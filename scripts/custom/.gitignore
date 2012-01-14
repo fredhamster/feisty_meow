@@ -1,0 +1,6 @@
+
+# ignore anything in this directory, since it's not public.
+
+[^.]*
+
+
