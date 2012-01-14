@@ -9,8 +9,6 @@ source "$SHELLDIR/rev_control/rev_control.sh"
 function do_checkin()
 {
   local directory="$1"; shift
-echo dir is $directory
-echo cur dir is $(pwd)
   if [ -d "CVS" ]; then
     # this appears to be cvs.
     pushd "$directory/.." &>/dev/null
@@ -33,9 +31,8 @@ function checkin_list {
       if [ ! -d "$j" ]; then continue; fi
 
       pushd $j &>/dev/null
-      folder=$j
-      echo "checking in '$folder'..."
-      do_checkin $folder
+      echo "checking in '$j'..."
+      do_checkin $j
       popd &>/dev/null
     done
   done
