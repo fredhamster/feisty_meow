@@ -27,7 +27,7 @@ function do_checkin()
 function checkin_list {
   local list=$*
   for i in $list; do
-    for j in $i/feisty_meow $i/hoople $i/hoople2 $i/quartz $i/web $i/yeti $i/xsede/xsede_tests $i/xsede/code/cak0l/trunk ; do
+    for j in $i/feisty_meow $i/hoople1 $i/hoople2 $i/quartz $i/web $i/yeti $i/xsede/xsede_tests $i/xsede/code/cak0l/trunk ; do
       if [ ! -d "$j" ]; then continue; fi
 
       pushd $j &>/dev/null
