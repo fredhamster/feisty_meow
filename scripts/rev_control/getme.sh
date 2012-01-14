@@ -24,32 +24,14 @@ function do_update()
 {
   directory="$1"; shift
 
-  # get the right modifier for the directory name.
-  compute_modifier "$directory" "out"
-
-  is_svn=1
-  checkout_cmd="echo unknown repository for $directory...  "
-
-  if [ "$home_system" == "true" ]; then
-    checkout_cmd="svn update ."
-  fi
-
-  # then we pretty much ignore what we guessed, and just use the
-  # appropriate command for what we see inside the directory.
-  if [ -d "$directory/CVS" ]; then
-    checkout_cmd="cvs co -P -kb "
-    modifier=  # reset the modifier, since we know we have cvs.
-    is_svn=0
-  elif [ -d "$directory/.svn" ]; then
-    checkout_cmd="svn update ."
-  fi
-
-  if [ $is_svn -eq 1 ]; then
-    pushd "$directory" &>/dev/null
-    $checkout_cmd
-    popd &>/dev/null
+  if [ -d "CVS" ]; then
+    cvs co -P -kb "$directory"
+  elif [ -d ".svn" ]; then
+    svn update .
+  elif [ -d ".git" ]; then
+    git pull
   else
-    $checkout_cmd "$modifier$directory"
+    echo unknown repository for $directory...
   fi
 }
 
@@ -63,10 +45,9 @@ function checkout_list {
         continue
       fi
 
-      pushd $i &>/dev/null
+      pushd $j &>/dev/null
       echo -n "retrieving '$j'...  "
       do_update $j
-#$(basename $j)
       popd &>/dev/null
     done
   done
