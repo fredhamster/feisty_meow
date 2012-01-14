@@ -1,0 +1,23 @@
+
+the unpacking manifest is a structure defined in terms of bytes.
+the exe's manifest offset is set to point to the beginning of this structure.
+
+bytes		   content
+-----              -------
+0 => 3		   number of chunks in the TOC
+4 => 4+N-1	   first manifest item, with length N
+4+N => 4+N+M-1	   second item, with length M
+4+N+M =>...etc.
+
+each bundle chunk has a structure:
+
+bytes		   content
+-----              -------
+0 => 3		   size of the data component of the chunk 
+4 => 4+S-1	   the file system target location for this chunk, as a zero
+		   terminated string (of length S).  this string comes from the
+		   target defined in the packing manifest.
+
+then the data starts after the end of the TOC; each chunk occupies the space
+declared for it in the manifest.
+

@@ -1,0 +1,46 @@
+# Firewall configuration written by lokkit
+# Manual customization of this file is not recommended.
+# Note: ifup-post will punch the current nameservers through the
+#       firewall; such entries will *not* be listed here.
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:RH-Lokkit-0-50-INPUT - [0:0]
+-A INPUT -j RH-Lokkit-0-50-INPUT
+
+# allow smtp.
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 25 --syn -j ACCEPT
+# allow ssh.
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 22 --syn -j ACCEPT
+
+# allow nfs.
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 111 --syn -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 111 -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 369 --syn -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 369 -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 530 --syn -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 530 -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 2049 --syn -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 2049 -j ACCEPT
+
+# allow SMB (netbios).
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 137 --syn -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 137 -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 138 --syn -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 138 -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 139 --syn -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 139 -j ACCEPT
+
+# accept anything from loopback adapter on our own host.
+-A RH-Lokkit-0-50-INPUT -i lo -j ACCEPT
+
+# accept dns info going to the server.
+-A RH-Lokkit-0-50-INPUT -p udp -m udp -s 14.28.42.28 --sport 53 -d 0/0 -j ACCEPT
+
+# otherwise, reject all input.
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --syn -j REJECT
+-A RH-Lokkit-0-50-INPUT -p udp -m udp -j REJECT
+
+COMMIT
+

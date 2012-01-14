@@ -1,0 +1,267 @@
+
+# CLAM System default variable definitions.
+
+###############################################################################
+
+# This file contains definitions and descriptions of the variables used
+# in the CLAM system (Coordinated Library Automagic Make).  This defaults
+# file should be included near the start of the user's makefile, and then the
+# rules file should be included after the user has modified the appropriate
+# variables and added the appropriate rules and targets.
+
+###############################################################################
+
+# OP_SYSTEM is a flag that specifies the operating system under which
+# the makefile system is executing.
+export OP_SYSTEM
+#OP_SYSTEM := UNIX = unix | OS2 = ibm os/2 | SYSV = v unix | DOS = pc dos
+#    | WIN32 = ms-win32 / NT.
+
+# OS_SUBCLASS is a finer differentiation of the OP_SYSTEM.  currently only
+# the darwin subclass for unix is considered.
+export OS_SUBCLASS
+#OS_SUBCLASS := darwin | 
+
+# set the default operating system when none is specified.
+ifeq "$(OP_SYSTEM)" ""
+#is there a nice way to join the greps?
+  IS_UNIX := $(shell uname | grep -i linux)
+  ifeq "$(IS_UNIX)" ""
+    IS_UNIX := $(shell uname | grep -i unix)
+    ifeq "$(IS_UNIX)" "" 
+      IS_UNIX := $(shell uname | grep -i darwin)
+      ifneq "$(IS_UNIX)" ""
+        # pick the subclass now that we know this is darwin.
+        OS_SUBCLASS := darwin
+      endif
+    endif
+  endif
+  IS_DOS := $(shell uname | grep -i cygwin)
+  ifeq "$(IS_DOS)" ""
+    IS_DOS := $(shell uname | grep -i ming)
+  endif
+  ifneq "$(IS_UNIX)" ""
+    OP_SYSTEM := UNIX
+  else
+    ifneq "$(IS_DOS)" ""
+      OP_SYSTEM := WIN32
+    else
+      # we don't have other comparisons yet, so we'll assume unix.  fix this
+      # if it's not your default operating system.
+      OP_SYSTEM := UNIX
+    endif
+  endif
+endif
+
+# now set a special ending for EXE files, which differs between the OSes.
+export EXE_END
+ifeq "$(OP_SYSTEM)" "WIN32"
+  EXE_END := .exe
+endif
+
+###############################################################################
+
+# "REPOSITORY_DIR" is the root of the "build" for our compilation oriented
+# features.  All source code and build helper files are usually found there.
+# The build targets to be built are usually stored there also, although the
+# targets can be located elsewhere if desired.  see TARGETS_DIR below.
+export REPOSITORY_DIR
+ifeq "$(REPOSITORY_DIR)" ""
+#  REPOSITORY_DIR = 
+#uhhh, use the current location?
+endif
+
+# "CLAM_DIR" points at where the CLAM source files are located.  this is needed
+# for finding shell scripts used during compilation.  if you are not using the
+# standard CLAM location, then modify this appropriately.
+export CLAM_DIR
+# must be set externally!
+#export CLAM_DIR := $(SHELLDIR)/clam
+
+# "TARGETS_DIR" is where all generated files will end up.  Usually the
+# files are put in a subdirectory named after their file type, such as
+# "include".  These subdirectories will all live under the TARGETS_DIR.
+export TARGETS_DIR
+ifeq "$(TARGETS_DIR)" ""
+  # the default is to generate files into subdirectories that are at the
+  # top-level of the repository.
+  TARGETS_DIR = $(REPOSITORY_DIR)
+endif
+
+# "CLAM_BIN" points at the location for helper binaries and shell scripts.
+ifeq "$(OP_SYSTEM)" "UNIX"
+  export CLAM_BIN = $(PRODUCTION_DIR)/clam_bin
+endif
+
+# "CURRENT_DIR" is the directory where this make was started.
+export CURRENT_DIR := $(shell pwd)
+
+###############################################################################
+
+# "PROJECT" is the root name for the project being compiled.  It is used
+# in generated directory names and for other purposes of uniquification.
+# This is a variable that _must_ be supplied by the user's makefile.
+# Examples:
+#     PROJECT = basis
+#     PROJECT = test_parser
+export PROJECT
+
+# "TARGETS" are the files to be created by CLAM.  It is assumed that each
+# target listed has a corresponding rule that causes it to be processed.
+# Targets are automatically deleted when the "make clean" command is used.
+export TARGETS
+
+# "ACTUAL_TARGETS" is how the targets are expected to be passed to the rules
+# file; this allows a plug-in module's rules to manipulate the TARGETS to make
+# sure that important files don't get deleted by the automatic deletion done
+# with "make clean."  If the real module used does not create a variable called
+# ACTUAL_TARGETS from the TARGETS, then the default specified here is used.
+export ACTUAL_TARGETS = $(TARGETS)
+
+# "FIRST_TARGETS" and "LAST_TARGETS" are targets that need to be processed
+# before and after the "TARGETS".
+#FIRST_TARGETS =
+#LAST_TARGETS =
+
+# "ACTUAL_FIRST_TARGETS" is the real variable that should be passed to the
+# rules for reasons similar to ACTUAL_TARGETS above.  Some language
+# dependent modules need to modify the first targets by inserting targets
+# before those provided by the user.  "ACTUAL_LAST_TARGETS" is similar. 
+ACTUAL_FIRST_TARGETS = $(FIRST_TARGETS)
+ACTUAL_LAST_TARGETS = $(LAST_TARGETS)
+
+# "BUILD_BEFORE" is a list of projects that need to be created before this
+# project can be created.  The projects are expected to match subdirectories
+# below this project.  make will change to that subdirectory and run the
+# makefile contained therein.
+#BUILD_BEFORE =
+
+# "BUILD_AFTER" is similar to BUILD_BEFORE, but these are done after the rest.
+#BUILD_AFTER =
+
+# "RUN_TARGETS" is a list of programs that should be executed as part of a make.
+export RUN_TARGETS
+
+# "MAKEFILE_NAME" works with BUILD_BEFORE and BUILD_AFTER.  This allows
+# the name of the makefile in the subdirectory to be changed to something other
+# than 'makefile'.
+export MAKEFILE_NAME = makefile
+
+############################################################################
+
+# "FIND" is a macro that points to the real find command, which is the unix
+# find command.  on dosdows, the find command is utter garbage and we need
+# to make sure we don't accidentally run that inferior one.
+export FIND = find
+#ifeq "$(OP_SYSTEM)" "WIN32"
+#  export FIND = $(REPOSITORY_DIR)/msys/bin/find
+#endif
+
+# "PARAMETER_FILE" is the location of our version stamps (if defined) and
+# also contains any extra flags passed to the compilation.
+ifeq "$(PARAMETER_FILE)" ""
+  # the default assumes that clam lives under the main hoople branch.
+  export PARAMETER_FILE = $(CLAM_DIR)/clam_parms.ini
+endif
+
+# ensure that our version variables are available to sub-shells.
+export major
+export minor
+export revision
+export build
+export TRIPART_VERSION = .$(major).$(minor).$(revision)
+
+# now pull those build parameters in.
+include $(PARAMETER_FILE)
+
+############################################################################
+
+# "CLEAN" is an powerful flag that affects what clam does.  if the flag is
+# non-empty, then nothing will be built and every generated file that is
+# known about will be deleted.
+export CLEAN
+# "CLEANUPS" are things to be removed by the "make clean" command.
+#CLEANUPS =
+# OTHER_CLEANS are targets to execute before performing the main clean up.
+#OTHER_CLEANS =
+
+# sets the temporary directory.
+export CLAM_TMP
+ifeq "$(CLAM_TMP)" ""
+  CLAM_TMP := $(WASTE_DIR)
+endif
+
+ifeq "$(OP_SYSTEM)" "WIN32"
+  # set these so that compilers and such will use them.
+  export TMP := $(CLAM_TMP)
+  export TEMP := $(CLAM_TMP)
+endif
+
+# "FAILURE_FILE" is a file that is used as a flag to track failures.  if the
+# file exists, then it is assumed that a failure happened during the current
+# make.
+export FAILURE_FILE = $(CLAM_TMP)/clam_failure.$(PROJECT)
+
+# "DIRTY_FILE" is a file that signifies that some targets have been remade.
+# it is not used at the base level of clam, but language-specific versions
+# might do something special if targets were remade.
+export DIRTY_FILE = $(CLAM_TMP)/clam_acted.$(PROJECT)
+
+# "SUBMAKE_FLAG" is a file whose presence indicates that the submake performed
+# some actions.  that can be interpreted by some language-specific versions
+# as a reason to set the dirty flag.
+export SUBMAKE_FLAG = $(CLAM_TMP)/clam_submake.$(PROJECT)
+
+# "FLAG_FILES" is a list of all the files that are used for compilation flags.
+# they are whacked at the beginning and end of a make.
+export FLAG_FILES = $(FAILURE_FILE) $(DIRTY_FILE)
+
+# "SUB_FLAG_FILES" is a list of the compilation flag files which should be
+# destroyed only at the end of a make.  they are communication back
+# from sub-makefiles.
+export SUB_FLAG_FILES = $(SUBMAKE_FLAG)
+
+# "SHELL" is used by gnu make to specify the shell that executes programs.
+SHELL = /bin/bash
+
+# "SH" is the shell that will execute all commands.  this is our own variable;
+# it is not used by gnu make.  currently we just default to the standard
+# SHELL variable above.
+export SH = $(SHELL)
+
+# "HIDER" cloaks the commands that are sent to the operating system.  The
+# HIDER macro has the "@" symbol in it if the make is _not_ verbose; this
+# hides the commands that are executed.  If the make _is_ to be verbose,
+# then the "@" is removed.
+HIDER_CHAR = @
+ifneq "$(NOISY)" ""
+  # If the special NOISY flag is true, then the make will be _very_ verbose.
+  HIDER_CHAR =
+endif
+# Put together the full hider package.
+HIDER = $(HIDER_CHAR)
+
+# "HIDESH" is a hider that executes a sub-shell.  This is needed for proper
+# execution of inlined shell scripting.  Note that the space at the end of
+# the line is required.
+HIDESH = $(HIDER) $(SH) 
+
+# "CATCHER" is a hider that looks for errors in the command being run and
+# stops the make if any are seen.
+CATCHER = $(HIDESH) $(CLAM_DIR)/badness_catcher.sh 
+
+# "NOISY" causes the compilation to be verbose.  All commands issued are echoed
+# to the standard output.
+export NOISY
+
+# "QUIET" has the effect of silencing certain internal clam printouts.
+#QUIET =
+
+# "CLAM_ERROR_SOUND" causes the named file to be played for error conditions that
+# stop the build.
+export CLAM_ERROR_SOUND
+
+# "CLAM_FINISH_SOUND" causes the file specified to be played when the make is
+# complete.
+export CLAM_FINISH_SOUND
+

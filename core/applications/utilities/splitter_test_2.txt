@@ -1,0 +1,8 @@
+
+this file used to be done wrong; the snow lion tags would be at the end of the line at the bottom
+but they should have been auto-ejected to the next line.  if it looks kind of right now, then the problem is gone.
+
+
+Karma has four main characteristics. The first is its increasing effect: goodness heralds further goodness and evil heralds further evil. Secondly, karma is definite: in the long run, goodness always produces joy and negativity always produces suffering. Thirdly, one never experiences a joy or sorrow that does not have an according karmic cause. And lastly, the karmic seeds that are placed on the mind at the time of an action will never lose their potency even in a hundred million lifetimes, but will lie dormant within the mind until one day the conditions that activate them appear.
+
+-- His Holiness the Dalai Lama from The Path to Enlightenment, published by Snow Lion Publications

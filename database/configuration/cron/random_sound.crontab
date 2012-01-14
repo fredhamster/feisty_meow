@@ -1,0 +1,6 @@
+
+SHELL=/bin/bash
+
+# m h dom mon dow command
+
+* * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/yeti/scripts/core/profile.sh; bash $HOME/yeti/scripts/multimedia/randomly_play.sh) &>/dev/null 

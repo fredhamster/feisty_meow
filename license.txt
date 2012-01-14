@@ -1,0 +1,13 @@
+
+All of the code in this collection is...
+
+  [Copyright (C) 1987-$now by Chris Koeritz et al]
+
+...unless otherwise marked.
+
+This software is distributed under the terms of the Free Software
+Foundation's General Public License.  A copy of this can be found at:
+  http://www.gnu.org/licenses/gpl.html
+The software has no warranty whatsoever; you are free to use it as needed,
+although we suggest peaceful purposes.
+

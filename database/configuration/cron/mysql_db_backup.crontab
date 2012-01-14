@@ -1,0 +1,7 @@
+
+SHELL=/bin/bash
+
+# m h dom mon dow command
+
+14 7 * * * bash $HOME/yeti/scripts/database/backup_mysql_dbs.sh
+

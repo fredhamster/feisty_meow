@@ -1,0 +1,16 @@
+
+# BOINC daemon configuration settings. The examples below are the defaults
+# you'd get if you left them out, so you only need the lines that are different.
+#
+BOINCUSER=fred
+BOINCDIR=/home/fred/BOINC
+#BUILD_ARCH=i686-pc-linux-gnu
+BOINCEXE=/home/fred/BOINC/boinc
+#LOGFILE=boinc.log
+#ERRORLOG=error.log
+
+#BOINCOPTS="-allow_remote_gui_rpc"
+# opens up your machine to the world!
+
+#LOCKDIR=/var/lock/subsys
+

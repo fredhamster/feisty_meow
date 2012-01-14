@@ -1,0 +1,4 @@
+
+# real time clock config.
+dev.rtc.max-user-freq=1024
+

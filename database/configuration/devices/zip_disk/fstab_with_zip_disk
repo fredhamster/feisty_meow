@@ -1,0 +1,6 @@
+
+# mount for zip disk on scsi device where it happens to show up on my machine.
+# look for a message in /var/messages to determine which adapter is right.
+/dev/sda4		/mnt/zip		vfat    noauto,rw,user,nosuid,sync,mode=0777
+
+

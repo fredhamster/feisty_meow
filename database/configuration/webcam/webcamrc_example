@@ -1,0 +1,37 @@
+
+[grab]
+       device = /dev/video0
+       text = "webcam %Y-%m-%d %H:%M:%S"
+#       infofile = filename
+       fg_red = 255
+       fg_green = 255
+       fg_blue = 255
+       width = 320
+       height = 240
+       delay = 1
+       wait = 0
+#       input = composite1
+       norm = pal
+       rotate = 0
+       top = 0
+       left = 0
+       bottom = 239
+       right = 319
+       quality = 85
+       trigger = 100
+       once = 0
+
+[velma]
+       host = velma
+       user = anonymous
+       pass = fred@
+       dir  = incoming
+       file = webcam.jpeg
+       tmp  = uploading.jpeg
+       passive = 1
+       debug = 0
+       auto = 0
+       local = 0
+       ssh = 0
+
+

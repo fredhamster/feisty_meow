@@ -1,0 +1,40 @@
+/*--------------------------------------------------|
+| dTree 2.05 | www.destroydrop.com/javascript/tree/ |
+|---------------------------------------------------|
+| Copyright (c) 2002-2003 Geir Landrö               |
+|--------------------------------------------------*/
+
+/*
+ * Modified by Chris Koeritz for http://gruntose.com (c) copyright 5/2005
+ * All changes donated back into public domain following same license
+ * as author (Geir Landroe).
+ */
+
+.dtree {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: rgb(204, 255, 208);
+	white-space: nowrap;
+}
+.dtree img {
+	border: 0px;
+	vertical-align: middle;
+}
+.dtree a {
+	color: rgb(104, 255, 208);
+	text-decoration: none;
+}
+.dtree a.node, .dtree a.nodeSel {
+	white-space: nowrap;
+	padding: 1px 2px 1px 2px;
+}
+.dtree a.node:hover, .dtree a.nodeSel:hover {
+	color: rgb(104, 255, 208);
+	text-decoration: underline;
+}
+.dtree a.nodeSel {
+	background-color: rgb(70, 0, 100);
+}
+.dtree .clip {
+	overflow: hidden;
+}

@@ -1,0 +1,169 @@
+# CLAM System default rule and target definitions.
+
+###############################################################################
+
+#  This file contains composite macros and rules for creating objects.
+#  This file should be included in the user's makefile after the variables
+#  have been initialized appropriately for the particular project being
+#  created.  The user's own targets should be placed after the include
+#  directive that specifies this file.
+
+###############################################################################
+
+# This ensures that any of other projects required by this one (defined through
+# BUILD_BEFORE) get created before the real work in this project is done.
+ifneq "$(BUILD_BEFORE)" ""
+  FIRST_TARGETS += $(BUILD_BEFORE:%=%.make)
+endif
+ifneq "$(BUILD_AFTER)" ""
+  LAST_TARGETS += $(BUILD_AFTER:%=%.make)
+endif
+
+# Make the default action be an error stop if we can't find an appropriate rule.
+.DEFAULT:
+	$(HIDER)echo
+	$(HIDER)echo [$@] is missing files or has a makefile problem.
+	$(HIDER)echo
+	$(HIDESH)$(CLAM_DIR)/exit_make.sh
+
+# This rule halts make for some supposedly devastating reason.  More
+# information should be printed out by the cause of the halt.
+%.halt:
+	@echo CLAM execution halted, the cause being $@...
+	$(HIDESH)$(CLAM_DIR)/exit_make.sh
+
+# Provides a time-stamp in the make log.
+show_date.%:
+	$(HIDER)echo "The time right now is $(shell date)"
+
+# The .make rule changes to the directory with the same first part of the
+# pattern and makes whatever projects are there.  This is used by the build
+# before procedure.
+%.make:
+	$(HIDESH) -c '\
+if [ -d $* ]; then \
+  if [ -f "$*/$(MAKEFILE_NAME)" ]; then \
+    $(MAKE) --silent -f "$(MAKEFILE_NAME)" NOT_FIRST_MAKE=t -C "$*"; \
+  else \
+    echo Skipping makefile-less directory [$*]; \
+  fi \
+else \
+  echo Skipping missing directory [$*]; \
+fi'
+#used to include message for first case: echo "Entering directory [$*]"; 
+
+# "all" is the first target to execute in any makefile.  we capture it and
+# use it to produce the requested actions.
+all: start $(ACTUAL_FIRST_TARGETS) $(ACTUAL_TARGETS) $(ACTUAL_LAST_TARGETS) $(RUN_TARGETS:%=run_targets) finish 
+
+# "start" announces the beginning of compilation.
+start:
+	$(HIDESH) -c '\
+if [ ! -d "$(CLAM_TMP)" ]; then \
+  mkdir "$(CLAM_TMP)"; \
+fi'
+ifeq "$(QUIET)" ""
+	$(HIDER)echo Project $(PROJECT) [$(shell basename $(shell dirname $(shell pwd) ) )/$(shell basename $(shell pwd) )] v. $(major).$(minor).$(revision).$(build).
+endif
+	$(HIDER)rm -f $(FLAG_FILES)
+
+# "finish" announces the end of compilation.  if there are targets to
+# run, then they are executed here.
+finish:
+ifeq "$(QUIET)" ""
+	$(HIDER)echo Finished $(PROJECT).
+endif
+	$(HIDER)rm -f $(FLAG_FILES) $(SUB_FLAG_FILES)
+ifeq "$(NOT_FIRST_MAKE)" ""
+	$(HIDESH) -c '\
+if [ ! -f "$(FAILURE_FILE)" ]; then \
+  $(SHELL) $(CLAM_DIR)/sound_play.sh $(CLAM_FINISH_SOUND); \
+fi'
+endif
+# toss the flag files so we do not see them again.
+	$(HIDER)rm -f "$(DIRTY_FILE)" "$(SUBMAKE_FLAG)"
+
+# runs the programs specified in the RUN_TARGETS variable.
+run_targets:
+	$(HIDESH) -c '\
+if [ ! -z "$(RUN_TARGETS)" ]; then \
+  if [ -f "$(DIRTY_FILE)" -o -f "$(SUBMAKE_FLAG)" ]; then \
+    total_exitval=0; \
+    for program_name in $(RUN_TARGETS); do \
+      base=`basename $$program_name`; \
+      "$$program_name"; \
+      exitval=$$?; \
+      if [ $$exitval -ne 0 ]; then \
+        echo -e "ERROR: $$program_name at `date`"; \
+        total_exitval=$$(($$total_exitval + 1)); \
+      fi; \
+    done; \
+    if [ $$total_exitval -ne 0 ]; then \
+      echo "FAILURE: errors occurred in RUN_TARGETS."; \
+    fi; \
+  fi; \
+fi'
+#hmmm: run targets needs to work on a hierarchy.
+#hmmm: old idea?    exit $$total_exitval; \
+
+# "make_subdirs" travels down each subdirectory and builds using make.
+make_subdirs:
+	$(HIDESH) -c '\
+for i in *; do \
+  if [ -d $$i ]; then \
+    if [ -f $$i/$(MAKEFILE_NAME) -a ! $$i -ef `pwd` ]; then \
+      echo; \
+      (cd $$i; $(MAKE) --silent NOT_FIRST_MAKE=t -f $(MAKEFILE_NAME) ); \
+    else \
+      echo Skipping makefile-less directory $$i...; \
+      echo; \
+    fi \
+  fi \
+done; \
+exit 0'
+##echo Entering $$i now...; 
+
+# "clean" is a default target that removes object files, libs, executable
+# files and such that were created by the project.  it invokes the makefile
+# again with the CLEAN variable defined so that this can be passed down into
+# all subsequent makes.
+clean: 
+	$(HIDER)$(MAKE) --silent CLEAN=t ready_to_clean
+
+ready_to_clean: $(OTHER_CLEANS) clean_subdirs
+	@echo Whacking [$(CLEANUPS)].
+	$(HIDESH) -c '\
+echo the other cleans were: $(OTHER_CLEANS); \
+echo the clean list is: $(CLEANUPS); \
+if [ ! -z "$(CLEANUPS)" ]; then \
+  for i in $(CLEANUPS) nonexistentishfileforlist; do \
+    rm -rf "$$i"; \
+  done \
+fi'
+
+# "clean_subdirs" travels down each subdirectory and cleans using make.
+clean_subdirs:
+	$(HIDESH) -c '\
+for i in *; do \
+  if [ -d "$$i" ]; then \
+    if [ -f "$$i/$(MAKEFILE_NAME)" -a ! "$$i" -ef `pwd` ]; then \
+      (cd "$$i"; $(MAKE) --silent NOT_FIRST_MAKE=t -f $(MAKEFILE_NAME) clean); \
+    else \
+      echo "Skipping makefile-less directory $$i..."; \
+    fi \
+  fi \
+done; \
+exit 0'
+###echo Cleaning "$$i" now...; 
+
+# "rm_links" removes the files in the current directory that are links
+# to other files.  this is only useful in a unix environment.
+rm_links:
+	$(HIDESH) -c '\
+for i in *; do \
+  if [ -h "$$i" ]; then \
+    /bin/rm -f "$$i"; \
+  fi \
+done; \
+exit 0'
+

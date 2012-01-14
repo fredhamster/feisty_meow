@@ -1,0 +1,7 @@
+// this should be included before the first use of new in a header.
+
+#ifdef new
+  #undef new
+  #define NEW_TRAP
+#endif
+

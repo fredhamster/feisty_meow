@@ -1,0 +1,19 @@
+# This is an example "version.ini" file for a library or application.
+# Using this file and the "main_ver.ini" (see "proto_main_ver.ini" for more
+# information), the version support creates the version record in a resource
+# file and outputs the header for version checking (libraries only).
+
+[version]
+  ; currently, the only section name used is "version".
+description=Gurp Library: assorted multi-purpose frotzing components
+  ; longish text summary of the library's purpose.
+name=Gurp_Library
+  ; the name that the library goes by.  how it thinks of itself.
+root=gurp
+  ; the root name for the project's dll or exe file.  don't include the
+  ; extension; that's specified below.
+extension=dll
+  ; type of file created by the project.  the default is "dll", which indicates
+  ; that a version checking header should be created (called "version.h").
+  ; the other option is "exe", which doesn't bother with the version header.
+

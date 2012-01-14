@@ -1,0 +1,9 @@
+# personal storage areas.
+
+/fatty/walrus		*.lachrymose.net(ro,no_root_squash,sync)
+/fatty/stuffing		*.lachrymose.net(rw,no_root_squash,sync)
+/fatty/opsystems	*.lachrymose.net(rw,no_root_squash,sync)
+
+# allow cd drive to be used remotely for installs, etc.
+/media/cdrom	*(ro,sync)
+

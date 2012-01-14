@@ -1,0 +1,22 @@
+
+# in addition to the .bashrc code that the operating system gives you,
+# you can add this file to your ~/.bashrc if you want the YETI scripts
+# to be loaded up automatically.
+#
+# this is for normal users, not the root user!
+
+# note: it is useful to set your own NAME variable to identify who you are.
+# the yeti scripts will set up a bogus one for you otherwise.  in your home
+# directory's .bashrc, you could add something like this, for example:
+#   export NAME='Doodmodeus Q. Nornberton'
+
+# don't bother running our stuff for a dumb terminal since any echo
+# can mess with an sftp connection, apparently.
+if [ ${TERM} != "dumb" ]; then
+  # make sure yeti code hasn't been explicitly disabled.
+  if [ -z "$NO_YETI" ]; then
+    # sets up the yeti scripts, using the default locations for all scripts.
+    source $HOME/yeti/scripts/core/profile.sh
+  fi
+fi
+

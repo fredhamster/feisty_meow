@@ -1,0 +1,264 @@
+
+
+
+User Commands                                       MAKEDEPEND(1)
+
+
+
+NNAAMMEE
+     makedepend - create dependencies in makefiles
+
+SSYYNNOOPPSSIISS
+     mmaakkeeddeeppeenndd  [  --DDnnaammee==ddeeff  ]  [  --DDnnaammee ] [ --IIiinncclluuddeeddiirr ] [
+     --YYiinncclluuddeeddiirr ] [ --aa ] [ --ffmmaakkeeffiillee ] [ --oooobbjjssuuffffiixx ] [ --ppoobb--
+     jjpprreeffiixx  ]  [ --ssssttrriinngg ] [ --wwwwiiddtthh ] [ --vv ] [ --mm ] [ -- ootthh--
+     eerrooppttiioonnss -- ] sourcefile ...
+
+DDEESSCCRRIIPPTTIIOONN
+     MMaakkeeddeeppeenndd reads each _s_o_u_r_c_e_f_i_l_e in sequence and  parses  it
+     like  a  C-preprocessor,  processing  all _#_i_n_c_l_u_d_e_, _#_d_e_f_i_n_e_,
+     _#_u_n_d_e_f_, _#_i_f_d_e_f_, _#_i_f_n_d_e_f_, _#_e_n_d_i_f_, _#_i_f and _#_e_l_s_e directives so
+     that  it can correctly tell which _#_i_n_c_l_u_d_e_, directives would
+     be used in a compilation.  Any _#_i_n_c_l_u_d_e_, directives can ref-
+     erence  files  having other _#_i_n_c_l_u_d_e directives, and parsing
+     will occur in these files as well.
+
+     Every file that a _s_o_u_r_c_e_f_i_l_e  includes,  directly  or  indi-
+     rectly,  is  what  mmaakkeeddeeppeenndd  calls  a "dependency".  These
+     dependencies are then written to a _m_a_k_e_f_i_l_e in  such  a  way
+     that mmaakkee((11)) will know which object files must be recompiled
+     when a dependency has changed.
+
+     By default, mmaakkeeddeeppeenndd places its output in the  file  named
+     _m_a_k_e_f_i_l_e  if  it  exists,  otherwise _M_a_k_e_f_i_l_e_.  An alternate
+     makefile may be specified with  the  --ff  option.   It  first
+     searches the makefile for the line
+
+         #  DO NOT DELETE THIS LINE -- make depend depends on it.
+
+     or one provided with the --ss option, as a delimiter  for  the
+     dependency  output.   If  it finds it, it will delete every-
+     thing following this to the end of the makefile and put  the
+     output  after this line.  If it doesn't find it, the program
+     will append the string to the end of the makefile and  place
+     the output following that.  For each _s_o_u_r_c_e_f_i_l_e appearing on
+     the command line, mmaakkeeddeeppeenndd puts lines in the  makefile  of
+     the form
+
+          sourcefile.o: dfile ...
+
+     Where  "sourcefile.o" is the name from the command line with
+     its suffix replaced with ".o", and "dfile" is  a  dependency
+     discovered  in a _#_i_n_c_l_u_d_e directive while parsing _s_o_u_r_c_e_f_i_l_e
+     or one of the files it included.
+
+EEXXAAMMPPLLEE
+     Normally, mmaakkeeddeeppeenndd will be used in a  makefile  target  so
+     that  typing "make depend" will bring the dependencies up to
+     date for the makefile.  For example,
+         SRCS = file1.c file2.c ...
+
+
+
+X Version 11          Last change: Release 6                    1
+
+
+
+
+
+
+User Commands                                       MAKEDEPEND(1)
+
+
+
+         CFLAGS = -O -DHACK -I../foobar -xyz
+         depend:
+                 makedepend -- $(CFLAGS) -- $(SRCS)
+
+OOPPTTIIOONNSS
+     MMaakkeeddeeppeenndd will ignore any option that it  does  not  under-
+     stand  so that you may use the same arguments that you would
+     for cccc((11))..
+
+     --DDnnaammee==ddeeff oorr --DDnnaammee
+          Define.  This places a definition for _n_a_m_e  in  mmaakkeeddee--
+          ppeenndd''ss  symbol  table.  Without _=_d_e_f the symbol becomes
+          defined as "1".
+
+     --IIiinncclluuddeeddiirr
+          Include directory.  This  option  tells  mmaakkeeddeeppeenndd  to
+          prepend _i_n_c_l_u_d_e_d_i_r to its list of directories to search
+          when it encounters a _#_i_n_c_l_u_d_e directive.   By  default,
+          mmaakkeeddeeppeenndd  only searches the standard include directo-
+          ries (usually /usr/include  and  possibly  a  compiler-
+          dependent directory).
+
+     --YYiinncclluuddeeddiirr
+          Replace  all  of  the standard include directories with
+          the single specified include directory;  you  can  omit
+          the _i_n_c_l_u_d_e_d_i_r to simply prevent searching the standard
+          include directories.
+
+     --aa   Append the dependencies to the end of the file  instead
+          of replacing them.
+
+     --ffmmaakkeeffiillee
+          Filename.   This  allows  you  to  specify an alternate
+          makefile in which mmaakkeeddeeppeenndd can place its output.
+
+     --oooobbjjssuuffffiixx
+          Object file suffix.  Some systems may have object files
+          whose suffix is something other than ".o".  This option
+          allows you to specify another suffix, such as ".b" with
+          _-_o_._b or ":obj" with _-_o_:_o_b_j and so forth.
+
+     --ppoobbjjpprreeffiixx
+          Object  file  prefix.   The  prefix is prepended to the
+          name of the object file. This is usually used to desig-
+          nate  a  different  directory for the object file.  The
+          default is the empty string.
+
+     --ssssttrriinngg
+          Starting string delimiter.  This option permits you  to
+          specify  a  different string for mmaakkeeddeeppeenndd to look for
+          in the makefile.
+
+
+
+
+X Version 11          Last change: Release 6                    2
+
+
+
+
+
+
+User Commands                                       MAKEDEPEND(1)
+
+
+
+     --wwwwiiddtthh
+          Line width.   Normally,  mmaakkeeddeeppeenndd  will  ensure  that
+          every  output line that it writes will be no wider than
+          78 characters for the sake of readability.  This option
+          enables you to change this width.
+
+     --vv   Verbose  operation.   This  option causes mmaakkeeddeeppeenndd to
+          emit the list of files included by each input  file  on
+          standard output.
+
+     --mm   Warn  about  multiple  inclusion.   This  option causes
+          mmaakkeeddeeppeenndd to produce  a  warning  if  any  input  file
+          includes another file more than once.  In previous ver-
+          sions of mmaakkeeddeeppeenndd this was the default behavior;  the
+          default  has  been changed to better match the behavior
+          of the C compiler, which  does  not  consider  multiple
+          inclusion  to be an error.  This option is provided for
+          backward compatibility, and to aid in  debugging  prob-
+          lems related to multiple inclusion.
+
+     ---- ooppttiioonnss ----
+          If  mmaakkeeddeeppeenndd  encounters  a double hyphen (--) in the
+          argument list, then any unrecognized argument following
+          it  will  be  silently  ignored; a second double hyphen
+          terminates  this  special  treatment.   In  this   way,
+          mmaakkeeddeeppeenndd  can  be made to safely ignore esoteric com-
+          piler arguments that  might  normally  be  found  in  a
+          CFLAGS mmaakkee macro (see the EEXXAAMMPPLLEE section above).  All
+          options that mmaakkeeddeeppeenndd recognizes and  appear  between
+          the pair of double hyphens are processed normally.
+
+AALLGGOORRIITTHHMM
+     The approach used in this program enables it to run an order
+     of magnitude faster than any other "dependency generator"  I
+     have ever seen.  Central to this performance are two assump-
+     tions: that all files compiled by a single makefile will  be
+     compiled  with  roughly the same _-_I and _-_D options; and that
+     most files in a single directory will  include  largely  the
+     same files.
+
+     Given  these  assumptions,  mmaakkeeddeeppeenndd  expects to be called
+     once for each makefile, with all source files that are main-
+     tained  by  the  makefile appearing on the command line.  It
+     parses each source and include file exactly once,  maintain-
+     ing an internal symbol table for each.  Thus, the first file
+     on the command line will take an amount of time proportional
+     to  the  amount  of time that a normal C preprocessor takes.
+     But on subsequent files, if it encounter's an  include  file
+     that it has already parsed, it does not parse it again.
+
+     For  example,  imagine  you are compiling two files, _f_i_l_e_1_._c
+     and _f_i_l_e_2_._c_, they each include the header file _h_e_a_d_e_r_._h_, and
+
+
+
+X Version 11          Last change: Release 6                    3
+
+
+
+
+
+
+User Commands                                       MAKEDEPEND(1)
+
+
+
+     the  file  _h_e_a_d_e_r_._h  in  turn  includes the files _d_e_f_1_._h and
+     _d_e_f_2_._h_.  When you run the command
+
+         makedepend file1.c file2.c
+
+     mmaakkeeddeeppeenndd will parse _f_i_l_e_1_._c and consequently, _h_e_a_d_e_r_._h and
+     then  _d_e_f_1_._h and _d_e_f_2_._h_.  It then decides that the dependen-
+     cies for this file are
+
+         file1.o: header.h def1.h def2.h
+
+     But when the program parses _f_i_l_e_2_._c and discovers  that  it,
+     too, includes _h_e_a_d_e_r_._h_, it does not parse the file, but sim-
+     ply adds _h_e_a_d_e_r_._h_, _d_e_f_1_._h and _d_e_f_2_._h to the list  of  depen-
+     dencies for _f_i_l_e_2_._o_.
+
+SSEEEE AALLSSOO
+     cc(1), make(1)
+
+BBUUGGSS
+     mmaakkeeddeeppeenndd parses, but does not currently evaluate, the SVR4
+     #predicate(token-list) preprocessor expression; such expres-
+     sions  are  simply  assumed  to be true.  This may cause the
+     wrong _#_i_n_c_l_u_d_e directives to be evaluated.
+
+     Imagine you are parsing two files, say _f_i_l_e_1_._c and  _f_i_l_e_2_._c_,
+     each  includes the file _d_e_f_._h_.  The list of files that _d_e_f_._h
+     includes might truly be different when _d_e_f_._h is included  by
+     _f_i_l_e_1_._c  than  when  it  is  included  by _f_i_l_e_2_._c_.  But once
+     mmaakkeeddeeppeenndd arrives at a list of dependencies for a file,  it
+     is cast in concrete.
+
+AAUUTTHHOORR
+     Todd Brunhoff, Tektronix, Inc. and MIT Project Athena
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+X Version 11          Last change: Release 6                    4
+
+
+

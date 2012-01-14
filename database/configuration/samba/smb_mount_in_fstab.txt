@@ -1,0 +1,27 @@
+
+//gulliver/build /home/fred/gullybuild cifs uid=1000,gid=1001,noauto,credentials=/etc/gulliver_credentials.txt 0 0
+  # in this example, a box named gulliver has an SMB share called "build".
+  # we are mounting that to a local directory /home/fred/gullybuild.
+  # the uid/gid items should be set to the actual user id and group id for
+  # whatever user will need to access and modify those files.  the credentials
+  # file is used to specify authentication parameters for the share.  an
+  # example of the credential file format is below.
+
+###############
+
+# example credentials file:
+# the information below is all that should be needed to access the share on
+# gulliver.  note that the user can contain a windows domain.
+# this file does not go in /etc/fstab!  it should be a separate file in the
+# /etc directory or some other safe place.  the file permissions should only
+# allow root to read/write the file, such as when these three commands
+# are used to set the ownership and permissions:
+#     chown root /etc/gulliver_credentials.txt
+#     chgrp root /etc/gulliver_credentials.txt
+#     chmod 600 /etc/gulliver_credentials.txt
+
+## /etc/gulliver_credentials.txt
+username=sluggocorp\dhughley
+password=semjendradok89
+workgroup=smezzo_group
+

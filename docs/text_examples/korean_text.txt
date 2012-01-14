@@ -1,0 +1,12 @@
+
+
+we will translate this at babelfish:
+
+Let us see then if we can narrow it down.  As I focus my mind upon it, it seems rather less impenetrable.  What indications have we as to this book?
+
+into this:
+
+우리들을 그때 우리가 떨어뜨리기 위하여 그것을 좁힐 수 있으면 보는 시키십시요. 나가 그것에 나의 마음을 초점을 맞추기 때문에, 오히려 보다 적게 보인다. 이 책에 관해서는 무슨 표시가 우리가 있는가?
+
+
+

@@ -1,0 +1,33 @@
+ 
+FROOP Corporation
+
+Software Design Description (SDD)
+
+Document: 	Outcome and Diagnostic Standardization Proposal
+
+Project: 	Snoopter 5.1
+
+Author: 	Chris Koeritz
+
+Created: 	11/17/2004
+
+Revision: 	2
+
+The Problem
+
+   1. The Snoopter product incorporates hundreds of C++ classes.  Many of these define a set of outcomes that represent the exit status of a function invocation.  This is a useful feature, rather than just returning a boolean result, but it has spread like wildfire and the set of outcomes today is very large.  One part of the problem is that it is not clear to our customers what the outcomes even are, much less what they mean.
+
+   2. This impacts the logging of diagnostic information too.  Sometimes the bare numerical values of outcomes are logged, whereas other times the outcome name is logged.  While logging the names of outcomes is the preferred method, even then the set of names and what they mean is not necessarily clear.  Another part of the problem is thus that diagnostic entries using outcomes are more difficult to decode than necessary.
+
+   3. Beyond the potential confusion that can arise from logging outcomes, some of our diagnostic entries are unclear or incomplete.  The entries describe a problem, but sometimes they don't describe the object that the problem pertains to or the don't provide enough information to really understand what the problem is.  Since each programmer writes their own log entries according to their own predilections, the diagnostic traces from Snoopter can be quirky and differ substantially from program to program.  Some of this is unavoidable, but we need to provide better and more complete logging.
+
+   4.
+
+The Solution
+
+   1. One aspect of this project is to define a very low-level set of outcomes that cover most common function results.  These will be used wherever possible as the outcomes returned by our C++ classes.  There may still need to be a larger set of outcomes for certain classes, since their behavior may not make sense to describe at a very low-level.  To support these extensions to the low-level set of outcomes, there needs to be a set of tools for adding new outcomes programmatically and in a way that is stable (i.e., the set does not change between releases unless intentionally modified) and verifiable (i.e., ensuring that no two outcomes share the same numeric value unless they are the same outcome).
+
+   2. It is important for the customer's sanity (and our own) that we have a way to produce a list of all outcomes in the program, their numerical values, and some description of what that outcome means.  Part of the standardization project is to produce a tool capable of listing all of the Snoopter outcomes in just this way.
+
+   3. This project will create a set of guidelines for how to log the right amount of information when describing a situation in a log file.  This will not be something that can be absolute and unvarying for everyone, but having a set of clear techniques for creating good log entries will be valuable.
+

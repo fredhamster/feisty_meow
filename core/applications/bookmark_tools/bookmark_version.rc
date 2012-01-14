@@ -1,0 +1,46 @@
+#ifndef NO_VERSION
+#include <winver.h>
+#include <__build_version.h>
+#include <__build_configuration.h>
+#define BI_PLAT_WIN32
+  // force 32 bit compile.
+1 VERSIONINFO LOADONCALL MOVEABLE
+FILEVERSION __build_FILE_VERSION_COMMAS
+PRODUCTVERSION __build_PRODUCT_VERSION_COMMAS
+FILEFLAGSMASK 0
+FILEFLAGS VS_FFI_FILEFLAGSMASK
+#if defined(BI_PLAT_WIN32)
+  FILEOS VOS__WINDOWS32
+#else
+  FILEOS VOS__WINDOWS16
+#endif
+FILETYPE VFT_APP
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    // Language type = U.S. English(0x0409) and Character Set = Windows, Multilingual(0x04b0)
+    BLOCK "040904b0"              // Matches VarFileInfo Translation hex value.
+    BEGIN
+      VALUE "CompanyName", __build_company "\000"
+#ifndef _DEBUG
+      VALUE "FileDescription", "Bookmark Utilities\000"
+#else
+      VALUE "FileDescription", "Bookmark Utilities (DEBUG)\000"
+#endif
+      VALUE "FileVersion", __build_FILE_VERSION "\000" 
+      VALUE "ProductVersion", __build_PRODUCT_VERSION "\000" 
+      VALUE "InternalName", "Bookmark Apps\000"
+      VALUE "LegalCopyright", __build_copyright "\000"
+      VALUE "LegalTrademarks", __build_legal_info "\000"
+      VALUE "OriginalFilename", "bookmark.exe\000"
+      VALUE "ProductName", __build_product_name "\000"
+      
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 0x04b0 // US English (0x0409) and win32 multilingual (0x04b0)
+  END
+END
+#endif

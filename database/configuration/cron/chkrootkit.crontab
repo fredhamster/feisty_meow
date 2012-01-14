@@ -1,0 +1,12 @@
+
+SHELL=/bin/bash
+
+# m h dom mon dow command
+
+# this runs chkrootkit to demonstrate a bug in the vm kernel currently
+# provided by...?
+# who's the vendor?
+
+3 * * * * (/usr/sbin/chkrootkit -q &>/var/www/rootkit_report_quiet.txt )
+4 * * * * (/usr/sbin/chkrootkit -x &>/var/www/rootkit_report_expert.txt )
+

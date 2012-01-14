@@ -1,0 +1,62 @@
+#!/bin/bash
+
+##############
+#  Name   : fred_techniques
+#  Author : Chris Koeritz
+#  Rights : Copyright (C) 2010-$now by Author
+##############
+# Copyright (c) 2010-$now By Author.  This script is free software; you can
+# redistribute it and/or modify it under the terms of the simplified BSD
+# license.  See: http://www.opensource.org/licenses/bsd-license.php
+# Please send updates for this code to: fred@gruntose.com -- Thanks, fred.
+##############
+
+# this script is a collection of helpful bash practices that unfortunately
+# sometimes slip my mind when i need them.  it's intended to collect all the
+# good bits so they don't slip away.  feel free to re-use them in your own
+# code as needed.
+
+##############
+
+# clean for loops in bash:
+
+for ((i=0; i < 5; i++)) do
+  echo $i
+done
+
+##############
+
+# removing an array element
+# --> only works on arrays that have no elements containing a space character.
+
+# define a 5 element array.
+arr=(a b c d e)
+
+# remove element 2 (the 'c').
+removepoint=2
+
+# set the array to slices of itself.
+arr=(${arr[*]:0:$removepoint} ${arr[*]:(($removepoint+1))} )
+
+# show the new contents.
+echo ${arr[*]}
+# shows: a b d e
+
+##############
+
+# store to a variable name by derefercing it.
+
+# shows how you can store into a variable when you are given only its name.
+function store_to_named_var()
+{
+  local name="$1"; shift
+  eval ${name}=\(gorbachev "perestroikanator 12000" chernenko\)
+}
+
+declare -a ted=(petunia "butter cup" smorgasbord)
+echo ted is ${ted[@]}
+store_to_named_var ted
+echo ted is now ${ted[@]}
+
+##############
+

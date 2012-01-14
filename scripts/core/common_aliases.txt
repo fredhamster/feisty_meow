@@ -1,0 +1,48 @@
+# common aliases are stored here.  these should work to some degree in
+# all environments, given some twiddling of characters to make the lines
+# appropriate for the shell.
+
+aliases=alias
+#arch='if [ -f /bin/arch ]; then /bin/arch; else uname -m; fi' 
+cd..='\cd ..'
+cd...='\cd ../..'
+cd....='\cd ../../..'
+cd.....='\cd ../../../..'
+cdt='\cd /'
+copy='\cp -i -v '
+cp='\cp -i -v '
+cvs='perl $SHELLDIR/rev_control/cvs_fix.pl'
+del='perl $SHELLDIR/files/safedel.pl'
+deltree='perl $SHELLDIR/files/safedel.pl'
+df='\df -m'
+dir='perl $SHELLDIR/files/summing_dir.pl'
+#du='\du --exclude=.svn -h'  # doesn't work on mac.
+du='\du -h'
+erase='perl $SHELLDIR/files/safedel.pl'
+l='\ls -FC $color_add'
+ls='\ls -FC $color_add'
+lsd='ls -l'
+md='mkdir'
+mo='less'
+more='less'
+move='mv -i -v '
+mplayer='\mplayer -ao arts'
+mv='\mv -i -v '
+np='gvim'
+path='echo $PATH'
+play='bash $SHELLDIR/multimedia/sound_play.sh'
+rebu='make REBUILD=t'
+rmdir='perl $SHELLDIR/files/zapdirs.pl'
+rd='perl $SHELLDIR/files/zapdirs.pl'
+#regen-- this might be better as a function.
+regenerate='bash $SHELLDIR/core/bootstrap_shells.sh ; perl $SHELLDIR/core/generate_aliases.pl ; echo ; nechung'
+reroot='chowngrp -R root /root'
+dvd_rip='vobcopy -m'
+rm='perl $SHELLDIR/files/safedel.pl'
+ren='\mv -v -i '
+up='cd ..'
+whence=which
+why='echo just because.'
+xterm='xterm $myxtermflags'
+xtroff='xtroff $myxflags'
+# don't add blank lines or they are interpreted as needing treatment.

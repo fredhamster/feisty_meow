@@ -1,0 +1,8 @@
+
+# nfs mounts to our server.
+
+pretzel:/fatty/opsystems	/mnt/opsystems	nfs	exec,dev,suid,rw,user 0 0
+pretzel:/fatty/stuffing		/stuffing	nfs	exec,dev,suid,rw,user 0 0
+pretzel:/fatty/walrus		/walrus	nfs	exec,dev,suid,ro,user 0 0
+
+

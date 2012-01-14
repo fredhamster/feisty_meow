@@ -1,0 +1,9 @@
+
+
+pattern that automates making changes in a lot of files with vi.
+system_config is to be changed to path_config.  substitute as needed.
+
+:1,$s/system_config/path_config/g
+:wn
+
+

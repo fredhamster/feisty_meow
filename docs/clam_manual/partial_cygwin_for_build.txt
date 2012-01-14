@@ -1,0 +1,32 @@
+
+install these groups:
+base - default should be okay
+devel -
+  add make
+shells - default should be okay
+
+optional items:
+admin
+  add shutdown
+archive
+  add sharutils
+  add zip
+  add unzip
+devel
+  add cvs
+editors
+  add gvim
+  add vim
+  add emacs
+interpreters
+  add perl
+net
+  add openssh
+text
+  add less
+utils
+  add pcre (needed by less)
+  add cygutils (provides cal and other useful tools)
+
+
+

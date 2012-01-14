@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# retrieves the system's spam pile from sa-exim's spool folder and
+# moves it to the user's home directory.  sudo access is required
+# for the file moving operations.
+# after the spam is all snagged, it is scanned for any untoward presence
+# of non-spam folks using the user's valid email list.
+
+# the storage area that the spam catcher tool puts the suspected spam into.
+SPAM_SPOOL="/var/spool/sa-exim"
+# a temporary directory where we'll move all the spam for analysis.
+SPAM_HOLD="$HOME/spamcrud"
+# the white list needs to be a file of good email addresses that will
+# probably never send spam.  it should be formatted one address to a line.
+EMAIL_WHITE_LIST="$HOME/quartz/database/email_addresses.txt"
+# we'll save a report of the spam checks in the file below.
+REPORT_FILE="$HOME/spam_check_report.txt"
+
+if [ ! -d "$SPAM_HOLD" ]; then
+  mkdir "$SPAM_HOLD"
+fi
+echo "The operation to move the spam files requires sudo privileges..."
+sudo find "$SPAM_SPOOL" -type f -exec mv {} "$SPAM_HOLD" ';'
+if [ $? -ne 0 ]; then
+  echo "The spam moving operation failed, which probably means we failed to get sudo access"
+  exit 3
+fi
+echo "Setting the directory back to user's ownership..."
+sudo chown -R $USER "$SPAM_HOLD" 
+sudo chgrp -R $USER "$SPAM_HOLD" 
+echo "Running checker for false-positive spams..."
+bash "$SHELLDIR/email/scan_spam.sh" "$SPAM_HOLD" "$EMAIL_WHITE_LIST" 2>&1 \
+  | tee "$REPORT_FILE"
+
+

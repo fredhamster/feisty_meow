@@ -1,0 +1,69 @@
+#!/bin/bash
+#
+# tracd startup script by Chris Koeritz
+#
+#  Note that this has been superceded by the (IMHO) much better approach of
+#  running tracd from apache using mod_python.
+#
+# /etc/init.d/trac_startup
+#
+#uhhh... chkconfig: 2345 04 11
+# description: starts the trac daemon as the www-data user.
+#
+### BEGIN INIT INFO
+# Provides: trac_startup
+# Required-Start:
+# Required-Stop:
+# Default-Start: 3 4 5
+# Default-Stop: 0 1 2 6
+# Short-Description: trac server initialization
+# Description: Keeps the trac server running at our chosen port.
+### END INIT INFO
+
+usage() {
+    echo "Usage: $0 {start|stop|status|kill}"
+}
+
+function trac_action()
+{
+#  export JAVA_HOME=/usr/lib/jvm/java-6-sun
+#  export HOME=/home/buildor
+  export TRAC_PORT=24108
+  export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+  # should become www-data and start trac on our port.
+  su -m -c "tracd -d -b universalbuilds.com --port $TRAC_PORT /home/trac/ubuilds_project $*" www-data
+}
+
+test -x ${PARSER} || exit 0 # by debian policy
+
+case "$1" in
+	start)
+		trac_action start
+		rc=$?
+		;;
+	stop)
+		trac_action stop
+		rc=$?
+		;;
+	kill)
+		trac_action stop kill
+		rc=$?
+		;;
+	status)
+		procs_found=$(ps wuax | grep tracd | grep -v grep)
+		if [ -z "$procs_found" ]; then
+		  echo "tracd is not running."
+		else
+		  echo "tracd is running."
+		fi
+		rc=$?
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+exit $rc
+
+

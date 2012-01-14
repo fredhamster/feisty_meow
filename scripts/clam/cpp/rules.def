@@ -1,0 +1,737 @@
+###############################################################################
+
+# CLAM System default rules and targets for C++ compilation.
+
+# This file composite macros and rules for creating compilation objects
+# (such as library archives, object files, executable programs, and others).
+
+# This file should be included in the user's Makefile after the variables
+# have been initialized appropriately for the particular project being
+# compiled.  The user's own targets should be placed after the include
+# directive that specifies this file.
+
+###############################################################################
+
+# This section manipulates variable values to prepare them for their use
+# in the standard CLAM support.
+
+# Modify the output directory for executable files if we're building a
+# test project.
+ifneq "$(findstring test, $(TYPE))" ""
+###  EXECUTABLE_DIR = $(TARGETS_DIR)/tests/$(PROJECT)
+endif
+
+# see if they have got the clean flag set.  if so, we will not build anything.
+ifneq "$(CLEAN)" ""
+  NO_COMPILE = t
+endif
+# also omit version compilation and some logging when not compiling.
+ifneq "$(NO_COMPILE)" ""
+  QUIET = t
+endif
+
+# implement special bits for gnu on unix.
+ifeq "$(COMPILER)" "GNU_LINUX"
+  ifneq "$(USE_XWIN)" ""
+    ifneq "$(OP_SYSTEM)" "WIN32"
+      DEFINITIONS += __XWINDOWS__ __X__
+      LIBS_USED += Xm Xt X11 Xft Xp 
+#need to separate out with a USE_MOTIF kind of thing.
+LIBS_USED += Xmu
+      HEADER_SEARCH_PATH += /usr/include/X11 /usr/X11R6/include /usr/include/g++
+      LIBRARY_SEARCH_PATH += /usr/X11R6/lib 
+    endif
+  endif
+
+  ifneq "$(USE_SSL)" ""
+    LIBS_USED += ssl crypto
+  endif
+  
+  ifneq "$(USE_WXWIDGETS)" ""
+    DEFINITIONS += __WXWIDGETS__ 
+    use_unicode =
+    ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
+#      ifeq "$(OP_SYSTEM)" "WIN32"
+        use_unicode = true
+#      endif
+    endif
+
+    # decide whether to turn on the unicode flag or not.
+    ifneq "$(use_unicode)" ""
+      DEFINITIONS += wxUSE_UNICODE
+      UNICODE_FLAG_ADD = --unicode=yes
+    else
+      UNICODE_FLAG_ADD = --unicode=no
+    endif
+    # could add for debugging: --debug=yes 
+    COMPILER_FLAGS += $(shell wx-config --cxxflags $(UNICODE_FLAG_ADD) )
+
+    LOAD_FLAG_PREFIX += $(shell wx-config --libs $(UNICODE_FLAG_ADD) )
+  endif
+
+  ifneq "$(USE_CURL)" ""
+    COMPILER_FLAGS += `curl-config --cflags`
+    LOAD_FLAG_SUFFIX += `curl-config --static-libs`
+  endif
+
+endif
+
+###############################################################################
+
+ifeq "$(COMPILER)" "GNU_DARWIN"
+  ifneq "$(USE_XWIN)" ""
+    DEFINITIONS += __XWINDOWS__ __X__
+    LIBS_USED += 
+#Xm Xt X11 Xft Xp 
+#need to separate out with a USE_MOTIF kind of thing.
+#LIBS_USED += Xmu
+    HEADER_SEARCH_PATH += /usr/include/X11 /usr/X11R6/include /usr/include/g++
+    LIBRARY_SEARCH_PATH += /usr/X11R6/lib 
+  endif
+
+  ifneq "$(USE_SSL)" ""
+    LIBS_USED += crypto
+  endif
+  
+  ifneq "$(USE_WXWIDGETS)" ""
+    DEFINITIONS += __WXWIDGETS__ 
+    use_unicode =
+    ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
+#      ifeq "$(OP_SYSTEM)" "WIN32"
+        use_unicode = true
+#      endif
+    endif
+
+    # decide whether to turn on the unicode flag or not.
+###    ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
+    ifneq "$(use_unicode)" ""
+      UNICODE_FLAG_ADD = --unicode=yes
+      DEFINITIONS += wxUSE_UNICODE
+    else
+      UNICODE_FLAG_ADD = --unicode=no
+    endif
+
+    COMPILER_FLAGS += $(shell wx-config --cxxflags $(UNICODE_FLAG_ADD) )
+    LOAD_FLAG_PREFIX += $(shell wx-config --libs $(UNICODE_FLAG_ADD) )
+  endif
+
+  ifneq "$(USE_CURL)" ""
+    COMPILER_FLAGS += `curl-config --cflags`
+    LOAD_FLAG_SUFFIX += `curl-config --libs`
+  endif
+
+endif
+
+###############################################################################
+
+
+# additions for gnu x86 and arm compilers.
+ifneq "$(OP_SYSTEM)" "WIN32"
+  # is the freetds library support available on this host.
+  ifneq "$(ENABLE_FREETDS)" ""
+    # establish the headers if freetds is enabled.  that just means things
+    # can be compiled against it.  to link in the db-lib, the makefile should
+    # have a 'USE_FREETDS = true' statement.
+
+    # is this particular library or app using freetds?
+    ifneq "$(USE_FREETDS)" ""
+      DEFINITIONS += ENABLE_FREETDS _FREETDS_LIBRARY_SOURCE
+      LIBS_USED += rt sybdb 
+    endif
+  endif
+endif
+
+# win32 compiler additions.
+ifeq "$(OP_SYSTEM)" "WIN32"
+  # processes the def file for linkage, if one has been specified.
+  ifneq "$(DEF_FILE)" ""
+    LOAD_FLAG_PREFIX += -def:$(DEF_FILE)
+  endif
+
+  ifneq "$(TYPE)" "library"
+    ifneq "$(USE_MFC)" ""
+      ifneq "$(findstring UNICODE, $(DEFINITIONS))" "" 
+        # specify the winmain type for unicode explicitly.
+        LOAD_FLAG_PREFIX += -entry:wWinMainCRTStartup
+      endif
+    endif
+  endif
+
+  # these are loaded after any special debugging libs.
+  ifneq "$(VCPP_USE_BASE)" ""
+    # the first set will be included in almost any old program.  we include
+    # winmm for multimedia in the base support since we make heavy use of the
+    # more accurate uptime function.
+    LOAD_FLAG_PREFIX += kernel32.lib user32.lib advapi32.lib shell32.lib \
+      version.lib winmm.lib shlwapi.lib 
+  endif
+
+  ifneq "$(USE_WXWIDGETS)" ""
+    DEFINITIONS += __WXWIDGETS__ __WXMSW__ 
+    LOCAL_HEADERS += $(THIRD_PARTY_DIR)/wxwidgets/include 
+    LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/wxwidgets/lib
+#    ifeq "$(findstring UNICODE, $(DEFINITIONS))" ""
+      LIBS_USED += wxmsw28_core.lib
+      LOCAL_HEADERS += $(THIRD_PARTY_DIR)/wxwidgets/lib/msw
+#    else
+#      DEFINITIONS += wxUSE_UNICODE
+#      LIBS_USED += wxmsw28u_core.lib
+#      LOCAL_HEADERS += $(THIRD_PARTY_DIR)/wxwidgets/lib/mswu
+#    endif
+
+##    LOAD_FLAG_PREFIX += comctl32.lib shell32.lib
+    VCPP_USE_GUI = t
+    VCPP_USE_OLE = t
+  endif
+
+  ifneq "$(USE_CURL)" ""
+    DEFINITIONS += _WIN32
+    LOCAL_HEADERS += $(THIRD_PARTY_DIR)/curl/include
+    LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/curl/lib
+#    ifeq "$(findstring libcurl, $(LIBS_USED))" ""
+      LIBS_USED += libcurl.dll.a
+#    endif
+  endif
+
+  ifneq "$(VCPP_USE_GUI)" ""
+    LOAD_FLAG_PREFIX += comctl32.lib comdlg32.lib gdi32.lib winspool.lib
+  endif
+
+  ifneq "$(VCPP_USE_OLE)" ""
+    LOAD_FLAG_PREFIX += ole32.lib oleaut32.lib uuid.lib
+    VCPP_USE_RPC = t
+  endif
+  ifneq "$(VCPP_USE_RPC)" ""
+    ifeq "$(COMPILER_VERSION)" "8"
+      LOAD_FLAG_PREFIX += rpcndr.lib rpcns4.lib rpcrt4.lib
+    endif
+    ifeq "$(COMPILER_VERSION)" "10"
+      LOAD_FLAG_PREFIX += rpcrt4.lib
+    endif
+    VCPP_USE_SOCK = t
+  endif
+  ifneq "$(VCPP_USE_SOCK)" ""
+    LOAD_FLAG_PREFIX += netapi32.lib ws2_32.lib
+  endif
+  ifneq "$(VCPP_USE_CLR)" ""
+    LOAD_FLAG_PREFIX += -noentry -include:"__DllMainCRTStartup@12"
+    COMPILER_FLAGS += -EHa -clr -AI "$(FRAMEWORK_DIR)" -AI "$(DYNAMIC_LIBRARY_DIR)" -FU "mscorlib.dll" -FU "System.dll" -FU "System.Data.dll" -FU "System.Windows.Forms.dll" -FU "System.Drawing.dll"
+  endif
+
+  ifneq "$(USE_SSL)" ""
+    LOCAL_HEADERS += $(THIRD_PARTY_DIR)/openssl/include
+    LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/openssl/lib
+    LIBS_USED += libeay32.lib
+  endif
+  
+endif
+
+ifeq "$(OP_SYSTEM)" "WIN32"
+  # prep the actual source variable so that certain file names are translated.
+  ACTUAL_RESX = $(RESX:%.resx=$(OBJECT_DIR)/%.resources)
+  ACTUAL_RESX_FLAGS = $(ACTUAL_RESX:%=-ASSEMBLYLINKRESOURCE:%) 
+else
+  ACTUAL_RESX = 
+  ACTUAL_RESX_FLAGS = 
+endif
+
+# Create the real list of local libraries needed.
+TEMP_LOC1 = $(LOCAL_LIBS_USED:%=%$(TRIPART_VERSION))
+ACTUAL_LOCAL_LIBS = $(TEMP_LOC1)
+
+# Create the list of objects from the list of source files.
+TEMP_OBJ1 = $(SOURCE:%.cpp=%.obj)
+TEMP_OBJ2 = $(TEMP_OBJ1:%.c=%.obj)
+ifeq "$(OP_SYSTEM)" "WIN32"
+  ifneq "$(OMIT_VERSIONS)" ""
+    # remove version rc files if we're not dealing with versions.
+    TEMP_OBJ3a = $(TEMP_OBJ2:%_version.rc=)
+  else
+    TEMP_OBJ3a = $(TEMP_OBJ2)
+  endif
+  TEMP_OBJ3 = $(TEMP_OBJ3a:%.rc=%.res)
+else
+  # replace this when supporting resource files on unix.
+  TEMP_OBJ3 = $(TEMP_OBJ2:%.rc=)
+endif
+TEMP_OBJ4 = $(TEMP_OBJ3:%.h=%.bad)
+OBJECTS = $(TEMP_OBJ4)
+
+# special case for multi-build and res files that need to be rebuilt.
+#RES_OBJECTS_0 = $(SOURCE:%.cpp=)
+#RES_OBJECTS_1 = $(RES_OBJECTS_0:%.c=)
+#RES_OBJECTS = $(RES_OBJECTS_1:%.rc=$(OBJECT_DIR)/%.res)
+
+# not much conversion anymore...
+ACTUAL_OBJECTS = $(OBJECTS) $(EXTRA_OBJECTS)
+
+# Updates the search path for the compiler and local libraries.
+BASE_HEADER_PATH = $(CODEBASE_HEADERS) $(LOCAL_HEADERS) $(HOOPLE_HEADERS) $(SEARCH_DIRS)
+HEADER_SEARCH_PATH += $(BASE_HEADER_PATH) $(COMPILER_HEADER_DIR)
+
+LIBRARY_SEARCH_PATH += $(LOCAL_LIBRARIES) $(HOOPLE_LIBRARIES) \
+  $(STATIC_LIBRARY_DIR) $(COMPILER_LIBRARY_DIR) $(SEARCH_DIRS)
+
+# Adds some directories that must be searched onto the search path for
+# header files, such as the header file directory for the compiler.
+COMPILER_FLAGS += $(HEADER_SEARCH_PATH:%=-I%) $(DEFINITIONS:%=-D%) $(UNDEFINITIONS:%=-U%) -DGLOBAL_PRODUCT_NAME="$(GLOBAL_PRODUCT_NAME)"
+
+# The load flags are updated by looking for code libraries in the directories
+# to search and by adding all of the code libraries that are used.
+LOAD_FLAG_PREFIX += $(LIBRARY_SEARCH_PATH:%=$(LIBRARY_PATH_FLAG)%)
+ifeq "$(OP_SYSTEM)" "UNIX"
+#mac no like these flags?
+#  LOAD_FLAG_PREFIX += -Xlinker --start-group
+#  LOAD_FLAG_SUFFIX += -Xlinker --end-group
+endif
+# had to switch from prefix to suffix recently.  oddity.
+#LOAD_FLAG_PREFIX += $(LIBS_USED:%=$(LIBRARY_NAME_FLAG)%)
+LOAD_FLAG_SUFFIX += $(LIBS_USED:%=$(LIBRARY_NAME_FLAG)%)
+
+# we steal the exe targets and represent their dependency from the hidden
+# cpp for the exe.
+EXE_TEMP_0 = $(TARGETS:%.dll=)
+EXE_TEMP_1 = $(EXE_TEMP_0:%.so=)
+EXE_TEMP_2 = $(EXE_TEMP_1:%.lib=)
+EXE_TEMP_3 = $(EXE_TEMP_2:%.elf=%.cpp)
+EXE_CPPS   = $(EXE_TEMP_3:%.exe=%.cpp)
+
+# used for compiling multiple source files at the same time with visual cpp.
+MULTI_BUILD_CMD = $(CC) $(COMPILER_FLAGS) -c `cat $(BUILD_LIST_FILE)` $(OBJECT_NAME_FLAG)$(OBJECT_DIR)/
+
+# prepare for mfc style DLLs.  currently we plan on all dlls we create being
+# based on MFC.  this is an unfortunate requirement for using the mfc debug
+# support for allocations; if regular new and DEBUG_NEW get mixed together,
+# crashes used to result.  supposedly these are gone now at least.
+ifneq "$(USE_MFC)" ""
+  ifeq "$(OP_SYSTEM)" "WIN32"
+    # set the flag that says we are doing mfc extension dlls.
+    DEFINITIONS += _AFXDLL
+    DEPENDENCY_DEFINITIONS += _MT _DLL
+    DEPENDENCY_DEFINITIONS += __AFXWIN_H__  # add this flag to shut stdafx up.
+  endif
+endif
+
+ifeq "$(OMIT_VERSIONS)" ""
+  ifneq "$(VERSION_RC_ROOT)" ""
+    VERSION_TARGET = $(VERSION_RC_ROOT)_version.rc
+  endif
+endif
+
+ifneq "$(GENDEPS)" ""
+  EXTRA_FIRST_TARGETS += gendeps
+endif
+
+# only do the deps generation for makefiles that are properly marked.
+ifneq "$(findstring __BUILD_STATIC_APPLICATION__, $(DEFINITIONS))" ""
+  # generate static build dependencies for all targets in the makefile.
+  GENERATED_DEPS_LIST = $(TARGETS:%.exe=%.gendeps)
+endif
+
+# Make sure that the directory for objects exists.
+ACTUAL_FIRST_TARGETS = check_requirements $(EXTRA_FIRST_TARGETS) $(VERSION_TARGET) $(FIRST_TARGETS) pre_compilation
+
+# Adds the primary targets to the list of products to create.
+ifeq "$(NO_COMPILE)" ""
+  ifeq "$(OP_SYSTEM)" "UNIX"
+    ACTUAL_TARGETS1 = $(TARGETS:%.exe=$(EXECUTABLE_DIR)/%)
+  else
+    ACTUAL_TARGETS1 = $(TARGETS:%.exe=$(EXECUTABLE_DIR)/%.exe)
+  endif
+  ifeq "$(OP_SYSTEM)" "UNIX"
+    ACTUAL_TARGETS2 = $(ACTUAL_TARGETS1:%.dll=%.so)
+    ACTUAL_TARGETS3 = $(ACTUAL_TARGETS2:%.so=$(DYNAMIC_LIBRARY_DIR)/%$(TRIPART_VERSION).so)
+  else
+    ACTUAL_TARGETS2 = $(ACTUAL_TARGETS1:%.so=%.dll)
+    ACTUAL_TARGETS3 = $(ACTUAL_TARGETS2:%.dll=$(DYNAMIC_LIBRARY_DIR)/%$(TRIPART_VERSION).dll)
+  endif
+  ACTUAL_TARGETS4 = $(ACTUAL_TARGETS3:%.lib=$(STATIC_LIBRARY_DIR)/%$(TRIPART_VERSION).library)
+  ACTUAL_TARGETS = $(ACTUAL_TARGETS4:%.elf=$(EXECUTABLE_DIR)/%.elf)
+else #is no_compile
+  ACTUAL_TARGETS1 = $(TARGETS:%.exe=)
+  ACTUAL_TARGETS2 = $(ACTUAL_TARGETS1:%.dll=)
+  ACTUAL_TARGETS3 = $(ACTUAL_TARGETS2:%.so=)
+  ACTUAL_TARGETS4 = $(ACTUAL_TARGETS3:%.lib=)
+  ACTUAL_TARGETS = $(ACTUAL_TARGETS4:%.elf=)
+endif
+
+# Adds the last few targets for CLAM to do.
+ACTUAL_LAST_TARGETS = post_compilation $(LAST_TARGETS)
+
+############################################################################
+
+# This section defines the rules used to generate various objects from their
+# source files.
+
+############################################################################
+
+# The first section provides simplistic pseudo-targets for testing compilation
+# rather than generating built products.
+
+# the blank target is used to (somewhat) safely remove items from the SOURCE
+# list.  it is an empty file that should be able to go in a library archive
+# without hosing it up.
+%.nil:
+ifeq "$(NO_COMPILE)" ""
+	$(CATCHER)$(CC) -c $(CLAM_DIR)/cpp/blank_target.c -o $@
+endif
+
+%.bad:
+	@echo There is a problem with the makefile in the SOURCE variable.
+	@echo The offending item is $@.
+	$(HIDESH)$(CLAM_DIR)/exit_make.sh
+
+## faked debug object.
+#%.obj: %.cpp
+#ifeq "$(NO_COMPILE)" ""
+#	@echo Bogus [$@].
+#	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$(TEMP)/$@
+#endif
+
+# recreate dependencies for static applications.
+%.gendeps: %.cpp
+	@echo "Generating Static Deps: $*.cpp"
+	$(HIDESH)$(CLAM_DIR)/cpp/buildor_gen_deps.sh "$*.cpp"
+
+############################################################################
+
+# C++ source to object file translation.
+# if there is a special set of flags for this source file, we use them
+# instead of the default compiler flags.
+
+$(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.cpp
+ifeq "$(NO_COMPILE)" ""
+  ifneq "$(COMPILER)" "VISUAL_CPP"
+	@echo Compiling [$(shell basename $@)].
+	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
+	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
+  else
+	@echo $< >>$(BUILD_LIST_FILE)
+	@echo $@ >>$(BUILD_WHACK_FILE)
+	@echo >$@
+  endif
+endif
+
+############################################################################
+
+# C source to object file translation.
+
+$(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.c
+ifeq "$(NO_COMPILE)" ""
+  ifneq "$(COMPILER)" "VISUAL_CPP"
+	@echo Compiling [$@].
+	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
+	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
+  else
+	@echo $< >>$(BUILD_LIST_FILE)
+	@echo $@ >>$(BUILD_WHACK_FILE)
+	@echo >$@
+  endif
+endif
+
+############################################################################
+
+# resource compiler for win32.
+
+ifeq "$(OP_SYSTEM)" "WIN32"
+$(OBJECT_DIR)/%.res: %.rc $(PARAMETER_FILE)
+  ifeq "$(NO_COMPILE)" ""
+	@echo Resource [$@].
+	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
+	$(CATCHER)$(RC) -r $(DEFINITIONS:%=-D%) $(HEADER_SEARCH_PATH:%=-i%) -fo $@ $<
+  endif
+
+$(OBJECT_DIR)/%.resources: %.resx $(PARAMETER_FILE)
+  ifeq "$(NO_COMPILE)" ""
+	@echo Resource [$@].
+	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
+	$(VCS_ROOT)/../SDK/v1.1/bin/resgen $< $@
+  endif
+else #non-win32
+  # this platform probably does not use rc files.
+$(OBJECT_DIR)/%.res: %.rc
+  ifeq "$(NO_COMPILE)" ""
+	@echo Bogus resource [$@].
+	@echo >$@
+  endif
+endif #win32
+
+############################################################################
+
+# creates static libraries.
+ifneq "$(NO_COMPILE)" ""
+$(STATIC_LIBRARY_DIR)/%.library:
+endif
+
+ifeq "$(NO_COMPILE)" ""
+$(STATIC_LIBRARY_DIR)/%.library: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
+	$(HIDER)echo Static [$@].
+	@echo $@ >$(DIRTY_FILE)
+  ifeq "$(COMPILER)" "VISUAL_CPP"
+	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
+  endif
+	$(CATCHER)$(LIBRARY_TOOL) $(LIBRARIAN_FLAGS) $(CREATE_LIBRARY_FLAG)$@ $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%)
+  ifneq "$(OP_SYSTEM)" "UNIX"
+	$(HIDER)mv $@ $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
+	$(HIDER)echo nil >$@
+  else
+	$(HIDER)ranlib $@ 
+	$(HIDER)rm -f $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
+	$(HIDER)ln -s $@ $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
+  endif
+endif #no_compile
+
+############################################################################
+
+# creates dynamic libraries.
+
+# we whack any existing LIB file, since we want to use changes in that file
+# as a clue for when we should rescan the dependencies.  we'd be fine if
+# visual c++ didn't keep an existing LIB if it doesn't change (even when the
+# DLL does).
+
+ifneq "$(NO_COMPILE)" ""
+$(DYNAMIC_LIBRARY_DIR)/%.dll:
+endif
+
+ifeq "$(NO_COMPILE)" ""
+$(DYNAMIC_LIBRARY_DIR)/%.dll: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(ACTUAL_RESX) $(PARAMETER_FILE) 
+#hmmm: use the res objects variable to rebuild res files as needed.
+###$(RES_OBJECTS) 
+	$(HIDER)echo Dynamic [$@].
+	@echo $@ >$(DIRTY_FILE)
+  ifeq "$(COMPILER)" "VISUAL_CPP"
+	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
+  endif
+	$(HIDER)rm -f $(@:%.dll=%.lib)
+	$(CATCHER)$(LINK_TOOL) $(LINKER_OUTPUT_FLAG)$@ -dll $(LOAD_FLAG_PREFIX) $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_RESX_FLAGS) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)$(LIB_PREFIX)%$(LIB_ENDING)) $(LOAD_FLAG_SUFFIX)
+  ifeq "$(COMPILER_VERSION)" "8"
+	$(HIDESH)$(CLAM_DIR)/cpp/ms_manifest.sh "$@" "2"
+  endif
+  ifeq "$(COMPILER_VERSION)" "10"
+	$(HIDESH)$(CLAM_DIR)/cpp/ms_manifest.sh "$@" "2"
+  endif
+  ifneq "$(VCPP_VISTA_ICON)" ""
+	$(HIDER)ReplaceVistaIcon "$@" "$(VCPP_VISTA_ICON)"
+  endif
+endif #no_compile
+
+ifneq "$(NO_COMPILE)" ""
+$(DYNAMIC_LIBRARY_DIR)/%.so:
+endif
+
+ifeq "$(NO_COMPILE)" ""
+$(DYNAMIC_LIBRARY_DIR)/%.so: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
+  ifeq "$(COMPILER:%_LINUX=LINUX)" "LINUX"
+	$(HIDER)echo Shared [$@].
+	@echo $@ >$(DIRTY_FILE)
+	$(CATCHER)$(LINK_TOOL) $(LINKER_OUTPUT_FLAG)$@ $(LOAD_FLAG_PREFIX) -shared -Wl,-soname,$*.so $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)%) $(LOAD_FLAG_SUFFIX) 
+	$(HIDER)rm -f $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
+	$(HIDER)ln -s $@ $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
+  endif
+endif #no_compile
+
+############################################################################
+
+# creates "exe" executables using all of the appropriate objects.
+
+ifeq "$(OP_SYSTEM)" "WIN32"
+  ifneq "$(NO_COMPILE)" ""
+$(EXECUTABLE_DIR)/%.exe:
+  endif
+
+  ifeq "$(NO_COMPILE)" ""
+$(EXECUTABLE_DIR)/%.exe: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(ACTUAL_RESX) $(PARAMETER_FILE)
+	$(HIDER)echo Application [$@].
+	@echo $@ >$(DIRTY_FILE)
+    ifeq "$(COMPILER)" "VISUAL_CPP"
+	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
+    endif
+	$(CATCHER)$(LINK_TOOL) $(EXE_FLAGS) $(LOAD_FLAG_PREFIX) $< $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_RESX_FLAGS) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)$(LIB_PREFIX)%$(LIB_ENDING)) $(LOAD_FLAG_SUFFIX) $(LINKER_OUTPUT_FLAG)$@
+#$(^:force_rebuild=) 
+    ifeq "$(COMPILER_VERSION)" "8"
+	$(HIDESH)$(CLAM_DIR)/cpp/ms_manifest.sh "$@" "1"
+    endif
+    ifeq "$(COMPILER_VERSION)" "10"
+	$(HIDESH)$(CLAM_DIR)/cpp/ms_manifest.sh "$@" "1"
+    endif
+    ifneq "$(VCPP_VISTA_ICON)" ""
+	$(HIDER)ReplaceVistaIcon "$@" "$(VCPP_VISTA_ICON)"
+    endif
+  endif #no_compile
+endif #win32
+
+ifeq "$(OP_SYSTEM)" "UNIX"
+  ifneq "$(NO_COMPILE)" ""
+$(EXECUTABLE_DIR)/%:
+  endif
+
+  ifeq "$(NO_COMPILE)" ""
+$(EXECUTABLE_DIR)/%: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
+	$(HIDER)echo Application [$@].
+	@echo $@ >$(DIRTY_FILE)
+	$(CATCHER)$(LINK_TOOL) $(EXE_FLAGS) $(LOAD_FLAG_PREFIX) $< $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)%) $(LOAD_FLAG_SUFFIX) $(LINKER_OUTPUT_FLAG)$@
+#hmmm: experimental item below.
+#$(^:force_rebuild=) 
+  endif #no_compile
+endif #unix
+
+############################################################################
+
+# creates firmware "elf" executables with the proper objects.
+
+ifneq "$(NO_COMPILE)" ""
+$(EXECUTABLE_DIR)/%.elf:
+endif
+
+ifeq "$(NO_COMPILE)" ""
+$(EXECUTABLE_DIR)/%.elf: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
+	$(HIDER)echo Application [$@].
+	@echo $@ >$(DIRTY_FILE)
+	$(CATCHER)$(LINK_TOOL) $(MAP) $(LOAD_FLAG_PREFIX) $< $(LINKER_COMMAND_FILE) $(STARTUP_OBJECT_FILE) $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)%) $(LOAD_FLAG_SUFFIX) $(LINKER_OUTPUT_FLAG)$@
+#$(^:force_rebuild=) 
+	@echo Hex [$(EXECUTABLE_DIR)/$*.out].
+	$(CATCHER)$(DDUMP_TOOL) $(DDUMP_OPTIONS) $@ -o$(EXECUTABLE_DIR)/$*.out
+	@echo Binary [$(EXECUTABLE_DIR)/$*.bin].
+	$(CATCHER)$(DDUMP_TOOL) $(DDUMP_BIN_OPTIONS) $@ -o$(EXECUTABLE_DIR)/$*.bin
+endif #no_compile
+
+############################################################################
+
+# handles creating version resource files if this project has a version.ini.
+
+ifeq "$(OMIT_VERSIONS)" ""
+  ifneq "$(VERSION_RC_ROOT)" ""
+# only redo the version resource if it or version.ini is out of date.
+%_version.rc: version.ini $(PARAMETER_FILE)
+	$(CATCHER)$(CLAM_BIN)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
+  endif
+endif
+
+############################################################################
+
+# Now the active part of the make process...
+
+# Adds the main CLAM system in to get some work done.  This should be placed
+# after the module's rules are defined and before the module's targets are
+# defined.
+include rules.def
+
+# make sure we really want to include the dependencies file.
+ifeq "$(TYPE)" "hierarchy"
+  # no dependencies for a simple hierarchy builder.
+  NO_DEPS = t
+endif
+ifneq "$(CLEAN)" ""
+  NO_DEPS = t
+  # no dependencies get left when we are cleaning up.
+  $(shell rm -f $(DEPS_FILE))
+endif
+ifneq "$(NO_COMPILE)" ""
+  # non compiling projects do not need dependencies.
+  NO_DEPS = t
+endif
+ifneq "$(REBUILD)" ""
+  NO_DEPS = t
+  # if we are rebuilding everything, we zap the deps file.
+  $(shell rm -f $(DEPS_FILE))
+endif
+
+# includes the auto-dependency information.  the dependency file is checked
+# for being up-to-date.  if not, it gets rebuilt and the make is restarted.
+ifeq "$(NO_DEPS)" ""
+  include $(DEPS_FILE)
+endif
+
+# preserves intermediate files from being deleted.
+ifeq "$(CLEAN)" ""
+.PRECIOUS: $(OBJECT_DIR)/%.obj $(OBJECT_DIR)/%.res $(OBJECT_DIR)/%.resources
+endif
+
+# zaps things when they could not be created correctly.
+####.DELETE_ON_ERROR:
+
+############################################################################
+
+# autodependency file creator.  See the make_dep man page for more info.
+
+# we do the auto-dependencies unless the disabling flag is set.
+ifneq "$(NO_DEPS)" ""
+    # makes the dependencies a no-op.
+    deps: $(PARAMETER_FILE)
+
+    $(DEPS_FILE): $(PARAMETER_FILE)
+
+else
+  deps: $(DEPS_FILE)
+
+  # this causes the dependency file to be regenerated if the sources or libs
+  # have changed.  we have to touch the deps file in case it's missing;
+  # makedep doesn't deal well with that.  also, we touch the dirty flag file
+  # to ensure that the fact we redid dependencies for some reason causes us
+  # to re-promote.  we only bother with any of this if we know we're going
+  # to really do some compilation; if in non-compile mode, we'll skip it.
+  ifneq "$(NO_COMPILE)" ""
+    # no dependencies in non-compile mode.
+    $(DEPS_FILE):
+
+  else
+    ifeq "$(LAX_DEPENDENCIES)" ""
+      $(DEPS_FILE): $(SOURCE) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(wildcard *.h) $(EXE_CPPS)
+    else  # lax dependencies means create if missing or if parm file changed.
+      $(DEPS_FILE): $(PARAMETER_FILE)
+    endif # !lax dependencies.
+    ifneq "$(VERSION_RC_ROOT)" ""
+      ifeq "$(OMIT_VERSIONS)" ""
+        $(DEPS_FILE): $(VERSION_RC_ROOT)_version.rc
+      endif
+    endif
+	@echo Dependencies [$(shell basename $@)].
+	-$(HIDESH)$(CLAM_DIR)/cpp/preconditions.sh
+	@touch $@
+#	@echo dep adds: $(DEPENDENCY_ADDITIONS)
+	@$(CLAM_BIN)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
+#	$(CATCHER)$(CLAM_BIN)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
+	@echo $@ >$(SUBMAKE_FLAG)
+  endif # non-compile.
+endif # no-deps.
+
+############################################################################
+
+# examines the required variables and complains if they're missing.
+check_requirements:
+	$(HIDESH) -c 'if [ -z "$(PROJECT)" ]; then echo the PROJECT variable is not defined!; . $(CLAM_DIR)/exit_make.sh; fi'
+	$(HIDESH) -c 'if [ -z "$(TYPE)" ]; then echo the TYPE variable is not defined!; . $(CLAM_DIR)/exit_make.sh; fi'
+ 
+############################################################################
+
+# calls the script for preparing output directories and such.
+pre_compilation:
+	$(HIDESH)$(CLAM_DIR)/cpp/preconditions.sh
+
+############################################################################
+
+# calls the script for copying the final products to the library directory.
+# we don't bother reporting errors from touch since there will sometimes
+# not be any objects in the final directory.
+post_compilation:
+	$(HIDESH)$(CLAM_DIR)/cpp/postconditions.sh
+
+############################################################################
+
+# if REBUILD is defined, then we cause all objects to be recompiled.
+.PHONY: force_rebuild
+force_rebuild:
+
+ifneq "$(REBUILD)" ""
+  # the target below needs the blank rule that it has for this to work.
+  $(FIRST_TARGETS) $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_TARGETS) $(EXE_CPPS:%.cpp=$(OBJECT_DIR)/%.obj) $(LAST_TARGETS): force_rebuild
+endif
+
+############################################################################
+
+# generate dependencies for any static targets if requested.
+gendeps: $(GENERATED_DEPS_LIST)
+
+############################################################################
+

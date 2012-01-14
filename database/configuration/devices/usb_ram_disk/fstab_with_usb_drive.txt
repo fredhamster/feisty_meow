@@ -1,0 +1,5 @@
+
+# usb ram drive support on fairly common scsi interface mapping.
+/dev/sda1		/mnt/usb		auto	noauto,owner,user 0 0
+
+

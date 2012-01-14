@@ -1,0 +1,13 @@
+
+error /^FAIL:/
+
+error /^ERROR:/
+
+error /^FAILURE for/
+
+error /^LAMENESS for/
+
+ok /^SUCCESS for/
+
+ok /^OKAY:/
+

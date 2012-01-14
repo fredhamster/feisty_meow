@@ -1,0 +1,6 @@
+
+SHELL=/bin/bash
+
+# m h dom mon dow command
+
+20 4 * * * (source $HOME/yeti/scripts/core/profile.sh; cd $HOME/hoople/docs; make) &>/tmp/doxy_make.log 

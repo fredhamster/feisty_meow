@@ -1,0 +1,223 @@
+; example manifest file for application bundler.
+
+[toc]
+set_source_temporary_dir=t
+establish_new_temp_dir=t
+; we whack the temporary directory before creating it in case it was there.
+whack_temporary_dir_before=t
+make_temporary_dir=t
+show_variables=t
+set_target=t
+set_bogus=t
+set_nechung_dir=t
+copy_nechung_to_tempdir=t
+copy_fortunes_to_tempdir=t
+using_target=t
+using_vars=t
+absolute_path=t
+wildcard_congelio=t
+wildcard_specific=t
+recursing_doodle=t
+execute_source_side=t
+execute_target_side=t
+target_exec_sans_source=t
+error_check=t
+no_replacement=t
+install_but_backup=t
+test_variable_defined=t
+whack_temporary_dir_after=t
+
+[set_target]
+variable=TARGET=$TMP/bundle_example_yo
+; this is an example of setting a variable.  the variables found in a section
+; should be the only content provided (no source or target is needed).  in
+; this example, the variable is "TARGET" and it's being set to a folder under
+; the TMP directory.
+; "TARGET" is actually a special variable; it is the main installation root
+; for all bundled products.  if it is going to be overridden, it should be the
+; first item in the table of contents; this ensures all other targets see
+; the chosen default target location.
+
+[set_bogus]
+variable=BOGUS=petunias
+; this is a simple variable that can be used to test overriding variables by
+; passing them on the command line to the unpacker exe.
+
+[set_source_temporary_dir]
+variable=SOURCE_TEMP=$HOME/.tmp_nechung
+; provides a folder to use for testing nechung stuff.
+
+[establish_new_temp_dir]
+variable=TMP=$SOURCE_TEMP
+; changes the temporary directory over to a location we think we can always
+; stay in control of.
+
+[set_nechung_dir]
+variable=NECHUNG=$SOURCE_TEMP/example.txt
+; provides the nechung oracle (used later) with a datafile.
+
+[make_temporary_dir]
+source=$UNIX_BIN/mkdir
+parms="$SOURCE_TEMP"
+no_pack=true
+exec_source=true
+
+[show_variables]
+source=$UNIX_BIN/echo
+parms="srctmp" "$SOURCE_TEMP" "EXECdir" "$EXECUTABLE_DIR" "exeend" "$EXE_END"
+no_pack=true
+exec_source=true
+
+[whack_temporary_dir_before]
+source=$UNIX_BIN/rm
+parms="-rf" "$SOURCE_TEMP"
+no_pack=true
+exec_source=true
+error_okay = true
+  ; for some reason rm is complaining about this, even though it's working.
+
+; this redundancy is an example of why we need an aliasing system for
+; creating multiple TOC items that actually call the same real section.
+; ini file format betrays us there since we cannot have two identical names
+; in the same section.
+[whack_temporary_dir_after]
+source=$UNIX_BIN/rm
+parms="-rf" "$SOURCE_TEMP"
+no_pack=true
+exec_source=true
+error_okay = true
+  ; for some reason rm is complaining about this, even though it's working.
+
+; the copy steps are preparing for running nechung.  we need a place where
+; we should always be able to write some new files, since nechung writes its
+; index of the fortunes when it's first run, and that's what SOURCE_TEMP is
+; for.
+[copy_nechung_to_tempdir]
+source=$UNIX_BIN/cp
+parms="$EXECUTABLE_DIR/nechung$EXE_END" "$SOURCE_TEMP/nechung$EXE_END"
+no_pack=true
+exec_source=true
+
+[copy_fortunes_to_tempdir]
+source=$UNIX_BIN/cp
+parms="$REPOSITORY_DIR/core/applications/nechung/example.txt" "$SOURCE_TEMP/example.txt"
+no_pack=true
+exec_source=true
+
+[using_target]
+source=$EXECUTABLE_DIR/bytedump$EXE_END
+target=$TARGET/bytedunker$EXE_END
+; a special variable called TARGET is the default location where files will
+; be stored.  this is basically the main installation folder.  the TARGET
+; folder can be specified on the command line when a bundle is installed.
+; note the automatic variable called EXE_END; this is set to ".exe" for win32
+; operating systems and is blank for others (so far).
+
+[using_vars]
+source=$CLAM_BIN/value_tagger$EXE_END
+target=$TMP/using_varsilator$EXE_END
+; variables in the source get resolved at packing time.
+; variables in the target get resolved during unbundling time.
+
+[absolute_path]
+source=$EXECUTABLE_DIR/nechung$EXE_END
+target=/tmp/spoonbender/nechung$EXE_END
+; simple file copy to an absolute path.
+
+[wildcard_congelio]
+source=$REPOSITORY_DIR/core/library/test_basis/*
+target=$TARGET/muse_files
+; wildcards are supported.  this will put all the files from that directory
+; "test_basis" into the target in a folder called "muse_files".
+
+[wildcard_specific]
+source=$REPOSITORY_DIR/core/library/basis/*.h
+target=$TARGET/basis_headers
+; this is a more specific wildcard that tests a pattern on the end, rather
+; than the "get everything" of a bare asterisk.
+
+[recursing_doodle]
+source=$REPOSITORY_DIR/core
+target=$TARGET/srcpack/doodle_src
+recurse=1
+; this shows a recursive copy of the directory "core" into a new directory
+; on the target called "doodle_src".  this matches the last component of the
+; source directly to the last component of the target, so that the files
+; in doodle will show up under doodle_src.
+; the flag "recurse" must also be set in the section.  if it has any contents
+; besides zero ("0") or "false", then it will be evaluated as enabling
+; recursion.  it should not be an empty string (since that is equivalent to it
+; not being set at all).
+; currently, recursion and wildcards cannot be mixed.
+
+[execute_source_side]
+source=$SOURCE_TEMP/nechung$EXE_END
+exec_source=true
+no_pack=true
+; this is an example of having a source side file be executed (the
+; "exec_source" item in the section specifies this).  the file will be
+; executed on the source side while the bundle is being packed.  the "no_pack"
+; flag means that the source exe will not even be copied to the target
+; location.  when this particular item is hit on the source side, nechung will
+; be executed and a fortune will be displayed if the database is accessible.
+
+[execute_target_side]
+source=$EXECUTABLE_DIR/bytedump$EXE_END
+target=$TARGET/meldrick$EXE_END
+exec_target=true
+parms="$TARGET/srcpack/doodle_src/library/basis/trap_new.addin"
+; this is an example of a target side executable.  note that we are providing
+; a set of parameters to this exe, each of which should be quoted and separated
+; by spaces from the next parameter.  note that when this bundle is unpacked,
+; there will be a spew of byte data from this command.
+
+[target_exec_sans_source]
+target=$TARGET/bytedunker$EXE_END
+; the bytedunker application is copied in a previous step.
+exec_target=true
+no_pack=true
+parms="$TARGET/srcpack/doodle_src/library/data_struct/makefile"
+; this is an example of a target side executable where the source is not 
+; specified and no_pack is used.  this means that the target app must already
+; exist in the target location.
+
+[error_check]
+source=$EXECUTABLE_DIR/bytedump$EXE_END
+target=$TARGET/pungentina$EXE_END
+exec_target=true
+no_pack=true
+parms="this" "command will fail" "because it won't be created"
+error_okay = true
+; shows how the "error_okay" flag can be used to keep a failed run of
+; an executable program from stopping the unbundling process.
+
+[no_replacement]
+source=$PRODUCTION_DIR/feisty_meow_config.ini
+target=$TARGET/buildonia.ini
+no_replace=true
+; this shows how the "no_replace" macro will avoid overwriting a file if it
+; already exists.  this emulates the non-overwriting style of copy that most
+; installers support.
+; to test this option out, run the example app you create to a particular
+; directory, then edit the installed version of buildonia.ini to change it
+; around, and run the same app again on the same directory.  the result
+; should be that your changes are kept.
+
+[install_but_backup]
+source=$PRODUCTION_DIR/feisty_meow_config.ini
+target=$TARGET/build_file_uhh
+make_backup=t
+; this simple example shows the backing up of a file before the packed
+; version gets installed.  that ensures that we never clobber a file if
+; we know ahead of time that it could have user configured changes or
+; another reason not to just write on top of it.
+
+[test_variable_defined]
+assert_defined=TMP
+; checks that the variable is defined, so that we know the installer can
+; rely on them.  this is really only needed if the installer is assuming
+; that the variable will be present, and if the install will fail without
+; the variable.  it makes the most sense when we cannot know the variable
+; ahead of time or when we don't want to have to know it.
+
+

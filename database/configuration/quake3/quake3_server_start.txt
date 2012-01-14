@@ -1,0 +1,15 @@
+
+this is an example of running quake3 in dedicated server mode and with
+no console.  the config file can be swapped out for other ones.
+
+nohup quake3 +set dedicated 1 +exec fred_free_for_all.cfg &
+
+the fred_...cfg file needs to be in the quake3/baseq3 directory unless
+the directory where it is stored is pointed at using q3 command line options
+that i don't know but which i have heard of.
+
+this just automates the copying of the config file before running quake.
+
+cp ~/yeti/quake3/fred_free_for_all.cfg /usr/local/games/quake3/baseq3/ ; nohup quake3 +set dedicated 1 +exec fred_free_for_all.cfg 
+
+

@@ -1,0 +1,10 @@
+
+Redirect permanent /google "http://google.com"
+
+# so, given this file in a web directory at: http://frenziedogmatics.com/
+# a web browser pointed at: http://frenziedogmatics.com/google
+# would actually just show http://google.com instead.
+
+
+
+

@@ -1,0 +1,8 @@
+
+this is a kind of useful compare filter for visual studio.  it drops checking of a lot
+of commonly present files which in general one does not care about.
+
+note: this pattern will hide changes to AssemblyInfo files.  we do that because these often
+are updated for versions and we don't want to see every one of those as being modified.
+
+!AssemblyInfo.cpp;!AssemblyInfo.cs;!logs\;!waste\;!generated\;!binaries\;!objects\;!lib\;!*_version.h;!*_version.rc;!obj\;!dll\;!exe\;!obj\;!pdb\;!install\;!*.user;!*.vspscc;!tests\;!*.fb2;!*.fxb;!*.fn2;!*.res;!html\;!*.pyc

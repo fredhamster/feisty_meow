@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="Author" content="Fred T. Hamster">
+  <meta name="generator"
+ content="Mozilla/5.0 (X11; U; Linux i686; en-US) [Mozilla]">
+  <meta name="Description"
+ content="Open Source Perl for Your Perusement">
+  <meta name="KeyWords"
+ content="reusable, open source, perl, shell, script, recursive, diff, snarf, YETI, free, source code, example, filename, snarfer">
+  <title>YETIcode Bash Scripts</title>
+  <meta content="Fred T. Hamster" name="author">
+  <meta
+ content="Assorted scripts for enhancing the bash environment and tools that automate fairly common actions."
+ name="description">
+</head>
+<body
+ style="background-image: url(pics/home_front_b_5.jpg); background-color: rgb(0, 0, 0); color: rgb(255, 255, 153);"
+ alink="#ffcc00" link="#66ff99" vlink="#00cc00">
+<h3>&nbsp; </h3>
+<center>
+<table bgcolor="#330000" border="4" cellpadding="0" cellspacing="0"
+ cols="1" width="92%">
+  <tbody>
+    <tr>
+      <td>
+      <center>
+      <h1><a href="http://yeticode.org/">YETIcode</a> Open Source Bash
+Scripts</h1>
+      <h2>GPL-Licensed Bash Code<br>
+      </h2>
+      </center>
+      <center>Contributed by Chris Koeritz (<a
+ href="mailto:%20koeritz@gruntose.com">Koeritz@Gruntose.COM</a>) <br>
+See the <a href="http://www.gruntose.com/Info/GNU/GPL.html">GNU Public
+License</a> for details of licensing.<span style="font-style: italic;"></span><br>
+      </center>
+      <h4>Caveats: please refer to the <a href="perl_tools.html">Perl
+Scripts page</a> which shares the same constraints as these Bash
+Scripts do.<br>
+      </h4>
+      <span style="color: rgb(255, 255, 204);">Direct Cognition</span>:
+View the scripts directory itself rather than navigating with the links
+below: <a href=".">scripts</a>.
+      <ol>
+      </ol>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<h3>&nbsp; </h3>
+<center>
+<table bgcolor="#330000" border="4" cellpadding="0" cellspacing="0"
+ cols="1" width="92%">
+  <tbody>
+    <tr>
+      <td>
+      <h2>Assorted Bash Script Files</h2>
+      <blockquote>
+        <h3> <a href="uhh.sh">uhh.sh</a></h3>
+        <blockquote>This documentation page isn't quite ready yet.<br>
+In fact, this file is still in its very first few iterations and is
+pretty
+limited so far...<br>
+        </blockquote>
+        <h3> <a href="../rev_control/cvs_importer.sh">cvs_importer.sh</a></h3>
+        <blockquote>This script eliminates the need to use the cvs
+import command to pull in a whole new sub-hierarchy.&nbsp; Given a
+sub-folder under an existing hierarchy, it will add all the
+subdirectories and all of the files in those subdirectories.&nbsp; The
+script avoids adding any files found in the internally used CVS
+directories.<br>
+For example, suppose you have a folder called "hoople" that's a
+top-level project in CVS.&nbsp; You want to add a new folder under the
+existing hierarchy "hoople/source/lib_src" called "pasta".&nbsp; The
+"pasta" hierarchy has hundreds of subdirectories and thousands of
+files.&nbsp; Assuming that you've already moved the new pasta source
+folder into place, the command would be:<br>
+&nbsp;&nbsp;&nbsp; cvs_importer hoople/source/pasta<br>
+If you don't have the Yeti aliases set up, then you may need to type
+this instead:<br>
+&nbsp;&nbsp;&nbsp; bash ~/yeti/scripts/cvs_importer.sh
+hoople/source/pasta<br>
+        </blockquote>
+        <h3> </h3>
+        <h3><a href="../database/movie_seeker.sh">movie_seeker.sh</a>
+/ <a href="../database/movie_stripper.sh">movie_stripper.sh</a>
+/&nbsp;<a href="../database/show_stripper.sh">show_stripper.sh</a><br>
+        </h3>
+        <div style="margin-left: 40px;">Some manipulation methods for a
+particular type of movie and TV show database.&nbsp; These expect a db
+in the form of a CSV file with three fields per line: (1) index number,
+(2) show or movie name and (3) show episode title.&nbsp; The third
+field is defined as blank for movies.&nbsp; The movie_seeker finds a
+given movie (or pattern) in the database.&nbsp; The movie_stripper
+pulls out all the unique movie or show names in the database.&nbsp; The
+show_stripper pulls out the episode names for a particular show name
+(or pattern).<br>
+        </div>
+        <h3><a href="../database/call_movie_seeker.sh">call_movie_seeker.sh</a>
+/ <a href="../database/call_movie_stripper.sh">call_movie_stripper.sh</a>
+/ <a href="../database/call_show_stripper.sh">call_show_stripper.sh</a><br>
+        </h3>
+        <div style="margin-left: 40px;">These are CGI correspondents to
+the above movie database searches.&nbsp; They're used on the Gruntose
+web site.<br>
+        </div>
+        <br>
+      </blockquote>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br>
+<br>
+<br>
+<br>
+</body>
+</html>

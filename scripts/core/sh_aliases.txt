@@ -1,0 +1,123 @@
+# This file contains aliases that extend the set of commands available
+# to the interactive shell user in Unix.  They are personally tailored.
+
+if [ ! -z "$SHELL_DEBUG" ]; then
+  echo specialized alias initialization begins...
+fi
+
+# define our functions for use in the shell.
+source "$SHELLDIR/core/functions.sh"
+
+# Standard CAK aliases that add to or extend Unix commands.
+alias bye='. $SHELLDIR/core/goodbye.sh'
+alias calc='kcalc'
+alias cls='clear_colormap; clear'
+if [ "$OS" != "Windows_NT" ]; then
+  if [ -n "$IS_DARWIN" ]; then
+    # case for mac os x.
+    alias exp='open'
+  elif [ ! -z "$(which nautilus)" ]; then
+    alias exp='nautilus'
+  else
+#check if konqueror exists also?  fall back to uhhh midnight cmdr?
+    alias exp='konqueror'
+  fi
+else
+  alias explorer="bash $SHELLDIR/winders/exploder.sh"
+  alias exp="bash $SHELLDIR/winders/exploder.sh"
+fi
+
+alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
+alias notepad='gedit'
+if [ "$OS" = "Windows_NT" ]; then
+  # aliases we only use on the winders side.
+  alias vi='gvim'
+fi
+
+# su function: makes su perform a login.
+# for some OSes, this transfers the X authority information to the new login.
+function su {
+  # decide if we think this is debian or ubuntu or a variant.
+  DEBIAN_LIKE=$(if [ ! -z "$(grep -i debian /etc/issue)" \
+      -o ! -z "$(grep -i ubuntu /etc/issue)" ]; then echo 1; else echo 0; fi)
+
+  if [ $DEBIAN_LIKE -eq 1 ]; then
+    # debian currently requires the full version which imports X authority
+    # information for su.
+
+    # get the x authority info for our current user.
+    source $SHELLDIR/x_win/get_x_auth.sh
+
+    if [ -z "$X_auth_info" ]; then
+      # if there's no authentication info to pass along, we just do a normal su.
+      /bin/su -l $*
+    else
+      # under X, we update the new login's authority info with the previous
+      # user's info.
+      (unset XAUTHORITY; /bin/su -l $* -c "$X_auth_info ; export DISPLAY=$DISPLAY ; bash")
+    fi
+  else
+    # non-debian supposedly doesn't need the extra overhead any more.
+    # or at least suse doesn't, which is the other one we've tested on.
+    /bin/su -l $*
+  fi
+
+  # relabel the console after returning.
+  bash $SHELLDIR/tty/label_terminal_with_infos.sh
+}
+
+# sudo function wraps the normal sudo by ensuring we replace the terminal
+# label if they're doing an su with the sudo.
+function sudo {
+  local first_command="$1"
+  /usr/bin/sudo $*
+  if [ "$first_command" == "su" ]; then
+    # yep, they were doing an su, but they're back now.
+    bash $SHELLDIR/tty/label_terminal_with_infos.sh
+  fi
+}
+
+alias whereami='echo whoa dude, try not to think about it...'
+
+# buntar is a long needed uncompressing macro that feeds into tar -x.
+# it takes a list of bz2 file names and extracts their contents into
+# sequentially numbered directories.
+function buntar {
+  index=1
+  for i in $*; do
+    mkdir buntar_$index
+    pushd buntar_$index &>/dev/null
+    file=$i
+    # if the filename has no directory component, we will assume it used to
+    # be above our unzipping directory here.
+    if [ "$(basename $file)" = $file ]; then
+      file=../$file
+    fi
+    bunzip2 -d -c $file | tar -xf -
+    popd &>/dev/null
+    index=$(expr $index + 1)
+  done
+}
+
+# trashes the .#blah files that cvs and svn leave behind when finding conflicts.
+# this kind of assumes you've already checked them for any salient facts.
+function clean_cvs_junk {
+  for i in $*; do
+    find $i -follow -type f -iname ".#*" -exec perl $SHELLDIR/files/safedel.pl {} ";" 
+  done
+}
+
+# call the generated aliases file, if it exists.
+if [ -f "$GENERADIR/p_alias.sh" ]; then 
+  if [ ! -z "$SHELL_DEBUG" ]; then echo launching generated aliases.; fi
+  source $GENERADIR/p_alias.sh
+  if [ ! -z "$SHELL_DEBUG" ]; then echo done with generated aliases.; fi
+fi
+
+# remove the fredization macro if it was defined, helping to avoid running
+# the shell scripts twice for users like root that don't always load this
+# stuff.
+unalias fredme >/dev/null 2>&1
+
+if [ ! -z "$SHELL_DEBUG" ]; then echo aliases initialization ends....; fi
+

@@ -1,0 +1,14 @@
+#! shell name (fix this)
+####
+# Name   : {script name}
+# Author : {your name}
+# Rights : Copyright (C) 2011-$now by Author
+####
+# Copyright (c) 2011-$now By Author.  This script is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as published by the Free Software
+# Foundation: http://www.gnu.org/licenses/gpl.html  or under the terms of the GNU Library license:
+# http://www.gnu.org/licenses/lgpl.html  at your preference.  Those licenses describe your legal
+# rights to this software, and no other rights or warranties apply.
+# Feel free to send updated versions of this code to: [ fred@gruntose.com ]  -- Thanks, fred.
+####
+
