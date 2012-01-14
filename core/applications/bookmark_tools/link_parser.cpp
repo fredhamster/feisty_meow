@@ -66,8 +66,13 @@ const int MAX_FILE_SIZE = 4 * MEGABYTE;
 #define INCREM_N_GO { curr_index++; continue; }
 
 // puts the current character on the intermediate string.
-#define ADD_INTERMEDIATE \
-  intermediate_text += full_contents[curr_index]
+#define ADD_INTERMEDIATE { \
+  char add_in = full_contents[curr_index]; \
+  if ( (add_in == '<') || (add_in == '>') ) { \
+    add_in = '-'; \
+  } \
+  intermediate_text += add_in; \
+}
 
 // returns a character in lower-case, if 'a' is in upper case.
 char normalize_char(char a)
@@ -138,14 +143,6 @@ void strain_out_html_codes(astring &to_edit)
   /* clean naughty characters out of the names. */ \
   CLEAN_UP_NAUGHTY(url_string); \
   CLEAN_UP_NAUGHTY(name_string); \
-  if (url_string.ends(name_string)) { \
-    /* handle the name being boring. replace with the intermediate text. */ \
-    MAKE_MORE_ENGLISH(intermediate_text); \
-    strain_out_html_codes(intermediate_text); \
-    CLEAN_UP_NAUGHTY(intermediate_text); \
-    if (intermediate_text.length()) \
-      name_string = intermediate_text; \
-  } \
   /* output a link in the HOOPLE format. */ \
   astring to_write = "\"L\",\""; \
   to_write += translate_web_chars(name_string); \
@@ -157,6 +154,16 @@ void strain_out_html_codes(astring &to_edit)
   output_file.write(to_write); \
   _link_count++; \
 }
+//was after second clean up naughty
+/*argh yuck...  if (url_string.ends(name_string)) { \
+    / * handle the name being boring. replace with the intermediate text. * / \
+    MAKE_MORE_ENGLISH(intermediate_text); \
+    strain_out_html_codes(intermediate_text); \
+    CLEAN_UP_NAUGHTY(intermediate_text); \
+    if (intermediate_text.length()) \
+      name_string = intermediate_text; \
+  } \
+*/
 
 // writes out the current section in the HOOPLE format.
 // currently the parent category is set to Root.
@@ -164,7 +171,7 @@ void strain_out_html_codes(astring &to_edit)
   CLEAN_UP_NAUGHTY(last_heading);  /* clean the name. */ \
   /* output a category definition. */ \
   astring to_write = "\"C\",\""; \
-  to_write += last_heading; \
+  to_write += translate_web_chars(last_heading); \
   to_write += "\",\""; \
   to_write += abbreviate_category(last_parents.top()); \
   to_write += "\"\n"; \
@@ -253,7 +260,22 @@ astring link_parser::translate_web_chars(const astring &vervoom)
 {
   astring to_return = vervoom;
   to_return.replace_all("&amp;", "&");
+  to_return.replace_all("&auml;", "ä");
+  to_return.replace_all("&copy;", "(c)");
+  to_return.replace_all("&eacute;", "é");
+  to_return.replace_all("&laquo;", "--");
+  to_return.replace_all("&lsquo;", "'");
+  to_return.replace_all("&ldquo;", "'");
+  to_return.replace_all("&mdash;", "--");
+  to_return.replace_all("&ndash;", "--");
+  to_return.replace_all("&nbsp;", " ");
+  to_return.replace_all("&raquo;", "--");
+  to_return.replace_all("&rdquo;", "'");
+  to_return.replace_all("&rsquo;", "'");
+
   to_return.replace_all("%7E", "~");
+  to_return.replace_all("%28", "(");
+  to_return.replace_all("%29", ")");
   return to_return;
 }
 
@@ -371,8 +393,8 @@ int link_parser::execute()
 #ifdef DEBUG_LINK_PARSER
           LOG("into the not an '<a' case");
 #endif
-          intermediate_text += '<';
-          JUMP_TO_CHAR('>', true);
+//          intermediate_text += '<';
+          JUMP_TO_CHAR('>', false);
           continue; 
         }
 #ifdef DEBUG_LINK_PARSER
@@ -381,8 +403,8 @@ int link_parser::execute()
         // found an a, but make sure that's the only character in the word.
         curr_index++;
         if (!parser_bits::white_space(full_contents[curr_index])) {
-          intermediate_text += "<a";
-          JUMP_TO_CHAR('>', true);
+//          intermediate_text += "<a";
+          JUMP_TO_CHAR('>', false);
           continue; 
         }
         // this looks like an address so find the start of the href.

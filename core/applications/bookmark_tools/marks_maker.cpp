@@ -37,7 +37,7 @@ using namespace structures;
 using namespace textual;
 using namespace timely;
 
-#define DEBUG_MARKS
+//#define DEBUG_MARKS
   // uncomment to have more debugging noise.
 
 #undef BASE_LOG

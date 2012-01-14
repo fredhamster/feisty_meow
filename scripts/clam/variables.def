@@ -89,9 +89,7 @@ ifeq "$(TARGETS_DIR)" ""
 endif
 
 # "CLAM_BIN" points at the location for helper binaries and shell scripts.
-ifeq "$(OP_SYSTEM)" "UNIX"
-  export CLAM_BIN = $(PRODUCTION_DIR)/clam_bin
-endif
+export CLAM_BIN = $(PRODUCTION_DIR)/clam_bin
 
 # "CURRENT_DIR" is the directory where this make was started.
 export CURRENT_DIR := $(shell pwd)

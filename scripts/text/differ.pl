@@ -74,6 +74,7 @@ sub recurse_dirs
   local($src, $dest) = @_;
 
   if ($src =~ /\/CVS$/) { return; }  # skip comparing repositories.
+#hmmm: why is only CVS spelled out here?  what about the others?
 
   if (! -d $src) {
     print "$src is not a directory.\n";
@@ -116,7 +117,9 @@ sub recurse_dirs
 #    print "name is $name and to compare is $compare_name.\n";
     local($new_name) = $src . "/" . $name;
     if ( (-d $new_name) && ($name ne ".") && ($name ne "..")
-        && ($name ne ".svn") ) {
+        && ($name ne ".svn") 
+        && ($name ne ".git") 
+        && ($name ne "CVS") ) {
 #      print "recursing on: source $name and destination $compare_name.\n";
       &recurse_dirs($new_name, $compare_name);
     }

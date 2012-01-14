@@ -84,13 +84,16 @@ if [ ! -z "$PARM_1" ]; then
   # use the first real parameter since this is probably the 'source' version.
   export BUILD_SCRIPTS_DIR="$(dirname "$PARM_1")"
   THIS_TOOL_NAME="$(basename "$PARM_1")"
+echo sourced version buildscriptsdir is $BUILD_SCRIPTS_DIR
 else
   # use the zeroth parameter, since we know nothing more about our name.
   export BUILD_SCRIPTS_DIR="$(dirname "$PARM_0")"
   THIS_TOOL_NAME="$(basename "$PARM_0")"
+echo bashed version buildscriptsdir is $BUILD_SCRIPTS_DIR
 fi
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
-echo buildsc is $BUILD_SCRIPTS_DIR
+echo post tr buildscriptsdir is $BUILD_SCRIPTS_DIR
+
 # figure out the other paths based on where we found this script.
 export BUILDING_HIERARCHY="$(echo "$BUILD_SCRIPTS_DIR" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
 export CLAM_DIR="$BUILD_SCRIPTS_DIR/../clam"
@@ -194,10 +197,10 @@ pushd / &>/dev/null # jump to the root so relative paths are caught.
 
 # first the scripts directory; do we find this script there?
 if [ ! -f "$BUILD_SCRIPTS_DIR/$THIS_TOOL_NAME" ]; then
-  echo "This script must be run using its full pathname.  This enables the script to"
-  echo "locate the proper build folders.  Please try again with the full path, e.g.:"
-  echo "    bash /home/fred/codeplex/scripts/generator/$THIS_TOOL_NAME"
-#  exit 1
+  echo "This script cannot locate the proper build folders.  The crucial path"
+  echo "variable seems to be '$BUILD_SCRIPTS_DIR', which"
+  echo "does not seem to contain '$THIS_TOOL_NAME' (this"
+  echo "script's apparent name)."
 fi
 
 # next the clam directory; is the main variables file present there?
@@ -205,7 +208,6 @@ if [ ! -f "$CLAM_DIR/variables.def" ]; then
   echo "The clam directory could not be located under our build tools hierarchy."
   echo "Please examine the configuration and make sure that this script is in a"
   echo "directory that resides at the same height as the 'clam' directory."
-#  exit 1
 fi
 
 # now compute some more paths with a bit of "heuristics" for where we can
@@ -215,7 +217,6 @@ if [ ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; 
   if [ ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; then
     echo "This script cannot locate the tool source code folder.  This is where the"
     echo "dependency_tool and clam_tools folders are expected to be."
-#    exit 1
   fi
 fi
 
@@ -241,7 +242,6 @@ fi
 export BUILD_PARAMETER_FILE="$PRODUCTION_DIR/feisty_meow_config.ini"
 if [ ! -f "$BUILD_PARAMETER_FILE" ]; then
   echo "Cannot find a useful build configuration file."
-#  exit 1
 fi
 
 # pick the executable's file ending based on the platform.
@@ -249,8 +249,11 @@ if [ "$OPERATING_SYSTEM" == "UNIX" ]; then export EXE_ENDING=;
 elif [ "$OPERATING_SYSTEM" == "WIN32" ]; then export EXE_ENDING=.exe;
 else
   echo "The OPERATING_SYSTEM variable is unset or unknown.  Bailing out."
-#  exit 1
 fi
+
+# we should have established our internal variables now, so let's try
+# using them.
+export PATH=$BINARY_DIR:$PATH
 
 # load up the helper variables for visual studio on winders.
 if [ "$OPERATING_SYSTEM" == "WIN32" ]; then

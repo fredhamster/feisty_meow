@@ -5,7 +5,11 @@ include cpp/variables.def
 PROJECT = clam_tools
 TYPE = application
 DEFINITIONS += __BUILD_STATIC_APPLICATION__
-LIBS_USED += pthread
+
+# why was that there?
+#LIBS_USED += pthread
+#
+
 ifeq "$(OMIT_VERSIONS)" ""
   SOURCE += clamtools_version.rc 
 endif

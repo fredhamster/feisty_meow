@@ -42,17 +42,18 @@ export BASE_CPU
 
 # set the CPU to a default if it has not been set previously.
 ifeq "$(BASE_CPU)" ""
-  ifneq "$(OP_SYSTEM)" "WIN32"
-    BASE_CPU := $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
-  endif
-  ifeq "$(BASE_CPU)" ""
+#  ifneq "$(OP_SYSTEM)" "WIN32"
+    BASE_CPU := $(shell machine 2>/dev/null || arch 2>/dev/null || uname -m 2>/dev/null || echo i686)
+#  endif
+
+#  ifeq "$(BASE_CPU)" ""
 #    BASE_CPU := $(shell uname -m)
-    BASE_CPU := $(shell arch)
-    ifeq "$(BASE_CPU)" ""
-      # failed to get the cpu type.
-      BASE_CPU := x86
-    endif
-  endif
+#    BASE_CPU := $(shell arch)
+#    ifeq "$(BASE_CPU)" ""
+#      # failed to get the cpu type.
+#      BASE_CPU := x86
+#    endif
+#  endif
 endif
 
 # COMPILER is a flag that specifies the compiler that will be used to build
@@ -183,14 +184,7 @@ FLAG_FILES += $(BUILD_LIST_FILE) $(BUILD_WHACK_FILE)
 # "THIRD_PARTY_DIR" is the root of our support libraries.
 export THIRD_PARTY_DIR
 ifeq "$(THIRD_PARTY_DIR)" ""
-  export THIRD_PARTY_DIR := $(shell bash -c '\
-    if [ -d "$(REPOSITORY_DIR)/3rdparty" ]; then \
-      echo "$(REPOSITORY_DIR)/3rdparty"; \
-    elif [ -d "$(REPOSITORY_DIR)/libraries/3rdparty" ]; then \
-      echo "$(REPOSITORY_DIR)/libraries/3rdparty"; \
-    else \
-      echo ""; \
-    fi')
+  export THIRD_PARTY_DIR := "$(PRODUCTION_DIR)/3rdparty"
 endif
 
 # "OUTPUT_ROOT" is the root of all output directories for objects and other

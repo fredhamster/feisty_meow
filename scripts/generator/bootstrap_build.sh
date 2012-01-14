@@ -27,11 +27,13 @@ export PATH=/bin:$PATH
 # signals that we're doing a fresh build to the variables script.
 export INCLUDED_FROM_BOOTSTRAP=true
 # pull in our build variables using the path to this script.
-export BUILD_SCRIPTS_DIR="$(dirname "$0")"
+export BUILD_SCRIPTS_DIR="$( \cd "$(\dirname "$0")" && \pwd )"
+echo build script initial from bootstrap: $BUILD_SCRIPTS_DIR
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
+echo build script after: $BUILD_SCRIPTS_DIR
 # drop any previous version of the repository variable.
 unset REPOSITORY_DIR
-source "$BUILD_SCRIPTS_DIR/build_variables.sh"
+source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
 
 ##############
 
@@ -146,7 +148,7 @@ fi
 bash "$BUILD_SCRIPTS_DIR/whack_build.sh" clean
 
 # recreate our useful waste directories and other things...
-source "$BUILD_SCRIPTS_DIR/build_variables.sh"
+source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
 
 toolset_names=(makedep value_tagger version_stamper vsts_version_fixer write_build_config short_path sleep_ms zap_process playsound create_guid)
 

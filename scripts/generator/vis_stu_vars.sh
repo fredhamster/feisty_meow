@@ -55,8 +55,9 @@ fi
 export WindowsSdkDir="$PLATFORM_DIR"
 #echo platform dir is $PLATFORM_DIR
 
+#echo "path before is $PATH"
 export PATH="$DevEnvDir:$VCINSTALLDIR/BIN:$VSxTOOLS:$VSxTOOLS/bin:$FrameworkDir/$FrameworkVersion:$FrameworkDir/v3.5:$VCINSTALLDIR/VCPackages:$VSINSTALLDIR/Common7/Tools:$PLATFORM_DIR/bin:$PATH"
-#$FrameworkSDKDir/bin
+#echo "path after is $PATH"
 
 export INCLUDE="$VCINSTALLDIR/ATLMFC/INCLUDE:$VCINSTALLDIR/INCLUDE:$PLATFORM_DIR/include"
 #:$FrameworkSDKDir/include"
@@ -70,5 +71,4 @@ export FrameworkDir="$(echo $FrameworkDir | sed -e 's/^\/\(.\)[\\\/]\(.*\)$/\1:\
   # warning that seems to be erroneously bitching about backslashes.
 #echo framedir now $FrameworkDir
 
-#echo "path now is $PATH"
 

@@ -26,6 +26,7 @@ require "importenv.pl";
 require "inc_num.pl";
 
 use Cwd;
+use File::Which;
 
 #hmmm: maybe move this to a utility script file.
 $null_log = "/dev/null";
@@ -62,18 +63,8 @@ for (local($i) = 0; $i < scalar(@junk_file_list); $i++) {
 #print "excludes list=@excludes\n";
 
 # generic versions work on sane OSes.
-$find_tool = `which find`; chop $find_tool;
-$tar_tool = `which tar`; chop $tar_tool;
-
-# pick a more specific version for windows.
-if ( ("$OS" =~ /[wW][iI][nN]/) || ("$OS" =~ /[Oo][Ss]2/)
-    || ("$OS" =~ /[Dd][Oo][Ss]/) ) {
-  $top_level = "$BUILD_TOP";
-  $msys_folder = "$top_level/build/msys/bin";
-  $find_tool = "$msys_folder/find.exe";
-  $tar_tool = "$msys_folder/tar.exe";
-}
-
+$find_tool = which('find');
+$tar_tool = which('tar');
 #print "find tool: $find_tool\n";
 #print "tar tool: $tar_tool\n";
 
@@ -100,22 +91,14 @@ sub short_hostname {
 # a timestamp and hostname.
 sub snarf_prefix {
   local($base) = @_;
-  local($extra_path) = "";
+  $date_tool = "date";
+
   if ($OS =~ /win/i) {
-    if (length($MINGBIN)) {
-      # we rely on the ming binary path on windows, since otherwise a strange
-      # interaction between perl and windowz causes 'date' to use the retarded
-      # windows date program, even with the ming binaries in the path before
-      # the windows directory.
-      $extra_path = "$MINGBIN/";
-#print "ming path here is:\n$MINGBIN\n";
-    } else {
-      # just hope that this is running under msys in our build bin.
-      $extra_path = "$HOME/hoople2/build/msys/bin/";
-    }
+    # just hope that this is running under msys in our build bin.
+    $date_tool = "$PRODUCTION_DIR/msys/bin/date";
   }
 
-  local($date_part) = `${extra_path}date +%Y-%m-%d-%H%M`;
+  local($date_part) = `$date_tool +%Y-%m-%d-%H%M`;
   while ($date_part =~ /[\r\n]$/) { chop $date_part; }
   local($host) = &short_hostname();
   while ($host =~ /[\r\n]$/) { chop $host; }

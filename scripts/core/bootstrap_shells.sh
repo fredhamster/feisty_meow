@@ -9,20 +9,21 @@
 # shell startup.  that can be added manually by editing your .bashrc file.
 # read the examples/bashrc_user file for more details.
 
-YETI_CORE_SCRIPTS_DIR="$(dirname "$0" | tr '\\\\' '/' )"
+ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && \pwd )"
+YETI_CORE_SCRIPTS_DIR="$(echo "$ORIGINATING_FOLDER" | tr '\\\\' '/' )"
 THIS_TOOL_NAME="$(basename "$0")"
 
-# check this scripts directory; do we find this script there?
-pushd "/" &>/dev/null  # jump to root so relative paths have to fail.
-if [ ! -f "$YETI_CORE_SCRIPTS_DIR/$THIS_TOOL_NAME" ]; then
-  echo "This script must be run using its full pathname.  This enables the script to"
-  echo "locate the proper folders.  Please try again with the full path, e.g.:"
-  echo "    bash /home/fred/codeplex/$THIS_TOOL_NAME"
-  exit 1
-fi
-popd &>/dev/null
+## check this scripts directory; do we find this script there?
+#pushd "/" &>/dev/null  # jump to root so relative paths have to fail.
+#if [ ! -f "$YETI_CORE_SCRIPTS_DIR/$THIS_TOOL_NAME" ]; then
+#  echo "This script must be run using its full pathname.  This enables the script to"
+#  echo "locate the proper folders.  Please try again with the full path, e.g.:"
+#  echo "    bash /home/fred/codeplex/$THIS_TOOL_NAME"
+#  exit 1
+#fi
+#popd &>/dev/null
 
-# set up the yeti dir if it's not already defined.
+# set up the yeti dir.
 pushd "$YETI_CORE_SCRIPTS_DIR/../.." &>/dev/null
 export YETI_DIR="$(pwd)"
 popd &>/dev/null

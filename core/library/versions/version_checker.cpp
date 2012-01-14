@@ -21,6 +21,7 @@
 #include <basis/guards.h>
 #include <basis/utf_conversion.h>
 #include <configuration/application_configuration.h>
+#include <filesystem/filename.h>
 #include <loggers/critical_events.h>
 
 #include <stdio.h>
