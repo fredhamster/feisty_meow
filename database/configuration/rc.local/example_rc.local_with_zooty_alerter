@@ -15,7 +15,7 @@
 
 # special for equanimity; get zooty informed of our IP so we can make
 # the back connection and get home.
-bash /home/fred/yeti/scripts/security/tell_zooty_our_ip.sh &>/tmp/zooty_tell_report.txt &
+bash /home/fred/feisty_meow/scripts/security/tell_zooty_our_ip.sh &>/tmp/zooty_tell_report.txt &
   # we put this in the background and hope it doesn't intrude too much.
 
 exit 0

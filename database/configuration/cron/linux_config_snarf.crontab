@@ -4,6 +4,6 @@ SHELL=/bin/bash
 # m h dom mon dow command
 
 # do a backup of the config files once a week.
-28 7 * * 4 (source $HOME/yeti/scripts/core/profile.sh; cd /z/stuffing/archives; perl $HOME/yeti/scripts/archival/snarf_linux_config.pl) &>/dev/null 
+28 7 * * 4 (source $HOME/feisty_meow/scripts/core/profile.sh; cd /z/stuffing/archives; perl $HOME/feisty_meow/scripts/archival/snarf_linux_config.pl) &>/dev/null 
 
 
