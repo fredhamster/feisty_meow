@@ -1,0 +1,12 @@
+
+# ignore generated files of various types.
+
+__build_configuration.h
+*.class
+*.log
+*.gz
+*.o
+*.obj
+*_version.rc
+*_version.h
+
