@@ -39,7 +39,7 @@ function checkout_list {
   list=$*
   for i in $list; do
 #this list should be part of the configuration file, not part of script.
-    for j in $i/feisty_meow $i/hoople $i/hoople2 $i/quartz $i/web $i/yeti $i/xsede/xsede_tests $i/xsede/code/cak0l/trunk ; do
+    for j in $i/feisty_meow $i/hoople1 $i/hoople2 $i/quartz $i/web $i/yeti $i/xsede/xsede_tests $i/xsede/code/cak0l/trunk ; do
       if [ ! -d $j ]; then
 #        echo no directory called $j exists
         continue
