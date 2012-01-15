@@ -34,7 +34,7 @@ local($snarf_file) = &snarf_name($base, $number);
 local($root) = &canonicalize("$HOME/feisty_meow");
 
 # grab the top level stuff.
-&backup_files($base, $number, $root, ".", ("*.txt", "make*"));
+&backup_files($base, $number, $root, ".", ("*.txt", "make*", ".gitignore"));
 
 # get the documentation directory.
 &backup_hierarchy($base, $number, "$root", "docs");
