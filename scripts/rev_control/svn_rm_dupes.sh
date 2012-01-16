@@ -7,6 +7,8 @@
 exemplar_dir="$1"; shift
 whack_dir="$1"; shift
 
+#hmmm: much code here is shared with whack_dupes.  get into a library.
+
 # make sure they gave us a good directory to start with.
 if [ -z "$exemplar_dir" ]; then
   echo "whack_dupes"
@@ -44,6 +46,12 @@ if [ ! -z "$whack_dir" ]; then
   pushd "$whack_dir" &>/dev/null
 fi
 
+# now that we're in the directory to clean, make sure we're good there.
+if [ ! -d ".svn" ]; then
+#  echo "Could not find a subversion directory; operation would be pointless."
+  exit 0
+fi
+
 current_dir="$(pwd)"
 
 #echo "currdir=$current_dir gooddir=$the_good_place"
@@ -52,11 +60,6 @@ if [ "$current_dir" == "$the_good_place" ]; then
   # this is not good; they're the same location.
   echo "the request would whack all the files in the current directory; ignoring."
   exit 4
-fi
-
-if [ ! -d ".svn" ]; then
-  echo "Could not find a subversion directory; operation would be pointless."
-  exit 1
 fi
 
 # do the real work now...
