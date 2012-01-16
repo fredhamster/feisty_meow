@@ -1,13 +1,15 @@
 #!/bin/bash
-# a simple script for updating a set of folders on a usb stick from
-# subversion.  currently just runs with no parameters and expects to
-# get all archives from wherever the files originally came from.
+# a simple script for updating a set of folders on a usb stick from subversion or git.  currently
+# just runs with no parameters and expects to get all archives from wherever the files originally
+# came from.
 for i in * ; do
   if [ -d "$i" ]; then
     pushd $i
+    # only update if we see a repository living there.
     if [ -d ".svn" ]; then
-      # only update if we see a repository living here.
       svn update .
+    elif [ -d ".git" ]; then
+      git pull .
     fi
     popd
   fi
