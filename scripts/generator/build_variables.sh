@@ -155,12 +155,7 @@ fi
 
 # new BUILD_TOP variable points at the utter top-most level of any files
 # in the building hierarchy.
-if [ -d "$REPOSITORY_DIR/../../build" ]; then
-  export BUILD_TOP="$REPOSITORY_DIR/../.."
-else
-  # this is actually just a guess.
-  export BUILD_TOP="$REPOSITORY_DIR"
-fi
+export BUILD_TOP="$REPOSITORY_DIR"
 
 # this variable points at a folder where we store most of the generated products
 # of the build.  these tend to be the things that will be used for packaging into
