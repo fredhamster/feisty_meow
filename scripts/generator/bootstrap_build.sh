@@ -31,6 +31,8 @@ export BUILD_SCRIPTS_DIR="$( \cd "$(\dirname "$0")" && \pwd )"
 echo build script initial from bootstrap: $BUILD_SCRIPTS_DIR
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
 echo build script after: $BUILD_SCRIPTS_DIR
+# load in feisty meow basic scripts, if not already loaded.
+source "$BUILD_SCRIPTS_DIR/../core/profile.sh"
 # drop any previous version of the repository variable.
 unset REPOSITORY_DIR
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"

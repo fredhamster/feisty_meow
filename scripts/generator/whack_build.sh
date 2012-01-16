@@ -48,7 +48,7 @@ function whack_single_build_area()
 
   if [ "$clean_src" == "clean" -o "$clean_src" == "CLEAN"  ]; then
     echo $(date): "    ** Aggressive cleaning activated..."
-    perl "$SHELLDIR/files/zapdirs.pl" "$CLEANING_TOP" >>"$CRUDFILE"
+    perl "$REPOSITORY_DIR/scripts/files/zapdirs.pl" "$CLEANING_TOP" >>"$CRUDFILE"
   fi
 
   echo $(date): "Cleaned [$choprepo]."
