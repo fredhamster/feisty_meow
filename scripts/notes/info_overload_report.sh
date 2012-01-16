@@ -11,7 +11,7 @@ project_depth=$(find ~/quartz/projects/ -type f -exec echo \"{}\" ';' | grep -v 
 
 # source examples need to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.
-source_example_depth=$(find ~/quartz/example_source_code/ -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | wc -l)
+source_example_depth=$(find ~/quartz/example_source_code/ -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | grep -v "inova_legacy" | wc -l)
 
 
 #hmmm: need the counter of things in the html files back too.
