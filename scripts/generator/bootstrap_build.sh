@@ -65,6 +65,10 @@ echo "Build bootstrap process has started."
 
 # preconditions for the build process...
 
+# clean out the logs directory so we are all fresh.
+rm -rf "$LOGS_DIR"
+
+# set up our output directories etc.
 prepare_binaries_dir
 
 # set a flag for this process so we can omit certain compilations as necessary.
