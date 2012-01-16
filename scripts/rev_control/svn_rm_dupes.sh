@@ -54,6 +54,11 @@ if [ "$current_dir" == "$the_good_place" ]; then
   exit 4
 fi
 
+if [ ! -d ".svn" ]; then
+  echo "Could not find a subversion directory; operation would be pointless."
+  exit 1
+fi
+
 # do the real work now...
 for i in *; do
   if [ -f "$exemplar_dir/$i" ]; then
