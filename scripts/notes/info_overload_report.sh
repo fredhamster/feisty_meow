@@ -4,14 +4,14 @@
 REPORT_FILE="$HOME/quartz/history_info_overload.txt"
 
 # notes are individual files of tasks, usually, although some are combined.
-note_depth=$(find ~/quartz/grunty_notes/ -type f -exec echo \"{}\" ';' | grep -v svn | wc -l)
+note_depth=$(find ~/quartz/grunty_notes/ -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | wc -l)
 
 # projects are slightly more productive, ongoing things that are very active.
-project_depth=$(find ~/quartz/projects/ -type f -exec echo \"{}\" ';' | grep -v svn | wc -l)
+project_depth=$(find ~/quartz/projects/ -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | wc -l)
 
 # source examples need to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.
-source_example_depth=$(find ~/quartz/example_source_code/ -type f -exec echo \"{}\" ';' | grep -v svn | wc -l)
+source_example_depth=$(find ~/quartz/example_source_code/ -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | wc -l)
 
 
 #hmmm: need the counter of things in the html files back too.
