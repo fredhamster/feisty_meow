@@ -46,7 +46,7 @@ fi
 
 current_dir="$(pwd)"
 
-echo "currdir=$current_dir gooddir=$the_good_place"
+#echo "currdir=$current_dir gooddir=$the_good_place"
 
 if [ "$current_dir" == "$the_good_place" ]; then
   # this is not good; they're the same location.
