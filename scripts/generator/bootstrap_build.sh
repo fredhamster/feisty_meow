@@ -66,8 +66,11 @@ echo "Build bootstrap process has started."
 # preconditions for the build process...
 
 # clean out the logs directory so we are all fresh.
+echo "Removing logs directory '$LOGS_DIR'..."
 \rm -rf "$LOGS_DIR" "$BUILD_TOP/generatedJUnitFiles"
-mkdir "$LOGS_DIR"  # make this again so no one gets cranky.
+mkdir -p "$LOGS_DIR"  # make this again so no one gets cranky.
+echo "after removing and making dir again, it's here '$LOGS_DIR'..."
+ls -al $LOGS_DIR
 
 # set up our output directories etc.
 prepare_binaries_dir
