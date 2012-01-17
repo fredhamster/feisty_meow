@@ -153,7 +153,8 @@ source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variabl
 # clean out any current contents.
 bash "$BUILD_SCRIPTS_DIR/whack_build.sh" clean
 
-mkdir -p "$LOGS_DIR"  # make this again so no one gets cranky.
+# make this again so no one gets cranky.
+mkdir -p "$LOGS_DIR"
 
 echo "after removing and making dir again, it's here '$LOGS_DIR'..."
 ls -al $LOGS_DIR
@@ -247,6 +248,7 @@ if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
   # recreate our useful junk directories...
   mkdir -p "$WASTE_DIR"
   mkdir -p "$TEMPORARIES_DIR"
+  mkdir -p "$LOGS_DIR"
 
   echo Now starting a normal build of the repository source code.
   pushd "$REPOSITORY_DIR" &>/dev/null
