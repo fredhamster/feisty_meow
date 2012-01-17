@@ -35,6 +35,7 @@ function whack_single_build_area()
 
   # kerzap.
   rm -rf \
+    "$CLEANING_TOP/generatedJUnitFiles" \
     "$CLEANING_TOP/binaries" \
     "$CLEANING_TOP/install" \
     "$CLEANING_TOP/logs" \
