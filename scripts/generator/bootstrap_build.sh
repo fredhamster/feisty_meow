@@ -65,11 +65,6 @@ echo "Build bootstrap process has started."
 
 # preconditions for the build process...
 
-#redundant!!!
-# clean out the logs directory so we are all fresh.
-#echo "Removing logs directory '$LOGS_DIR'..."
-#\rm -rf "$LOGS_DIR" "$BUILD_TOP/generatedJUnitFiles"
-
 # set up our output directories etc.
 prepare_binaries_dir
 
