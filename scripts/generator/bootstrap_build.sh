@@ -65,12 +65,10 @@ echo "Build bootstrap process has started."
 
 # preconditions for the build process...
 
+#redundant!!!
 # clean out the logs directory so we are all fresh.
-echo "Removing logs directory '$LOGS_DIR'..."
-\rm -rf "$LOGS_DIR" "$BUILD_TOP/generatedJUnitFiles"
-mkdir -p "$LOGS_DIR"  # make this again so no one gets cranky.
-echo "after removing and making dir again, it's here '$LOGS_DIR'..."
-ls -al $LOGS_DIR
+#echo "Removing logs directory '$LOGS_DIR'..."
+#\rm -rf "$LOGS_DIR" "$BUILD_TOP/generatedJUnitFiles"
 
 # set up our output directories etc.
 prepare_binaries_dir
@@ -154,11 +152,16 @@ fi
 
 # start the actual build process now...
 
+# recreate our useful waste directories and other things...
+source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
+
 # clean out any current contents.
 bash "$BUILD_SCRIPTS_DIR/whack_build.sh" clean
 
-# recreate our useful waste directories and other things...
-source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
+mkdir -p "$LOGS_DIR"  # make this again so no one gets cranky.
+
+echo "after removing and making dir again, it's here '$LOGS_DIR'..."
+ls -al $LOGS_DIR
 
 toolset_names=(makedep value_tagger version_stamper vsts_version_fixer write_build_config short_path sleep_ms zap_process playsound create_guid)
 
