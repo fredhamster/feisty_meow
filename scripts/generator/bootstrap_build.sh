@@ -257,5 +257,9 @@ if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
   export NOT_SLIMLINE=true
   make_code
   popd &>/dev/null
+
+echo hey ho ho hey, got to final place
+ls -al $PRODUCTION_DIR/logs
+
 fi
 
