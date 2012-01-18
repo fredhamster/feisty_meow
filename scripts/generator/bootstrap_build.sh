@@ -254,12 +254,8 @@ if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
   pushd "$REPOSITORY_DIR" &>/dev/null
   unset BUILD_DEFAULTS
   declare -a BUILD_DEFAULTS=( "BOOT_STRAPPING=" "OPTIMIZE=t" "DEBUG=t" "REBUILD=t" )
-  export NOT_SLIMLINE=true
   make_code
+
   popd &>/dev/null
-
-echo hey ho ho hey, got to final place
-ls -al $PRODUCTION_DIR/logs
-
 fi
 
