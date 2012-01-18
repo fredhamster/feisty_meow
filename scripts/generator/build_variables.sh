@@ -120,28 +120,15 @@ if [ ! -z "$SHELL_DEBUG" ]; then
   echo "[OS is \"$OPERATING_SYSTEM\"]"
 fi
 
-# the impact of always redoing the repository directory below means that we
-# will always expect the build scripts to be located within the build they're
-# building.  that's fundamentally broken for some usages.
-# but just using the existing repository directory is fundamentally broken
-# too, since then the build variables will never re-adapt to the repository
-# you want.
-# maybe just documentation; if you are changing your repository and the build
-# scripts are in the right place, then you should unset REPOSITORY_DIR.
-# we at least check that the folder still exists now too, but that's not exact
-# knowledge that it's still the right directory.
-
-if [ -z "$REPOSITORY_DIR" -o ! -d "$REPOSITORY_DIR" ]; then
-  # we create the variable repository dir, but we keep the idiotic dos form of
-  # the path, because otherwise lots of bad things happens when passing the
-  # folders around to visual studio commands that don't allow a space after them.
-  if [ -d "$BUILDING_HIERARCHY/source" ]; then
-    # old style repository is same height as building hierarchy.
-    export REPOSITORY_DIR="$BUILDING_HIERARCHY"
-  else
-    # new style repository is a level above the build hierarchy.
-    export REPOSITORY_DIR="$(echo "$BUILDING_HIERARCHY" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
-  fi
+# we create the variable REPOSITORY_DIR, but we keep the dos form of
+# the path, because otherwise lots of bad things happens when passing the
+# folders around to visual studio commands that don't allow a space after them.
+if [ -d "$BUILDING_HIERARCHY/source" ]; then
+  # old style repository is same height as building hierarchy.
+  export REPOSITORY_DIR="$BUILDING_HIERARCHY"
+else
+  # new style repository is a level above the build hierarchy.
+  export REPOSITORY_DIR="$(echo "$BUILDING_HIERARCHY" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
 fi
 
 if [ "$OPERATING_SYSTEM" = "WIN32" ]; then
