@@ -225,13 +225,13 @@ int test_mutex::execute()
       ted.unlock();
     }
     time_stamp mutt_out;
-#ifdef DEBUG_MUTEX
-    log(a_sprintf("%d mutex lock & unlock pairs took %f seconds,",
-        MAX_MUTEX_TIMING_TEST,
-        (mutt_out.value() - mutt_in.value()) / SECOND_ms));
-    log(a_sprintf("or %f ms per (lock+unlock).",
-        (mutt_out.value() - mutt_in.value()) / MAX_MUTEX_TIMING_TEST));
-#endif
+    double run_count = MAX_MUTEX_TIMING_TEST;
+    double full_run_time = (mutt_out.value() - mutt_in.value()) / SECOND_ms;
+    double time_per_lock = (mutt_out.value() - mutt_in.value()) / run_count;
+    log(a_sprintf("%.0f mutex lock & unlock pairs took %.3f seconds,",
+        run_count, full_run_time));
+    log(a_sprintf("or %f ms per (lock+unlock).", time_per_lock));
+    ASSERT_TRUE(time_per_lock < 1.0, "mutex lock timing should be super fast");
   }
 
   // make sure the guard is initialized before the threads run.
