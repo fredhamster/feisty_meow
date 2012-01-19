@@ -1,0 +1,11 @@
+
+
+# added this after the bashrc setup stuff for yeti...
+
+# extras for uva
+export JAVA_HOME=/usr/lib/jvm/java-6-sun/jre
+export PATH=$PATH:$JAVA_HOME/bin
+
+# ant options to get the wsdl files to all build properly.
+export ANT_OPTS="-Xms512m -Xmx768m -XX:MaxPermSize=768m"
+
