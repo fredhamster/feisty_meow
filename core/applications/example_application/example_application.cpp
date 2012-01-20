@@ -65,8 +65,8 @@ public:
   virtual int execute();
     //!< the root of the program's activity.
 
-  void print_instructions();
-    //!< describes the available command line options for the ULS.
+  int print_instructions() { LOG("no instructions at this time."); return 1; }
+    //!< describes the available command line options for this program.
 
 private:
   singleton_application _app_lock;  //!< our inter-application synchronizer.

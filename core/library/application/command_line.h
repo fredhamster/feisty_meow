@@ -88,9 +88,12 @@ class command_line
 public:
   command_line(int argc, char *argv[]);
     //!< takes command line parameters in the form of "argc" and "argv".
-    /*!< this is suitable for most C++ main programs.  the first "argv"
-    string (element zero) is ignored because it is assumed that it is the program name.
-    these become available in the global variables _global_argc and _global_argv. */
+    /*!< this is suitable for most C++ main programs.  the first "argv" string (element zero) is
+    ignored because it is assumed that it is the program name.  that means that the array of
+    command parameters here will be (argc - 1) in length, and that index zero of our array has
+    the first "real" parameter that was passed to the program (i.e., not it's name).
+    note that the unaltered command parameters of argc and argv become available in the global
+    variables _global_argc and _global_argv. */
 
   command_line(const basis::astring &to_parse);
     //!< takes a string form of the command line.
