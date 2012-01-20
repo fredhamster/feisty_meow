@@ -65,7 +65,7 @@ public:
   virtual int execute();
     //!< the root of the program's activity.
 
-  int print_instructions() { LOG("no instructions at this time."); return 1; }
+  int print_instructions();
     //!< describes the available command line options for this program.
 
 private:
@@ -81,6 +81,13 @@ application_example::application_example()
 
 application_example::~application_example()
 {}
+
+int application_example::print_instructions()
+{
+  FUNCDEF("print_instructions");
+  LOG("no instructions at this time.");
+  return 1;
+}
 
 void application_example::handle_startup()
 {

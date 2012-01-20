@@ -156,9 +156,6 @@ bash "$BUILD_SCRIPTS_DIR/whack_build.sh" clean
 # make this again so no one gets cranky.
 mkdir -p "$LOGS_DIR"
 
-echo "after removing and making dir again, it's here '$LOGS_DIR'..."
-ls -al $LOGS_DIR
-
 toolset_names=(makedep value_tagger version_stamper vsts_version_fixer write_build_config short_path sleep_ms zap_process playsound create_guid)
 
 if [ -z "$SAVE_BINARIES" ]; then
