@@ -107,7 +107,7 @@ sub recurse_dirs
     &diff_dirs($dest, $src);
   } else {
     print "$break_line\n";
-    print "Source exists at \"$src\", but target does not.\n";
+    print "Source directory has \"$src\", but target does not.\n";
   }
 
   # iterate through the directory.
