@@ -18,7 +18,7 @@ function chowngrp {
 # makes a directory of the name specified and then tries to change the
 # current directory to that directory.
 function mcd {
-  if [ ! -d "$1" ]; then mkdir "$1"; fi
+  if [ ! -d "$1" ]; then mkdir -p "$1"; fi
   cd "$1"
 }
 
