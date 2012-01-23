@@ -4,8 +4,14 @@
 
 # extras for uva
 export JAVA_HOME=/usr/lib/jvm/java-6-sun/jre
-export PATH=$PATH:$JAVA_HOME/bin
 
 # ant options to get the wsdl files to all build properly.
 export ANT_OPTS="-Xms512m -Xmx768m -XX:MaxPermSize=768m"
+
+# where we have our local eclipse.
+export ECLIPSE_DIR=/usr/local/eclipse_jee
+
+# add in the places we'd like in the path.
+# java and eclipse go first to override any other installed versions.
+export PATH=$JAVA_HOME/bin:$ECLIPSE_DIR:$PATH
 
