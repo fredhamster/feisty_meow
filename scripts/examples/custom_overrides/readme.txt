@@ -10,6 +10,6 @@ a "c_" in front.  ones understood currently are:
   c_variables.sh
 
 when you have some custom scripts you want to use, copy them from your own
-folder to the scripts/custom directory.  be careful though, because these
+folder to the scripts/custom directory.  be careful though, because they
 will never be checked into the repository from there.
 
