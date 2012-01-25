@@ -62,10 +62,11 @@ fi
 # other variables...
 ##############################################################################
 
-# pull in the custom variable overrides for bash.
-if [ -f "$YETI_SCRIPTS/custom/c_variables.sh" ]; then
-  source "$YETI_SCRIPTS/custom/c_variables.sh"
-fi
+# pull in the custom overrides for feisty_meow scripts.
+for i in $YETI_SCRIPTS/custom/*.sh; do
+  echo "Sourcing custom file: $i"
+  source $i
+done
 
 # sets the prompts to what we (i.e., i) like...
 # there are four different prompts.  the first one, PS1, is the one that users
