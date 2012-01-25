@@ -245,19 +245,10 @@ int write_build_config::execute()
   // find our storage area for the build headers.  we know a couple build
   // configurations by now, but this should really be coming out of a config
   // file instead.
-  astring library_directory = repodir + "/source/lib_src/library";
+  astring library_directory = repodir + "/nucleus/library";
   if (!filename(library_directory).good()) {
-    library_directory = repodir + "/source/core/library";
-    if (!filename(library_directory).good()) {
-      library_directory = repodir + "/libraries/library";
-      if (!filename(library_directory).good()) {
-        library_directory = repodir + "/../../libraries/library";
-        if (!filename(library_directory).good()) {
-          non_continuable_error(static_class_name(), func,
-              astring("failed to locate the library folder storing the generated files."));
-        }
-      }
-    }
+    non_continuable_error(static_class_name(), func,
+        astring("failed to locate the library folder storing the generated files."));
   }
 
   // these are very specific paths, but they really are where we expect to

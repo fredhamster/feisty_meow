@@ -235,8 +235,8 @@ export STATIC_LIBRARY_DIR = $(TARGETS_DIR)
 ifeq "$(HOOPLE_HEADERS)" ""
 #seems like some of this is redundant with earlier 3rdparty exploring.
   LOCUS_LIBRARY_HEADERS = $(shell bash -c '\
-    if [ -d "$(REPOSITORY_DIR)/core" ]; then \
-      echo "$(REPOSITORY_DIR)/core" "$(REPOSITORY_DIR)/octopi" "$(REPOSITORY_DIR)/graphiq" ; \
+    if [ -d "$(REPOSITORY_DIR)/nucleus" ]; then \
+      echo "$(REPOSITORY_DIR)/nucleus" "$(REPOSITORY_DIR)/octopi" "$(REPOSITORY_DIR)/graphiq" ; \
     else \
       echo ""; \
     fi | sed -e "s/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/" ')

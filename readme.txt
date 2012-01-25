@@ -8,7 +8,7 @@ the CLAM build system, and a variety of other efforts.
 
 Directories and files of interest here...
 
-core/
+nucleus/
     The hierarchies of compiled code for the basic modules of the Feisty Meow hoople2 codebase.
 
 database/

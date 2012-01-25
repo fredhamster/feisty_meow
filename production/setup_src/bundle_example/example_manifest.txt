@@ -100,7 +100,7 @@ exec_source=true
 
 [copy_fortunes_to_tempdir]
 source=$UNIX_BIN/cp
-parms="$REPOSITORY_DIR/core/applications/nechung/example.txt" "$SOURCE_TEMP/example.txt"
+parms="$REPOSITORY_DIR/nucleus/applications/nechung/example.txt" "$SOURCE_TEMP/example.txt"
 no_pack=true
 exec_source=true
 
@@ -125,19 +125,19 @@ target=/tmp/spoonbender/nechung$EXE_END
 ; simple file copy to an absolute path.
 
 [wildcard_congelio]
-source=$REPOSITORY_DIR/core/library/test_basis/*
+source=$REPOSITORY_DIR/nucleus/library/test_basis/*
 target=$TARGET/muse_files
 ; wildcards are supported.  this will put all the files from that directory
 ; "test_basis" into the target in a folder called "muse_files".
 
 [wildcard_specific]
-source=$REPOSITORY_DIR/core/library/basis/*.h
+source=$REPOSITORY_DIR/nucleus/library/basis/*.h
 target=$TARGET/basis_headers
 ; this is a more specific wildcard that tests a pattern on the end, rather
 ; than the "get everything" of a bare asterisk.
 
 [recursing_doodle]
-source=$REPOSITORY_DIR/core
+source=$REPOSITORY_DIR/nucleus
 target=$TARGET/srcpack/doodle_src
 recurse=1
 ; this shows a recursive copy of the directory "core" into a new directory

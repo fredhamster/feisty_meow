@@ -194,7 +194,7 @@ fi
 
 # now compute some more paths with a bit of "heuristics" for where we can
 # find the source code.
-export TOOL_SOURCES="$REPOSITORY_DIR/core/tools"
+export TOOL_SOURCES="$REPOSITORY_DIR/nucleus/tools"
 if [ ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; then
   if [ ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; then
     echo "This script cannot locate the tool source code folder.  This is where the"
