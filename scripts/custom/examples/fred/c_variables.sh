@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# this set of files is our personal overrides.
+# these are my personal overrides.  --fred.
 
-# The quartz directory has personalized items.
+# The quartz directory has *really* personalized items.
 export QUARTZDIR=$HOME/quartz
 
 # The gruntose web site is expected to reside below, if it exists at all.
@@ -30,12 +30,15 @@ export BROWSER=/usr/bin/firefox
 
 # editor and other mixed settings...
 export VISUAL=$(which vim)
-#export JAVA_HOME=/usr/java/jdk1.6.0_11
-#export ANT_HOME=/usr/local/eclipse/plugins/org.apache.ant_1.7.0.v200803061910/
+
+#hmmm: move these to the uva profile,
+#      rename uva profile to java profile,
+#      get them doing the right thing per OS.
+#  export JAVA_HOME="c:/Program Files/java/jdk1.6.0_11"
+
 # special settings for win32 and svn.
 if [ "$OS" == "Windows_NT" ]; then
   export EDITOR=$(which gvim)
-  export JAVA_HOME="c:/Program Files/java/jdk1.6.0_11"
 fi
 
 # this hideous mess is necessitated by our not having found the source of the
@@ -44,9 +47,4 @@ export LS_COLORS='no=00:fi=00:di=01;37:ln=00;36:pi=40;33:so=01;35:do=01;35:bd=40
 
 # we set this to avoid paying for slow app signing on win32.
 export NO_SIGNING=true
-
-# language settings for our common need.
-#export LANGUAGE=en_US
-#export LC_ALL=en_US
-#export LANG=en_US
 

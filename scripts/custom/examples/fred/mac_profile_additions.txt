@@ -1,6 +1,6 @@
 
 
-# added this after the bashrc setup stuff for yeti...
+# added this after the bashrc setup stuff for feisty_meow scripts...
 
 # extras for uva
 export JAVA_HOME=/Library/Java/Home
