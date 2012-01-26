@@ -3,6 +3,6 @@ alias mc='mc -a'
 
 export PATH=$PATH:/home/QtPalmtop/j2me:/home/QtPalmtop/j2me/bin
 
-alias fredme='export HOME=/home/zaurus/fred ; export TMP=$HOME/.tmp ; source $HOME/yeti/scripts/core/profile.sh ; cd '
+alias fredme='export HOME=/home/zaurus/fred ; export TMP=$HOME/.tmp ; source $HOME/feisty_meow/scripts/core/profile.sh ; cd '
 
 
