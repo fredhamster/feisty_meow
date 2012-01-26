@@ -6,15 +6,6 @@ if [ ! -z "$SHELL_DEBUG" ]; then
   echo function definitions begin...
 fi
 
-# applies a chown and a chgrp to the files specified, but the user name must
-# have a private group of the same name for this to work.
-function chowngrp {
-  chown $*
-# $2 $3 $4 $5 $6 $7 $8 $9
-  chgrp $*
-# $2 $3 $4 $5 $6 $7 $8 $9
-}
-
 # makes a directory of the name specified and then tries to change the
 # current directory to that directory.
 function mcd {

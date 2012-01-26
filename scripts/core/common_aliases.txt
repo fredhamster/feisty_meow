@@ -36,7 +36,7 @@ rmdir='perl $SHELLDIR/files/zapdirs.pl'
 rd='perl $SHELLDIR/files/zapdirs.pl'
 #regen-- this might be better as a function.
 regenerate='bash $SHELLDIR/core/bootstrap_shells.sh ; perl $SHELLDIR/core/generate_aliases.pl ; echo ; nechung'
-reroot='chowngrp -R root /root'
+reroot='chown -R root:root /root'
 dvd_rip='vobcopy -m'
 rm='perl $SHELLDIR/files/safedel.pl'
 ren='\mv -v -i '

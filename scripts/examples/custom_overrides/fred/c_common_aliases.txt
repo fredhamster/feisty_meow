@@ -2,7 +2,7 @@
 moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky '
 unmoo='umount /z/stuffing ; umount /z/walrus ; umount /z/chunky '
 
-refred='(chowngrp -R fred /home/fred /usr/local/games /home/archives /fatty /clutterato /var/spool/mail/fred ; normal_perm /var/log )'
+refred='(chown -R fred:fred /home/fred /usr/local/games /home/archives /fatty /clutterato /var/spool/mail/fred ; normal_perm /var/log )'
 
 
 

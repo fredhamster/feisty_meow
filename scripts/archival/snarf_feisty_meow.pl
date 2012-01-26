@@ -52,7 +52,7 @@ local($root) = &canonicalize("$HOME/feisty_meow");
 &backup_hierarchy($base, $number, $root, "scripts");
 
 # get all C++ code project hierarchies.
-&backup_hierarchy($base, $number, "$root", "core");
+&backup_hierarchy($base, $number, "$root", "nucleus");
 &backup_hierarchy($base, $number, "$root", "octopi");
 &backup_hierarchy($base, $number, "$root", "graphiq");
 
