@@ -84,15 +84,15 @@ if [ ! -z "$PARM_1" ]; then
   # use the first real parameter since this is probably the 'source' version.
   export BUILD_SCRIPTS_DIR="$(dirname "$PARM_1")"
   THIS_TOOL_NAME="$(basename "$PARM_1")"
-echo sourced version buildscriptsdir is $BUILD_SCRIPTS_DIR
+#echo sourced version buildscriptsdir is $BUILD_SCRIPTS_DIR
 else
   # use the zeroth parameter, since we know nothing more about our name.
   export BUILD_SCRIPTS_DIR="$(dirname "$PARM_0")"
   THIS_TOOL_NAME="$(basename "$PARM_0")"
-echo bashed version buildscriptsdir is $BUILD_SCRIPTS_DIR
+#echo bashed version buildscriptsdir is $BUILD_SCRIPTS_DIR
 fi
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
-echo post tr buildscriptsdir is $BUILD_SCRIPTS_DIR
+#echo post tr buildscriptsdir is $BUILD_SCRIPTS_DIR
 
 # figure out the other paths based on where we found this script.
 export BUILDING_HIERARCHY="$(echo "$BUILD_SCRIPTS_DIR" | sed -e 's/\(.*\)\/[^\/]*/\1/')"

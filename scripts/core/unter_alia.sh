@@ -29,11 +29,11 @@ if [ ! -d $GENERADIR ]; then mkdir $GENERADIR; fi
 test_color=$(ls --help 2>&1 | grep -i color)
 
 export COMMON_FILES=$SHELLDIR/core/common_aliases.txt
-if [ -f "$SHELLDIR/custom/c_common_aliases.txt" ]; then
-  # if the custom aliases file exists, add it to the list.
-  export COMMON_FILES="$COMMON_FILES $SHELLDIR/custom/c_common_aliases.txt"
-fi
-#echo common files is... $COMMON_FILES
+# if custom aliases files exist, add them to the list.
+for i in "$SHELLDIR/custom/*.txt"; do
+  COMMON_FILES+=" $i"
+done
+echo -e "Found alias files:\n$COMMON_FILES"
 
 # write the aliases for sh and bash scripts.
 
@@ -56,16 +56,19 @@ fi
 
 # we process the alias file to add the word "alias" to the first of every
 # line that's not a comment.
-cat $COMMON_FILES | sed -e 's/^\([^#]\)/alias \1/' >>$ALIASES_FILE 
-echo "##" >>$ALIASES_FILE
-echo "## now including shell specific additions..." >>$ALIASES_FILE
-echo "##" >>$ALIASES_FILE
-# then just dump the sh specific alias stuff into the file.
-cat $SHELLDIR/core/sh_aliases.txt >>$ALIASES_FILE 
-# add in customized sh aliases if they exist.
-if [ -f "$SHELLDIR/custom/c_sh_aliases.txt" ]; then
-  cat $SHELLDIR/custom/c_sh_aliases.txt >>$ALIASES_FILE 
-fi
+#cat $COMMON_FILES | sed -e 's/^\([^#]\)/alias \1/' >>$ALIASES_FILE 
+#nope: we no longer do that.
 
-exit 0;
+cat $COMMON_FILES >>$ALIASES_FILE 
+
+#echo "##" >>$ALIASES_FILE
+#echo "## now including shell specific additions..." >>$ALIASES_FILE
+#echo "##" >>$ALIASES_FILE
+## then just dump the sh specific alias stuff into the file.
+#cat $SHELLDIR/core/sh_aliases.txt >>$ALIASES_FILE 
+# add in customized sh aliases if they exist.
+#if [ -f "$SHELLDIR/custom/c_sh_aliases.txt" ]; then
+#  cat $SHELLDIR/custom/c_sh_aliases.txt >>$ALIASES_FILE 
+#fi
+
 

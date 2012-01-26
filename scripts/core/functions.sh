@@ -103,5 +103,76 @@ function dos_to_msys_path() {
   echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
 }
 
+# su function: makes su perform a login.
+# for some OSes, this transfers the X authority information to the new login.
+function su {
+  # decide if we think this is debian or ubuntu or a variant.
+  DEBIAN_LIKE=$(if [ ! -z "$(grep -i debian /etc/issue)" \
+      -o ! -z "$(grep -i ubuntu /etc/issue)" ]; then echo 1; else echo 0; fi)
+
+  if [ $DEBIAN_LIKE -eq 1 ]; then
+    # debian currently requires the full version which imports X authority
+    # information for su.
+
+    # get the x authority info for our current user.
+    source $SHELLDIR/x_win/get_x_auth.sh
+
+    if [ -z "$X_auth_info" ]; then
+      # if there's no authentication info to pass along, we just do a normal su.
+      /bin/su -l $*
+    else
+      # under X, we update the new login's authority info with the previous
+      # user's info.
+      (unset XAUTHORITY; /bin/su -l $* -c "$X_auth_info ; export DISPLAY=$DISPLAY ; bash")
+    fi
+  else
+    # non-debian supposedly doesn't need the extra overhead any more.
+    # or at least suse doesn't, which is the other one we've tested on.
+    /bin/su -l $*
+  fi
+
+  # relabel the console after returning.
+  bash $SHELLDIR/tty/label_terminal_with_infos.sh
+}
+
+# sudo function wraps the normal sudo by ensuring we replace the terminal
+# label if they're doing an su with the sudo.
+function sudo {
+  local first_command="$1"
+  /usr/bin/sudo $*
+  if [ "$first_command" == "su" ]; then
+    # yep, they were doing an su, but they're back now.
+    bash $SHELLDIR/tty/label_terminal_with_infos.sh
+  fi
+}
+
+# buntar is a long needed uncompressing macro that feeds into tar -x.
+# it takes a list of bz2 file names and extracts their contents into
+# sequentially numbered directories.
+function buntar {
+  index=1
+  for i in $*; do
+    mkdir buntar_$index
+    pushd buntar_$index &>/dev/null
+    file=$i
+    # if the filename has no directory component, we will assume it used to
+    # be above our unzipping directory here.
+    if [ "$(basename $file)" = $file ]; then
+      file=../$file
+    fi
+    bunzip2 -d -c $file | tar -xf -
+    popd &>/dev/null
+    index=$(expr $index + 1)
+  done
+}
+
+# trashes the .#blah files that cvs and svn leave behind when finding conflicts.
+# this kind of assumes you've already checked them for any salient facts.
+function clean_cvs_junk {
+  for i in $*; do
+    find $i -follow -type f -iname ".#*" -exec perl $SHELLDIR/files/safedel.pl {} ";" 
+  done
+}
+
 if [ ! -z "$SHELL_DEBUG" ]; then echo function definitions end....; fi
 

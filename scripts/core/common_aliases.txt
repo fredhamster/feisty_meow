@@ -1,48 +1,83 @@
-# common aliases are stored here.  these should work to some degree in
-# all environments, given some twiddling of characters to make the lines
-# appropriate for the shell.
+# common aliases for feisty_meow are located here.
+# most should work in any bash environment.
 
-aliases=alias
-#arch='if [ -f /bin/arch ]; then /bin/arch; else uname -m; fi' 
-cd..='\cd ..'
-cd...='\cd ../..'
-cd....='\cd ../../..'
-cd.....='\cd ../../../..'
-cdt='\cd /'
-copy='\cp -i -v '
-cp='\cp -i -v '
-cvs='perl $SHELLDIR/rev_control/cvs_fix.pl'
-del='perl $SHELLDIR/files/safedel.pl'
-deltree='perl $SHELLDIR/files/safedel.pl'
-df='\df -m'
-dir='perl $SHELLDIR/files/summing_dir.pl'
-#du='\du --exclude=.svn -h'  # doesn't work on mac.
-du='\du -h'
-erase='perl $SHELLDIR/files/safedel.pl'
-l='\ls -FC $color_add'
-ls='\ls -FC $color_add'
-lsd='ls -l'
-md='mkdir'
-mo='less'
-more='less'
-move='mv -i -v '
-mplayer='\mplayer -ao arts'
-mv='\mv -i -v '
-np='gvim'
-path='echo $PATH'
-play='bash $SHELLDIR/multimedia/sound_play.sh'
-rebu='make REBUILD=t'
-rmdir='perl $SHELLDIR/files/zapdirs.pl'
-rd='perl $SHELLDIR/files/zapdirs.pl'
+alias aliases=alias
+#alias arch='if [ -f /bin/arch ]; then /bin/arch; else uname -m; fi' 
+alias cd..='\cd ..'
+alias cd...='\cd ../..'
+alias cd....='\cd ../../..'
+alias cd.....='\cd ../../../..'
+alias copy='\cp -i -v '
+alias cp='\cp -i -v '
+alias cvs='perl $SHELLDIR/rev_control/cvs_fix.pl'
+alias del='perl $SHELLDIR/files/safedel.pl'
+alias deltree='perl $SHELLDIR/files/safedel.pl'
+alias df='\df -m'
+alias dir='perl $SHELLDIR/files/summing_dir.pl'
+alias du='\du -h'
+alias dvd_rip='vobcopy -m'
+alias erase='perl $SHELLDIR/files/safedel.pl'
+alias l='\ls -FC $color_add'
+alias ls='\ls -FC $color_add'
+alias lsd='ls -l'
+alias md='mkdir'
+alias mo='less'
+alias more='less'
+alias move='mv -i -v '
+alias mplayer='\mplayer -ao arts'
+alias mv='\mv -i -v '
+alias np='gvim'
+alias path='echo $PATH'
+alias play='bash $SHELLDIR/multimedia/sound_play.sh'
+alias rmdir='perl $SHELLDIR/files/zapdirs.pl'
+alias rd='perl $SHELLDIR/files/zapdirs.pl'
 #regen-- this might be better as a function.
-regenerate='bash $SHELLDIR/core/bootstrap_shells.sh ; perl $SHELLDIR/core/generate_aliases.pl ; echo ; nechung'
-reroot='chown -R root:root /root'
-dvd_rip='vobcopy -m'
-rm='perl $SHELLDIR/files/safedel.pl'
-ren='\mv -v -i '
-up='cd ..'
-whence=which
-why='echo just because.'
-xterm='xterm $myxtermflags'
-xtroff='xtroff $myxflags'
-# don't add blank lines or they are interpreted as needing treatment.
+alias regenerate='bash $SHELLDIR/core/bootstrap_shells.sh ; perl $SHELLDIR/core/generate_aliases.pl ; echo ; nechung'
+alias reroot='chown -R root:root /root'
+alias rm='perl $SHELLDIR/files/safedel.pl'
+alias ren='\mv -v -i '
+alias up='cd ..'
+alias whence=which
+alias xterm='xterm $myxtermflags'
+alias xtroff='xtroff $myxflags'
+
+#hmmm: move these to the custom area?
+# Standard CAK aliases that add to or extend Unix commands.
+alias bye='. $SHELLDIR/core/goodbye.sh'
+alias calc='kcalc'
+alias cls='clear_colormap; clear'
+if [ "$OS" != "Windows_NT" ]; then
+  if [ -n "$IS_DARWIN" ]; then
+    # case for mac os x.
+    alias exp='open'
+  elif [ ! -z "$(which nautilus)" ]; then
+    alias exp='nautilus'
+  else
+#check if konqueror exists also?  fall back to uhhh midnight cmdr?
+    alias exp='konqueror'
+  fi
+else
+  alias explorer="bash $SHELLDIR/winders/exploder.sh"
+  alias exp="bash $SHELLDIR/winders/exploder.sh"
+fi
+alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
+alias notepad='gedit'
+if [ "$OS" = "Windows_NT" ]; then
+  # aliases we only use on the winders side.
+  alias vi='gvim'
+fi
+alias whereami='echo whoa dude, try not to think about it...'
+alias why='echo just because.'
+
+# call the generated aliases file, if it exists.
+if [ -f "$GENERADIR/p_alias.sh" ]; then 
+  if [ ! -z "$SHELL_DEBUG" ]; then echo launching generated aliases.; fi
+  source $GENERADIR/p_alias.sh
+  if [ ! -z "$SHELL_DEBUG" ]; then echo done with generated aliases.; fi
+fi
+
+# remove the fredization macro if it was defined, helping to avoid running
+# the shell scripts twice for users like root that don't always load this
+# stuff.
+unalias fredme >/dev/null 2>&1
+
