@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Author: Chris Koeritz
+
 # this script tries to intuit where java is installed on this machine.
 
 ############################
@@ -96,5 +99,7 @@ fi
 if [ ! -z "$ECLIPSE_DIR" ]; then
   export PATH=$ECLIPSE_DIR:$PATH
 fi
+
+############################
 
 

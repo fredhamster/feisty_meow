@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # these are my personal overrides.  --fred.
 
