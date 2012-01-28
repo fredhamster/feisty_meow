@@ -11,9 +11,10 @@ function do_checkin()
   local directory="$1"; shift
   if [ -d "CVS" ]; then
     # this appears to be cvs.
-    pushd "$directory/.." &>/dev/null
-    cvs ci "$directory"
-    popd &>/dev/null
+#    pushd "$directory/.." &>/dev/null
+    cvs ci .
+###"$directory"
+#    popd &>/dev/null
   elif [ -d ".svn" ]; then
     svn ci .
   elif [ -d ".git" ]; then
