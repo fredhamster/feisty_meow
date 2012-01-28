@@ -3,7 +3,7 @@
 # generates alias files for different operating systems and shell scripts.
 #
 # This script generates command alias definitions for a variety of different
-# shells.  The "common_aliases.txt" file is used in all of the generated
+# shells.  The "common.alias" file is used in all of the generated
 # files as a base set of generally useful aliases.  Then the appropriate
 # shell's specific aliases are added in; these are named after the shell that
 # they support, e.g. "sh_aliases.txt" is used with the sh and bash shells.
