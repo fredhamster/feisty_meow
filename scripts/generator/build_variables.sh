@@ -120,6 +120,7 @@ if [ ! -z "$SHELL_DEBUG" ]; then
   echo "[OS is \"$OPERATING_SYSTEM\"]"
 fi
 
+#hmmm: all this stuff is highly questionable value now.
 # we create the variable FEISTY_MEOW_DIR, but we keep the dos form of
 # the path, because otherwise lots of bad things happens when passing the
 # folders around to visual studio commands that don't allow a space after them.
