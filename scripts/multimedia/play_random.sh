@@ -25,7 +25,7 @@ if [ ! -z "$grunty" ]; then
   done
 
   # now play the file
-  bash $SHELLDIR/sound_play.sh $TO_PLAY
+  bash $FEISTY_MEOW_SCRIPTS/sound_play.sh $TO_PLAY
 
 fi
 

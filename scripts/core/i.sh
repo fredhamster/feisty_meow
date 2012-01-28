@@ -1,7 +1,7 @@
 #!/bin/bash
 
 (
-source $SHELLDIR/core/date_stringer.sh
+source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
 echo '###############################################################################'
 echo
@@ -22,7 +22,7 @@ echo
 echo '###############################################################################'
 echo
 echo You are running the following processes:
-. $SHELLDIR/users/findme.sh
+. $FEISTY_MEOW_SCRIPTS/users/findme.sh
 echo
 echo '###############################################################################'
 ) | less

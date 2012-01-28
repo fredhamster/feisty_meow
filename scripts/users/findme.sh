@@ -3,4 +3,4 @@
 snuser=$USER
 if [ -z "$snuser" ]; then snuser=$USERNAME; fi
 # more checks?  what else would we get it from, REPLYTO?
-bash "$SHELLDIR/users/find_user.sh" $snuser
+bash "$FEISTY_MEOW_SCRIPTS/users/find_user.sh" $snuser

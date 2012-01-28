@@ -3,7 +3,7 @@
 # utility.  then the processes can all be accessed when desired, rather than
 # needing to be started in 5 or so separate windows.
 
-source $SHELLDIR/opensim/opensim_utils.sh
+source $FEISTY_MEOW_SCRIPTS/opensim/opensim_utils.sh
 
 # jump into the opensim binaries directory so we can run stuff.
 pushd $HOME/opensim/bin &>/dev/null

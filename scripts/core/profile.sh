@@ -9,16 +9,16 @@ export SHELL_DEBUG=true
   # when they run.
 
 ####fault--repeated code from bootstrap.  isolate to shared location.
-# GENERADIR is where the generated files yeti uses are located.
-export GENERADIR="$HOME/.zz_auto_gen"
+# FEISTY_MEOW_GENERATED is where the generated files yeti uses are located.
+export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
 if [ ! -z "$WINDIR" -o ! -z "$windir" ]; then
   # assume they are using windoze.
-  export GENERADIR="$TMP/zz_auto_gen"
+  export FEISTY_MEOW_GENERATED="$TMP/zz_auto_gen"
 fi
 
 # make sure our main variables are established.
-YETIVARS="$GENERADIR/yeti_variables.sh"
-if [ ! -f "$YETIVARS" ]; then
+GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/feisty_meow_variables.sh"
+if [ ! -f "$GENERATED_FEISTY_MEOW_VARIABLES" ]; then
   echo -e '\n\n'
   echo "The yeti scripts need to be initialized via the bootstrap process, e.g.:"
   echo "  bash $HOME/feisty_meow/scripts/core/bootstrap_shells.sh"
@@ -26,7 +26,7 @@ if [ ! -f "$YETIVARS" ]; then
 fi
 
 # pull in our variable set.
-source "$YETIVARS"
+source "$GENERATED_FEISTY_MEOW_VARIABLES"
 
 # define a default name, if one wasn't already set.
 if [ -z "$NAME" ]; then
@@ -41,14 +41,14 @@ if [ "$OS" == "Windows_NT" ]; then
     export HOME=/c/home
   fi
   if [ ! -d "$HOME" ]; then mkdir $HOME; fi
-##  export GENERADIR=$TMP/zz_auto_gen
+##  export FEISTY_MEOW_GENERATED=$TMP/zz_auto_gen
 fi
 
 if [ -z "$LIGHTWEIGHT_INIT" ]; then
   # perform the bulk of the login.
-  source $SHELLDIR/core/unix_login.sh
+  source $FEISTY_MEOW_SCRIPTS/core/unix_login.sh
 else
   # this is the lightweight login that just wants variables set.
-  source $SHELLDIR/core/lightweight_unix_login.sh
+  source $FEISTY_MEOW_SCRIPTS/core/lightweight_unix_login.sh
 fi
 

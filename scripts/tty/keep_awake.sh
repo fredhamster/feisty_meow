@@ -6,4 +6,4 @@
 # kind of snafu with the ksh environment variable $$ where it would always
 # record the previous shell's number and not the current one or something....
 #
-(bash $SHELLDIR/keep_awake_process.sh) &
+(bash $FEISTY_MEOW_SCRIPTS/keep_awake_process.sh) &

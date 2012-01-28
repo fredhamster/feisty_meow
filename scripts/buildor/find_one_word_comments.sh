@@ -8,7 +8,7 @@
 
 SOURCES_FOUND_LIST="$(mktemp "$TMP/sources_found.XXXXXX")"
 
-source $SHELLDIR/build/seek_all_source.sh $*
+source $FEISTY_MEOW_SCRIPTS/build/seek_all_source.sh $*
   # got a list of source files now.
 
 function examine_file {

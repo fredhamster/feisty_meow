@@ -3,7 +3,7 @@
 # checks in all our commonly used folders.
 # note: fred specific.
 
-source "$SHELLDIR/rev_control/rev_control.sh"
+source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
 
 # selects the method for check-in based on where we are.
 function do_checkin()

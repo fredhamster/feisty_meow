@@ -9,14 +9,14 @@ alias cd....='\cd ../../..'
 alias cd.....='\cd ../../../..'
 alias copy='\cp -i -v '
 alias cp='\cp -i -v '
-alias cvs='perl $SHELLDIR/rev_control/cvs_fix.pl'
-alias del='perl $SHELLDIR/files/safedel.pl'
-alias deltree='perl $SHELLDIR/files/safedel.pl'
+alias cvs='perl $FEISTY_MEOW_SCRIPTS/rev_control/cvs_fix.pl'
+alias del='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
+alias deltree='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias df='\df -m'
-alias dir='perl $SHELLDIR/files/summing_dir.pl'
+alias dir='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
 alias du='\du -h'
 alias dvd_rip='vobcopy -m'
-alias erase='perl $SHELLDIR/files/safedel.pl'
+alias erase='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias l='\ls -FC $color_add'
 alias ls='\ls -FC $color_add'
 alias lsd='ls -l'
@@ -28,13 +28,13 @@ alias mplayer='\mplayer -ao arts'
 alias mv='\mv -i -v '
 alias np='gvim'
 alias path='echo $PATH'
-alias play='bash $SHELLDIR/multimedia/sound_play.sh'
-alias rmdir='perl $SHELLDIR/files/zapdirs.pl'
-alias rd='perl $SHELLDIR/files/zapdirs.pl'
+alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
+alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
+alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 #regen-- this might be better as a function.
-alias regenerate='bash $SHELLDIR/core/bootstrap_shells.sh ; perl $SHELLDIR/core/generate_aliases.pl ; echo ; nechung'
+alias regenerate='bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh ; perl $FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl ; echo ; nechung'
 alias reroot='chown -R root:root /root'
-alias rm='perl $SHELLDIR/files/safedel.pl'
+alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias ren='\mv -v -i '
 alias up='cd ..'
 alias whence=which
@@ -43,7 +43,7 @@ alias xtroff='xtroff $myxflags'
 
 #hmmm: move these to the custom area?
 # Standard CAK aliases that add to or extend Unix commands.
-alias bye='. $SHELLDIR/core/goodbye.sh'
+alias bye='. $FEISTY_MEOW_SCRIPTS/core/goodbye.sh'
 alias calc='kcalc'
 alias cls='clear_colormap; clear'
 if [ "$OS" != "Windows_NT" ]; then
@@ -57,8 +57,8 @@ if [ "$OS" != "Windows_NT" ]; then
     alias exp='konqueror'
   fi
 else
-  alias explorer="bash $SHELLDIR/winders/exploder.sh"
-  alias exp="bash $SHELLDIR/winders/exploder.sh"
+  alias explorer="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
+  alias exp="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
 fi
 alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
 alias notepad='gedit'
@@ -70,9 +70,9 @@ alias whereami='echo whoa dude, try not to think about it...'
 alias why='echo just because.'
 
 # call the generated aliases file, if it exists.
-if [ -f "$GENERADIR/p_alias.sh" ]; then 
+if [ -f "$FEISTY_MEOW_GENERATED/p_alias.sh" ]; then 
   if [ ! -z "$SHELL_DEBUG" ]; then echo launching generated aliases.; fi
-  source $GENERADIR/p_alias.sh
+  source $FEISTY_MEOW_GENERATED/p_alias.sh
   if [ ! -z "$SHELL_DEBUG" ]; then echo done with generated aliases.; fi
 fi
 

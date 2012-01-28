@@ -4,5 +4,5 @@
 # lightweight version of unix login script.
 #
 
-source $SHELLDIR/core/variables.sh
-source $SHELLDIR/core/create_tempdir.sh
+source $FEISTY_MEOW_SCRIPTS/core/variables.sh
+source $FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh

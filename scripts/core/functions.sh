@@ -115,7 +115,7 @@ function su {
     # information for su.
 
     # get the x authority info for our current user.
-    source $SHELLDIR/x_win/get_x_auth.sh
+    source $FEISTY_MEOW_SCRIPTS/x_win/get_x_auth.sh
 
     if [ -z "$X_auth_info" ]; then
       # if there's no authentication info to pass along, we just do a normal su.
@@ -132,7 +132,7 @@ function su {
   fi
 
   # relabel the console after returning.
-  bash $SHELLDIR/tty/label_terminal_with_infos.sh
+  bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
 }
 
 # sudo function wraps the normal sudo by ensuring we replace the terminal
@@ -142,7 +142,7 @@ function sudo {
   /usr/bin/sudo $*
   if [ "$first_command" == "su" ]; then
     # yep, they were doing an su, but they're back now.
-    bash $SHELLDIR/tty/label_terminal_with_infos.sh
+    bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
   fi
 }
 
@@ -170,7 +170,7 @@ function buntar {
 # this kind of assumes you've already checked them for any salient facts.
 function clean_cvs_junk {
   for i in $*; do
-    find $i -follow -type f -iname ".#*" -exec perl $SHELLDIR/files/safedel.pl {} ";" 
+    find $i -follow -type f -iname ".#*" -exec perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl {} ";" 
   done
 }
 

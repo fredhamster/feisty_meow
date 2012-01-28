@@ -449,7 +449,7 @@ sub restore_archive {
   if ($outcome) { die("failure to undo archive"); }
 
   local($outcome) =
-      0xff & system "bash", "$SHELLDIR/files/normal_perm.sh", ".";
+      0xff & system "bash", "$FEISTY_MEOW_SCRIPTS/files/normal_perm.sh", ".";
   if ($outcome) { die("failure to normalize permissions"); }
 
   # remove any links that might have crept in; these can cause mischief.

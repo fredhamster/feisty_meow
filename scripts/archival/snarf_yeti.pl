@@ -27,7 +27,7 @@ require "shared_snarfer.pl";
 local($number) = &retrieve_number("aa_backup");
 
 # variables for directory location to backup and the file to dump it in.
-local($root) = $YETI_DIR;
+local($root) = $FEISTY_MEOW_DIR;
 local($base) = &snarf_prefix("yeti");
 local($snarf_file) = &snarf_name($base, $number);
 

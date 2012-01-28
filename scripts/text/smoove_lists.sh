@@ -52,7 +52,7 @@ done <"$tempfile"
 rm "$tempfile"
 
 # clean out any directories that we managed to move everything out of.
-perl "$SHELLDIR/files/zapdirs.pl" $source
+perl "$FEISTY_MEOW_SCRIPTS/files/zapdirs.pl" $source
 
 popd &>/dev/null
 

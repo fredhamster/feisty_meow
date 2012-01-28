@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $SHELLDIR/core/date_stringer.sh
+source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
 bad_file="$HOME/bad_protections.txt"
 if [ $# = 0 ]; then dirname=$HOME; export dirname;
@@ -41,7 +41,7 @@ rm $outfile
 
 echo "Searching for Files Not Owned by the User in $HOME...."
 echo "" >>$bad_file
-bash $SHELLDIR/find_non_owned.sh $HOME >>$bad_file
+bash $FEISTY_MEOW_SCRIPTS/find_non_owned.sh $HOME >>$bad_file
 
 echo "" >>$bad_file
 echo "" >>$bad_file

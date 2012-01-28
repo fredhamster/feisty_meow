@@ -14,4 +14,4 @@ fi
 
 new_title="-- $user@$pruned_host -- [$date_string]"
 
-bash "$SHELLDIR/tty/set_term_title.sh" "$new_title"
+bash "$FEISTY_MEOW_SCRIPTS/tty/set_term_title.sh" "$new_title"

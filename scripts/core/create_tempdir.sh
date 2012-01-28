@@ -5,7 +5,7 @@
 # This creates a temporary directory for transient files if such a directory
 # does not already exist.
 
-source $SHELLDIR/core/date_stringer.sh
+source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
 if [ ! -z "$SHELL_DEBUG" ]; then echo creating temporary directory...; fi
 

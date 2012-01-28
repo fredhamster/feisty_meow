@@ -6,6 +6,6 @@ NOISE_IT_UP=$(expr $RANDOM / 91)
 #echo noise lev is $NOISE_IT_UP
 if [ $NOISE_IT_UP -gt 108 -a $NOISE_IT_UP -le 128 ]; then
   # we hit our percentage.
-  bash $SHELLDIR/play_random.sh
+  bash $FEISTY_MEOW_SCRIPTS/play_random.sh
 fi
 

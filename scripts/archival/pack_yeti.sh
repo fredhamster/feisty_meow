@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd $YETI_DIR
+cd $FEISTY_MEOW_DIR
   # change to the yeti root.
 
 cd ..

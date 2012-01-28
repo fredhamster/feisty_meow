@@ -9,7 +9,7 @@
 
 #source $HOME/yeti/scripts/profile.sh
 
-soundfile=$YETI_DIR/database/sounds/woouoo.wav
+soundfile=$FEISTY_MEOW_DIR/database/sounds/woouoo.wav
 if [ ! -z "$1" ]; then
   soundfile=$1
 fi
@@ -17,7 +17,7 @@ fi
 while true; do
   echo Connecting sendmail and proxy servers via zooty.
   ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -L 14008:localhost:25 fred@zooty.koeritz.com
-  bash $SHELLDIR/multimedia/sound_play.sh $soundfile
+  bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile
 #hmmm: parameterize this for the sound to be played.  doofus.
   echo "Got dumped from tunnels; re-establishing connection."
   echo "Note: if you're being asked for a password, you haven't set up an RSA key yet."

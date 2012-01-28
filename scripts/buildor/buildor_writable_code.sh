@@ -4,7 +4,7 @@ source $REPOSITORY_DIR/bin/seek_all_source.sh
 
 function strip_file {
   file=$1
-  perl $SHELLDIR/strip_cr.pl $file
+  perl $FEISTY_MEOW_SCRIPTS/strip_cr.pl $file
 }
 
 #echo tempfile is $SOURCES_FOUND_LIST

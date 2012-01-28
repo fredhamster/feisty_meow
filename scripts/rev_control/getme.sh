@@ -2,7 +2,7 @@
 
 # gets all of fred's revision control folders out.
 
-source "$SHELLDIR/rev_control/rev_control.sh"
+source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
 
 if [ "$(pwd)" != "$TMP" ]; then
 #  echo "Moving to the TMP directory to avoid file access conflicts..."
@@ -65,8 +65,8 @@ fi
 less $TMPO_CHK
 
 # we now regenerate the scripts after getme, to ensure it's done automatically.
-bash "$SHELLDIR/core/bootstrap_shells.sh"
-perl "$SHELLDIR/core/generate_aliases.pl"
+bash "$FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh"
+perl "$FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl"
 echo
 nechung
 

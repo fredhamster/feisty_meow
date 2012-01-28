@@ -29,7 +29,7 @@ echo "Setting the directory back to user's ownership..."
 sudo chown -R $USER "$SPAM_HOLD" 
 sudo chgrp -R $USER "$SPAM_HOLD" 
 echo "Running checker for false-positive spams..."
-bash "$SHELLDIR/email/scan_spam.sh" "$SPAM_HOLD" "$EMAIL_WHITE_LIST" 2>&1 \
+bash "$FEISTY_MEOW_SCRIPTS/email/scan_spam.sh" "$SPAM_HOLD" "$EMAIL_WHITE_LIST" 2>&1 \
   | tee "$REPORT_FILE"
 
 

@@ -2,7 +2,7 @@
 # This program is meant to be started by the program keep_awake and has
 # the basic guts that are meant to execute inside of a semi-perpetual loop.
 
-source $SHELLDIR/core/date_stringer.sh
+source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
 # save the process id for the bye bye program to deal with.
 #echo $$ >>$TMP/trash.last_keep_awake_process

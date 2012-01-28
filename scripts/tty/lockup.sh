@@ -2,7 +2,7 @@
 
 # Thanks to Kevin Wika for this shell.
 
-source $SHELLDIR/core/date_stringer.sh
+source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
 trap '' HUP
 trap '' INT

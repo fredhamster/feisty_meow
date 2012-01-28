@@ -76,7 +76,7 @@ endif
 # standard CLAM location, then modify this appropriately.
 export CLAM_DIR
 # must be set externally!
-#export CLAM_DIR := $(SHELLDIR)/clam
+#export CLAM_DIR := $(FEISTY_MEOW_SCRIPTS)/clam
 
 # "TARGETS_DIR" is where all generated files will end up.  Usually the
 # files are put in a subdirectory named after their file type, such as

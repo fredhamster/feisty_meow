@@ -41,21 +41,21 @@ fi
 # configuration examples, javascript code, and other stuff.
 export SCRIPT_SYSTEM=feisty_meow
 
-#if [ -z "$YETI_DIR" ]; then export YETI_DIR="$HOME/$SCRIPT_SYSTEM"; fi
-#if [ -z "$YETI_SCRIPTS" ]; then export YETI_SCRIPTS="$YETI_DIR/scripts"; fi
-#if [ -z "$SHELLDIR" ]; then export SHELLDIR="$YETI_SCRIPTS"; fi
+#if [ -z "$FEISTY_MEOW_DIR" ]; then export FEISTY_MEOW_DIR="$HOME/$SCRIPT_SYSTEM"; fi
+#if [ -z "$FEISTY_MEOW_SCRIPTS" ]; then export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"; fi
+#if [ -z "$FEISTY_MEOW_SCRIPTS" ]; then export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"; fi
 
 # include helpful functions.
-source "$YETI_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 # LIBDIR is an older variable that points at the root of the yeti code.
-export LIBDIR=$YETI_DIR
+export LIBDIR=$FEISTY_MEOW_DIR
 
-if [ -z "$GENERADIR" ]; then
+if [ -z "$FEISTY_MEOW_GENERATED" ]; then
   # The generated scripts directory is where automatically generated files live.
   # It is separate from the main body of the shell scripts in order to keep things from
   # exploding.
-  export GENERADIR=$HOME/.zz_auto_gen
+  export FEISTY_MEOW_GENERATED=$HOME/.zz_auto_gen
 fi
 
 ##############################################################################
@@ -63,8 +63,10 @@ fi
 ##############################################################################
 
 # pull in the custom overrides for feisty_meow scripts.
-for i in $YETI_SCRIPTS/custom/*.sh; do
-  echo "Sourcing custom file: $i"
+for i in $FEISTY_MEOW_SCRIPTS/custom/*.sh; do
+  if [ ! -z "$SHELL_DEBUG" ]; then
+    echo "loading customization: $(basename $(dirname $i))/$(basename $i)"
+  fi
   source $i
 done
 
@@ -79,16 +81,16 @@ export PERLLIB
 if [ "$OS" != "Windows_NT" ]; then
   PERLLIB+="/usr/lib/perl5"
 else
-#echo "the scripts dir is $YETI_SCRIPTS"
-  YETI_SCRIPTS="$(echo $YETI_SCRIPTS | sed -e 's/\\/\//g')"
-  SHELLDIR="$YETI_SCRIPTS"
-#echo "the scripts dir is now $SHELLDIR"
+#echo "the scripts dir is $FEISTY_MEOW_SCRIPTS"
+  FEISTY_MEOW_SCRIPTS="$(echo $FEISTY_MEOW_SCRIPTS | sed -e 's/\\/\//g')"
+  FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
+#echo "the scripts dir is now $FEISTY_MEOW_SCRIPTS"
   export PERLIO=:perlio
     # choose perl's IO over the system's so we can handle file bytes exactly.
 fi
 
 #make this automatic!
-PERLLIB+=":$YETI_SCRIPTS/core:$YETI_SCRIPTS/text:$YETI_SCRIPTS/files:$YETI_SCRIPTS/archival"
+PERLLIB+=":$FEISTY_MEOW_SCRIPTS/core:$FEISTY_MEOW_SCRIPTS/text:$FEISTY_MEOW_SCRIPTS/files:$FEISTY_MEOW_SCRIPTS/archival"
 
 # set this so nechung can find its data.
 export NECHUNG=$LIBDIR/database/fortunes.dat
@@ -164,7 +166,7 @@ if [ $found_build_vars == 1 ]; then
 fi
 
 # Set the path for locating applications.
-export PATH="$(dos_to_msys_path $BINDIR):$(dos_to_msys_path $GENERADIR):$PATH:/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:."
+export PATH="$(dos_to_msys_path $BINDIR):$(dos_to_msys_path $FEISTY_MEOW_GENERATED):$PATH:/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:."
 
 if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization ends....; fi
 

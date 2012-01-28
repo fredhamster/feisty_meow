@@ -1,10 +1,10 @@
 #!/bin/bash
 
-source "$YETI_DIR/scripts/build/seek_all_source.sh"
+source "$FEISTY_MEOW_DIR/scripts/build/seek_all_source.sh"
 
 function strip_file {
   file="$1"
-  perl $SHELLDIR/text/strip_cr.pl "$file"
+  perl $FEISTY_MEOW_SCRIPTS/text/strip_cr.pl "$file"
 }
 
 #echo tempfile is $SOURCES_FOUND_LIST
