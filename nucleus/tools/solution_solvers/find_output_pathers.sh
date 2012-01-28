@@ -6,4 +6,4 @@
 
 # only works when repo dir is at the top of the full builds area.
 # we need like a top dir of some sort.
-find $REPOSITORY_DIR -iname "*proj" -exec grep -l OutputPath {} ';' >~/outputpath_mentioners.txt
+find $FEISTY_MEOW_DIR -iname "*proj" -exec grep -l OutputPath {} ';' >~/outputpath_mentioners.txt

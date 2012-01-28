@@ -61,13 +61,13 @@ endif
 
 ###############################################################################
 
-# "REPOSITORY_DIR" is the root of the "build" for our compilation oriented
+# "FEISTY_MEOW_DIR" is the root of the "build" for our compilation oriented
 # features.  All source code and build helper files are usually found there.
 # The build targets to be built are usually stored there also, although the
 # targets can be located elsewhere if desired.  see TARGETS_DIR below.
-export REPOSITORY_DIR
-ifeq "$(REPOSITORY_DIR)" ""
-#  REPOSITORY_DIR = 
+export FEISTY_MEOW_DIR
+ifeq "$(FEISTY_MEOW_DIR)" ""
+#  FEISTY_MEOW_DIR = 
 #uhhh, use the current location?
 endif
 
@@ -85,7 +85,7 @@ export TARGETS_DIR
 ifeq "$(TARGETS_DIR)" ""
   # the default is to generate files into subdirectories that are at the
   # top-level of the repository.
-  TARGETS_DIR = $(REPOSITORY_DIR)
+  TARGETS_DIR = $(FEISTY_MEOW_DIR)
 endif
 
 # "CLAM_BIN" points at the location for helper binaries and shell scripts.
@@ -152,7 +152,7 @@ export MAKEFILE_NAME = makefile
 # to make sure we don't accidentally run that inferior one.
 export FIND = find
 #ifeq "$(OP_SYSTEM)" "WIN32"
-#  export FIND = $(REPOSITORY_DIR)/msys/bin/find
+#  export FIND = $(FEISTY_MEOW_DIR)/msys/bin/find
 #endif
 
 # "PARAMETER_FILE" is the location of our version stamps (if defined) and

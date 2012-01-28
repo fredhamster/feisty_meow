@@ -113,31 +113,31 @@ if [ -z "$SVN_EDITOR" ]; then
 fi
 
 # include variables needed for compiling hoople and using its scripts.
-if [ -z "$REPOSITORY_DIR" ]; then
+if [ -z "$FEISTY_MEOW_DIR" ]; then
   if [ -d "$HOME/feisty_meow" ]; then
-    export REPOSITORY_DIR="$HOME/feisty_meow"
+    export FEISTY_MEOW_DIR="$HOME/feisty_meow"
   fi
 fi
 
 # initialize the build variables, if possible.
 found_build_vars=0
-if [ ! -z "$REPOSITORY_DIR" ]; then
+if [ ! -z "$FEISTY_MEOW_DIR" ]; then
   # first guess at using the old school bin directory.
-  bv="$REPOSITORY_DIR/bin/build_variables.sh"
+  bv="$FEISTY_MEOW_DIR/bin/build_variables.sh"
   if [ -f "$bv" ]; then
     # the old bin directory is present, so let's use its build vars.
     source "$bv" "$bv"
     found_build_vars=1
   else
     # try again with the new school location for the file.
-    bv="$REPOSITORY_DIR/scripts/generator/build_variables.sh"
+    bv="$FEISTY_MEOW_DIR/scripts/generator/build_variables.sh"
     if [ -f "$bv" ]; then
       # yep, that one looks good, so pull in the build defs.
       source "$bv" "$bv"
       found_build_vars=1
     else
       # try once more with new school and assume we're deep.
-      bv="$REPOSITORY_DIR/../../scripts/generator/build_variables.sh"
+      bv="$FEISTY_MEOW_DIR/../../scripts/generator/build_variables.sh"
       if [ -f "$bv" ]; then
         # sweet, there is something there.
         source "$bv" "$bv"
@@ -156,7 +156,7 @@ if [ $found_build_vars == 1 ]; then
   # the binaries, but now we don't ship them with yeti any more as pre-built items.  this reduces
   # the size of the code package a lot and shortens up our possible exposure to compromised
   # binaries.  people can bootstrap up their own set from hoople now instead.
-  export BINDIR=$REPOSITORY_DIR/production/binaries
+  export BINDIR=$FEISTY_MEOW_DIR/production/binaries
 
   # add binaries created within build to the path.
   export PATH="$(dos_to_msys_path $BUILD_TOP/build/bin):$PATH"

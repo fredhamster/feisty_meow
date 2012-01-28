@@ -120,29 +120,29 @@ if [ ! -z "$SHELL_DEBUG" ]; then
   echo "[OS is \"$OPERATING_SYSTEM\"]"
 fi
 
-# we create the variable REPOSITORY_DIR, but we keep the dos form of
+# we create the variable FEISTY_MEOW_DIR, but we keep the dos form of
 # the path, because otherwise lots of bad things happens when passing the
 # folders around to visual studio commands that don't allow a space after them.
 if [ -d "$BUILDING_HIERARCHY/source" ]; then
   # old style repository is same height as building hierarchy.
-  export REPOSITORY_DIR="$BUILDING_HIERARCHY"
+  export FEISTY_MEOW_DIR="$BUILDING_HIERARCHY"
 else
   # new style repository is a level above the build hierarchy.
-  export REPOSITORY_DIR="$(echo "$BUILDING_HIERARCHY" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
+  export FEISTY_MEOW_DIR="$(echo "$BUILDING_HIERARCHY" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
 fi
 
 if [ "$OPERATING_SYSTEM" = "WIN32" ]; then
   # make sure repository dir looks right on windoze.
-  export REPOSITORY_DIR="$(msys_to_dos_path "$REPOSITORY_DIR")"
+  export FEISTY_MEOW_DIR="$(msys_to_dos_path "$FEISTY_MEOW_DIR")"
 fi
 
 if [ ! -z "$SHELL_DEBUG" ]; then
-  echo "[REPOSITORY_DIR is $REPOSITORY_DIR]"
+  echo "[FEISTY_MEOW_DIR is $FEISTY_MEOW_DIR]"
 fi
 
 # new BUILD_TOP variable points at the utter top-most level of any files
 # in the building hierarchy.
-export BUILD_TOP="$REPOSITORY_DIR"
+export BUILD_TOP="$FEISTY_MEOW_DIR"
 
 # this variable points at a folder where we store most of the generated products
 # of the build.  these tend to be the things that will be used for packaging into
@@ -168,7 +168,7 @@ function make()
 #echo scripts: $BUILD_SCRIPTS_DIR
 #echo build tools hier: $BUILDING_HIERARCHY
 #echo this tool: $THIS_TOOL_NAME
-#echo repository: $REPOSITORY_DIR
+#echo repository: $FEISTY_MEOW_DIR
 #echo clam: $CLAM_DIR
 #echo makeflags: $MAKEFLAGS
 
@@ -194,7 +194,7 @@ fi
 
 # now compute some more paths with a bit of "heuristics" for where we can
 # find the source code.
-export TOOL_SOURCES="$REPOSITORY_DIR/nucleus/tools"
+export TOOL_SOURCES="$FEISTY_MEOW_DIR/nucleus/tools"
 if [ ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; then
   if [ ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; then
     echo "This script cannot locate the tool source code folder.  This is where the"

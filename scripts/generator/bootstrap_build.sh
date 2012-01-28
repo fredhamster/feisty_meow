@@ -34,7 +34,7 @@ echo build script after: $BUILD_SCRIPTS_DIR
 # load in feisty meow basic scripts, if not already loaded.
 source "$BUILD_SCRIPTS_DIR/../core/profile.sh"
 # drop any previous version of the repository variable.
-unset REPOSITORY_DIR
+unset FEISTY_MEOW_DIR
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
 
 ##############
@@ -248,7 +248,7 @@ if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
   mkdir -p "$LOGS_DIR"
 
   echo Now starting a normal build of the repository source code.
-  pushd "$REPOSITORY_DIR" &>/dev/null
+  pushd "$FEISTY_MEOW_DIR" &>/dev/null
   unset BUILD_DEFAULTS
   declare -a BUILD_DEFAULTS=( "BOOT_STRAPPING=" "OPTIMIZE=t" "DEBUG=t" "REBUILD=t" )
   make_code

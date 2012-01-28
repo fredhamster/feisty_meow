@@ -35,7 +35,7 @@ function whack_single_build_area()
 
   # kerzap.
   rm -rf \
-    "$REPOSITORY_DIR/generatedJUnitFiles" \
+    "$FEISTY_MEOW_DIR/generatedJUnitFiles" \
     "$CLEANING_TOP/binaries" \
     "$CLEANING_TOP/install" \
     "$CLEANING_TOP/logs" \
@@ -49,7 +49,7 @@ function whack_single_build_area()
 
   if [ "$clean_src" == "clean" -o "$clean_src" == "CLEAN"  ]; then
     echo $(date): "    ** Aggressive cleaning activated..."
-    perl "$REPOSITORY_DIR/scripts/files/zapdirs.pl" "$CLEANING_TOP" >>"$CRUDFILE"
+    perl "$FEISTY_MEOW_DIR/scripts/files/zapdirs.pl" "$CLEANING_TOP" >>"$CRUDFILE"
   fi
 
   echo $(date): "Cleaned [$choprepo]."
@@ -61,5 +61,5 @@ function whack_single_build_area()
 
 # clean all known hierarchies of build products...
 
-whack_single_build_area "$REPOSITORY_DIR"
+whack_single_build_area "$FEISTY_MEOW_DIR"
 
