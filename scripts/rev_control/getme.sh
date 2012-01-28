@@ -25,7 +25,7 @@ function do_update()
   directory="$1"; shift
 
   if [ -d "CVS" ]; then
-    cvs co -P -kb "$directory"
+    cvs update .
   elif [ -d ".svn" ]; then
     svn update .
   elif [ -d ".git" ]; then
