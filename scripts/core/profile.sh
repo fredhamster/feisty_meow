@@ -3,7 +3,6 @@
 #
 # This file takes the place of .profile or other initialization scripts.
 
-#export SHELL_DEBUG=
 export SHELL_DEBUG=true
   # this variable causes the scripts that listen to it to print more information
   # when they run.
