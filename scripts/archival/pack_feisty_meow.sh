@@ -16,5 +16,5 @@ date_string="$(date +"%Y_%b_%e_%H%M" | sed -e 's/ //g')"
 
 # now move the newest version into its resting place.  this prepares the
 # feisty_meow package for uploading.
-mv -v $TEMPO_FILE $WEB_DIR/feistymeow.org/feisty_meow_codebase_${date_string}.tar.gz
+mv -v $TEMPO_FILE $WEB_DIR/feistymeow.org/releases/feisty_meow_codebase_${date_string}.tar.gz
 
