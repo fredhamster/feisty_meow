@@ -36,7 +36,7 @@ for i in $hostlist; do
   if [ "$host" = "$i" -o "$host" = "$i.$DOMAIN_NAME" ]; then
 #    echo $(date_stringer)": $host matched." >>$HOME/host_matched_in_byejob.txt
     ( /bin/bash <<end
-      sleep 7; bash $FEISTY_MEOW_SCRIPTS/byemessage.sh /dev/console
+      sleep 7; bash $FEISTY_MEOW_SCRIPTS/users/byemessage.sh /dev/console
 end
     )&
 jobs

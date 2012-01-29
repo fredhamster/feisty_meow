@@ -4,7 +4,7 @@
 
 source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
-# save the process id for the bye bye program to deal with.
+# save the process id for the goodbye program to deal with.
 #echo $$ >>$TMP/trash.last_keep_awake_process
 #don't let the shutdown guy know who we are; we want to keep running now.
 

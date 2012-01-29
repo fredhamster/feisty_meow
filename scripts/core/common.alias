@@ -43,7 +43,7 @@ alias xtroff='xtroff $myxflags'
 
 #hmmm: move these to the custom area?
 # Standard CAK aliases that add to or extend Unix commands.
-alias bye='. $FEISTY_MEOW_SCRIPTS/core/goodbye.sh'
+alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
 alias calc='kcalc'
 alias cls='clear_colormap; clear'
 if [ "$OS" != "Windows_NT" ]; then

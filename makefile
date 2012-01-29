@@ -1,7 +1,7 @@
 include variables.def
 
 PROJECT = feisty_meow_sources
-BUILD_BEFORE = start_make nucleus scripts octopi graphiq production end_make
+BUILD_BEFORE = start_make nucleus scripts octopi graphiq webby production end_make
 
 include rules.def
 
