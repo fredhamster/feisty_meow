@@ -5,7 +5,7 @@
 #
 # go to the main folder of the project you're building before you run this.
 
-source $SHELLDIR/core/date_stringer.sh
+source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
 echo "$(date_stringer)"
 echo "Building application from $(\pwd)"

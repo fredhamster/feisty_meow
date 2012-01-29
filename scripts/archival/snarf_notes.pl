@@ -47,6 +47,7 @@ local($snarf_file) = &snarf_name($base, $number);
 &snarf_by_pattern("$root", "notes");
 &snarf_by_pattern("$root", "project");
 &snarf_by_pattern("$root", "issue");
+&snarf_by_pattern("$root", "idea");
 &snarf_by_pattern("$root", "crucial");
 &snarf_by_pattern("$root", "list");
 &snarf_by_pattern("$root", "task");

@@ -11,7 +11,7 @@ ifneq "$(BUILD_PARAMETER_FILE)" ""
 endif
 ifeq "$(PARAMETER_FILE)" ""
   # last ditch attempt to get one that will work.
-  export PARAMETER_FILE = $(REPOSITORY_DIR)/build.ini
+  export PARAMETER_FILE = $(FEISTY_MEOW_DIR)/build.ini
 endif
 
 ###############################################################################
@@ -22,12 +22,12 @@ include variables.def
 ###############################################################################
 
 #no # set the repository directory if it's still set to the base version.
-#ifeq "$(REPOSITORY_DIR)" ""
+#ifeq "$(FEISTY_MEOW_DIR)" ""
 #  ifeq "$(OP_SYSTEM)" "UNIX"
-#    export REPOSITORY_DIR = $(HOME)/hoople
+#    export FEISTY_MEOW_DIR = $(HOME)/hoople
 #  endif
 #  ifeq "$(OP_SYSTEM)" "WIN32"
-#    export REPOSITORY_DIR = l:
+#    export FEISTY_MEOW_DIR = l:
 #  endif
 #endif
 
@@ -209,7 +209,7 @@ export BASE_OUTPUT_PATH = $(OUTPUT_ROOT)/$(CPU_BUILD_DIR)
 
 # special case when doing arm-linux builds
 ifeq "$(COMPILER)" "GNU_ARM_LINUX"
-  export TARGETS_DIR = $(REPOSITORY_DIR)/$(CPU_BUILD_DIR)
+  export TARGETS_DIR = $(FEISTY_MEOW_DIR)/$(CPU_BUILD_DIR)
   # special output directory for firmware doesn't include CPU name because
   #  the repository already include the CPU name
   BASE_OUTPUT_PATH = $(OUTPUT_ROOT)
@@ -235,8 +235,8 @@ export STATIC_LIBRARY_DIR = $(TARGETS_DIR)
 ifeq "$(HOOPLE_HEADERS)" ""
 #seems like some of this is redundant with earlier 3rdparty exploring.
   LOCUS_LIBRARY_HEADERS = $(shell bash -c '\
-    if [ -d "$(REPOSITORY_DIR)/core" ]; then \
-      echo "$(REPOSITORY_DIR)/core" "$(REPOSITORY_DIR)/octopi" "$(REPOSITORY_DIR)/graphiq" ; \
+    if [ -d "$(FEISTY_MEOW_DIR)/nucleus" ]; then \
+      echo "$(FEISTY_MEOW_DIR)/nucleus" "$(FEISTY_MEOW_DIR)/octopi" "$(FEISTY_MEOW_DIR)/graphiq" ; \
     else \
       echo ""; \
     fi | sed -e "s/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/" ')

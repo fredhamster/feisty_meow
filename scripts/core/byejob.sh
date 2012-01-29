@@ -6,7 +6,7 @@ export LIGHTWEIGHT_INIT=true  # make sure we just get our variables.
 source $HOME/yeti/scripts/profile.sh
 export host=$(hostname)
 
-source $SHELLDIR/core/date_stringer.sh
+source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
 # use this to always print the message.
 #  export hostlist=$host
@@ -36,7 +36,7 @@ for i in $hostlist; do
   if [ "$host" = "$i" -o "$host" = "$i.$DOMAIN_NAME" ]; then
 #    echo $(date_stringer)": $host matched." >>$HOME/host_matched_in_byejob.txt
     ( /bin/bash <<end
-      sleep 7; bash $SHELLDIR/byemessage.sh /dev/console
+      sleep 7; bash $FEISTY_MEOW_SCRIPTS/byemessage.sh /dev/console
 end
     )&
 jobs

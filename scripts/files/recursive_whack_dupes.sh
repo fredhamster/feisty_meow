@@ -43,7 +43,7 @@ pushd $whack_dir &>/dev/null
 
 for i in $(find . -depth -mindepth 1 -type d \
     -exec echo {} ';' | sed -e 's/^.\///'); do
-  bash $SHELLDIR/whack_dupes_dir.sh $exemplar_dir/$i $i
+  bash $FEISTY_MEOW_SCRIPTS/whack_dupes_dir.sh $exemplar_dir/$i $i
 done
 
 # get back to where we started.

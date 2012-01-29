@@ -1,7 +1,7 @@
 #!/bin/bash
 # a simple script that backs up the opensim database assets.
 
-source $SHELLDIR/core/date_stringer.sh
+source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
 host=$(echo $(hostname) | sed -e 's/\([^.]*\)\..*/\1/')
 

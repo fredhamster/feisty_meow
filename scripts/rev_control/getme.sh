@@ -2,7 +2,7 @@
 
 # gets all of fred's revision control folders out.
 
-source "$SHELLDIR/rev_control/rev_control.sh"
+source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
 
 if [ "$(pwd)" != "$TMP" ]; then
 #  echo "Moving to the TMP directory to avoid file access conflicts..."
@@ -25,7 +25,7 @@ function do_update()
   directory="$1"; shift
 
   if [ -d "CVS" ]; then
-    cvs co -P -kb "$directory"
+    cvs update .
   elif [ -d ".svn" ]; then
     svn update .
   elif [ -d ".git" ]; then
@@ -39,7 +39,7 @@ function checkout_list {
   list=$*
   for i in $list; do
 #this list should be part of the configuration file, not part of script.
-    for j in $i/feisty_meow $i/hoople1 $i/hoople2 $i/quartz $i/web $i/yeti $i/xsede/xsede_tests $i/xsede/code/cak0l/trunk ; do
+    for j in $i/feisty_meow $i/hoople $i/hoople1 $i/hoople2 $i/quartz $i/web $i/yeti $i/xsede/xsede_tests $i/xsede/code/cak0l/trunk ; do
       if [ ! -d $j ]; then
 #        echo no directory called $j exists
         continue
@@ -65,8 +65,8 @@ fi
 less $TMPO_CHK
 
 # we now regenerate the scripts after getme, to ensure it's done automatically.
-bash "$SHELLDIR/core/bootstrap_shells.sh"
-perl "$SHELLDIR/core/generate_aliases.pl"
+bash "$FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh"
+perl "$FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl"
 echo
 nechung
 

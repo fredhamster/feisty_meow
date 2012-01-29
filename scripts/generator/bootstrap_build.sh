@@ -34,7 +34,7 @@ echo build script after: $BUILD_SCRIPTS_DIR
 # load in feisty meow basic scripts, if not already loaded.
 source "$BUILD_SCRIPTS_DIR/../core/profile.sh"
 # drop any previous version of the repository variable.
-unset REPOSITORY_DIR
+unset FEISTY_MEOW_DIR
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
 
 ##############
@@ -64,9 +64,6 @@ unset CLAM_FINISH_SOUND
 echo "Build bootstrap process has started."
 
 # preconditions for the build process...
-
-# clean out the logs directory so we are all fresh.
-rm -rf "$LOGS_DIR"
 
 # set up our output directories etc.
 prepare_binaries_dir
@@ -150,11 +147,14 @@ fi
 
 # start the actual build process now...
 
+# recreate our useful waste directories and other things...
+source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
+
 # clean out any current contents.
 bash "$BUILD_SCRIPTS_DIR/whack_build.sh" clean
 
-# recreate our useful waste directories and other things...
-source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
+# make this again so no one gets cranky.
+mkdir -p "$LOGS_DIR"
 
 toolset_names=(makedep value_tagger version_stamper vsts_version_fixer write_build_config short_path sleep_ms zap_process playsound create_guid)
 
@@ -245,13 +245,14 @@ if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
   # recreate our useful junk directories...
   mkdir -p "$WASTE_DIR"
   mkdir -p "$TEMPORARIES_DIR"
+  mkdir -p "$LOGS_DIR"
 
   echo Now starting a normal build of the repository source code.
-  pushd "$REPOSITORY_DIR" &>/dev/null
+  pushd "$FEISTY_MEOW_DIR" &>/dev/null
   unset BUILD_DEFAULTS
   declare -a BUILD_DEFAULTS=( "BOOT_STRAPPING=" "OPTIMIZE=t" "DEBUG=t" "REBUILD=t" )
-  export NOT_SLIMLINE=true
   make_code
+
   popd &>/dev/null
 fi
 

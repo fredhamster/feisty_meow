@@ -70,9 +70,9 @@ sub load_file_names {
 ##############
 
 # make sure we know where to store the files we're creating.
-if ( ! length("$GENERADIR") ) {
+if ( ! length("$FEISTY_MEOW_GENERATED") ) {
   print "\
-The GENERADIR variable is not defined.  This must point to the location where\n\
+The FEISTY_MEOW_GENERATED variable is not defined.  This must point to the location where\n\
 the generated scripts are stored.  Perhaps you still need to run\n\
 bootstrap_shells.sh and set up some environment variables.  Please see\n\
 http://yeticode.org for more details.\n";
@@ -80,13 +80,13 @@ http://yeticode.org for more details.\n";
 #really need to use better exit codes.
 }
 
-$GENERADIR =~ s/\\/\//g;
-$SHELLDIR =~ s/\\/\//g;
-$YETI_DIR =~ s/\\/\//g;
+$FEISTY_MEOW_GENERATED =~ s/\\/\//g;
+$FEISTY_MEOW_SCRIPTS =~ s/\\/\//g;
+$FEISTY_MEOW_DIR =~ s/\\/\//g;
 
 # create our generated shells directory if it's not already there.
-if (! -d $GENERADIR) {
-  mkdir $GENERADIR;
+if (! -d $FEISTY_MEOW_GENERATED) {
+  mkdir $FEISTY_MEOW_GENERATED;
 }
 
 ##############
@@ -98,28 +98,28 @@ if (-d $BINDIR) {
 
 ##############
 
-system("bash \"$SHELLDIR\"/core/unter_alia.sh");
+system("bash \"$FEISTY_MEOW_SCRIPTS\"/core/unter_alia.sh");
   # generate the first set of alias files; these are the root files used
   # by the shell.  each of them will be written to in turn invoke the
-  # p_alias files which are made from the set of scripts in YETI_SCRIPTS
+  # p_alias files which are made from the set of scripts in FEISTY_MEOW_SCRIPTS
   # (see below).
 
 # trash the old versions.
-unlink("$GENERADIR/p_alias.sh");
+unlink("$FEISTY_MEOW_GENERATED/p_alias.sh");
 
-printf "writing $GENERADIR/p_alias.sh...\n";
+printf "writing $FEISTY_MEOW_GENERATED/p_alias.sh...\n";
 
 # open the alias files to be created.
-open(she, ">> $GENERADIR/p_alias.sh");
+open(she, ">> $FEISTY_MEOW_GENERATED/p_alias.sh");
 
 #print "os is $OS\n";
 
 # find the list of files in the scripts directory.
-#opendir(scripts, "$SHELLDIR");
+#opendir(scripts, "$FEISTY_MEOW_SCRIPTS");
 #@shell_files = sort(readdir(scripts));
 #print "yeti scripts: @shell_files\n";
 
-@shell_files = &load_file_names("$SHELLDIR");
+@shell_files = &load_file_names("$FEISTY_MEOW_SCRIPTS");
 
 # construct aliases for items in the scripts directory.
 foreach $file (@shell_files) {
@@ -127,14 +127,17 @@ foreach $file (@shell_files) {
   if ($file =~ '^\.$'
       || $file =~ '^\.\.$'
       || $file =~ '^.svn$'
+      || $file =~ '^.git$'
       || $file =~ /\/\.$/
       || $file =~ /\/\.\.$/
-      || $file =~ /\/\.svn$/) {
+      || $file =~ /\/\.svn$/
+      || $file =~ /\/\.git$/
+      ) {
     # just skip this item; it's a special directory.
-  } elsif (-d "$SHELLDIR/$file") {
+  } elsif (-d "$FEISTY_MEOW_SCRIPTS/$file") {
     # if we see a subdirectory in the scripts folder, we add all the
     # scripts in it as aliases.  we recurse only one level.
-    opendir(subdir, "$SHELLDIR/$file");
+    opendir(subdir, "$FEISTY_MEOW_SCRIPTS/$file");
     @subdir_files = sort(readdir(subdir));
     foreach $subfile (@subdir_files) {
       push(@shell_files, "$file/$subfile");
@@ -142,7 +145,7 @@ foreach $file (@shell_files) {
   } else {
     # if it's a regular file, we'll try to make an alias for it.  the function
     # will only fire if the ending is appropriate for the script languages we use.
-    &make_alias($file, "$SHELLDIR");
+    &make_alias($file, "$FEISTY_MEOW_SCRIPTS");
   }
 }
 

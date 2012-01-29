@@ -4,7 +4,7 @@ if [ -z "$1" ]; then
   exit 2
 fi
 
-source "$SHELLDIR/functions.sh"  # provides psfind.
+source "$FEISTY_MEOW_SCRIPTS/functions.sh"  # provides psfind.
 
 PIDLIST=$(psfind $1)
 #echo "PIDS are $PIDLIST"

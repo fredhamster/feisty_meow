@@ -3,7 +3,7 @@
 # keeps trying to mount the cd on a mac mini to overcome
 # a new bug in itunes seen as of osx leopard upgrade.
 
-source $SHELLDIR/core/date_stringer.sh
+source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
 
 mountpoint=/Volumes/mounty_cd
 

@@ -2,7 +2,7 @@
 
 # play the sound files specified.
 
-source "$SHELLDIR/core/functions.sh"  # provides psfind.
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"  # provides psfind.
 
 if [ $# -lt 1 ]; then
   #echo no sound file specified.

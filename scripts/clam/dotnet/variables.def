@@ -17,11 +17,11 @@ ifneq "$(BUILD_PARAMETER_FILE)" ""
   # define our version of the build parameter file.  this should be set
   # beforehand so we override the default parameter file for clam.
   export PARAMETER_FILE = $(BUILD_PARAMETER_FILE)
-###no: $(REPOSITORY_DIR)/build/identity.ini
+###no: $(FEISTY_MEOW_DIR)/build/identity.ini
 endif
 ifeq "$(PARAMETER_FILE)" ""
   # last ditch attempt to get one that will work.
-  export PARAMETER_FILE = $(REPOSITORY_DIR)/build.ini
+  export PARAMETER_FILE = $(FEISTY_MEOW_DIR)/build.ini
 endif
 
 ###############################################################################
@@ -110,7 +110,7 @@ ifeq "$(OP_SYSTEM)" "UNIX"
   export THIRD_PARTY_DIR
 endif
 ifeq "$(OP_SYSTEM)" "WIN32"
-  export THIRD_PARTY_DIR = $(REPOSITORY_DIR)/3rdparty
+  export THIRD_PARTY_DIR = $(FEISTY_MEOW_DIR)/3rdparty
 endif
 
 # "OUTPUT_ROOT" is the root of all output directories for objects and other
@@ -152,7 +152,7 @@ export TESTS_DIR = $(TARGETS_DIR)/tests
 #HEADER_SEARCH_PATH =
 
 # "HOOPLE_HEADERS" are locations where the HOOPLE headers can be found.
-HOOPLE_HEADERS := $(shell $(FIND) $(REPOSITORY_DIR)/source/lib_src $(REPOSITORY_DIR)/libraries -mindepth 1 -maxdepth 1 -type d)
+HOOPLE_HEADERS := $(shell $(FIND) $(FEISTY_MEOW_DIR)/source/lib_src $(FEISTY_MEOW_DIR)/libraries -mindepth 1 -maxdepth 1 -type d)
 
 # "LOCAL_HEADERS" are overrides that go first in the header search path.
 #LOCAL_HEADERS =

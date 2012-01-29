@@ -23,36 +23,35 @@ THIS_TOOL_NAME="$(basename "$0")"
 #fi
 #popd &>/dev/null
 
-# set up the yeti dir.
+# set up the feisty_meow dir.
 pushd "$YETI_CORE_SCRIPTS_DIR/../.." &>/dev/null
-export YETI_DIR="$(pwd)"
+export FEISTY_MEOW_DIR="$(pwd)"
 popd &>/dev/null
-#echo yeti is $YETI_DIR
+#echo feisty_meow is $FEISTY_MEOW_DIR
 
-export YETI_SCRIPTS="$YETI_DIR/scripts"
-export SHELLDIR="$YETI_SCRIPTS"
+export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"
 
-# GENERADIR is where the generated files yeti uses are located.
-export GENERADIR="$HOME/.zz_auto_gen"
+# FEISTY_MEOW_GENERATED is where the generated files feisty_meow uses are located.
+export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
 if [ ! -z "$WINDIR" -o ! -z "$windir" ]; then
   # assume they are using windoze.
-  export GENERADIR="$TMP/zz_auto_gen"
+  export FEISTY_MEOW_GENERATED="$TMP/zz_auto_gen"
 fi
-if [ ! -d "$GENERADIR" ]; then
-  mkdir "$GENERADIR"
+if [ ! -d "$FEISTY_MEOW_GENERATED" ]; then
+  mkdir "$FEISTY_MEOW_GENERATED"
 fi
 
-YETIVARS="$GENERADIR/yeti_variables.sh"
-echo >"$YETIVARS"
-for i in YETI_DIR YETI_SCRIPTS SHELLDIR GENERADIR; do
-  echo "export $i=${!i}" >>"$YETIVARS"
+GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/feisty_meow_variables.sh"
+echo >"$GENERATED_FEISTY_MEOW_VARIABLES"
+for i in FEISTY_MEOW_DIR FEISTY_MEOW_SCRIPTS FEISTY_MEOW_GENERATED; do
+  echo "export $i=${!i}" >>"$GENERATED_FEISTY_MEOW_VARIABLES"
 done
 
 # create our common aliases.
-perl "$YETI_SCRIPTS/core/generate_aliases.pl"
+perl "$FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl"
 
-echo -e '\n\n'
-echo Established this set of variables to describe how to find yeti assets:
-cat "$YETIVARS"
-echo -e '\n'
+echo ==========================================
+echo Established this set of variables to describe how to find feisty_meow assets:
+cat "$GENERATED_FEISTY_MEOW_VARIABLES"
+echo ==========================================
 

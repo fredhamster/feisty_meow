@@ -1,0 +1,10 @@
+
+# some aliases that i don't expect very many people to ever want.  they are
+# based on some of the mount configurations available at home or abroad.
+
+alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky '
+alias unmoo='umount /z/stuffing ; umount /z/walrus ; umount /z/chunky '
+
+alias refred='(chown -R fred:fred /home/fred /usr/local/games /home/archives /fatty /clutterato /var/spool/mail/fred ; normal_perm /var/log )'
+
+

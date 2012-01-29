@@ -30,11 +30,12 @@ function whack_single_build_area()
 
   # avoid accidentally removing way too much important stuff if our variables have not
   # been previously established.
-  local WASTE_DIR="$CLEANING_LOCALE/waste"
-  local TEMPORARIES_DIR="$CLEANING_LOCALE/temporaries"
+  local WASTE_DIR="$CLEANING_TOP/waste"
+  local TEMPORARIES_DIR="$CLEANING_TOP/temporaries"
 
   # kerzap.
   rm -rf \
+    "$FEISTY_MEOW_DIR/generatedJUnitFiles" \
     "$CLEANING_TOP/binaries" \
     "$CLEANING_TOP/install" \
     "$CLEANING_TOP/logs" \
@@ -48,13 +49,11 @@ function whack_single_build_area()
 
   if [ "$clean_src" == "clean" -o "$clean_src" == "CLEAN"  ]; then
     echo $(date): "    ** Aggressive cleaning activated..."
-    perl "$REPOSITORY_DIR/scripts/files/zapdirs.pl" "$CLEANING_TOP" >>"$CRUDFILE"
+    perl "$FEISTY_MEOW_DIR/scripts/files/zapdirs.pl" "$CLEANING_TOP" >>"$CRUDFILE"
   fi
 
   echo $(date): "Cleaned [$choprepo]."
-
   rm -rf "$NEW_TMP"
-
   return 0
 }
 
@@ -62,7 +61,5 @@ function whack_single_build_area()
 
 # clean all known hierarchies of build products...
 
-whack_single_build_area "$REPOSITORY_DIR"
-
-
+whack_single_build_area "$FEISTY_MEOW_DIR"
 

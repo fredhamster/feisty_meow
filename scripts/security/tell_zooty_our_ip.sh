@@ -12,7 +12,7 @@ tempdir=/tmp  # where we generate our files.
 
 source $HOME/yeti/scripts/core/profile.sh
 
-soundfile=$YETI_DIR/database/sounds/woouoo.wav
+soundfile=$FEISTY_MEOW_DIR/database/sounds/woouoo.wav
 if [ ! -z "$1" ]; then
   soundfile=$1
 fi

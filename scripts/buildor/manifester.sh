@@ -7,6 +7,6 @@ if [ -z "$dir" ]; then
 fi
 
 for i in $dir/*.exe; do
-  mt -manifest $SHELLDIR/clam/cpp/security_manifest.txt -outputresource:$i\;\#1
+  mt -manifest $FEISTY_MEOW_SCRIPTS/clam/cpp/security_manifest.txt -outputresource:$i\;\#1
 done 
 

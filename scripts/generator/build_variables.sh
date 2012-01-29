@@ -84,15 +84,15 @@ if [ ! -z "$PARM_1" ]; then
   # use the first real parameter since this is probably the 'source' version.
   export BUILD_SCRIPTS_DIR="$(dirname "$PARM_1")"
   THIS_TOOL_NAME="$(basename "$PARM_1")"
-echo sourced version buildscriptsdir is $BUILD_SCRIPTS_DIR
+#echo sourced version buildscriptsdir is $BUILD_SCRIPTS_DIR
 else
   # use the zeroth parameter, since we know nothing more about our name.
   export BUILD_SCRIPTS_DIR="$(dirname "$PARM_0")"
   THIS_TOOL_NAME="$(basename "$PARM_0")"
-echo bashed version buildscriptsdir is $BUILD_SCRIPTS_DIR
+#echo bashed version buildscriptsdir is $BUILD_SCRIPTS_DIR
 fi
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
-echo post tr buildscriptsdir is $BUILD_SCRIPTS_DIR
+#echo post tr buildscriptsdir is $BUILD_SCRIPTS_DIR
 
 # figure out the other paths based on where we found this script.
 export BUILDING_HIERARCHY="$(echo "$BUILD_SCRIPTS_DIR" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
@@ -120,42 +120,30 @@ if [ ! -z "$SHELL_DEBUG" ]; then
   echo "[OS is \"$OPERATING_SYSTEM\"]"
 fi
 
-# the impact of always redoing the repository directory below means that we
-# will always expect the build scripts to be located within the build they're
-# building.  that's fundamentally broken for some usages.
-# but just using the existing repository directory is fundamentally broken
-# too, since then the build variables will never re-adapt to the repository
-# you want.
-# maybe just documentation; if you are changing your repository and the build
-# scripts are in the right place, then you should unset REPOSITORY_DIR.
-# we at least check that the folder still exists now too, but that's not exact
-# knowledge that it's still the right directory.
-
-if [ -z "$REPOSITORY_DIR" -o ! -d "$REPOSITORY_DIR" ]; then
-  # we create the variable repository dir, but we keep the idiotic dos form of
-  # the path, because otherwise lots of bad things happens when passing the
-  # folders around to visual studio commands that don't allow a space after them.
-  if [ -d "$BUILDING_HIERARCHY/source" ]; then
-    # old style repository is same height as building hierarchy.
-    export REPOSITORY_DIR="$BUILDING_HIERARCHY"
-  else
-    # new style repository is a level above the build hierarchy.
-    export REPOSITORY_DIR="$(echo "$BUILDING_HIERARCHY" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
-  fi
+#hmmm: all this stuff is highly questionable value now.
+# we create the variable FEISTY_MEOW_DIR, but we keep the dos form of
+# the path, because otherwise lots of bad things happens when passing the
+# folders around to visual studio commands that don't allow a space after them.
+if [ -d "$BUILDING_HIERARCHY/source" ]; then
+  # old style repository is same height as building hierarchy.
+  export FEISTY_MEOW_DIR="$BUILDING_HIERARCHY"
+else
+  # new style repository is a level above the build hierarchy.
+  export FEISTY_MEOW_DIR="$(echo "$BUILDING_HIERARCHY" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
 fi
 
 if [ "$OPERATING_SYSTEM" = "WIN32" ]; then
   # make sure repository dir looks right on windoze.
-  export REPOSITORY_DIR="$(msys_to_dos_path "$REPOSITORY_DIR")"
+  export FEISTY_MEOW_DIR="$(msys_to_dos_path "$FEISTY_MEOW_DIR")"
 fi
 
 if [ ! -z "$SHELL_DEBUG" ]; then
-  echo "[REPOSITORY_DIR is $REPOSITORY_DIR]"
+  echo "[FEISTY_MEOW_DIR is $FEISTY_MEOW_DIR]"
 fi
 
 # new BUILD_TOP variable points at the utter top-most level of any files
 # in the building hierarchy.
-export BUILD_TOP="$REPOSITORY_DIR"
+export BUILD_TOP="$FEISTY_MEOW_DIR"
 
 # this variable points at a folder where we store most of the generated products
 # of the build.  these tend to be the things that will be used for packaging into
@@ -181,7 +169,7 @@ function make()
 #echo scripts: $BUILD_SCRIPTS_DIR
 #echo build tools hier: $BUILDING_HIERARCHY
 #echo this tool: $THIS_TOOL_NAME
-#echo repository: $REPOSITORY_DIR
+#echo repository: $FEISTY_MEOW_DIR
 #echo clam: $CLAM_DIR
 #echo makeflags: $MAKEFLAGS
 
@@ -207,7 +195,7 @@ fi
 
 # now compute some more paths with a bit of "heuristics" for where we can
 # find the source code.
-export TOOL_SOURCES="$REPOSITORY_DIR/core/tools"
+export TOOL_SOURCES="$FEISTY_MEOW_DIR/nucleus/tools"
 if [ ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; then
   if [ ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; then
     echo "This script cannot locate the tool source code folder.  This is where the"

@@ -165,7 +165,7 @@ CLAM</big></h2>
   <li><big>Setting environment variables for clam:</big></li>
   <small> </small><big> </big><small> </small>
   <ol>
-    <li><big>YETI_DIR:</big></li>
+    <li><big>FEISTY_MEOW_DIR:</big></li>
     <small> </small><big> </big><small> </small>
     <ol>
       <small> </small><big> </big><small> </small>
@@ -175,7 +175,7 @@ CLAM</big></h2>
 This variable has been needed since clam became
 part of the YETIcode project (at <a href="http://yeticode.org/">http://yeticode.org</a>).</big></li>
       <small> </small>
-      <li><big>The default location for clam is under the YETI_DIR
+      <li><big>The default location for clam is under the FEISTY_MEOW_DIR
 in a
 folder named clam, although the version of clam shipped with the HOOPLE
 code (http://hoople.org) actually lives under the root of the hoople
@@ -184,7 +184,7 @@ hierarchy.<br>
       <small> </small><big> </big><small> </small>
       <li><big>If the yeti root directory is in $HOME/yeti
 already, then the
-default for YETI_DIR will work and it doesn't need to be declared.</big></li>
+default for FEISTY_MEOW_DIR will work and it doesn't need to be declared.</big></li>
       <li><big>Setting the variable:<br>
         </big></li>
       <small> </small><big> </big><small> </small>
@@ -221,10 +221,10 @@ to find the clam definitions and scripts.</big></li>
       <ol>
         <small> </small><big> </big><small> </small>
         <li><big>On Unix (assuming bash as shell): <span
- style="font-weight: bold;">export MAKEFLAGS="-I $YETI_DIR/clam"</span></big></li>
+ style="font-weight: bold;">export MAKEFLAGS="-I $FEISTY_MEOW_DIR/clam"</span></big></li>
         <small> </small><big> </big><small> </small>
         <li><big>On win32: <span style="font-weight: bold;">set
-MAKEFLAGS="-I %YETI_DIR%/clam"</span></big></li>
+MAKEFLAGS="-I %FEISTY_MEOW_DIR%/clam"</span></big></li>
         <small> </small><big> </big><small> </small>
         <li><big>This variable also requires forward slashes
 instead of
@@ -1132,7 +1132,7 @@ and other unusual punctuation characters are discouraged.&nbsp; All of
 the project's temporary directories will be created based on this
 variable.
 </big>
-<h4><big>REPOSITORY_DIR</big></h4>
+<h4><big>FEISTY_MEOW_DIR</big></h4>
 <big>&nbsp;&nbsp;&nbsp; &nbsp;Specifies the root directory
 for compilation or other&nbsp; building activities. &nbsp; The
 repository
@@ -1181,7 +1181,7 @@ a generated variable called ACTUAL_TARGETS is used.<br>
 <big>&nbsp;&nbsp;&nbsp;&nbsp; This folder is where all generated
 files are
 to
-be stored. &nbsp;It is usually identical to REPOSITORY_DIR but can be
+be stored. &nbsp;It is usually identical to FEISTY_MEOW_DIR but can be
 overridden
 when the targets should be stored elsewhere.<br>
 </big>
@@ -1341,7 +1341,7 @@ directives can be included so that they do not have to be passed on the
 command
 line.&nbsp; For C++ compilation, this is usually an INI file
 stored in the
-REPOSITORY_DIR under the build folder.&nbsp;
+FEISTY_MEOW_DIR under the build folder.&nbsp;
 Here is a sample parameter file:
 </big>
 <blockquote><big><tt><font size="-1"><big>#\</big></font></tt> <br>

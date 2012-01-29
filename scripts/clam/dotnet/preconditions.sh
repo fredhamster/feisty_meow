@@ -2,7 +2,7 @@
 # prepares the project for compilation by creating the appropriate directories.
 
 # make sure the top-level repository exists.
-if [ ! -d $REPOSITORY_DIR ]; then mkdir $REPOSITORY_DIR; fi
+if [ ! -d $FEISTY_MEOW_DIR ]; then mkdir $FEISTY_MEOW_DIR; fi
 # make sure our temp directory is there.
 if [ ! -d $CLAM_TMP ]; then mkdir $CLAM_TMP; fi
 # make sure the generated files have a home.

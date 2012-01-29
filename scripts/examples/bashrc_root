@@ -1,4 +1,0 @@
-# added to root's ~/.bashrc, the yetime macro enables all the yeti tools.
-
-alias yetime='source $HOME/yeti/scripts/core/profile.sh'
-

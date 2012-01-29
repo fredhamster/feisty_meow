@@ -2,7 +2,7 @@
 # this locates the main opensim process if possible.  if we cannot find it,
 # then the process is restarted.
 
-source $SHELLDIR/opensim/opensim_utils.sh
+source $FEISTY_MEOW_SCRIPTS/opensim/opensim_utils.sh
 
 # see if the process is findable.
 # (this approach will not work if the process actually freezes up but

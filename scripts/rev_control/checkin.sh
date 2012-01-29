@@ -3,7 +3,7 @@
 # checks in all our commonly used folders.
 # note: fred specific.
 
-source "$SHELLDIR/rev_control/rev_control.sh"
+source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
 
 # selects the method for check-in based on where we are.
 function do_checkin()
@@ -11,9 +11,10 @@ function do_checkin()
   local directory="$1"; shift
   if [ -d "CVS" ]; then
     # this appears to be cvs.
-    pushd "$directory/.." &>/dev/null
-    cvs ci "$directory"
-    popd &>/dev/null
+#    pushd "$directory/.." &>/dev/null
+    cvs ci .
+###"$directory"
+#    popd &>/dev/null
   elif [ -d ".svn" ]; then
     svn ci .
   elif [ -d ".git" ]; then
