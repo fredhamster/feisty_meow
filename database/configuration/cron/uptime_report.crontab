@@ -4,5 +4,5 @@ SHELL=/bin/bash
 # m h dom mon dow command
 
 # the script writes the current time and current uptime to the log file.
-0 * * * * (source $HOME/feisty_meow/scripts/core/profile.sh; bash $HOME/feisty_meow/scripts/system/write_uptime_report.sh) &>/dev/null 
+0 * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/system/write_uptime_report.sh) &>/dev/null 
 

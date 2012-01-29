@@ -32,7 +32,7 @@ echo build script initial from bootstrap: $BUILD_SCRIPTS_DIR
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
 echo build script after: $BUILD_SCRIPTS_DIR
 # load in feisty meow basic scripts, if not already loaded.
-source "$BUILD_SCRIPTS_DIR/../core/profile.sh"
+source "$BUILD_SCRIPTS_DIR/../core/launch_feisty_meow.sh"
 # drop any previous version of the repository variable.
 unset FEISTY_MEOW_DIR
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"

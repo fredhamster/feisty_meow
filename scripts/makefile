@@ -14,7 +14,7 @@ regenerate:
 	echo "FEISTY_MEOW_GENERATED = $(FEISTY_MEOW_GENERATED)"
 	$(CATCHER)'if [ ! -d $(FEISTY_MEOW_GENERATED) ]; then mkdir $(FEISTY_MEOW_GENERATED); fi'
 	$(CATCHER)perl $(FEISTY_MEOW_SCRIPTS)/core/generate_aliases.pl
-	$(CATCHER)'(export LIGHTWEIGHT_INIT=true; source $(FEISTY_MEOW_SCRIPTS)/core/profile.sh; perl $(FEISTY_MEOW_SCRIPTS)/text/new_sig.pl)'
+	$(CATCHER)'(export LIGHTWEIGHT_INIT=true; source $(FEISTY_MEOW_SCRIPTS)/core/launch_feisty_meow.sh; perl $(FEISTY_MEOW_SCRIPTS)/text/new_sig.pl)'
 
 clean_generated:
 	@echo removing generated aliases.

@@ -7,7 +7,7 @@
 
 #hmmm:  none of the user info below will work for others: parameterize it.
 
-#source $HOME/yeti/scripts/profile.sh
+#source $HOME/yeti/scripts/launch_feisty_meow.sh
 
 soundfile=$FEISTY_MEOW_DIR/database/sounds/woouoo.wav
 if [ ! -z "$1" ]; then

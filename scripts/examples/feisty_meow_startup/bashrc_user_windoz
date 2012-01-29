@@ -18,6 +18,6 @@ export PATH=/bin:$PATH:/c/utilities/emacs-23.2/bin:/c/tools/cvsnt:/c/utilities/V
 #export FEISTY_MEOW_DIR="$HOME/feisty_meow"
 
 # sets up the feisty_meow scripts, using the default locations for all scripts.
-source $HOME/feisty_meow/scripts/core/profile.sh
+source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
 
 
