@@ -1,17 +1,21 @@
 #!/bin/bash
 
-##############################################################################
+##############
+
 # variables script:
 #   Defines the environment variables used by the personalized unix
 #   environment.
-##############################################################################
+# Author: Chris Koeritz
+
+##############
 
 if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization begins...; fi
 
-##############################################################################
-# System variables.
-##############################################################################
-# OS stands for the operating system that we think is running.
+##############
+
+# System variables...
+
+# OS variable records the operating system we think we found.
 if [ -z "$OS" ]; then
   export OS=UNIX
 fi
@@ -34,11 +38,17 @@ if [ "$OS" == "Windows_NT" ]; then
   export HOSTNAME=$(echo $HOSTNAME | tr A-Z a-z)
 fi
 
-##############################################################################
-# Directory variables.
-##############################################################################
-# The yeti library directory holds useful shell scripts, public databases,
-# configuration examples, javascript code, and other stuff.
+# ulimit and umask.  umask sets a permission mask for all file
+# creations.  The mask shown here disallows writing by the "group" and
+# "others" categories of users.  ulimit sets the user limits.  the core
+# file size is set to zero.
+umask 022
+ulimit -c 0
+
+##############
+
+# Directory variables...
+
 export SCRIPT_SYSTEM=feisty_meow
 
 #if [ -z "$FEISTY_MEOW_DIR" ]; then export FEISTY_MEOW_DIR="$HOME/$SCRIPT_SYSTEM"; fi
@@ -57,6 +67,18 @@ if [ -z "$FEISTY_MEOW_GENERATED" ]; then
   # exploding.
   export FEISTY_MEOW_GENERATED=$HOME/.zz_auto_gen
 fi
+
+##############
+
+# user variables...
+
+# define a default name, if one wasn't already set.
+if [ -z "$NAME" ]; then
+  export NAME='Unset Q. Namington, Fixley Your Name III'
+fi
+
+##############
+
 
 ##############################################################################
 # other variables...
