@@ -1,8 +1,6 @@
 #!/bin/bash
 
 (
-source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
-
 echo '###############################################################################'
 echo
 echo Your user name is $USER on a computer named $(hostname).

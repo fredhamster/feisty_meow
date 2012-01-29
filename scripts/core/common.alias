@@ -32,7 +32,7 @@ alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 #regen-- this might be better as a function.
-alias regenerate='bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh ; perl $FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl ; echo ; nechung'
+alias regenerate='bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh ; echo ; nechung'
 alias reroot='chown -R root:root /root'
 alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias ren='\mv -v -i '

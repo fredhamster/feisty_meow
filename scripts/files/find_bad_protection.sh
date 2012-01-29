@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
-
 bad_file="$HOME/bad_protections.txt"
 if [ $# = 0 ]; then dirname=$HOME; export dirname;
 else dirname=$1; export dirname; fi

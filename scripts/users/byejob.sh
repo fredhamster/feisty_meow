@@ -6,8 +6,6 @@ export LIGHTWEIGHT_INIT=true  # make sure we just get our variables.
 source $HOME/yeti/scripts/launch_feisty_meow.sh
 export host=$(hostname)
 
-source $FEISTY_MEOW_SCRIPTS/core/date_stringer.sh
-
 # use this to always print the message.
 #  export hostlist=$host
 
