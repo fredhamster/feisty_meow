@@ -2,9 +2,15 @@
 # some aliases that i don't expect very many people to ever want.  they are
 # based on some of the mount configurations available at home or abroad.
 
+# moo and unmoo mount the local folders i use most.
 alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky '
 alias unmoo='umount /z/stuffing ; umount /z/walrus ; umount /z/chunky '
 
+# cleans up the ownership for all my files.
 alias refred='(chown -R fred:fred /home/fred /usr/local/games /home/archives /fatty /clutterato /var/spool/mail/fred ; normal_perm /var/log )'
+
+# redoes my custom scripts.  kind of a bummer if i mistakenly made
+# modifications in the un-saved custom directory itself.
+alias recustom='cpdiff $FEISTY_MEOW_SCRIPTS/examples/custom_overrides/fred $FEISTY_MEOW_SCRIPTS/custom'
 
 

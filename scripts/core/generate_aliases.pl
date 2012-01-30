@@ -1,25 +1,25 @@
 #!/usr/bin/perl
 
-###############################################################################
-#                                                                             #
-#  Name   : generate_aliases                                                  #
-#  Author : Chris Koeritz                                                     #
-#  Rights : Copyright (C) 1996-$now by Author                                 #
-#                                                                             #
-#  Purpose:                                                                   #
-#                                                                             #
-#    This script generates YETI alias files.  Alias files contain a list of   #
-#  definitions for command aliases that are written in the specified shell    #
-#  dialect (such as bash or perl) and which are additionally tailored for the #
-#  operating system to be used.                                               #
-#                                                                             #
-###############################################################################
-#  This program is free software; you can redistribute it and/or modify it    #
-#  under the terms of the GNU General Public License as published by the Free #
-#  Software Foundation; either version 2 of the License or (at your option)   #
-#  any later version.  See: "http://www.gruntose.com/Info/GNU/GPL.html" for a #
-#  version of the License.  Please send any updates to "fred@gruntose.com".   #
-###############################################################################
+##############
+#
+#  Name   : generate_aliases
+#  Author : Chris Koeritz
+#  Rights : Copyright (C) 1996-$now by Author
+#
+#  Purpose:
+#
+#    This script generates YETI alias files.  Alias files contain a list of
+#  definitions for command aliases that are written in the specified shell
+#  dialect (such as bash or perl) and which are additionally tailored for the
+#  operating system to be used.
+#
+##############
+#  This program is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU General Public License as published by the Free
+#  Software Foundation; either version 2 of the License or (at your option)
+#  any later version.  See: "http://www.gruntose.com/Info/GNU/GPL.html" for a
+#  version of the License.  Please send any updates to "fred@gruntose.com".
+##############
 
 require "importenv.pl";
 
