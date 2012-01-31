@@ -2,6 +2,8 @@
 
 # this program is run in the background to show a bye message on the console.
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
 export LIGHTWEIGHT_INIT=true  # make sure we just get our variables.
 source $HOME/yeti/scripts/launch_feisty_meow.sh
 export host=$(hostname)

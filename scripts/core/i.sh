@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
 (
 echo '###############################################################################'
 echo

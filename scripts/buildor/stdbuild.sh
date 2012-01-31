@@ -5,6 +5,8 @@
 #
 # go to the main folder of the project you're building before you run this.
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
 echo "$(date_stringer)"
 echo "Building application from $(\pwd)"
 echo "    via standard 'configure;make;sudo make install' process..."

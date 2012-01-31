@@ -1,6 +1,8 @@
 #!/bin/bash
 # a simple script that backs up the opensim database assets.
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
 host=$(echo $(hostname) | sed -e 's/\([^.]*\)\..*/\1/')
 
 bkupname=opensim_bkup_${host}_$(date_stringer).mysql_bkup

@@ -2,6 +2,8 @@
 
 # Thanks to Kevin Wika for this shell.
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
 trap '' HUP
 trap '' INT
 trap '' QUIT

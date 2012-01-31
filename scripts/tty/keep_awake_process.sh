@@ -2,6 +2,8 @@
 # This program is meant to be started by the program keep_awake and has
 # the basic guts that are meant to execute inside of a semi-perpetual loop.
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
 # save the process id for the goodbye program to deal with.
 #echo $$ >>$TMP/trash.last_keep_awake_process
 #don't let the shutdown guy know who we are; we want to keep running now.
