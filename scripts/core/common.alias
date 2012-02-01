@@ -38,8 +38,6 @@ alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias ren='\mv -v -i '
 alias up='cd ..'
 alias whence=which
-alias xterm='xterm $myxtermflags'
-alias xtroff='xtroff $myxflags'
 
 #hmmm: move these to the custom area?
 # Standard CAK aliases that add to or extend Unix commands.
@@ -70,9 +68,9 @@ alias whereami='echo whoa dude, try not to think about it...'
 alias why='echo just because.'
 
 # call the generated aliases file, if it exists.
-if [ -f "$FEISTY_MEOW_GENERATED/p_alias.sh" ]; then 
+if [ -f "$FEISTY_MEOW_GENERATED/aliases_for_scripts.sh" ]; then 
   if [ ! -z "$SHELL_DEBUG" ]; then echo launching generated aliases.; fi
-  source $FEISTY_MEOW_GENERATED/p_alias.sh
+  source "$FEISTY_MEOW_GENERATED/aliases_for_scripts.sh"
   if [ ! -z "$SHELL_DEBUG" ]; then echo done with generated aliases.; fi
 fi
 

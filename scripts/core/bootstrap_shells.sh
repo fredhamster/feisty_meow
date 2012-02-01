@@ -13,21 +13,10 @@ ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && \pwd )"
 YETI_CORE_SCRIPTS_DIR="$(echo "$ORIGINATING_FOLDER" | tr '\\\\' '/' )"
 THIS_TOOL_NAME="$(basename "$0")"
 
-## check this scripts directory; do we find this script there?
-#pushd "/" &>/dev/null  # jump to root so relative paths have to fail.
-#if [ ! -f "$YETI_CORE_SCRIPTS_DIR/$THIS_TOOL_NAME" ]; then
-#  echo "This script must be run using its full pathname.  This enables the script to"
-#  echo "locate the proper folders.  Please try again with the full path, e.g.:"
-#  echo "    bash /home/fred/codeplex/$THIS_TOOL_NAME"
-#  exit 1
-#fi
-#popd &>/dev/null
-
 # set up the feisty_meow dir.
 pushd "$YETI_CORE_SCRIPTS_DIR/../.." &>/dev/null
 export FEISTY_MEOW_DIR="$(pwd)"
 popd &>/dev/null
-#echo feisty_meow is $FEISTY_MEOW_DIR
 
 export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"
 

@@ -99,18 +99,16 @@ if (-d $BINDIR) {
 ##############
 
 system("bash \"$FEISTY_MEOW_SCRIPTS\"/core/unter_alia.sh");
-  # generate the first set of alias files; these are the root files used
-  # by the shell.  each of them will be written to in turn invoke the
-  # p_alias files which are made from the set of scripts in FEISTY_MEOW_SCRIPTS
-  # (see below).
+  # generate the first set of alias files that are defined in the core
+  # and custom scripts directories.
 
 # trash the old versions.
-unlink("$FEISTY_MEOW_GENERATED/p_alias.sh");
+unlink("$FEISTY_MEOW_GENERATED/aliases_for_scripts.sh");
 
-printf "writing $FEISTY_MEOW_GENERATED/p_alias.sh...\n";
+printf "writing $FEISTY_MEOW_GENERATED/aliases_for_scripts.sh...\n";
 
 # open the alias files to be created.
-open(she, ">> $FEISTY_MEOW_GENERATED/p_alias.sh");
+open(she, ">> $FEISTY_MEOW_GENERATED/aliases_for_scripts.sh");
 
 #print "os is $OS\n";
 

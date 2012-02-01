@@ -10,7 +10,7 @@
 
 ##############
 
-export SHELL_DEBUG=true
+#export SHELL_DEBUG=true
   # this variable causes the scripts that listen to it to print more information
   # when they run.
 
@@ -75,7 +75,7 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
     if [ ! -z "$SHELL_DEBUG" ]; then
       echo the aliases were missing, now they are added...
     fi
-    source $FEISTY_MEOW_GENERATED/aliases.sh
+    source "$FEISTY_MEOW_GENERATED/core_and_custom_aliases.sh"
   fi
 
   # allow connections to our x server from the local host.

@@ -2,6 +2,11 @@
 #
 # Provides functions for checking and sorting the contents of arrays.
 
+
+#hmmm: these could all be beefed up by properly handling spaces in array
+#      entries.  use "${blah[@]}" rather than '*' for getting all elems.
+
+
 # given the name of an array as the first parameter, this signals
 # success (return value zero) if the second parameter is found in the
 # array.  failure (non-zero return) occurs if the item is missing.

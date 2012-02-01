@@ -29,7 +29,7 @@ done
 
 # write the aliases for sh and bash scripts.
 
-GENERATED_ALIAS_FILE="$FEISTY_MEOW_GENERATED/aliases.sh"
+GENERATED_ALIAS_FILE="$FEISTY_MEOW_GENERATED/core_and_custom_aliases.sh"
 echo "writing generated aliases in $GENERATED_ALIAS_FILE..."
 
 #hmmm: perhaps a good place for a function to create the header,
