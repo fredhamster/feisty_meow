@@ -11,8 +11,9 @@
 #   export NAME='Doodmodeus Q. Nornberton'
 
 # don't bother running our stuff for a dumb terminal since any echo
-# can mess with an sftp connection, apparently.
-if [ ${TERM} != "dumb" ]; then
+# can mess with an sftp or scp connection, apparently.  similarly, we
+# don't want any automatic startup stuff if we are running under PBS.
+if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
   # sets up the feisty_meow scripts, using the default locations for all scripts.
   source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
 fi

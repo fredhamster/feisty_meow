@@ -15,9 +15,8 @@
 # add in some useful paths for the local machine.
 export PATH=/bin:$PATH:/c/utilities/emacs-23.2/bin:/c/tools/cvsnt:/c/utilities/Vim/vim71:/c/system/Perl/site/bin:/c/system/Perl/bin:/c/tools/doxygen/bin:/c/tools/graphviz/Graphviz/bin
 
-#export FEISTY_MEOW_DIR="$HOME/feisty_meow"
-
-# sets up the feisty_meow scripts, using the default locations for all scripts.
-source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
+if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
+  source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
+fi
 
 
