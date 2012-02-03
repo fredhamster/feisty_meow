@@ -11,6 +11,6 @@ alias refred='(chown -R fred:fred /home/fred /usr/local/games /home/archives /fa
 
 # redoes my custom scripts.  kind of a bummer if i mistakenly made
 # modifications in the un-saved custom directory itself.
-alias recustom='cpdiff $FEISTY_MEOW_SCRIPTS/examples/custom_overrides/fred $FEISTY_MEOW_SCRIPTS/custom'
+alias recustomize='cpdiff $FEISTY_MEOW_SCRIPTS/examples/custom_overrides/fred $FEISTY_MEOW_SCRIPTS/custom'
 
 
