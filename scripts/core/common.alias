@@ -31,6 +31,8 @@ alias path='echo $PATH'
 alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
+# redoes fred's set of custom scripts.
+alias recustomize='cpdiff $FEISTY_MEOW_SCRIPTS/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom'
 #regen-- this might be better as a function.
 alias regenerate='bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh ; echo ; nechung'
 alias reroot='chown -R root:root /root'
@@ -68,9 +70,9 @@ alias whereami='echo whoa dude, try not to think about it...'
 alias why='echo just because.'
 
 # call the generated aliases file, if it exists.
-if [ -f "$FEISTY_MEOW_GENERATED/aliases_for_scripts.sh" ]; then 
+if [ -f "$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh" ]; then 
   if [ ! -z "$SHELL_DEBUG" ]; then echo launching generated aliases.; fi
-  source "$FEISTY_MEOW_GENERATED/aliases_for_scripts.sh"
+  source "$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh"
   if [ ! -z "$SHELL_DEBUG" ]; then echo done with generated aliases.; fi
 fi
 

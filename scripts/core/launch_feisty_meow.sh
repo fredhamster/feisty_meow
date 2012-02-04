@@ -26,7 +26,7 @@ if [ ! -z "$WINDIR" -o ! -z "$windir" ]; then
 fi
 
 # make sure our main variables are established.
-GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/feisty_meow_variables.sh"
+GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/fmc_variables.sh"
 if [ ! -f "$GENERATED_FEISTY_MEOW_VARIABLES" ]; then
   echo -e '\n\n'
   echo "The yeti scripts need to be initialized via the bootstrap process, e.g.:"
@@ -75,7 +75,7 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
     if [ ! -z "$SHELL_DEBUG" ]; then
       echo the aliases were missing, now they are added...
     fi
-    source "$FEISTY_MEOW_GENERATED/core_and_custom_aliases.sh"
+    source "$FEISTY_MEOW_GENERATED/fmc_core_and_custom_aliases.sh"
   fi
 
   # allow connections to our x server from the local host.

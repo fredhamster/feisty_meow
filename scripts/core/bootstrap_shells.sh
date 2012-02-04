@@ -29,9 +29,12 @@ fi
 if [ ! -d "$FEISTY_MEOW_GENERATED" ]; then
   mkdir "$FEISTY_MEOW_GENERATED"
 fi
+if [ ! -d "$FEISTY_MEOW_GENERATED/custom" ]; then
+  mkdir "$FEISTY_MEOW_GENERATED/custom"
+fi
 
 # just a variable we use in here to refer to the generated variables file.
-GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/feisty_meow_variables.sh"
+GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/fmc_variables.sh"
 # create the alias file as totally blank.
 echo -n >"$GENERATED_FEISTY_MEOW_VARIABLES"
 for i in FEISTY_MEOW_DIR FEISTY_MEOW_SCRIPTS FEISTY_MEOW_GENERATED; do

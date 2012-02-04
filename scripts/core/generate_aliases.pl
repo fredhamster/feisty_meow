@@ -103,12 +103,12 @@ system("bash \"$FEISTY_MEOW_SCRIPTS\"/core/unter_alia.sh");
   # and custom scripts directories.
 
 # trash the old versions.
-unlink("$FEISTY_MEOW_GENERATED/aliases_for_scripts.sh");
+unlink("$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
 
-printf "writing $FEISTY_MEOW_GENERATED/aliases_for_scripts.sh...\n";
+printf "writing $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh...\n";
 
 # open the alias files to be created.
-open(she, ">> $FEISTY_MEOW_GENERATED/aliases_for_scripts.sh");
+open(she, ">> $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
 
 #print "os is $OS\n";
 

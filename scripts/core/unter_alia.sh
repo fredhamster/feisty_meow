@@ -5,7 +5,8 @@
 # The "common.alias" file is used in the generated aliases file as a base
 # set of generally useful aliases.  We also add aliases for any script files
 # (perl, bash, python, etc) that we find in the feisty meow script hierarchy.
-# Any *.alias files found in the scripts/custom folder are loaded also.
+# Any *.alias files found in the $FEISTY_MEOW_GENERATED/custom folder are
+# loaded also.
 
 if [ ! -z "$SHELL_DEBUG" ]; then echo rebuiling generated aliases file...; fi
 
@@ -19,7 +20,7 @@ test_color=$(ls --help 2>&1 | grep -i color)
 ALIAS_DEFINITION_FILES=("$FEISTY_MEOW_SCRIPTS/core/common.alias")
 
 # if custom aliases files exist, add them to the list.
-for i in "$FEISTY_MEOW_SCRIPTS/custom/*.alias"; do
+for i in "$FEISTY_MEOW_GENERATED/custom/*.alias"; do
   ALIAS_DEFINITION_FILES+=("$i")
 done
 echo "alias files:"
@@ -29,7 +30,7 @@ done
 
 # write the aliases for sh and bash scripts.
 
-GENERATED_ALIAS_FILE="$FEISTY_MEOW_GENERATED/core_and_custom_aliases.sh"
+GENERATED_ALIAS_FILE="$FEISTY_MEOW_GENERATED/fmc_core_and_custom_aliases.sh"
 echo "writing generated aliases in $GENERATED_ALIAS_FILE..."
 
 #hmmm: perhaps a good place for a function to create the header,
