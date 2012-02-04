@@ -38,6 +38,8 @@ export VISUAL=$(which vim)
 # special settings for win32 and svn.
 if [ "$OS" == "Windows_NT" ]; then
   export EDITOR=$(which gvim)
+else
+  export EDITOR=$(which vi)
 fi
 
 # this hideous mess is necessitated by our not having found the source of the

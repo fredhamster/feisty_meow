@@ -31,6 +31,9 @@ if [ ! -d "$JAVA_HOME" ]; then
   export JAVA_HOME=/usr/lib/jvm/java-6-sun/jre
 fi
 if [ ! -d "$JAVA_HOME" ]; then
+  export JAVA_HOME=/usr/lib/jvm/java-7-oracle/jre
+fi
+if [ ! -d "$JAVA_HOME" ]; then
   # try using a windows version.
 #note: this logic is untested.
 # probably will break due to space in path issues.
