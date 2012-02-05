@@ -1,10 +1,10 @@
-#! shell name (fix this)
+#!/shell/name (replace this)
 ####
 # Name   : {script name}
 # Author : {your name}
-# Rights : Copyright (C) 2011-$now by Author
+# Rights : Copyright (C) 2012-$now by Author
 ####
-# Copyright (c) 2011-$now By Author.  This script is free software; you can redistribute it and/or
+# Copyright (c) 2012-$now By Author.  This script is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as published by the Free Software
 # Foundation: http://www.gnu.org/licenses/gpl.html  or under the terms of the GNU Library license:
 # http://www.gnu.org/licenses/lgpl.html  at your preference.  Those licenses describe your legal
