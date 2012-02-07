@@ -69,14 +69,30 @@ export FEISTY_MEOW_DIR
 ifeq "$(FEISTY_MEOW_DIR)" ""
 #  FEISTY_MEOW_DIR = 
 #uhhh, use the current location?
+#currently we rely on this being set from shell bootstrapping.  is that bad?
+endif
+
+# "FEISTY_MEOW_SCRIPTS" is the root location of our scripts.  we expect to
+# be able to find a few things there reliably.
+export FEISTY_MEOW_SCRIPTS
+ifeq "$(FEISTY_MEOW_SCRIPTS)" ""
+  export FEISTY_MEOW_SCRIPTS := $(FEISTY_MEOW_DIR)/scripts
+endif
+
+# "PRODUCTION_DIR" is where the built products will be stored, plus any
+# temporary files that are generated during the build.
+export PRODUCTION_DIR
+ifeq "$(PRODUCTION_DIR)" ""
+  PRODUCTION_DIR=$(FEISTY_MEOW_DIR)/production
 endif
 
 # "CLAM_DIR" points at where the CLAM source files are located.  this is needed
 # for finding shell scripts used during compilation.  if you are not using the
 # standard CLAM location, then modify this appropriately.
 export CLAM_DIR
-# must be set externally!
-#export CLAM_DIR := $(FEISTY_MEOW_SCRIPTS)/clam
+ifeq "$(CLAM_DIR)" ""
+  export CLAM_DIR := $(FEISTY_MEOW_SCRIPTS)/clam
+endif
 
 # "TARGETS_DIR" is where all generated files will end up.  Usually the
 # files are put in a subdirectory named after their file type, such as

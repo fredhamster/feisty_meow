@@ -1,36 +1,36 @@
-###############################################################################
-#                                                                             #
-#  Name   : build variable calculator                                         #
-#  Author : Chris Koeritz                                                     #
-#                                                                             #
-#  Purpose:                                                                   #
-#                                                                             #
-#    This script sets up all the variables needed by the HOOPLE system for    #
-#  building the source code.  It can either be run as a bash script directly  #
-#  like so:                                                                   #
-#                                                                             #
-#      bash ~/feisty_meow/scripts/generator/build_variables.sh                #
-#                                                                             #
-#  which will establish a new shell containing all the variables, or you can  #
-#  'source' the script like so:                                               #
-#                                                                             #
-#      build_vars=~/feisty_meow/scripts/generator/build_variables.sh          #
-#      source $build_vars $build_vars                                         #
-#                                                                             #
-#  to set all of the variables in your current shell.  The full path is       #
-#  necessary in these commands to allow the script to easily find itself.     #
-#  The 'source' version needs to be fed the actual path to the script         #
-#  because bash 'source' commands cause the first parameter (called $0) to    #
-#  be set to just the path to bash itself.                                    #
-#                                                                             #
-###############################################################################
-# Copyright (c) 2004-$now By Author.  This program is free software; you can  #
-# redistribute it and/or modify it under the terms of the GNU General Public  #
-# License as published by the Free Software Foundation; either version 2 of   #
-# the License or (at your option) any later version.  This is online at:      #
-#     http://www.fsf.org/copyleft/gpl.html                                    #
-# Please send any updates to: fred@gruntose.com                               #
-###############################################################################
+##############
+#
+#  Name   : build variable calculator
+#  Author : Chris Koeritz
+#
+#  Purpose:
+#
+#    This script sets up all the variables needed by the HOOPLE system for
+#  building the source code.  It can either be run as a bash script directly
+#  like so:
+#
+#      bash ~/feisty_meow/scripts/generator/build_variables.sh
+#
+#  which will establish a new shell containing all the variables, or you can
+#  'source' the script like so:
+#
+#      build_vars=~/feisty_meow/scripts/generator/build_variables.sh
+#      source $build_vars $build_vars
+#
+#  to set all of the variables in your current shell.  The full path is
+#  necessary in these commands to allow the script to easily find itself.
+#  The 'source' version needs to be fed the actual path to the script
+#  because bash 'source' commands cause the first parameter (called $0) to
+#  be set to just the path to bash itself.
+#
+##############
+# Copyright (c) 2004-$now By Author.  This program is free software; you can
+# redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation; either version 2 of
+# the License or (at your option) any later version.  This is online at:
+#     http://www.fsf.org/copyleft/gpl.html
+# Please send any updates to: fred@gruntose.com
+##############
 
 # prerequisites for this script:
 #
@@ -69,11 +69,11 @@ function dos_to_msys_path() {
 #        of dos to msys etc live.
 # test suite for above functions.
 #echo this should go from msys to dos:
-#  prior='/c/bogart\dingle'
+#  prior='/c/bogart\dongle'
 #  latter=$(msys_to_dos_path "$prior")
 #  echo went from $prior to $latter
 #echo this should go from dos to msys:
-#  prior='D:\bogart\dingle'
+#  prior='D:\bogart\dongle'
 #  latter=$(dos_to_msys_path "$prior")
 #  echo went from $prior to $latter
 
@@ -91,12 +91,13 @@ else
   THIS_TOOL_NAME="$(basename "$PARM_0")"
 #echo bashed version buildscriptsdir is $BUILD_SCRIPTS_DIR
 fi
-BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
-#echo post tr buildscriptsdir is $BUILD_SCRIPTS_DIR
+BUILD_SCRIPTS_DIR="$(cd $(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' ); \pwd)"
+#echo ">> buildscriptsdir is $BUILD_SCRIPTS_DIR"
 
 # figure out the other paths based on where we found this script.
 export BUILDING_HIERARCHY="$(echo "$BUILD_SCRIPTS_DIR" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
-export CLAM_DIR="$BUILD_SCRIPTS_DIR/../clam"
+export CLAM_DIR="$(cd $BUILD_SCRIPTS_DIR/../clam ; \pwd)"
+#echo ">> clamdir is $CLAM_DIR"
 # synonym to make other builds happy.
 export BUILDER_DIR="$BUILDING_HIERARCHY"
 

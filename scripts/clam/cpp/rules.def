@@ -691,7 +691,6 @@ else
 	-$(HIDESH)$(CLAM_DIR)/cpp/preconditions.sh
 	@touch $@
 #	@echo dep adds: $(DEPENDENCY_ADDITIONS)
-	@echo clam bin here is $(CLAM_BIN)
 	@$(CLAM_BIN)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
 #	$(CATCHER)$(CLAM_BIN)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
 	@echo $@ >$(SUBMAKE_FLAG)
