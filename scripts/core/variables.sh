@@ -107,16 +107,29 @@ export PERLLIB
 if [ "$OS" != "Windows_NT" ]; then
   PERLLIB+="/usr/lib/perl5"
 else
+
 #echo "the scripts dir is $FEISTY_MEOW_SCRIPTS"
-  FEISTY_MEOW_SCRIPTS="$(echo $FEISTY_MEOW_SCRIPTS | sed -e 's/\\/\//g')"
-  FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
+#  FEISTY_MEOW_SCRIPTS="$(echo $FEISTY_MEOW_SCRIPTS | sed -e 's/\\/\//g')"
+#  FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
 #echo "the scripts dir is now $FEISTY_MEOW_SCRIPTS"
+
   export PERLIO=:perlio
-    # choose perl's IO over the system's so we can handle file bytes exactly.
+    # choose perl's IO over the ms-windows version so we can handle file
+    # bytes properly.
 fi
 
-#make this automatic!
-PERLLIB+=":$FEISTY_MEOW_SCRIPTS/core:$FEISTY_MEOW_SCRIPTS/text:$FEISTY_MEOW_SCRIPTS/files:$FEISTY_MEOW_SCRIPTS/archival"
+# iterate across our sub-directories and find the perl scripts.
+# this currently only looks one level down.
+for i in $FEISTY_MEOW_SCRIPTS/*; do
+  if [ -d "$i" ]; then
+    # check if there is a perl file present; add the folder to PERLLIB if so.
+    ls $i/*.pl &>/dev/null
+    if [ $? -eq 0 ]; then
+      PERLLIB+=":$i"
+    fi
+  fi
+done
+#echo PERLLIB is now $PERLLIB
 
 # set this so nechung can find its data.
 export NECHUNG=$LIBDIR/database/fortunes.dat

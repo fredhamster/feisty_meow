@@ -130,7 +130,7 @@ print "made gener dir $FEISTY_MEOW_GENERATED\n";
   foreach $i (@ALIAS_DEFINITION_FILES) {
     open CURR_ALIASER, "<$i" or die "cannot open current alias file $i";
     foreach $line (<CURR_ALIASER>) {
-      print GENOUT "$line\n";
+      print GENOUT "$line";
     }
   }
 
@@ -170,11 +170,9 @@ if (-d $BINDIR) {
   system("chmod -R u+x \"$BINDIR\"/*");
 }
 
-
 # generate the first set of alias files that are defined in the core
 # and custom scripts directories.
 &rebuild_script_aliases;
-###system("bash \"$FEISTY_MEOW_SCRIPTS\"/core/unter_alia.sh");
 
 # trash the old versions.
 unlink("$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");

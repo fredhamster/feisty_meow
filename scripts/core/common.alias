@@ -49,7 +49,7 @@ alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
 
 # redoes fred's set of custom scripts.
-alias recustomize='cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom'
+alias recustomize='cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom; regenerate'
 # makes root user's home directory's permissions right.
 alias reroot='chown -R root:root /root'
 
@@ -79,9 +79,9 @@ alias why='echo just because.'
 
 # call the generated aliases file, if it exists.
 if [ -f "$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh" ]; then 
-  if [ ! -z "$SHELL_DEBUG" ]; then echo launching generated aliases.; fi
+  if [ ! -z "$SHELL_DEBUG" ]; then echo loading script aliases...; fi
   source "$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh"
-  if [ ! -z "$SHELL_DEBUG" ]; then echo done with generated aliases.; fi
+  if [ ! -z "$SHELL_DEBUG" ]; then echo done loading script aliases.; fi
 fi
 
 # remove the fredization macro if it was defined, helping to avoid running
