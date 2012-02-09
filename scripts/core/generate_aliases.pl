@@ -113,7 +113,7 @@ print "made gener dir $FEISTY_MEOW_GENERATED\n";
 #hmmm: perhaps a good place for a function to create the header,
 #      given the appropriate comment code.
 
-  open GENOUT, ">>$GENERATED_ALIAS_FILE" or die "cannot open $GENERATED_ALIAS_FILE";
+  open GENOUT, ">$GENERATED_ALIAS_FILE" or die "cannot open $GENERATED_ALIAS_FILE";
 
   print GENOUT "##\n";
   print GENOUT "## generated file: $GENERATED_ALIAS_FILE\n";
