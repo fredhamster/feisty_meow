@@ -1,7 +1,20 @@
+#!/bin/bash
+##############
+# Name   : common.alias
+# Author : Chris Koeritz
+# Rights : Copyright (C) 1988-$now by Author
+##############
+# This script is free software; you can modify/redistribute it under the terms
+# of the GNU General Public License. [ http://www.gnu.org/licenses/gpl.html ]
+# Feel free to send updates to: [ fred@gruntose.com ]
+##############
+
 # common aliases for feisty_meow are located here.
 # most of these should work in any bash environment...
 # although some may require more than bash, like the aliases
 # that invoke perl scripts.
+
+##############
 
 # repurposes certain commands that feisty meow does a little differently.
 alias cls='clear_colormap; clear'
@@ -14,6 +27,24 @@ alias df='\df -m'
 alias dir='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
 alias du='\du -h'
 alias erase='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
+# elaborate replacement for explorer command, which we shorten to exp.
+if [ "$OS" != "Windows_NT" ]; then
+  if [ -n "$IS_DARWIN" ]; then
+    # case for mac os x.
+    alias exp='open'
+  elif [ ! -z "$(which nautilus)" ]; then
+    # we prefer nautilus if available.
+    alias exp='nautilus'
+  else
+    # last ditch is konqueror browser.
+    alias exp='konqueror'
+  fi
+else
+  # windows gets routed to our helpful script instead.
+  alias exp="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
+fi
+# re-use work we did on 'exp' macro for longer command.
+alias explorer=exp
 alias l='\ls -FC $color_add'
 alias ls='\ls -FC $color_add'
 alias lsd='ls -l'
@@ -21,12 +52,16 @@ alias md='mkdir'
 alias more='less'
 alias move='mv -i -v '
 alias mv='\mv -i -v '
+alias notepad='gedit'
+alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
 alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 alias ren='\mv -v -i '
 alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 alias path='echo $PATH'
 alias whence=which
+
+##############
 
 # some aliases that are just generally nice to have.
 alias aliases=alias
@@ -39,43 +74,34 @@ alias mo='less'
 alias np='gvim'
 alias up='cd ..'
 
+##############
+
 # extended aliases for meta-operations.
 alias dvd_rip='vobcopy -m'
 alias mplayer='\mplayer -ao arts'
 alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 
+##############
+
 # some really eccentric feisty meow aliases...
 
+# says goodbye when leaving a shell.
 alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
-
 # redoes fred's set of custom scripts.
 alias recustomize='cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom; regenerate'
 # makes root user's home directory's permissions right.
 alias reroot='chown -R root:root /root'
-
-#hmmm: move these to the custom area?
-if [ "$OS" != "Windows_NT" ]; then
-  if [ -n "$IS_DARWIN" ]; then
-    # case for mac os x.
-    alias exp='open'
-  elif [ ! -z "$(which nautilus)" ]; then
-    alias exp='nautilus'
-  else
-#check if konqueror exists also?  fall back to uhhh midnight cmdr?
-    alias exp='konqueror'
-  fi
-else
-  alias explorer="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
-  alias exp="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
-fi
-alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
-alias notepad='gedit'
+# replace the vi command with a graphical version on windows.
 if [ "$OS" = "Windows_NT" ]; then
-  # aliases we only use on the winders side.
   alias vi='gvim'
 fi
+# yes, these are really helpful...
 alias whereami='echo whoa dude, try not to think about it...'
 alias why='echo just because.'
+
+# done with loading up regular aliases now...
+
+##############
 
 # call the generated aliases file, if it exists.
 if [ -f "$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh" ]; then 
@@ -84,8 +110,12 @@ if [ -f "$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh" ]; then
   if [ ! -z "$SHELL_DEBUG" ]; then echo done loading script aliases.; fi
 fi
 
+##############
+
 # remove the fredization macro if it was defined, helping to avoid running
 # the shell scripts twice for users like root that don't always load this
 # stuff.
-unalias fredme >/dev/null 2>&1
+unalias fredme &>/dev/null
+
+##############
 
