@@ -86,6 +86,10 @@ fi
 
 # pull in the custom overrides for feisty_meow scripts.
 for i in $FEISTY_MEOW_GENERATED/custom/*.sh; do
+  if [ ! -f "$i" ]; then
+    # skip it if it's not real.
+    continue;
+  fi
   if [ ! -z "$SHELL_DEBUG" ]; then
     echo "loading customization: $(basename $(dirname $i))/$(basename $i)"
   fi

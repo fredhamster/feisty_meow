@@ -21,7 +21,9 @@ ALIAS_DEFINITION_FILES=("$FEISTY_MEOW_SCRIPTS/core/common.alias")
 
 # if custom aliases files exist, add them to the list.
 for i in "$FEISTY_MEOW_GENERATED/custom/*.alias"; do
-  ALIAS_DEFINITION_FILES+=("$i")
+  if [ -f "$i" ]; then
+    ALIAS_DEFINITION_FILES+=("$i")
+  fi
 done
 echo "alias files:"
 for i in "${ALIAS_DEFINITION_FILES[@]}"; do
