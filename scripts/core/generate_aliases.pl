@@ -21,6 +21,8 @@
 #  version of the License.  Please send any updates to "fred@gruntose.com".
 ##############
 
+require "filename_helper.pl";
+
 require "importenv.pl";
 
 # given a possible aliasable filename, this will decide whether to create a perl
@@ -69,6 +71,78 @@ sub load_file_names {
 
 ##############
 
+# The "common.alias" file is used in the generated aliases file as a base
+# set of generally useful aliases.  We also add aliases for any script files
+# (perl, bash, python, etc) that we find in the feisty meow script hierarchy.
+# Any *.alias files found in the $FEISTY_MEOW_GENERATED/custom folder are
+# loaded also.
+sub rebuild_script_aliases {
+
+  if (length($SHELL_DEBUG)) {
+    print "rebuiling generated aliases file...\n";
+  }
+
+  # create our generated shells directory if it's not already.
+  if ( ! -d $FEISTY_MEOW_GENERATED ) {
+    mkdir $FEISTY_MEOW_GENERATED;
+print "made gener dir $FEISTY_MEOW_GENERATED\n";
+  }
+
+  # test if we can use color in ls...
+  $test_color=` ls --help 2>&1 | grep -i color `;
+
+  # this is an array of files from which to draw alias definitions.
+  @ALIAS_DEFINITION_FILES = ("$FEISTY_MEOW_SCRIPTS/core/common.alias");
+
+  # if custom aliases files exist, add them to the list.
+  foreach $i (&glob_list("$FEISTY_MEOW_GENERATED/custom/*.alias")) {
+    if (-f $i) { push(@ALIAS_DEFINITION_FILES, $i); }
+  }
+  print "alias files:\n";
+  foreach $i (@ALIAS_DEFINITION_FILES) {
+    local $base_of_dir = &basename(&dirname($i));
+    local $basename = &basename($i);
+    print "  $base_of_dir/$basename\n";
+  }
+
+  # write the aliases for sh and bash scripts.
+
+  local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_GENERATED/fmc_core_and_custom_aliases.sh";
+  print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";
+
+#hmmm: perhaps a good place for a function to create the header,
+#      given the appropriate comment code.
+
+  open GENOUT, ">>$GENERATED_ALIAS_FILE" or die "cannot open $GENERATED_ALIAS_FILE";
+
+  print GENOUT "##\n";
+  print GENOUT "## generated file: $GENERATED_ALIAS_FILE\n";
+  print GENOUT "## please do not edit.\n";
+  print GENOUT "##\n";
+
+  if (length($test_color)) {
+    print GENOUT "color_add=--color=auto\n";
+  } else {
+    print GENOUT "color_add=\n";
+  }
+
+  # plow in the full set of aliases into the file.
+  foreach $i (@ALIAS_DEFINITION_FILES) {
+    open CURR_ALIASER, "<$i" or die "cannot open current alias file $i";
+    foreach $line (<CURR_ALIASER>) {
+      print GENOUT "$line\n";
+    }
+  }
+
+  close GENOUT;
+
+  if (length($SHELL_DEBUG)) {
+    print("done rebuiling generated aliases file.\n");
+  }
+}
+
+##############
+
 # make sure we know where to store the files we're creating.
 if ( ! length("$FEISTY_MEOW_GENERATED") ) {
   print "\
@@ -96,11 +170,11 @@ if (-d $BINDIR) {
   system("chmod -R u+x \"$BINDIR\"/*");
 }
 
-##############
 
-system("bash \"$FEISTY_MEOW_SCRIPTS\"/core/unter_alia.sh");
-  # generate the first set of alias files that are defined in the core
-  # and custom scripts directories.
+# generate the first set of alias files that are defined in the core
+# and custom scripts directories.
+&rebuild_script_aliases;
+###system("bash \"$FEISTY_MEOW_SCRIPTS\"/core/unter_alia.sh");
 
 # trash the old versions.
 unlink("$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");

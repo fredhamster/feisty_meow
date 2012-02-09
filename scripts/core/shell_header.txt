@@ -1,4 +1,6 @@
-#!/shell/name (replace this)
+#!/bin/bash
+#!/usr/bin/perl
+#!/usr/bin/python
 ####
 # Name   : {script name}
 # Author : {your name}
