@@ -1,16 +1,13 @@
 #!/bin/bash
 #!/usr/bin/perl
 #!/usr/bin/python
-####
+##############
 # Name   : {script name}
 # Author : {your name}
 # Rights : Copyright (C) 2012-$now by Author
-####
-# Copyright (c) 2012-$now By Author.  This script is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as published by the Free Software
-# Foundation: http://www.gnu.org/licenses/gpl.html  or under the terms of the GNU Library license:
-# http://www.gnu.org/licenses/lgpl.html  at your preference.  Those licenses describe your legal
-# rights to this software, and no other rights or warranties apply.
-# Feel free to send updated versions of this code to: [ fred@gruntose.com ]  -- Thanks, fred.
-####
+##############
+# This script is free software; you can modify/redistribute it under the terms
+# of the GNU General Public License. [ http://www.gnu.org/licenses/gpl.html ]
+# Feel free to send updates to: [ fred@gruntose.com ]
+##############
 
