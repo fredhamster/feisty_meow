@@ -1,12 +1,10 @@
 # common aliases for feisty_meow are located here.
-# most should work in any bash environment.
+# most of these should work in any bash environment...
+# although some may require more than bash, like the aliases
+# that invoke perl scripts.
 
-alias aliases=alias
-#alias arch='if [ -f /bin/arch ]; then /bin/arch; else uname -m; fi' 
-alias cd..='\cd ..'
-alias cd...='\cd ../..'
-alias cd....='\cd ../../..'
-alias cd.....='\cd ../../../..'
+# repurposes certain commands that feisty meow does a little differently.
+alias cls='clear_colormap; clear'
 alias copy='\cp -i -v '
 alias cp='\cp -i -v '
 alias cvs='perl $FEISTY_MEOW_SCRIPTS/rev_control/cvs_fix.pl'
@@ -15,37 +13,47 @@ alias deltree='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias df='\df -m'
 alias dir='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
 alias du='\du -h'
-alias dvd_rip='vobcopy -m'
 alias erase='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias l='\ls -FC $color_add'
 alias ls='\ls -FC $color_add'
 alias lsd='ls -l'
 alias md='mkdir'
-alias mo='less'
 alias more='less'
 alias move='mv -i -v '
-alias mplayer='\mplayer -ao arts'
 alias mv='\mv -i -v '
-alias np='gvim'
-alias path='echo $PATH'
-alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
-alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
-# redoes fred's set of custom scripts.
-alias recustomize='cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom'
-#regen-- this might be better as a function.
-alias regenerate='bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh ; echo ; nechung'
-alias reroot='chown -R root:root /root'
-alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias ren='\mv -v -i '
-alias up='cd ..'
+alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
+alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
+alias path='echo $PATH'
 alias whence=which
 
-#hmmm: move these to the custom area?
-# Standard CAK aliases that add to or extend Unix commands.
-alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
+# some aliases that are just generally nice to have.
+alias aliases=alias
 alias calc='kcalc'
-alias cls='clear_colormap; clear'
+alias cd..='\cd ..'
+alias cd...='\cd ../..'
+alias cd....='\cd ../../..'
+alias cd.....='\cd ../../../..'
+alias mo='less'
+alias np='gvim'
+alias up='cd ..'
+
+# extended aliases for meta-operations.
+alias dvd_rip='vobcopy -m'
+alias mplayer='\mplayer -ao arts'
+alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
+
+# some really eccentric feisty meow aliases...
+
+alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
+
+# redoes fred's set of custom scripts.
+alias recustomize='cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom'
+# makes root user's home directory's permissions right.
+alias reroot='chown -R root:root /root'
+
+#hmmm: move these to the custom area?
 if [ "$OS" != "Windows_NT" ]; then
   if [ -n "$IS_DARWIN" ]; then
     # case for mac os x.

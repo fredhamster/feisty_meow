@@ -14,13 +14,13 @@ function date_stringer() {
 
 # makes a directory of the name specified and then tries to change the
 # current directory to that directory.
-function mcd {
+function mcd() {
   if [ ! -d "$1" ]; then mkdir -p "$1"; fi
   cd "$1"
 }
 
 # locates a process given a search pattern to match in the process list.
-function psfind {
+function psfind() {
   PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
   appropriate_pattern='s/^[-a-zA-Z_0-9][-a-zA-Z_0-9]*  *\([0-9][0-9]*\).*$/\1/p'
     # pattern to use for peeling off the process numbers.
@@ -45,7 +45,7 @@ function psfind {
 
 # finds all processes matching the pattern specified and shows their full
 # process listing (whereas psfind just lists process ids).
-function psa {
+function psa() {
   p=$(psfind "$1")
   if [ ! -z "$p" ]; then
     echo ""
@@ -87,13 +87,13 @@ function psa {
 # pcl.  if the input postscript causes ghostscript to bomb out, there has been
 # some good success running ps2ps on the input file and using the cleaned
 # postscript file for printing.
-function ps2pcl2lpr {
+function ps2pcl2lpr() {
   for $i in $*; do
     gs -sDEVICE=pcl3 -sOutputFile=- -sPAPERSIZE=letter "$i" | lpr -l 
   done
 }
 
-function fix_alsa {
+function fix_alsa() {
   sudo /etc/init.d/alsasound restart
 }
 
@@ -111,7 +111,7 @@ function dos_to_msys_path() {
 
 # su function: makes su perform a login.
 # for some OSes, this transfers the X authority information to the new login.
-function su {
+function su() {
   # decide if we think this is debian or ubuntu or a variant.
   DEBIAN_LIKE=$(if [ ! -z "$(grep -i debian /etc/issue)" \
       -o ! -z "$(grep -i ubuntu /etc/issue)" ]; then echo 1; else echo 0; fi)
@@ -143,7 +143,7 @@ function su {
 
 # sudo function wraps the normal sudo by ensuring we replace the terminal
 # label if they're doing an su with the sudo.
-function sudo {
+function sudo() {
   local first_command="$1"
   /usr/bin/sudo $*
   if [ "$first_command" == "su" ]; then
@@ -155,7 +155,7 @@ function sudo {
 # buntar is a long needed uncompressing macro that feeds into tar -x.
 # it takes a list of bz2 file names and extracts their contents into
 # sequentially numbered directories.
-function buntar {
+function buntar() {
   index=1
   for i in $*; do
     mkdir buntar_$index
@@ -174,10 +174,24 @@ function buntar {
 
 # trashes the .#blah files that cvs and svn leave behind when finding conflicts.
 # this kind of assumes you've already checked them for any salient facts.
-function clean_cvs_junk {
+function clean_cvs_junk() {
   for i in $*; do
     find $i -follow -type f -iname ".#*" -exec perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl {} ";" 
   done
+}
+
+# recreates all the generated files that the feisty meow scripts use.
+function regenerate() {
+  bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh
+  echo
+  local wheres_nechung=$(which nechung)
+  if [ -z "$wheres_nechung" ]; then
+    echo "The nechung oracle program cannot be found.  You may want to consider"
+    echo "rebuilding the feisty meow applications with this command:"
+    echo "   bash $FEISTY_MEOW_DIR/scripts/generator/bootstrap_build.sh"
+  else
+    nechung
+  fi
 }
 
 if [ ! -z "$SHELL_DEBUG" ]; then echo function definitions end....; fi
