@@ -40,8 +40,6 @@ local($snarf_file) = &snarf_name($base, $number);
 &backup_files($base, $number, $root, ".", ("*.html", "*.txt"));
 # backup all the hierarchies in our quartz directory.
 &backup_hierarchy($base, $number, "$root", "quartz");
-# grab all the state out of basketnotes's home directory.
-&backup_hierarchy($base, $number, "$root", ".kde/share/apps/basket");
 
 # gather any directories in our home that match these often recurring patterns.
 &snarf_by_pattern("$root", "notes");
