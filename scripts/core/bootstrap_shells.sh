@@ -22,10 +22,6 @@ export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"
 
 # FEISTY_MEOW_GENERATED is where the generated files feisty_meow uses are located.
 export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
-if [ ! -z "$WINDIR" -o ! -z "$windir" ]; then
-  # assume they are using windoze.
-  export FEISTY_MEOW_GENERATED="$TMP/zz_auto_gen"
-fi
 if [ ! -d "$FEISTY_MEOW_GENERATED" ]; then
   mkdir "$FEISTY_MEOW_GENERATED"
 fi

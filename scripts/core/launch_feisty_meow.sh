@@ -20,10 +20,6 @@
 # this is our single entry point we can use without knowing any variables
 # yet in the initialization process.
 export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
-if [ ! -z "$WINDIR" -o ! -z "$windir" ]; then
-  # assume they are using windoze.
-  export FEISTY_MEOW_GENERATED="$TMP/zz_auto_gen"
-fi
 
 # make sure our main variables are established.
 GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/fmc_variables.sh"
