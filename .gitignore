@@ -9,4 +9,5 @@ __build_configuration.h
 *.obj
 *_version.rc
 *_version.h
+Thumbs.db
 
