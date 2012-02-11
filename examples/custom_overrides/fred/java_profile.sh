@@ -31,6 +31,7 @@ if [ ! -d "$JAVA_HOME" ]; then
   export JAVA_HOME=/usr/lib/jvm/java-6-sun/jre
 fi
 if [ ! -d "$JAVA_HOME" ]; then
+  # try an even more recent version.
   export JAVA_HOME=/usr/lib/jvm/java-7-oracle/jre
 fi
 if [ ! -d "$JAVA_HOME" ]; then
@@ -59,8 +60,12 @@ if [ ! -d "$JAVA_HOME" ]; then
 fi
 # last thing is to tell them we couldn't find it.
 if [ ! -d "$JAVA_HOME" ]; then
-  intuition_failure JAVA_HOME
-  unset JAVA_BIN_PIECE
+  if [ ! -z "$(which java)" ]; then
+    echo "JAVA_HOME unknown, but java is in path."
+  else
+    intuition_failure JAVA_HOME
+    unset JAVA_BIN_PIECE
+  fi
 fi
 
 ############################
@@ -89,7 +94,13 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR="/e/tools/eclipse"
 fi
 # final option is to whine.
-if [ ! -d "$ECLIPSE_DIR" ]; then intuition_failure ECLIPSE_DIR; fi
+if [ ! -d "$ECLIPSE_DIR" ]; then
+  if [ ! -z "$(which eclipse)" ]; then
+    echo "ECLIPSE_DIR unknown, but eclipse is in path."
+  else
+    intuition_failure ECLIPSE_DIR;
+  fi
+fi
 
 ############################
 
