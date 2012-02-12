@@ -107,12 +107,6 @@ export PERLLIB
 if [ "$OS" != "Windows_NT" ]; then
   PERLLIB+="/usr/lib/perl5"
 else
-
-#echo "the scripts dir is $FEISTY_MEOW_SCRIPTS"
-#  FEISTY_MEOW_SCRIPTS="$(echo $FEISTY_MEOW_SCRIPTS | sed -e 's/\\/\//g')"
-#  FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
-#echo "the scripts dir is now $FEISTY_MEOW_SCRIPTS"
-
   export PERLIO=:perlio
     # choose perl's IO over the ms-windows version so we can handle file
     # bytes properly.
