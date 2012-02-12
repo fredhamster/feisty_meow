@@ -30,6 +30,10 @@ if [ -z "$HOME" ]; then
   fi
 fi
 
+##############
+
+# windoze specific stuff.
+
 # patch home to undo cygwin style of drive letter.
 export HOME=$(echo $HOME | sed -e 's/\/cygdrive\//\//g')
 #echo HOME is now $HOME
@@ -37,6 +41,8 @@ export HOME=$(echo $HOME | sed -e 's/\/cygdrive\//\//g')
 if [ "$OS" == "Windows_NT" ]; then
   export HOSTNAME=$(echo $HOSTNAME | tr A-Z a-z)
 fi
+
+##############
 
 # ulimit and umask.  umask sets a permission mask for all file
 # creations.  The mask shown here disallows writing by the "group" and
@@ -50,10 +56,6 @@ ulimit -c 0
 # Directory variables...
 
 export SCRIPT_SYSTEM=feisty_meow
-
-#if [ -z "$FEISTY_MEOW_DIR" ]; then export FEISTY_MEOW_DIR="$HOME/$SCRIPT_SYSTEM"; fi
-#if [ -z "$FEISTY_MEOW_SCRIPTS" ]; then export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"; fi
-#if [ -z "$FEISTY_MEOW_SCRIPTS" ]; then export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"; fi
 
 # include helpful functions.
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
@@ -70,7 +72,8 @@ fi
 
 ##############
 
-# user variables...
+# user variables, sort of...  if they haven't given themselves a name yet,
+# then we will make one up for them.
 
 # define a default name, if one wasn't already set.
 if [ -z "$NAME" ]; then
@@ -79,40 +82,16 @@ fi
 
 ##############
 
-
-##############################################################################
 # other variables...
-##############################################################################
 
-# pull in the custom overrides for feisty_meow scripts.
-for i in $FEISTY_MEOW_GENERATED/custom/*.sh; do
-  if [ ! -f "$i" ]; then
-    # skip it if it's not real.
-    continue;
-  fi
-  if [ ! -z "$SHELL_DEBUG" ]; then
-    echo "loading customization: $(basename $(dirname $i))/$(basename $i)"
-  fi
-  source $i
-done
-
-# sets the prompts to what we (i.e., i) like...
-# there are four different prompts.  the first one, PS1, is the one that users
-# see the most often. 
+# sets the main prompt to a simple default, with user@host.
 export PS1='\u@\h $ ';
-### export PS2='> '; export PS3='#? '; export PS4='+ '
 
 # variables for perl.
 export PERLLIB
 if [ "$OS" != "Windows_NT" ]; then
   PERLLIB+="/usr/lib/perl5"
 else
-
-#echo "the scripts dir is $FEISTY_MEOW_SCRIPTS"
-#  FEISTY_MEOW_SCRIPTS="$(echo $FEISTY_MEOW_SCRIPTS | sed -e 's/\\/\//g')"
-#  FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
-#echo "the scripts dir is now $FEISTY_MEOW_SCRIPTS"
-
   export PERLIO=:perlio
     # choose perl's IO over the ms-windows version so we can handle file
     # bytes properly.
@@ -140,6 +119,10 @@ export CVS_RSH=ssh
 # sets the history length and max file size so we can get some long history around here.
 HISTSIZE=1000000
 HISTFILESIZE=2000000
+
+# the base checkout list is just to update feisty_meow.  additional folder
+# names can be added in your customized scripts.
+export REPOSITORY_LIST="feisty_meow"
 
 # set the editor for subversion if it hasn't already been set.
 if [ -z "$SVN_EDITOR" ]; then
@@ -204,8 +187,29 @@ if [ $found_build_vars == 1 ]; then
   export LD_LIBRARY_PATH="$(dos_to_msys_path $LD_LIBRARY_PATH):$(dos_to_msys_path $BINDIR)"
 fi
 
-# Set the path for locating applications.
+##############
+
+# pull in the custom overrides for feisty_meow scripts.  this is done last,
+# because we want to set everything up as expected, then let the user
+# override individual variables and definitions.
+for i in $FEISTY_MEOW_GENERATED/custom/*.sh; do
+  if [ ! -f "$i" ]; then
+    # skip it if it's not real.
+    continue;
+  fi
+  if [ ! -z "$SHELL_DEBUG" ]; then
+    echo "loading customization: $(basename $(dirname $i))/$(basename $i)"
+  fi
+  source $i
+done
+
+##############
+
+# set the path for locating applications.  this is done after any
+# potential overrides from the user.
 export PATH="$(dos_to_msys_path $BINDIR):$(dos_to_msys_path $FEISTY_MEOW_GENERATED):$PATH:/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:."
+
+##############
 
 if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization ends....; fi
 

@@ -25,10 +25,17 @@ function do_checkin()
   fi
 }
 
+# checks in all the folders in a specified list.
 function checkin_list {
   local list=$*
   for i in $list; do
-    for j in $i/feisty_meow $i/hoople1 $i/hoople2 $i/quartz $i/web $i/yeti $i/xsede/xsede_tests $i/xsede/code/cak0l/trunk ; do
+echo whole list is ${REPOSITORY_LIST}
+    # turn repo list back into an array.
+    eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+    for j in "${repository_list[@]}"; do
+      # add in the directory component.
+      j="$i/$j"
+echo here the dir thing is: $j
       if [ ! -d "$j" ]; then continue; fi
 
       pushd $j &>/dev/null

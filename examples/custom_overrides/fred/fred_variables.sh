@@ -10,6 +10,11 @@ if [ "$(hostname)" = "zooty.koeritz.com" ]; then
   export WEB_DIR=/var/www
 fi
 
+# add a bunch of folders to the list for checkin & checkout.  these are
+# definitely personal, and some of them are fairly dated (the yeti and
+# hoople folders, for example).
+REPOSITORY_LIST+=" games hoople hoople1 hoople2 quartz web yeti xsede/xsede_tests xsede/code/cak0l/trunk"
+
 # point to our local certificate for ssh usage.
 export SVN_SSH="ssh -i $HOME/.ssh/id_dsa_sourceforge"
 

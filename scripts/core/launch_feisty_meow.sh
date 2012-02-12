@@ -30,16 +30,18 @@ if [ ! -f "$GENERATED_FEISTY_MEOW_VARIABLES" ]; then
   echo -e '\n\n'
 fi
 
-# pull in our variable set.
+##############
+
+# pull in our generated variables that are the minimal set we need to find
+# the rest of our resources.
 source "$GENERATED_FEISTY_MEOW_VARIABLES"
 
 ##############
 
-# Set up all of the environment's system variables.  This is the first step
-# in the majestic plan we have for this shell's initialization.
+# load all the standard feisty meow variables into the environment.
 source $FEISTY_MEOW_SCRIPTS/core/variables.sh
 
-# Set up the temporary directory...
+# Set up the temporary directory.
 source $FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh
 
 ##############
@@ -60,10 +62,6 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
   # perform the bulkier parts of the login and initialization.
 
   if [ ! -z "$SHELL_DEBUG" ]; then echo heavyweight login begins...; fi
-
-#FEISTY_MEOW_GENERATED=$(echo $FEISTY_MEOW_GENERATED | sed -e 's/\\/\//g')
-#FEISTY_MEOW_SCRIPTS="$(echo $FEISTY_MEOW_SCRIPTS | sed -e 's/\\/\//g')"
-#FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
 
   # set up the aliases for the shell, but only if they are not already set.
   alias regenerated &>/dev/null  # see if a crucial alias exists.
