@@ -13,47 +13,62 @@ if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization begins...; fi
 
 ##############
 
-# System variables...
-
 # OS variable records the operating system we think we found.
 if [ -z "$OS" ]; then
   export OS=UNIX
 fi
 export IS_DARWIN=$(echo $OSTYPE | grep -i darwin)
 
-if [ -z "$HOME" ]; then
-  if [ "$OS" == "Windows_NT" ]; then
+##############
+
+# windoze sometimes needs a special home variable setup.
+if [ "$OS" == "Windows_NT" ]; then
+  # give them a default place if they don't have one already.
+  if [ -z "$HOME" ]; then
     export HOME=/c/home
-    if [ ! -d $HOME ]; then
-      mkdir $HOME
-    fi
+  fi
+  # patch home to undo cygwin style of drive letter.
+  export HOME=$(echo $HOME | sed -e 's/\/cygdrive\//\//g')
+  # make the home folder if it doesn't exist yet.
+  if [ ! -d $HOME ]; then
+    mkdir $HOME
+  fi
+  if [ ! -z "$SHELL_DEBUG" ]; then echo HOME is now $HOME; fi
+fi
+
+##############
+
+# fallbacks to set crucial variables for feisty meow...
+
+# set the main root directory variable for the feisty meow codebase.
+# this is only used for extreme failure modes, when the values were not
+# pulled in from our auto-generated config.
+if [ -z "$FEISTY_MEOW_DIR" ]; then
+  if [ -d "$HOME/feisty_meow" ]; then
+    export FEISTY_MEOW_DIR="$HOME/feisty_meow"
   fi
 fi
 
-##############
-
-# windoze specific stuff.
-
-# patch home to undo cygwin style of drive letter.
-export HOME=$(echo $HOME | sed -e 's/\/cygdrive\//\//g')
-#echo HOME is now $HOME
-
-if [ "$OS" == "Windows_NT" ]; then
-  export HOSTNAME=$(echo $HOSTNAME | tr A-Z a-z)
+# similarly, make sure we have someplace to look for our generated files, if
+# we were not handed a value.
+if [ -z "$FEISTY_MEOW_GENERATED" ]; then
+  # The generated scripts directory is where automatically generated files live.
+  # It is separate from the main body of the shell scripts in order to keep things from
+  # exploding.
+  export FEISTY_MEOW_GENERATED=$HOME/.zz_auto_gen
 fi
 
 ##############
 
-# ulimit and umask.  umask sets a permission mask for all file
-# creations.  The mask shown here disallows writing by the "group" and
-# "others" categories of users.  ulimit sets the user limits.  the core
-# file size is set to zero.
+# umask sets a permission mask for all file creations.  the mask used here
+# disallows writing by the "group" and "others" categories.
 umask 022
+# ulimit sets user limits.  we set the maximum allowed core dump file size
+# to zero, because it is obnoxious to see the core dumps from crashed
+# programs lying around everywhere.
 ulimit -c 0
 
 ##############
-
-# Directory variables...
 
 export SCRIPT_SYSTEM=feisty_meow
 
@@ -62,13 +77,6 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 # LIBDIR is an older variable that points at the root of the yeti code.
 export LIBDIR=$FEISTY_MEOW_DIR
-
-if [ -z "$FEISTY_MEOW_GENERATED" ]; then
-  # The generated scripts directory is where automatically generated files live.
-  # It is separate from the main body of the shell scripts in order to keep things from
-  # exploding.
-  export FEISTY_MEOW_GENERATED=$HOME/.zz_auto_gen
-fi
 
 ##############
 
@@ -134,13 +142,6 @@ if [ -z "$SVN_EDITOR" ]; then
   fi
 fi
 
-# include variables needed for compiling hoople and using its scripts.
-if [ -z "$FEISTY_MEOW_DIR" ]; then
-  if [ -d "$HOME/feisty_meow" ]; then
-    export FEISTY_MEOW_DIR="$HOME/feisty_meow"
-  fi
-fi
-
 # initialize the build variables, if possible.
 found_build_vars=0
 if [ ! -z "$FEISTY_MEOW_DIR" ]; then
@@ -185,6 +186,14 @@ if [ $found_build_vars == 1 ]; then
 
   # Shared libraries are located via this variable.
   export LD_LIBRARY_PATH="$(dos_to_msys_path $LD_LIBRARY_PATH):$(dos_to_msys_path $BINDIR)"
+fi
+
+##############
+
+# windoze specific patching up missing things.
+
+if [ "$OS" == "Windows_NT" ]; then
+  export HOSTNAME=$(echo $HOSTNAME | tr A-Z a-z)
 fi
 
 ##############

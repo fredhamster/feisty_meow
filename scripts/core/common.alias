@@ -88,7 +88,7 @@ alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 # says goodbye when leaving a shell.
 alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
 # redoes fred's set of custom scripts.
-alias recustomize='cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom; regenerate'
+alias recustomize='echo "copying custom overrides for fred..."; cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom; regenerate'
 # makes root user's home directory's permissions right.
 alias reroot='chown -R root:root /root'
 # replace the vi command with a graphical version on windows.
