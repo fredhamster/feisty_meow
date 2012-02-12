@@ -6,10 +6,12 @@
 
 ############################
 
+# this reports when we have totally failed to figure out where a folder
+# is actually located on the machine.
 function intuition_failure()
 {
   missing="$1"; shift
-  echo "We cannot intuit your $missing variable for this host."
+  echo "Could not intuit '$missing' variable."
   # remove the variable because its value is busted.
   unset $missing
 }
@@ -59,13 +61,9 @@ if [ ! -d "$JAVA_HOME" ]; then
   JAVA_BIN_PIECE=Commands
 fi
 # last thing is to tell them we couldn't find it.
-if [ ! -d "$JAVA_HOME" ]; then
-  if [ ! -z "$(which java)" ]; then
-    echo "okay, java is in the path (JAVA_HOME unknown)."
-  else
-    intuition_failure JAVA_HOME
-    unset JAVA_BIN_PIECE
-  fi
+if [ ! -d "$JAVA_HOME" -a -z "$(which java)" ]; then
+  intuition_failure JAVA_HOME
+  unset JAVA_BIN_PIECE
 fi
 
 ############################
@@ -94,12 +92,8 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR="/e/tools/eclipse"
 fi
 # final option is to whine.
-if [ ! -d "$ECLIPSE_DIR" ]; then
-  if [ ! -z "$(which eclipse)" ]; then
-    echo "okay, eclipse is in the path (ECLIPSE_DIR unknown)."
-  else
-    intuition_failure ECLIPSE_DIR;
-  fi
+if [ ! -d "$ECLIPSE_DIR" -a -z "$(which eclipse)" ]; then
+  intuition_failure ECLIPSE_DIR
 fi
 
 ############################
