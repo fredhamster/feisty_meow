@@ -1,3 +1,6 @@
+
+# grover is a sharp zaurus.  this is pretty out of date.
+
 export LC_ALL=C
 alias mc='mc -a'
 

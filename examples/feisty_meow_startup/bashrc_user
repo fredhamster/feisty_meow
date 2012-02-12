@@ -1,16 +1,13 @@
 
-# in addition to the .bashrc code that the operating system gives you,
-# you can add this file to your ~/.bashrc if you want the feisty_meow scripts
-# to be loaded up automatically.
-#
-# this is for normal users, not the root user!
+# add this file to your ~/.bashrc if you want the feisty_meow scripts to be
+# loaded up automatically.  this assumes your default shell is bash.
+# ** this is for normal users, not the root user.
 
-# note: it is useful to set your own NAME variable to identify who you are.
-# the feisty_meow scripts will set up a bogus one for you otherwise.  in your home
-# directory's .bashrc, you could add something like this, for example:
-#   export NAME='Doodmodeus Q. Nornberton'
+# note: it is often useful to set the NAME variable to identify who you are.
+# the scripts will set up a bogus one for you otherwise.  for example:
+#   export NAME='Frunkooleon Q. Grendervasp'
 
-# don't bother running our stuff for a dumb terminal since any echo
+# don't bother running our stuff for dumb terminals, since any echo
 # can mess with an sftp or scp connection, apparently.  similarly, we
 # don't want any automatic startup stuff if we are running under PBS.
 if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
