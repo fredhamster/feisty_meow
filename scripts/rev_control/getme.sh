@@ -47,7 +47,9 @@ function checkout_list {
       # add in the directory for our purposes here.
       j="$i/$j"
       if [ ! -d $j ]; then
-        echo no directory called $j exists
+        if [ ! -z "$SHELL_DEBUG" ]; then
+          echo "No directory called $j exists."
+        fi
         continue
       fi
 
