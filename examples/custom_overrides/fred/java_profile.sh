@@ -61,7 +61,7 @@ fi
 # last thing is to tell them we couldn't find it.
 if [ ! -d "$JAVA_HOME" ]; then
   if [ ! -z "$(which java)" ]; then
-    echo "JAVA_HOME unknown, but java is in path."
+    echo "okay, java is in the path (JAVA_HOME unknown)."
   else
     intuition_failure JAVA_HOME
     unset JAVA_BIN_PIECE
@@ -96,7 +96,7 @@ fi
 # final option is to whine.
 if [ ! -d "$ECLIPSE_DIR" ]; then
   if [ ! -z "$(which eclipse)" ]; then
-    echo "ECLIPSE_DIR unknown, but eclipse is in path."
+    echo "okay, eclipse is in the path (ECLIPSE_DIR unknown)."
   else
     intuition_failure ECLIPSE_DIR;
   fi
