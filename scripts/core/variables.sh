@@ -13,6 +13,10 @@ if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization begins...; fi
 
 ##############
 
+# start with some simpler things.
+
+export SCRIPT_SYSTEM=feisty_meow
+
 # OS variable records the operating system we think we found.
 if [ -z "$OS" ]; then
   export OS=UNIX
@@ -46,6 +50,7 @@ fi
 if [ -z "$FEISTY_MEOW_DIR" ]; then
   if [ -d "$HOME/feisty_meow" ]; then
     export FEISTY_MEOW_DIR="$HOME/feisty_meow"
+    export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"
   fi
 fi
 
@@ -70,13 +75,8 @@ ulimit -c 0
 
 ##############
 
-export SCRIPT_SYSTEM=feisty_meow
-
 # include helpful functions.
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
-
-# LIBDIR is an older variable that points at the root of the yeti code.
-export LIBDIR=$FEISTY_MEOW_DIR
 
 ##############
 
@@ -90,12 +90,13 @@ fi
 
 ##############
 
-# other variables...
-
 # sets the main prompt to a simple default, with user@host.
 export PS1='\u@\h $ ';
 
+##############
+
 # variables for perl.
+
 export PERLLIB
 if [ "$OS" != "Windows_NT" ]; then
   PERLLIB+="/usr/lib/perl5"
@@ -118,8 +119,10 @@ for i in $FEISTY_MEOW_SCRIPTS/*; do
 done
 #echo PERLLIB is now $PERLLIB
 
+##############
+
 # set this so nechung can find its data.
-export NECHUNG=$LIBDIR/database/fortunes.dat
+export NECHUNG=$FEISTY_MEOW_DIR/database/fortunes.dat
 
 # ensure we use the right kind of rsh for security.
 export CVS_RSH=ssh
@@ -142,51 +145,39 @@ if [ -z "$SVN_EDITOR" ]; then
   fi
 fi
 
-# initialize the build variables, if possible.
-found_build_vars=0
-if [ ! -z "$FEISTY_MEOW_DIR" ]; then
-  # first guess at using the old school bin directory.
-  bv="$FEISTY_MEOW_DIR/bin/build_variables.sh"
-  if [ -f "$bv" ]; then
-    # the old bin directory is present, so let's use its build vars.
-    source "$bv" "$bv"
+# initializes the feisty meow build variables, if possible.
+function initialize_build_variables()
+{
+  found_build_vars=0
+  # we need to know the feisty meow directory, or we bail.
+  if [ -z "$FEISTY_MEOW_DIR" ]; then return; fi
+  # pick from our expected generator folder, but make sure it's there...
+  buildvars="$FEISTY_MEOW_DIR/scripts/generator/build_variables.sh"
+  if [ -f "$buildvars" ]; then
+    # yep, that one looks good, so pull in the build defs.
+    source "$buildvars" "$buildvars"
     found_build_vars=1
-  else
-    # try again with the new school location for the file.
-    bv="$FEISTY_MEOW_DIR/scripts/generator/build_variables.sh"
-    if [ -f "$bv" ]; then
-      # yep, that one looks good, so pull in the build defs.
-      source "$bv" "$bv"
-      found_build_vars=1
-    else
-      # try once more with new school and assume we're deep.
-      bv="$FEISTY_MEOW_DIR/../../scripts/generator/build_variables.sh"
-      if [ -f "$bv" ]; then
-        # sweet, there is something there.
-        source "$bv" "$bv"
-        found_build_vars=1
-      fi
-    fi
   fi
-fi
+  # now augment the environment if we found our build variables.
+  if [ $found_build_vars == 1 ]; then
+    # the binary directory contains handy programs we use a lot in yeti.  we set up the path to it
+    # here based on the operating system.
+    # note that yeti has recently become more dependent on hoople.  hoople was always the source of
+    # the binaries, but now we don't ship them with yeti any more as pre-built items.  this reduces
+    # the size of the code package a lot and shortens up our possible exposure to compromised
+    # binaries.  people can bootstrap up their own set from hoople now instead.
+    export BINDIR=$FEISTY_MEOW_DIR/production/binaries
 
-# augment the configuration if we found our build variables.
-if [ $found_build_vars == 1 ]; then
+    # add binaries created within build to the path.
+    export PATH="$(dos_to_msys_path $BUILD_TOP/build/bin):$PATH"
 
-  # the binary directory contains handy programs we use a lot in yeti.  we set up the path to it
-  # here based on the operating system.
-  # note that yeti has recently become more dependent on hoople.  hoople was always the source of
-  # the binaries, but now we don't ship them with yeti any more as pre-built items.  this reduces
-  # the size of the code package a lot and shortens up our possible exposure to compromised
-  # binaries.  people can bootstrap up their own set from hoople now instead.
-  export BINDIR=$FEISTY_MEOW_DIR/production/binaries
+    # Shared libraries are located via this variable.
+    export LD_LIBRARY_PATH="$(dos_to_msys_path $LD_LIBRARY_PATH):$(dos_to_msys_path $BINDIR)"
+  fi
+}
 
-  # add binaries created within build to the path.
-  export PATH="$(dos_to_msys_path $BUILD_TOP/build/bin):$PATH"
-
-  # Shared libraries are located via this variable.
-  export LD_LIBRARY_PATH="$(dos_to_msys_path $LD_LIBRARY_PATH):$(dos_to_msys_path $BINDIR)"
-fi
+# load in the build environment.
+initialize_build_variables
 
 ##############
 
