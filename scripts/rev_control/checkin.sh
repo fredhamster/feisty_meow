@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# checks in all our commonly used folders.
-# note: fred specific.
+# checks in all the folders present in the REPOSITORY_LIST variable.
 
 source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
 
@@ -29,13 +28,11 @@ function do_checkin()
 function checkin_list {
   local list=$*
   for i in $list; do
-echo whole list is ${REPOSITORY_LIST}
     # turn repo list back into an array.
     eval "repository_list=( ${REPOSITORY_LIST[*]} )"
     for j in "${repository_list[@]}"; do
       # add in the directory component.
       j="$i/$j"
-echo here the dir thing is: $j
       if [ ! -d "$j" ]; then continue; fi
 
       pushd $j &>/dev/null

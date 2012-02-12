@@ -1,11 +1,15 @@
 #!/bin/bash
 
-# gets all of fred's revision control folders out.
+# gets any updates for the repository folders present in the REPOSITORY_LIST variable.
 
 source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
 
+# trickery to ensure we can always update this file, even when the operating system has some
+# rude behavior with regard to file locking (ahem, windows...).
 if [ "$(pwd)" != "$TMP" ]; then
-#  echo "Moving to the TMP directory to avoid file access conflicts..."
+  if [ ! -z "$SHELL_DEBUG" ]; then
+    echo "Moving to the TMP directory to avoid file access conflicts..."
+  fi
   new_name="$TMP/zz_$(basename $0)"
   cp -f "$0" "$new_name"
   if [ $? -ne 0 ]; then
@@ -16,8 +20,6 @@ if [ "$(pwd)" != "$TMP" ]; then
   chmod a+x "$new_name"
   exec "$new_name"
 fi
-
-export TMPO_CHK=$TMP/zz_chk.log
 
 # selects the checkout method based on where we are (the host the script runs on).
 function do_update()
@@ -35,6 +37,7 @@ function do_update()
   fi
 }
 
+# gets all the updates for a list of folders under revision control.
 function checkout_list {
   list=$*
   for i in $list; do
@@ -56,6 +59,10 @@ function checkout_list {
   done
 }
 
+##############
+
+export TMPO_CHK=$TMP/zz_chk.log
+
 rm -f "$TMPO_CHK"
 
 # perform the checkouts as appropriate per OS.
@@ -67,9 +74,13 @@ fi
 
 less $TMPO_CHK
 
+##############
+
 # we now regenerate the scripts after getme, to ensure it's done automatically.
 bash "$FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh"
 perl "$FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl"
 echo
 nechung
+
+##############
 
