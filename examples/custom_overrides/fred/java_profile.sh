@@ -63,7 +63,7 @@ if [ ! -d "$JAVA_HOME" ]; then
   JAVA_BIN_PIECE=Commands
 fi
 # last thing is to tell them we couldn't find it.
-if [ ! -d "$JAVA_HOME" -a -z "$(which java)" ]; then
+if [ ! -d "$JAVA_HOME" -a -z "$(which java 2>/dev/null)" ]; then
   intuition_failure JAVA_HOME
   unset JAVA_BIN_PIECE
 fi
@@ -94,7 +94,7 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR="/e/tools/eclipse"
 fi
 # final option is to whine.
-if [ ! -d "$ECLIPSE_DIR" -a -z "$(which eclipse)" ]; then
+if [ ! -d "$ECLIPSE_DIR" -a -z "$(which eclipse 2>/dev/null)" ]; then
   intuition_failure ECLIPSE_DIR
 fi
 
