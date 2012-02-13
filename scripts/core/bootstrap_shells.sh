@@ -25,6 +25,8 @@ export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
 if [ ! -d "$FEISTY_MEOW_GENERATED" ]; then
   mkdir "$FEISTY_MEOW_GENERATED"
 fi
+# make toast out of generated files right away, but leave any custom scripts.
+find "$FEISTY_MEOW_GENERATED" -maxdepth 1 -type f -exec rm -f "{}" ';' &>/dev/null
 if [ ! -d "$FEISTY_MEOW_GENERATED/custom" ]; then
   mkdir "$FEISTY_MEOW_GENERATED/custom"
 fi
