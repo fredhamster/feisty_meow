@@ -27,30 +27,30 @@ require "shared_snarfer.pl";
 local($number) = &retrieve_number("aa_backup");
 
 # variables used throughout here.
-local($base) = &snarf_prefix("opensim_config");
-local($snarf_file) = &snarf_name($base, $number);
+local($snarf_file_base) = &snarf_prefix("opensim_config");
+local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the archive number in the file for retrieval on the other side.
-&backup_number("aa_backup", $base, $number);
+&backup_number("aa_backup", $snarf_file_base, $number);
 
 # the top directory where everything we're grabbing lives.
 local($root) = &canonicalize(&glob_list("$HOME/opensim"));
 
 # grab the top level stuff.
-#&backup_files($base, $number, $HOME, ".",
+#&backup_files($snarf_file_base, $number, $HOME, ".",
 #    ("*.sh"));
-&backup_files($base, $number, $root, ".",
+&backup_files($snarf_file_base, $number, $root, ".",
     ("*.sh"));
 
 # snag the main config files.
-&backup_files($base, $number, $root, "bin",
+&backup_files($snarf_file_base, $number, $root, "bin",
     ("OpenSim.ini", "Robust.ini", "OpenSim.exe.config", "Robust.exe.config"));
 
 # snag the configuration include file.
-&backup_files($base, $number, $root, "bin/config-include", ("GridCommon.ini"));
+&backup_files($snarf_file_base, $number, $root, "bin/config-include", ("GridCommon.ini"));
 
 # get the region definitions.
-&backup_hierarchy($base, $number, "$root", "bin/Regions");
+&backup_hierarchy($snarf_file_base, $number, "$root", "bin/Regions");
 
 # now rename the file so only the unpacker can access it.
 &rename_archive($snarf_file);

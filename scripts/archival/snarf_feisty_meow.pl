@@ -24,41 +24,41 @@ require "shared_snarfer.pl";
 local($number) = &retrieve_number("aa_backup");
 
 # variables used throughout here.
-local($base) = &snarf_prefix("feisty_meow");
-local($snarf_file) = &snarf_name($base, $number);
+local($snarf_file_base) = &snarf_prefix("feisty_meow");
+local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the archive number in the file for retrieval on the other side.
-&backup_number("aa_backup", $base, $number);
+&backup_number("aa_backup", $snarf_file_base, $number);
 
 # the top directory where everything we're grabbing lives.
 local($root) = &canonicalize("$HOME/feisty_meow");
 
 # grab the top level stuff.
-&backup_files($base, $number, $root, ".", ("*.txt", "make*", ".gitignore"));
+&backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore"));
 
 # get the documentation directory.
-&backup_hierarchy($base, $number, "$root", "docs");
+&backup_hierarchy($snarf_file_base, $number, "$root", "docs");
 ###
 #oldversion
-#&snarfer($base, $number, $root, "docs", ("-maxdepth", "1"));
+#&snarfer($snarf_file_base, $number, $root, "docs", ("-maxdepth", "1"));
 # get an extra folder we like.
-#&backup_hierarchy($base, $number, "$root", "docs/text_examples");
+#&backup_hierarchy($snarf_file_base, $number, "$root", "docs/text_examples");
 ###
 
 # get our databases that we ship with the sources.
-&backup_hierarchy($base, $number, $root, "database");
+&backup_hierarchy($snarf_file_base, $number, $root, "database");
 
 # get all the yeti scripts hierarchy in there.
-&backup_hierarchy($base, $number, $root, "scripts");
+&backup_hierarchy($snarf_file_base, $number, $root, "scripts");
 
 # get all C++ code project hierarchies.
-&backup_hierarchy($base, $number, "$root", "nucleus");
-&backup_hierarchy($base, $number, "$root", "octopi");
-&backup_hierarchy($base, $number, "$root", "graphiq");
+&backup_hierarchy($snarf_file_base, $number, "$root", "nucleus");
+&backup_hierarchy($snarf_file_base, $number, "$root", "octopi");
+&backup_hierarchy($snarf_file_base, $number, "$root", "graphiq");
 
 # grab the production assets.
-&backup_files($base, $number, $root, "production", ("*.ini", "make*"));
-&backup_hierarchy($base, $number, "$root", "production/setup_src");
+&backup_files($snarf_file_base, $number, $root, "production", ("*.ini", "make*"));
+&backup_hierarchy($snarf_file_base, $number, "$root", "production/setup_src");
 
 # now rename the file so only the unpacker can access it.
 &rename_archive($snarf_file);

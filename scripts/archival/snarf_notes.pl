@@ -28,27 +28,30 @@ local($number) = &retrieve_number("aa_backup");
 
 # variables for directory location to backup and the file to dump it in.
 local($root) = "$HOME";
-local($base) = &snarf_prefix("notes");
-local($snarf_file) = &snarf_name($base, $number);
+local($snarf_file_base) = &snarf_prefix("notes");
+local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the archive number in the file for retrieval on the other side.
-&backup_number("aa_backup", $base, $number);
+&backup_number("aa_backup", $snarf_file_base, $number);
 
 ############################################################################
 
 # get top level text files and other potentially important items...
-&backup_files($base, $number, $root, ".", ("*.html", "*.txt"));
+&backup_files($snarf_file_base, $number, $root, ".", ("*.html", "*.txt"));
 # backup all the hierarchies in our quartz directory.
-&backup_hierarchy($base, $number, "$root", "quartz");
+&backup_hierarchy($snarf_file_base, $number, "$root", "quartz");
 
 # gather any directories in our home that match these often recurring patterns.
-&snarf_by_pattern("$root", "notes");
-&snarf_by_pattern("$root", "project");
-&snarf_by_pattern("$root", "issue");
-&snarf_by_pattern("$root", "idea");
-&snarf_by_pattern("$root", "crucial");
-&snarf_by_pattern("$root", "list");
-&snarf_by_pattern("$root", "task");
+&snarf_by_pattern($snarf_file_base, "$root", "notes");
+&snarf_by_pattern($snarf_file_base, "$root", "project");
+&snarf_by_pattern($snarf_file_base, "$root", "issue");
+&snarf_by_pattern($snarf_file_base, "$root", "idea");
+&snarf_by_pattern($snarf_file_base, "$root", "crucial");
+&snarf_by_pattern($snarf_file_base, "$root", "list");
+&snarf_by_pattern($snarf_file_base, "$root", "task");
+
+# backup additional items from our Ubuntu One folder.
+&snarf_by_pattern($snarf_file_base, "$root", "notes", "Ubuntu One");
 
 ############################################################################
 

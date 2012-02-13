@@ -177,7 +177,7 @@ sub snarfer {
   chdir($root);
 
   local($outcome) = 0;
-  my @lines = qx( $find_tool $subdir @extra_flags "-type" "f" );
+  my @lines = qx( $find_tool "$subdir" @extra_flags "-type" "f" );
 #  if ( ($! != 0) || ($? != 0) ) {
 #    die("failure to find files in $subdir"); 
 #  }
@@ -277,7 +277,7 @@ sub remove_from_backup {
 # recursively scoops up a directory hierarchy.
 sub backup_hierarchy {
   local($prefix, $number, $root, $filepart) = @_;
-#print "backup_hierarchy: pref=$prefix, num=$number, root=$root, filepart=$filepart\n";
+print "backup_hierarchy: pref=$prefix, num=$number, root=$root, filepart=$filepart\n";
   local(@locus_temp) = &glob_list($root);
   local($save_root) = $root;
   local($root) = $locus_temp[0];
@@ -324,22 +324,30 @@ sub backup_hierarchies {
   }
 }
 
-# grab up all the files in a directory (first parm) that are named matching
-# a simple text pattern (second parm).
+# grab up all the files in a directory (second parm) that are named matching
+# a simple text pattern (third parm).  if there is a fourth parameter, it is
+# used as an extra directory component after the main directory.
 sub snarf_by_pattern {
-  local($dir, $pattern) = @_;
+  local($prefix, $dir, $pattern, $extra_component) = @_;
 #  print "dir = $dir and patt = $pattern\n";
+  $extra_piece = "";
+  $dir_for_hierarchy = ".";
+  if (length($extra_component)) {
+    $extra_piece = "/" . $extra_component;
+    $dir_for_hierarchy = $extra_component;
+  }
 
-  @dir_contents = &glob_list("$dir/*$pattern*"); 
-#  print "dir contents: @dir_contents\n";
+  @dir_contents = &glob_list("$dir$extra_piece/*$pattern*"); 
+  print "dir contents: @dir_contents\n";
 
   if (!scalar(@dir_contents)) {
-    print "no $pattern directores were backed up in $dir.\n";
+    print "no '$pattern' directores were backed up in $dir.\n";
   }
+  
   foreach $item (@dir_contents) {
     if ( ($item =~ /$pattern.*snarf/) || ($item =~ /$pattern.*tar/) ) { next; }
     if ( ! -d "$item" ) { next; }
-    &backup_hierarchy($base, $number, $item, ".");
+    &backup_hierarchy($prefix, $number, $dir, "$dir_for_hierarchy" . "/" . &basename($item));
   }
 }
 

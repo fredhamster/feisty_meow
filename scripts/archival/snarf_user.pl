@@ -28,24 +28,24 @@ local($number) = &retrieve_number("aa_backup");
 
 # variables for directory location to backup and the file to dump it in.
 local($root) = "$HOME";
-local($base) = snarf_prefix("$USER");
-local($snarf_file) = &snarf_name($base, $number);
+local($snarf_file_base) = snarf_prefix("$USER");
+local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the archive number in the file for retrieval on the other side.
-&backup_number("aa_backup", $base, $number);
+&backup_number("aa_backup", $snarf_file_base, $number);
 
 ############################################################################
 
 # backup all the config info for kde.
-&backup_hierarchy($base, $number, "$root", ".kde");
+&backup_hierarchy($snarf_file_base, $number, "$root", ".kde");
 
 # get any dot files ending in "rc", or with "bash" or "profile" in them, or
 # that start with "x".
-&backup_files($base, $number, $root, ".",
+&backup_files($snarf_file_base, $number, $root, ".",
     ("*rc", ".*bash*", ".*profile*", ".x*", ));
 
 # get the ssh configuration files.
-&backup_hierarchy($base, $number, "$root", ".ssh");
+&backup_hierarchy($snarf_file_base, $number, "$root", ".ssh");
 
 # now rename the file so only the unpacker can access it.
 &rename_archive($snarf_file);
