@@ -6,6 +6,8 @@
 # after the spam is all snagged, it is scanned for any untoward presence
 # of non-spam folks using the user's valid email list.
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
 # the storage area that the spam catcher tool puts the suspected spam into.
 SPAM_SPOOL="/var/spool/sa-exim"
 # a temporary directory where we'll move all the spam for analysis.
@@ -14,7 +16,7 @@ SPAM_HOLD="$HOME/spamcrud"
 # probably never send spam.  it should be formatted one address to a line.
 EMAIL_WHITE_LIST="$HOME/quartz/database/email_addresses.txt"
 # we'll save a report of the spam checks in the file below.
-REPORT_FILE="$HOME/spam_check_report.txt"
+REPORT_FILE="$HOME/spam_check_report_$(date_stringer).txt"
 
 if [ ! -d "$SPAM_HOLD" ]; then
   mkdir "$SPAM_HOLD"
@@ -28,8 +30,9 @@ fi
 echo "Setting the directory back to user's ownership..."
 sudo chown -R $USER "$SPAM_HOLD" 
 sudo chgrp -R $USER "$SPAM_HOLD" 
-echo "Running checker for false-positive spams..."
+echo "Checking for false-positive spams..." | tee "$REPORT_FILE"
 bash "$FEISTY_MEOW_SCRIPTS/email/scan_spam.sh" "$SPAM_HOLD" "$EMAIL_WHITE_LIST" 2>&1 \
-  | tee "$REPORT_FILE"
+  | tee -a "$REPORT_FILE"
+echo "Done checking for false-positive spams." | tee -a "$REPORT_FILE"
 
 
