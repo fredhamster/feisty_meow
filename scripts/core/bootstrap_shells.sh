@@ -45,8 +45,8 @@ source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
 # create our common aliases.
 perl "$FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl"
 
-echo ==========================================
-echo Established this set of variables to describe how to find feisty_meow assets:
+echo established these variables for feisty_meow assets:
+echo ==============
 cat "$GENERATED_FEISTY_MEOW_VARIABLES"
-echo ==========================================
+echo ==============
 

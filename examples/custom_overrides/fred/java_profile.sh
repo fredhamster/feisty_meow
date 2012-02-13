@@ -11,7 +11,9 @@
 function intuition_failure()
 {
   missing="$1"; shift
-  echo "Could not intuit '$missing' variable."
+  if [ ! -z "$SHELL_DEBUG" ]; then
+    echo "Could not intuit '$missing' variable."
+  fi
   # remove the variable because its value is busted.
   unset $missing
 }

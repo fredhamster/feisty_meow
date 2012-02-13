@@ -85,7 +85,9 @@ sub rebuild_script_aliases {
   # create our generated shells directory if it's not already.
   if ( ! -d $FEISTY_MEOW_GENERATED ) {
     mkdir $FEISTY_MEOW_GENERATED;
-print "made gener dir $FEISTY_MEOW_GENERATED\n";
+    if (length($SHELL_DEBUG)) {
+      print "made FEISTY_MEOW_GENERATED at '$FEISTY_MEOW_GENERATED'\n";
+    }
   }
 
   # test if we can use color in ls...
@@ -98,17 +100,21 @@ print "made gener dir $FEISTY_MEOW_GENERATED\n";
   foreach $i (&glob_list("$FEISTY_MEOW_GENERATED/custom/*.alias")) {
     if (-f $i) { push(@ALIAS_DEFINITION_FILES, $i); }
   }
-  print "alias files:\n";
-  foreach $i (@ALIAS_DEFINITION_FILES) {
-    local $base_of_dir = &basename(&dirname($i));
-    local $basename = &basename($i);
-    print "  $base_of_dir/$basename\n";
+  if (length($SHELL_DEBUG)) {
+    print "using these alias files:\n";
+    foreach $i (@ALIAS_DEFINITION_FILES) {
+      local $base_of_dir = &basename(&dirname($i));
+      local $basename = &basename($i);
+      print "  $base_of_dir/$basename\n";
+    }
   }
 
   # write the aliases for sh and bash scripts.
 
   local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_GENERATED/fmc_core_and_custom_aliases.sh";
-  print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";
+  if (length($SHELL_DEBUG)) {
+    print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";
+  }
 
 #hmmm: perhaps a good place for a function to create the header,
 #      given the appropriate comment code.
@@ -177,7 +183,9 @@ if (-d $BINDIR) {
 # trash the old versions.
 unlink("$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
 
-printf "writing $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh...\n";
+if (length($SHELL_DEBUG)) {
+  printf "writing $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh...\n";
+}
 
 # open the alias files to be created.
 open(she, ">> $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
