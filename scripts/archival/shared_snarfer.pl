@@ -277,7 +277,7 @@ sub remove_from_backup {
 # recursively scoops up a directory hierarchy.
 sub backup_hierarchy {
   local($prefix, $number, $root, $filepart) = @_;
-print "backup_hierarchy: pref=$prefix, num=$number, root=$root, filepart=$filepart\n";
+#print "backup_hierarchy: pref=$prefix, num=$number, root=$root, filepart=$filepart\n";
   local(@locus_temp) = &glob_list($root);
   local($save_root) = $root;
   local($root) = $locus_temp[0];
@@ -338,7 +338,7 @@ sub snarf_by_pattern {
   }
 
   @dir_contents = &glob_list("$dir$extra_piece/*$pattern*"); 
-  print "dir contents: @dir_contents\n";
+#  print "dir contents: @dir_contents\n";
 
   if (!scalar(@dir_contents)) {
     print "no '$pattern' directores were backed up in $dir.\n";
