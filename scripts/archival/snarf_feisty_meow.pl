@@ -37,12 +37,12 @@ local($root) = &canonicalize("$HOME/feisty_meow");
 &backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore"));
 
 # get the documentation directory.
-&backup_hierarchy($snarf_file_base, $number, "$root", "docs");
+&backup_hierarchy($snarf_file_base, $number, "$root", "doc");
 ###
 #oldversion
-#&snarfer($snarf_file_base, $number, $root, "docs", ("-maxdepth", "1"));
+#&snarfer($snarf_file_base, $number, $root, "doc", ("-maxdepth", "1"));
 # get an extra folder we like.
-#&backup_hierarchy($snarf_file_base, $number, "$root", "docs/text_examples");
+#&backup_hierarchy($snarf_file_base, $number, "$root", "doc/text_examples");
 ###
 
 # get our databases that we ship with the sources.

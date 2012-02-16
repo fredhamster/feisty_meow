@@ -43,8 +43,8 @@ target=$TARGET
 keyword=sources
 
 [docs]
-source=$FEISTY_MEOW_DIR/docs/*
-target=$TARGET/docs
+source=$FEISTY_MEOW_DIR/doc/*
+target=$TARGET/doc
 keyword=sources
 
 [makefile]
