@@ -1,7 +1,7 @@
 
 //////////////
 // Name   : {class name}
-// Author : {your name}
+// Author : Chris Koeritz
 // Rights : Copyright (c) 2012-$now By Feisty Meow Concerns, Ltd.
 //////////////
 // This script is free software; you can modify/redistribute it under the terms
