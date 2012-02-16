@@ -15,7 +15,7 @@ database/
     Some files considered critical to the operations of Feisty Meow Concerns Ltd.  This includes
     the database of fortunes used by the Nechung Oracle Program.
 
-docs/
+doc/
     Assorted documentation files for Feisty Meow and a code-scanning documentation generator
     based on doxygen.
 
