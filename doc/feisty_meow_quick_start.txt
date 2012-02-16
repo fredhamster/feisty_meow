@@ -1,7 +1,8 @@
 
-Feisty Meow Concerns Ltd. is a small software shop that concentrates on building high quality,
-portable, open source projects in a variety of languages (primarily bash, perl, python, C++,
-and Java).  Here are some highlights of our main products:
+Feisty Meow Concerns Ltd. is a small software shop that concentrates on
+building high quality, portable, open source projects in a variety of
+languages (primarily bash, perl, python, C++, and Java).  Here are some
+highlights of our main products:
 
   Bookmark Processing Tools - can take a mozilla bookmark file or arbitrary
      web page and extract all the links out of it, building a csv database of
@@ -48,23 +49,23 @@ Quick Start:
   have downloaded the archive or retrieved them via CVS (assuming that you
   have stored the files in ~/feisty_meow):
 
-    bash ~/feisty_meow2/scripts/generator/bootstrap_build.sh
+    bash ~/feisty_meow/scripts/generator/bootstrap_build.sh
 
   This should create the 'makedep' dependency checking tool and the version
   tagging tool and then go through the rest of the build.
 
   Once you've got a bootstrapped build, you can clean out all the files with:
 
-    bash ~/feisty_meow2/scripts/generator/whack_build.sh clean
+    bash ~/feisty_meow/scripts/generator/whack_build.sh clean
 
   And if you want to load the build environment for doing makes inside the
   feisty_meow hierarchies, you can either run a sub-shell with the environment:
 
-    bash ~/feisty_meow2/scripts/generator/build_variables.sh
+    bash ~/feisty_meow/scripts/generator/build_variables.sh
 
   or you can load them into the current shell:
 
-    bv=~/feisty_meow2/scripts/generator/build_variables.sh; source $bv $bv
+    bv=~/feisty_meow/scripts/generator/build_variables.sh; source $bv $bv
 
   (The double reference is required since a sourced script does not get any of
   the command-line parameters from the parent script.)

@@ -1,9 +1,10 @@
 
 # ignore the dynamic libraries, applications, temporary files, etc.
 
-waste
 binaries
 clam_bin
+code_guide
 install
 logs
+waste
 
