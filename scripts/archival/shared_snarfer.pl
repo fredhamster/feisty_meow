@@ -329,7 +329,7 @@ sub backup_hierarchies {
 # used as an extra directory component after the main directory.
 sub snarf_by_pattern {
   local($prefix, $dir, $pattern, $extra_component) = @_;
-  print "dir = $dir and patt = $pattern\n";
+#  print "dir = $dir and patt = $pattern\n";
   $extra_piece = "";
   $dir_for_hierarchy = ".";
   if (length($extra_component)) {
@@ -338,17 +338,17 @@ sub snarf_by_pattern {
   }
 
   @dir_contents = &glob_list("$dir_for_hierarchy$extra_piece/*$pattern*"); 
-  print "dir contents: @dir_contents\n";
+#  print "dir contents: @dir_contents\n";
 
   if (!scalar(@dir_contents)) {
     print "no '$pattern' directores were backed up in $dir.\n";
   }
   
   foreach $item (@dir_contents) {
-print "considering backup hier of $item\n";
+#    print "considering backup hier of $item\n";
     if ( ($item =~ /$pattern.*snarf/) || ($item =~ /$pattern.*tar/) ) { next; }
     if ( ! -d "$item" ) { next; }
-print "now really planning to backup hier of $item\n";
+#    print "now really planning to backup hier of $item\n";
     &backup_hierarchy($prefix, $number, $dir_for_hierarchy . $extra_piece, &basename($item));
   }
 }
