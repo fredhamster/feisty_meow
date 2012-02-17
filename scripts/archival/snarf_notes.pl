@@ -50,8 +50,9 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 &snarf_by_pattern($snarf_file_base, "$root", "list");
 &snarf_by_pattern($snarf_file_base, "$root", "task");
 
-# backup additional items from our Ubuntu One folder.
-&snarf_by_pattern($snarf_file_base, "$root", "notes", "Ubuntu One");
+# backup additional folders we care about.
+###ubuntu one retired because of complete unreliability.
+#&snarf_by_pattern($snarf_file_base, "$root", "notes", "Ubuntu One");
 
 ############################################################################
 
