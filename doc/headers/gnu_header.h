@@ -14,13 +14,8 @@
 //! brief description goes here.
 /*!
   detailed description goes here.
+...
 */
-
-//////////////
-
-// class definition goes here.......
-
-//////////////
 
 #endif
 
