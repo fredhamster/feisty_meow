@@ -337,7 +337,7 @@ sub snarf_by_pattern {
     $dir_for_hierarchy = $extra_component;
   }
 
-  @dir_contents = &glob_list("$dir$extra_piece/*$pattern*"); 
+  @dir_contents = &glob_list("$dir_for_hierarchy$extra_piece/*$pattern*"); 
 #  print "dir contents: @dir_contents\n";
 
   if (!scalar(@dir_contents)) {
@@ -345,9 +345,11 @@ sub snarf_by_pattern {
   }
   
   foreach $item (@dir_contents) {
+#    print "considering backup hier of $item\n";
     if ( ($item =~ /$pattern.*snarf/) || ($item =~ /$pattern.*tar/) ) { next; }
     if ( ! -d "$item" ) { next; }
-    &backup_hierarchy($prefix, $number, $dir, "$dir_for_hierarchy" . "/" . &basename($item));
+#    print "now really planning to backup hier of $item\n";
+    &backup_hierarchy($prefix, $number, $dir_for_hierarchy . $extra_piece, &basename($item));
   }
 }
 
