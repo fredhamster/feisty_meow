@@ -2,7 +2,7 @@
 
 cleaning_dirs=($*)
 
-more_authoritative=( ~/quartz/example_source_code/inova_legacy ~/feisty_meow ~/scavenging_inova/inovasoft )
+more_authoritative=( ~/feisty_meow ~/scavenging_inova/inovasoft )
 ###not yet ~/scavenging_inova/lightlink 
 
 if [ -z "$TMP" ]; then TMP=/tmp; fi
