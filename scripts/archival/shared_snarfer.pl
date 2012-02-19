@@ -329,27 +329,32 @@ sub backup_hierarchies {
 # used as an extra directory component after the main directory.
 sub snarf_by_pattern {
   local($prefix, $dir, $pattern, $extra_component) = @_;
-#  print "dir = $dir and patt = $pattern\n";
-  $extra_piece = "";
-  $dir_for_hierarchy = ".";
-  if (length($extra_component)) {
-    $extra_piece = "/" . $extra_component;
-    $dir_for_hierarchy = $extra_component;
+  local($had_extra) = length($extra_component) != 0;
+#print "snarf by pattern, dir = $dir, patt = $pattern, extra = $extra_component\n";
+  if ($had_extra) {
+    $dir = "$dir/$extra_component";
   }
-
-  @dir_contents = &glob_list("$dir_for_hierarchy$extra_piece/*$pattern*"); 
-#  print "dir contents: @dir_contents\n";
+  @dir_contents = &glob_list("$dir/*$pattern*"); 
+#print "dir contents: @dir_contents\n";
 
   if (!scalar(@dir_contents)) {
     print "no '$pattern' directores were backed up in $dir.\n";
   }
   
   foreach $item (@dir_contents) {
-#    print "considering backup hier of $item\n";
     if ( ($item =~ /$pattern.*snarf/) || ($item =~ /$pattern.*tar/) ) { next; }
     if ( ! -d "$item" ) { next; }
-#    print "now really planning to backup hier of $item\n";
-    &backup_hierarchy($prefix, $number, $dir_for_hierarchy . $extra_piece, &basename($item));
+#print "now really planning to backup hier of $item\n";
+    # normal backup had no extra component.
+    local $upper_dir = &dirname($item);
+    local $dir_plus_base = &basename($item);
+    # if we did have an extra component, we do this a bit differently.
+    if ($had_extra) {
+      $upper_dir = &dirname( &dirname($item) );
+      $dir_plus_base = &basename( &dirname($item) ) . "/" . &basename($item);
+    }
+#print "using upper=$upper_dir and dir+base=$dir_plus_base\n";
+    &backup_hierarchy($prefix, $number, $upper_dir, $dir_plus_base);
   }
 }
 
