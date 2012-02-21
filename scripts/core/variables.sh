@@ -32,7 +32,7 @@ if [ "$OS" == "Windows_NT" ]; then
     export HOME=/c/home
   fi
   # patch home to undo cygwin style of drive letter.
-  export HOME=$(echo $HOME | sed -e 's/\/cygdrive\//\//g')
+#  export HOME=$(echo $HOME | sed -e 's/\/cygdrive\//\//g')
   # make the home folder if it doesn't exist yet.
   if [ ! -d $HOME ]; then
     mkdir $HOME
