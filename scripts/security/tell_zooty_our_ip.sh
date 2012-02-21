@@ -10,7 +10,7 @@ username=fred
 local_user=fred
 tempdir=/tmp  # where we generate our files.
 
-source $HOME/yeti/scripts/core/launch_feisty_meow.sh
+source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
 
 soundfile=$FEISTY_MEOW_DIR/database/sounds/woouoo.wav
 if [ ! -z "$1" ]; then
