@@ -51,7 +51,7 @@ if [ "$OS" == "Windows_NT" ]; then
   if [ -z "$HOME" ]; then
     # set a default that might not be appropriate for everyone, but should
     # still work.
-    export HOME=/c/home
+    export HOME=c:/home
   fi
   if [ ! -d "$HOME" ]; then mkdir $HOME; fi
 fi
