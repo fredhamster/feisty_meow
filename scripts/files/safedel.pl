@@ -32,14 +32,13 @@ if ($#ARGV < 0) {
   die "Too few arguments to command.";
 }
 
+$DEV_NULL = "&> /dev/null";
 if ($OS eq "UNIX") {
   $FIND_ENDING = "';'";
-  $DEV_NULL = "> /dev/null";
   $zip = "zip -y ";
 } elsif ( ($OS eq "DOS") || ($OS eq "Windows_95")
     || ($OS eq "Windows_98") || ($OS eq "Windows_NT") ) {
   $FIND_ENDING = "';'";
-  $DEV_NULL = "> nul";
   $zip = "zip ";
 } else {
   die "The Operating System variable (OS) is not set.\n";

@@ -28,15 +28,7 @@ require "inc_num.pl";
 use Cwd;
 use File::Which;
 
-#hmmm: maybe move this to a utility script file.
 $null_log = "/dev/null";
-#hmmm: move especially this check to a script file, and recast anything
-#      referring to Windows_NT to it.
-if ( ("$OS" =~ /[wW][iI][nN]/) || ("$OS" =~ /[Oo][Ss]2/)
-    || ("$OS" =~ /[Dd][Oo][Ss]/) ) {
-  $null_log = "nul"
-}
-#print "nul log=$null_log \n";
 
 $TMP =~ s/\\/\//g;  # fix the temp variable for ms-winders.
 

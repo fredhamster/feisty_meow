@@ -21,14 +21,13 @@
 
 require "zap_the_dir.pl";
 
+$DEV_NULL = "&>/dev/null"
 #hmmm: move this to a useful location in a perl library.
 if ($OS eq "UNIX") {
   $FIND_ENDING = "';'";
-  $DEV_NULL = "> /dev/null"
 } elsif ( ($OS eq "DOS") || ($OS eq "Windows_95")
     || ($OS eq "Windows_98") || ($OS eq "Windows_NT") ) {
   $FIND_ENDING = "';'";
-  $DEV_NULL = "> nul"
 } else {
   die "The Operating System variable (OS) is not set.\n";
 }
