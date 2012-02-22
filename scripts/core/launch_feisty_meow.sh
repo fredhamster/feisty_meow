@@ -10,7 +10,7 @@
 
 ##############
 
-#export SHELL_DEBUG=true
+export SHELL_DEBUG=true
   # this variable causes the scripts that listen to it to print more information
   # when they run.
 

@@ -7,15 +7,12 @@ skip_all=
 date_stringer &>/dev/null
 if [ $? -eq 0 ]; then
   # there was no error, so we can skip the inits.
-#  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$SHELL_DEBUG" ]; then
     echo skipping functions.sh because already defined.
-#  fi
+  fi
 fi
 
-echo proceeding to run functions.sh 
-
 if [ -z "$skip_all" ]; then
-
   if [ ! -z "$SHELL_DEBUG" ]; then
     echo function definitions begin...
   fi

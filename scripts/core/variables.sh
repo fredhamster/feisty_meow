@@ -28,23 +28,6 @@ if [ -z "$NECHUNG" ]; then
   
   ##############
   
-  # windoze sometimes needs a special home variable setup.
-  if [ "$OS" == "Windows_NT" ]; then
-    # give them a default place if they don't have one already.
-    if [ -z "$HOME" ]; then
-      export HOME=c:/home
-    fi
-    # patch home to undo cygwin style of drive letter.
-  #  export HOME=$(echo $HOME | sed -e 's/\/cygdrive\//\//g')
-    # make the home folder if it doesn't exist yet.
-    if [ ! -d $HOME ]; then
-      mkdir $HOME
-    fi
-    if [ ! -z "$SHELL_DEBUG" ]; then echo HOME is now $HOME; fi
-  fi
-  
-  ##############
-  
   # fallbacks to set crucial variables for feisty meow...
   
   # set the main root directory variable for the feisty meow codebase.
