@@ -32,13 +32,6 @@
 # Please send any updates to: fred@gruntose.com
 ##############
 
-# prerequisites for this script:
-#
-# (1) the script should be run with a full path, so that it can decide where
-#     it lives with minimal fuss.
-# (2) on windows, the msys bin directory should already be in the path so that
-#     tools like dirname are already available.
-
 # here is where we compute the locations for the build's pieces, based on
 # where this script is located.  we currently assume that the build scripts
 # like this one are at the same height in the hierarchy as the clam scripts
@@ -54,19 +47,6 @@ PARM_1="$1"
 # helpful build function zone.
 
 source $FEISTY_MEOW_SCRIPTS/core/functions.sh
-  # load msys_to_dos_path and dos_to_msys_path.
-
-#### switches from a /X/path form to an X:/ form.
-###function msys_to_dos_path() {
-###  # we always remove dos slashes in favor of forward slashes.
-###  echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
-###}
-
-#### switches from an X:/ form to an /X/path form.
-###function dos_to_msys_path() {
-###  # we always remove dos slashes in favor of forward slashes.
-###  echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
-###}
 
 ##############
 
@@ -111,23 +91,6 @@ fi
 if [ ! -z "$SHELL_DEBUG" ]; then
   echo "[OS is \"$OPERATING_SYSTEM\"]"
 fi
-
-#hmmm: all this stuff is highly questionable value now.
-#### we create the variable FEISTY_MEOW_DIR, but we keep the dos form of
-#### the path, because otherwise lots of bad things happens when passing the
-#### folders around to visual studio commands that don't allow a space after them.
-###if [ -d "$BUILDING_HIERARCHY/source" ]; then
-###  # old style repository is same height as building hierarchy.
-###  export FEISTY_MEOW_DIR="$BUILDING_HIERARCHY"
-###else
-###  # new style repository is a level above the build hierarchy.
-###  export FEISTY_MEOW_DIR="$(echo "$BUILDING_HIERARCHY" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
-###fi
-###
-###if [ "$OPERATING_SYSTEM" = "WIN32" ]; then
-###  # make sure repository dir looks right on windoze.
-###  export FEISTY_MEOW_DIR="$(msys_to_dos_path "$FEISTY_MEOW_DIR")"
-###fi
 
 if [ ! -z "$SHELL_DEBUG" ]; then
   echo "[FEISTY_MEOW_DIR is $FEISTY_MEOW_DIR]"

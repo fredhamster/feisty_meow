@@ -167,9 +167,6 @@ export MAKEFILE_NAME = makefile
 # find command.  on dosdows, the find command is utter garbage and we need
 # to make sure we don't accidentally run that inferior one.
 export FIND = find
-#ifeq "$(OP_SYSTEM)" "WIN32"
-#  export FIND = $(FEISTY_MEOW_DIR)/msys/bin/find
-#endif
 
 # "PARAMETER_FILE" is the location of our version stamps (if defined) and
 # also contains any extra flags passed to the compilation.

@@ -19,8 +19,9 @@
 #
 # (1) the script should be run with a full path, so that it can decide where
 #     it lives with minimal fuss.
-# (2) on windows, the msys bin directory should already be in the path so that
-#     tools like dirname are already available.
+# (2) on windows, the unix tools bin directory should already be in the path
+#     so that tools like dirname are already available.  use msys or cygwin
+#     at your discretion and your own risk.
 
 # make sure we know how to find our bash bins.
 export PATH=/bin:$PATH

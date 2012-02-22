@@ -5,9 +5,7 @@ TYPE = hierarchy
 FIRST_TARGETS = build_bundle
 CLEANUPS = $(FEISTY_MEOW_DIR)/install/example_bundle$(EXE_END)
 export UNIX_BIN = /bin
-ifeq "$(OP_SYSTEM)" "WIN32"
-  export UNIX_BIN = $(BUILDING_HIERARCHY)/msys/bin
-endif
+#hmmm: is UNIX_BIN used anywhere?
 
 include cpp/rules.def
 
