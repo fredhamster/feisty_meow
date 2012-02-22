@@ -16,45 +16,42 @@
 
 ##############
 
-# FEISTY_MEOW_GENERATED is where the generated files yeti uses are located.
-# this is our single entry point we can use without knowing any variables
-# yet in the initialization process.
-export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
+if [ -z "$FEISTY_MEOW_GENERATED" ]; then
+  # FEISTY_MEOW_GENERATED is where the generated files yeti uses are located.
+  # this is our single entry point we can use without knowing any variables
+  # yet in the initialization process.
+  export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
+#hmmm: the above is kind of a constant.  that's not so great.
 
-# make sure our main variables are established.
-GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/fmc_variables.sh"
-if [ ! -f "$GENERATED_FEISTY_MEOW_VARIABLES" ]; then
-  echo -e '\n\n'
-  echo "The yeti scripts need to be initialized via the bootstrap process, e.g.:"
-  echo "  bash $HOME/feisty_meow/scripts/core/bootstrap_shells.sh"
-  echo -e '\n\n'
-fi
-
-##############
-
-# pull in our generated variables that are the minimal set we need to find
-# the rest of our resources.
-source "$GENERATED_FEISTY_MEOW_VARIABLES"
-
-##############
-
-# load all the standard feisty meow variables into the environment.
-source $FEISTY_MEOW_SCRIPTS/core/variables.sh
-
-# Set up the temporary directory.
-source $FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh
-
-##############
-
-# check if this is dos/windows.
-if [ "$OS" == "Windows_NT" ]; then
-  if [ -z "$HOME" ]; then
-    # set a default that might not be appropriate for everyone, but should
-    # still work.
-    export HOME=c:/home
+  # make sure our main variables are established.
+  GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/fmc_variables.sh"
+  if [ ! -f "$GENERATED_FEISTY_MEOW_VARIABLES" ]; then
+    echo -e '\n\n'
+    echo "The yeti scripts need to be initialized via the bootstrap process, e.g.:"
+    echo "  bash $HOME/feisty_meow/scripts/core/bootstrap_shells.sh"
+    echo -e '\n\n'
   fi
-  if [ ! -d "$HOME" ]; then mkdir $HOME; fi
+
+  ##############
+
+  # pull in our generated variables that are the minimal set we need to find
+  # the rest of our resources.
+  source "$GENERATED_FEISTY_MEOW_VARIABLES"
+
+  # Set up the temporary directory.
+  source $FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh
+
+  ##############
+
+  # load the larger body of standard feisty meow variables into the environment.
+  source $FEISTY_MEOW_SCRIPTS/core/variables.sh
+
 fi
+
+# check hash table before searching path.
+shopt -s checkhash
+# don't check path for sourced files.
+shopt -u sourcepath
 
 ##############
 
