@@ -155,11 +155,11 @@ if [ -z "$NECHUNG" ]; then
       export BINDIR=$FEISTY_MEOW_DIR/production/binaries
   
       # add binaries created within build to the path.
-  #    export PATH="$(dos_to_msys_path $BUILD_TOP/build/bin):$PATH"
-      export PATH="$BUILD_TOP/build/bin:$PATH"
+#    export PATH="$(dos_to_msys_path $BUILD_TOP/build/bin):$PATH"
+      export PATH="$BINDIR:$PATH"
   
       # Shared libraries are located via this variable.
-  #    export LD_LIBRARY_PATH="$(dos_to_msys_path $LD_LIBRARY_PATH):$(dos_to_msys_path $BINDIR)"
+#    export LD_LIBRARY_PATH="$(dos_to_msys_path $LD_LIBRARY_PATH):$(dos_to_msys_path $BINDIR)"
       export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$BINDIR"
     fi
   }
@@ -196,7 +196,8 @@ if [ -z "$NECHUNG" ]; then
   # set the path for locating applications.  this is done after any
   # potential overrides from the user.
   #export PATH="$(dos_to_msys_path $BINDIR):$(dos_to_msys_path $FEISTY_MEOW_GENERATED):$PATH:/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:."
-  export PATH="$BINDIR:$FEISTY_MEOW_GENERATED:$PATH:/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:."
+  export PATH="$FEISTY_MEOW_GENERATED:$PATH:/sbin:."
+###noise! :/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:.
   
   ##############
   
