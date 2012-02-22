@@ -79,7 +79,7 @@ sub load_file_names {
 sub rebuild_script_aliases {
 
   if (length($SHELL_DEBUG)) {
-    print "rebuiling generated aliases file...\n";
+    print "rebuilding generated aliases file...\n";
   }
 
   # create our generated shells directory if it's not already.
@@ -143,7 +143,7 @@ sub rebuild_script_aliases {
   close GENOUT;
 
   if (length($SHELL_DEBUG)) {
-    print("done rebuiling generated aliases file.\n");
+    print("done rebuilding generated aliases file.\n");
   }
 }
 
