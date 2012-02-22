@@ -48,6 +48,16 @@ if [ -z "$FEISTY_MEOW_GENERATED" ]; then
 
 fi
 
+##############
+  
+# include helpful functions.  we do this every time rather than making it part
+# of variable initialization, because functions cannot be exported to
+# sub-shells in bash (much like aliases cannot, to our infinite chagrin after
+# having migrated from korn shell...).
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+  
+##############
+  
 # check hash table before searching path.
 shopt -s checkhash
 # don't check path for sourced files.

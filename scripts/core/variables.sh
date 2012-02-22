@@ -61,11 +61,6 @@ if [ -z "$NECHUNG" ]; then
   
   ##############
   
-  # include helpful functions.
-  source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
-  
-  ##############
-  
   # user variables, sort of...  if they haven't given themselves a name yet,
   # then we will make one up for them.
   
