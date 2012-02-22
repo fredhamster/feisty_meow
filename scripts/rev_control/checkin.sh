@@ -47,6 +47,6 @@ if [ "$OS" != "Windows_NT" ]; then
   # first get individual folders.
   checkin_list $HOME
 else
-  checkin_list c: c:/home d: d:/home e: e:/home f: f:/home g: g:/home h: h:/home i: i:/home 
+  checkin_list $HOME c:/ d:/ e:/ f:/ g:/ h:/ i:/
 fi
 
