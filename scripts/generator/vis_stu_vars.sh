@@ -12,6 +12,7 @@ function print_usage {
   echo ""
 }
 
+chmod 755 $PRODUCTION_DIR/win32_help/*.exe
 export PATH=$PRODUCTION_DIR/win32_help:$PATH
 
 # we try to use the most recent compiler location, and work backwards as
