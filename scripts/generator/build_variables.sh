@@ -113,21 +113,21 @@ if [ ! -z "$SHELL_DEBUG" ]; then
 fi
 
 #hmmm: all this stuff is highly questionable value now.
-# we create the variable FEISTY_MEOW_DIR, but we keep the dos form of
-# the path, because otherwise lots of bad things happens when passing the
-# folders around to visual studio commands that don't allow a space after them.
-if [ -d "$BUILDING_HIERARCHY/source" ]; then
-  # old style repository is same height as building hierarchy.
-  export FEISTY_MEOW_DIR="$BUILDING_HIERARCHY"
-else
-  # new style repository is a level above the build hierarchy.
-  export FEISTY_MEOW_DIR="$(echo "$BUILDING_HIERARCHY" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
-fi
-
-if [ "$OPERATING_SYSTEM" = "WIN32" ]; then
-  # make sure repository dir looks right on windoze.
-  export FEISTY_MEOW_DIR="$(msys_to_dos_path "$FEISTY_MEOW_DIR")"
-fi
+#### we create the variable FEISTY_MEOW_DIR, but we keep the dos form of
+#### the path, because otherwise lots of bad things happens when passing the
+#### folders around to visual studio commands that don't allow a space after them.
+###if [ -d "$BUILDING_HIERARCHY/source" ]; then
+###  # old style repository is same height as building hierarchy.
+###  export FEISTY_MEOW_DIR="$BUILDING_HIERARCHY"
+###else
+###  # new style repository is a level above the build hierarchy.
+###  export FEISTY_MEOW_DIR="$(echo "$BUILDING_HIERARCHY" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
+###fi
+###
+###if [ "$OPERATING_SYSTEM" = "WIN32" ]; then
+###  # make sure repository dir looks right on windoze.
+###  export FEISTY_MEOW_DIR="$(msys_to_dos_path "$FEISTY_MEOW_DIR")"
+###fi
 
 if [ ! -z "$SHELL_DEBUG" ]; then
   echo "[FEISTY_MEOW_DIR is $FEISTY_MEOW_DIR]"
