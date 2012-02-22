@@ -33,8 +33,7 @@ BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
 echo build script after: $BUILD_SCRIPTS_DIR
 # load in feisty meow basic scripts, if not already loaded.
 source "$BUILD_SCRIPTS_DIR/../core/launch_feisty_meow.sh"
-# drop any previous version of the repository variable.
-unset FEISTY_MEOW_DIR
+# load in build variables based on our deduced paths.
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
 
 ##############

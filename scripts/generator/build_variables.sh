@@ -136,6 +136,7 @@ fi
 # new BUILD_TOP variable points at the utter top-most level of any files
 # in the building hierarchy.
 export BUILD_TOP="$FEISTY_MEOW_DIR"
+echo build top is $BUILD_TOP
 
 # this variable points at a folder where we store most of the generated products
 # of the build.  these tend to be the things that will be used for packaging into
