@@ -12,6 +12,10 @@ function print_usage {
   echo ""
 }
 
+if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
+  export PATH=$PRODUCTION_DIR/win32_help:$PATH
+fi
+
 # we try to use the most recent compiler location, and work backwards as
 # needed for the supported range (10 = vs 2010, 9 = vs 2008, 8 = vs 2005).
 export VSxTOOLS="$VS100COMNTOOLS"
