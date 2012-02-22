@@ -75,20 +75,20 @@ if [ ! -z "$PARM_1" ]; then
   # use the first real parameter since this is probably the 'source' version.
   export BUILD_SCRIPTS_DIR="$(dirname "$PARM_1")"
   THIS_TOOL_NAME="$(basename "$PARM_1")"
-#echo sourced version buildscriptsdir is $BUILD_SCRIPTS_DIR
+echo ==sourced version buildscriptsdir is $BUILD_SCRIPTS_DIR
 else
   # use the zeroth parameter, since we know nothing more about our name.
   export BUILD_SCRIPTS_DIR="$(dirname "$PARM_0")"
   THIS_TOOL_NAME="$(basename "$PARM_0")"
-#echo bashed version buildscriptsdir is $BUILD_SCRIPTS_DIR
+echo ==bashed version buildscriptsdir is $BUILD_SCRIPTS_DIR
 fi
 BUILD_SCRIPTS_DIR="$(cd $(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' ); \pwd)"
-echo ">> buildvars buildscriptsdir is $BUILD_SCRIPTS_DIR"
+echo "==buildvars buildscriptsdir is $BUILD_SCRIPTS_DIR"
 
 # figure out the other paths based on where we found this script.
 export BUILDING_HIERARCHY="$(echo "$BUILD_SCRIPTS_DIR" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
 export CLAM_DIR="$(cd $BUILD_SCRIPTS_DIR/../clam ; \pwd)"
-echo ">> buildvars clamdir is $CLAM_DIR"
+echo "==buildvars clamdir is $CLAM_DIR"
 # synonym to make other builds happy.
 export BUILDER_DIR="$BUILDING_HIERARCHY"
 
@@ -193,6 +193,7 @@ fi
 # now compute some more paths with a bit of "heuristics" for where we can
 # find the source code.
 export TOOL_SOURCES="$FEISTY_MEOW_DIR/nucleus/tools"
+echo "==tool source is $TOOL_SOURCES"
 if [ -z "$got_bad" -a ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; then
   echo "This script cannot locate the tool source code folder.  This is where the"
   echo "dependency_tool and clam_tools folders are expected to be."
