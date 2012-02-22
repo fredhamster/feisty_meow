@@ -4,7 +4,7 @@
 
 # test whether we've been here before or not.
 skip_all=
-date_stringer &>/dev/null
+function_sentinel &>/dev/null
 if [ $? -eq 0 ]; then
   # there was no error, so we can skip the inits.
   if [ ! -z "$SHELL_DEBUG" ]; then
@@ -205,6 +205,8 @@ if [ -z "$skip_all" ]; then
       nechung
     fi
   }
+
+  function function_sentinel() { return 0; }
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo function definitions end....; fi
   
