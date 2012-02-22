@@ -9,6 +9,7 @@ if [ $? -eq 0 ]; then
   # there was no error, so we can skip the inits.
   if [ ! -z "$SHELL_DEBUG" ]; then
     echo skipping functions.sh because already defined.
+    skip_all=yes
   fi
 fi
 
