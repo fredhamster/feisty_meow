@@ -184,7 +184,7 @@ function clean_cvs_junk() {
 function regenerate() {
   bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh
   echo
-  local wheres_nechung=$(which nechung)
+  local wheres_nechung=$(which nechung 2>/dev/null)
   if [ -z "$wheres_nechung" ]; then
     echo "The nechung oracle program cannot be found.  You may want to consider"
     echo "rebuilding the feisty meow applications with this command:"
