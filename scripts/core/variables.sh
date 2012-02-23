@@ -174,22 +174,6 @@ if [ -z "$NECHUNG" ]; then
   
   ##############
   
-  # pull in the custom overrides for feisty_meow scripts.  this is done last,
-  # because we want to set everything up as expected, then let the user
-  # override individual variables and definitions.
-  for i in $FEISTY_MEOW_GENERATED/custom/*.sh; do
-    if [ ! -f "$i" ]; then
-      # skip it if it's not real.
-      continue;
-    fi
-    if [ ! -z "$SHELL_DEBUG" ]; then
-      echo "loading customization: $(basename $(dirname $i))/$(basename $i)"
-    fi
-    source $i
-  done
-  
-  ##############
-  
   # set the path for locating applications.  this is done after any
   # potential overrides from the user.
   #export PATH="$(dos_to_msys_path $BINDIR):$(dos_to_msys_path $FEISTY_MEOW_GENERATED):$PATH:/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:."
@@ -202,3 +186,21 @@ if [ -z "$NECHUNG" ]; then
 
 fi
 
+##############
+
+# pull in the custom overrides for feisty_meow scripts.  this is done last,
+# because we want to set everything up as expected, then let the user
+# override individual variables and definitions.  we also don't guard this
+# to avoid running it again, because we don't know what mix of functions and
+# aliases they want to define in there.
+for i in $FEISTY_MEOW_GENERATED/custom/*.sh; do
+  if [ ! -f "$i" ]; then
+    # skip it if it's not real.
+    continue;
+  fi
+  if [ ! -z "$SHELL_DEBUG" ]; then
+    echo "loading customization: $(basename $(dirname $i))/$(basename $i)"
+  fi
+  source $i
+done
+  
