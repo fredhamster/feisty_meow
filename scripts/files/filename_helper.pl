@@ -342,7 +342,7 @@ sub important_filename {
 
   local(@junk_files) = ("~", "^\\.#.*", "^\\._.*", "\\.aps", "\\.bak",
       "^binaries", 
-      "\\.clw", "^cpdiff_tmp\\.txt", "^Debug", "^\\.ds_store", "^diffs\\.txt",
+      "\\.clw", "^cpdiff_tmp\\.txt", "^\\.ds_store", "^diffs\\.txt",
       "^diff_tmp\\.txt", "\\.dsp", "\\.dsw", "\\.gid", "gmon\\.out", "\\.isr",
       "^isconfig\\.ini", "\\.log", "^manifest.txt", "^obj",
       "\\.obj", "\\.output", "\\.plg", "^RCa.*", "^Release", "\\.res",
