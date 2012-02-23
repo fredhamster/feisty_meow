@@ -9,6 +9,17 @@
 
 ##############
 
+# this section should always run or bash will reset them on us.
+# these need to be as minimal as possible.
+
+# sets the main prompt to a simple default, with user@host.
+export PS1='\u@\h $ ';
+# sets the history length and max file size so we can get some long history around here.
+export HISTSIZE=1000000
+export HISTFILESIZE=2000000
+  
+##############
+  
 # we'll run this again only if we think it's needed.
 if [ -z "$NECHUNG" ]; then
 
@@ -71,11 +82,6 @@ if [ -z "$NECHUNG" ]; then
   
   ##############
   
-  # sets the main prompt to a simple default, with user@host.
-  export PS1='\u@\h $ ';
-  
-  ##############
-  
   # variables for perl.
   
   export PERLLIB
@@ -107,10 +113,6 @@ if [ -z "$NECHUNG" ]; then
   
   # ensure we use the right kind of rsh for security.
   export CVS_RSH=ssh
-  
-  # sets the history length and max file size so we can get some long history around here.
-  HISTSIZE=1000000
-  HISTFILESIZE=2000000
   
   # the base checkout list is just to update feisty_meow.  additional folder
   # names can be added in your customized scripts.
