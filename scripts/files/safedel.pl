@@ -32,7 +32,7 @@ if ($#ARGV < 0) {
   die "Too few arguments to command.";
 }
 
-$DEV_NULL = "&> /dev/null";
+$DEV_NULL = "> /dev/null 2> /dev/null";
 if ($OS eq "UNIX") {
   $FIND_ENDING = "';'";
   $zip = "zip -y ";

@@ -21,7 +21,7 @@
 
 require "zap_the_dir.pl";
 
-$DEV_NULL = "&>/dev/null";
+$DEV_NULL = "> /dev/null 2> /dev/null";
 #hmmm: move this to a useful location in a perl library.
 if ($OS eq "UNIX") {
   $FIND_ENDING = "';'";
