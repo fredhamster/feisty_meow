@@ -41,12 +41,14 @@ if [ -z "$FEISTY_MEOW_GENERATED" ]; then
   # Set up the temporary directory.
   source $FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh
 
-  ##############
-
-  # load the larger body of standard feisty meow variables into the environment.
-  source $FEISTY_MEOW_SCRIPTS/core/variables.sh
-
 fi
+
+##############
+
+# load the larger body of standard feisty meow variables into the environment.
+# we actually want this to always run also; it will decide what variables need
+# to be set again.
+source $FEISTY_MEOW_SCRIPTS/core/variables.sh
 
 ##############
   

@@ -200,12 +200,5 @@ if [ -z "$NECHUNG" ]; then
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization ends....; fi
 
-else
-  # we are seeing this lot again, we believe, so make things easier for the
-  # rest of initialization.
-  export LIGHTWEIGHT_INIT=true
-  if [ ! -z "$SHELL_DEBUG" ]; then
- echo skipped var init and put in lightweight mode due to belief in previous existence.; 
-fi
 fi
 
