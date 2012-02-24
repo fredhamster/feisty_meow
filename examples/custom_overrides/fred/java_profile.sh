@@ -51,21 +51,7 @@ if [ ! -d "$JAVA_HOME" ]; then
 fi
 if [ ! -d "$JAVA_HOME" ]; then
   # try using a windows version.
-#note: this logic is untested.
-# probably will break due to space in path issues.
-  declare -a any_there=$(find "/c/Program Files/java" -type d -iname "jdk" 2>/dev/null)
-  if [ ${#any_there[*]} -gt 0 ]; then
-    (( last = ${#any_there[@]} - 1 ))
-    JAVA_HOME="${any_there[$last]}"
-  fi
-  if [ ! -d "$JAVA_HOME" ]; then
-    # if no jdk, try a jre.
-    declare -a any_there=$(find "/c/Program Files/java" -type d -iname "jre" 2>/dev/null)
-    if [ ${#any_there[*]} -gt 0 ]; then
-      (( last = ${#any_there[@]} - 1 ))
-      JAVA_HOME="${any_there[$last]}"
-    fi
-  fi
+  JAVA_HOME=d:/tools/java6-jre
 fi
 # this should go last, since it changes the bin dir.
 if [ ! -d "$JAVA_HOME" ]; then
@@ -96,13 +82,13 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR="/c/Program Files/eclipse"
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  ECLIPSE_DIR="/c/tools/eclipse"
+  ECLIPSE_DIR="c:/tools/eclipse"
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  ECLIPSE_DIR="/d/tools/eclipse"
+  ECLIPSE_DIR="d:/tools/eclipse"
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  ECLIPSE_DIR="/e/tools/eclipse"
+  ECLIPSE_DIR="e:/tools/eclipse"
 fi
 # final option is to whine.
 if [ ! -d "$ECLIPSE_DIR" -a -z "$(whichable eclipse 2>/dev/null)" ]; then
