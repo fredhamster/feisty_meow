@@ -29,6 +29,9 @@ sub get_number {
   if ($number < 10) { $number = '0'.$number; }
   if ($number < 100) { $number = '0'.$number; }
   if ($number < 1000) { $number = '0'.$number; }
+  # upgraded to 6 digit numbers.  whoo hoo.
+  if ($number < 10000) { $number = '0'.$number; }
+  if ($number < 100000) { $number = '0'.$number; }
   close(NUMBERING);
   return $number;
 }
@@ -37,9 +40,9 @@ sub get_number {
 sub next_number {
   local($number_file) = @_;
   local($number) = &get_number($number_file);
-  if ($number < 0) { $number = '0000'; }
+  if ($number < 0) { $number = '000000'; }
   $number++;
-  if ($number > 9999) { $number = '0000'; }
+  if ($number > 999999) { $number = '000000'; }
   open(NUMBERING, "> $number_file");
 #print "number is now $number\n";
   print NUMBERING "$number\n";
