@@ -9,7 +9,7 @@ for i in * ; do
     if [ -d ".svn" ]; then
       svn update .
     elif [ -d ".git" ]; then
-      git pull .
+      git pull 
     fi
     popd
   fi
