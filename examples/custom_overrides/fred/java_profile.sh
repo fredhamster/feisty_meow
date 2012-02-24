@@ -67,6 +67,20 @@ fi
 
 ############################
 
+if [ ! -d "$JDK_HOME" ]; then
+  # try using a windows version.
+  JDK_HOME="d:/tools/java6-jdk"
+  if [ -d "$JDK_HOME/jre" ]; then
+    # reset java home.
+    JAVA_HOME="$JDK_HOME/jre"
+  fi
+fi
+if [ ! -d "$JDK_HOME" ]; then
+  intuition_failure JDK_HOME
+fi
+
+############################
+
 # intuit where we have our local eclipse.
 if [ ! -d "$ECLIPSE_DIR" ]; then
   export ECLIPSE_DIR=/usr/local/eclipse_jee
@@ -102,6 +116,10 @@ fi
 
 if [ ! -z "$JAVA_HOME" ]; then
   export PATH=$JAVA_HOME/$JAVA_BIN_PIECE:$PATH
+fi
+if [ ! -z "$JDK_HOME" ]; then
+#may have to do bin piece if support mac with jdk bit.
+  export PATH=$JDK_HOME/bin:$PATH
 fi
 if [ ! -z "$ECLIPSE_DIR" ]; then
   export PATH=$ECLIPSE_DIR:$PATH
