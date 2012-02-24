@@ -51,7 +51,7 @@ if [ ! -d "$JAVA_HOME" ]; then
 fi
 if [ ! -d "$JAVA_HOME" ]; then
   # try using a windows version.
-  JAVA_HOME=/d/tools/java6-jre
+  JAVA_HOME="/d/tools/java6-jdk"
 fi
 # this should go last, since it changes the bin dir.
 if [ ! -d "$JAVA_HOME" ]; then
@@ -63,20 +63,6 @@ fi
 if [ ! -d "$JAVA_HOME" -a -z "$(whichable java 2>/dev/null)" ]; then
   intuition_failure JAVA_HOME
   unset JAVA_BIN_PIECE
-fi
-
-############################
-
-if [ ! -d "$JDK_HOME" ]; then
-  # try using a windows version.
-  JDK_HOME="/d/tools/java6-jdk"
-  if [ -d "$JDK_HOME/jre" ]; then
-    # reset java home.
-    JAVA_HOME="$JDK_HOME/jre"
-  fi
-fi
-if [ ! -d "$JDK_HOME" ]; then
-  intuition_failure JDK_HOME
 fi
 
 ############################
@@ -116,10 +102,6 @@ fi
 
 if [ ! -z "$JAVA_HOME" ]; then
   export PATH=$JAVA_HOME/$JAVA_BIN_PIECE:$PATH
-fi
-if [ ! -z "$JDK_HOME" ]; then
-#may have to do bin piece if support mac with jdk bit.
-  export PATH=$JDK_HOME/bin:$PATH
 fi
 if [ ! -z "$ECLIPSE_DIR" ]; then
   export PATH=$ECLIPSE_DIR:$PATH
