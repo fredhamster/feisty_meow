@@ -34,7 +34,8 @@ function launch_screen()
   screen_name="$1"; shift
   app_name="$1"; shift
   echo "$(mdate): starting $screen_name now..."
-  screen -L -S "$screen_name" -d -m nice -n $NICENESS_LEVEL mono --debug "$app_name" 
+  screen -L -S "$screen_name" -d -m nice -n $NICENESS_LEVEL mono "$app_name" 
+##why? --debug 
 #-console=basic 
   echo "$(mdate): $screen_name started."
   sleep $SNOOZE_TIME
