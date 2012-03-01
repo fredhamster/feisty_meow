@@ -51,7 +51,7 @@ if [ ! -d "$JAVA_HOME" ]; then
 fi
 if [ ! -d "$JAVA_HOME" ]; then
   # try using a windows version.
-  JAVA_HOME="/d/tools/java6-jdk"
+  JAVA_HOME="d:/tools/java6-jdk"
 fi
 # this should go last, since it changes the bin dir.
 if [ ! -d "$JAVA_HOME" ]; then
@@ -79,16 +79,16 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
 #uhhh, default on winders?
-  ECLIPSE_DIR="/c/Program Files/eclipse"
+  ECLIPSE_DIR="c:/Program Files/eclipse"
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  ECLIPSE_DIR="/c/tools/eclipse"
+  ECLIPSE_DIR="c:/tools/eclipse"
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  ECLIPSE_DIR="/d/tools/eclipse"
+  ECLIPSE_DIR="d:/tools/eclipse"
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  ECLIPSE_DIR="/e/tools/eclipse"
+  ECLIPSE_DIR="e:/tools/eclipse"
 fi
 # final option is to whine.
 if [ ! -d "$ECLIPSE_DIR" -a -z "$(whichable eclipse 2>/dev/null)" ]; then
