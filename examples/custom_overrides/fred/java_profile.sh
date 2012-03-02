@@ -63,10 +63,6 @@ fi
 if [ ! -d "$JAVA_HOME" -a -z "$(whichable java 2>/dev/null)" ]; then
   intuition_failure JAVA_HOME
   unset JAVA_BIN_PIECE
-else
-  if [ ! -z "$(uname -a | grep -i cygwin)" ]; then
-    JAVA_HOME=$(echo $JAVA_HOME | sed -e 's/^\(.\):/\/cygdrive\/\1/')
-  fi
 fi
 
 ############################
@@ -109,10 +105,18 @@ fi
 # any other paths to different versions.
 
 if [ ! -z "$JAVA_HOME" ]; then
-  export PATH=$JAVA_HOME/$JAVA_BIN_PIECE:$PATH
+  j="$JAVA_HOME"
+  if [ ! -z "$(uname -a | grep -i cygwin)" ]; then
+    j=$(echo $j | sed -e 's/^\(.\):/\/cygdrive\/\1/')
+  fi
+  export PATH=$j/$JAVA_BIN_PIECE:$PATH
 fi
 if [ ! -z "$ECLIPSE_DIR" ]; then
-  export PATH=$ECLIPSE_DIR:$PATH
+  e="$ECLIPSE_DIR"
+  if [ ! -z "$(uname -a | grep -i cygwin)" ]; then
+    e=$(echo $e | sed -e 's/^\(.\):/\/cygdrive\/\1/')
+  fi
+  export PATH=$e:$PATH
 fi
 
 ############################
