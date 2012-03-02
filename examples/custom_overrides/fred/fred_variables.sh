@@ -33,19 +33,8 @@ export from="Fred T. Hamster <fred@gruntose.com>"
 export BROWSER=/usr/bin/firefox
 
 # editor and other mixed settings...
-export VISUAL=$(which vim)
-
-#hmmm: move these to the uva profile,
-#      rename uva profile to java profile,
-#      get them doing the right thing per OS.
-#  export JAVA_HOME="c:/Program Files/java/jdk1.6.0_11"
-
-# special settings for win32 and svn.
-if [ "$OS" == "Windows_NT" ]; then
-  export EDITOR=$(which gvim)
-else
-  export EDITOR=$(which vi)
-fi
+export VISUAL="$(which vi)"
+export EDITOR="$VISUAL"
 
 # this hideous mess is necessitated by our not having found the source of the
 # settings yet.  we override a few colors that look bad on a dark background.
