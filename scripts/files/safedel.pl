@@ -97,12 +97,12 @@ sub safedel {
       next;
     }
     $tempfile = $temp_subdir . "/temp" . "$number";
-#   print "tempfile is $tempfile; file is $file.\n";
+#print "tempfile is $tempfile; file is $file.\n";
     if (-d $file) {
       # ensure there aren't any read only files.
       system("chmod -R u+rw \"$file\"");
       # store the directory in the trash storage.
-      system("$zip -rm$use_path $tempfile \"$file$wildcard\" $DEV_NULL");
+      system("$zip -rm $use_path $tempfile \"$file$wildcard\" $DEV_NULL");
         # zip up the files into the safekeeper directory.
       # recursively unlink in case zip doesn't remove the empty dir.
       if (-d $file) {
@@ -113,6 +113,8 @@ sub safedel {
     } elsif (-f $file) {
       # store the file in the trash storage.
       system("chmod u+rw \"$file\"");
+
+#print "about to run: system [$zip -m$use_path $tempfile '$file' $DEV_NULL]";
       system("$zip -m$use_path $tempfile \"$file\" $DEV_NULL");
       push(@deleted, "$file");
     } else {
