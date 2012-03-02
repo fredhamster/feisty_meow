@@ -92,10 +92,6 @@ alias cputemp='acpi -t'
 alias recustomize='regenerate &>/dev/null; echo "copying custom overrides for fred..."; cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom; regenerate'
 # makes root user's home directory's permissions right.
 alias reroot='chown -R root:root /root'
-# replace the vi command with a graphical version on windows.
-if [ "$OS" = "Windows_NT" ]; then
-  alias vi='gvim'
-fi
 # yes, these are really helpful...
 alias whereami='echo whoa dude, try not to think about it...'
 alias why='echo just because.'

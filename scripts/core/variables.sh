@@ -120,12 +120,7 @@ if [ -z "$NECHUNG" ]; then
   
   # set the editor for subversion if it hasn't already been set.
   if [ -z "$SVN_EDITOR" ]; then
-  #hmmm: not sure what original reason for having these different was...
-    if [ "$OS"  == "Windows_NT" ]; then
-      export SVN_EDITOR=$(which gvim)
-    else
-      export SVN_EDITOR=$(which vi)
-    fi
+    export SVN_EDITOR=$(which vi)
   fi
   
   # initializes the feisty meow build variables, if possible.
