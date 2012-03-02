@@ -63,6 +63,10 @@ fi
 if [ ! -d "$JAVA_HOME" -a -z "$(whichable java 2>/dev/null)" ]; then
   intuition_failure JAVA_HOME
   unset JAVA_BIN_PIECE
+else
+  if [ ! -z "$(uname -a | grep -i cygwin)" ]; then
+    JAVA_HOME=$(echo $JAVA_HOME | sed -e 's/^\(.\):/\/cygdrive\/\1/')
+  fi
 fi
 
 ############################
@@ -93,6 +97,10 @@ fi
 # final option is to whine.
 if [ ! -d "$ECLIPSE_DIR" -a -z "$(whichable eclipse 2>/dev/null)" ]; then
   intuition_failure ECLIPSE_DIR
+else
+  if [ ! -z "$(uname -a | grep -i cygwin)" ]; then
+    ECLIPSE_DIR=$(echo $ECLIPSE_DIR | sed -e 's/^\(.\):/\/cygdrive\/\1/')
+  fi
 fi
 
 ############################
