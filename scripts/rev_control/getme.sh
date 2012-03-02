@@ -71,7 +71,7 @@ rm -f "$TMPO_CHK"
 if [ "$OS" != "Windows_NT" ]; then
   checkout_list $HOME 2>&1 | tee -a "$TMPO_CHK"
 else
-  checkout_list $HOME c:/ d:/ e:/ f:/ g:/ h:/ i:/ 2>&1 | tee -a "$TMPO_CHK"
+  checkout_list $HOME c:/ d:/ e:/ 2>&1 | tee -a "$TMPO_CHK"
 fi
 
 less $TMPO_CHK
