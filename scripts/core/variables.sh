@@ -111,8 +111,9 @@ if [ -z "$NECHUNG" ]; then
   # set this so nechung can find its data.
   export NECHUNG=$FEISTY_MEOW_DIR/database/fortunes.dat
   
-  # ensure we use the right kind of rsh for security.
-  export CVS_RSH=ssh
+  # ensure we use the right kind of secure shell.
+  export CVS_RSH=$FEISTY_MEOW_SCRIPTS/tty/ssh.sh
+  export GIT_SSH=$FEISTY_MEOW_SCRIPTS/tty/ssh.sh
   
   # the base checkout list is just to update feisty_meow.  additional folder
   # names can be added in your customized scripts.
