@@ -8,9 +8,25 @@ the CLAM build system, and a variety of other efforts.
 
 Directories and files of interest here...
 
+scripts/
+    Stores the script files that we use a lot.  These are usually written in interpreted
+    languages, such as bash and perl.  These were the core of the YetiCode scripts library.
+
 nucleus/
-    Source for the basic modules of the Feisty Meow (TM) codebase.  This includes basic
-    data structures, useful utilities, and the like.
+    Source for the basic modules of the Feisty Meow (TM) codebase.  This includes generic
+    data structures, useful utilities, and the like.  This hierarchy, plus octopi and graphiq,
+    formed the major parts of hoople1 and hoople2.
+
+huffware/
+    The library of LSL scripts for osgrid and Second Life written by the avatar named Fred
+    Huffhines.  Fred Huffhines is a regular contributor and a well-loved member of our
+    development team.  He also happens to be a fictional sock-puppet for adventuring around
+    the grids, but a lot of code has been written in his name.  We are going to release the
+    full corpus of the Huffhines work over time.
+
+octopi/
+    Octopus design pattern and CROMP protocol reference implementations.  Assorted applications
+    based on these.
 
 database/
     Some files considered critical to the operations of Feisty Meow Concerns Ltd.  This includes
@@ -20,30 +36,22 @@ doc/
     Assorted documentation files for Feisty Meow and a code-scanning documentation generator
     based on doxygen.
 
-graphiq/
-    GUI tools and components, somewhat busted or just absent right now.
-
-huffware/
-    The library of LSL scripts for osgrid and Second Life written by the avatar named Fred
-    Huffhines.  Fred Huffhines is a regular contributor and a well-loved member of our
-    development team.  He also happens to be a fictional sock-puppet for adventuring around
-    the grids, but a lot of code has been written in his name.  We are going to release the
-    full corpus of the Huffhines work over time.
+examples/
+    Some files that show how to get work done with Feisty Meow or that show how to do certain
+    tasks in different scripting / programming languages.
 
 kona/
     Our burgeoning Java libraries.  Not much to see here yet, but there is some code piling
     up for these that we will try to release soon.
 
-octopi/
-    Octopus design pattern and CROMP protocol reference implementations.  Assorted applications
-    based on these.
-
 production/
     Machinery for getting releases out the door, including the generated files such as binaries
     and build system tools.
 
-scripts/
-    Stores the script files that we use a lot.  These are usually written in interpreted
-    languages, such as bash and perl.
+graphiq/
+    GUI tools and components, somewhat busted or just absent right now.
 
+webby/
+    Source code specifically for web programming and building sites.  Mainly a few javascript
+    files we keep around.
 
