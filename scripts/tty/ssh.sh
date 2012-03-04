@@ -14,6 +14,8 @@ if [ ! -z "$(echo $* | grep -i sourceforge)" ]; then
   keyfile="$HOME/.ssh/id_dsa_sourceforge"
 fi
 
+echo hey we be on wik dese parms $* >~/crap.txt
+
 \ssh -i "$keyfile" -X $*
 
 if [ $? -eq 0 ]; then
