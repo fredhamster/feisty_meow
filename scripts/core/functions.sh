@@ -53,13 +53,9 @@ if [ -z "$skip_all" ]; then
       \rm "$tmppid"
       local appropriate_pattern='s/^.*  *\([0-9][0-9]*\) *$/\1/p'
       for i in "${patterns[@]}"; do
-#echo "pattern $i seek" >>~/crap.txt
         PIDS_SOUGHT+=$(cat $PID_DUMP \
           | grep -i "$i" \
           | sed -n -e "$appropriate_pattern")
-#cp $PID_DUMP ~/crud
-#echo heres the dump after grep >>~/crap.txt
-#cat $PID_DUMP | grep -i "$i" >>~/crap.txt
         if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
 	  # we want to bail as soon as we get matches, because on the same
 	  # platform, the same set of patterns should work to find all
