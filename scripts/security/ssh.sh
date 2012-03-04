@@ -2,7 +2,7 @@
 
 # wraps our calling the secure shell and lets us pick our credentials.
 
-source "$FEISTY_MEOW_SCRIPTS/pick_credentials.sh"
+source "$FEISTY_MEOW_SCRIPTS/security/pick_credentials.sh"
 
 \ssh -i "$keyfile" -X $*
 
