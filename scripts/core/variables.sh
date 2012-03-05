@@ -121,7 +121,7 @@ if [ -z "$NECHUNG" ]; then
   
   # set the editor for subversion if it hasn't already been set.
   if [ -z "$SVN_EDITOR" ]; then
-    export SVN_EDITOR=$(which vi)
+    export SVN_EDITOR=$(which gvim)
   fi
   
   # initializes the feisty meow build variables, if possible.
