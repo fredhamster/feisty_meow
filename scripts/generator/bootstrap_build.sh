@@ -33,6 +33,7 @@ echo build script initial from bootstrap: $BUILD_SCRIPTS_DIR
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
 echo build script after: $BUILD_SCRIPTS_DIR
 # load in feisty meow basic scripts, if not already loaded.
+bash "$BUILD_SCRIPTS_DIR/../core/bootstrap_shells.sh"
 source "$BUILD_SCRIPTS_DIR/../core/launch_feisty_meow.sh"
 # load in build variables based on our deduced paths.
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
