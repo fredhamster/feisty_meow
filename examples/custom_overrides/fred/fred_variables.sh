@@ -33,7 +33,10 @@ export from="Fred T. Hamster <fred@gruntose.com>"
 export BROWSER=/usr/bin/firefox
 
 # editor and other mixed settings...
-export VISUAL="$(which vi)"
+export VISUAL="$(which gvim)"
+if [ $? -ne 0 ]; then
+  export VISUAL="$(which vi)"
+fi
 export EDITOR="$VISUAL"
 
 # this hideous mess is necessitated by our not having found the source of the
