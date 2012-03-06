@@ -7,6 +7,6 @@ alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chun
 alias unmoo='umount /z/stuffing ; umount /z/walrus ; umount /z/chunky '
 
 # cleans up the ownership for all my files.
-alias refred='(chown -R fred:fred /home/fred /usr/local/games /home/archives /fatty /clutterato /var/spool/mail/fred ; normal_perm /var/log )'
+alias refred='(chown -R fred:fred /home/fred /home/games /home/archives ; normal_perm /var/log )'
 
 
