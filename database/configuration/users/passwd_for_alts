@@ -1,0 +1,10 @@
+
+fred:x:1008:1008:fred hamster,,,:/home/fred:/bin/bash
+
+fredhuff:x:14000:14000:Fred Huffhines,,,,:/home/fredhuff:/bin/bash
+chronical:x:14001:14001:Chronical Koolhoven,,,,:/home/chronical:/bin/bash
+zeno:x:14002:14002:Zeno Olifone,,,,:/home/zeno:/bin/bash
+mojo:x:14003:14003:mojopickle haystack,,,,:/home/mojo:/bin/bash
+sedge:x:14004:14004:sedgeweaver jupiter,,,,:/home/sedge:/bin/bash
+ddm:x:14005:14005:DharmaDrum Magic,,,,:/home/ddm:/bin/bash
+
