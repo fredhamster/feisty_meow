@@ -119,11 +119,6 @@ if [ -z "$NECHUNG" ]; then
   # names can be added in your customized scripts.
   export REPOSITORY_LIST="feisty_meow"
   
-  # set the editor for subversion if it hasn't already been set.
-  if [ -z "$SVN_EDITOR" ]; then
-    export SVN_EDITOR=$(which gvim)
-  fi
-  
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()
   {

@@ -33,11 +33,11 @@ function launch_screen()
 {
   screen_name="$1"; shift
   app_name="$1"; shift
-  echo "$(mdate): starting $screen_name now..."
+  echo "$(date_stringer): starting $screen_name now..."
   screen -L -S "$screen_name" -d -m nice -n $NICENESS_LEVEL mono "$app_name" 
 ##why? --debug 
 #-console=basic 
-  echo "$(mdate): $screen_name started."
+  echo "$(date_stringer): $screen_name started."
   sleep $SNOOZE_TIME
 }
 
@@ -60,13 +60,13 @@ function close_application()
 {
   screen_name="$1"; shift
   process_name="$1"; shift
-  echo "$(mdate): stopping $screen_name now..."
+  echo "$(date_stringer): stopping $screen_name now..."
   screen -r -s "$screen_name" -X quit
 
   # we don't want to shut any other servers down until this process is really gone.
   find_opensim_process $process_name
   if [ ! -z "$OS_PROC_ID" ]; then
-    echo "$(mdate): waiting for $screen_name to really shut down..."
+    echo "$(date_stringer): waiting for $screen_name to really shut down..."
     sleep $SNOOZE_TIME
     # check again after the snooze.
     find_opensim_process $process_name
@@ -74,7 +74,7 @@ function close_application()
       find_opensim_process $process_name
 #break out on timed basis.
     done
-    echo "$(mdate): $screen_name really is shut down now."
+    echo "$(date_stringer): $screen_name really is shut down now."
 
 #do this as last ditch, above in timeout
     find_opensim_process $process_name
@@ -86,6 +86,6 @@ function close_application()
 
   fi
 
-  echo "$(mdate): $screen_name stopped."
+  echo "$(date_stringer): $screen_name stopped."
 }
 
