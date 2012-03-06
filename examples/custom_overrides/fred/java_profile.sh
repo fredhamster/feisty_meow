@@ -50,8 +50,10 @@ if [ ! -d "$JAVA_HOME" ]; then
   export JAVA_HOME=/usr/lib/jvm/java-7-oracle/jre
 fi
 if [ ! -d "$JAVA_HOME" ]; then
-  # try using a windows version.
-  JAVA_HOME="d:/tools/java6-jdk"
+  if [ ! -z "$(grep 'd:' /proc/mounts)" ]; then
+    # try using a windows version.
+    JAVA_HOME="d:/tools/java6-jdk"
+  fi
 fi
 # this should go last, since it changes the bin dir.
 if [ ! -d "$JAVA_HOME" ]; then
@@ -78,17 +80,17 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR=$HOME/apps/eclipse
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-#uhhh, default on winders?
-  ECLIPSE_DIR="c:/Program Files/eclipse"
-fi
-if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR="c:/tools/eclipse"
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  ECLIPSE_DIR="d:/tools/eclipse"
+  if [ ! -z "$(grep 'd:' /proc/mounts)" ]; then
+    ECLIPSE_DIR="d:/tools/eclipse"
+  fi
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  ECLIPSE_DIR="e:/tools/eclipse"
+  if [ ! -z "$(grep 'e:' /proc/mounts)" ]; then
+    ECLIPSE_DIR="e:/tools/eclipse"
+  fi
 fi
 # final option is to whine.
 if [ ! -d "$ECLIPSE_DIR" -a -z "$(whichable eclipse 2>/dev/null)" ]; then
