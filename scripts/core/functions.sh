@@ -114,14 +114,14 @@ if [ -z "$skip_all" ]; then
           fuzil_sentinel=true
         done
       else 
-        # cases besides darwin OS (for macs).
+        # cases besides mac os x's darwin.
         extra_flags=
         if [ "$OS" = "Windows_NT" ]; then
           # special case for windows.
           extra_flags=-W
           ps | head -1
           for curr in $p; do
-            ps $extra_flags | grep "^ *$curr" 
+            ps $extra_flags | grep "$curr" 
           done
         else
           # normal OSes can handle a nice simple query.
