@@ -50,12 +50,12 @@ if [ ! -d "$JAVA_HOME" ]; then
   export JAVA_HOME=/usr/lib/jvm/java-7-oracle/jre
 fi
 if [ ! -d "$JAVA_HOME" ]; then
-  JAVA_HOME="c:/tools/java6-jdk"
+  JAVA_HOME="$(ls -d c:/tools/*jdk*)"
 fi
 if [ ! -d "$JAVA_HOME" ]; then
   if [ ! -z "$(grep 'd:' /proc/mounts)" ]; then
     # try using a windows version.
-    JAVA_HOME="d:/tools/java6-jdk"
+    JAVA_HOME="$(ls -d d:/tools/*jdk*)"
   fi
 fi
 # this should go last, since it changes the bin dir.
@@ -67,6 +67,7 @@ fi
 # last thing is to tell them we couldn't find it.
 if [ ! -d "$JAVA_HOME" -a -z "$(whichable java 2>/dev/null)" ]; then
   intuition_failure JAVA_HOME
+  unset JAVA_HOME
   unset JAVA_BIN_PIECE
 fi
 
@@ -98,6 +99,7 @@ fi
 # final option is to whine.
 if [ ! -d "$ECLIPSE_DIR" -a -z "$(whichable eclipse 2>/dev/null)" ]; then
   intuition_failure ECLIPSE_DIR
+  unset ECLIPSE_DIR
 else
   if [ ! -z "$(uname -a | grep -i cygwin)" ]; then
     ECLIPSE_DIR=$(echo $ECLIPSE_DIR | sed -e 's/^\(.\):/\/cygdrive\/\1/')
