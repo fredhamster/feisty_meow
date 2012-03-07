@@ -152,9 +152,6 @@ if [ -z "$NECHUNG" ]; then
     fi
   }
   
-  # load in the build environment.
-  initialize_build_variables
-  
   ##############
   
   # windoze specific patching up missing things.
@@ -162,8 +159,13 @@ if [ -z "$NECHUNG" ]; then
   if [ "$OS" == "Windows_NT" ]; then
     export HOSTNAME=$(echo $HOSTNAME | tr A-Z a-z)
     # turn off warnings about files in dos format.  give up cygwin, you're on dos/windows.
-    export cygwin=nodosfilewarning
+    export CYGWIN=nodosfilewarning
   fi
+  
+  ##############
+  
+  # load in the build environment.
+  initialize_build_variables
   
   ##############
   
