@@ -158,8 +158,6 @@ if [ -z "$NECHUNG" ]; then
   
   if [ "$OS" == "Windows_NT" ]; then
     export HOSTNAME=$(echo $HOSTNAME | tr A-Z a-z)
-    # turn off warnings about files in dos format.  give up cygwin, you're on dos/windows.
-    export CYGWIN=nodosfilewarning
   fi
   
   ##############
