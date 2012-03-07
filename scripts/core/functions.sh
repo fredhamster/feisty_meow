@@ -57,7 +57,8 @@ if [ -z "$skip_all" ]; then
       # we 'type' the file to get rid of the unicode result from wmic.
       cmd $flag type "$tmppid" >$PID_DUMP
       \rm "$tmppid"
-      local appropriate_pattern='s/^.*  *\([0-9][0-9]*\) *$/\1/p'
+      local CR=''  # embedded carriage return.
+      local appropriate_pattern="s/^.*  *\([0-9][0-9]*\)[ $CR]*\$/\1/p"
       for i in "${patterns[@]}"; do
         PIDS_SOUGHT+=$(cat $PID_DUMP \
           | grep -i "$i" \
