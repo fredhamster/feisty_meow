@@ -6,7 +6,11 @@ source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
 
 # trickery to ensure we can always update this file, even when the operating system has some
 # rude behavior with regard to file locking (ahem, windows...).
-if [ "$(pwd)" != "$TMP" ]; then
+# and even more rudeness is that the pwd and $TMP may not always be in the same form,
+# which causes endless confusion and badness.  that's why we get the pwd reading for TMP
+# first so we can do an orange-to-orange compare.
+tmpdir="$(cd $TMP; \pwd)"
+if [ "$(\pwd)" != "$tmpdir" ]; then
   if [ ! -z "$SHELL_DEBUG" ]; then
     echo "Moving to the TMP directory to avoid file access conflicts..."
   fi
