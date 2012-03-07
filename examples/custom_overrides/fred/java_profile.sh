@@ -50,6 +50,9 @@ if [ ! -d "$JAVA_HOME" ]; then
   export JAVA_HOME=/usr/lib/jvm/java-7-oracle/jre
 fi
 if [ ! -d "$JAVA_HOME" ]; then
+  JAVA_HOME="c:/tools/java6-jdk"
+fi
+if [ ! -d "$JAVA_HOME" ]; then
   if [ ! -z "$(grep 'd:' /proc/mounts)" ]; then
     # try using a windows version.
     JAVA_HOME="d:/tools/java6-jdk"
