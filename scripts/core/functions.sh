@@ -64,9 +64,9 @@ if [ -z "$skip_all" ]; then
           | grep -i "$i" \
           | sed -n -e "$appropriate_pattern")
         if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
-	  # we want to bail as soon as we get matches, because on the same
-	  # platform, the same set of patterns should work to find all
-	  # occurrences of the genesis java.
+          # we want to bail as soon as we get matches, because on the same
+          # platform, the same set of patterns should work to find all
+          # occurrences of the genesis java.
           break;
         fi
       done
@@ -83,9 +83,9 @@ if [ -z "$skip_all" ]; then
           | grep -i "$i" \
           | sed -n -e "$appropriate_pattern")
         if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
-	  # we want to bail as soon as we get matches, because on the same
-	  # platform, the same set of patterns should work to find all
-	  # occurrences of the genesis java.
+          # we want to bail as soon as we get matches, because on the same
+          # platform, the same set of patterns should work to find all
+          # occurrences of the genesis java.
           break;
         fi
       done
