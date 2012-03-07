@@ -10,11 +10,8 @@ if [ ! -z "$SHELL_DEBUG" ]; then echo creating temporary directory...; fi
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 if [ -z "$TMP" ]; then
+  # main declaration of the transients area.
   export TMP=$HOME/.tmp
-    # main declaration of the transients area.
-  if [ "$OS" = "Windows_NT" ]; then
-    export TMP=c:/tmp
-  fi
 fi
 
 LOG_FILE=$TMP/zz_transients.log
