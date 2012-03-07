@@ -38,7 +38,13 @@ if [ -z "$skip_all" ]; then
     local patterns=($*)
     if [ "$OS" == "Windows_NT" ]; then
       # needs to be a windows format filename for 'type' to work.
-      local tmppid=c:\\tmp_pids.txt
+      if [ ! -d c:/tmp ]; then
+        mkdir c:/tmp
+      fi
+      # windows7 magical mystery tour lets us create a file c:\\tmp_pids.txt, but then it's not really there
+      # in the root of drive c: when we look for it later.  hoping to fix that problem by using a subdir, which
+      # also might be magical thinking from windows perspective.
+      tmppid=c:\\tmp\\pids.txt
       # we have abandoned all hope of relying on ps on windows.  instead
       # we use wmic to get full command lines for processes.
       # this does not exist on windows home edition.  we are hosed if that's
