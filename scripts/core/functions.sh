@@ -21,7 +21,9 @@ if [ -z "$skip_all" ]; then
   # a handy little method that can be used for date strings.  it was getting
   # really tiresome how many different ways the script did the date formatting.
   function date_stringer() {
-    date +"%Y_%m_%d_%H%M_%S" | tr -d '/\n/'
+    local sep="$1"; shift
+    if [ -z "$sep" ]; then sep='_'; fi
+    date +"%Y$sep%m$sep%d$sep%H%M$sep%S" | tr -d '/\n/'
   }
   
   # makes a directory of the name specified and then tries to change the
