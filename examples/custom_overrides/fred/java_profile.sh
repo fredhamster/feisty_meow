@@ -50,12 +50,12 @@ if [ ! -d "$JAVA_HOME" ]; then
   export JAVA_HOME=/usr/lib/jvm/java-7-oracle/jre
 fi
 if [ ! -d "$JAVA_HOME" ]; then
-  JAVA_HOME="$(ls -d c:/tools/*jdk*)"
+  JAVA_HOME="$(ls -d c:/tools/*jdk* 2>/dev/null)"
 fi
 if [ ! -d "$JAVA_HOME" ]; then
-  if [ ! -z "$(grep 'd:' /proc/mounts)" ]; then
+  if [ ! -z "$(grep 'd:' /proc/mounts 2>/dev/null)" ]; then
     # try using a windows version.
-    JAVA_HOME="$(ls -d d:/tools/*jdk*)"
+    JAVA_HOME="$(ls -d d:/tools/*jdk* 2>/dev/null)"
   fi
 fi
 # this should go last, since it changes the bin dir.
