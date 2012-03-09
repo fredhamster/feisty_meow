@@ -1,13 +1,5 @@
 #!/bin/bash
 
-function rebuild_cak0l()
-{
-  pushd ~/xsede/code/cak0l/trunk
-  ant clean
-  ant -Dbuild.targetArch=64 build
-  popd
-}
-
 function build_cak0l()
 {
   pushd ~/xsede/code/cak0l/trunk
@@ -15,4 +7,11 @@ function build_cak0l()
   popd
 }
 
+function rebuild_cak0l()
+{
+  pushd ~/xsede/code/cak0l/trunk
+  ant clean
+  popd
+  build_cak0l
+}
 
