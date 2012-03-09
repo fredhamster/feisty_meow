@@ -8,3 +8,4 @@ mojo:x:14003:14003:mojopickle haystack,,,,:/home/mojo:/bin/bash
 sedge:x:14004:14004:sedgeweaver jupiter,,,,:/home/sedge:/bin/bash
 ddm:x:14005:14005:DharmaDrum Magic,,,,:/home/ddm:/bin/bash
 
+eepaw:x:14108:14108:eepaw mater,,,,:/home/eepaw:/bin/bash
