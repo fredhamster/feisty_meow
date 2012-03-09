@@ -65,10 +65,12 @@ if [ ! -d "$JAVA_HOME" ]; then
   JAVA_BIN_PIECE=Commands
 fi
 # last thing is to tell them we couldn't find it.
-if [ ! -d "$JAVA_HOME" -a -z "$(whichable java 2>/dev/null)" ]; then
-  intuition_failure JAVA_HOME
+if [ ! -d "$JAVA_HOME" ]; then
   unset JAVA_HOME
   unset JAVA_BIN_PIECE
+  if [ -z "$(whichable java 2>/dev/null)" ]; then
+    intuition_failure JAVA_HOME
+  fi
 fi
 
 ############################
@@ -97,13 +99,16 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
   fi
 fi
 # final option is to whine.
-if [ ! -d "$ECLIPSE_DIR" -a -z "$(whichable eclipse 2>/dev/null)" ]; then
-  intuition_failure ECLIPSE_DIR
+if [ ! -d "$ECLIPSE_DIR" ]; then
   unset ECLIPSE_DIR
 else
   if [ ! -z "$(uname -a | grep -i cygwin)" ]; then
+    # fix the path for cygwin's bizarre requirement of /cygdrive/X.
     ECLIPSE_DIR=$(echo $ECLIPSE_DIR | sed -e 's/^\(.\):/\/cygdrive\/\1/')
   fi
+fi
+if [ -z "$ECLIPSE_DIR" -a -z "$(whichable eclipse 2>/dev/null)" ]; then
+  intuition_failure ECLIPSE_DIR
 fi
 
 ############################
