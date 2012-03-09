@@ -35,8 +35,9 @@ if ($#ARGV < 0) {
 local($destination) = $ARGV[0];
 local($source) = ".";
 if ($#ARGV > 0) {
-  # get the location they provided.
-  $source = $ARGV[1];
+  # use both the locations they provided.
+  $source = $ARGV[0];
+  $destination = $ARGV[1];
 }
 
 # make the names a little more manipulable.
