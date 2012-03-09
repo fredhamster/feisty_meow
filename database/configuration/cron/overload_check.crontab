@@ -4,6 +4,6 @@ SHELL=/bin/bash
 # m h dom mon dow command
 
 # make a report of the current state of information overload in our notes files.
-24 22 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/notes/info_overload_report.sh ) &>/tmp/zz_info_overload_$USER.log 
+24 22 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/notes/info_overload_report.sh ) 2>&1 >>/tmp/zz_info_overload_$USER.log 
 
 

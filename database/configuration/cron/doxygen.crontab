@@ -3,5 +3,5 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
-20 4 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; cd $HOME/hoople/docs; make) &>/tmp/zz_doxy_make_$USER.log
+20 4 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; cd $HOME/hoople/docs; make) 2>&1 >>/tmp/zz_doxy_make_$USER.log
 
