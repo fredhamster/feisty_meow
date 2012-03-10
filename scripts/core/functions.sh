@@ -99,11 +99,11 @@ if [ -z "$skip_all" ]; then
   # finds all processes matching the pattern specified and shows their full
   # process listing (whereas psfind just lists process ids).
   function psa() {
-    p=$(psfind "$1")
-    if [ -z "$p" ]; then
+    if [ -z "$1" ]; then
       echo "psa finds processes by pattern, but there was no pattern on the command line."
       return 1
     fi
+    p=$(psfind "$1")
     echo ""
     echo "Processes containing \"$1\"..."
     echo ""
