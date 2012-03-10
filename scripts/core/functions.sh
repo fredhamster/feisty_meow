@@ -100,35 +100,37 @@ if [ -z "$skip_all" ]; then
   # process listing (whereas psfind just lists process ids).
   function psa() {
     p=$(psfind "$1")
-    if [ ! -z "$p" ]; then
-      echo ""
-      echo "Processes containing \"$1\"..."
-      echo ""
-      if [ -n "$IS_DARWIN" ]; then
-        unset fuzil_sentinel
-        for i in $p; do
-          # only print the header the first time.
-          if [ -z "$fuzil_sentinel" ]; then
-            ps $i -w -u
-          else
-            ps $i -w -u | sed -e '1d'
-          fi
-          fuzil_sentinel=true
-        done
-      else 
-        # cases besides mac os x's darwin.
-        extra_flags=
-        if [ "$OS" = "Windows_NT" ]; then
-          # special case for windows.
-          extra_flags=-W
-          ps | head -1
-          for curr in $p; do
-            ps $extra_flags | grep "$curr" 
-          done
+    if [ -z "$p" ]; then
+      echo "psa finds processes by pattern, but there was no pattern on the command line."
+      return 1
+    fi
+    echo ""
+    echo "Processes containing \"$1\"..."
+    echo ""
+    if [ -n "$IS_DARWIN" ]; then
+      unset fuzil_sentinel
+      for i in $p; do
+        # only print the header the first time.
+        if [ -z "$fuzil_sentinel" ]; then
+          ps $i -w -u
         else
-          # normal OSes can handle a nice simple query.
-          ps wu $p
+          ps $i -w -u | sed -e '1d'
         fi
+        fuzil_sentinel=true
+      done
+    else 
+      # cases besides mac os x's darwin.
+      extra_flags=
+      if [ "$OS" = "Windows_NT" ]; then
+        # special case for windows.
+        extra_flags=-W
+        ps | head -1
+        for curr in $p; do
+          ps $extra_flags | grep "$curr" 
+        done
+      else
+        # normal OSes can handle a nice simple query.
+        ps wu $p
       fi
     fi
   }
