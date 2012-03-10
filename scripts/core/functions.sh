@@ -104,6 +104,10 @@ if [ -z "$skip_all" ]; then
       return 1
     fi
     p=$(psfind "$1")
+    if [ -z "$p" ]; then
+      # no matches.
+      return 0
+    fi
     echo ""
     echo "Processes containing \"$1\"..."
     echo ""
