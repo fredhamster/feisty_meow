@@ -19,7 +19,6 @@ source_example_depth=$(find ~/quartz/example_source_code/ -type f -exec echo \"{
 total_overload=$(($note_depth + $item_depth + $project_depth + $source_example_depth))
 
 report="\
-\n\
 We have studied your information overload and find that there are:\n\
   $note_depth note files\n\
   $item_depth to-do list items\n\
@@ -28,6 +27,7 @@ We have studied your information overload and find that there are:\n\
   -------\n\
   $total_overload total items\n\
 Gathered On: $(date)\n\
+\n\
 ##############\n\
 "
 
