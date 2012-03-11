@@ -11,6 +11,7 @@ outfile="$1"; shift  # optional parm.
 
 if [ -z "$dirname" ]; then
   echo "This script requires one directory on which to make a checker report."
+  echo "Additionally, you can specify an output file as the second parameter."
   exit 1
 fi
 
