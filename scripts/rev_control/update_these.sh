@@ -10,6 +10,8 @@ for i in * ; do
       svn update .
     elif [ -d ".git" ]; then
       git pull 
+    elif [ -d "CVS" ]; then
+      cvs update .
     fi
     popd
   fi
