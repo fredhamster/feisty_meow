@@ -33,9 +33,7 @@ echo "my ip is [$my_ip]"
 # gets us access to the server.  this needs to be on the local machine
 # for sftp to run without a login prompt.
 sudo -u $local_user sftp $username@$server <<eof
-if [ ! -d gen ]; then
-  mkdir gen
-fi
+mkdir gen
 cd gen
 put $ip_file $(hostname | sed -e "s/\..*$//")_ip.txt
 eof
