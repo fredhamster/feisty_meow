@@ -17,7 +17,7 @@ if [ ! -z "$1" ]; then
   soundfile=$1
 fi
 
-ip_file="$(mktemp ${tempdir}/$(hostname | sed -e "s/\..*$//")_ip.XXXXXX)_${USER}"
+ip_file="$(mktemp ${tempdir}/ip_${USER}_$(hostname | sed -e "s/\..*$//").XXXXXX)"
 
 # get live ip address
 pushd $tempdir
@@ -37,6 +37,8 @@ mkdir gen
 cd gen
 put $ip_file $(hostname | sed -e "s/\..*$//")_ip.txt
 eof
+
+\rm -f "$ip_file"
 
 popd
 
