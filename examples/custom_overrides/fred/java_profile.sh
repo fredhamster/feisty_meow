@@ -121,14 +121,14 @@ if [ ! -z "$JAVA_HOME" ]; then
   if [ ! -z "$(uname -a | grep -i cygwin)" ]; then
     j=$(echo $j | sed -e 's/^\(.\):/\/cygdrive\/\1/')
   fi
-  export PATH=$PATH:$j/$JAVA_BIN_PIECE
+  export PATH=$j/$JAVA_BIN_PIECE:$PATH
 fi
 if [ ! -z "$ECLIPSE_DIR" ]; then
   e="$ECLIPSE_DIR"
   if [ ! -z "$(uname -a | grep -i cygwin)" ]; then
     e=$(echo $e | sed -e 's/^\(.\):/\/cygdrive\/\1/')
   fi
-  export PATH=$PATH:$e
+  export PATH=$e:$PATH
 fi
 
 ############################
