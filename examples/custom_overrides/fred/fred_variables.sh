@@ -1,7 +1,7 @@
 
 # these are my personal overrides.  --fred.
 
-if [ ! -z "$NETHACKOPTIONS" ]; then
+if [ -z "$NETHACKOPTIONS" ]; then
   # if we don't see the nethack variable defined, this probably hasn't run yet.
 
   # The quartz directory has *really* personalized items.
