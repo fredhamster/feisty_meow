@@ -53,7 +53,7 @@ if [ ! -d "$JAVA_HOME" ]; then
   JAVA_HOME="$(ls -d c:/tools/*jdk* 2>/dev/null)"
 fi
 if [ ! -d "$JAVA_HOME" ]; then
-  if [ ! -z "$(grep 'd:' /proc/mounts 2>/dev/null)" ]; then
+  if [ ! -z "$(grep -i 'd:' /proc/mounts 2>/dev/null)" ]; then
     # try using a windows version.
     JAVA_HOME="$(ls -d d:/tools/*jdk* 2>/dev/null)"
   fi
@@ -89,12 +89,12 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR="c:/tools/eclipse"
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  if [ ! -z "$(grep 'd:' /proc/mounts)" ]; then
+  if [ ! -z "$(grep -i 'd:' /proc/mounts)" ]; then
     ECLIPSE_DIR="d:/tools/eclipse"
   fi
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  if [ ! -z "$(grep 'e:' /proc/mounts)" ]; then
+  if [ ! -z "$(grep -i 'e:' /proc/mounts)" ]; then
     ECLIPSE_DIR="e:/tools/eclipse"
   fi
 fi
