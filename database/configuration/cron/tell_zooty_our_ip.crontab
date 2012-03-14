@@ -5,5 +5,5 @@ SHELL=/bin/bash
 
 # special for equanimity; get zooty informed of our IP so we can make
 # the back-connection and get home.
-14,28,42,56 * * * * (bash /home/fred/feisty_meow/scripts/security/tell_zooty_our_ip.sh) 2>&1 >>/tmp/zooty_tell_report.txt
+14,28,42,56 * * * * (bash /home/fred/feisty_meow/scripts/security/tell_zooty_our_ip.sh) &>>/tmp/zooty_tell_report.txt
 

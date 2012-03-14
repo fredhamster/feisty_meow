@@ -3,5 +3,5 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
-* * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $HOME/feisty_meow/scripts/text/new_sig.pl) 2>&1 >>/tmp/zz_nechung_fortune_$USER.log
+* * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $HOME/feisty_meow/scripts/text/new_sig.pl) &>>/tmp/zz_nechung_fortune_$USER.log
 

@@ -3,5 +3,5 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
-14 7 * * * bash $HOME/feisty_meow/scripts/database/backup_mysql_dbs.sh 2>&1 >>/tmp/zz_backup_mysql_$USER.log
+14 7 * * * bash $HOME/feisty_meow/scripts/database/backup_mysql_dbs.sh &>>/tmp/zz_backup_mysql_$USER.log
 

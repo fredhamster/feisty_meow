@@ -4,6 +4,6 @@ SHELL=/bin/bash
 # m h dom mon dow command
 
 # regenerate the bookmarks pages.
-24 10 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/bookmarks/create_marks.sh ) 2>&1 >>/tmp/zz_bookmarkingering_$USER.log 
+24 10 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/bookmarks/create_marks.sh ) &>>/tmp/zz_bookmarkingering_$USER.log 
 
 

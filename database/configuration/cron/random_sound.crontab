@@ -3,5 +3,5 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
-* * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/multimedia/randomly_play.sh) 2>&1 >>/tmp/zz_random_sound_$USER.log
+* * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/multimedia/randomly_play.sh) &>>/tmp/zz_random_sound_$USER.log
 
