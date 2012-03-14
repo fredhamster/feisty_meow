@@ -3,6 +3,8 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
+USER=fred
+
 # do a backup of the config files once a week.
 28 7 * * 4 (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; cd /z/stuffing/archives; perl $HOME/feisty_meow/scripts/archival/snarf_linux_config.pl) &>>/tmp/zz_linux_config_snarf_$USER.log
 

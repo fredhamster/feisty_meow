@@ -3,7 +3,9 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
+USER=fred
+
 # make sure opensim is started if we can't detect it as running.
-*/5 * * * * export FOOP=/tmp/opensim_restart.log; export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh &>>$FOOP ; bash $HOME/feisty_meow/scripts/opensim/maybe_restart_opensim.sh &>>$FOOP ; /bin/chmod g+w $FOOP
+*/5 * * * * export FOOP=/tmp/opensim_restart_$USER.log; export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh &>>$FOOP ; bash $HOME/feisty_meow/scripts/opensim/maybe_restart_opensim.sh &>>$FOOP ; /bin/chmod g+w $FOOP
 
 
