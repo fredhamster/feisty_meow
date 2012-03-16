@@ -2,19 +2,25 @@
 
 parm=$1
 
-#echo parm original is: $parm
+#echo original parm is: $parm
 # turn the form that is just two characters of /X into X:/.
-parm2=$(echo $parm | sed -e 's/^\/\([a-zA-Z]\)$/\1:\//g')
-#echo parm2 is $parm2
+parm=$(echo $parm | sed -e 's/^\/\([a-zA-Z]\)$/\1:\//g')
+#echo parm now is $parm
 # turn the msys path form into an msdos style path for the drive letter.
-parm3=$(echo $parm2 | sed -e 's/^\/\([a-zA-Z]\)\//\1:\//g')
-#echo parm3 is $parm3
+parm=$(echo $parm | sed -e 's/^\/\([a-zA-Z]\)\//\1:\//g')
+#echo parm now is $parm
+# turn the form that is /cygdrive/X into X:/.
+parm=$(echo $parm | sed -e 's/^\/cygdrive\/\([a-zA-Z]\)$/\1:\//g')
+#echo parm now is $parm
+# turn regular cygwin paths into msdos style paths for the drive letter.
+parm=$(echo $parm | sed -e 's/^\/cygdrive\/\([a-zA-Z]\)\//\1:\//g')
+#echo parm now is $parm
 # rip off any slashes on the end, if they aren't too close to a colon.
-parm4=$(echo $parm3 | sed -e 's/\([^:]\)\/*$/\1/g')
-#echo parm4 is $parm4
+parm=$(echo $parm | sed -e 's/\([^:]\)\/*$/\1/g')
+#echo parm now is $parm
 # turn linux forward slashes into dos backward slashes.
-parm5=$(echo $parm4 | sed -e 's/\//\\/g')
-#echo "chewed parm5 is: $parm5"
+parm=$(echo $parm | sed -e 's/\//\\/g')
+#echo "totally chewed parm is: $parm"
 
-$WINDIR/explorer "$parm5"
+$WINDIR/explorer "$parm"
 
