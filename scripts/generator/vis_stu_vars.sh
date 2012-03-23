@@ -59,7 +59,7 @@ export WindowsSdkDir="$PLATFORM_DIR"
 #echo platform dir is $PLATFORM_DIR
 
 #echo "path before is $PATH"
-#export PATH="$DevEnvDir:$VCINSTALLDIR/BIN:$VSxTOOLS:$VSxTOOLS/bin:$FrameworkDir/$FrameworkVersion:$FrameworkDir/v3.5:$VCINSTALLDIR/VCPackages:$VSINSTALLDIR/Common7/Tools:$PLATFORM_DIR/bin:$PATH"
+export PATH="$DevEnvDir:$VCINSTALLDIR/BIN:$VSxTOOLS:$VSxTOOLS/bin:$FrameworkDir/$FrameworkVersion:$FrameworkDir/v3.5:$VCINSTALLDIR/VCPackages:$VSINSTALLDIR/Common7/Tools:$PLATFORM_DIR/bin:$PATH"
 #hmmm: yuck!  wake me up when we don't need all of those in the path.
 #echo "path after is $PATH"
 
