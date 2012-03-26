@@ -5,7 +5,7 @@
 
 #hmmm:  none of the user info below will work for others: parameterize it.
 
-server=zooty.koeritz.com
+server=serene.feistymeow.org
 username=fred
 local_user=fred
 tempdir=/tmp  # where we generate our files.
