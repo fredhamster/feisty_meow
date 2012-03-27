@@ -1,26 +1,12 @@
 
-There are a few pre-built binaries included with this code distribution.
-They originate from a few different sources.  Feel free to not trust them.
+There is one pre-built binary included with this code distribution
+in the production/win32_helper folder.  Feel free to not trust it.
 
-These apps are external to the feisty meow build...
+short_path.exe:
+  This tool is built by the feisty meow application bootstrapping process
+  (that is, by scripts/generator/bootstrap_build.sh), but unfortunately it is
+  needed *by* that process when your visual studio installation path has
+  spaces in it.  To fix this chicken & egg problem, you can manually change
+  your VC root variable (e.g. VS100COMNTOOLS) to the short path version (as
+  reported using "dir /x").
 
-production/win32_help hierarchy:
-  unzip.exe & zip.exe:
-    The zip and unzip tools are from the info-zip project.  They are somewhat
-    antiquated but still work great on the various 32-bit windows platforms.
-    These utilities are self-identified as: "Zip 2.3 (November 29th 1999)"
-    To get a more recent version of the zip utilities or build them yourself,
-    they can be found at the site: http://www.info-zip.org/
-
-  short_path.exe:
-    This tool is built by the code bootstrapping process (that is, by
-    scripts/generator/bootstrap_build.sh), but unfortunately it is
-    desperately needed for windows builds to work nicely with clam and
-    bash.  If you don't have it, and your visual studio installation path
-    has spaces in it, then you may have trouble bootstrapping.  You can
-    manually change your VC root variable to a short path version, as
-    reported by dir /x).  This tool can be replaced by any newer working
-    version created by a bootstrap build.
-
-  zap_process.exe
-    A win32 tool that kills any process containing the name provided.

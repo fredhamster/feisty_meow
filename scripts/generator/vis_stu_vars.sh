@@ -12,8 +12,8 @@ function print_usage {
   echo ""
 }
 
-chmod 755 $PRODUCTION_DIR/win32_help/*.exe
-export PATH=$PRODUCTION_DIR/win32_help:$PATH
+chmod 755 $PRODUCTION_DIR/win32_helper/*.exe
+export PATH=$PRODUCTION_DIR/win32_helper:$PATH
 
 # we try to use the most recent compiler location, and work backwards as
 # needed for the supported range (10 = vs 2010, 9 = vs 2008, 8 = vs 2005).
