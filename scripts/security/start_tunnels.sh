@@ -16,7 +16,7 @@ fi
 
 while true; do
   echo Connecting sendmail and proxy servers via zooty.
-  ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -L 14008:localhost:25 fred@zooty.koeritz.com
+  ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -L 14008:localhost:25 fred@serene.feistymeow.org
   bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile
 #hmmm: parameterize this for the sound to be played.  doofus.
   echo "Got dumped from tunnels; re-establishing connection."
