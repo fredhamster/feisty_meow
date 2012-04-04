@@ -28,7 +28,7 @@ item_depth=$(find ~/quartz/grunty_notes/ -type f -iname "*.html" -exec grep "<li
 
 # scan across all appropriately named folders in our folders that live in the "cloud".
 cloud_depth=0
-for i in ~/cloud/project-* ~/cloud/research-*; do
+for i in ~/cloud/*project* ~/cloud/*research*; do
   temp_depth=$(calculate_depth $i)
   cloud_depth=$(($cloud_depth + $temp_depth))
 done
