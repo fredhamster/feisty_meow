@@ -51,7 +51,7 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 &snarf_by_pattern($snarf_file_base, "$root", "task");
 
 # backup additional folders we care about.
-&snarf_by_pattern($snarf_file_base, "$root", "notes", "cloud");
+#unneeded it seems: &snarf_by_pattern($snarf_file_base, "$root", "notes", "cloud");
 
 ############################################################################
 
