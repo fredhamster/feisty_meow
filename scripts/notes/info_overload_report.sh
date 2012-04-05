@@ -10,21 +10,20 @@ function calculate_depth()
   find "$dir" -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | wc -l | tr -d ' '
 }
 
+##############
+
 # notes are individual files of tasks, usually, although some are combined.
-note_depth=$(calculate_depth ~/quartz/grunty_notes)
-#$(find ~/quartz/grunty_notes/ -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | wc -l | tr -d ' ')
+note_depth=$(calculate_depth ~/cloud/grunty_notes)
 
 # projects are slightly more productive, ongoing things that are very active.
 project_depth=$(calculate_depth ~/quartz/projects)
-#$(find ~/quartz/projects/ -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | wc -l | tr -d ' ')
 
 # source examples need to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.
 source_example_depth=$(calculate_depth ~/quartz/example_source_code)
-#$(find ~/quartz/example_source_code/ -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | wc -l | tr -d ' ')
 
 # the list files are web documents with to-do lists.  individual items are marked with <li>.
-item_depth=$(find ~/quartz/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -l | tr -d ' ')
+item_depth=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -l | tr -d ' ')
 
 # scan across all appropriately named folders in our folders that live in the "cloud".
 cloud_depth=0
@@ -32,6 +31,8 @@ for i in ~/cloud/*project* ~/cloud/*research*; do
   temp_depth=$(calculate_depth $i)
   cloud_depth=$(($cloud_depth + $temp_depth))
 done
+
+##############
 
 total_overload=$(($note_depth + $item_depth + $project_depth + $source_example_depth + $cloud_depth))
 
