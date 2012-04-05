@@ -15,8 +15,8 @@ function calculate_depth()
 # notes are individual files of tasks, usually, although some are combined.
 note_depth=$(calculate_depth ~/cloud/grunty_notes)
 
-# projects are slightly more productive, ongoing things that are very active.
-project_depth=$(calculate_depth ~/quartz/projects)
+# unsorted files haven't been categorized yet.
+unsorted_depth=$(calculate_depth ~/cloud/unsorted)
 
 # source examples need to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.
@@ -34,7 +34,7 @@ done
 
 ##############
 
-total_overload=$(($note_depth + $item_depth + $project_depth + $source_example_depth + $cloud_depth))
+total_overload=$(($note_depth + $item_depth + $unsorted_depth + $source_example_depth + $cloud_depth))
 
 report="\
 \n\
@@ -42,7 +42,7 @@ Current information overload consists of:\n\
 \n\
   $note_depth\tnote files\n\
   $item_depth\tto-do list items\n\
-  $project_depth\tproject files\n\
+  $unsorted_depth\tunsorted files\n\
   $source_example_depth\tsource examples\n\
   $cloud_depth\tcloud notes\n\
   -------\n\
