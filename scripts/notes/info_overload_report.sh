@@ -20,7 +20,7 @@ unsorted_depth=$(calculate_depth ~/cloud/unsorted)
 
 # source examples need to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.
-source_example_depth=$(calculate_depth ~/quartz/example_source_code)
+source_example_depth=$(calculate_depth ~/cloud/example_source)
 
 # the list files are web documents with to-do lists.  individual items are marked with <li>.
 item_depth=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -l | tr -d ' ')
