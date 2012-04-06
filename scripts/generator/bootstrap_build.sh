@@ -25,16 +25,22 @@
 
 # make sure we know how to find our bash bins.
 export PATH=/bin:$PATH
+
 # signals that we're doing a fresh build to the variables script.
 export INCLUDED_FROM_BOOTSTRAP=true
+
 # pull in our build variables using the path to this script.
 export BUILD_SCRIPTS_DIR="$( \cd "$(\dirname "$0")" && \pwd )"
 echo build script initial from bootstrap: $BUILD_SCRIPTS_DIR
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
 echo build script after: $BUILD_SCRIPTS_DIR
+
 # load in feisty meow basic scripts, if not already loaded.
-bash "$BUILD_SCRIPTS_DIR/../core/bootstrap_shells.sh"
-source "$BUILD_SCRIPTS_DIR/../core/launch_feisty_meow.sh"
+if [ -z "$FEISTY_MEOW_SCRIPTS_LOADED" ]; then
+  bash "$BUILD_SCRIPTS_DIR/../core/bootstrap_shells.sh"
+  source "$BUILD_SCRIPTS_DIR/../core/launch_feisty_meow.sh"
+fi
+
 # load in build variables based on our deduced paths.
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
 

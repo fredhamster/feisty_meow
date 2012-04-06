@@ -29,18 +29,12 @@ if [ -z "$VSxTOOLS" ]; then
   print_usage
   return 33
 fi
-#echo "common tools dir is \"$VSxTOOLS\""
 export VSxTOOLS="$(short_path "$VSxTOOLS" | tr "A-Z" "a-z" | sed -e 's/\\/\//g' | sed -e 's/^\(.\):/\/\1/' )"
-#echo cleaned comn tools is $VSxTOOLS 
 
 export VIS_STU_ROOT="$(echo $VSxTOOLS | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' | sed -e 's/^\(.\):/\/\1/' )"
 export VSINSTALLDIR="$VIS_STU_ROOT"
-#echo root of visual studio is $VSINSTALLDIR
 
 export WINDIR="$(short_path "$WINDIR" | sed -e 's/\\/\//g' | sed -e 's/^\(.\):/\/\1/' )"
-#echo cleaned windir is $WINDIR
-
-#echo "prior path is $PATH"
 
 export VCINSTALLDIR="$VSINSTALLDIR/VC"
 export VSCOMMONROOT="$VSINSTALLDIR/Common7"
@@ -56,12 +50,10 @@ if [ ! -d "$PLATFORM_DIR" ]; then
   export PLATFORM_DIR="$(short_path "$PROGRAMFILES/Microsoft SDKs/Windows/v7.0A" | tr "A-Z" "a-z" | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' | sed -e 's/^\(.\):/\/\1/' )"
 fi
 export WindowsSdkDir="$PLATFORM_DIR"
-#echo platform dir is $PLATFORM_DIR
 
-#echo "path before is $PATH"
+echo "path before is $PATH"
 export PATH="$DevEnvDir:$VCINSTALLDIR/BIN:$VSxTOOLS:$VSxTOOLS/bin:$FrameworkDir/$FrameworkVersion:$FrameworkDir/v3.5:$VCINSTALLDIR/VCPackages:$VSINSTALLDIR/Common7/Tools:$PLATFORM_DIR/bin:$PATH"
-#hmmm: yuck!  wake me up when we don't need all of those in the path.
-#echo "path after is $PATH"
+echo "path after is $PATH"
 
 export INCLUDE="$VCINSTALLDIR/ATLMFC/INCLUDE:$VCINSTALLDIR/INCLUDE:$PLATFORM_DIR/include"
 #:$FrameworkSDKDir/include"
@@ -73,6 +65,16 @@ export LIB="$VCINSTALLDIR/ATLMFC/LIB:$VCINSTALLDIR/LIB:$PLATFORM_DIR/lib"
 export FrameworkDir="$(echo $FrameworkDir | sed -e 's/^\/\(.\)[\\\/]\(.*\)$/\1:\\\2/' | tr "/" "\\" 2>/dev/null )"
   # the redirection of stderr to null is to get around an obnoxious cygwin
   # warning that seems to be erroneously bitching about backslashes.
-#echo framedir now $FrameworkDir
 
+
+##############
+
+echo "common tools dir is \"$VSxTOOLS\""
+echo cleaned windir is $WINDIR
+echo cleaned comn tools is $VSxTOOLS 
+echo root of visual studio is $VSINSTALLDIR
+echo platform dir is $PLATFORM_DIR
+echo framedir now $FrameworkDir
+
+##############
 

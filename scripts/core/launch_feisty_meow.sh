@@ -14,6 +14,9 @@
   # this variable causes the scripts that listen to it to print more information
   # when they run.
 
+export ERROR_OCCURRED=
+  # no error to start with.
+
 ##############
 
 if [ -z "$FEISTY_MEOW_GENERATED" ]; then
@@ -30,6 +33,7 @@ if [ -z "$FEISTY_MEOW_GENERATED" ]; then
     echo "The yeti scripts need to be initialized via the bootstrap process, e.g.:"
     echo "  bash $HOME/feisty_meow/scripts/core/bootstrap_shells.sh"
     echo -e '\n\n'
+    ERROR_OCCURRED=true
   fi
 
   ##############
@@ -93,5 +97,10 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
   bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
 
   if [ ! -z "$SHELL_DEBUG" ]; then echo heavyweight login ends....; fi
+fi
+
+if [ -z "$ERROR_OCCURRED" ]; then
+  # set a sentinel variable to say we loaded the feisty meow environment.
+  export FEISTY_MEOW_SCRIPTS_LOADED=true
 fi
 

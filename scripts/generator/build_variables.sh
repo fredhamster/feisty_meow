@@ -50,6 +50,9 @@ source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 
 ##############
 
+# outer check on whether this already was run or not.
+if [ -z "$BUILD_VARS_LOADED" ]; then
+
 # perform some calculations to get the right paths from our parameters.
 if [ ! -z "$PARM_1" ]; then
   # use the first real parameter since this is probably the 'source' version.
@@ -107,22 +110,15 @@ if [ ! -d "$LOGS_DIR" ]; then
   mkdir -p "$LOGS_DIR"
 fi
 
-# hook clam into the compilation system.
-function make()
-{
-  /usr/bin/make -I "$CLAM_DIR" $*
-}
-
 ##############
 
 # debugging area where we say what we think we know.
 
-#echo scripts: $BUILD_SCRIPTS_DIR
-#echo build tools hier: $BUILDING_HIERARCHY
-#echo this tool: $THIS_TOOL_NAME
-#echo repository: $FEISTY_MEOW_DIR
-#echo clam: $CLAM_DIR
-#echo makeflags: $MAKEFLAGS
+echo scripts: $BUILD_SCRIPTS_DIR
+echo build tools hier: $BUILDING_HIERARCHY
+echo this tool: $THIS_TOOL_NAME
+echo repository: $FEISTY_MEOW_DIR
+echo clam: $CLAM_DIR
 
 ##############
 
@@ -219,5 +215,20 @@ if [ -z "$got_bad" ]; then
     bash
   fi
 
+  # sentinel that tells us this script was pulled in.
+  export BUILD_VARS_LOADED=true
+
 fi
+
+fi  # outer wrapper for already ran build vars check.
+
+##############
+
+# hook clam into the compilation system.
+# this always needs to be defined since functions aren't exported.
+function make()
+{
+  /usr/bin/make -I "$CLAM_DIR" $*
+}
+
 
