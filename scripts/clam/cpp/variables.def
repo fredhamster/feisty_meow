@@ -672,8 +672,8 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
   export PDB_DIR = $(TARGETS_DIR)
 
   # set these way up here so we can override them later.
-  CC = $(COMPILER_ROOT_DIR)/bin/cl
-  LINK_TOOL = $(COMPILER_ROOT_DIR)/bin/link
+  CC = bash $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/cl
+  LINK_TOOL = bash $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/link
 
   # This is needed to protect against the use of 64-bit time_t structure
   # on windows.  We are casting to time_t from a 32-bit structure.

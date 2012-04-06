@@ -62,10 +62,25 @@ export LIB="$VCINSTALLDIR/ATLMFC/LIB:$VCINSTALLDIR/LIB:$PLATFORM_DIR/lib"
 #:$FrameworkSDKDir/lib"
 
 # convert framework dir back or things yell like hell.
-export FrameworkDir="$(echo $FrameworkDir | sed -e 's/^\/\(.\)[\\\/]\(.*\)$/\1:\\\2/' | tr "/" "\\" 2>/dev/null )"
+export FrameworkDir=$(msys_to_dos_path $FrameworkDir)
   # the redirection of stderr to null is to get around an obnoxious cygwin
   # warning that seems to be erroneously bitching about backslashes.
 
+# mark this as executable because we will need it.
+#chmod 755 $FEISTY_MEOW_SCRIPTS/generator/wrapdoze.sh
+
+# convert all other relevant paths back to dos form, or visual studio barfs.
+#export BUILD_SCRIPTS_DIR=$(msys_to_dos_path $BUILD_SCRIPTS_DIR)
+#export BUILDING_HIERARCHY=$(msys_to_dos_path $BUILDING_HIERARCHY)
+#export BUILDER_DIR=$(msys_to_dos_path $BUILDER_DIR)
+#export BUILD_TOP=$(msys_to_dos_path $BUILD_TOP)
+#export PRODUCTION_DIR=$(msys_to_dos_path $PRODUCTION_DIR)
+#export LOGS_DIR=$(msys_to_dos_path $LOGS_DIR)
+#export TOOL_SOURCES=$(msys_to_dos_path $TOOL_SOURCES)
+#export BINARY_DIR=$(msys_to_dos_path $BINARY_DIR)
+#export TARGETS_DIR=$(msys_to_dos_path $TARGETS_DIR)
+#export INTERMEDIATE_EXE_DIR=$(msys_to_dos_path $INTERMEDIATE_EXE_DIR)
+#export WASTE_DIR=$(msys_to_dos_path $WASTE_DIR)
 
 ##############
 

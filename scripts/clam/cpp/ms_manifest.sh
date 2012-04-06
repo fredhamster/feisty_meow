@@ -8,10 +8,10 @@ if [ -z "$WIN32_MANIFEST_FILE" ]; then
 fi
 error_val=0
 if [ -f "$basename.manifest" -a -f "$basename" ]; then 
-  mt -manifest $basename.manifest $WIN32_MANIFEST_FILE -outputresource:$basename\;$where >/dev/null 
+  bash $BUILD_SCRIPTS_DIR/wrapdoze.sh mt -manifest $basename.manifest $WIN32_MANIFEST_FILE -outputresource:$basename\;$where >/dev/null 
   error_val=$?
 elif [ -f "$basename" ]; then 
-  mt -manifest $WIN32_MANIFEST_FILE -outputresource:$basename\;$where >/dev/null
+  bash $BUILD_SCRIPTS_DIR/wrapdoze.sh mt -manifest $WIN32_MANIFEST_FILE -outputresource:$basename\;$where >/dev/null
   error_val=$?
 else
   echo skipping manifest generation for $basename.

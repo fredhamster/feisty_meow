@@ -156,10 +156,10 @@ if [ -z "$skip_all" ]; then
     sudo /etc/init.d/alsasound restart
   }
   
-  # switches from a /X/path form to an X:/ form.
+  # switches from a /X/path form to an X:/ form.  this also processes cygwin paths.
   function msys_to_dos_path() {
     # we always remove dos slashes in favor of forward slashes.
-    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
+    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
   }
   
   # switches from an X:/ form to an /X/path form.
