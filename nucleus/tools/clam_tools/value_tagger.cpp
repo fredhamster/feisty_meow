@@ -373,7 +373,7 @@ variables before running a build.\r\n";
   }
   for (int i = 0; i < temp_dirs.symbols(); i++) {
 //log(astring("curr is ") + current);
-    astring current = parser_bits::substitute_env_vars(temp_dirs.name(i));
+    filename current = filename(parser_bits::substitute_env_vars(temp_dirs.name(i)));
     _dirs.add(current, "");
   }
 
