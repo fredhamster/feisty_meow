@@ -200,7 +200,7 @@ private:
   ini_configurator *_ini;  // the configuration for what we'll scan.
   string_table _dirs;  // the list of directories.
   string_table _dirs_seen;  // full list of already processed directories.
-  astring _manifest_filename;  // the name of the manifest we'll create.
+  filename _manifest_filename;  // the name of the manifest we'll create.
   byte_filer _manifest;  // the actual file we're building.
   active_searches _search_list;  // tracks our progress in scanning files.
   int_array _search_ordering;
@@ -352,8 +352,8 @@ variables before running a build.\r\n";
   _ini = new ini_configurator(ini_file, ini_configurator::RETURN_ONLY);
 
   // read the name of the manifest file to create.
-  _manifest_filename = _ini->load("manifest", "output", "");
-  if (!_manifest_filename) {
+  _manifest_filename = filename(_ini->load("manifest", "output", ""));
+  if (!_manifest_filename.raw().length()) {
     non_continuable_error(class_name(), ini_file, "The 'output' file entry is missing");
   }
   _manifest_filename = parser_bits::substitute_env_vars(_manifest_filename);
