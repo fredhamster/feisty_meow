@@ -1,13 +1,22 @@
 #!/bin/bash
 # badness_catcher: runs the command line passed in and catches error conditions.
+
 #echo args are: $*
-eval $*
-ERR=$?  # get exit status.
+eval "$@"
+
+# get exit status.
+ERR=$?
+
 if [ $ERR -eq 0 ]; then exit; fi  # exit if no error.
-# print a complaint if there was an error.
+
+# print a complaint since there was an error.
 echo
-echo "Error in project \"$PROJECT\"!"
-echo "  command=\"$*\"."
+echo "======================="
 echo
+echo "Error in project: \"$PROJECT\""
+echo "  command was: $*"
+echo
+echo "======================="
 source $CLAM_DIR/exit_make.sh
 exit $ERR
+

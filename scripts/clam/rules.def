@@ -29,7 +29,7 @@ endif
 # This rule halts make for some supposedly devastating reason.  More
 # information should be printed out by the cause of the halt.
 %.halt:
-	@echo CLAM execution halted, the cause being $@...
+	@echo CLAM execution halted, the cause being: $@
 	$(HIDESH)$(CLAM_DIR)/exit_make.sh
 
 # Provides a time-stamp in the make log.
@@ -50,7 +50,9 @@ if [ -d $* ]; then \
 else \
   echo Skipping missing directory [$*]; \
 fi'
-#used to include message for first case: echo "Entering directory [$*]"; 
+
+# always run the targets.  if they don't exist, that's an error.
+.PHONY: run_targets
 
 # "all" is the first target to execute in any makefile.  we capture it and
 # use it to produce the requested actions.
@@ -63,7 +65,7 @@ if [ ! -d "$(CLAM_TMP)" ]; then \
   mkdir "$(CLAM_TMP)"; \
 fi'
 ifeq "$(QUIET)" ""
-	$(HIDER)echo Project $(PROJECT) [$(shell basename $(shell dirname $(shell pwd) ) )/$(shell basename $(shell pwd) )] v. $(major).$(minor).$(revision).$(build).
+	$(HIDER)echo Project $(PROJECT) [$(shell basename $(shell dirname $(shell pwd) ) )/$(shell basename $(shell pwd) )] v. $(major).$(minor).$(revision).$(build)
 endif
 	$(HIDER)rm -f $(FLAG_FILES)
 
@@ -100,11 +102,11 @@ if [ ! -z "$(RUN_TARGETS)" ]; then \
     done; \
     if [ $$total_exitval -ne 0 ]; then \
       echo "FAILURE: errors occurred in RUN_TARGETS."; \
+      echo yep >"$(FAILURE_FILE)"; \
+      exit 1; \
     fi; \
   fi; \
 fi'
-#hmmm: run targets needs to work on a hierarchy.
-#hmmm: old idea?    exit $$total_exitval; \
 
 # "make_subdirs" travels down each subdirectory and builds using make.
 make_subdirs:
@@ -121,7 +123,6 @@ for i in *; do \
   fi \
 done; \
 exit 0'
-##echo Entering $$i now...; 
 
 # "clean" is a default target that removes object files, libs, executable
 # files and such that were created by the project.  it invokes the makefile
@@ -131,7 +132,7 @@ clean:
 	$(HIDER)$(MAKE) --silent CLEAN=t ready_to_clean
 
 ready_to_clean: $(OTHER_CLEANS) clean_subdirs
-	@echo Whacking [$(CLEANUPS)].
+	@echo Whacking [$(CLEANUPS)]
 	$(HIDESH) -c '\
 echo the other cleans were: $(OTHER_CLEANS); \
 echo the clean list is: $(CLEANUPS); \

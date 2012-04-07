@@ -218,6 +218,48 @@ int test_filename::execute()
     ASSERT_TRUE(test2.unpack(packed), GROUP + "unpack 1 failed");
     ASSERT_EQUAL(test2, test1, GROUP + "packed contents differ, 1 failed");
   }
+#ifdef __WIN32__
+  {
+    // eighth test group is only for windows side.
+//hmmm: might be nice to get the build machine launching this on a windows vm.
+    astring GROUP = "eighth: cygwin and msys paths";
+    filename test1("/cygdrive/q/marbles");
+    ASSERT_EQUAL(test1, astring("q:\\marbles"), GROUP + "test 1 failed");
+    filename test2("/cygdrive/r");
+    ASSERT_EQUAL(test2, astring("r:\\"), GROUP + "test 2 failed");
+    filename test3("/cygdrive/r/");
+    ASSERT_EQUAL(test3, astring("r:\\"), GROUP + "test 3 failed");
+    filename test4("/cygdrive//");
+    ASSERT_EQUAL(test4, astring("\\cygdrive"), GROUP + "test 4 failed");
+    filename test5("/cygdrive/");
+    ASSERT_EQUAL(test5, astring("\\cygdrive"), GROUP + "test 5 failed");
+    filename test6("/cygdrive");
+    ASSERT_EQUAL(test6, astring("\\cygdrive"), GROUP + "test 6 failed");
+    filename test7("/klaunspendle");
+    ASSERT_EQUAL(test7, astring("\\klaunspendle"), GROUP + "test 7 failed");
+    filename test8("z:/klaunspendle");
+    ASSERT_EQUAL(test8, astring("z:\\klaunspendle"), GROUP + "test 8 failed");
+
+    filename test10("/q/borkage");
+    ASSERT_EQUAL(test10, astring("q:\\borkage"), GROUP + "test 10 failed");
+    filename test11("/q/r");
+    ASSERT_EQUAL(test11, astring("q:\\r"), GROUP + "test 11 failed");
+    filename test12("/q/r/");
+    ASSERT_EQUAL(test12, astring("q:\\r"), GROUP + "test 12 failed");
+    filename test13("/q/r/x");
+    ASSERT_EQUAL(test13, astring("q:\\r\\x"), GROUP + "test 13 failed");
+    filename test14("/r/");
+    ASSERT_EQUAL(test14, astring("r:\\"), GROUP + "test 14 failed");
+    filename test15("/r");
+    ASSERT_EQUAL(test15, astring("r:"), GROUP + "test 15 failed");
+    filename test16("/");
+    ASSERT_EQUAL(test16, astring("\\"), GROUP + "test 16 failed");
+    filename test17("r/");
+    ASSERT_EQUAL(test17, astring("r\\"), GROUP + "test 17 failed");
+    filename test18("/kr/soop");
+    ASSERT_EQUAL(test18, astring("\\kr\\soop"), GROUP + "test 18 failed");
+  }
+#endif
 
   return final_report();
 }

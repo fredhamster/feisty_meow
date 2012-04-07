@@ -189,27 +189,31 @@ void filename::canonicalize()
       + astring(DEFAULT_SEPARATOR, 1));
   // must be at least as long as the string we're looking for, plus a drive letter afterwards.
   if ( (length() > CYGDRIVE_PATH.length() + 1) && begins(CYGDRIVE_PATH) ) {
-    zap(0, CYGDRIVE_PATH.length() + 1);  // whack the cygdrive portion plus two slashes.
+    zap(0, CYGDRIVE_PATH.length() - 1);  // whack the cygdrive portion plus two slashes.
     insert(1, ":");  // add a colon after the imputed drive letter.
+LOG(astring("turned cygdrive string into: ") + *this);
   }
   // now we convert msys...
-  if ( (length() >= 2) && (get(0) == DEFAULT_SEPARATOR) && textual::parser_bits::is_alpha(get(1)) ) {
+  if ( (length() >= 2) && (get(0) == DEFAULT_SEPARATOR)
+        && textual::parser_bits::is_alpha(get(1)) ) {
     // we seem reasonably sure now that this is a windows path hiding in msys format, but
     // the next character needs to be a slash (if there is a next character) for it to be
     // the windows drive form.  otherwise it could be /tmp, which would obviously not be
     // intended as a windows path.
-    if ( (length() < 3) || (get(2) == DEFAULT_SEPARATOR) ) {
+    if ( (length() == 2) || (get(2) == DEFAULT_SEPARATOR) ) {
       // cool, this should be interpretable as an msys path, except for those wacky types
-      // that use top-level single character directory names.  we cannot help that, because
-      // we *know* msys is a choice used in other code a lot.
-//hmmm: future revision: see if the file or directory '/x' actually exists on current drive?  yuck.
+      // of folks that might use a top-level single character directory name.  we cannot
+      // help them, because we have made a design decision to support msys-style paths.
+      // note that this would only affect someone if they were referring to their directory on
+      // the current windows partition (c:, d:, etc.) without providing the drive letter,
+      // if they had that single character directory name (e.g., c:\x, d:\q, etc.) and even
+      // then only on the near defunct windows platform.
       zap(0, 0);  // take off initial slash.
       insert(1, ":");  // add the obligatory colon.
+LOG(astring("turned msys string into: ") + *this);
     }
   } 
 #endif
-
-LOG(astring("ha ha turned string into: ") + *this);
 
   // we don't crop the last separator if the name's too small.  for msdos
   // names, that would be chopping a slash off the c:\ style name.

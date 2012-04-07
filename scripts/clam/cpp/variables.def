@@ -226,7 +226,6 @@ export OBJECT_DIR = $(OUTPUT_PATH)
 export EXECUTABLE_DIR = $(TARGETS_DIR)
 export DYNAMIC_LIBRARY_DIR = $(TARGETS_DIR)
 export STATIC_LIBRARY_DIR = $(TARGETS_DIR)
-#export TESTS_DIR = $(TARGETS_DIR)/tests
 
 # "HEADER_SEARCH_PATH" is where the class interface files are to be found.
 #HEADER_SEARCH_PATH =

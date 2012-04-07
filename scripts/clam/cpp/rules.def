@@ -15,10 +15,13 @@
 # This section manipulates variable values to prepare them for their use
 # in the standard CLAM support.
 
-# Modify the output directory for executable files if we're building a
-# test project.
+# special actions for projects that are tests.
 ifneq "$(findstring test, $(TYPE))" ""
-###  EXECUTABLE_DIR = $(TARGETS_DIR)/tests/$(PROJECT)
+  # add the clean task at the end, so that we will always rebuild the tests
+  # and run them again.
+#hmmm: this is a kludge to make sure we always run the tests.  there has got
+#      to be a better way.
+  LAST_TARGETS += clean
 endif
 
 # see if they have got the clean flag set.  if so, we will not build anything.
@@ -379,7 +382,7 @@ endif
 
 %.bad:
 	@echo There is a problem with the makefile in the SOURCE variable.
-	@echo The offending item is $@.
+	@echo The offending item is: $@
 	$(HIDESH)$(CLAM_DIR)/exit_make.sh
 
 ## faked debug object.
@@ -392,7 +395,7 @@ endif
 # recreate dependencies for static applications.
 %.gendeps: %.cpp
 	@echo "Generating Static Deps: $*.cpp"
-	$(HIDESH)$(CLAM_DIR)/cpp/buildor_gen_deps.sh "$*.cpp"
+	$(CATCHER)$(CLAM_DIR)/cpp/buildor_gen_deps.sh "$*.cpp"
 
 ############################################################################
 
@@ -403,7 +406,7 @@ endif
 $(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.cpp
 ifeq "$(NO_COMPILE)" ""
   ifneq "$(COMPILER)" "VISUAL_CPP"
-	@echo Compiling [$(shell basename $@)].
+	@echo Compiling [$(shell basename $@)]
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
   else
@@ -420,7 +423,7 @@ endif
 $(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.c
 ifeq "$(NO_COMPILE)" ""
   ifneq "$(COMPILER)" "VISUAL_CPP"
-	@echo Compiling [$@].
+	@echo Compiling [$@]
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
   else
@@ -437,14 +440,14 @@ endif
 ifeq "$(OP_SYSTEM)" "WIN32"
 $(OBJECT_DIR)/%.res: %.rc $(PARAMETER_FILE)
   ifeq "$(NO_COMPILE)" ""
-	@echo Resource [$@].
+	@echo Resource [$@]
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(CATCHER)$(RC) -r $(DEFINITIONS:%=-D%) $(HEADER_SEARCH_PATH:%=-i%) -fo $@ $<
   endif
 
 $(OBJECT_DIR)/%.resources: %.resx $(PARAMETER_FILE)
   ifeq "$(NO_COMPILE)" ""
-	@echo Resource [$@].
+	@echo Resource [$@]
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(VCS_ROOT)/../SDK/v1.1/bin/resgen $< $@
   endif
@@ -452,7 +455,7 @@ else #non-win32
   # this platform probably does not use rc files.
 $(OBJECT_DIR)/%.res: %.rc
   ifeq "$(NO_COMPILE)" ""
-	@echo Bogus resource [$@].
+	@echo Bogus resource [$@]
 	@echo >$@
   endif
 endif #win32
@@ -466,7 +469,7 @@ endif
 
 ifeq "$(NO_COMPILE)" ""
 $(STATIC_LIBRARY_DIR)/%.library: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
-	$(HIDER)echo Static [$@].
+	$(HIDER)echo Static [$@]
 	@echo $@ >$(DIRTY_FILE)
   ifeq "$(COMPILER)" "VISUAL_CPP"
 	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
@@ -499,7 +502,7 @@ ifeq "$(NO_COMPILE)" ""
 $(DYNAMIC_LIBRARY_DIR)/%.dll: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(ACTUAL_RESX) $(PARAMETER_FILE) 
 #hmmm: use the res objects variable to rebuild res files as needed.
 ###$(RES_OBJECTS) 
-	$(HIDER)echo Dynamic [$@].
+	$(HIDER)echo Dynamic [$@]
 	@echo $@ >$(DIRTY_FILE)
   ifeq "$(COMPILER)" "VISUAL_CPP"
 	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
@@ -524,7 +527,7 @@ endif
 ifeq "$(NO_COMPILE)" ""
 $(DYNAMIC_LIBRARY_DIR)/%.so: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
   ifeq "$(COMPILER:%_LINUX=LINUX)" "LINUX"
-	$(HIDER)echo Shared [$@].
+	$(HIDER)echo Shared [$@]
 	@echo $@ >$(DIRTY_FILE)
 	$(CATCHER)$(LINK_TOOL) $(LINKER_OUTPUT_FLAG)$@ $(LOAD_FLAG_PREFIX) -shared -Wl,-soname,$*.so $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)%) $(LOAD_FLAG_SUFFIX) 
 	$(HIDER)rm -f $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
@@ -543,7 +546,7 @@ $(EXECUTABLE_DIR)/%.exe:
 
   ifeq "$(NO_COMPILE)" ""
 $(EXECUTABLE_DIR)/%.exe: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(ACTUAL_RESX) $(PARAMETER_FILE)
-	$(HIDER)echo Application [$@].
+	$(HIDER)echo Application [$@]
 	@echo $@ >$(DIRTY_FILE)
     ifeq "$(COMPILER)" "VISUAL_CPP"
 	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
@@ -569,7 +572,7 @@ $(EXECUTABLE_DIR)/%:
 
   ifeq "$(NO_COMPILE)" ""
 $(EXECUTABLE_DIR)/%: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
-	$(HIDER)echo Application [$@].
+	$(HIDER)echo Application [$@]
 	@echo $@ >$(DIRTY_FILE)
 	$(CATCHER)$(LINK_TOOL) $(EXE_FLAGS) $(LOAD_FLAG_PREFIX) $< $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)%) $(LOAD_FLAG_SUFFIX) $(LINKER_OUTPUT_FLAG)$@
 #hmmm: experimental item below.
@@ -587,13 +590,13 @@ endif
 
 ifeq "$(NO_COMPILE)" ""
 $(EXECUTABLE_DIR)/%.elf: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
-	$(HIDER)echo Application [$@].
+	$(HIDER)echo Application [$@]
 	@echo $@ >$(DIRTY_FILE)
 	$(CATCHER)$(LINK_TOOL) $(MAP) $(LOAD_FLAG_PREFIX) $< $(LINKER_COMMAND_FILE) $(STARTUP_OBJECT_FILE) $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)%) $(LOAD_FLAG_SUFFIX) $(LINKER_OUTPUT_FLAG)$@
 #$(^:force_rebuild=) 
-	@echo Hex [$(EXECUTABLE_DIR)/$*.out].
+	@echo Hex [$(EXECUTABLE_DIR)/$*.out]
 	$(CATCHER)$(DDUMP_TOOL) $(DDUMP_OPTIONS) $@ -o$(EXECUTABLE_DIR)/$*.out
-	@echo Binary [$(EXECUTABLE_DIR)/$*.bin].
+	@echo Binary [$(EXECUTABLE_DIR)/$*.bin]
 	$(CATCHER)$(DDUMP_TOOL) $(DDUMP_BIN_OPTIONS) $@ -o$(EXECUTABLE_DIR)/$*.bin
 endif #no_compile
 
@@ -687,7 +690,7 @@ else
         $(DEPS_FILE): $(VERSION_RC_ROOT)_version.rc
       endif
     endif
-	@echo Dependencies [$(shell basename $@)].
+	@echo Dependencies [$(shell basename $@)]
 	-$(HIDESH)$(CLAM_DIR)/cpp/preconditions.sh
 	@touch $@
 #	@echo dep adds: $(DEPENDENCY_ADDITIONS)
