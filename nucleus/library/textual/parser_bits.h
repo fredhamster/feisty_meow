@@ -90,6 +90,14 @@ public:
   static bool is_alphanumeric(const basis::astring &look_at, int len);
     //!< returns true if the string "look_at" is all alphanumeric characters.
 
+  static bool is_alpha(char look_at);
+    //!< returns true if "look_at" is one of the alphabetical characters.
+    /*!< This includes a to z in either case. */
+  static bool is_alpha(const char *look_at, int len);
+    //!< returns true if the char ptr "look_at" is all alphabetical characters.
+  static bool is_alpha(const basis::astring &look_at, int len);
+    //!< returns true if the string "look_at" is all alphabetical characters.
+
   static bool is_numeric(char look_at);
     //!< returns true if "look_at" is a valid numerical character.
     /*! this allows the '-' character for negative numbers also (but only for

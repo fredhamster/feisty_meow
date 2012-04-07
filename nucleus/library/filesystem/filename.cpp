@@ -19,6 +19,7 @@
 
 #include <basis/byte_array.h>
 #include <basis/functions.h>
+#include <textual/parser_bits.h>
 
 #include <stdio.h>
 #include <sys/stat.h>
@@ -29,6 +30,9 @@
 #ifdef __WIN32__
   #include <io.h>
 #endif
+
+#undef LOG
+#define LOG(to_print) printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
 
 using namespace basis;
 using namespace structures;
@@ -146,6 +150,7 @@ void filename::push(const astring &to_push)
 
 void filename::canonicalize()
 {
+  FUNCDEF("canonicalize");
   // turn all the non-default separators into the default.
   bool found_sep = false;
   for (int j = 0; j < length(); j++) {
@@ -175,6 +180,36 @@ void filename::canonicalize()
       saw_sep = true;
     } else saw_sep = false;
   }
+
+#ifdef __WIN32__
+  // on windows, we want to translate away from any cygwin or msys format into a more palatable
+  // version that the rest of windows understands.
+  // first, cygwin...
+  const astring CYGDRIVE_PATH = astring(astring(DEFAULT_SEPARATOR, 1) + "cygdrive"
+      + astring(DEFAULT_SEPARATOR, 1));
+  // must be at least as long as the string we're looking for, plus a drive letter afterwards.
+  if ( (length() > CYGDRIVE_PATH.length() + 1) && begins(CYGDRIVE_PATH) ) {
+    zap(0, CYGDRIVE_PATH.length() + 1);  // whack the cygdrive portion plus two slashes.
+    insert(1, ":");  // add a colon after the imputed drive letter.
+  }
+  // now we convert msys...
+  if ( (length() >= 2) && (get(0) == DEFAULT_SEPARATOR) && textual::parser_bits::is_alpha(get(1)) ) {
+    // we seem reasonably sure now that this is a windows path hiding in msys format, but
+    // the next character needs to be a slash (if there is a next character) for it to be
+    // the windows drive form.  otherwise it could be /tmp, which would obviously not be
+    // intended as a windows path.
+    if ( (length() < 3) || (get(2) == DEFAULT_SEPARATOR) ) {
+      // cool, this should be interpretable as an msys path, except for those wacky types
+      // that use top-level single character directory names.  we cannot help that, because
+      // we *know* msys is a choice used in other code a lot.
+//hmmm: future revision: see if the file or directory '/x' actually exists on current drive?  yuck.
+      zap(0, 0);  // take off initial slash.
+      insert(1, ":");  // add the obligatory colon.
+    }
+  } 
+#endif
+
+LOG(astring("ha ha turned string into: ") + *this);
 
   // we don't crop the last separator if the name's too small.  for msdos
   // names, that would be chopping a slash off the c:\ style name.

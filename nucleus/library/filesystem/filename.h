@@ -23,8 +23,7 @@
 // forward declarations.
 class status_info;
 
-//hmmm: this doesn't really belong here, does it.
-
+//hmmm: this doesn't really belong here, does it...
 // define useful constant for filesystem path length.
 #ifndef MAX_ABS_PATH 
   #ifdef __WIN32__

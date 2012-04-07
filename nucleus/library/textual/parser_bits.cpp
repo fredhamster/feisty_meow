@@ -135,6 +135,19 @@ bool parser_bits::is_alphanumeric(const char *look_at, int len)
 bool parser_bits::is_alphanumeric(const astring &look_at, int len)
 { return is_alphanumeric(look_at.observe(), len); }
 
+bool parser_bits::is_alpha(char look_at)
+{ return range_check(look_at, 'a', 'z') || range_check(look_at, 'A', 'Z'); }
+
+bool parser_bits::is_alpha(const char *look_at, int len)
+{
+  for (int i = 0; i < len; i++)
+    if (!is_alpha(look_at[i])) return false;
+  return true;
+}
+
+bool parser_bits::is_alpha(const astring &look_at, int len)
+{ return is_alpha(look_at.observe(), len); }
+
 bool parser_bits::is_identifier(char look_at)
 {
   return range_check(look_at, 'a', 'z')
