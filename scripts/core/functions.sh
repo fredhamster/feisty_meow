@@ -238,19 +238,24 @@ if [ -z "$skip_all" ]; then
       find $i -follow -type f -iname ".#*" -exec perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl {} ";" 
     done
   }
-  
-  # recreates all the generated files that the feisty meow scripts use.
-  function regenerate() {
-    bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh
-    echo
+
+  # overlay for nechung binary so that we can complain less grossly about it when it's missing.
+  function nechung() {
     local wheres_nechung=$(which nechung 2>/dev/null)
     if [ -z "$wheres_nechung" ]; then
       echo "The nechung oracle program cannot be found.  You may want to consider"
       echo "rebuilding the feisty meow applications with this command:"
       echo "   bash $FEISTY_MEOW_DIR/scripts/generator/bootstrap_build.sh"
     else
-      nechung
+      $wheres_nechung
     fi
+  }
+  
+  # recreates all the generated files that the feisty meow scripts use.
+  function regenerate() {
+    bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh
+    echo
+    nechung
   }
 
   function function_sentinel() { return 0; }
