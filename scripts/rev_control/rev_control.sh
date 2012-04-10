@@ -3,6 +3,19 @@
 # these are helper functions for doing localized revision control.
 # this script should be sourced into other scripts that use it.
 
+# one unpleasantry to take care of first; cygwin barfs aggressively if the TMP directory
+# is a DOS path, but we need it to be a DOS path for our XSEDE testing, so that blows.
+# to get past this, TMP gets changed below to a hopefully generic and safe place.
+
+export TMP=/tmp/rev_control
+if [ ! -d "$TMP" ]; then
+  mkdir $TMP
+fi
+if [ ! -d "$TMP" ]; then
+  echo "Could not create the temporary directory TMP in: $TMP"
+  echo "This script will not work properly without an existing TMP directory."
+fi
+
 this_host=
 # gets the machine's hostname and stores it in the variable "this_host".
 function get_our_hostname()
