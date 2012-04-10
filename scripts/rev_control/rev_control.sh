@@ -7,7 +7,7 @@
 # is a DOS path, but we need it to be a DOS path for our XSEDE testing, so that blows.
 # to get past this, TMP gets changed below to a hopefully generic and safe place.
 
-export TMP=/tmp/rev_control
+export TMP=/tmp/rev_control_$USER
 if [ ! -d "$TMP" ]; then
   mkdir $TMP
 fi
