@@ -26,15 +26,22 @@ source_example_depth=$(calculate_depth ~/cloud/example_source)
 item_depth=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -l | tr -d ' ')
 
 # scan across all appropriately named folders in our folders that live in the "cloud".
-cloud_depth=0
+cloud_project_depth=0
 for i in ~/cloud/*project* ~/cloud/*research*; do
   temp_depth=$(calculate_depth $i)
-  cloud_depth=$(($cloud_depth + $temp_depth))
+  cloud_project_depth=$(($cloud_project_depth + $temp_depth))
+done
+
+# also snag the files labelled as trivia, since they're still to-dos...
+cloud_trivia_depth=0
+for i in ~/cloud/*trivia*; do
+  temp_depth=$(calculate_depth $i)
+  cloud_trivia_depth=$(($cloud_trivia_depth + $temp_depth))
 done
 
 ##############
 
-total_overload=$(($note_depth + $item_depth + $unsorted_depth + $source_example_depth + $cloud_depth))
+total_overload=$(($note_depth + $item_depth + $unsorted_depth + $source_example_depth + $cloud_project_depth + $cloud_trivia_depth))
 
 report="\
 \n\
@@ -44,7 +51,8 @@ Current information overload consists of:\n\
   $item_depth\tto-do list items\n\
   $unsorted_depth\tunsorted files\n\
   $source_example_depth\tsource examples\n\
-  $cloud_depth\tcloud notes\n\
+  $cloud_project_depth\tcloud projects\n\
+  $cloud_trivia_depth\tcloud trivials\n\
   -------\n\
   $total_overload\ttotal items\n\
 \n\
