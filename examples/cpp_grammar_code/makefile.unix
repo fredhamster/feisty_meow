@@ -1,0 +1,224 @@
+#
+#	Title:		Make file for Cxx Grammar tester.
+#
+#	Author:		E.D.Willink
+#
+#	SCCS:		%W% %G%
+#
+#	Description:	This stripped down make file builds the Cxx Grammar tester.
+#
+#	Targets:	
+#			default, executable, normal
+#					builds $(ARCH)o/grammar using default (sun) compiler
+#			sun
+#					builds $(ARCH)o/grammar using sun compiler, yacc and lex
+#			gnu
+#					builds $(ARCH)o/grammar using gnu compiler, bison and flex
+#			debug
+#					builds $(ARCH)o_g/grammar
+#			clean
+#					eliminates $(ARCH)o* intermediates
+#			realclean
+#					eliminates $(ARCH)o* intermediates and executables
+#			source_kit
+#					generates the distribution kits
+#
+#	Switch settings are appropriate for Sun C++ 4.2.
+#	Commented settings indicate what might be appropriate for gcc once it supports templates plausibly.
+#
+#	Latest Modification:
+# EDW		Date:	14-Jun-2001		Original
+#END
+
+.SUFFIXES:
+
+COMPILER = SUN_4_2
+TARGET = grammar
+ARCH = sun4
+FOG_PATH = $(PWD)
+SRCDIR = sources
+PCHDIR = $(SRCDIR)
+STDDIR = std
+DUMMYDIR = dummy
+OBJ_DIR = $(ARCH)o
+OBJ_DIR_PI = $(ARCH)o_pi
+OBJ_DIR_G = $(ARCH)o_g
+OBJ_DIR_PI_G = $(ARCH)o_pi_g
+PRECIOUS_DIRECTORIES = $(SRCDIR) $(OBJ_DIR) $(OBJ_DIR_PI) $(OBJ_DIR_G) $(OBJ_DIR_PI_G)  
+PRECIOUS_LIBRARIES = $(OBJ_DIR)/lib$(TARGET).a $(OBJ_DIR_PI)/lib$(TARGET).so \
+					$(OBJ_DIR_G)/lib$(TARGET).a $(OBJ_DIR_PI_G)/lib$(TARGET).so
+
+.PRECIOUS: $(PRECIOUS_DIRECTORIES) $(PRECIOUS_LIBRARIES) $(SRCDIR)/$(TARGET).dep
+
+LINK		= $(PURIFY) $(CC)
+LFLAGS = 
+EGCS_1_0_2_LINK_LIBS = -ll
+SUN_4_2_LINK_LIBS = -lsunmath -lm /usr/ccs/lib/libl.a
+LINK_LIBS = $($(COMPILER)_LINK_LIBS)
+
+SUN_4_2_CC = CC
+EGCS_1_0_2_CC = g++
+CC = $($(COMPILER)_CC)
+
+SUN_4_2_G = -g0
+EGCS_1_0_2_G = -g
+_G = $($(COMPILER)_G)
+
+SUN_4_2_PIC = -PIC
+EGCS_1_0_2_PIC = 
+_PIC = $($(COMPILER)_PIC)
+
+SUN_4_2_CFLAGS = -temp=. -ptr. -noex
+EGCS_1_0_2_CFLAGS =
+CFLAGS = $($(COMPILER)_CFLAGS)
+
+SUN_4_2_CC_INCS =
+EGCS_1_0_2_CC_INCS = -I../$(DUMMYDIR)
+CC_INCS = -I../$(SRCDIR) -I.. $($(COMPILER)_CC_INCS)
+
+SUN_4_2_CC_DEFS = -D__EXTERN_C__ -DNEEDS_BOOL -DNEEDS_YYWRAP
+EGCS_1_0_2_CC_DEFS =
+CC_DEFS = $($(COMPILER)_CC_DEFS)
+
+SUN_4_2_LFLAGS =
+EGCS_1_0_2_LFLAGS =
+LFLAGS = $($(COMPILER)_LFLAGS)
+
+CP = cp
+MV = mv
+RM = rm
+
+SUN_4_2_LEX = lex
+EGCS_1_0_2_LEX = flex
+LEX = $($(COMPILER)_LEX)
+
+SUN_4_2_LEX_FLAGS = -n
+EGCS_1_0_2_LEX_FLAGS =
+LEX_FLAGS = $($(COMPILER)_LEX_FLAGS)
+
+SUN_4_2_YACC = yacc
+EGCS_1_0_2_YACC = bison
+YACC = $($(COMPILER)_YACC)
+
+SUN_4_2_YACC_FLAGS = -d -t -v
+EGCS_1_0_2_YACC_FLAGS = -d -t -v -y
+YACC_FLAGS = $($(COMPILER)_YACC_FLAGS)
+
+default : executable $(ALL_FILES)
+
+#../import.make is empty by default, but may be provided to copy sources from somewhere.
+../import.make :
+	echo > $@
+IMPORT_PATH = grammar
+include ../import.make
+
+include makefile.macros
+
+LIB_OBJS = $(COMPOSITE_SOURCES:%.cpp=%.o)
+LIB_OBJS_G = $(COMPOSITE_SOURCES:%.cpp=$(OBJ_DIR_G)/%.o)
+DUMMIES = $(DUMMYDIR)/osfcn.h
+
+executable : $(ALL_FILES) normal
+
+normal : $(OBJ_DIR)/$(TARGET)
+
+debug : $(OBJ_DIR_G)/$(TARGET)
+
+sun :
+	$(MAKE) -f makefile.unix $(MFLAGS) COMPILER=SUN_4_2 normal
+
+gnu : 
+	$(MAKE) -f makefile.unix $(MFLAGS) COMPILER=EGCS_1_0_2 normal
+
+$(DUMMYDIR)/osfcn.h :
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; fi'
+	@echo '$@'
+	@- sh -c 'echo "extern \"C\" int read(int, char *, int);" > "$@"'
+	@- sh -c 'chmod -w "$@"'
+
+$(SRCDIR)/%.cxx : %.l
+	@- if test ! -d $(@D); then echo mkdir -p $(@D); mkdir -p $(@D); else $(RM) -f $(@D)/$*.cxx; fi
+	- $(LEX) $(LEX_FLAGS) $*.l
+	@- mv -f lex.yy.c $(@D)/$*.cxx
+	@- chmod -w $(@D)/$*.cxx
+
+$(SRCDIR)/%.cxx $(SRCDIR)/%.hxx : %.y
+	@- if test ! -r $(@D); then echo mkdir -p $(@D); mkdir -p $(@D); else $(RM) -f $(@D)/$*.output $(@D)/$*.cxx $(@D)/$*.hxx; fi
+	- $(YACC) $(YACC_FLAGS) $*.y
+	@- mv -f y.tab.c $(@D)/$*.cxx
+	@- mv -f y.tab.h $(@D)/$*.hxx
+	@- mv -f y.output $(@D)/$*.output
+	@- chmod -w $(@D)/$*.cxx $(@D)/$*.hxx $(@D)/$*.output
+
+$(OBJ_DIR)/%.o : %.cpp
+	@- if test ! -d $(@D); then echo mkdir -p $(@D); mkdir -p $(@D); fi
+	@- echo $@
+	@- cd $(OBJ_DIR) ; if $(CC) -c -O $(CFLAGS) $(CC_INCS) $(CC_DEFS) -o $*.o ../$< ;\
+		 then : ; else $(RM) -f $*.o; fi
+
+$(OBJ_DIR_PI)/%.o : %.cpp
+	@- if test ! -d $(@D); then echo mkdir -p $(@D); mkdir -p $(@D); fi
+	@- echo $@
+	@- cd $(OBJ_DIR_PI) ; if $(CC) -c -O $(_PIC) $(CFLAGS) $(CC_INCS) $(CC_DEFS) -o $*.o ../$< ;\
+			then : ; else $(RM) -f $*.o; fi
+
+$(OBJ_DIR_G)/%.o : %.cpp
+	@- if test ! -d $(@D); then echo mkdir -p $(@D); mkdir -p $(@D); fi
+	@- echo $@ 
+	@- cd $(OBJ_DIR_G) ; if $(CC) -c $(_G) $(CFLAGS) $(CC_INCS) $(CC_DEFS) -o $*.o ../$< ;\
+		 then : ; else $(RM) -f $*.o; fi
+
+$(OBJ_DIR_PI_G)/%.o : %.cpp
+	@- if test ! -d $(@D); then echo mkdir -p $(@D); mkdir -p $(@D); fi
+	@- echo $@
+	@- cd $(OBJ_DIR_PI_G) ; if $(CC) -c $(_PIC) $(_G) $(CFLAGS) $(CC_INCS) $(CC_DEFS) -o $*.o ../$< ;\
+		then : ; else $(RM) -f $*.o; fi
+
+$(TARGET) : makefile $(LIB_OBJS:%.o=$(OBJ_DIR)/%.o)
+	@- if test ! -d $(@D); then echo mkdir -p $(@D); mkdir -p $(@D); fi
+	@- echo $@
+	- cd $(OBJ_DIR) ; $(LINK) $(CFLAGS) $(CC_INCS) $(CC_DEFS) -o ../$(TARGET) -Bstatic \
+		$(LIB_OBJS) $(LINK_LIBS)
+
+$(OBJ_DIR)/$(TARGET) : makefile $(LIB_OBJS:%.o=$(OBJ_DIR)/%.o)
+	@- if test ! -d $(@D); then echo mkdir -p $(@D); mkdir -p $(@D); else rm -f $@; fi
+	@- echo $@
+	- cd $(OBJ_DIR) ; $(LINK) $(CFLAGS) $(CC_INCS) $(CC_DEFS) -o $(TARGET) $(LIB_OBJS) $(LINK_LIBS)
+
+$(OBJ_DIR_G)/$(TARGET) : makefile $(LIB_OBJS:%.o=$(OBJ_DIR_G)/%.o)
+	@- if test ! -d $(@D); then echo mkdir -p $(@D); mkdir -p $(@D); else rm -f $@; fi
+	@- echo $@
+	- cd $(OBJ_DIR_G) ; $(LINK) $(CFLAGS) $(CC_INCS) $(CC_DEFS) $$(_G) -o $(TARGET) $(LIB_OBJS)  $(LINK_LIBS)
+
+source_kit : CxxSrc.tgz
+	
+CxxSrc.tgz : CxxSrc.tar
+	@- rm -f $@
+	- gzip CxxSrc.tar -c > $@
+	@- chmod -w $@
+	
+CxxSrc.tar : $(ALL_FILES) FORCE $(OBJ_DIR)/grammar
+	@- rm -f "$@
+	@- tar cf "$@" $(ALL_FILES:%="$(MAKE_TAR_PATH)%") "$(MAKE_TAR_PATH)$(OBJ_DIR)/grammar"
+	@- chmod -w "$@"
+
+$(TAR_FILE) : $(ALL_FILES) FORCE
+	@- cd $(@D); tar rf $(@F) $(ALL_FILES:%=$(MAKE_TAR_PATH)%)
+
+FORCE :
+	
+#
+#	Cleanup rules
+#
+clean :
+	- $(RM) -f $(DUMMYDIR)/* $(SRCDIR)/* $(OBJ_DIR)/*.o $(OBJ_DIR_PI)/*.o $(OBJ_DIR_G)/*.o $(OBJ_DIR_PI_G)/*.o
+
+realclean :
+	- $(RM) -rf $(DUMMYDIR) $(SRCDIR) $(OBJ_DIR) $(OBJ_DIR_PI) $(OBJ_DIR_G) $(OBJ_DIR_PI_G)
+
+$(OBJ_DIR)/CxxLexer.o $(OBJ_DIR_PI)/CxxLexer.o $(OBJ_DIR_G)/CxxLexer.o $(OBJ_DIR_PI_G)/CxxLexer.o : \
+    CxxLexing.cxx CxxLexing.hxx CxxToken.hxx $(SRCDIR)/CxxLexer.cxx $(SRCDIR)/CxxParser.hxx $(DUMMIES)
+$(OBJ_DIR)/CxxParser.o $(OBJ_DIR_PI)/CxxParser.o $(OBJ_DIR_G)/CxxParser.o $(OBJ_DIR_PI_G)/CxxParser.o : \
+    CxxParsing.cxx CxxParsing.hxx CxxToken.hxx $(SRCDIR)/CxxParser.cxx $(SRCDIR)/CxxParser.hxx
+$(OBJ_DIR)/CxxToken.o $(OBJ_DIR_PI)/CxxToken.o $(OBJ_DIR_G)/CxxToken.o $(OBJ_DIR_PI_G)/CxxToken.o : \
+    CxxToken.cxx CxxToken.hxx

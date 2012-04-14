@@ -1,0 +1,39 @@
+From: Ed.Willink [mailto:Ed.Willink@uk.thalesgroup.com]
+Sent: Thursday, January 15, 2004 12:23 PM
+To: 'Chris Koeritz'
+Cc: 'Ed.Willink@thalesgroup.com'
+Subject: RE: question regarding your c++ grammar and lexer...
+Hi Chris
+
+
+[Please use Ed.Willink@thalesgroup.com for further coirrespondence. ]
+The grammar's the most re-usable bit. Overall it came from my extended C++ language
+FOG that allowed meta-execution at compile time ..,
+It is very Open Source - no license at all. You may use it as you like. It would
+be nice if you give an appropriate acknowledgement..
+The ISO compliance is the result of best endeavours comparison and interpretation
+rather than rigourous application of conformance suites.
+Be aware that it is a context free syntax only parser. It requires a subsequent semantic
+phase to resolve certain ambiguities that require type context.. If you need to
+implement this, you really should read the Grammar chapter of my thesis posted
+on the same site, and maybe use the FOG semantic parsing as a starting point.
+I hope you make lots and lots of money, so that you may feel generously disposed
+to giving me some.
+Regards
+Ed Willink
+
+
+-----Original Message-----
+From: Chris Koeritz
+Sent: 14 January 2004 19:35
+To: 'Ed.Willink@rrl.co.uk'
+Subject: question regarding your c++ grammar and lexer...
+dear mr. willink,
+first, thank you very much for posting your c++ grammar online. it is, well, awesome that it is compliant with the ansi standard.
+i am wondering though about what copyrights apply to it. i am considering using the grammar in a project that might be included in a tool which might eventually be sold.
+my concerns are: (1) is it appropriate to include your grammar in a GPLed open source application? and (2) do you allow the grammar to be used in a project that might be sold commercially without any royalty requirements for the use of it?
+please feel free to push my nose into any FAQ sites or other information that may already be available. i came by your grammar from the site here: http://www.parashift.com/c++-faq-lite/compiler-dependencies.html#faq-37.11
+and they were a bit skimpy on links to anything besides the grammar itself.
+thanks for your time and i hope releasing this grammar has been more fun than trouble for you...
+-chris koeritz
+

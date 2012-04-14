@@ -1,0 +1,188 @@
+#
+#	Title:			makefile.gmake
+#
+#	Author:			E.D.Willink
+#
+#	Description:	GNU make file for Cxx Grammar tester under NT
+#
+#		Environment
+#			INTDIR	intermediate directory for objects (defaults to ".\Release")
+#			OUTDIR	output directory for executable (defaults to ".\Release")
+#			MSINCDIR path of main system include directory (defaults to $(MSVCDIR)\Include)
+#
+#		Public Targets
+#			executable
+#					builds '$(OUTDIR)'/grammar.exe
+#			clean
+#					eliminates $(INTDIR) intermediates
+#			realclean
+#					eliminates $(INTDIR) and '$(OUTDIR)' intermediates
+#			source_kit
+#					generates the distribution kits
+#		Private Targets
+#			backup
+#					copies changed sources from C: to $(BACKUPDIR)
+#			tar_delta
+#					tars up changes ready for transfer to Unix
+#
+#
+#	Build is error and warning free as
+#		nmake -f makefile.gmake
+#	(after using - Visual C++ 6
+#		"C:\Program Files\Microsoft Visual Studio\VC98\Bin\vcvars32.bat"
+#	or - Visual C++ 5
+#		"C:\Program Files\DevStudio\VC\Bin\vcvars32.bat"
+#	  in a Command Prompt to set up the Visual C++ environment).
+#	Alternatively do a "Compile xxx" to compile target xxx from the "grammar files->Targets"
+#	after loading root.dsw into DevStudio.
+#
+.SUFFIXES:
+.SUFFIXES: .l .y .hxx .cxx .cpp .obj
+
+TARGET = grammar
+INTDIR = .\Release
+OUTDIR = $(INTDIR)
+SRCDIR = Sources
+DUMMYDIR = Dummy
+LSTDIR = Listings
+MSINCDIR = $(MSVCDIR)\Include
+BACKUPDIR = Q:/P541/C/BackUp/grammar
+TARDELTADIR = P:/$(USERNAME)
+
+CPRINT = "../tools/cprint/$(OUTDIR)/cprint.exe" -b -c150 -e -h0 -f1 -l69 -n25 -t4
+WIDE_CPRINT = "../tools/cprint/$(OUTDIR)/cprint.exe" -b -c150 -e -h0 -f1 -l69 -n0 -t4
+
+CCP = "../tools/ccp/$(OUTDIR)/ccp.exe"
+CCP_FLAGS =
+MV = mv
+#LEX = "../tools/flex_pp/$(OUTDIR)/flex_pp.exe" -S../tools/flex_pp/flexskel.cc -H../tools/flex_pp/flexskel.h
+#LEX_FLAGS = -8
+LEX = flex
+LEX_FLAGS = 
+#YACC = "../tools/bison_pp/$(OUTDIR)/bison_pp.exe" -S ../tools/bison_pp/bison.cc -H ../tools/bison_pp/bison.h
+#YACC_FLAGS = -t -v
+YACC = bison -d -t -v
+YACC_FLAGS = 
+
+CPP = cl.exe /nologo
+CPP_RELEASE_FLAGS = /ML /O2 /D "NDEBUG"
+CPP_DEBUG_FLAGS = /MLd /Gm /ZI /Od /D "_DEBUG" /GZ 
+CPP_COMMON_FLAGS = /W3 /GX /Fo"$(INTDIR)/" /Fd"$(INTDIR)/$(TARGET)" /c
+CPP_DEFS = /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NEEDS_YYWRAP"
+CPP_INCS = /I "$(SRCDIR)" /I "." /I "$(DUMMYDIR)" 
+
+LINK32 = link.exe /nologo /machine:I386 /subsystem:console
+LINK_RELEASE_FLAGS = /incremental:no
+LINK_DEBUG_FLAGS = /incremental:yes /debug /pdbtype:sept
+LINK32_LIBS = kernel32.lib 
+
+MAKEFILE = makefile.gmake
+DUMMIES = $(DUMMYDIR)/unistd.h
+
+include makefile.macros
+
+OBJECTS = $(COMPOSITE_SOURCES:%.cpp=$(INTDIR)/%.obj)
+
+all : $(ALL_FILES) executable
+
+executable : $(OUTDIR)/$(TARGET).exe
+
+$(DUMMYDIR)/unistd.h :
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; fi'
+	@echo '$@'
+	@- sh -c 'echo "#include <io.h>" > "$@"'
+	@- sh -c 'chmod -w "$@"'
+
+$(SRCDIR)/%.cxx : %.l
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f $(@D)/$*.cxx; fi'
+	- sh -c '$(LEX) $(LEX_FLAGS) $*.l'
+	@- sh -c 'mv -f lex.yy.c $(@D)/$*.cxx'
+	@- sh -c 'chmod -w $(@D)/$*.cxx'
+
+$(SRCDIR)/%.cxx $(SRCDIR)/%.hxx : %.y
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f $(@D)/$*.output $(@D)/$*.cxx $(@D)/$*.hxx; fi'
+	- sh -c '$(YACC) $(YACC_FLAGS) $*.y'
+	@- sh -c 'mv -f $*.tab.c $(@D)/$*.cxx'
+	@- sh -c 'mv -f $*.tab.h $(@D)/$*.hxx'
+	@- sh -c 'mv -f $*.output $(@D)/$*.output'
+	@- sh -c 'chmod -w $(@D)/$*.cxx $(@D)/$*.hxx $(@D)/$*.output'
+
+.\Release/%.obj : %.cpp
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f "$@"; fi'
+	@- sh -c '$(CPP) $(CPP_INCS) $(CPP_DEFS) $(CPP_RELEASE_FLAGS) $(CPP_COMMON_FLAGS) "$<"'
+
+.\Debug/%.obj : %.cpp
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f "$@"; fi'
+	@- sh -c '$(CPP) $(CPP_INCS) $(CPP_DEFS) $(CPP_DEBUG_FLAGS) $(CPP_COMMON_FLAGS) "$<"'
+
+.\Release/$(TARGET).exe : $(OBJECTS) $(MAKEFILE)
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; fi'
+	@echo '$@'
+	@- sh -c '$(LINK32) /pdb:"$(@D)/$(TARGET).pdb" /out:"$@" $(LINK_RELEASE_FLAGS) $(OBJECTS:%="%") $(LINK32_LIBS)'
+
+.\Debug/$(TARGET).exe : $(OBJECTS) $(MAKEFILE)
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; fi'
+	@echo '$@'
+	@- sh -c '$(LINK32) /pdb:"$(@D)/$(TARGET).pdb" /out:"$@" $(LINK_DEBUG_FLAGS) $(OBJECTS:%="%") $(LINK32_LIBS)'
+
+$(LSTDIR)/CxxLexer.list : CxxLexer.cpp $(LEXER_FILES) $(L_FILES)
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f "$@"; fi'
+	sh -c '$(CPRINT) $? > "$@"'
+
+$(LSTDIR)/CxxParser.list : CxxParser.cpp $(PARSER_FILES) $(Y_FILES)
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f "$@"; fi'
+	sh -c '$(CPRINT) $? > "$@"'
+
+$(LSTDIR)/CxxToken.list : CxxToken.cpp $(TOKEN_FILES)
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f "$@"; fi'
+	sh -c '$(CPRINT) $? > "$@"'
+
+$(LSTDIR)/CxxMake.list : $(MAKE_FILES)
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f "$@"; fi'
+	sh -c '$(CPRINT) $? > "$@"'
+
+source_kit: CxxNtSrc.tgz
+	
+CxxNtSrc.tgz : CxxNtSrc.tar
+	@echo $@
+	@- sh -c 'rm -f "$@"'
+	@- sh -c 'gzip "$<" -c > "$@"'
+	@- sh -c 'chmod -w "$@"'
+	
+CxxNtSrc.tar : FORCE
+	@echo $@
+	@- sh -c 'rm -f "$@"'
+	@- sh -c 'tar cf "$@" $(ALL_FILES:%="$(MAKE_TAR_PATH)%") "Release/grammar.exe"'
+	@- sh -c 'chmod -w "$@"'
+
+$(PWD)/%.tar : FORCE
+	@- sh -c 'cd $(PWD); tar rf "$(@F)" $(ALL_FILES:%="$(MAKE_TAR_PATH)%")'
+
+FORCE :
+
+tar_delta : $(TARDELTADIR)/$(TARGET)_delta.tar
+
+$(TARDELTADIR)/$(TARGET)_delta.tar : $(ALL_FILES)
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f "$@"; fi'
+	- sh -c 'tar cf - $(?:%="%") > "$@"'
+	@- sh -c 'chmod -w "$@"'
+
+backup : $(ALL_FILES:%=$(BACKUPDIR)/%) $(BACKUPDIR)/grammar.dsp
+
+$(BACKUPDIR)/% : %
+	@- sh -c 'if test ! -d "$(@D)"; then echo mkdir -p "$(@D)"; mkdir -p "$(@D)"; else rm -f "$@"; fi'
+	@echo $<
+	@- sh -c 'cp "$<" "$@"'
+	@- sh -c 'chmod -w "$@"'
+
+clean :
+	@- sh -c 'if test -d "$(INTDIR)"; then rm -f "$(INTDIR)"/*.idb "$(INTDIR)"/*.ilk "$(INTDIR)"/*.obj "$(INTDIR)"/*.pch "$(INTDIR)"/*.pdb; fi'
+	@- sh -c 'rm -f "$(SRCDIR)"/*.xxh'
+
+realclean : clean
+	@- sh -c 'rm -rf "$(DUMMYDIR)" Release Debug $(SRCDIR)'
+	@- sh -c 'rm -f "tests/*/results/*"'
+
+$(INTDIR)/CxxLexer.obj : CxxLexing.cxx CxxLexing.hxx $(SRCDIR)/CxxLexer.cxx $(SRCDIR)/CxxParser.hxx $(DUMMIES)
+$(INTDIR)/CxxParser.obj : CxxParsing.cxx CxxParsing.hxx $(SRCDIR)/CxxParser.cxx $(SRCDIR)/CxxParser.hxx
+$(INTDIR)/CxxToken.obj : CxxToken.cxx CxxToken.hxx

@@ -1,0 +1,196 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Ed's Toolkit</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h1 align="center">Superset C++ Grammar</h1>
+
+<hr>
+
+<p>This work area supports a demonstration of the superset C++
+grammar described in Chapter 5 of <a
+href="mailto:Ed.Willink@rrl.co.uk">Ed Willink</a>'s thesis on <a
+href="http://www.computing.surrey.ac.uk/research/dsrg/fog/FogThesis.html">Meta-Compilation
+for C++</a>. It contains working lex and yacc grammars that
+enable C++ source to be lexically analysed, then syntactically
+analysed without semantic knowlege. The lex and yacc grammar have
+their action routines defined by macros in the hope that
+reconfiguration may be possible without editing the grammars
+directly. The dummy implementations of the yacc macros do nothing
+other than count statements and diagnose the back-tracking
+behaviour. Users may add their own syntactic level code. A proper
+C++ parser needs semantic analysis as well, including correction
+of minor misprses at the syntactic level. Semantic interpretaion
+is provided by <a
+href="http://www.computing.surrey.ac.uk/research/dsrg/fog/">FOG</a>
+from which this demonstration is split off.</p>
+
+<p>The work area is self-sufficient, requiring only <em>lex</em>
+and <em>yacc</em>, or <em>flex</em> and <em>bison</em>.</p>
+
+<hr>
+
+<h2>Command Line</h2>
+
+<p>The test grammar is a simple command line utility, for
+analysing a single <strong>pre-processed</strong> source file
+(use CC -E to run just the preprocessor on your source files)..</p>
+
+<pre>	grammar [options] &lt; source-file</pre>
+
+<p>The full set of command line options is:</p>
+
+<pre>	-c	Recognise only C keywords - approximates C rather than C++ parsing
+	-m	Display mark activity.
+	-n	Echo line numbers.
+	-t	Echo source line text.
+	-y	Display yacc diagnostics.</pre>
+
+<p>On completion a three line diagnostic summarises the search
+activity. </p>
+
+<hr>
+
+<h2>Files</h2>
+
+<p><a href="CxxSrc.tgz">CxxSrc.tgz</a>, <a href="CxxNtSrc.tgz">CxxNtSrc.tgz</a>
+The source distribution kit including a Sun or NT executable.</p>
+
+<p><a href="CxxLexer.l">CxxLexer.l</a> A simple lexer for all C
+and/or C++ tokens</p>
+
+<p><a href="CxxParser.y">CxxParser.y</a> The parser,
+automatically extracted from FogParser.y.</p>
+
+<p><a href="CxxToken.hxx">CxxToken.hxx</a>, <a
+href="CxxToken.cxx">CxxToken.cxx</a> A trivial class used by the
+parser to represent each parsed token.</p>
+
+<p><a href="CxxLexing.hxx">CxxLexing.hxx</a>, <a
+href="CxxLexing.cxx">CxxLexing.cxx</a> Interface and
+implementation of token creation routines for the lexer.</p>
+
+<p><a href="CxxParsing.hxx">CxxParsing.hxx</a>, <a
+href="CxxParsing.cxx">CxxParsing.cxx</a> Interface and
+implementation of token manioulation routines for the parser.</p>
+
+<p><a href="CxxLexer.cpp">CxxLexer.cpp</a>, <a
+href="CxxParser.cpp">CxxParser.cpp</a>, <a href="CxxToken.cpp">CxxToken.cpp</a>
+Degenerate compilation units for the above.</p>
+
+<p><a href="makefile">makefile</a>, <a href="makefile.macros">makefile.macros</a>,
+<a href="CxxLexer.l">makefile.unix</a> Unix build scripts</p>
+
+<p><a href="makefile.gmake">makefile.gmake</a>, <a
+href="makefile.macros">makefile.macros</a>, <a href="grammar.dsw">grammar.dsw</a>,
+<a href="grammar.dsp">grammar.dsp</a> NT build scripts and
+DevStudio workspace and project</p>
+
+<p><a><u>sun4o/grammar</u></a> Built executable (on Unix)</p>
+
+<p><a><u>Release/grammar.exe</u></a> Built executable (on NT)</p>
+
+<hr>
+
+<h2>Unix Builds</h2>
+
+<p>The code builds under Solaris 2.5 and with Sun C++ 4.2.</p>
+
+<pre>	make sun</pre>
+
+<p>or Gnu egcs-1.0.2 release, with flex 2.3.7, bison 1.16</p>
+
+<pre>	make gnu</pre>
+
+<hr>
+
+<h2>NT Builds</h2>
+
+<p>The code builds under NT 4 and has been tested with DevStudio
+V6 and cygwin 1.1.</p>
+
+<h3>a) cygwin</h3>
+
+<p>You need cygwin, the latest version of which is available <a
+href="ftp://sunsite.org.uk:21/Mirrors/sourceware.cygnus.com/pub/cygwin/setup.exe">ftp://sunsite.org.uk:21/Mirrors/sourceware.cygnus.com/pub/cygwin/setup.exe</a></p>
+
+<p>A slightly easier to install earlier version (used by the
+author) is <a
+href="ftp://sunsite.org.uk:21/Mirrors/sourceware.cygnus.com/pub/cygwin/old/cygwin-b20/full.exe">ftp://sunsite.org.uk:21/Mirrors/sourceware.cygnus.com/pub/cygwin/old/cygwin-b20/full.exe</a></p>
+
+<p>Use a mirror site listed at <a
+href="http://sources.redhat.com/cygwin/mirrors.html">http://sources.redhat.com/cygwin/mirrors.html</a>.</p>
+
+<p>The older cygwin is a simple standard NT installation - just
+run full.exe (with administrator rights) and accept the default
+installation paths (gnu tools build them in). The newer cygwin is
+much smarter, doing automatic selective downloads - which the
+author's firewall messes up.</p>
+
+<h3>b) Path configuration</h3>
+
+<p>You may want to make cygwin tools accessible from command
+prompts so</p>
+
+<pre>Start-&gt;Settings-&gt;ControlPanel
+	System|Environment
+		Add Variable PATH
+		Value C:\cygwin\cygwin-b20\H-i586-cygwin32\BIN</pre>
+
+<h3>c) DevStudio configuration</h3>
+
+<p>You need to configure DevStudio to use cygwin.</p>
+
+<p>In DevStudio:</p>
+
+<pre>Tools-&gt;Options-&gt;Directories
+	Show Directories For Executable files
+	Add C:\cygwin\bin</pre>
+
+<h3>d) Unpacking</h3>
+
+<p>Then use winzip or gunzip to extract all of <a
+href="CxxNtSrc.tgz">CxxNtSrc.tgz</a>:</p>
+
+<pre>double click in Explorer on <a href="CxxNtSrc.tgz">CxxNtSrc.tgz</a>
+	Yes to decompress archive to temporary file
+	Wait a few moments
+	Actions...-&gt;Extract
+		All Files, to e.g. C:\CxxGrammar, use Folder names, Extract
+	Close Winzip</pre>
+
+<h3>e) DevStudio build</h3>
+
+<pre>Double click in Explorer on <a href="grammar.dsw">grammar.dsw</a>
+	If prompted to browse for a SourceSafe project Click No.
+	If prompted to attempt SourceSafe connection in another session click No.
+	Select your preferred configuration (Win32 Debug is default)
+	Select FileView|grammar Files-&gt;Targets-&gt;executable
+	&lt;Ctrl&gt;F7
+	after a few seconds everything is built</pre>
+
+<p>DevStudio reports 0 errors and 1 warnings</p>
+
+<pre>Build : warning : failed to (or don't know how to) build 'C:\CxxGrammar\Targets\executable'</pre>
+
+<p>The warning is an artefact of fake build targets</p>
+
+<p>Everything in DevStudio is compiled using a makefile.gmake
+target which is selected for a &lt;CTRL&gt;F7 in the Workspace
+window. Steer clear of the standard DevStudio F7 which builds all
+targets: backup then clean then executables then realclean then
+test etc. No harm is done but it takes a long time.</p>
+
+<hr>
+
+<p><i>Last updated <!--webbot bot="Timestamp" startspan
+s-type="EDITED" s-format="%d %B, %Y" -->28 July, 2001<!--webbot
+bot="Timestamp" i-checksum="21078" endspan -->.</i> </p>
+</body>
+</html>

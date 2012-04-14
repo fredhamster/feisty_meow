@@ -1,0 +1,20 @@
+This directory tree comprises a pre-built demonstration of the superset C++ grammar
+from FOG..
+
+Contents
+--------
+
+	Release/grammar.exe	-- the statically bound executable (on NT)
+    sun4o/grammar -- the statically bound executable (on Unix)
+
+It is a command line based utility. See index.html for details.
+
+Bug reporting
+-------------
+
+Please report any bugs to Ed.Willink@rrl.co.uk. I will endeavour to fix them,
+but since this code is a one man effort and my time is primarily devoted to
+my other activities for Thales Research, only simple and easy fixes are likely.
+I am more likely to be able to fix the problem if you can trim your problem to
+just a few lines.
+

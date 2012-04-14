@@ -1,0 +1,83 @@
+#
+#	Title:		Common make macros for the Cxx Grammar tester.
+#
+#	Author:		E.D.Willink
+#
+#	Description:
+#
+#		These macros are shared by
+#			makefile		for Unix make
+#			makefile.gmake	for NT (g)make
+#END
+
+L_FILES = \
+	CxxLexer.l
+
+Y_FILES = \
+	CxxParser.y
+
+LEXER_FILES = \
+	CxxLexing.cxx \
+	CxxLexing.hxx
+
+PARSER_FILES = \
+	CxxParsing.cxx \
+	CxxParsing.hxx
+
+TOKEN_FILES = \
+	CxxToken.cxx \
+	CxxToken.hxx
+
+CLASS_SOURCES = \
+	$(LEXER_FILES) \
+	$(PARSER_FILES) \
+	$(TOKEN_FILES)
+
+#
+# list of all compilation units
+#
+COMPOSITE_SOURCES = \
+	CxxLexer.cpp \
+	CxxParser.cpp \
+	CxxToken.cpp
+
+Y_CXX_FILES = $(Y_FILES:%.y=$(SRCDIR)/%.cxx)
+GENERATED_INCLUDES = \
+	$(L_FILES:%.l=$(SRCDIR)/%.cxx) \
+	$(Y_FILES:%.y=$(SRCDIR)/%.cxx) \
+	$(Y_FILES:%.y=$(SRCDIR)/%.hxx)
+
+MAKE_FILES = \
+	makefile \
+	makefile.gmake \
+	makefile.macros \
+	makefile.unix
+
+# list of all other files for listing purposes
+OTHER_SOURCES = \
+	$(MAKE_FILES) \
+	$(CLASS_SOURCES) \
+	$(L_FILES) \
+	$(Y_FILES)
+
+CPP_SOURCES = $(COMPOSITE_SOURCES) 
+
+INCLUDES = $(GENERATED_INCLUDES)
+
+SOURCES = \
+	$(CPP_SOURCES) \
+	$(CLASS_SOURCES) \
+	$(L_FILES) \
+	$(Y_FILES) \
+	$(MAKE_FILES)
+
+DOCUMENTATION_FILES = \
+    index.html \
+    README
+
+# List of all primary files (to be copied to a secondary environment)
+ALL_FILES = \
+	$(SOURCES) \
+	$(DOCUMENTATION_FILES) \
+	grammar.dsp \
+	grammar.dsw
