@@ -13,8 +13,8 @@ base_dir="$(basename "$FEISTY_MEOW_DIR")"
 
 pushd $parent_dir
 
-# zip up hoople2, but exclude the file names we never want to see.
-tar -czf $TEMPO_FILE $base_dir $XC"*/*.tar.gz" $XC"*/*.zip" $XC"*/waste/*" $XC"*/logs/*" $XC"*/binaries/*" $XC"*.git*" 
+# zip up feisty meow, but exclude the file names we never want to see.
+tar -h -czf $TEMPO_FILE $base_dir $XC"*/*.tar.gz" $XC"*/*.zip" $XC"*/waste/*" $XC"*/logs/*" $XC"*/binaries/*" $XC"*.git*" 
 
 # now move the newest version into its resting place.  this prepares the
 # feisty_meow package for uploading.
