@@ -13,7 +13,7 @@ if [ ! -z "$grunty" ]; then
   VOXDIR=/z/walrus/media/sounds
 #hmmm: generalize the above.
   FILE_LIST=$(find $VOXDIR -type f)
-#echo "file list is $FILE_LIST"
+echo "file list is $FILE_LIST"
   LINES=$(find $VOXDIR -type f | wc -l)
 #echo "lines is $LINES"
   LESS_CHANCE=$(expr $LINES \\* 4)
@@ -25,7 +25,7 @@ if [ ! -z "$grunty" ]; then
   done
 
   # now play the file
-  bash $FEISTY_MEOW_SCRIPTS/sound_play.sh $TO_PLAY
+  bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $TO_PLAY
 
 fi
 
