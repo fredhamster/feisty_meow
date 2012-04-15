@@ -68,6 +68,12 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 shopt -s checkhash
 # don't check path for sourced files.
 shopt -u sourcepath
+# ignore duplicate lines and spaces for history.
+HISTCONTROL=ignoredups:ignorespace
+# append to the history file.
+shopt -s histappend
+# automatically update window size if needed.
+shopt -s checkwinsize
 
 ##############
 
