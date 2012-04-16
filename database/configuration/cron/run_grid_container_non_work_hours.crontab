@@ -1,0 +1,19 @@
+
+# m h dom mon dow command
+
+SHELL=/bin/bash
+
+USER=jurgis
+XSEDE_TESTS_FOLDER=/home/jurgis/xsede/xsede_tests
+
+# during non-weekday hours, make sure grid container is started if can't detect it as running.
+
+  # first is for weekdays, during non-working hours.
+*/10 0-8,19-23 * * 1-5 export FOOP=/tmp/container_restarter_${USER}_$(hostname).log; bash $XSEDE_TESTS_FOLDER/library/maybe_restart_container.sh &>>$FOOP ; /bin/chmod g+w $FOOP
+
+  # second is for weekends.
+*/10 * * * 0,6 export FOOP=/tmp/container_restarter_${USER}_$(hostname).log; bash $XSEDE_TESTS_FOLDER/library/maybe_restart_container.sh &>>$FOOP ; /bin/chmod g+w $FOOP
+
+# stop the container during working hours, so it doesn't hose up our desktop performance.
+*/10 9-18 * * 1-5 export FOOP=/tmp/container_restarter_${USER}_$(hostname).log; bash $XSEDE_TESTS_FOLDER/library/zap_genesis_javas.sh &>>$FOOP ; /bin/chmod g+w $FOOP
+
