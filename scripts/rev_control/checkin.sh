@@ -2,6 +2,7 @@
 
 # checks in all the folders present in the REPOSITORY_LIST variable.
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
 
 # selects the method for check-in based on where we are.

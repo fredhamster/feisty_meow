@@ -1,0 +1,6 @@
+gimp -i -b '(batch-whiteboard-clean "*.png")' -b '(gimp-quit 0)'
+
+# from sites:
+#   http://matthew.mceachen.us/blog/how-to-clean-up-photos-of-whiteboards-with-gimp-403.html
+#   http://registry.gimp.org/node/19822
+
