@@ -39,20 +39,32 @@ for i in ~/cloud/*trivia*; do
   cloud_trivia_depth=$(($cloud_trivia_depth + $temp_depth))
 done
 
+# and then count up the things that we think will be cleaned soon, but one thing we have learned
+# is that things that are intended are not always followed up on right away.  this catches us
+# being too hopeful and makes sure nothing seems to be getting done that's lagging.
+cloud_active_depth=0
+for i in ~/cloud/*active*; do
+  temp_depth=$(calculate_depth $i)
+  cloud_active_depth=$(($cloud_active_depth + $temp_depth))
+done
+
+#hmmm: the find and add thing is starting to look like a useful function.
+
 ##############
 
-total_overload=$(($note_depth + $item_depth + $unsorted_depth + $source_example_depth + $cloud_project_depth + $cloud_trivia_depth))
+total_overload=$(($note_depth + $item_depth + $unsorted_depth + $source_example_depth + $cloud_project_depth + $cloud_trivia_depth + $cloud_active_depth))
 
 report="\
 \n\
 Current information overload consists of:\n\
 \n\
-  $note_depth\tnote files\n\
+  $note_depth\tgrunty notes\n\
   $item_depth\tto-do list items\n\
   $unsorted_depth\tunsorted files\n\
   $source_example_depth\tsource examples\n\
-  $cloud_project_depth\tcloud projects\n\
-  $cloud_trivia_depth\tcloud trivials\n\
+  $cloud_project_depth\tproject files\n\
+  $cloud_trivia_depth\ttrivial notes\n\
+  $cloud_active_depth\tactive items\n\
   -------\n\
   $total_overload\ttotal items\n\
 \n\
