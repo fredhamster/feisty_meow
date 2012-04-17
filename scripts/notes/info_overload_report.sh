@@ -60,11 +60,11 @@ Current information overload consists of:\n\
 \n\
   $note_depth\tgrunty notes\n\
   $item_depth\tto-do list items\n\
-  $unsorted_depth\tunsorted files\n\
-  $source_example_depth\tsource examples\n\
-  $cloud_project_depth\tproject files\n\
-  $cloud_trivia_depth\ttrivial notes\n\
   $cloud_active_depth\tactive items\n\
+  $cloud_project_depth\tproject files\n\
+  $source_example_depth\tsource examples\n\
+  $cloud_trivia_depth\ttrivial notes\n\
+  $unsorted_depth\tunsorted files\n\
   -------\n\
   $total_overload\ttotal items\n\
 \n\
