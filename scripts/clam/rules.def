@@ -51,12 +51,12 @@ else \
   echo Skipping missing directory [$*]; \
 fi'
 
-# always run the targets.  if they don't exist, that's an error.
+# always run the exes listed in RUN_TARGETS.
 .PHONY: run_targets
 
 # "all" is the first target to execute in any makefile.  we capture it and
 # use it to produce the requested actions.
-all: start $(ACTUAL_FIRST_TARGETS) $(ACTUAL_TARGETS) $(ACTUAL_LAST_TARGETS) $(RUN_TARGETS:%=run_targets) finish 
+all: start $(ACTUAL_FIRST_TARGETS) $(ACTUAL_TARGETS) $(ACTUAL_LAST_TARGETS) run_targets finish 
 
 # "start" announces the beginning of compilation.
 start:
@@ -87,26 +87,8 @@ endif
 
 # runs the programs specified in the RUN_TARGETS variable.
 run_targets:
-	$(HIDESH) -c '\
-if [ ! -z "$(RUN_TARGETS)" ]; then \
-  if [ -f "$(DIRTY_FILE)" -o -f "$(SUBMAKE_FLAG)" ]; then \
-    total_exitval=0; \
-    for program_name in $(RUN_TARGETS); do \
-      base=`basename $$program_name`; \
-      "$$program_name"; \
-      exitval=$$?; \
-      if [ $$exitval -ne 0 ]; then \
-        echo -e "ERROR: $$program_name at `date`"; \
-        total_exitval=$$(($$total_exitval + 1)); \
-      fi; \
-    done; \
-    if [ $$total_exitval -ne 0 ]; then \
-      echo "FAILURE: errors occurred in RUN_TARGETS."; \
-      echo yep >"$(FAILURE_FILE)"; \
-      exit 1; \
-    fi; \
-  fi; \
-fi'
+	$(HIDESH)"$(CLAM_DIR)/target_runner.sh"
+#### "$(RUN_TARGETS)"
 
 # "make_subdirs" travels down each subdirectory and builds using make.
 make_subdirs:
