@@ -4,6 +4,9 @@
 # a web proxy like squid.  when used for SMTP, it ensures that none of the
 # text is seen on whatever network one is on before it's sent from the remote
 # server.
+#
+# it accepts a single parameter so far, which will be used as the name of a
+# sound file to play.
 
 #hmmm:  none of the user info below will work for others: parameterize it.
 
@@ -18,7 +21,6 @@ while true; do
   echo Connecting uva web sites via khandroma.
   ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -D localhost:14420 fred@khandroma.cs.virginia.edu
   bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile
-#hmmm: parameterize this for the sound to be played.  doofus.
   echo "Got dumped from tunnels; re-establishing connection."
   echo "Note: if you're being asked for a password, you haven't set up an RSA key yet."
   sleep 14

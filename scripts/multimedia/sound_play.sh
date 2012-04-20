@@ -30,3 +30,4 @@ fi
 for i in $*; do $PLAYCMD $i >/dev/null 2>&1; done
 
 exit 0
+
