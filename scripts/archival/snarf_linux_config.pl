@@ -24,7 +24,7 @@ require "shared_snarfer.pl";
 local($number) = &retrieve_number("aa_backup");
 
 # variables used throughout.
-local($snarf_file_base) = snarf_prefix("linux_config");
+local($snarf_file_base) = snarf_prefix("config-linux_");
 local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the current archive number in the file for retrieval on the

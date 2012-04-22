@@ -28,7 +28,7 @@ local($number) = &retrieve_number("aa_backup");
 
 # variables for directory location to backup and the file to dump it in.
 local($root) = "$HOME";
-local($snarf_file_base) = &snarf_prefix("notes");
+local($snarf_file_base) = &snarf_prefix("notes-");
 local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the archive number in the file for retrieval on the other side.
