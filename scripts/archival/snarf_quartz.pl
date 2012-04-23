@@ -2,7 +2,7 @@
 
 ###############################################################################
 #                                                                             #
-#  Name   : snarf_notes                                                       #
+#  Name   : snarf_quartz                                                      #
 #  Author : Chris Koeritz                                                     #
 #  Rights : Copyright (C) 2000-$now by Author                                 #
 #                                                                             #
@@ -28,7 +28,7 @@ local($number) = &retrieve_number("aa_backup");
 
 # variables for directory location to backup and the file to dump it in.
 local($root) = "$HOME";
-local($snarf_file_base) = &snarf_prefix("notes");
+local($snarf_file_base) = &snarf_prefix("quartz");
 local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the archive number in the file for retrieval on the other side.
@@ -42,16 +42,13 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 &backup_hierarchy($snarf_file_base, $number, "$root", "quartz");
 
 # gather any directories in our home that match these often recurring patterns.
-&snarf_by_pattern($snarf_file_base, "$root", "notes");
+&snarf_by_pattern($snarf_file_base, "$root", "quartz");
 &snarf_by_pattern($snarf_file_base, "$root", "project");
 &snarf_by_pattern($snarf_file_base, "$root", "issue");
 &snarf_by_pattern($snarf_file_base, "$root", "idea");
 &snarf_by_pattern($snarf_file_base, "$root", "crucial");
 &snarf_by_pattern($snarf_file_base, "$root", "list");
 &snarf_by_pattern($snarf_file_base, "$root", "task");
-
-# backup additional folders we care about.
-#unneeded it seems: &snarf_by_pattern($snarf_file_base, "$root", "notes", "cloud");
 
 ############################################################################
 
