@@ -2,13 +2,13 @@
 
 ###############################################################################
 #                                                                             #
-#  Name   : snarf_quartz                                                      #
+#  Name   : snarf_notes                                                       #
 #  Author : Chris Koeritz                                                     #
 #  Rights : Copyright (C) 2000-$now by Author                                 #
 #                                                                             #
 #  Purpose:                                                                   #
 #                                                                             #
-#    Packs up an archive with the quartz repository.                          #
+#    Produces an archive with any current notes from the user's home dir.     #
 #                                                                             #
 ###############################################################################
 #  This program is free software; you can redistribute it and/or modify it    #
@@ -28,7 +28,7 @@ local($number) = &retrieve_number("aa_backup");
 
 # variables for directory location to backup and the file to dump it in.
 local($root) = "$HOME";
-local($snarf_file_base) = &snarf_prefix("quartz");
+local($snarf_file_base) = &snarf_prefix("notes");
 local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the archive number in the file for retrieval on the other side.
@@ -36,8 +36,17 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 ############################################################################
 
-# backup all the hierarchies in our quartz directory.
-&backup_hierarchy($snarf_file_base, $number, "$root", "quartz");
+# get top level text files and other potentially important items...
+&backup_files($snarf_file_base, $number, $root, ".", ("*.html", "*.txt"));
+
+# gather any directories in our home that match these often recurring patterns.
+&snarf_by_pattern($snarf_file_base, "$root", "crucial");
+&snarf_by_pattern($snarf_file_base, "$root", "idea");
+&snarf_by_pattern($snarf_file_base, "$root", "issue");
+&snarf_by_pattern($snarf_file_base, "$root", "list");
+&snarf_by_pattern($snarf_file_base, "$root", "note");
+&snarf_by_pattern($snarf_file_base, "$root", "project");
+&snarf_by_pattern($snarf_file_base, "$root", "task");
 
 ############################################################################
 
