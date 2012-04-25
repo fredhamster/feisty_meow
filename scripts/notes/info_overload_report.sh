@@ -57,6 +57,7 @@ total_overload=$(($note_depth + $item_depth + $unsorted_depth + $source_example_
 report="\
 \n\
 Current information overload consists of:\n\
+[gathered on $(date)]\n\
 \n\
   $note_depth\tgrunty notes\n\
   $item_depth\tto-do list items\n\
@@ -67,8 +68,6 @@ Current information overload consists of:\n\
   $unsorted_depth\tunsorted files\n\
   -------\n\
   $total_overload\ttotal items\n\
-\n\
-Gathered On: $(date)\n\
 \n\
 ##############"
 
