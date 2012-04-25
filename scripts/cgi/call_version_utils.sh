@@ -11,5 +11,5 @@ echo ""
 #echo "query string is $QUERY_STRING"
 #echo "cmd1=$cmd1"
 #echo "cmd2=$cmd2"
-bash /var/www/yeti/scripts/build/version_utils.sh $cmd1 $cmd2
+bash /home/www-data/feisty_meow/scripts/buildor/version_utils.sh $cmd1 $cmd2
 
