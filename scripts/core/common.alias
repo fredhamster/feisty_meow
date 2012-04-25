@@ -89,7 +89,7 @@ alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
 alias cputemp='acpi -t'
 # redoes fred's set of custom scripts.
-alias recustomize='regenerate &>/dev/null; echo "copying custom overrides for fred..."; cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom; regenerate'
+alias recustomize='regenerate >/dev/null; echo "copying custom overrides for fred..."; cpdiff $FEISTY_MEOW_DIR/examples/custom_overrides/fred $FEISTY_MEOW_GENERATED/custom; regenerate'
 # makes root user's home directory's permissions right.
 alias reroot='chown -R root:root /root'
 # yes, these are really helpful...
