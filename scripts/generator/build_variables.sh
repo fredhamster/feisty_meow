@@ -114,11 +114,13 @@ fi
 
 # debugging area where we say what we think we know.
 
-echo scripts: $BUILD_SCRIPTS_DIR
-echo build tools hier: $BUILDING_HIERARCHY
-echo this tool: $THIS_TOOL_NAME
-echo repository: $FEISTY_MEOW_DIR
-echo clam: $CLAM_DIR
+if [ ! -z "$SHELL_DEBUG" ]; then
+  echo scripts: $BUILD_SCRIPTS_DIR
+  echo build tools hier: $BUILDING_HIERARCHY
+  echo this tool: $THIS_TOOL_NAME
+  echo repository: $FEISTY_MEOW_DIR
+  echo clam: $CLAM_DIR
+fi
 
 ##############
 
