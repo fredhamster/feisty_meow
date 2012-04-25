@@ -1,5 +1,5 @@
 
-# added to root's ~/.bashrc, the fredup macro enables all the feisty_meow tools.
+# added to root's ~/.bashrc, the fredme macro enables all the feisty_meow tools.
 
-alias fredup='source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh'
+alias fredme='source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh'
 
