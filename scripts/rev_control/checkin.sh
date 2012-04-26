@@ -9,17 +9,12 @@ source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
 function do_checkin()
 {
   local directory="$1"; shift
-  if [ -d "CVS" ]; then
-    # this appears to be cvs.
-#    pushd "$directory/.." &>/dev/null
-    cvs ci .
-###"$directory"
-#    popd &>/dev/null
-  elif [ -d ".svn" ]; then
-    svn ci .
+  if [ -d "CVS" ]; then cvs ci . ;
+  elif [ -d ".svn" ]; then svn ci . ;
   elif [ -d ".git" ]; then
-    git commit .
-    git push
+    git add .  # snag all new files.  not to everyone's liking.
+    git commit .  # tell git about all the files and get a check-in comment.
+    git push  # upload the files to the server so others can see them.
   else
     echo unknown repository for $directory...
   fi

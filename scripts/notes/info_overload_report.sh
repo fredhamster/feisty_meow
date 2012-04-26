@@ -3,11 +3,12 @@
 
 REPORT_FILE="$HOME/cloud/overload_history.txt"
 
-# given a path, this will find how many items are under it, ignoring svn and git files.
+# given a path, this will find how many items are under it, ignoring svn and git files, plus
+# other patterns we happen to notice are not useful.
 function calculate_depth()
 {
   local dir="$1"; shift
-  find "$dir" -type f -exec echo \"{}\" ';' | grep -v "\.svn" | grep -v "\.git" | wc -l | tr -d ' '
+  find "$dir" -type f -exec echo \"{}\" ';' |  grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | wc -l | tr -d ' '
 }
 
 ##############
