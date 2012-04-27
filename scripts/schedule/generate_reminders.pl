@@ -43,7 +43,7 @@ local($CAL_FILE);
 if (! $CAL_FILE) {
 #  print "the CAL_FILE variable is not set.\n";
 #  print "defaulting it to a value that probably does not suit you.\n";
-  $CAL_FILE = "$QUARTZDIR/database/calendar.dat";
+  $CAL_FILE = "$CLOUD_DIR/database/calendar.dat";
 }
 
 #print "calfile is $CAL_FILE\n";

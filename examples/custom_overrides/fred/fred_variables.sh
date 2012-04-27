@@ -7,6 +7,10 @@ if [ -z "$NETHACKOPTIONS" ]; then
   # The quartz directory has *really* personalized items.
   export QUARTZDIR=$HOME/quartz
 
+  # The cloud directory is our new repository that's always available.  It serves as our
+  # personal cloud for data.
+  export CLOUD_DIR=$HOME/cloud
+
   # The gruntose web site is expected to reside below, if it exists at all.
   export WEB_DIR=$HOME/web
   if [ "$(hostname)" = "zooty.koeritz.com" ]; then
