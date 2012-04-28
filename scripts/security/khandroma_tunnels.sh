@@ -16,23 +16,3 @@ while true; do
   sleep 14
 done
 
-#-L 8028:localhost:3128 
-
-#-L 8043:localhost:443 
-
-# ports sometimes used:
-#     25 is the sendmail tunnel.
-#   3128 is the squid proxy server.
-#    443 is the https version of squid.
-
-# ssh flags in use sometimes:
-#   -f   go into the background once connected.
-#   -2   enforce ssh version 2.
-#   -N   don't execute any command; just forward data between the ports.
-#   -L   (port:host:hostport) connect the local machine's "port" to the
-#        remote port "hostport" on the "host" specified.  the local "port"
-#        becomes an alias for the remote port.  note that the connection
-#        being made to host and hostport is from the perspective of the ssh
-#        server, not the local host.
-
-
