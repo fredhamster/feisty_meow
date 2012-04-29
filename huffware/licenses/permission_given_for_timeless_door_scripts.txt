@@ -1,0 +1,24 @@
+Subject:
+xxx - permission for timeless door scripts (part 1) [via fred huffhines]
+From:
+<09a0351a-9e36-414f-9322-adc731c3dddd@fred@gruntose.com>
+Date:
+04/28/2012 12:15 PM
+To:
+<fred@gruntose.com>
+
+Object-Name: email notes to fred v1.4
+Region: smokier (2562048, 2562304)
+Local-Position: (175, 77, 84)
+
+[2011/04/02 09:20]  Fred Huffhines: hi timeless.  i wanted to thank you for your timeless linked door script.  that thing is great.
+[2011/04/02 09:20]  Fred Huffhines: i am wondering if you are okay with my reusing it in osgrid and opensim environments.  i have been using it a lot for doors there.
+[2011/04/02 09:21]  Fred Huffhines: also, i think you have the most rational attitude for friend requests i've ever seen.  i friended you on that basis.  thanks again for the scripting.  i also am a scripter, but not so nearly crucial in the SL infrastruc
+[2011/04/02 10:08]  Timeless Prototype: hi, thanks for asking, yes you may use the door script in other grids. Also, here are some others you might enjoy: http://www.timelessguru.com/downloads 
+[2011/04/02 10:08]  Fred Huffhines: sweet.  thanks very much.
+[2011/04/02 10:09]  Inventory item offered
+[2011/04/02 10:09]  Fred Huffhines: there's a searchbert for you if you're interested.  a search engine i built in sl (plus further developed some open source scripts).
+[2011/04/02 10:46]  Timeless Prototype: hehe, thanks! Searchbert is so cool
+[2011/04/02 10:49]  Fred Huffhines: ah, thank you.  most kind.
+
+

@@ -7,17 +7,45 @@
 
 #hmmm:  none of the user info below will work for others: parameterize it.
 
-#source $HOME/yeti/scripts/launch_feisty_meow.sh
+#hmmm: maybe we need a base function that takes all the disparate values,
+#      and this script could call it with known feisty meow settings.
+
+##############
+
+# these variables are configurable from plug-ins.
 
 soundfile=$FEISTY_MEOW_DIR/database/sounds/woouoo.wav
 if [ ! -z "$1" ]; then
   soundfile=$1
 fi
 
+##############
+
+# provides a list of properly formatted tunnels for ssh to create.  if this list
+# is empty, then we do nothing.
+# TUNNEL_LIST=()
+
+# set this to the hostname that will be providing the tunnel.  this is
+# usually a remote system.
+USER_PLUS_HOST=""
+
+# set this to your key file, plus the -i flag, such as: 
+#   SECURITY_KEY="-i $HOME/.ssh/id_rsa" 
+SECURITY_KEY=""
+
+##############
+
+#hmmm:move to fred configs!
+TUNNEL_LIST+=(-L 14008:localhost:25)
+USER_PLUS_HOST="fred@serene.feistymeow.org"
+SECURITY_KEY="-i $HOME/.ssh/id_dsa_fred" 
+
+##############
+
 while true; do
-  echo Connecting sendmail and proxy servers via zooty.
-  ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -L 14008:localhost:25 fred@serene.feistymeow.org
-  bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile
+  echo Connecting sendmail to serenely zooty.
+  ssh  -2 -N -v ${TUNNEL_LIST[*]} "$USER_PLUS_HOST"
+  bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile &>/dev/null </dev/null &
 #hmmm: parameterize this for the sound to be played.  doofus.
   echo "Got dumped from tunnels; re-establishing connection."
   echo "Note: if you're being asked for a password, you haven't set up an RSA key yet."

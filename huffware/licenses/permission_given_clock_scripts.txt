@@ -1,0 +1,20 @@
+Subject:
+xxx - permission for clock scripts (part 1) [via fred huffhines]
+From:
+<09a0351a-9e36-414f-9322-adc731c3dddd@fred@gruntose.com>
+Date:
+04/28/2012 12:15 PM
+To:
+<fred@gruntose.com>
+
+Object-Name: email notes to fred v1.4
+Region: smokier (2562048, 2562304)
+Local-Position: (175, 77, 84)
+
+[2011/04/02 12:06]  Fred Huffhines: hi beezle, i'm interested in whether you have any licensing terms associated with your clock scripts.  i found that i am using hour hand and minute hand in one of my objects.
+[2011/04/02 12:06]  Fred Huffhines: i actually have extended it by adding a menu to pick the time zone, if you're interested.  but i wanted to make sure what rules you had for re-use of the scripts.  thanks, fred.
+[2011/04/02 15:33]  Beezle Warburton: Oh, I released those "into the wild" years ago, do what you like, I just ask that people don't resell the scripts by themselves.
+[2011/04/02 16:25]  Fred Huffhines: great, thanks a lot.  yes, i sell a clock that happens to use the hour and minute hand, but it's not just selling the scripts alone.
+[2011/04/02 16:25]  Fred Huffhines: would you like the time zone extension, or is that not needed?  and thanks for your open source attitude.  -fred
+
+
