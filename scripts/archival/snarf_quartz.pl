@@ -36,8 +36,10 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 ############################################################################
 
-# backup all the hierarchies in our quartz directory.
+# backup all the hierarchies in our quartz directory, as well as any other well known
+# repositories of goodness.
 &backup_hierarchy($snarf_file_base, $number, "$root", "quartz");
+&backup_hierarchy($snarf_file_base, $number, "$root", "ebooks");
 
 ############################################################################
 
