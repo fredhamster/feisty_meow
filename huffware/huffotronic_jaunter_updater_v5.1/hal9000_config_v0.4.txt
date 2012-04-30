@@ -1,0 +1,8 @@
+﻿#jaunt
+:add_name=1
+<35, 69, 25>
+nested dominicule
+<105, 210, 30>
+paper lantern house
+<130, 126, 25>
+region center

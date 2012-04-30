@@ -1,0 +1,436 @@
+﻿
+// huffware script: menutini library, by fred huffhines.
+//
+// this is a library script for menuing that provides a way to remote control the
+// menu, somewhat.  another script can zing link messages at this script and a menu
+// will be shown based on the specified description and buttons.  when the user
+// selects an answer, that result is sent back in a link message reply.
+//
+// this script is licensed by the GPL v3 which is documented at: http://www.gnu.org/licenses/gpl.html
+// do not use it in objects without fully realizing you are implicitly accepting that license.
+//
+
+// useful constants you might want to change:
+
+integer TIMEOUT_FOR_MENU = 42;
+    // timeout for the menu in seconds.
+//hmmm: may want this to be selectable from menu request.
+//      or may even want to never time out!
+//      if we managed a list of ongoing menus, that would work.
+//      currently it cannot.
+
+integer DEBUGGING = FALSE;
+    // if this is true, then extra info will be printed when handling a menu.
+
+string NEXT_MENU_TEXT = "Next >>";
+    // what the next item will say for showing next menu page.
+
+// menutini link message API...
+//////////////
+// do not redefine these constants.
+integer MENUTINI_HUFFWARE_ID = 10009;
+    // the unique id within the huffware system for the jaunt script to
+    // accept commands on.  this is used in llMessageLinked as the num parameter.
+string HUFFWARE_PARM_SEPARATOR = "{~~~}";
+    // this pattern is an uncommon thing to see in text, so we use it to separate
+    // our commands in link messages.
+string HUFFWARE_ITEM_SEPARATOR = "{|||}";
+    // used to separate lists of items from each other when stored inside a parameter.
+    // this allows lists to be passed as single string parameters if needed.
+integer REPLY_DISTANCE = 100008;  // offset added to service's huffware id in reply IDs.
+string SHOW_MENU_COMMAND = "#menu#";
+    // the command that tells menutini to show a menu defined by parameters
+    // that are passed along.  these must be: the menu name, the menu's title
+    // (which is really the info to show as content in the main box of the menu),
+    // the wrapped list of commands to show as menu buttons, the menu system
+    // channel's for listening, and the key to listen to.
+    // the reply will include: the menu name, the choice made and the key for
+    // the avatar.
+//
+//////////////
+// joins a list of sub-items using the item sentinel for the library.
+string wrap_item_list(list to_wrap)
+{ return llDumpList2String(to_wrap, HUFFWARE_ITEM_SEPARATOR); }
+//
+//////////////
+
+// global variables...
+
+list _private_global_buttons;  // holds onto the active set of menu options.
+string _private_global_av_key;  // the key for the avatar who clicks the menu.
+string _private_global_title;  // holds onto current title text.
+
+integer _menu_base_start = 0;  // position in the items of the current menu.
+
+integer listening_id = 0;
+    // the current id of our listening for the menu.  it's an id returned by LSL
+    // that we need to track so we can cancel the listen.
+
+integer menu_system_channel = 0;
+    // messages come back to us from this channel when user clicks the dialog.
+    // this is set later and the default is meaningless.
+
+string global_menu_name = "";
+    // hangs onto the current menu's name.
+
+//hmmm: note; to manage multiple concurrent menus on different channels,
+//      we must make these into lists.  then the timeouts should apply
+//      individually to these instead of overall (if we even do timeouts;
+//      it's nicer if menus never stop being active).
+
+
+// displays the menu requested.  it's "menu_name" is an internal name that is
+// not displayed to the user.  the "title" is the content shown in the main area
+// of the menu.  "commands_in" is the list of menu items to show as buttons.
+// the "menu_channel" is where the user's clicked response will be sent.  the
+// "listen_to" key is the avatar expected to click the menu, which is needed to
+// listen to his response.
+show_menu(string menu_name, string title, list buttons,
+    integer menu_channel, key listen_to)
+{
+    // save our new parms.
+    global_menu_name = menu_name;
+    _private_global_title = title;
+    _private_global_buttons = buttons;
+    menu_system_channel = menu_channel;
+    _private_global_av_key = listen_to;
+    if (DEBUGGING) {
+        log_it("menu name: " + global_menu_name);
+        log_it("title: " + _private_global_title);
+        log_it("buttons: " + (string)buttons);
+        log_it("channel: " + (string)menu_system_channel);
+        log_it("listen key: " + (string)listen_to);
+    }
+
+    integer add_next = FALSE;  // true if we should add a next menu item.
+
+    // the math here incorporates current button position.
+    integer current = _menu_base_start;
+    integer max_buttons = llGetListLength(buttons) - current;
+
+    if (max_buttons > 12) {
+        // limitation of SL: menus have a max of 12 buttons.
+        max_buttons = 12;
+        add_next = TRUE;
+    } else if (llGetListLength(buttons) > 12) {
+        // we already have been adding next.  let's make sure this gets
+        // a wrap-around next button.
+        add_next = TRUE;
+    }
+    // chop out what we can use in a menu.
+    list trunc_buttons = llList2List(buttons, current, current + max_buttons - 1);
+    if (add_next) {
+        // we were asked to add a menu item for the next screen.
+        trunc_buttons = llList2List(trunc_buttons, 0, 10) + NEXT_MENU_TEXT;
+    }
+
+    listening_id = llListen(menu_channel, "", listen_to, "");
+    list commands;
+    integer i;
+    // take only the prefix of the string, to avoid getting a length complaint.
+    for (i = 0; i < llGetListLength(trunc_buttons); i++) {
+        string curr = llList2String(trunc_buttons, i);
+        integer last_pos = 23;  // default maximum, highest possible is 24.
+        if (llStringLength(curr) - 1 < last_pos) last_pos = llStringLength(curr) - 1;
+        curr = llGetSubString(curr, 0, last_pos);
+        commands += curr;
+    }
+    llDialog(listen_to, title, commands, menu_channel);
+    llSetTimerEvent(TIMEOUT_FOR_MENU);
+}
+
+// shuts down any connection we might have had with any active menu.  we will not
+// send any responses after this point (although we might already have responded when
+// the user clicked the menu).
+clear_menu()
+{
+    llListenRemove(listening_id);
+    llSetTimerEvent(0.0);
+}
+
+// a simple version of a reply for a command that has been executed.  the parameters
+// might contain an outcome or result of the operation that was requested.
+// ours do differ from normal in that we send back the channel as the number parameter
+// instead of enforcing that being MENU_HUFFWARE_ID.
+send_reply(integer destination, integer channel, list parms, string command)
+{
+    llMessageLinked(destination, channel, command,
+        llDumpList2String(parms, HUFFWARE_PARM_SEPARATOR));
+}
+
+// processes the menu requests.
+handle_link_message(integer sender, integer huff_id, string msg, key id)
+{
+    if (huff_id != MENUTINI_HUFFWARE_ID) return;  // not for us.
+
+    if (msg == SHOW_MENU_COMMAND) {
+        _menu_base_start = 0;  // reset the position in the menus.
+        // separate the list out.
+//log_it("id showing: " + id);
+        list parms = llParseString2List(id, [HUFFWARE_PARM_SEPARATOR], []);
+        // toss any existing menu info.
+        clear_menu();
+//log_it("key here early: " + llList2String(parms, 4));
+        show_menu(llList2String(parms, 0), llList2String(parms, 1),
+            llParseString2List(llList2String(parms, 2),
+                [HUFFWARE_ITEM_SEPARATOR], []),
+            (integer)llList2String(parms, 3),
+            (key)llList2String(parms, 4));
+    }
+}
+
+// process the response when the user chooses a menu item.  this causes our
+// caller to be told what was selected.
+process_menu_response(integer channel, string name, key id, string message)
+{
+    if (channel != menu_system_channel) return;  // not for us.
+
+    if (message == NEXT_MENU_TEXT) {
+        // this is the special choice, so we need to go to the next page.
+        _menu_base_start += 11;
+        if (_menu_base_start > llGetListLength(_private_global_buttons)) {
+            // we have wrapped around the list.  go to the start again.
+            _menu_base_start = 0;
+        }
+        show_menu(global_menu_name, _private_global_title,
+            _private_global_buttons, menu_system_channel,
+            _private_global_av_key);
+        return;  // handled by opening a new menu.
+    }
+    
+    string calculated_name;
+    integer indy;
+    // first try for an exact match.
+    for (indy = 0; indy < llGetListLength(_private_global_buttons); indy++) {
+        string curr = llList2String(_private_global_buttons, indy);
+        if (curr == message) {
+            // correct the answer based on the full button string.
+            calculated_name = curr;
+        }
+    }
+    if (calculated_name == "") {
+        // try an imprecise match if the exact matching didn't work.
+        for (indy = 0; indy < llGetListLength(_private_global_buttons); indy++) {
+            string curr = llList2String(_private_global_buttons, indy);
+            if (is_prefix(curr, message)) {
+                // correct the answer based on the full button string.
+                calculated_name = curr;
+            }
+        }
+    }
+    if (calculated_name != "") {
+        // only send a response if that menu choice made sense to us.
+        send_reply(LINK_THIS, MENUTINI_HUFFWARE_ID + REPLY_DISTANCE,
+            [ global_menu_name, calculated_name, _private_global_av_key ],
+            SHOW_MENU_COMMAND);
+    }
+}
+
+//////////////
+// from hufflets...
+
+integer debug_num = 0;
+
+// a debugging output method.  can be disabled entirely in one place.
+log_it(string to_say)
+{
+    debug_num++;
+    // tell this to the owner.    
+    llOwnerSay(llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
+    // say this on open chat, but use an unusual channel.
+//    llSay(108, llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
+}
+
+//////////////
+
+// returns TRUE if the "prefix" string is the first part of "compare_with".
+integer is_prefix(string compare_with, string prefix)
+{ return (llSubStringIndex(compare_with, prefix) == 0); }
+
+//////////////
+
+//////////////
+// huffware script: auto-retire, by fred huffhines, version 2.8.
+// distributed under BSD-like license.
+//   !!  keep in mind that this code must be *copied* into another
+//   !!  script that you wish to add auto-retirement capability to.
+// when a script has auto_retire in it, it can be dropped into an
+// object and the most recent version of the script will destroy
+// all older versions.
+//
+// the version numbers are embedded into the script names themselves.
+// the notation for versions uses a letter 'v', followed by two numbers
+// in the form "major.minor".
+// major and minor versions are implicitly considered as a floating point
+// number that increases with each newer version of the script.  thus,
+// "hazmap v0.1" might be the first script in the "hazmap" script continuum,
+// and "hazmap v3.2" is a more recent version.
+//
+// example usage of the auto-retirement script:
+//     default {
+//         state_entry() {
+//            auto_retire();  // make sure newest addition is only version of script.
+//        }
+//     }
+// this script is partly based on the self-upgrading scripts from markov brodsky
+// and jippen faddoul.
+//////////////
+auto_retire() {
+    string self = llGetScriptName();  // the name of this script.
+    list split = compute_basename_and_version(self);
+    if (llGetListLength(split) != 2) return;  // nothing to do for this script.
+    string basename = llList2String(split, 0);  // script name with no version attached.
+    string version_string = llList2String(split, 1);  // the version found.
+    integer posn;
+    // find any scripts that match the basename.  they are variants of this script.
+    for (posn = llGetInventoryNumber(INVENTORY_SCRIPT) - 1; posn >= 0; posn--) {
+        string curr_script = llGetInventoryName(INVENTORY_SCRIPT, posn);
+        if ( (curr_script != self) && (llSubStringIndex(curr_script, basename) == 0) ) {
+            // found a basic match at least.
+            list inv_split = compute_basename_and_version(curr_script);
+            if (llGetListLength(inv_split) == 2) {
+                // see if this script is more ancient.
+                string inv_version_string = llList2String(inv_split, 1);  // the version found.
+                // must make sure that the retiring script is completely the identical basename;
+                // just matching in the front doesn't make it a relative.
+                if ( (llList2String(inv_split, 0) == basename)
+                    && ((float)inv_version_string < (float)version_string) ) {
+                    // remove script with same name from inventory that has inferior version.
+                    llRemoveInventory(curr_script);
+                }
+            }
+        }
+    }
+}
+//
+// separates the base script name and version number.  used by auto_retire.
+list compute_basename_and_version(string to_chop_up)
+{
+    // minimum script name is 2 characters plus a version.
+    integer space_v_posn;
+    // find the last useful space and 'v' combo.
+    for (space_v_posn = llStringLength(to_chop_up) - 3;
+        (space_v_posn >= 2) && (llGetSubString(to_chop_up, space_v_posn, space_v_posn + 1) != " v");
+        space_v_posn--) {
+        // look for space and v but do nothing else.
+    }
+    if (space_v_posn < 2) return [];  // no space found.
+    // now we zoom through the stuff after our beloved v character and find any evil
+    // space characters, which are most likely from SL having found a duplicate item
+    // name and not so helpfully renamed it for us.
+    integer indy;
+    for (indy = llStringLength(to_chop_up) - 1; indy > space_v_posn; indy--) {
+        if (llGetSubString(to_chop_up, indy, indy) == " ") {
+            // found one; zap it.  since we're going backwards we don't need to
+            // adjust the loop at all.
+            to_chop_up = llDeleteSubString(to_chop_up, indy, indy);
+        }
+    }
+    string full_suffix = llGetSubString(to_chop_up, space_v_posn, -1);
+    // ditch the space character for our numerical check.
+    string chop_suffix = llGetSubString(full_suffix, 1, llStringLength(full_suffix) - 1);
+    // strip out a 'v' if there is one.
+    if (llGetSubString(chop_suffix, 0, 0) == "v")
+        chop_suffix = llGetSubString(chop_suffix, 1, llStringLength(chop_suffix) - 1);
+    // if valid floating point number and greater than zero, that works for our version.
+    string basename = to_chop_up;  // script name with no version attached.
+    if ((float)chop_suffix > 0.0) {
+        // this is a big success right here.
+        basename = llGetSubString(to_chop_up, 0, -llStringLength(full_suffix) - 1);
+        return [ basename, chop_suffix ];
+    }
+    // seems like we found nothing useful.
+    return [];
+}
+//
+//////////////
+
+//hmmm: extract this code to a menutini example!
+
+//////////////
+// how to invoke a menu (assuming menutini is in same prim as calling script):
+//
+list buttons;  // holds onto the set of menu options.
+//
+integer random_channel() { return -(integer)(llFrand(40000) + 20000); }
+//
+example_invocation()
+{
+    string menu_name = "grumfazoid";
+    string title = "These united colors of ben's futon have unfortunately run.";
+    buttons = [ "garp out", "sklonar", "fuzzlenog" ];
+    integer menu_channel = random_channel();
+    key listen_to = llGetOwner();
+    llMessageLinked(LINK_THIS, MENUTINI_HUFFWARE_ID, SHOW_MENU_COMMAND,
+        menu_name + HUFFWARE_PARM_SEPARATOR
+        + title + HUFFWARE_PARM_SEPARATOR
+        + wrap_item_list(buttons) + HUFFWARE_PARM_SEPARATOR
+        + (string)menu_channel + HUFFWARE_PARM_SEPARATOR
+        + (string)listen_to);
+}
+//
+// how to handle the response message when the user chooses a button.
+//
+react_to_menu(string menu_name, string which_choice)
+{
+    // one might use the menu_name when dealing with multiple different menus.
+
+    integer indy = 0;
+    // find the specified item and process it.
+    while (indy < llGetListLength(buttons)) {
+        // see if the current destination matches.
+        if (llSubStringIndex(llList2String(buttons, indy), which_choice) == 0) {
+            // this is the chosen item.
+//            process_menu_item(indy);  // using numerical numbering.
+// this function must be implemented in your own code; it is what handles the
+// user picking a particular button on the menu.
+            return;            
+        }
+        indy++;
+    }
+    llSay(0, "did not find menu option");
+}
+
+// an example for menu handling.  this gets the response from menutini library
+// and calls the menu processing method "react_to_menu".
+example_handle_link_message(integer sender, integer num, string msg, key id)
+{
+    if (num != MENUTINI_HUFFWARE_ID + REPLY_DISTANCE) return;  // not for us.
+    if (msg != SHOW_MENU_COMMAND) return;  // also not for us.
+    list parms = llParseString2List(id, [HUFFWARE_PARM_SEPARATOR], []);
+    string menu_name = llList2String(parms, 0);
+    string which_choice = llList2String(parms, 1);
+    react_to_menu(menu_name, which_choice);
+}
+
+// then inside a state, you need an event handler like so:
+//
+// link_message(integer sender, integer num, string msg, key id)
+// { example_handle_link_message(sender, num, msg, id); }
+
+//
+// end invocation sample code...
+//////////////
+
+default
+{
+    state_entry() { if (llSubStringIndex(llGetObjectName(),  "huffotronic") < 0) state real_default; }
+    on_rez(integer parm) { state rerun; }
+}
+state rerun { state_entry() { state default; } }
+
+state real_default
+{
+    state_entry() { auto_retire(); }
+
+    link_message(integer sender, integer huff_id, string msg, key id)
+    { handle_link_message(sender, huff_id, msg, id); }
+
+    listen(integer channel, string name, key id, string message)
+    { process_menu_response(channel, name, id, message); }
+    
+    // if the timer goes off, then the user has ignored the menu for longer than the
+    // timeout.  we need to turn off our listen and ignore that menu.
+    timer() { clear_menu(); }
+}
+

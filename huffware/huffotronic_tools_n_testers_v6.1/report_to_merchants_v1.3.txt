@@ -1,0 +1,78 @@
+﻿
+// huffware script: report to merchants, by fred huffhines.
+//
+// this script lets merchants know that one of their items has been rezzed or attached.
+// it only reports this the first time it happens.
+
+// global constants...
+
+integer SCRIPT_ZAPS_SELF_AFTER_REPORT = FALSE;
+    // if this is true, the script will destroy itself once it reports the object rez or attach.
+
+// the list of UUIDs for reporting the customer event.
+list IDS_TO_ALERT = [
+//    "addfa58f-e42e-4dde-9eb0-755bbf4e23ec",  // damara's alt.
+    "71649242-6abe-4288-b45b-a057621d35ea"   // fred.
+];
+
+// the list of emails that should be alerted.
+list EMAILS_TO_ALERT = [
+//    "damradbruch@hotmail.com",  // damara's alt email.
+    "fred@gruntose.com"         // fred.
+];
+
+// global variables...
+
+integer REPORTED_ABOUT_REZ = FALSE;  // did we tell the merchants yet?
+
+key CURRENT_OWNER = NULL_KEY;  // the guy who owns the hud right now.
+
+// helper functions...
+
+// let the merchants who sold this product know that it was either rezzed or attached.
+// either event should cause a nice report to them.
+alert_the_merchants(string word)
+{
+    integer i;
+    if (CURRENT_OWNER != llGetOwner()) {
+        // if the owner has changed, then we always believe that we need to report.
+        REPORTED_ABOUT_REZ = FALSE;
+        CURRENT_OWNER = llGetOwner();
+    }
+    if (!REPORTED_ABOUT_REZ) {
+        // we have not reported before (for this owner), so we can tell the merchants now.
+        REPORTED_ABOUT_REZ = TRUE;
+        string message_for_merchants = "Your product '" + llGetObjectName() + "' was "
+            + word + " by " + llKey2Name(llGetOwner())
+            + " in " + llGetRegionName()
+            + " at " + llGetTimestamp();
+        // send instant messages about this event.
+        for (i = 0; i < llGetListLength(IDS_TO_ALERT); i++) {
+            key id = (key)llList2String(IDS_TO_ALERT, i);
+            llInstantMessage(id, message_for_merchants);
+        }
+        // send emails about it too.
+        for (i = 0; i < llGetListLength(EMAILS_TO_ALERT); i++) {
+            string addr = llList2String(EMAILS_TO_ALERT, i);
+            llEmail(addr, "customer event for " + llKey2Name(llGetOwner())
+                + " regarding " + llGetObjectName(),
+                message_for_merchants);
+        }
+        // see if the script should go away now.
+        if (SCRIPT_ZAPS_SELF_AFTER_REPORT) {
+            llRemoveInventory(llGetScriptName());
+        }
+    }    
+}
+
+default
+{
+    state_entry() { CURRENT_OWNER = llGetOwner(); }
+    
+    attach(key id) {
+        if (id != NULL_KEY) { alert_the_merchants("attached"); }
+    }
+
+    on_rez(integer start_parm) { alert_the_merchants("rezzed"); }
+}
+

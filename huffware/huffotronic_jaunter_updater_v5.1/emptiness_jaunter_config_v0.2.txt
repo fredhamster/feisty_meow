@@ -1,0 +1,10 @@
+﻿#jaunt
+:add_name=1
+<128, 127, 21>
+education isle
+<231, 188, 98>
+skull obelisk
+<218, 68, 24>
+temple island
+<155, 188, 22>
+wylie island
