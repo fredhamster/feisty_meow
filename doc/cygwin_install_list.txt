@@ -1,0 +1,46 @@
+recommended packages to install in cygwin's setup
+if you're going to use cygwin on windows:
+
+first, keep all the standard packages that cygwin will enable.
+second, add these packages to get the full recommended set...
+
+shells:
+  python
+  perl
+  perl-win32-gui
+  perl-libwin32
+
+network:
+  ncftp
+  openssh
+
+editors:
+  vim
+  gvim
+  emacs
+
+revision control:
+  git
+  gitk
+  subversion
+
+general tools:
+  bc
+  expect
+  util-linux
+  inetutils
+  email
+  mutt
+  unzip
+  zip
+  crypt
+  time
+
+build tools:
+  gcc4
+  make
+
+x window support:
+  xterm
+  xinit
+
