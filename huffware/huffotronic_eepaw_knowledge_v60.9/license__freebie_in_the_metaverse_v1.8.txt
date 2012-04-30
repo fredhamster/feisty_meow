@@ -3,14 +3,8 @@ author: fred huffhines (osgrid and second life avatar)
 source: eepaw shop (see below)
 all content by fred huffhines is licensed by GPL [ http://www.gnu.org/licenses/gpl.html ] within the full metaverse (osgrid, opensims, second life, etc).
 note that any included content created by others may be licensed differently; all appropriate original copyright notices have been retained.
-price in osgrid: *free*
-    ** note: if you paid for this in osgrid, someone ripped you off.  please let fred huffhines (in osgrid) know about this.
-price in second life: *non-free*
-    ** note: the only avatar licensed to sell materials within this product is fred huffhines in second life.
-          if you bought this from someone else, please let fred huffhines know.
-price in other grids: *unspecified*
-    ** we're still developing a relationship with other grids, but any opensim-based-server user can use any of this content on their personal standalone/hypergrid sims for free.  we ask that you please do not share any of this content on commercial grids yet.
-    ** please let us know if you're interested in expanding our licensing to your commercial grid.
+price: *free*
+    ** note: if you paid for this, someone ripped you off.  please let fred huffhines in osgrid or second life know about this.
 
 * our store is called Eclectic Electric Patterns and Widgets (eepaw).  we started out in Second life, but have since branched out into opensim based simulators.  we have two locations for the store now, one in osgrid that is all ++freebies++, and another store in second life that is a mix of commercial objects and freebies (because the linden labs dingbats insist on charging exorbitant rates to rent space on their servers).
 

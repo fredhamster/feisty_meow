@@ -1,0 +1,76 @@
+﻿===================================
+info about the searchbert seeker robot
+===================================
+
+###
+version 46.4
+released February 26 2012
+###
+
+author=fred huffhines (osgrid and second life avatar)
+source=eepaw shop (see below)
+price=*free*
+** note: if you paid for this, someone ripped you off.  please let fred huffhines in osgrid or second life know about this.
+license = gpl [ http://www.gnu.org/licenses/gpl.html ] within metaverse (osgrid, opensims, second life, etc).
+
+    searchbert is a full-perm second life search engine that i created for the free scripts library (which used to be in the Solvo region of second life, but which no longer exists, sadly).
+
+    this device can find matches for nearby objects given just a part of the object's name.  after doings its scan, searchbert points out all the objects with multi-colored particle beams.
+
+    the objects can be scattered at different heights and distances, even fairly far away from searchbert, and still be accurately located.  avatars will also be found if their names match the search.  searchbert can point out up to 17 objects and avatars.
+
+    if you 'Touch' searchbert, then it will tell you its usage info.  here is a more detailed version of the help information.
+    you can speak these commands near searchbert in open chat to give it some orders:
+
+    #find X
+        looks for any object nearby with "X" in its name.
+        try this one out: "#find primitive" (in osgrid) or  "#find object" (in second life)
+            that will find any items that have been left with their respective default names.
+        and this is a nice one: "#find e"
+            finds any object whose name contains the letter 'e'.  that's usually very many things.
+
+    #reset
+        clears any existing search matches that had been found.  the matches will eventually time-out and be forgotten anyhow, but this makes searchbert forget the search immediately.
+        if this command is used by the owner of searchbert while a search is active, it stops the search immediately, but doesn't clear any matches that may already have been found.  #reset can only be used this way by the owner, which avoids random people stopping each other's searches.
+
+    #initialize
+        hard core brain-clearing command for the searchbert; makes it fully clear out and restart its scripts.
+
+    #skew
+        *bonus* a debugging command that makes searchbert point its arms in all directions.
+
+    #channel
+        allows the listening channel for searchbert to be changed.  example:
+            #channel 42
+        this makes searchbert listen for any commands on channel 42, a fact which should be reflected
+        in the menus and chat after this..
+
+that's about it for the basics...  enjoy!
+--fred huffhines
+
+====
+more detailed and nutty searchbert notes...
+
+* searchbert builds upon original scripts by christopher omega and ama omega, which gave me a starting point for the particle system and link message communication.  i have put quite a lot of time into the searchbert also, to make it zoom around in a spiral and so forth.
+
+* searchbert gets around second life's limitations on the number of search matches by moving around and looking at things from different angles.  it uses a spiral search pattern to traverse the area.  it has multiple "seeker rods" to find matches, and these are aimed in different directions to increase the likelihood of finding matches.  further, during the search, searchbert is gradually rotated to different orientations to cover even more area.
+
+* you can rip all of searchbert's arms off and it won't feel a thing!  rez a searchbert on land where you have permissions, right-click on it and select "Edit".  when the editing dialog has popped up, hit this key combination: "ctrl-shift-L".  that is the "remove all links" shortcut command, and it will separate all the arms from searchbert's main body (the sphere).  the arms will take this very poorly and all die, but the sphere will survive.  after that ugliness, clicking on searchbert will make it perform its "putting my arms back on" schtick for about 17 seconds.  it needs permission to attach objects, and will ask for it.  after the arms are finished being snapped back on, searchbert will be fully functional again.
+
+* release 46.0 sees the arm reattachment code in a separate script.  we were doing fine with version 42.0 in open simulator, but second life had other ideas about how much space a script is allowed to occupy when compiled.  this forced us to separate out the code for the arm reattachment procedures in a 'searchbert armature' script.  this script also takes care of synchronizing content with the seeker arms.  fracturing searchbert's code in this way actually led to a few simplifications, so maybe it's now better overall, but being _forced_ to refactor is not exactly the ideal process for optimal software development.
+
+* as of searchbert 42.0, there is a notecard configuration system and a menuing system.  the options available in the notecards for configuration are broader than what is available in the menu interface, so far.
+due to how scripts work, if you reset the scripts, then any items configured from the menu are forgotten and searchbert will fall back to whatever is specified in the notecard.
+
+* the search range at which objects will be found can be re-configured inside searchbert's "searchbert config vX.Y" notecard.  there are two parts to this.  the max_spiral_radius variable is the maximum distance searchbert will travel away from its starting point.  the sensor_max_range variable is the maximum distance used for a sensor scan.  so the maximum distance from its starting point that searchbert will ever be able to find an object at is max_spiral_radius + sensor_max_range.
+
+* as of searchbert 32.5, searchbert is low lag:
+    old searchbert 31.3 crushed performance of densely packed and also second life's "openspace sims" before, eating up to 10% of the sim's recommended cpu.
+    that was then, version 32.5 is now (or was "now" when i wrote this screed); it uses about 10% of its former resources (so more like 1% or less of sim cpu) when it's active.  thanks very much to eren padar for measuring its performance with elf clan's estate tools.
+    also this version doesn't ask for link permissions unless it needs to put its arms back on.  thanks to hippyjim starbrook for that suggestion.
+
+* searchbert is the freebie mascot for our store, Eclectic Electric Patterns and Widgets (eepaw).
+    check out the licensing notecard for our store locations.
+
+* thanks for reading the extended notes.  you are a patient, patient person.  --fred huffhines.
+
