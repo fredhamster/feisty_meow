@@ -1,0 +1,646 @@
+﻿
+// huffware script: "party culiar", by fred huffhines
+//
+// this is yet another particle system script, based on ideas seen
+// in several scripts by various authors and assisted by the lsl wiki.
+// it has the useful characteristic of being able to load its parameters
+// from a notecard, thus making script modifications for the particle
+// system unnecessary.  
+// on initial rez, if a notecard exists, then it is read for particle
+// system parameters named similarly to the variables below (see the
+// particle archetype notecard for more details).  if the object is
+// rezzed with an existing particle system already read from a notecard
+// that's still present, it will keep playing that particle system.
+// if a notecard is added or changed, then the particle variables are
+// read again.
+//
+// this script is licensed by the GPL v3 which is documented at: http://www.gnu.org/licenses/gpl.html
+// do not use it in objects without fully realizing you are implicitly accepting that license.
+//
+
+// party culiar link message API.
+//////////////
+integer PARTYCULIAR_HUFFWARE_ID = 10018;
+    // a unique ID within the huffware system for this script.
+string HUFFWARE_PARM_SEPARATOR = "~~~";
+    // three tildes is an uncommon thing to have otherwise, so we use it to separate
+    // our commands in linked messages.
+//
+string PARTYCULIAR_POWER_COMMAND = "#powrpcl";
+    // tells the particle system to either turn on or off.  the single parameter is
+    // either "on", "1", "true", or "off", "0", "false".
+//////////////
+
+// constants...
+float MIN_ROTATION = 0.1;  // rotations used for omega value to rotate particles.
+float MAX_ROTATION = 4.0;
+
+// items controlled by the notecard...
+
+// noisiness...
+integer debug = FALSE;  // controls whether logging occurs.
+
+integer start_enabled = FALSE;  // if true, particle system starts up right away.
+
+// color...
+integer interpolate_colors = TRUE;
+integer randomize_colors = FALSE;
+vector starting_color = <0.5, 0.7, 0.9>;
+vector ending_color = <0.0, 1.0, 0.3>;
+
+// particle size...
+integer interpolate_size = TRUE;
+vector final_dimensions = <1.8, 1.8, 1.8>;
+vector initial_dimensions = <0.72, 0.72, 0.72>;
+
+// transparency...
+//   1.0 means completely opaque and 0.0 means completely transparent.
+float initial_opacity = 1.0;
+float final_opacity = 0.3;
+
+// target following (or not)...
+integer follow_target_key = FALSE;
+key target_key = NULL_KEY;
+
+// speed and acceleration of particles...
+float minimum_velocity = 0.4;
+float maximum_velocity = 1.4;
+vector acceleration = <0.0, 0.4, 0.7>;
+integer wind_blown = TRUE;  // are particles affected by wind?
+
+// freaky effects for particles...
+integer bounce_off_z_height = FALSE;  // start at height of containing object.
+integer glowing = FALSE;  // particles will glow.
+integer source_centered = TRUE;  // particles start at object's center.
+integer point_toward_velocity = TRUE;  // rotate vertical axis toward velocity.
+
+string particle_texture = "";  // image used for the particle, if any.
+
+// when randomizing colors, these control how long a choice lasts.
+float minimum_hold_time = 5.0;
+float maximum_hold_time = 20.0;
+
+// timing (in seconds)...
+float lifespan_for_particle = 3.0;
+float lifespan_for_system = 0.0;  // 0 means unlimited.
+float creation_rate = 0.2;  // delay between particle creations.
+integer siblings = 7;  // how many to create at once.
+
+// how to exude particles.
+integer emission_pattern
+    = PSYS_SRC_PATTERN_ANGLE;  // 2D emission between given angles.
+    // = PSYS_SRC_PATTERN_DROP;  // just plop them at center of object.
+    // = PSYS_SRC_PATTERN_EXPLODE;  // spew them out as if exploded.
+    // = PSYS_SRC_PATTERN_ANGLE_CONE;  // 3D emission between given angles.
+    // = PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY;  // inverse of angle cone.
+
+// pattern details...
+float starting_angle = 1.0;  // initial angle where particles are emitted.
+float ending_angle = 0.0;  // bounding angle for emission.
+vector rotation_between_bursts = <0.2, 0.2, 0.2>;  // used in angle patterns.
+float burst_radius = 2.0;  // emission distance from source, unused for source centered.
+
+// add-in...  huffware script: notecard library, by fred huffhines
+
+string current_notecard_name;  // the name of the card we're reading now.
+key current_query_id;  // the query ID for the current notecard.
+list query_contents;  // the lines we have read from the notecard.
+integer line_number;  // which line are we at in notecard?
+
+initialize()
+{
+    current_notecard_name = "";
+    current_query_id = NULL_KEY;
+    query_contents = [];
+    line_number = 0;
+}
+
+string dump_list(list to_show)
+{
+    integer len = llGetListLength(to_show);
+    integer i;
+    string text;
+    for (i = len - 1; i >= 0; i--) {
+        text += llList2String(to_show, i) + "\n";
+    }
+    return text;
+}
+
+//////////////
+
+create_particle_system()
+{
+    if (randomize_colors) {
+        starting_color = <randomize_within_range(0.28, 0.95, FALSE),
+            randomize_within_range(0.28, 0.95, FALSE),
+            randomize_within_range(0.28, 0.95, FALSE)>;
+        ending_color = <randomize_within_range(0.14, 0.85, FALSE),
+            randomize_within_range(0.14, 0.85, FALSE),
+            randomize_within_range(0.14, 0.85, FALSE)>;
+    }
+    
+    list system_parameters;
+    integer flags_for_particle_effects = 0;
+
+    if (interpolate_colors)
+        flags_for_particle_effects = PSYS_PART_INTERP_COLOR_MASK | flags_for_particle_effects;
+    system_parameters += [ PSYS_PART_START_COLOR, starting_color,
+        PSYS_PART_END_COLOR, ending_color ];    
+
+    if (interpolate_size)
+        flags_for_particle_effects = PSYS_PART_INTERP_SCALE_MASK | flags_for_particle_effects;
+    system_parameters += [ PSYS_PART_START_SCALE, initial_dimensions,
+        PSYS_PART_END_SCALE, final_dimensions ];
+
+    system_parameters += [ PSYS_PART_START_ALPHA, initial_opacity,
+        PSYS_PART_END_ALPHA, final_opacity ];
+
+    if (follow_target_key && (target_key != NULL_KEY) ) {
+        flags_for_particle_effects = PSYS_PART_TARGET_POS_MASK | flags_for_particle_effects;
+        system_parameters += [ PSYS_SRC_TARGET_KEY, target_key ];
+    }
+
+    system_parameters += [ PSYS_SRC_BURST_SPEED_MIN, minimum_velocity,
+        PSYS_SRC_BURST_SPEED_MAX, maximum_velocity,
+        PSYS_SRC_ACCEL, acceleration ];
+    if (wind_blown)
+        flags_for_particle_effects = PSYS_PART_WIND_MASK | flags_for_particle_effects;
+
+    if (particle_texture != "")
+        system_parameters += [ PSYS_SRC_TEXTURE, particle_texture ];
+
+    if (emission_pattern != 0)
+        system_parameters += [ PSYS_SRC_PATTERN, emission_pattern ];
+
+    system_parameters += [ PSYS_PART_MAX_AGE, lifespan_for_particle,
+        PSYS_SRC_MAX_AGE, lifespan_for_system,
+        PSYS_SRC_BURST_PART_COUNT, siblings,
+        PSYS_SRC_BURST_RATE, creation_rate ];
+
+//hmmm: only add if used?
+    system_parameters += [ PSYS_SRC_ANGLE_BEGIN, starting_angle,
+        PSYS_SRC_ANGLE_END, ending_angle,
+        PSYS_SRC_OMEGA, rotation_between_bursts ];
+        
+    // assorted effects...
+    if (bounce_off_z_height)
+        flags_for_particle_effects = PSYS_PART_BOUNCE_MASK | flags_for_particle_effects;
+    if (glowing)
+        flags_for_particle_effects = PSYS_PART_EMISSIVE_MASK | flags_for_particle_effects;
+    if (point_toward_velocity)
+        flags_for_particle_effects = PSYS_PART_FOLLOW_VELOCITY_MASK | flags_for_particle_effects;
+    if (source_centered)
+        flags_for_particle_effects = PSYS_PART_FOLLOW_SRC_MASK | flags_for_particle_effects;
+    else
+        system_parameters += [ PSYS_SRC_BURST_RADIUS, burst_radius ];  // okay to use.
+
+    // now that we're done accumulating the flags, we can add them to our list.
+    system_parameters += [ PSYS_PART_FLAGS, flags_for_particle_effects ];  // must be last.
+
+    // and finally, we are ready to create the particle system of our dreams...    
+    llParticleSystem(system_parameters);
+}
+
+// returns a non-empty string if "to_check" defines contents for "variable_name".
+string defines_variable(string to_check, string variable_name)
+{
+    // clean initial spaces.
+    while (llGetSubString(to_check, 0, 0) == " ")
+        to_check = llDeleteSubString(to_check, 0, 0);
+    if (!is_prefix(to_check, variable_name)) return "";
+    to_check = llDeleteSubString(to_check, 0, llStringLength(variable_name) - 1);
+    // clean any spaces or valid assignment characters.
+    while ( (llGetSubString(to_check, 0, 0) == " ")
+            || (llGetSubString(to_check, 0, 0) == "=")
+            || (llGetSubString(to_check, 0, 0) == ",") )
+        to_check = llDeleteSubString(to_check, 0, 0);
+    if (debug)
+        log_it("set " + variable_name + " = " + to_check);    
+    // return what's left of the string.
+    return to_check;
+}
+
+parse_variable_definition(string to_parse)
+{
+    string content;  // filled after finding a variable name.
+    string texture_name;  // temporary used in reading texture name.
+    
+    if ( (content = defines_variable(to_parse, "debug")) != "")
+        debug = (integer)content;
+    else if ( (content = defines_variable(to_parse, "interpolate_colors")) != "")
+        interpolate_colors = (integer)content;
+    else if ( (content = defines_variable(to_parse, "randomize_colors")) != "")
+        randomize_colors = (integer)content;
+    else if ( (content = defines_variable(to_parse, "starting_color")) != "")
+        starting_color = (vector)content;
+    else if ( (content = defines_variable(to_parse, "ending_color")) != "")
+        ending_color = (vector)content;
+    else if ( (content = defines_variable(to_parse, "interpolate_size")) != "")
+        interpolate_size = (integer)content;
+    else if ( (content = defines_variable(to_parse, "initial_dimensions")) != "")
+        initial_dimensions = (vector)content;
+    else if ( (content = defines_variable(to_parse, "final_dimensions")) != "")
+        final_dimensions = (vector)content;
+    else if ( (content = defines_variable(to_parse, "initial_opacity")) != "")
+        initial_opacity = (float)content;
+    else if ( (content = defines_variable(to_parse, "final_opacity")) != "")
+        final_opacity = (float)content;
+    else if ( (content = defines_variable(to_parse, "follow_target_key")) != "")
+        follow_target_key = (integer)content;
+    else if ( (content = defines_variable(to_parse, "target_key")) != "")
+        target_key = (string)content;
+    else if ( (content = defines_variable(to_parse, "minimum_velocity")) != "")
+        minimum_velocity = (float)content;
+    else if ( (content = defines_variable(to_parse, "maximum_velocity")) != "")
+        maximum_velocity = (float)content;
+    else if ( (content = defines_variable(to_parse, "wind_blown")) != "")
+        wind_blown = (integer)content;
+    else if ( (content = defines_variable(to_parse, "acceleration")) != "")
+        acceleration = (vector)content;
+    else if ( (content = defines_variable(to_parse, "bounce_off_z_height")) != "")
+        bounce_off_z_height = (integer)content;
+    else if ( (content = defines_variable(to_parse, "glowing")) != "")
+        glowing = (integer)content;
+    else if ( (content = defines_variable(to_parse, "source_centered")) != "")
+        source_centered = (integer)content;
+    else if ( (content = defines_variable(to_parse, "point_toward_velocity")) != "")
+        point_toward_velocity = (integer)content;
+    else if ( (content = defines_variable(to_parse, "particle_texture")) != "")
+        particle_texture = (string)content;
+    else if ( (content = defines_variable(to_parse, "lifespan_for_particle")) != "")
+        lifespan_for_particle = (float)content;
+    else if ( (content = defines_variable(to_parse, "lifespan_for_system")) != "")
+        lifespan_for_system = (float)content;
+    else if ( (content = defines_variable(to_parse, "creation_rate")) != "")
+        creation_rate = (float)content;
+    else if ( (content = defines_variable(to_parse, "siblings")) != "")
+        siblings = (integer)content;
+    else if ( (content = defines_variable(to_parse, "minimum_hold_time")) != "")
+        minimum_hold_time = (float)content;
+    else if ( (content = defines_variable(to_parse, "maximum_hold_time")) != "")
+        maximum_hold_time = (float)content;
+    else if ( (content = defines_variable(to_parse, "emission_pattern")) != "") {
+        texture_name = (string)content;
+        // translate the short hand name into an emission_pattern value.
+        if (texture_name == "ANGLE") emission_pattern = PSYS_SRC_PATTERN_ANGLE;
+        else if (texture_name == "DROP") emission_pattern = PSYS_SRC_PATTERN_DROP;
+        else if (texture_name == "EXPLODE") emission_pattern = PSYS_SRC_PATTERN_EXPLODE;
+        else if (texture_name == "ANGLE_CONE") emission_pattern = PSYS_SRC_PATTERN_ANGLE_CONE;
+        else if (texture_name == "ANGLE_CONE_EMPTY")
+            emission_pattern = PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY;
+//log_it("emission pattern is now " + (string)emission_pattern);
+    }
+    else if ( (content = defines_variable(to_parse, "starting_angle")) != "")
+        starting_angle = (float)content;
+    else if ( (content = defines_variable(to_parse, "ending_angle")) != "")
+        ending_angle = (float)content;
+    else if ( (content = defines_variable(to_parse, "rotation_between_bursts")) != "") {
+        if (content == "random")
+            rotation_between_bursts = <randomize_within_range(MIN_ROTATION, MAX_ROTATION, TRUE),
+                randomize_within_range(MIN_ROTATION, MAX_ROTATION, TRUE),
+                randomize_within_range(MIN_ROTATION, MAX_ROTATION, TRUE)>;
+        else
+            rotation_between_bursts = (vector)content;
+    } else if ( (content = defines_variable(to_parse, "burst_radius")) != "")
+        burst_radius = (float)content;
+    else if ( (content = defines_variable(to_parse, "running")) != "")
+        start_enabled = (integer)content;
+
+    // special cases for key to follow...
+    if (target_key == "owner") target_key = llGetOwner();
+    else if (target_key == "self") target_key = llGetKey();
+    // special cases for texture.
+    if (particle_texture == "inventory")
+        particle_texture = llGetInventoryName(INVENTORY_TEXTURE, 0);
+
+}
+
+process_particle_settings(list particle_definitions)
+{
+    integer current_item = 0;
+    integer max_items = llGetListLength(particle_definitions);
+    while (current_item < max_items) {
+        string curr_line = llList2String(particle_definitions, current_item);
+        parse_variable_definition(curr_line);
+        current_item++;
+    }
+}
+
+randomize_timer()
+{
+    if (randomize_colors) {
+        llSetTimerEvent(randomize_within_range(maximum_hold_time,
+            minimum_hold_time, FALSE));
+    }
+}
+
+stop_timer() { llSetTimerEvent(0.0); }
+
+check_for_notecard()
+{
+    if (current_notecard_name != "") return;
+    // if there's a notecard, then we will start reading it.
+    if (llGetInventoryNumber(INVENTORY_NOTECARD) > 0) {
+        current_notecard_name = llGetInventoryName(INVENTORY_NOTECARD, 0);
+        line_number = 0;
+        query_contents = [];
+        current_query_id = llGetNotecardLine(current_notecard_name, 0);
+        llSetTimerEvent(80);
+    }
+}
+
+// this should be invoked from the link_message event handler to process the requests
+// for whatever service this library script provides.
+handle_link_message(integer sender, integer huff_id, string msg, key id)
+{
+    if (huff_id != PARTYCULIAR_HUFFWARE_ID) {
+        return;
+    }
+//llOwnerSay("link msg: " + (string)sender + " " + (string)huff_id + " msg=" + msg + " id=" + (string)id);
+    if (msg == PARTYCULIAR_POWER_COMMAND) {
+        string cmd = id;
+        if ( (find_substring(id, "on") == 0)
+            || (find_substring(id, "1") == 0)
+            || (find_substring(id, "true") == 0) ) {
+            // they want to crank the particle system up.
+            create_particle_system();
+            randomize_timer();
+        } else if ( (find_substring(id, "off") == 0)
+            || (find_substring(id, "0") == 0)
+            || (find_substring(id, "false") == 0) ) {
+            // the request is to shut the party down now.
+            llParticleSystem([]);
+            stop_timer();
+        }
+    }
+}
+
+//////////////
+// from hufflets...
+
+//////////////
+
+integer debug_num = 0;
+
+// a debugging output method.  can be disabled entirely in one place.
+log_it(string to_say)
+{
+    debug_num++;
+    // tell this to the owner.    
+    llOwnerSay(llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
+    // say this on open chat, but use an unusual channel.
+//    llSay(108, llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
+}
+
+//////////////
+
+// joins a list of parameters using the parameter sentinel for the library.
+string wrap_parameters(list to_flatten)
+{ return llDumpList2String(to_flatten, HUFFWARE_PARM_SEPARATOR); }
+
+// handles when blank strings need to come through the pipe.
+string wrap_blank_string(string to_wrap)
+{
+    if (llStringLength(to_wrap)) return to_wrap;  // that one is okay.
+    return "\"\"";  // return a quoted nothing as a signal for a blank.
+}
+
+// undoes a previously wrapped blank string.
+string interpret_blank_string(string to_unwrap)
+{
+    if (to_unwrap == "\"\"") return "";  // that was an encoded blank.
+    return to_unwrap;  // no encoding.
+}
+
+// a simple version of a reply for a command that has been executed.  the parameters
+// might contain an outcome or result of the operation that was requested.
+send_reply(integer destination, list parms, string command)
+{
+    llMessageLinked(destination, PARTYCULIAR_HUFFWARE_ID, command,
+        llDumpList2String(parms, HUFFWARE_PARM_SEPARATOR));
+}
+
+//////////////
+
+// returns a number at most maximum and at least minimum.
+// if "allow_negative" is TRUE, then the return may be positive or negative.
+float randomize_within_range(float minimum, float maximum, integer allow_negative)
+{
+    float to_return = minimum + llFrand(maximum - minimum);
+    if (allow_negative) {
+        if (llFrand(1.0) < 0.5) to_return *= -1.0;
+    }
+    return to_return;
+}
+
+// the string processing methods are not case sensitive.
+  
+// returns TRUE if the "pattern" is found in the "full_string".
+integer matches_substring(string full_string, string pattern)
+{ return (find_substring(full_string, pattern) >= 0); }
+
+// returns the index of the first occurrence of "pattern" inside
+// the "full_string".  if it is not found, then a negative number is returned.
+integer find_substring(string full_string, string pattern)
+{ return llSubStringIndex(llToLower(full_string), llToLower(pattern)); }
+
+// returns TRUE if the "prefix" string is the first part of "compare_with".
+integer is_prefix(string compare_with, string prefix)
+{ return find_substring(compare_with, prefix) == 0; }
+
+//////////////
+// huffware script: auto-retire, by fred huffhines, version 2.5.
+// distributed under BSD-like license.
+//   !!  keep in mind that this code must be *copied* into another
+//   !!  script that you wish to add auto-retirement capability to.
+// when a script has auto_retire in it, it can be dropped into an
+// object and the most recent version of the script will destroy
+// all older versions.
+//
+// the version numbers are embedded into the script names themselves.
+// the notation for versions uses a letter 'v', followed by two numbers
+// in the form "major.minor".
+// major and minor versions are implicitly considered as a floating point
+// number that increases with each newer version of the script.  thus,
+// "hazmap v0.1" might be the first script in the "hazmap" script continuum,
+// and "hazmap v3.2" is a more recent version.
+//
+// example usage of the auto-retirement script:
+//     default {
+//         state_entry() {
+//            auto_retire();  // make sure newest addition is only version of script.
+//        }
+//     }
+// this script is partly based on the self-upgrading scripts from markov brodsky
+// and jippen faddoul.
+//////////////
+auto_retire() {
+    string self = llGetScriptName();  // the name of this script.
+    list split = compute_basename_and_version(self);
+    if (llGetListLength(split) != 2) return;  // nothing to do for this script.
+    string basename = llList2String(split, 0);  // script name with no version attached.
+    string version_string = llList2String(split, 1);  // the version found.
+    integer posn;
+    // find any scripts that match the basename.  they are variants of this script.
+    for (posn = llGetInventoryNumber(INVENTORY_SCRIPT) - 1; posn >= 0; posn--) {
+//log_it("invpo=" + (string)posn);
+        string curr_script = llGetInventoryName(INVENTORY_SCRIPT, posn);
+        if ( (curr_script != self) && (llSubStringIndex(curr_script, basename) == 0) ) {
+            // found a basic match at least.
+            list inv_split = compute_basename_and_version(curr_script);
+            if (llGetListLength(inv_split) == 2) {
+                // see if this script is more ancient.
+                string inv_version_string = llList2String(inv_split, 1);  // the version found.
+                // must make sure that the retiring script is completely the identical basename;
+                // just matching in the front doesn't make it a relative.
+                if ( (llList2String(inv_split, 0) == basename)
+                    && ((float)inv_version_string < (float)version_string) ) {
+                    // remove script with same name from inventory that has inferior version.
+                    llRemoveInventory(curr_script);
+                }
+            }
+        }
+    }
+}
+//
+// separates the base script name and version number.  used by auto_retire.
+list compute_basename_and_version(string to_chop_up)
+{
+    // minimum script name is 2 characters plus a version.
+    integer space_v_posn;
+    // find the last useful space and 'v' combo.
+    for (space_v_posn = llStringLength(to_chop_up) - 3;
+        (space_v_posn >= 2) && (llGetSubString(to_chop_up, space_v_posn, space_v_posn + 1) != " v");
+        space_v_posn--) {
+        // look for space and v but do nothing else.
+//log_it("pos=" + (string)space_v_posn);
+    }
+    if (space_v_posn < 2) return [];  // no space found.
+//log_it("space v@" + (string)space_v_posn);
+    // now we zoom through the stuff after our beloved v character and find any evil
+    // space characters, which are most likely from SL having found a duplicate item
+    // name and not so helpfully renamed it for us.
+    integer indy;
+    for (indy = llStringLength(to_chop_up) - 1; indy > space_v_posn; indy--) {
+//log_it("indy=" + (string)space_v_posn);
+        if (llGetSubString(to_chop_up, indy, indy) == " ") {
+            // found one; zap it.  since we're going backwards we don't need to
+            // adjust the loop at all.
+            to_chop_up = llDeleteSubString(to_chop_up, indy, indy);
+//log_it("saw case of previously redundant item, aieee.  flattened: " + to_chop_up);
+        }
+    }
+    string full_suffix = llGetSubString(to_chop_up, space_v_posn, -1);
+    // ditch the space character for our numerical check.
+    string chop_suffix = llGetSubString(full_suffix, 1, llStringLength(full_suffix) - 1);
+    // strip out a 'v' if there is one.
+    if (llGetSubString(chop_suffix, 0, 0) == "v")
+        chop_suffix = llGetSubString(chop_suffix, 1, llStringLength(chop_suffix) - 1);
+    // if valid floating point number and greater than zero, that works for our version.
+    string basename = to_chop_up;  // script name with no version attached.
+    if ((float)chop_suffix > 0.0) {
+        // this is a big success right here.
+        basename = llGetSubString(to_chop_up, 0, -llStringLength(full_suffix) - 1);
+        return [ basename, chop_suffix ];
+    }
+    // seems like we found nothing useful.
+    return [];
+}
+//
+//////////////
+
+default {
+    state_entry() { if (llSubStringIndex(llGetObjectName(), "huffotronic") < 0) state real_default; }
+    on_rez(integer parm) { state rerun; }
+}
+state rerun { state_entry() { state default; } }
+
+state real_default
+{
+    state_entry()
+    {
+        auto_retire();
+        initialize();
+        if (start_enabled) {
+            create_particle_system();
+            randomize_timer();
+        } else {
+            llParticleSystem([]);
+            stop_timer();
+        }
+        check_for_notecard();
+    }
+    
+    timer() {
+        if (current_query_id != NULL_KEY) {
+            // there's been a failure of some sort; we were supposed to get a notecard to read.
+            llWhisper(0, "Failed to read the notecard, now restarting.");
+            llResetScript();
+        }
+        create_particle_system();
+        randomize_timer();
+    }
+    
+    on_rez(integer parm) {
+        target_key = llGetKey();  // reset to get rid of weird wrong keys.
+        llResetScript();
+    }
+
+    link_message(integer sender, integer num, string msg, key id) {
+        handle_link_message(sender, num, msg, id);
+    }
+
+    changed(integer change_type) {
+        if (change_type != CHANGED_INVENTORY) {
+            // we only care about inventory changes here.
+            return;
+        }
+        llResetScript();
+    }
+    
+    dataserver(key query_id, string data) {
+        if (query_id != current_query_id) {
+log_it("not our query id somehow?  weird query had: id=" + (string)query_id + " data=" + (string)data);
+            // to heck with all this weirdness; if there's a failure, start over.
+            llResetScript();
+        }
+        // if we're not at the end of the notecard we're reading...
+        if (data != EOF) {
+            if (!line_number) {
+                if (data != "#party culiar") {
+                    // this card has the wrong signature at the top.  quit bothering
+                    // with it now.
+                    return;
+                }
+                log_it("starting to read notecard " + current_notecard_name + "...");    
+            }
+            if (data != "") {
+                 // add the non-blank line to our destination list.
+                query_contents += data;
+//log_it("line " + (string)line_number + ": data=" + data);
+            }
+            line_number++;  // increase the line count.
+            // request the next line from the notecard.
+            current_query_id = llGetNotecardLine(current_notecard_name, line_number);
+        } else {
+            // no more data, so we're done with this card.
+            current_query_id = NULL_KEY;
+            if (!llGetListLength(query_contents)) {
+                // nothing was read?  the heck with this card.
+                current_notecard_name = "";  // toss bad card.
+                return;
+            }
+//log_it("notecard said:\n" + dump_list(query_contents));
+            process_particle_settings(query_contents);
+            if (start_enabled) {
+                create_particle_system();
+                randomize_timer();
+            } else {
+                llParticleSystem([]);
+                stop_timer();
+            }
+            log_it("done reading notecard " + current_notecard_name + ".");
+        }
+    }
+}
+

@@ -1,0 +1,210 @@
+﻿
+// huffware script: particle projector, by fred huffhines.
+//
+// takes a texture from one side of the object and projects it in a forward X and upward Z direction.
+//
+// this script is licensed by the GPL v3 which is documented at: http://www.gnu.org/licenses/gpl.html
+// do not use it in objects without fully realizing you are implicitly accepting that license.
+//
+
+// constants that can be modified for different behavior.
+ 
+float TEXTURE_DISPLAY_LIFE_SPAN = 14.0;  // how long the texture should be shown.
+
+integer SIDE_TO_ACQUIRE_TEXTURE_FROM = 1;  // which side of the object should give us our display texture?
+
+float MAGNIFIER = 4.0;  // how much to expand the texture as it runs.
+
+vector TEXTURE_ACCELERATION = <0.02, 0.0, 0.01>;  // change in speed of the texture over time.
+
+// global variables used in the script.
+
+string texture_to_display = "95c7bb7c-d777-26b1-4052-acd778bfcb40";  // a simple default texture.
+
+// displays a particle system with a texture that gradually enlarges over the object.
+texture_hallucination()
+{
+    // get a bounding box around the object.
+    list bounds = llGetBoundingBox(llGetKey());
+    // calculate the size of the object, which will be our starting particle size.
+    vector size = (vector)llList2String(bounds, 1) - (vector)llList2String(bounds, 0);
+    float chosen_dimension = size.x;
+    if (size.y > chosen_dimension) chosen_dimension = size.y;
+    if (size.z > chosen_dimension) chosen_dimension = size.z;
+    llParticleSystem([
+        // properties regarding the generated particles.
+        PSYS_PART_FLAGS, PSYS_PART_BOUNCE_MASK | PSYS_PART_INTERP_SCALE_MASK,
+        PSYS_PART_START_SCALE, <chosen_dimension, chosen_dimension, 0.0>,
+        PSYS_PART_END_SCALE, <chosen_dimension * MAGNIFIER, chosen_dimension * MAGNIFIER, 0.0>,
+        PSYS_PART_MAX_AGE, TEXTURE_DISPLAY_LIFE_SPAN,
+        PSYS_PART_START_COLOR, <1.0, 1.0, 1.0>,
+        PSYS_PART_END_COLOR, <1.0, 1.0, 1.0>,
+        PSYS_PART_START_ALPHA, 1.0,
+        PSYS_PART_END_ALPHA, 1.0,
+        // properties for the particle system's source.
+        PSYS_SRC_MAX_AGE, TEXTURE_DISPLAY_LIFE_SPAN,
+        PSYS_SRC_TEXTURE, texture_to_display,
+        PSYS_SRC_ACCEL, TEXTURE_ACCELERATION,
+        PSYS_SRC_PATTERN, PSYS_SRC_PATTERN_DROP,
+        PSYS_SRC_BURST_PART_COUNT, 1,
+        PSYS_SRC_BURST_RADIUS, chosen_dimension,
+        PSYS_SRC_BURST_RATE, TEXTURE_DISPLAY_LIFE_SPAN,
+        PSYS_SRC_BURST_SPEED_MIN, 0.01,
+        PSYS_SRC_BURST_SPEED_MAX, 0.01,
+        PSYS_SRC_ANGLE_BEGIN, 0.0,
+        PSYS_SRC_ANGLE_END, 0.0,
+        PSYS_SRC_OMEGA, <0.0, 0.0, 0.0>
+    ]);
+}
+
+// from hufflets...
+
+// returns a number at most "maximum" and at least "minimum".
+// if "allow_negative" is TRUE, then the return may be positive or negative.
+float randomize_within_range(float minimum, float maximum, integer allow_negative)
+{
+    if (minimum > maximum) {
+        // flip the two if they are reversed.
+        float temp = minimum; minimum = maximum; maximum = temp;
+    }
+    float to_return = minimum + llFrand(maximum - minimum);
+    if (allow_negative) {
+        if (llFrand(1.0) < 0.5) to_return *= -1.0;
+    }
+    return to_return;
+}
+
+//////////////
+// huffware script: auto-retire, by fred huffhines, version 2.5.
+// distributed under BSD-like license.
+//   !!  keep in mind that this code must be *copied* into another
+//   !!  script that you wish to add auto-retirement capability to.
+// when a script has auto_retire in it, it can be dropped into an
+// object and the most recent version of the script will destroy
+// all older versions.
+//
+// the version numbers are embedded into the script names themselves.
+// the notation for versions uses a letter 'v', followed by two numbers
+// in the form "major.minor".
+// major and minor versions are implicitly considered as a floating point
+// number that increases with each newer version of the script.  thus,
+// "hazmap v0.1" might be the first script in the "hazmap" script continuum,
+// and "hazmap v3.2" is a more recent version.
+//
+// example usage of the auto-retirement script:
+//     default {
+//         state_entry() {
+//            auto_retire();  // make sure newest addition is only version of script.
+//        }
+//     }
+// this script is partly based on the self-upgrading scripts from markov brodsky
+// and jippen faddoul.
+//////////////
+auto_retire() {
+    string self = llGetScriptName();  // the name of this script.
+    list split = compute_basename_and_version(self);
+    if (llGetListLength(split) != 2) return;  // nothing to do for this script.
+    string basename = llList2String(split, 0);  // script name with no version attached.
+    string version_string = llList2String(split, 1);  // the version found.
+    integer posn;
+    // find any scripts that match the basename.  they are variants of this script.
+    for (posn = llGetInventoryNumber(INVENTORY_SCRIPT) - 1; posn >= 0; posn--) {
+//log_it("invpo=" + (string)posn);
+        string curr_script = llGetInventoryName(INVENTORY_SCRIPT, posn);
+        if ( (curr_script != self) && (llSubStringIndex(curr_script, basename) == 0) ) {
+            // found a basic match at least.
+            list inv_split = compute_basename_and_version(curr_script);
+            if (llGetListLength(inv_split) == 2) {
+                // see if this script is more ancient.
+                string inv_version_string = llList2String(inv_split, 1);  // the version found.
+                // must make sure that the retiring script is completely the identical basename;
+                // just matching in the front doesn't make it a relative.
+                if ( (llList2String(inv_split, 0) == basename)
+                    && ((float)inv_version_string < (float)version_string) ) {
+                    // remove script with same name from inventory that has inferior version.
+                    llRemoveInventory(curr_script);
+                }
+            }
+        }
+    }
+}
+//
+// separates the base script name and version number.  used by auto_retire.
+list compute_basename_and_version(string to_chop_up)
+{
+    // minimum script name is 2 characters plus a version.
+    integer space_v_posn;
+    // find the last useful space and 'v' combo.
+    for (space_v_posn = llStringLength(to_chop_up) - 3;
+        (space_v_posn >= 2) && (llGetSubString(to_chop_up, space_v_posn, space_v_posn + 1) != " v");
+        space_v_posn--) {
+        // look for space and v but do nothing else.
+//log_it("pos=" + (string)space_v_posn);
+    }
+    if (space_v_posn < 2) return [];  // no space found.
+//log_it("space v@" + (string)space_v_posn);
+    // now we zoom through the stuff after our beloved v character and find any evil
+    // space characters, which are most likely from SL having found a duplicate item
+    // name and not so helpfully renamed it for us.
+    integer indy;
+    for (indy = llStringLength(to_chop_up) - 1; indy > space_v_posn; indy--) {
+//log_it("indy=" + (string)space_v_posn);
+        if (llGetSubString(to_chop_up, indy, indy) == " ") {
+            // found one; zap it.  since we're going backwards we don't need to
+            // adjust the loop at all.
+            to_chop_up = llDeleteSubString(to_chop_up, indy, indy);
+//log_it("saw case of previously redundant item, aieee.  flattened: " + to_chop_up);
+        }
+    }
+    string full_suffix = llGetSubString(to_chop_up, space_v_posn, -1);
+    // ditch the space character for our numerical check.
+    string chop_suffix = llGetSubString(full_suffix, 1, llStringLength(full_suffix) - 1);
+    // strip out a 'v' if there is one.
+    if (llGetSubString(chop_suffix, 0, 0) == "v")
+        chop_suffix = llGetSubString(chop_suffix, 1, llStringLength(chop_suffix) - 1);
+    // if valid floating point number and greater than zero, that works for our version.
+    string basename = to_chop_up;  // script name with no version attached.
+    if ((float)chop_suffix > 0.0) {
+        // this is a big success right here.
+        basename = llGetSubString(to_chop_up, 0, -llStringLength(full_suffix) - 1);
+        return [ basename, chop_suffix ];
+    }
+    // seems like we found nothing useful.
+    return [];
+}
+//
+//////////////
+
+default
+{
+    state_entry() { if (llSubStringIndex(llGetObjectName(),  "huffotronic") < 0) state real_default; }
+    on_rez(integer parm) { state rerun; }
+}
+state rerun { state_entry() { state default; } }
+
+state real_default {
+    state_entry() {
+        auto_retire();
+    }
+
+    touch_start(integer touch_count) {
+        integer count = llGetInventoryNumber(INVENTORY_TEXTURE);
+        if (count > 0) {
+            // try getting a texture out of inventory.
+            integer which_texture = llRound(randomize_within_range(0, count - 1, FALSE));
+            texture_to_display = llGetInventoryName(INVENTORY_TEXTURE, which_texture);
+//if (texture_to_display == "") llOwnerSay("fail!  got bad index from random.");
+        } else {
+            // if none in inventory, load the texture to show from our side.
+            texture_to_display = llGetTexture(SIDE_TO_ACQUIRE_TEXTURE_FROM);
+        }
+//llOwnerSay("texture is now: " + texture_to_display);
+        texture_hallucination();
+        llSetTimerEvent(TEXTURE_DISPLAY_LIFE_SPAN + 0.1);
+    }
+
+    timer() {
+        llParticleSystem([]);  // zap it back out again.
+        llSetTimerEvent(0);  // turn off timer.
+    }
+}

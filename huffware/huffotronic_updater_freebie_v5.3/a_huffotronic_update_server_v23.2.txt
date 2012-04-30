@@ -1,0 +1,940 @@
+﻿
+// huffware script: huff-update server, by fred huffhines.
+//
+// this script is the server side of the update process.  it should reside in an object that
+// has all the newest versions of scripts and objects that will be updated.  when rezzed, and
+// at periodic intervals, it announces on a private chat channel that updates are available.
+// when objects respond that they might like an update, it tells them the scripts that it has
+// stored inside of it.  if any of those scripts are an older version inside the client
+// (update requesting) object, then the client will request the newer versions.  the server
+// object will stuff them into it and tell them to start running.
+//
+// this script is licensed by the GPL v3 which is documented at: http://www.gnu.org/licenses/gpl.html
+// do not use it in objects without fully realizing you are implicitly accepting that license.
+//
+
+integer IS_OPENSIM = TRUE;  // must be set to true for opensim, false for second life.
+
+integer DEBUGGING = FALSE;  // set this to true for noisier diagnostics.
+
+
+
+// updater dependency section:
+// should be moved to a notecard!!!
+//
+// format is a list of strings, where each string has a pair wrapped by the
+// huffware item separators.  the pair contains (1) the basename of a script
+// that has a new dependency and (2) the basename of that new dependency.
+list known_script_dependencies;
+
+
+
+
+load_script_deps()
+{
+    known_script_dependencies = [
+        llDumpList2String(["jaunt wik rez", "jaunt config funcs"], ITEM_LIST_SEPARATOR),
+        llDumpList2String(["jaunt wik rez", "data cow"], ITEM_LIST_SEPARATOR),
+        llDumpList2String(["jaunt wik rez", "jaunt rezolator"], ITEM_LIST_SEPARATOR),
+        llDumpList2String(["remotely personable", "inventory exchanger"], ITEM_LIST_SEPARATOR),
+        llDumpList2String(["animote main driver", "exchange driver hudimation"], ITEM_LIST_SEPARATOR),
+        llDumpList2String(["animote main driver", "avatar timer manager"], ITEM_LIST_SEPARATOR),
+        llDumpList2String(["animote main driver", "avatar choice memory"], ITEM_LIST_SEPARATOR),
+        llDumpList2String(["giftorse", "particle projector"], ITEM_LIST_SEPARATOR),
+        llDumpList2String(["huff-search brainiac", "searchbert armature"], ITEM_LIST_SEPARATOR),
+
+        
+//special purpose -- removes the updater from the elevator buttons...
+//llDumpList2String(["comfortable sitting", "zap updater from elevators"], ITEM_LIST_SEPARATOR),
+// => do not uncomment unless you want your elevators to shed their ability to update.
+
+
+        // this allows us to add or remove items above at will without complaints about comma.
+        llDumpList2String(["xyzzy", "hopefully-never-matches"], ITEM_LIST_SEPARATOR)
+    ];
+}
+
+
+
+
+// global constants...
+
+integer USER_COMMAND_CHANNEL = 4;  // channel where we listen to user commands.
+
+float ANNOUNCEMENT_PERIOD = 14.0;  // how often we tell other objects that we have tasty treats.
+
+integer UPDATE_ANNOUNCEMENT_CHANNEL   = -420108;  // used by server to brag about itself.
+integer OLD_REQUEST_INVENTORY_CHANNEL = -421008;  // used by clients to request an update list.
+
+string UPDATE_ANNOUNCEMENT_PREFIX   = "#huff-update#";  // first part of any announcement.
+string REQUEST_INVENTORY_PREFIX     = "#huff-reqinv#";  // first part of request for inventory list.
+string REPORT_AVAILABLE_SCRIPTS     = "#scripts#";  // server's keyword to let client know script inventory.
+string REQUEST_SCRIPT_UPDATE        = "#updatego#";  // keyword used by client to request some updates.
+string SHUT_THEM_DOWN               = "#huffdown#";  // server tells client to stop any non-updater scripts.
+string READY_TO_UPDATE              = "#listoneeds#";  // the client tells the server the scripts it wants.
+string SCRIPTS_ARE_CURRENT          = "#gottemthx#";  // client says this when all new scripts are in place.
+string START_THEM_UP                = "#huffup#";  // server tells client to start up other scripts again.
+string DONE_UPDATING                = "#finito#";  // the client is done updating.
+string BUSY_BUSY                    = "#busymuch#";  // a signal that the server is too busy to update us.
+
+integer UPDATER_SCRIPT_PIN          = -1231008;  // the hook for our scripts to be modified.
+
+string RESTART_UPDATER_COMMAND      = "#restart";  // said in open chat to recrank the updater.
+string SHOW_SCRIPTS_COMMAND         = "#show";  // said in open chat to list out the scripts.
+string SHUTDOWN_COMMAND             = "#destroy";  // shuts down object and destroys it.
+
+string UPDATER_PARM_SEPARATOR = "~~~";
+    // three tildes is an uncommon thing to have otherwise, so we use it to separate
+    // our commands in linked messages.
+
+string SCRIPT_DEPENDENCY_MARK = "DEP";  // signals that a dependency is coming.
+
+integer ENTRIES_PER_LINE = 4;  // number of items from a list shown on one line of text.
+
+integer MAXIMUM_ACTIVE_CLIENTS = 5;  // number of conversations we will allow at a time.
+
+float LONGEST_SLACK_PER_CLIENT = 84.0;
+    // we allow a client to be out of touch with us for this many seconds.  after that,
+    // we decide it's deceased and remove it from our list.
+
+integer MESSAGE_SIZE_LIMIT = 800;  // longest thing that can be safely said without clipping (guess).
+
+float SCRIPT_LIST_PAUSE_INTERVAL = 1.4;  // pause between large chunks of update text.
+
+string ITEM_LIST_SEPARATOR = "``";  // separates dependencies.
+
+float CHANGED_INVENTORY_SNOOZER = 7.0;
+    // the number of seconds we sleep once we see an inventory change.  we don't want to
+    // react to this immediately.  this overrides the normal announcement cycle until it's
+    // dealt with by the timer.
+
+string CONTINUANCE_MARKER = "...";
+    // a string sent when the update list is too long and needs to be continued in another chat.
+
+string UPDATER_BASE_NAME = "huff-update client";
+    // the name of the updater script that keeps everything in sync.
+
+//////////////
+
+// global variables...
+
+list scripts_available;  // the list of scripts we have in our inventory for distribution.
+list objects_available;  // list of objects for handing out.
+
+list active_clients;  // list of keys for clients that are updating currently.
+list active_update_channels;  // active conversations on client chosen channels.
+list active_listen_ids;  // the ids for the listener on those channels.
+list active_timestamps;  // tracks when the client was last active.
+
+integer inventory_request_channel;  // our personal channel that the update client should talk with.
+
+integer dealing_with_change;  // has the inventory changed?  we will deal with this in the timer.
+
+// displays the status of the update server.
+show_status(key who_says)
+{
+    string title = "[mem free=" + (string)llGetFreeMemory() + "]";
+    title = "Listening for requests on channel " + (string)inventory_request_channel;
+    if (llGetListLength(active_update_channels))
+        title += "\nactive channels="
+            + dump_list(active_update_channels, FALSE, ENTRIES_PER_LINE);
+    else
+        title += "\nNo channels active.";
+        
+    if (llGetListLength(active_clients))
+        title += "\nactive clients=" + dump_keyed_list(active_clients, TRUE, 2);
+    else
+        title += "\nNo clients active.";
+    
+    if (llGetOwner() == who_says) {
+        string addition = " ";
+        if (USER_COMMAND_CHANNEL != 0) addition = "/" + (string)USER_COMMAND_CHANNEL + " ";
+        title += "\n[ \"" + addition + SHOW_SCRIPTS_COMMAND + "\" lists all the scripts, "
+            + "\"" + addition + SHUTDOWN_COMMAND + "\" zaps the updater, "
+            + "\"" + addition + RESTART_UPDATER_COMMAND + "\" refreshes the updater ]";
+    }
+
+    llWhisper(0, title);
+}
+
+// plink a quietous string of resonance...
+squonk(integer indy)
+{
+    string snd = llGetInventoryName(INVENTORY_SOUND, indy);
+    if (snd != "") llTriggerSound(snd, 1.0);
+}
+
+// list out the scripts that the server's object contains.
+show_scripts()
+{
+    string title = (string)llGetListLength(scripts_available) + " scripts available:";
+    show_list(title, scripts_available);
+    title = (string)llGetListLength(objects_available) + " objects available:";
+    show_list(title, objects_available);
+}
+
+// lets the client know that we're here and have some scripts available.
+announce_presence()
+{
+    if (llGetListLength(active_clients) < MAXIMUM_ACTIVE_CLIENTS) {
+        // only announce if we're not already booked up.
+        llWhisper(UPDATE_ANNOUNCEMENT_CHANNEL, UPDATE_ANNOUNCEMENT_PREFIX + (string)inventory_request_channel);
+    }
+}
+
+// lifted from "clear text and effects" script; should be nearly identical
+// to that, except that we set the texture animation.
+reset_all_effects()
+{
+    llSetText("", <0,0,0>, 0);  // clear any text above object.
+    llSetSitText("Sit Here");  // reset sit text to default state.
+    llSetTouchText("Touch");  // similarly for touch.
+    llSitTarget(ZERO_VECTOR, ZERO_ROTATION);  // reset sit target position.
+    llParticleSystem([]);  // turn off all particles.
+    llSensorRemove();  // stop any running sensors.
+    llTargetOmega(<0.0, 0.0, 0.0>, 0, 1.0);  // stop rotations of object.
+    llSetLinkAlpha(LINK_SET, 1.0, ALL_SIDES);  // turn off any transparency.
+    // keep it from being physical and from disapparating.
+    llSetPrimitiveParams([PRIM_TEMP_ON_REZ, FALSE, PRIM_PHYSICS, FALSE,
+        PRIM_PHANTOM, TRUE]);
+    llSetLinkColor(LINK_SET, <1.0, 1.0, 1.0>, ALL_SIDES);  // reset color to white.
+
+    //
+    // the following are specific to the huffotronic update server.
+    //
+
+    // we re-assert our special texture set here, in case some wayward scripts have
+    // messed with us.
+    integer textures_held = llGetInventoryNumber(INVENTORY_TEXTURE);
+    integer indy;
+    for (indy = 0; indy < textures_held; indy++) {
+        string curr_tex = llGetInventoryName(INVENTORY_TEXTURE, indy);
+        // we have a simple scheme for putting textures on the updater.
+        // we have an inside, an outside and the ends.
+        if (is_prefix(curr_tex, "~~s0")) {
+            llSetTexture(curr_tex, ALL_SIDES);
+        } else if (is_prefix(curr_tex, "~~s1")) {
+            llSetTexture(curr_tex, 1);
+        } else if (is_prefix(curr_tex, "~~s2")) {
+            llSetTexture(curr_tex, 0);
+            llSetTexture(curr_tex, 3);
+        }
+    }
+    
+    // re-assert our texture animation also.
+    llSetTextureAnim(ANIM_ON | LOOP | SMOOTH | ROTATE,
+        ALL_SIDES, 0, 0, 0, TWO_PI, 1.0 / 36.0);
+}
+
+// set up the update server object.
+initialize_root()
+{
+    // set up our particular "look".
+    reset_all_effects();
+
+    // shut down any competing scripts in this object.
+    // we try to swat any other script that's been added before we let them do weird
+    // stuff.  for example, a pet script might start acting like one.  this
+    // function is not guaranteed to run before that bad stuff can happen,
+    // and that's maybe the one major issue with this approach.  as long as
+    // the contained scripts aren't evil (like if they jump someplace else
+    // as soon as they start), then there shouldn't be any serious problems.
+    knock_down_other_scripts();
+
+    // reset our variables.
+    active_update_channels = [];
+    active_listen_ids = [];
+    active_clients = [];
+    active_timestamps = [];
+    scripts_available = [];
+    objects_available = [];
+    dealing_with_change = FALSE;  // not handling any inventory changes.
+
+    // make sure we know about any scripts that have new dependencies.
+    load_script_deps();
+
+    // clean out any older versions of the scripts before we make our
+    // inventory.
+    destroy_older_versions();
+
+    // now accumulate the list of scripts in our inventory.    
+    integer items_held = llGetInventoryNumber(INVENTORY_SCRIPT);
+    integer indy;
+    for (indy = 0; indy < items_held; indy++) {
+        string curr_script = llGetInventoryName(INVENTORY_SCRIPT, indy);
+        // we don't provide our own script for updating; it must be kept from
+        // floating around, like into other objects that are not updaters.
+////        if (curr_script != llGetScriptName())
+            scripts_available += curr_script;
+    }
+    items_held = llGetInventoryNumber(INVENTORY_OBJECT);
+    for (indy = 0; indy < items_held; indy++) {
+        objects_available += llGetInventoryName(INVENTORY_OBJECT, indy);
+//log_it("added obj: " + llGetInventoryName(INVENTORY_OBJECT, indy));
+    }
+    items_held = llGetInventoryNumber(INVENTORY_NOTECARD);
+    for (indy = 0; indy < items_held; indy++) {
+        objects_available += llGetInventoryName(INVENTORY_NOTECARD, indy);
+//log_it("added note: " + llGetInventoryName(INVENTORY_NOTECARD, indy));
+    }
+
+    // listen to the owner.
+    llListen(USER_COMMAND_CHANNEL, "", llGetOwner(), "");
+    // listen for any requests from our loyal clients.
+    inventory_request_channel = random_channel();
+    llListen(inventory_request_channel, "", NULL_KEY, "");
+    // listen for older clients too.
+    llListen(OLD_REQUEST_INVENTORY_CHANNEL, "", NULL_KEY, "");
+
+    // set up the periodic announcements.
+    llSetTimerEvent(ANNOUNCEMENT_PERIOD);
+}
+
+handle_timer()
+{
+    if (dealing_with_change) {
+        dealing_with_change = FALSE;
+        state rerun;  // zoom back to the starting point.
+    }
+    integer indy;
+    integer timecheck = llGetUnixTime();  // use for whole loop.
+    for (indy = llGetListLength(active_timestamps) - 1; indy >= 0; indy--) {
+        integer last_time = llList2Integer(active_timestamps, indy);
+        if (llAbs(last_time - timecheck) > LONGEST_SLACK_PER_CLIENT) {
+            // we need to clear out this item.  we know we can whack the client
+            // at the same index and that will take care of this slacker.
+            key curr_key = llList2Key(active_clients, indy);
+            log_it("timed-out client: " + llKey2Name(curr_key) + " [" + (string)curr_key + "]");
+            remove_client(curr_key);
+        }
+    }
+
+    // let the objects nearby know that we are open for business by
+    // announcing the script inventory.
+    announce_presence();
+}
+
+// turns a list into a nicely formatted string.
+string dump_list(list to_show, integer initial_line_break, integer entries_per_line)
+{
+    string msg;
+    integer indy;
+    for (indy = 0; indy < llGetListLength(to_show); indy++) {
+        // we break every Nth entry, but not if it's the first line and
+        // they said to not have the initial line break.
+        if ( !(indy % entries_per_line) && (indy || initial_line_break) )
+            msg += "\n";
+        string cursc = llList2String(to_show, indy);
+        msg += cursc;
+        // add commas where needed.
+        if (indy < llGetListLength(to_show) - 1)
+            msg += ", ";
+    }
+    return msg;
+}
+
+// similar to dump_keyed_list, but only shows the names, each on their own line.
+string dump_names_for_keys(list to_show)
+{
+    string msg;
+    integer indy;
+    for (indy = 0; indy < llGetListLength(to_show); indy++) {
+        // we only line break after the first entry.
+        if (indy > 0) msg += "\n";
+        string keystr = llList2String(to_show, indy);
+        msg += llKey2Name(keystr);
+    }
+    return msg;
+}
+
+// similar to dump_list
+string dump_keyed_list(list to_show, integer initial_line_break, integer entries_per_line)
+{
+    string msg;
+    integer indy;
+    for (indy = 0; indy < llGetListLength(to_show); indy++) {
+        // we break every Nth entry, but not if it's the first line and
+        // they said to not have the initial line break.
+        if ( !(indy % entries_per_line) && (indy || initial_line_break) )
+            msg += "\n";
+        string keystr = llList2String(to_show, indy);
+        msg += llKey2Name(keystr) + " (" + keystr + ")";
+        // add commas where needed.
+        if (indy < llGetListLength(to_show) - 1)
+            msg += ", ";
+    }
+    return msg;
+}
+
+// shows the list specified in a compact manner.
+show_list(string title, list to_show)
+{
+    string to_say = title + dump_list(to_show, TRUE, ENTRIES_PER_LINE);
+    // flush some memory.
+    title = "";
+    to_show = [];
+    integer indy;
+    // say the output in pieces to avoid over-clogging chat.
+    for (indy = 0; indy < llStringLength(to_say); indy += MESSAGE_SIZE_LIMIT) {
+        integer last_indy = indy + MESSAGE_SIZE_LIMIT - 1;
+        string addition;
+        if (last_indy < llStringLength(to_say)) addition = CONTINUANCE_MARKER;
+        llWhisper(0, llGetSubString(to_say, indy, last_indy) + addition);
+    }
+}
+
+// stops all the scripts besides this one.
+knock_down_other_scripts()
+{
+    // set all scripts but this to not be running.
+    integer indy;
+    string self_script = llGetScriptName();
+    list split = compute_basename_and_version(self_script);
+    string self_base = llList2String(split, 0);
+    self_script = ""; split = [];  // free memory.
+    integer count = llGetInventoryNumber(INVENTORY_SCRIPT);
+    // we set all other scripts that are not versions of this script to not be running.
+    for (indy = 0; indy < count; indy++) {
+        string curr_script = llGetInventoryName(INVENTORY_SCRIPT, indy);
+        if (!is_prefix(curr_script, self_base)
+            && !is_prefix(curr_script, UPDATER_BASE_NAME) ) {
+            llSetScriptState(curr_script, FALSE);
+        }
+    }
+}
+
+// set a text label on the updater with the list of clients.
+set_our_label()
+{
+    string label = "";
+    if (llGetListLength(active_clients) > 0) label = "[updating]\n";
+    llSetText(label + dump_names_for_keys(active_clients), <0.8, 0.95, 0.92>, 1.0);
+}
+
+// clean out a client that we should be done with.
+remove_client(key id)
+{
+    // locate said client of deceased nature...
+    integer indy = find_in_list(active_clients, id);
+    if (indy < 0) {
+//        if (DEBUGGING) log_it("failure to find client to remove: " + (string)id);
+        return;
+    }
+    active_clients = llDeleteSubList(active_clients, indy, indy);
+    // also clean out the channel and stop listening to it.
+integer act_chan = llList2Integer(active_update_channels, indy);
+    active_update_channels = llDeleteSubList(active_update_channels, indy, indy);
+    integer listen_to_remove = llList2Integer(active_listen_ids, indy);
+//log_it("remove listen " + (string)listen_to_remove + " on chan " + (string)act_chan);
+    llListenRemove(listen_to_remove);
+    active_listen_ids = llDeleteSubList(active_listen_ids, indy, indy);
+    active_timestamps = llDeleteSubList(active_timestamps, indy, indy);
+    set_our_label();
+}
+
+// fix a partial match to a script name if we can't find the exact item.
+string backpatch_script_name(string partial)
+{
+    if (llGetInventoryType(partial) == INVENTORY_SCRIPT) return partial;  // all set.
+    integer dep_indy;
+    for (dep_indy = 0; dep_indy < llGetInventoryNumber(INVENTORY_SCRIPT); dep_indy++) {
+        string curr_name = llGetInventoryName(INVENTORY_SCRIPT, dep_indy);
+        if (is_prefix(curr_name, partial)) {
+//            log_it("found real name " + curr_name + " for part: " + partial);
+            return curr_name;
+        }
+    }
+//    log_it("no matches for partial script name!");
+    return "";  // no matches!
+}
+
+// moves the upgrade process with "id" along to the next step given the request in
+// the message.
+propel_upgrade_process(integer channel, key id, string message)
+{
+    if (DEBUGGING) log_it("got upgrade note from " + (string)id + " with msg=" + message);
+    if (message == REQUEST_SCRIPT_UPDATE) {
+        // begins the update process with the client.
+        llSay(channel, SHUT_THEM_DOWN);
+    } else if (is_prefix(message, READY_TO_UPDATE)) {
+        // whack the prefix so we can get the list they want.
+        message = llDeleteSubString(message, 0, llStringLength(READY_TO_UPDATE) - 1);
+        list requests = llParseString2List(message, [UPDATER_PARM_SEPARATOR], []);
+        message = "";
+        // send over the scripts the client asked for, since it seems to be ready for them.
+        if (llGetListLength(requests)) {
+            show_list("updating " + llKey2Name(id) + " (key " + (string)id + ") with", requests);
+            integer indy;
+            for (indy = 0; indy < llGetListLength(requests); indy++) {
+                string curr = llList2String(requests, indy);
+                if (find_in_list(objects_available, curr) >= 0) {
+//log_it("handing object over: " + curr);
+                    // it's an object, so treat it that way.
+                    llGiveInventory(id, curr);
+                } else {
+//log_it("handing script over: " + curr);
+                    // assume it's a script, and use script pin to stuff it.
+                    curr = backpatch_script_name(curr);
+                    if (curr != "") {
+//                        integer starting_state = FALSE;
+// second life was okay with scripts being plugged in unstarted.  opensim is not.
+// and second life appears to be unhappy with scripts plugged in as started.  so we
+// have an impasse.
+// this should be: true for opensim, and false for second life.
+                        integer starting_state = IS_OPENSIM;
+//                        if (DEBUGGING) log_it("installing script using updater pin.");
+                        llRemoteLoadScriptPin(id, curr, UPDATER_SCRIPT_PIN, starting_state, 0);
+                    }
+                }
+            }
+        }
+    } else if (message == SCRIPTS_ARE_CURRENT) {
+        // the client thinks it's ready to get back up and running.
+//log_it("heard client is ready!");
+        llSay(channel, START_THEM_UP);
+        // kludge for older clients (pre 10.4 version) to try to help them start up.
+//old and not useful.        llSleep(0.2); llSay(channel, START_THEM_UP); llSleep(0.2); llSay(channel, START_THEM_UP);
+        remove_client(id);
+    } else if (message == DONE_UPDATING) {
+        // this client has nothing to do for now.
+//log_it("heard client is done: " + (string)id);
+        remove_client(id);
+    } else {
+//log_it("weird note from client: " + message);
+        return;  // not used.
+    }
+    
+}
+
+// blasts out the inventory list to a curious client.
+spew_inventory_list(integer channel, string message, key id)
+{
+    if (!is_prefix(message, REQUEST_INVENTORY_PREFIX)) {
+
+        // this is an old style update alert that we still use at startup of the client
+        // to ensure that finishing replacement of the updater script is never unnoticed.
+        if (is_prefix(message, DONE_UPDATING)) {
+//            if (DEBUGGING) log_it("found very special message from startup of updater.");
+            propel_upgrade_process(channel, id, message);
+        }
+        
+        // argh, this is not the right kind of message on our channel.
+        return;
+    }
+    string chan_str = llDeleteSubString(message, 0, llStringLength(REQUEST_INVENTORY_PREFIX) - 1);
+    integer new_update_channel = (integer)chan_str;    
+    if (llGetListLength(active_clients) >= MAXIMUM_ACTIVE_CLIENTS) {
+        // got to tell them "not right now".  we'll pretend we have no
+        // scripts; they'll know what we mean if the update client is
+        // recent enough.  really old clients will just go to sleep until later.
+        if (DEBUGGING) log_it("having to disallow new client '" + llKey2Name(id) + "', too many now.");
+        llSay(new_update_channel, REPORT_AVAILABLE_SCRIPTS + BUSY_BUSY);
+        return;
+    }
+
+    // looks like we're going to try to handle the request for them.    
+    if (DEBUGGING) log_it("server heard update req on chan " + (string)channel + " from: " + llKey2Name(id));
+    
+//log_it("add client convo chan " + (string)new_update_channel);
+    integer existing_indy = find_in_list(active_clients, id);
+    if (existing_indy < 0) {
+        active_clients += id;
+        active_update_channels += new_update_channel;
+        integer new_listen_id = llListen(new_update_channel, "", id, "");
+//log_it("add listen " + (string)new_listen_id + " on chan " + (string)new_update_channel);
+        active_listen_ids += new_listen_id;
+        active_timestamps += llGetUnixTime();
+        set_our_label();
+    } else {
+//        if (DEBUGGING) log_it("same client came back before finishing previous upgrade, rolling with it.");
+        // delete old listener so we don't leave it dangling.
+        integer old_listen_id = llList2Integer(active_listen_ids, existing_indy);
+//log_it("remove old listen " + (string)old_listen_id);
+        llListenRemove(old_listen_id);
+        // update the channel and listener id for the new registration.
+        active_update_channels = chop_list(active_update_channels, 0, existing_indy - 1)
+            + [ new_update_channel ]
+            + chop_list(active_update_channels, existing_indy + 1,
+                llGetListLength(active_update_channels) - 1);
+        integer new_listen_id = llListen(new_update_channel, "", id, "");
+//log_it("add new listen " + (string)new_listen_id);
+        active_listen_ids = chop_list(active_listen_ids, 0, existing_indy - 1)
+            + [ new_listen_id ]
+            + chop_list(active_listen_ids, existing_indy + 1,
+                llGetListLength(active_listen_ids) - 1);
+        active_timestamps = chop_list(active_timestamps, 0, existing_indy - 1)
+            + [ new_listen_id ]
+            + chop_list(active_timestamps, existing_indy + 1,
+                llGetListLength(active_timestamps) - 1);
+    }
+
+    // our report name is always called available scripts, but it can actually have
+    // script dependency definitions, script names and object names.
+    string msg = REPORT_AVAILABLE_SCRIPTS;
+    string curr;  // temp.
+
+    // add in the huff updater, since that's the most crucial that they know we have.
+    integer posn;
+    string UPDATE_CLIENT_SCRIPT = "huff-update client";
+    for (posn = 0; posn < llGetListLength(scripts_available); posn++) {
+        curr = llList2String(scripts_available, posn);
+        if (llDeleteSubString(curr, llStringLength(UPDATE_CLIENT_SCRIPT), -1)
+                == UPDATE_CLIENT_SCRIPT) {
+//log_it("found "  + curr);
+            msg += curr + UPDATER_PARM_SEPARATOR;
+            posn = 99999;  // jump out.
+        }
+        if (DEBUGGING && (posn == llGetListLength(scripts_available) - 1) ) {
+            log_it("epic fail, found no updater client script.");
+        }
+    }
+
+    // speak about the dependencies that we know.
+    for (posn = 0; posn < llGetListLength(known_script_dependencies); posn++) {
+        msg += SCRIPT_DEPENDENCY_MARK
+            + llList2String(known_script_dependencies, posn) + UPDATER_PARM_SEPARATOR;
+        if (llStringLength(msg) > MESSAGE_SIZE_LIMIT - 50) {
+            llSay(new_update_channel, msg + CONTINUANCE_MARKER);
+//log_it(msg + CONTINUANCE_MARKER);
+            llSleep(SCRIPT_LIST_PAUSE_INTERVAL);
+            msg = REPORT_AVAILABLE_SCRIPTS;
+        }
+    }        
+    // tell this new client what scripts we have.
+    for (posn = 0; posn < llGetListLength(scripts_available); posn++) {
+        curr = llList2String(scripts_available, posn);
+        if (llDeleteSubString(curr, llStringLength(UPDATE_CLIENT_SCRIPT), -1)
+                != UPDATE_CLIENT_SCRIPT) {            
+            // add in the next item, along with the parameter separator.
+            msg += curr + UPDATER_PARM_SEPARATOR;
+//log_it("adding " + curr);
+            if (llStringLength(msg) > MESSAGE_SIZE_LIMIT - 50) {
+                llSay(new_update_channel, msg + CONTINUANCE_MARKER);
+//log_it(msg + CONTINUANCE_MARKER);
+                if (channel == OLD_REQUEST_INVENTORY_CHANNEL) {
+                    // stop sending the list to them since they may not know how
+                    // to interpret a multiple part update list.
+                    return;
+                }
+                llSleep(SCRIPT_LIST_PAUSE_INTERVAL);
+                msg = REPORT_AVAILABLE_SCRIPTS;
+            }
+        }
+    }
+    // mention any objects that are available.
+    for (posn = 0; posn < llGetListLength(objects_available); posn++) {
+        // add in the next item, along with the parameter separator.            
+        msg += llList2String(objects_available, posn)
+            + UPDATER_PARM_SEPARATOR;
+        if (llStringLength(msg) > MESSAGE_SIZE_LIMIT - 50) {
+            llSay(new_update_channel, msg + CONTINUANCE_MARKER);
+//log_it(msg + CONTINUANCE_MARKER);
+            llSleep(SCRIPT_LIST_PAUSE_INTERVAL);
+            msg = REPORT_AVAILABLE_SCRIPTS;
+        }
+    }
+    // say final bit, even if it's mostly blank.  we need to let them know
+    // that we're done and not adding that continuation flag string.
+    llSay(new_update_channel, msg);
+}
+
+// handles verbal commands from objects that want updates.
+process_verbal_requests(integer channel, string name, key id, string message)
+{
+    if ( (channel == OLD_REQUEST_INVENTORY_CHANNEL) || (channel == inventory_request_channel) ) {
+        spew_inventory_list(channel, message, id);
+        return;
+    } else if (channel == USER_COMMAND_CHANNEL) {
+if (DEBUGGING) log_it("heard orders: " + message);
+        // simple verbal commands.
+        if (message == RESTART_UPDATER_COMMAND) {
+            log_it("Restarting now.");
+            llResetScript();
+        } else if (message == SHOW_SCRIPTS_COMMAND) {
+            show_scripts();
+        } else if (message == SHUTDOWN_COMMAND) {
+            // we will de-rez now (i.e., die) if we are not one of the special names that is undying.
+            if (!matches_substring(llGetObjectName(), "keeper")) {
+//                log_it("server " + (string)inventory_request_channel + " now disintegrating.");
+                squonk(1);
+                llDie();
+            }
+        }
+        return;
+    }
+
+    integer indy;
+    // see if the channel is for one of our valid updates that's in progress.
+    for (indy = 0; indy < llGetListLength(active_update_channels); indy++) {
+        integer cur_chan = llList2Integer(active_update_channels, indy);
+        if (cur_chan == channel) {
+            // yes, this is really for that guy.
+            propel_upgrade_process(channel, id, message);
+            return;
+        }
+    }
+}
+
+//////////////
+// from hufflets...
+
+integer debug_num = 0;
+
+// a debugging output method.  can be disabled entirely in one place.
+log_it(string to_say)
+{
+    debug_num++;
+    // tell this to the owner.    
+//    llOwnerSay(llGetDate() + ": " + llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
+llWhisper(0, llGetDate() + ": " + llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
+    // say this on an unusual channel for chat if it's not intended for general public.
+//    llSay(108, llGetDate() + ": " + llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
+    // say this on open chat that anyone can hear.  we take off the bling for this one.
+//    llSay(0, to_say);
+}
+
+// returns TRUE if the "pattern" is found in the "full_string".
+integer matches_substring(string full_string, string pattern)
+{ return (find_substring(full_string, pattern) >= 0); }
+
+// returns the index of the first occurrence of "pattern" inside
+// the "full_string".  if it is not found, then a negative number is returned.
+integer find_substring(string full_string, string pattern)
+{ return llSubStringIndex(llToLower(full_string), llToLower(pattern)); }
+
+// returns TRUE if the "prefix" string is the first part of "compare_with".
+integer is_prefix(string compare_with, string prefix)
+{ return find_substring(compare_with, prefix) == 0; }
+
+// joins a list of parameters using the parameter sentinel for the library.
+string wrap_parameters(list to_flatten)
+{ return llDumpList2String(to_flatten, UPDATER_PARM_SEPARATOR); }
+
+// locates the string "text" in the list to "search_in".
+integer find_in_list(list search_in, string text)
+{ 
+    integer len = llGetListLength(search_in);
+    integer i; 
+    for (i = 0; i < len; i++) { 
+        if (llList2String(search_in, i) == text) 
+            return i; 
+    } 
+    return -1;
+}
+
+// returns the portion of the list between start and end, but only if they are
+// valid compared with the list length.  an attempt to use negative start or
+// end values also returns a blank list.
+list chop_list(list to_chop, integer start, integer end)
+{
+    integer last_len = llGetListLength(to_chop) - 1;
+    if ( (start < 0) || (end < 0) || (start > last_len) || (end > last_len) ) return [];
+    return llList2List(to_chop, start, end);
+}
+
+// a random channel for the first interaction with the client.
+integer random_channel() { return -(integer)(llFrand(800000) + 20000); }
+
+// note that this new, lower memory version, depends on the inventory functions returning
+// items in alphabetical order.
+scrub_items_by_type(string this_guy, integer inventory_type)
+{
+    list removal_list;
+    integer outer;
+    for (outer = 0; outer < llGetInventoryNumber(inventory_type); outer++) {
+        string curr = llGetInventoryName(inventory_type, outer);
+        list split = compute_basename_and_version(curr);
+        // make sure there was a comparable version number in this name.
+        if ( (curr != this_guy) && llGetListLength(split)) {
+            string curr_base = llList2String(split, 0);
+            float curr_ver = (float)llList2String(split, 1);
+//log_it("outer: " + curr_base + " / " + (string)curr_ver);
+            integer inner;
+            for (inner = outer + 1; inner < llGetInventoryNumber(inventory_type); inner++) {
+                string next_guy = llGetInventoryName(inventory_type, inner);
+                list comp_split = compute_basename_and_version(next_guy);
+                if (llGetListLength(comp_split)) {
+                    string comp_base = llList2String(comp_split, 0);
+                    float comp_ver = (float)llList2String(comp_split, 1);
+                    // okay, now we can actually compare.
+                    if (curr_base != comp_base) {
+                        // break out of inner loop.  we are past where the names can matter.
+                        inner = 2 * llGetInventoryNumber(inventory_type);
+                    } else {
+//log_it("inner: " + comp_base + " / " + (string)comp_ver);
+                        if (curr_ver <= comp_ver) {
+                            // the script at inner index is comparable or better than
+                            // the script at the outer index.
+                            removal_list += curr;
+                        } else {
+                            // this inner script must be inferior to the outer one,
+                            // somehow, which defies our expectation of alphabetical ordering.
+                            removal_list += next_guy;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // now actually do the deletions.
+    for (outer = 0; outer < llGetListLength(removal_list); outer++) {
+        string to_whack = llList2String(removal_list, outer);
+        log_it("removing older asset: " + to_whack);
+        llRemoveInventory(to_whack);
+    }
+    
+    if (IS_OPENSIM && (llGetListLength(removal_list) > 0) ) {
+        log_it("now restarting to avoid opensim late updating change event.");
+        llResetScript();
+    }
+}
+
+// ensures that only the latest version of any script or object is kept in our inventory.
+destroy_older_versions()
+{
+    // firstly, iterate across scripts to clean out older versions.
+    scrub_items_by_type(llGetScriptName(), INVENTORY_SCRIPT);
+    // secondly, try to clean out the objects.
+    scrub_items_by_type(llGetScriptName(), INVENTORY_OBJECT);
+    // thirdly, try to clean out the notecards.
+    scrub_items_by_type(llGetScriptName(), INVENTORY_NOTECARD);
+}
+
+//////////////
+// huffware script: auto-retire, by fred huffhines, version 2.4.
+// distributed under BSD-like license.
+//   partly based on the self-upgrading scripts from markov brodsky and jippen faddoul.
+// the function auto_retire() should be added *inside* a version numbered script that
+// you wish to give the capability of self-upgrading.
+//   this script supports a notation for versions embedded in script names where a 'v'
+// is followed by a number in the form "major.minor", e.g. "grunkle script by ted v8.2".
+// when the containing script is dropped into an object with a different version, the
+// most recent version eats any existing ones.
+//   keep in mind that this code must be *copied* into your script you wish to add
+// auto-retirement capability to.
+// example usage of the auto-retirement script:
+//     default {
+//         state_entry() {
+//            auto_retire();  // make sure newest addition is only version of script.
+//        }
+//     }
+auto_retire() {
+    string self = llGetScriptName();  // the name of this script.
+    list split = compute_basename_and_version(self);
+    if (llGetListLength(split) != 2) return;  // nothing to do for this script.
+    string basename = llList2String(split, 0);  // script name with no version attached.
+    string version_string = llList2String(split, 1);  // the version found.
+    integer posn;
+    // find any scripts that match the basename.  they are variants of this script.
+    for (posn = llGetInventoryNumber(INVENTORY_SCRIPT) - 1; posn >= 0; posn--) {
+        string curr_script = llGetInventoryName(INVENTORY_SCRIPT, posn);
+        if ( (curr_script != self) && (llSubStringIndex(curr_script, basename) == 0) ) {
+            // found a basic match at least.
+            list inv_split = compute_basename_and_version(curr_script);
+            if (llGetListLength(inv_split) == 2) {
+                // see if this script is more ancient.
+                string inv_version_string = llList2String(inv_split, 1);  // the version found.
+                // must make sure that the retiring script is completely the identical basename;
+                // just matching in the front doesn't make it a relative.
+                if ( (llList2String(inv_split, 0) == basename)
+                    && ((float)inv_version_string < (float)version_string) ) {
+                    // remove script with same name from inventory that has inferior version.
+                    llRemoveInventory(curr_script);
+                }
+            }
+        }
+    }
+}
+//
+// separates the base script name and version number.  used by auto_retire.
+list compute_basename_and_version(string to_chop_up)
+{
+    // minimum script name is 2 characters plus a version.
+    integer space_v_posn;
+    // find the last useful space and 'v' combo.
+    for (space_v_posn = llStringLength(to_chop_up) - 3;
+        (space_v_posn >= 2) && (llGetSubString(to_chop_up, space_v_posn, space_v_posn + 1) != " v");
+        space_v_posn--) {
+        // look for space and v but do nothing else.
+    }
+    if (space_v_posn < 2) return [];  // no space found.
+    // now we zoom through the stuff after our beloved v character and find any evil
+    // space characters, which are most likely from SL having found a duplicate item
+    // name and not so helpfully renamed it for us.
+    integer indy;
+    for (indy = llStringLength(to_chop_up) - 1; indy > space_v_posn; indy--) {
+        if (llGetSubString(to_chop_up, indy, indy) == " ") {
+            // found one; zap it.  since we're going backwards we don't need to
+            // adjust the loop at all.
+            to_chop_up = llDeleteSubString(to_chop_up, indy, indy);
+        }
+    }
+    string full_suffix = llGetSubString(to_chop_up, space_v_posn, -1);
+    // ditch the space character for our numerical check.
+    string chop_suffix = llGetSubString(full_suffix, 1, llStringLength(full_suffix) - 1);
+    // strip out a 'v' if there is one.
+    if (llGetSubString(chop_suffix, 0, 0) == "v")
+        chop_suffix = llGetSubString(chop_suffix, 1, llStringLength(chop_suffix) - 1);
+    // if valid floating point number and greater than zero, that works for our version.
+    string basename = to_chop_up;  // script name with no version attached.
+    if ((float)chop_suffix > 0.0) {
+        // this is a big success right here.
+        basename = llGetSubString(to_chop_up, 0, -llStringLength(full_suffix) - 1);
+        return [ basename, chop_suffix ];
+    }
+    // seems like we found nothing useful.
+    return [];
+}
+//
+//////////////
+
+// end hufflets.
+//////////////
+
+default
+{
+    state_entry()
+    {
+        auto_retire();
+        initialize_root();  // get set up to start answering requests.
+        llWhisper(0, llGetScriptName() + " started...  touch for more info.");
+        squonk(0);
+    }
+    
+    state_exit() { llSetTimerEvent(0); }
+
+    on_rez(integer parm) {
+        state rerun;
+    }
+
+    timer() { handle_timer(); }
+
+    touch_start(integer count) {
+        show_status(llDetectedKey(0));
+    }
+    
+    listen(integer channel, string name, key id, string message) {
+        // make sure that the object is something we should even talk to.
+        if (llGetOwnerKey(id) != llGetOwner()) {
+            return;
+        }
+        // looks okay, let's see if this is useful communication.
+        process_verbal_requests(channel, name, id, message); 
+    }
+
+    changed(integer change) {
+        if (change & CHANGED_INVENTORY) {
+            log_it("inventory changed, scheduled a restart.");
+            // sleep a little bit; otherwise we get SL noise about scripts not being
+            // there when it told us they were there.  this can lead to some scripts
+            // doing bizarre things if they are running when added.
+            dealing_with_change = TRUE;
+            llSetTimerEvent(0.0);  // kludge to get around second life bug.
+            llSetTimerEvent(CHANGED_INVENTORY_SNOOZER);
+        }
+    }
+}
+
+state rerun { state_entry() { state default; } }
+

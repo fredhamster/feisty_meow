@@ -1,0 +1,533 @@
+﻿
+// huffware script: menu list manager, by fred huffhines.
+//
+// deals with popping up menus when desired.  does not do any configuration
+// reading; that all must be fed to the script via link messages.
+//
+// this script is licensed by the GPL v3 which is documented at: http://www.gnu.org/licenses/gpl.html
+// do not use it in objects without fully realizing you are implicitly accepting that license.
+//
+
+// constants...
+
+string GIFTING_MENU_NAME = "#gifting#";
+    // the menu name that we support internally for giving gifts.
+
+// global variables...
+
+// these are the definition of the menuing system,
+// and are valid once we have heard our config.
+
+// unique identifiers of menu names.
+list menu_names;
+// a list of titles for the menus.
+list menu_titles;
+// the menu choices are strings containing encoded lists of button text labels.
+list menu_button_lists;
+
+// store current activated menu info...
+string _private_global_av_name;
+string _private_global_av_key;
+
+// menu list manager link message API.
+//////////////
+// do not redefine these constants.
+integer MENU_LIST_MANAGER_HUFFWARE_ID = 10033;
+    // the unique id within the huffware system for this sensor plugin script.
+string HUFFWARE_PARM_SEPARATOR = "{~~~}";
+    // this pattern is an uncommon thing to see in text, so we use it to separate
+    // our commands in link messages.
+string HUFFWARE_ITEM_SEPARATOR = "{|||}";
+    // used to separate lists of items from each other when stored inside a parameter.
+    // this allows lists to be passed as single string parameters if needed.
+integer REPLY_DISTANCE = 100008;  // offset added to service's huffware id in reply IDs.
+string MENU_LIST_MGR_RESET = "#ml-reset#";
+    // throws out any current menus and gets ready to load a new set.
+string MENU_LIST_MGR_ADD_MENU = "#ml-addmenu#";
+    // puts a new menu into our list.  this requires 3 parameters: menu name,
+    // menu title, menu button list.
+string MENU_LIST_MGR_SHOW_MENU = "#ml-shomenu#";
+    // a request that a particular menu be shown.  the first parameter is the menu index.
+    // the second parameter is the avatar name.  the third parameter is the avatar key.
+string MENU_LIST_MGR_GIVE_ITEM = "#ml-give#";
+    // brings up a gift giving menu.  parms are avatar name and avatar key.
+string MENU_LIST_MGR_MODIFY_MENU = "#ml-modmenu#";
+string MENU_LIST_KEEP_WORD = "KEEP";
+    // replaces a menu already in the list.  this requires 4 parameters: menu index, menu name,
+    // menu title, menu button list.  if a parameter is the MENU_LIST_KEEP_WORD, then that field
+    // is not changed.
+string MENU_LIST_MGR_CHOICE_MADE_ALERT = "#ml-event-picked";
+    // alerts the driver for this script that the owner has picked a choice.  the
+    // parameters include: the text of the choice, the name of the menu, the avatar name,
+    // the avatar key.
+//
+//////////////
+// joins a list of parameters using the parameter sentinel for the library.
+string wrap_parameters(list to_flatten)
+{ return llDumpList2String(to_flatten, HUFFWARE_PARM_SEPARATOR); }
+//////////////
+
+// requires HUD sensor plugin v21.4 or better.
+//////////////
+// do not redefine these constants.
+integer SENSOR_PLUGIN_HUFFWARE_ID = 10014;
+    // the unique id within the huffware system for this sensor plugin script.
+string GIVE_ALL_AVATARS = "#santa#";
+    // if this is received, the sensor plugin attempts to hand out an object passed as
+    // the first parameter to every avatar it knows about.
+//////////////
+
+// requires menutini v3.9 or better...
+//////////////
+// do not redefine these constants.
+integer MENUTINI_HUFFWARE_ID = 10009;
+    // the unique id within the huffware system for the jaunt script to
+    // accept commands on.  this is used in llMessageLinked as the num parameter.
+// commands available via menutini:
+string SHOW_MENU_COMMAND = "#menu#";
+    // the command that tells menutini to show a menu defined by parameters
+    // that are passed along.  these must be: the menu name, the menu's title
+    // (which is really the info to show as content in the main box of the menu),
+    // the wrapped list of commands to show as menu buttons, the menu system
+    // channel's for listening, and the key to listen to.
+//
+//////////////
+// joins a list of sub-items using the item sentinel for the library.
+string wrap_item_list(list to_wrap)
+{ return llDumpList2String(to_wrap, HUFFWARE_ITEM_SEPARATOR); }
+//
+//////////////
+
+// replaces occurences of $owner and $avatar with the owner's name and the
+// targeted avatars name.  _first and _last added to the name cause the first
+// or last name to be used instead.
+string senso_substitute_vars(string to_substitute, string avatars_name)
+{
+    string owners_name = llKey2Name(llGetOwner());
+    return substitute_variable_list(to_substitute,
+        [ "avatar_first", "avatar_last", "avatar",
+            "owner_first", "owner_last", "owner" ],
+        [ first_name(avatars_name), last_name(avatars_name), avatars_name,
+           first_name(owners_name), last_name(owners_name), owners_name ]);
+}
+
+integer random_channel() { return -(integer)(llFrand(40000) + 20000); }
+
+simply_display_menu(string menu_name, string title, list buttons,
+    string av_name, string av_key)
+{
+    // we only manage one global now for this stuff...
+    _private_global_av_name = av_name;
+    _private_global_av_key = av_key;
+
+    integer menu_channel = random_channel();
+    key listen_to = llGetOwner();
+//log_it("passing in key to use: " + (string)listen_to);
+    llMessageLinked(LINK_THIS, MENUTINI_HUFFWARE_ID, SHOW_MENU_COMMAND,
+        menu_name + HUFFWARE_PARM_SEPARATOR
+        + title + HUFFWARE_PARM_SEPARATOR
+        + wrap_item_list(buttons) + HUFFWARE_PARM_SEPARATOR
+        + (string)menu_channel + HUFFWARE_PARM_SEPARATOR
+        + (string)listen_to);
+}
+
+replace_vars_and_display_menu(integer menu_index, string av_name, string av_key)
+{
+    // patch the avatar names and owner names before displaying.
+    string title = senso_substitute_vars(llList2String(menu_titles, menu_index), av_name);
+    string button_text = llList2String(menu_button_lists, menu_index);
+
+    simply_display_menu(llList2String(menu_names, menu_index), title,
+        llParseString2List(button_text, [HUFFWARE_ITEM_SEPARATOR], []),
+        av_name, av_key);
+}
+
+// shows a menu by index.
+show_menu(integer index, string av_name, string av_key)
+{
+    replace_vars_and_display_menu(index, av_name, av_key);
+//log_it("sent the menu request...  memory left=" + (string)llGetFreeMemory());
+}
+
+// handles the response message when the user chooses a button.
+react_to_menu(string menu_name, string av_name, string av_key, string which_choice)
+{
+//log_it("you clicked " + which_choice + " item for av " + av_name);
+    handle_chosen_menu_item(menu_name, av_name, av_key, which_choice);
+}
+
+// the gift giving menu.  we show the menu after looking through the
+// inventory.  if the owner picks an item, we'll deal with that response.
+show_gift_menu(string av_name, string av_key)
+{
+    string menu_name = "gift";
+    string menu_title = "Pick a gift for " + av_name + "...";
+    list menu_button_list = [];
+    integer indy;
+    for (indy = 0; indy < llGetInventoryNumber(INVENTORY_OBJECT); indy++) {
+        menu_button_list += llGetInventoryName(INVENTORY_OBJECT, indy);
+    }
+    for (indy = 0; indy < llGetInventoryNumber(INVENTORY_TEXTURE); indy++) {
+        string item_name = llGetInventoryName(INVENTORY_TEXTURE, indy);
+        if (!is_prefix(item_name, "ean hud keys"))
+            menu_button_list += item_name;
+    }
+    for (indy = 0; indy < llGetInventoryNumber(INVENTORY_LANDMARK); indy++) {
+        menu_button_list += llGetInventoryName(INVENTORY_LANDMARK, indy);
+    }
+    for (indy = 0; indy < llGetInventoryNumber(INVENTORY_NOTECARD); indy++) {
+        string item_name = llGetInventoryName(INVENTORY_NOTECARD, indy);
+        if ( (find_substring(item_name, "help") < 0)
+            && (find_substring(item_name, "Help") < 0)
+            && (find_substring(item_name, "config") < 0) )
+            menu_button_list += item_name;
+    }
+    for (indy = 0; indy < llGetInventoryNumber(INVENTORY_CLOTHING); indy++) {
+        menu_button_list += llGetInventoryName(INVENTORY_CLOTHING, indy);
+    }
+    for (indy = 0; indy < llGetInventoryNumber(INVENTORY_GESTURE); indy++) {
+        menu_button_list += llGetInventoryName(INVENTORY_GESTURE, indy);
+    }
+    
+    if (llGetListLength(menu_button_list) == 0) {
+        llOwnerSay("There are no objects loaded in the hud currently.  I can make no gifts.");
+    }
+    simply_display_menu(GIFTING_MENU_NAME, menu_title, menu_button_list,
+        av_name, av_key);
+}
+
+// handles a request for this library itself.
+process_hud_menu_mgr_request(integer sender, integer num, string msg, key id)
+{
+    list parms = llParseString2List(id, [HUFFWARE_PARM_SEPARATOR], []);
+    if (msg == MENU_LIST_MGR_RESET) {
+        llResetScript();
+    } else if (msg == MENU_LIST_MGR_ADD_MENU) {
+        if (llGetListLength(parms) < 3) {
+            log_it("too few parms to add menu.");
+            return;
+        }
+//hmmm: sloppy list processing!
+        menu_names += [ llList2String(parms, 0) ];
+        menu_titles += [ llList2String(parms, 1) ];
+        menu_button_lists += [ llList2String(parms, 2) ];
+    } else if (msg == MENU_LIST_MGR_GIVE_ITEM) {
+        // give over a gift.
+        string av_name = llList2String(parms, 0);
+        string av_key = llList2String(parms, 1);
+        show_gift_menu(av_name, av_key);
+    } else if (msg == MENU_LIST_MGR_SHOW_MENU) {
+        if (llGetListLength(parms) < 3) {
+            log_it("too few parms to show menu.");
+            return;
+        }
+//log_it("key comes as " + llList2String(parms, 2));
+        show_menu((integer)llList2String(parms, 0), llList2String(parms, 1),
+            (key)llList2String(parms, 2));
+//log_it("show menu...  memory left=" + (string)llGetFreeMemory());
+    } else if (msg == MENU_LIST_MGR_MODIFY_MENU) {
+        if (llGetListLength(parms) < 4) {
+            log_it("too few parms to replace menu.");
+            return;
+        }
+        integer indo = (integer)llList2String(parms, 0);
+//log_it("modif menu request, indo is " + (string)indo);
+        if (indo >= llGetListLength(menu_names)) {
+//log_it("index too large in replace menu");
+            return;
+        }
+//log_it("replacing entry " + (string)indo + " with " + llList2String(parms, 1) + ", " + llList2String(parms, 2) + ", " + llList2String(parms, 3));
+        if (llList2String(parms, 1) != MENU_LIST_KEEP_WORD)
+            menu_names = replace_entry(menu_names, indo, [ llList2String(parms, 1) ]);
+        if (llList2String(parms, 2) != MENU_LIST_KEEP_WORD)
+            menu_titles = replace_entry(menu_titles, indo, [ llList2String(parms, 2) ]);
+        if (llList2String(parms, 3) != MENU_LIST_KEEP_WORD)
+            menu_button_lists = replace_entry(menu_button_lists, indo, [ llList2String(parms, 3) ]);
+//log_it("new menu button:" + llList2String(parms, 3));
+    }
+}
+
+// processes a message from a link.  some of this must be handled
+// by the driver script that handles our configuration.
+handle_link_message(integer sender, integer num, string msg, key id)
+{
+    if (num == MENU_LIST_MANAGER_HUFFWARE_ID) {
+        process_hud_menu_mgr_request(sender, num, msg, id);
+    }
+    
+    if ( (num != MENUTINI_HUFFWARE_ID + REPLY_DISTANCE)
+        || (msg != SHOW_MENU_COMMAND) ) return;  // not for us.
+
+//log_it("menu reply: sndr=" + (string)sender + " num=" + (string)num + " msg=" + msg + " id=" + (string)id);
+    list parms = llParseString2List(id, [HUFFWARE_PARM_SEPARATOR], []);
+    string menu_name = llList2String(parms, 0);
+    string which_choice = llList2String(parms, 1);
+///not used:    key av_key = llList2String(parms, 2);
+//hmmm: should the menutini also offer av name and key options???
+    react_to_menu(menu_name, _private_global_av_name,
+        _private_global_av_key, which_choice);
+}
+
+//////////////
+
+// gives a present to the avatar named here.
+give_gift(string av_name, string av_key, string present)
+{
+//log_it("trying to give a gift of " + present + " to " + av_name);
+    if (av_name != "ALL") {
+        llGiveInventory(av_key, present);
+        llOwnerSay("gave " + present + " to " + av_name);
+    } else {
+        // send the request back to the sensor plugin for processing.
+        llMessageLinked(LINK_ROOT, SENSOR_PLUGIN_HUFFWARE_ID,
+            GIVE_ALL_AVATARS, wrap_parameters([present]));
+    }
+}
+        
+handle_chosen_menu_item(string menu_name, string av_name,
+    string av_key, string which_choice)
+{
+    if (menu_name == GIFTING_MENU_NAME) {
+        give_gift(av_name, av_key, which_choice);
+    }
+
+    // send the alert to the driver.
+    llMessageLinked(LINK_ROOT, MENU_LIST_MANAGER_HUFFWARE_ID + REPLY_DISTANCE,
+        MENU_LIST_MGR_CHOICE_MADE_ALERT,
+        wrap_parameters([which_choice, menu_name, av_name, av_key]));
+}
+
+//////////////
+// from hufflets...
+//
+integer debug_num = 0;
+
+// a debugging output method.  can be disabled entirely in one place.
+log_it(string to_say)
+{
+    debug_num++;
+    // tell this to the owner.    
+    llOwnerSay(llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
+    // say this on open chat, but use an unusual channel.
+//    llSay(108, llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
+}
+
+integer find_substring(string full_string, string pattern)
+{
+    string full_lower = llToLower(full_string);
+    return llSubStringIndex(full_lower, pattern);
+}
+
+//////////////
+
+// returns the position of the last space in "look_within" or a negative number.
+integer find_last_space(string look_within)
+{
+    integer indy = llStringLength(look_within) - 1;
+    while ( (indy >= 0) && (llGetSubString(look_within, indy, indy) != " ") ) indy--;
+    return indy;
+}
+
+// returns the first name for an avatar with the "full_name".
+string first_name(string full_name)
+{
+    integer finding = find_last_space(full_name);
+    if (finding >= 0) return llGetSubString(full_name, 0, finding - 1);
+    return full_name;  // failed to find space.
+}
+
+// returns the last name for an avatar with the "full_name".
+string last_name(string full_name)
+{
+    integer finding = find_last_space(full_name);
+    if (finding >= 0) return llGetSubString(full_name, finding + 1, -1);
+    return full_name;  // failed to find space.
+}
+
+// substitutes a variable's name for its value.  note that variables are assumed to start
+// with a dollar sign character, which should not be provided in the "variable_name" parameter.
+string substitute_variable(string substitute_within, string variable_name, string variable_value)
+{
+    string to_return = substitute_within;
+    integer posn;
+    while ( (posn = find_substring(to_return, "$" + variable_name)) >= 0) {
+        // we found an occurrence of the variable.
+        to_return = llDeleteSubString(to_return, posn, -1)  // keep part before.
+            + variable_value  // add the value in place of the variable name.
+            + llDeleteSubString(to_return, 0, posn + llStringLength(variable_name));
+                // keep part after.
+    }
+    return to_return;
+}
+
+// in "substitute_within", this finds any occurrences of items in the "variables_names"
+// and replaces those with the corresponding item from "variable_values".
+string substitute_variable_list(string substitute_within, list variable_names, list variable_values)
+{
+    string to_return = substitute_within;
+    integer vars = llGetListLength(variable_names);
+    if (vars != llGetListLength(variable_values)) {
+//        log_it("error in substitute_variable_list: inequal number of variable names vs. values.");
+        return to_return;
+    }
+    integer indy;
+    for (indy = 0; indy < vars; indy++) {
+        to_return = substitute_variable(to_return,
+            llList2String(variable_names, indy),
+            llList2String(variable_values, indy));
+    }
+    return to_return;
+}
+
+// locates the string "text" in the list to "search_in".
+integer find_in_list(list search_in, string text)
+{ 
+    integer len = llGetListLength(search_in);
+    integer i; 
+    for (i = 0; i < len; i++) { 
+        if (llList2String(search_in, i) == text) 
+            return i; 
+    } 
+    return -1;
+}
+
+// removes the entry at "index" and instead inserts the list "to_insert"
+// at that position.
+list replace_entry(list to_modify, integer index, list to_insert)
+{
+    if (llGetListLength(to_modify) == 0) return to_insert;  // special case for empty.
+    return llListReplaceList(to_modify, to_insert, index, index);
+}
+
+// returns TRUE if the "prefix" string is the first part of "compare_with".
+integer is_prefix(string compare_with, string prefix)
+{ return (llSubStringIndex(compare_with, prefix) == 0); }
+//
+// end hufflets
+//////////////
+
+//////////////
+// huffware script: auto-retire, by fred huffhines, version 2.5.
+// distributed under BSD-like license.
+//   !!  keep in mind that this code must be *copied* into another
+//   !!  script that you wish to add auto-retirement capability to.
+// when a script has auto_retire in it, it can be dropped into an
+// object and the most recent version of the script will destroy
+// all older versions.
+//
+// the version numbers are embedded into the script names themselves.
+// the notation for versions uses a letter 'v', followed by two numbers
+// in the form "major.minor".
+// major and minor versions are implicitly considered as a floating point
+// number that increases with each newer version of the script.  thus,
+// "hazmap v0.1" might be the first script in the "hazmap" script continuum,
+// and "hazmap v3.2" is a more recent version.
+//
+// example usage of the auto-retirement script:
+//     default {
+//         state_entry() {
+//            auto_retire();  // make sure newest addition is only version of script.
+//        }
+//     }
+// this script is partly based on the self-upgrading scripts from markov brodsky
+// and jippen faddoul.
+//////////////
+auto_retire() {
+    string self = llGetScriptName();  // the name of this script.
+    list split = compute_basename_and_version(self);
+    if (llGetListLength(split) != 2) return;  // nothing to do for this script.
+    string basename = llList2String(split, 0);  // script name with no version attached.
+    string version_string = llList2String(split, 1);  // the version found.
+    integer posn;
+    // find any scripts that match the basename.  they are variants of this script.
+    for (posn = llGetInventoryNumber(INVENTORY_SCRIPT) - 1; posn >= 0; posn--) {
+//log_it("invpo=" + (string)posn);
+        string curr_script = llGetInventoryName(INVENTORY_SCRIPT, posn);
+        if ( (curr_script != self) && (llSubStringIndex(curr_script, basename) == 0) ) {
+            // found a basic match at least.
+            list inv_split = compute_basename_and_version(curr_script);
+            if (llGetListLength(inv_split) == 2) {
+                // see if this script is more ancient.
+                string inv_version_string = llList2String(inv_split, 1);  // the version found.
+                // must make sure that the retiring script is completely the identical basename;
+                // just matching in the front doesn't make it a relative.
+                if ( (llList2String(inv_split, 0) == basename)
+                    && ((float)inv_version_string < (float)version_string) ) {
+                    // remove script with same name from inventory that has inferior version.
+                    llRemoveInventory(curr_script);
+                }
+            }
+        }
+    }
+}
+//
+// separates the base script name and version number.  used by auto_retire.
+list compute_basename_and_version(string to_chop_up)
+{
+    // minimum script name is 2 characters plus a version.
+    integer space_v_posn;
+    // find the last useful space and 'v' combo.
+    for (space_v_posn = llStringLength(to_chop_up) - 3;
+        (space_v_posn >= 2) && (llGetSubString(to_chop_up, space_v_posn, space_v_posn + 1) != " v");
+        space_v_posn--) {
+        // look for space and v but do nothing else.
+//log_it("pos=" + (string)space_v_posn);
+    }
+    if (space_v_posn < 2) return [];  // no space found.
+//log_it("space v@" + (string)space_v_posn);
+    // now we zoom through the stuff after our beloved v character and find any evil
+    // space characters, which are most likely from SL having found a duplicate item
+    // name and not so helpfully renamed it for us.
+    integer indy;
+    for (indy = llStringLength(to_chop_up) - 1; indy > space_v_posn; indy--) {
+//log_it("indy=" + (string)space_v_posn);
+        if (llGetSubString(to_chop_up, indy, indy) == " ") {
+            // found one; zap it.  since we're going backwards we don't need to
+            // adjust the loop at all.
+            to_chop_up = llDeleteSubString(to_chop_up, indy, indy);
+//log_it("saw case of previously redundant item, aieee.  flattened: " + to_chop_up);
+        }
+    }
+    string full_suffix = llGetSubString(to_chop_up, space_v_posn, -1);
+    // ditch the space character for our numerical check.
+    string chop_suffix = llGetSubString(full_suffix, 1, llStringLength(full_suffix) - 1);
+    // strip out a 'v' if there is one.
+    if (llGetSubString(chop_suffix, 0, 0) == "v")
+        chop_suffix = llGetSubString(chop_suffix, 1, llStringLength(chop_suffix) - 1);
+    // if valid floating point number and greater than zero, that works for our version.
+    string basename = to_chop_up;  // script name with no version attached.
+    if ((float)chop_suffix > 0.0) {
+        // this is a big success right here.
+        basename = llGetSubString(to_chop_up, 0, -llStringLength(full_suffix) - 1);
+        return [ basename, chop_suffix ];
+    }
+    // seems like we found nothing useful.
+    return [];
+}
+//
+//////////////
+
+default
+{
+    state_entry() { if (llSubStringIndex(llGetObjectName(),  "huffotronic") < 0) state real_default; }
+    on_rez(integer parm) { state rerun; }
+}
+state rerun { state_entry() { state default; } }
+
+state real_default
+{
+    state_entry()
+    {
+        auto_retire();  // make sure newest addition is only version of script.
+        // reset all our variables.
+        menu_names = [];
+        menu_titles = [];
+        menu_button_lists = [];
+        _private_global_av_name = "";
+        _private_global_av_key = NULL_KEY;
+    }
+
+    link_message(integer sender, integer num, string msg, key id)
+    { handle_link_message(sender, num, msg, id); }
+}
+

@@ -1,0 +1,697 @@
+﻿
+// fred huffhines mods:
+//
+// took away the universal skeleton key that was lodged in this script.
+//
+// stopped considering door's scale; this is not usually needed, plus we were blowing
+//      past the SL limit on object names.
+//
+// moved to only storing a couple digits after the decimal point; this is another
+//      crucial thing to limit the size of the object name.
+//
+// added a "toggle" command that behaves like touch, in that the door will be opened
+//      or closed based on current state.
+//
+// made the sensor distance required before the door will listen to someone into a
+//      configurable parameter, instead of the woefully tiny, hard-coded 5 meters.
+//
+// added debugging flag and switchable logging for debugging mode.
+//
+// *original license and author info below...*
+//
+// plus, timeless prototype said this about using the script in osgrid and elsewhere:
+//      "hi, thanks for asking, yes you may use the door script in other grids."
+//
+// this script is licensed by the GPL v3 which is documented at: http://www.gnu.org/licenses/gpl.html
+// do not use it in objects without fully realizing you are implicitly accepting that license.
+//
+// more fred huffhines mods: (circa march 2012)
+//   added PASS_COMMANDS flag, which can be used to pass along any commands we
+// hear to anyone else on our same channel within the object.
+//   added stifling of commands heard so they don't get re-sent, causing endless
+// loops of door openings.
+
+
+//------------------------------------------------------
+// Timeless Linked Door Script by Timeless Prototype
+//------------------------------------------------------
+// The latest version of this script can always be found
+// in the Library section of the wiki:
+// http://www.secondlife.com/badgeo/
+// This script is free to use, but whereever it is used
+// the SCRIPT's permissions MUST be set to:
+// [x] Next owner can modify
+// [x] Next owner can copy
+// [x] Next owner can transfer
+// [x] Allow anyone to copy
+// [x] Share with group
+
+//------------------------------------------------------
+// USAGE INSTRUCTIONS FOR EVERYDAY USE:
+//------------------------------------------------------
+// Say the following commands on channel 0:
+// 'unlock'     - Unlocks all doors in range.
+// 'lock'       - Locks all doors in range and allows
+//                only the permitted users to open it.
+// To open the door, either Touch it, Walk into it or
+// say 'open' or say 'close'.
+
+//------------------------------------------------------
+// USAGE INSTRUCTIONS FOR BUILDERS:
+//------------------------------------------------------
+// 1. Copy and paste this script into the door prim and
+//    change the settings (see further down).
+// 2. The door prim must be linked to at least one other
+//    prim (could be linked to the house for example).
+// 3. The door prim MUST NOT be the root prim.
+// 4. Use Edit Linked Parts to move, rotate and size the
+//    door prim for the closed state.
+// 5. When ready, stand close to the door and say
+//    '/door closed' (this records the closed door
+//    position, rotation and size to the object's
+//    name and description).
+// 6. Use the Edit Linked parts to move, rotate and size
+//    the door prim for the opened state.
+// 7. When ready, stand close to the door and say
+//    '/door opened' (this records the opened door
+//    position, rotation and size).
+// 8. Once recorded it will not accept these commands
+//    again. If you do need to redo the settings then
+//    delete the Name and Description of the door prim
+//    (these are where the position information is
+//    stored), and then follow the steps above again.
+//    Note: deleting the object name won't save, so set
+//    the object name to 'Object' to reset the object
+//    name.
+
+//------------------------------------------------------
+// Change these settings to suit your needs.
+//------------------------------------------------------
+// To mute any/all of the sounds set the sound string(s)
+// to "" (empty string).
+// To get the UUID of a sound, right click on the sound
+// in your inventory and choose "Copy Asset UUID", then
+// paste the UUID in here.
+string      doorOpenSound       = "Door open";
+string      doorCloseSound      = "Door close";
+string      confirmedSound      = "69743cb2-e509-ed4d-4e52-e697dc13d7ac";
+string      accessDeniedSound   = "58da0f9f-42e5-8a8f-ee51-4fac6c247c98";
+string      doorBellSound       = ""; // Setting to empty stops door announcements too.
+float       autoCloseTime       = 120.0; // 0 seconds to disable auto close.
+integer     allowGroupToo       = TRUE; // Set to FALSE to disallow same group access to door.
+list        allowedAgentUUIDs   = []; // Comma-separated, quoted list of avatar UUIDs who are allowed access to this door.
+// was allowing this sneaky guy: "8efecbac-35de-4f40-89c1-2c772b83cafa"
+integer     listenChannel       = 10106;
+float       RESPONSE_DISTANCE   = 120.0;  // how far to allow a command from users with permission.
+integer     DEBUGGING           = FALSE;
+integer     PASS_COMMANDS       = TRUE;
+    // if true, then we will order other doors to open when we do.
+    // we use the listenChannel as the id to pass commands on, so that only the doors listening to
+    // the same place will hear our commands.
+integer     command_is_a_response  = FALSE;
+    // if this is true, then the door open and close must not re-echo their actions.
+
+//------------------------------------------------------
+// Leave the rest of the settings alone, these are
+// handled by the script itself.
+//------------------------------------------------------
+integer     isLocked            = FALSE; // Only when the door is locked do the permissions apply.
+integer     isOpen              = TRUE;
+vector      openPos             = ZERO_VECTOR;
+rotation    openRot             = ZERO_ROTATION;
+vector      closedPos           = ZERO_VECTOR;
+rotation    closedRot           = ZERO_ROTATION;
+key         openerKey           = NULL_KEY;
+key         closerKey           = NULL_KEY;
+integer     isSetup             = FALSE;
+integer     listenHandle        = 0;
+string      avatarName          = "";
+
+// zooms the sub-prim to a new rotation and position.
+jump_to_position(vector position, rotation new_rot)
+{
+    list config_blast = [ 
+        PRIM_SIZE, llGetScale(), ///????
+        // first jump away from where we started, trying to get past an opensim bug.
+//        PRIM_POSITION, ZERO_VECTOR,
+//        PRIM_POSITION, ZERO_VECTOR,
+//        PRIM_POSITION, ZERO_VECTOR,
+//        PRIM_POSITION, ZERO_VECTOR,
+//        PRIM_POSITION, ZERO_VECTOR,
+        PRIM_ROTATION, ZERO_ROTATION * new_rot / llGetRootRotation(),
+//        PRIM_POSITION, position,
+//        PRIM_POSITION, position,
+//        PRIM_POSITION, position,
+//        PRIM_POSITION, position,
+//        PRIM_POSITION, position,
+        PRIM_POSITION, position
+        ];
+    llSetLinkPrimitiveParams(llGetLinkNumber(), config_blast);
+if (DEBUGGING) llOwnerSay("want pos=" + (string)position + ", got=" + (string)llGetLocalPos()
++ ", and want rot=" + (string)new_rot + ", got=" + (string)llGetLocalRot());
+}
+
+mySayName(integer channel, string objectName, string message)
+{
+    string name = llGetObjectName();
+    llSetObjectName(objectName);
+    llSay(0, "/me " + message);
+    llSetObjectName(name);
+}
+
+mySay(integer channel, string message)
+{
+    string name = llGetObjectName();
+    llSetObjectName("Door");
+    llSay(0, message);
+    llSetObjectName(name);
+}
+
+myOwnerSay(string message)
+{
+    string name = llGetObjectName();
+    llSetObjectName("Door");
+    llOwnerSay(message);
+    llSetObjectName(name);
+}
+
+mySoundConfirmed()
+{
+    if (confirmedSound != "")
+    {
+        llTriggerSound(confirmedSound, 1.0);
+    }
+}
+
+mySoundAccessDenied()
+{
+    if (accessDeniedSound != "")
+    {
+        llTriggerSound(accessDeniedSound, 1.0);
+    }
+}
+
+myGetDoorParams()
+{
+    isSetup = FALSE;
+    if (llSubStringIndex(llGetObjectDesc(), "D;") == 0 && llSubStringIndex(llGetObjectName(), "D;") == 0)
+    {
+        list nameWords = llParseString2List(llGetObjectName(), [";"], []);
+        list descWords = llParseString2List(llGetObjectDesc(), [";"], []);
+        if (llGetListLength(nameWords) != 3 || llGetListLength(descWords) != 3)
+        {
+            myOwnerSay("The door prim's name and/or description has invalid syntax and/or number of parameters. Delete the door prim's name and description and setup the door prim again.");
+        }
+        else
+        {
+            openPos = (vector)llList2String(nameWords, 1);
+            openRot = (rotation)llList2String(nameWords, 2);
+            closedPos = (vector)llList2String(descWords, 1);
+            closedRot = (rotation)llList2String(descWords, 2);
+            isSetup = TRUE;
+        }
+//llSay(0, "got open pos=" + (string)(openPos) + " rot=" + (string)(openRot));
+//llSay(0, "got close pos=" + (string)(closedPos) + " rot=" + (string)(closedRot));
+        
+    }
+}
+
+// if open_state is true, the parms are for an open door.
+mySetDoorParams(integer open_state, vector Pos, rotation Rot)
+{
+    if (open_state) {
+        // parms for open state.
+        llSetObjectName("D;" + vector_chop(Pos) + ";" + rotation_chop(Rot));
+    } else {
+        // parms for closed state.
+        llSetObjectDesc("D;" + vector_chop(Pos) + ";" + rotation_chop(Rot));
+    }
+    isSetup = TRUE;
+}
+
+integer myPermissionCheck(key id)
+{
+    integer hasPermission = FALSE;
+    if (isLocked == FALSE) {
+        if (DEBUGGING) llOwnerSay("perm--unlocked: okay");
+        hasPermission = TRUE;
+    } else if (llGetOwnerKey(id) == llGetOwner()) {
+        if (DEBUGGING) llOwnerSay("perm--is owner: okay");
+        hasPermission = TRUE;
+    } else if (allowGroupToo == TRUE && llSameGroup(id)) {
+        if (DEBUGGING) llOwnerSay("perm--same group: okay");
+        hasPermission = TRUE;
+    } else if (llListFindList(allowedAgentUUIDs, [(string)id]) != -1) {
+        if (DEBUGGING) llOwnerSay("perm--in list: okay");
+        hasPermission = TRUE;
+    } else {
+        if (DEBUGGING) llOwnerSay("perm--not found anywhere: bad perms");
+    }
+    return hasPermission;
+}
+
+myOpenDoor()
+{
+    isOpen = FALSE;
+    myToggleDoor();
+}
+
+myCloseDoor()
+{
+    isOpen = TRUE;
+    myToggleDoor();
+}
+
+myToggleDoor()
+{
+    if (isSetup == FALSE)
+    {
+        myOwnerSay("The door prim has not been configured yet. Please read the usage instructions in the door script.");
+    }
+    else if (llGetLinkNumber() == 0 || llGetLinkNumber() == 1)
+    {
+        myOwnerSay("The door prim must be linked to at least one other prim and the door prim must not be the root prim");
+    }
+    else
+    {
+        isOpen = !isOpen;
+if (DEBUGGING) llOwnerSay("door open state is now=" + (string)isOpen);
+        if (isOpen)
+        {
+if (DEBUGGING) llOwnerSay("opening the door.");
+            if (doorBellSound != "")
+            {
+                llTriggerSound(doorBellSound, 1.0);
+                if (avatarName != "")
+                {
+                    mySayName(0, avatarName, "is at the door.");
+                    avatarName = "";
+                }
+            }
+            if (doorOpenSound != "")
+            {
+                llTriggerSound(doorOpenSound, 1.0);
+            }
+            jump_to_position(openPos, openRot);
+//            list config_blast = [ PRIM_POSITION, llGetLocalPos() + <4, 4, 4>,
+//                PRIM_ROTATION, ZERO_ROTATION * openRot / llGetRootRotation(),
+//                PRIM_POSITION, openPos
+////                PRIM_SIZE, llGetScale() 
+//                ];
+//            llSetPrimitiveParams(config_blast);
+//if (DEBUGGING) llOwnerSay("want pos=" + (string)openPos + ", got=" + (string)llGetLocalPos()
+//+ ", and want rot=" + (string)openRot + ", got=" + (string)llGetLocalRot());
+
+            if (PASS_COMMANDS && !command_is_a_response) {
+                // Door API.
+                llMessageLinked(LINK_SET, listenChannel, "cmd|door|open", llGetKey());
+            }
+            command_is_a_response = FALSE;  // took care of that one.
+        }
+        else
+        {
+if (DEBUGGING) llOwnerSay("closing the door.");
+            if (doorCloseSound != "")
+            {
+                llTriggerSound(doorCloseSound, 1.0);
+            }
+            jump_to_position(closedPos, closedRot);
+//            list config_blast = [ 
+//                PRIM_ROTATION, ZERO_ROTATION * closedRot / llGetRootRotation(),
+//                PRIM_POSITION, closedPos
+////                PRIM_SIZE, llGetScale()
+//                ];
+//            llSetPrimitiveParams(config_blast);
+//if (DEBUGGING) llOwnerSay("want pos=" + (string)closedPos + ", got=" + (string)llGetLocalPos()
+//+ ", and want rot=" + (string)closedRot + ", got=" + (string)llGetLocalRot());
+            if (PASS_COMMANDS && !command_is_a_response) {
+                // Door API.
+                llMessageLinked(LINK_SET, listenChannel, "cmd|door|close", llGetKey());
+            }
+            command_is_a_response = FALSE;  // took care of that one.
+        }
+        
+        llSetTimerEvent(0.0);
+        if (isOpen == TRUE && autoCloseTime != 0.0)
+        {
+            llSetTimerEvent(autoCloseTime);
+        }
+    }
+}
+
+//////////////
+// from hufflets...
+
+// returns the index of the first occurrence of "pattern" inside
+// the "full_string".  if it is not found, then a negative number is returned.
+integer find_substring(string full_string, string pattern)
+{ return llSubStringIndex(llToLower(full_string), llToLower(pattern)); }
+
+// returns text for a floating point number, but includes only
+// three digits after the decimal point.
+string float_chop(float to_show)
+{
+    integer mant = llAbs(llRound(to_show * 1000.0) / 1000);
+    string neg_sign;
+    if (to_show < 0.0) neg_sign = "-";
+    string dec_s = (string)((llRound(to_show * 1000.0) - mant * 1000) / 1000.0);
+    dec_s = llGetSubString(llGetSubString(dec_s, find_substring(dec_s, ".") + 1, -1), 0, 2);
+    // strip off all trailing zeros.
+    while (llGetSubString(dec_s, -1, -1) == "0")
+        dec_s = llDeleteSubString(dec_s, -1, -1);
+    string to_return = neg_sign + (string)mant;
+    if (llStringLength(dec_s)) to_return += "." + dec_s;
+    return to_return;
+}
+
+// returns a prettier form for vector text, with chopped floats.
+string vector_chop(vector to_show)
+{
+    return "<" + float_chop(to_show.x) + ","
+        + float_chop(to_show.y) + ","
+        + float_chop(to_show.z) + ">";
+}
+
+// similarly, for a rotation.
+string rotation_chop(rotation to_show)
+{
+    return "<" + float_chop(to_show.x) + ","
+        + float_chop(to_show.y) + ","
+        + float_chop(to_show.z) + ","
+        + float_chop(to_show.s) + ">";
+}
+
+//////////////
+// huffware script: auto-retire, by fred huffhines, version 2.5.
+// distributed under BSD-like license.
+//   !!  keep in mind that this code must be *copied* into another
+//   !!  script that you wish to add auto-retirement capability to.
+// when a script has auto_retire in it, it can be dropped into an
+// object and the most recent version of the script will destroy
+// all older versions.
+//
+// the version numbers are embedded into the script names themselves.
+// the notation for versions uses a letter 'v', followed by two numbers
+// in the form "major.minor".
+// major and minor versions are implicitly considered as a floating point
+// number that increases with each newer version of the script.  thus,
+// "hazmap v0.1" might be the first script in the "hazmap" script continuum,
+// and "hazmap v3.2" is a more recent version.
+//
+// example usage of the auto-retirement script:
+//     default {
+//         state_entry() {
+//            auto_retire();  // make sure newest addition is only version of script.
+//        }
+//     }
+// this script is partly based on the self-upgrading scripts from markov brodsky
+// and jippen faddoul.
+//////////////
+auto_retire() {
+    string self = llGetScriptName();  // the name of this script.
+    list split = compute_basename_and_version(self);
+    if (llGetListLength(split) != 2) return;  // nothing to do for this script.
+    string basename = llList2String(split, 0);  // script name with no version attached.
+    string version_string = llList2String(split, 1);  // the version found.
+    integer posn;
+    // find any scripts that match the basename.  they are variants of this script.
+    for (posn = llGetInventoryNumber(INVENTORY_SCRIPT) - 1; posn >= 0; posn--) {
+//log_it("invpo=" + (string)posn);
+        string curr_script = llGetInventoryName(INVENTORY_SCRIPT, posn);
+        if ( (curr_script != self) && (llSubStringIndex(curr_script, basename) == 0) ) {
+            // found a basic match at least.
+            list inv_split = compute_basename_and_version(curr_script);
+            if (llGetListLength(inv_split) == 2) {
+                // see if this script is more ancient.
+                string inv_version_string = llList2String(inv_split, 1);  // the version found.
+                // must make sure that the retiring script is completely the identical basename;
+                // just matching in the front doesn't make it a relative.
+                if ( (llList2String(inv_split, 0) == basename)
+                    && ((float)inv_version_string < (float)version_string) ) {
+                    // remove script with same name from inventory that has inferior version.
+                    llRemoveInventory(curr_script);
+                }
+            }
+        }
+    }
+}
+//
+// separates the base script name and version number.  used by auto_retire.
+list compute_basename_and_version(string to_chop_up)
+{
+    // minimum script name is 2 characters plus a version.
+    integer space_v_posn;
+    // find the last useful space and 'v' combo.
+    for (space_v_posn = llStringLength(to_chop_up) - 3;
+        (space_v_posn >= 2) && (llGetSubString(to_chop_up, space_v_posn, space_v_posn + 1) != " v");
+        space_v_posn--) {
+        // look for space and v but do nothing else.
+//log_it("pos=" + (string)space_v_posn);
+    }
+    if (space_v_posn < 2) return [];  // no space found.
+//log_it("space v@" + (string)space_v_posn);
+    // now we zoom through the stuff after our beloved v character and find any evil
+    // space characters, which are most likely from SL having found a duplicate item
+    // name and not so helpfully renamed it for us.
+    integer indy;
+    for (indy = llStringLength(to_chop_up) - 1; indy > space_v_posn; indy--) {
+//log_it("indy=" + (string)space_v_posn);
+        if (llGetSubString(to_chop_up, indy, indy) == " ") {
+            // found one; zap it.  since we're going backwards we don't need to
+            // adjust the loop at all.
+            to_chop_up = llDeleteSubString(to_chop_up, indy, indy);
+//log_it("saw case of previously redundant item, aieee.  flattened: " + to_chop_up);
+        }
+    }
+    string full_suffix = llGetSubString(to_chop_up, space_v_posn, -1);
+    // ditch the space character for our numerical check.
+    string chop_suffix = llGetSubString(full_suffix, 1, llStringLength(full_suffix) - 1);
+    // strip out a 'v' if there is one.
+    if (llGetSubString(chop_suffix, 0, 0) == "v")
+        chop_suffix = llGetSubString(chop_suffix, 1, llStringLength(chop_suffix) - 1);
+    // if valid floating point number and greater than zero, that works for our version.
+    string basename = to_chop_up;  // script name with no version attached.
+    if ((float)chop_suffix > 0.0) {
+        // this is a big success right here.
+        basename = llGetSubString(to_chop_up, 0, -llStringLength(full_suffix) - 1);
+        return [ basename, chop_suffix ];
+    }
+    // seems like we found nothing useful.
+    return [];
+}
+//
+//////////////
+
+default
+{
+    state_entry() { if (llSubStringIndex(llGetObjectName(),  "huffotronic") < 0) state real_default; }
+    on_rez(integer parm) { state rerun; }
+}
+state rerun { state_entry() { state default; } }
+
+state real_default
+{
+    state_entry()
+    {
+        auto_retire();
+        listenHandle = llListen(listenChannel, "", NULL_KEY, "");
+        myGetDoorParams();
+        myCloseDoor();
+    }
+    
+    on_rez(integer parm) { llResetScript(); }
+
+    touch_start(integer total_number)
+    {
+        command_is_a_response = FALSE;
+        if (myPermissionCheck(llDetectedKey(0)) == TRUE)
+        {
+            avatarName = llDetectedName(0);
+            myToggleDoor();
+        }
+        else
+        {
+            mySoundAccessDenied();
+        }
+    }
+    
+    timer()
+    {
+        myCloseDoor();
+    }
+    
+    link_message(integer sender_num, integer num, string str, key id)
+    {
+        // Door API. The API is here in case you want to create PIN entry keypads or whatever.
+        if (num == listenChannel) {
+            if (id == llGetKey()) return;  // don't listen to our own commands.
+            command_is_a_response = TRUE;
+            if (str == "cmd|door|open") myOpenDoor();
+            else if (str == "cmd|door|close") myCloseDoor();
+            else if (str == "cmd|door|discover")
+                llMessageLinked(LINK_SET, listenChannel, "cmd|door|discovered|" + (string)llGetKey(),
+                    llGetKey());
+            else command_is_a_response = FALSE;
+//hmmm: above protocol seems redundant, but sending back the original id (like this did before)
+//      in the id field does not fit in with our usual schemes very well.
+        }
+    }
+    
+    listen(integer channel, string name, key id, string message)
+    {
+//        if (DEBUGGING) llOwnerSay("heard: " + message);
+        command_is_a_response = FALSE;  // don't get involved with the link message checking.
+
+        // Performance note: it's quicker to compare the strings than to compare permissions each time anyone says anything on this channel.
+        if (message == "open")
+        {
+            if (myPermissionCheck(id) == TRUE)
+            {
+                // Only open the door if the person is quite close to this door.
+                openerKey = id;
+                closerKey = NULL_KEY;
+                avatarName = name;
+                llSensor(name, id, AGENT, RESPONSE_DISTANCE, TWO_PI);
+            }
+            else
+            {
+                mySoundAccessDenied();
+            }
+        }
+        else if (message == "close")
+        {
+            if (myPermissionCheck(id) == TRUE)
+            {
+                openerKey = NULL_KEY;
+                closerKey = id;
+                avatarName = name;
+                // Only close the door if the person is quite close to this door.
+                llSensor(name, id, AGENT, RESPONSE_DISTANCE, TWO_PI);
+            }
+            else
+            {
+                mySoundAccessDenied();
+            }
+        }
+        else if (message == "lock")
+        {
+            if (myPermissionCheck(id) == TRUE)
+            {
+                isLocked = TRUE;
+                mySoundConfirmed();
+            }
+            else
+            {
+                mySoundAccessDenied();
+            }
+        }
+        else if (message == "unlock")
+        {
+            if (myPermissionCheck(id) == TRUE)
+            {
+                isLocked = FALSE;
+                mySoundConfirmed();
+            }
+            else
+            {
+                mySoundAccessDenied();
+            }
+        }
+        else if (message == "toggle")
+        {
+            if (myPermissionCheck(id) == TRUE)
+            {
+                avatarName = name;
+                myToggleDoor();
+            }
+            else
+            {
+                mySoundAccessDenied();
+            }
+        }
+        else if (message == "/door opened" && llSubStringIndex(llGetObjectName(), "D;") == -1)
+        {
+            if (llGetOwnerKey(id) == llGetOwner())
+            {
+                mySoundConfirmed();
+                openPos = llGetLocalPos();
+                openRot = llGetLocalRot();
+                isOpen = TRUE;
+                mySetDoorParams(TRUE, openPos, openRot);
+//llSay(0, "set open pos=" + (string)(openPos) + " rot=" + (string)(openRot));
+            }
+            else
+            {
+                mySoundAccessDenied();
+            }
+        }
+        else if (message == "/door closed" && llSubStringIndex(llGetObjectDesc(), "D;") == -1)
+        {
+            if (llGetOwnerKey(id) == llGetOwner())
+            {
+                mySoundConfirmed();
+                closedPos = llGetLocalPos();
+                closedRot = llGetLocalRot();
+                isOpen = FALSE;
+                mySetDoorParams(FALSE, closedPos, closedRot);
+//llSay(0, "set close pos=" + (string)(closedPos) + " rot=" + (string)(closedRot));
+            }
+            else
+            {
+                mySoundAccessDenied();
+            }
+        }
+    }
+    
+    sensor(integer num_detected)
+    {
+        if (openerKey != NULL_KEY)
+        {
+            integer i;
+            for (i = 0; i < num_detected; i++)
+            {
+                if (llDetectedKey(i) == openerKey && myPermissionCheck(llDetectedKey(i)) == TRUE)
+                {
+                    myOpenDoor();
+                }
+            }
+            openerKey = NULL_KEY;
+        }
+        else
+        {
+            integer i;
+            for (i = 0; i < num_detected; i++)
+            {
+                if (llDetectedKey(i) == closerKey && myPermissionCheck(llDetectedKey(i)) == TRUE)
+                {
+                    myCloseDoor();
+                }
+            }
+            closerKey = NULL_KEY;
+        }
+    }
+
+//------------------------------------------------------
+// Uncomment the following code if you particularly want
+// collisions to affect the door state.    
+//------------------------------------------------------
+
+//    collision_start(integer num_detected)
+//    {
+//        integer i;
+//        for (i = 0; i < num_detected; i++)
+//        {
+//            if (myPermissionCheck(llDetectedKey(i)) == TRUE)
+//            {
+//                avatarName = llDetectedName(i);
+//                myOpenDoor();
+//            }
+//            else if (llDetectedType(i) & AGENT)
+//            {
+//                mySoundAccessDenied();
+//            }
+//        }
+//    }
+
+}
+
