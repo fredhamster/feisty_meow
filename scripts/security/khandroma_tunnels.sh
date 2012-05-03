@@ -9,7 +9,7 @@ fi
 
 while true; do
   echo Connecting jenkins and vms at khandroma.
-  ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -L "*:5908:localhost:5908" -L "*:4040:localhost:8080" fred@khandroma.cs.virginia.edu &>~/.tmp/zz_tunnel_khandro_jenkins_vnc.log &
+  ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -L "*:5908:localhost:5908" -L "*:4040:localhost:8080" fred@khandroma.cs.virginia.edu
   bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile &>/dev/null </dev/null &
   echo "Got dumped from tunnels; re-establishing connection."
   echo "Note: if you're being asked for a password, you haven't set up an RSA key yet."
