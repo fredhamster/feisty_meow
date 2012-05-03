@@ -1,6 +1,8 @@
 
 # ignore generated files of various types.
 
+.*
+*#
 __build_configuration.h
 *.class
 *.log
