@@ -24,7 +24,7 @@ unsorted_depth=$(calculate_depth ~/cloud/unsorted)
 source_example_depth=$(calculate_depth ~/cloud/example_source)
 
 # the list files are web documents with to-do lists.  individual items are marked with <li>.
-item_depth=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -l | tr -d ' ')
+html_item_depth=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -l | tr -d ' ')
 
 # scan across all appropriately named folders in our folders that live in the "cloud".
 cloud_project_depth=0
@@ -53,7 +53,7 @@ done
 
 ##############
 
-total_overload=$(($note_depth + $item_depth + $unsorted_depth + $source_example_depth + $cloud_project_depth + $cloud_trivia_depth + $cloud_active_depth))
+total_overload=$(($note_depth + $html_item_depth + $unsorted_depth + $source_example_depth + $cloud_project_depth + $cloud_trivia_depth + $cloud_active_depth))
 
 report="\
 \n\
@@ -61,7 +61,7 @@ Current information overload consists of:\n\
 [gathered on $(date)]\n\
 \n\
   $note_depth\tgrunty notes\n\
-  $item_depth\tto-do list items\n\
+  $html_item_depth\tto-do notes in html\n\
   $cloud_active_depth\tactive items\n\
   $cloud_project_depth\tproject files\n\
   $source_example_depth\tsource examples\n\
