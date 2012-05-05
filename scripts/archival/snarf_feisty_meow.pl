@@ -36,25 +36,18 @@ local($root) = &canonicalize("$HOME/feisty_meow");
 # grab the top level stuff.
 &backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore"));
 
-# get the documentation directory.
-&backup_hierarchy($snarf_file_base, $number, "$root", "doc");
-###
-#oldversion
-#&snarfer($snarf_file_base, $number, $root, "doc", ("-maxdepth", "1"));
-# get an extra folder we like.
-#&backup_hierarchy($snarf_file_base, $number, "$root", "doc/text_examples");
-###
-
-# get our databases that we ship with the sources.
+# snarf up all the important directories.
+# CAK: current as of 2012-05-05.
 &backup_hierarchy($snarf_file_base, $number, $root, "database");
-
-# get all the yeti scripts hierarchy in there.
+&backup_hierarchy($snarf_file_base, $number, $root, "doc");
+&backup_hierarchy($snarf_file_base, $number, $root, "examples");
+&backup_hierarchy($snarf_file_base, $number, $root, "graphiq");
+&backup_hierarchy($snarf_file_base, $number, $root, "huffware");
+&backup_hierarchy($snarf_file_base, $number, $root, "kona");
+&backup_hierarchy($snarf_file_base, $number, $root, "nucleus");
+&backup_hierarchy($snarf_file_base, $number, $root, "octopi");
 &backup_hierarchy($snarf_file_base, $number, $root, "scripts");
-
-# get all C++ code project hierarchies.
-&backup_hierarchy($snarf_file_base, $number, "$root", "nucleus");
-&backup_hierarchy($snarf_file_base, $number, "$root", "octopi");
-&backup_hierarchy($snarf_file_base, $number, "$root", "graphiq");
+&backup_hierarchy($snarf_file_base, $number, $root, "webby");
 
 # grab the production assets.
 &backup_files($snarf_file_base, $number, $root, "production", ("*.ini", "make*"));
