@@ -176,7 +176,7 @@ if [ -z "$NECHUNG" ]; then
   ##############
 
   # set the SHUNIT_DIR so our shunit tests can find the codebase.
-  export SHUNIT_DIR="$FEIST_MEOW_SCRIPTS/shunit"
+  export SHUNIT_DIR="$FEISTY_MEOW_SCRIPTS/shunit"
   
   ##############
   
