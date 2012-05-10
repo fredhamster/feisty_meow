@@ -174,6 +174,11 @@ if [ -z "$NECHUNG" ]; then
 ###noise! :/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:.
   
   ##############
+
+  # set the SHUNIT_DIR so our shunit tests can find the codebase.
+  export SHUNIT_DIR="$FEIST_MEOW_SCRIPTS/shunit"
+  
+  ##############
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization ends....; fi
 

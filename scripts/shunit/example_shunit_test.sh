@@ -7,7 +7,8 @@
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 cd $WORKDIR
 
-SHUNIT_DIR=/home/fred/xsede/xsede_tests/shunit
+# this variable needs to be set somewhere.  feisty meow scripts will set it.
+#SHUNIT_DIR=/home/fred/shunit
 
 oneTimeSetUp()
 {

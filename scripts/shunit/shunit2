@@ -862,6 +862,7 @@ _shunit_generateReport()
     _shunit_msg_="${_shunit_msg_})"
   fi
 
+  echo "Suite ran for $(($suite_end - $suite_start)) seconds."
   echo
   echo "$(date): ${_shunit_msg_}"
   __shunit_reportGenerated=${SHUNIT_TRUE}
@@ -1041,6 +1042,9 @@ if [ "${__shunit_mode}" = "${__SHUNIT_MODE_STANDALONE}" ]; then
   . "`_shunit_prepForSourcing \"${__shunit_script}\"`"
 fi
 
+# record when the tests started running.
+suite_start=$(date +%s)
+
 # execute the oneTimeSetUp function (if it exists)
 oneTimeSetUp
 
@@ -1062,6 +1066,8 @@ _shunit_execSuite
 
 # execute the oneTimeTearDown function (if it exists)
 oneTimeTearDown
+
+suite_end=$(date +%s)
 
 # generate the report
 _shunit_generateReport
