@@ -5,12 +5,12 @@
 # Author: Chris Koeritz
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-#cd $WORKDIR
 if [[ ! "$0" =~ ^/.* ]]; then
-  # re-run the script with the absolute path if it didn't start that way; otherwise
+  # re-run the script with an absolute path if it didn't start out that way; otherwise,
   # shunit is not happy with finding the script.
   exec "$WORKDIR/$(basename $0)" $*
 fi
+cd $WORKDIR
 
 oneTimeSetUp()
 {
