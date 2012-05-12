@@ -20,11 +20,14 @@ oneTimeSetUp()
 
 testOneThing()
 {
-  echo "got to test case.  sleeping for a bit..."
+  echo "got to primary test case."
   zero=0
   assertEquals "zero should be equal to 0" 0 $zero
-  sleep 23
-  echo "woke up.  passed tautological test."
+  echo "passed tautological test."
+  sleep_time=83
+  echo "$(date): now sleeping for $sleep_time seconds."
+  sleep $sleep_time
+  echo "$(date): woke up."
 }
 
 oneTimeTearDown()
