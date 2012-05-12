@@ -17,7 +17,7 @@ export LANG=C
 
 # this is used as a process startup snooze, to avoid running a dependent
 # process before the dependency has really started.
-export SNOOZE_TIME=7
+export SNOOZE_TIME=11
 
 # lock the limit in for threads, so we don't have any getting out of control.
 # also make sure we've provided enough space for each thread.
