@@ -3,6 +3,7 @@
 # An example of using shunit2.
 #
 # Author: Chris Koeritz
+# license gnu gpl v3
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 if [[ ! "$0" =~ ^/.* ]]; then
