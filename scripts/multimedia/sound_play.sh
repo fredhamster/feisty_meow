@@ -20,9 +20,14 @@ if [ ! -z "$(psfind artsd)" ]; then
 elif [ ! -z "$(psfind esd)" ]; then
   # we see esd running...
   PLAYCMD=esdplay
+elif [ ! -z "$(psfind pulseaudio)" ]; then
+  # we see pulse running...
+  PLAYCMD="padsp aplay"
 elif [ ! -z "$WINDIR" ]; then
   # kludge for win32; we provide our own sound player.
   PLAYCMD=playsound
+else
+  echo "I don't know how to play sounds for this OS and sound system."
 fi
 
 # play the sounds individually; playsound can handle multiple files, but
