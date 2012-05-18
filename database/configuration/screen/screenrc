@@ -1,0 +1,5 @@
+
+nethack on
+
+logfile /home/fred/.tmp/zz_screenlog.%n
+
