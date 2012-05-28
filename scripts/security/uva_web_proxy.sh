@@ -12,14 +12,17 @@
 
 #source $HOME/yeti/scripts/launch_feisty_meow.sh
 
+#ssh_host=khandroma.cs.virginia.edu
+ssh_host=mason.cs.virginia.edu
+
 soundfile=$FEISTY_MEOW_DIR/database/sounds/woouoo.wav
 if [ ! -z "$1" ]; then
   soundfile=$1
 fi
 
 while true; do
-  echo Connecting uva web sites via khandroma.
-  ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -D localhost:14420 fred@khandroma.cs.virginia.edu
+  echo Connecting uva web sites via a machine on site: $ssh_host
+  ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -D localhost:14420 fred@$ssh_host
   bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile
   echo "Got dumped from tunnels; re-establishing connection."
   echo "Note: if you're being asked for a password, you haven't set up an RSA key yet."
