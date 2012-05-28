@@ -867,7 +867,7 @@ _shunit_generateReport()
   duration_h=$(($duration_m / 60))
   if [ $duration_m -lt 10 ]; then duration_m="0$duration_m"; fi
   if [ $duration_h -lt 10 ]; then duration_h="0$duration_h"; fi
-  echo "Suite ran for $duration_s total seconds [$duration_h:$duration_m hh:mm]"
+  echo "Test suite ran for $duration_s total seconds [$duration_h:$duration_m hh:mm]"
   echo
   echo "$(date): ${_shunit_msg_}"
   __shunit_reportGenerated=${SHUNIT_TRUE}
