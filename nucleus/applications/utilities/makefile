@@ -7,7 +7,7 @@ TYPE = application
 ifeq "$(OMIT_VERSIONS)" ""
   SOURCE += util_version.rc 
 endif
-LOCAL_LIBS_USED = application loggers mathematics processes textual timely configuration filesystem nodes structures basis 
+LOCAL_LIBS_USED = application basis configuration filesystem loggers mathematics nodes processes textual timely structures 
 TARGETS = await_app_exit.exe bytedump.exe checker.exe dirtree.exe ini_edit.exe mdate.exe \
   splitter.exe 
 

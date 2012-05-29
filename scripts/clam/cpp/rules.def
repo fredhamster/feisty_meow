@@ -284,9 +284,10 @@ COMPILER_FLAGS += $(HEADER_SEARCH_PATH:%=-I%) $(DEFINITIONS:%=-D%) $(UNDEFINITIO
 # to search and by adding all of the code libraries that are used.
 LOAD_FLAG_PREFIX += $(LIBRARY_SEARCH_PATH:%=$(LIBRARY_PATH_FLAG)%)
 ifeq "$(OP_SYSTEM)" "UNIX"
-#mac no like these flags?
-#  LOAD_FLAG_PREFIX += -Xlinker --start-group
-#  LOAD_FLAG_SUFFIX += -Xlinker --end-group
+#  ifneq "$(COMPILER)" "GNU_DARWIN"
+    LOAD_FLAG_PREFIX += -Xlinker --start-group
+    LOAD_FLAG_SUFFIX += -Xlinker --end-group
+#  endif
 endif
 # had to switch from prefix to suffix recently.  oddity.
 #LOAD_FLAG_PREFIX += $(LIBS_USED:%=$(LIBRARY_NAME_FLAG)%)
