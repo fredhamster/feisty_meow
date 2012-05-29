@@ -1,0 +1,9 @@
+
+# m h  dom mon dow   command
+
+SHELL=/bin/bash
+
+# fix the mailman binaries.
+23 5 * * * chmod -R 02775 /var/lib/mailman/logs &>/dev/null 
+
+

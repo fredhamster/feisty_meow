@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# team_city_startup by Chris Koeritz
+#
+# /etc/init.d/team_city_startup
+#
+#uhhh chkconfig: 2345 01 99
+# description: Starts the Team City Agent as our swbuild user.
+#
+### BEGIN INIT INFO
+# Provides: team_city_startup
+# Required-Start:
+# Required-Stop:
+# Default-Start: 3 4 5
+# Default-Stop: 0 1 2 6
+# Short-Description: Team City Agent initialization
+# Description: team city rc file. This rc script runs the agent as the
+#       swbuild user.
+### END INIT INFO
+
+usage() {
+    echo "Usage: $0 {start|stop|status|kill}"
+}
+
+function teamcity_action()
+{
+  export JAVA_HOME=/usr/lib/jvm/java-6-sun
+  export HOME=/home/swbuild
+
+  # should become the swbuild user and tell team city the proper action.
+  su -m -c "/home/swbuild/teamcity_agent/bin/agent.sh $*" swbuild
+}
+
+test -x ${PARSER} || exit 0 # by debian policy
+
+case "$1" in
+	start)
+		teamcity_action start
+		rc=$?
+		;;
+	stop)
+		teamcity_action stop
+		rc=$?
+		;;
+	kill)
+		teamcity_action stop kill
+		rc=$?
+		;;
+	status)
+		procs_found=$(ps wuax | grep teamcity | grep -v grep)
+		if [ -z "$procs_found" ]; then
+		  echo "Team City Agent is not running."
+		else
+		  echo "Team City Agent is running."
+		fi
+		rc=$?
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+exit $rc
+
+
