@@ -1,0 +1,7 @@
+
+SHELL=/bin/bash
+
+# m h dom mon dow command
+
+* * * * * /bin/rm -f $HOME'/C:\nppdf32Log\debuglog.txt'
+
