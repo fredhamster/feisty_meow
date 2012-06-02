@@ -11,6 +11,8 @@
 
 # starts up the gpg-agent, but only if it's not already running.
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
 if [ -z "$(psa gpg-agent)" ]; then
   gpg-agent --daemon --enable-ssh-support --write-env-file "${HOME}/.gpg-agent-info" &>$TMP/zz_gpg-agent-daemon.log
 fi
