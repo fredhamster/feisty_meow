@@ -3,18 +3,18 @@
 # bootstrap_shells:
 #
 # This script creates the directory for auto-generated scripts and gets
-# the current user's account ready to use YETI.
+# the current user's account ready to use the feisty meow scripts.
 #
-# Note: this does not yet ensure that the YETI profile is executed on
-# shell startup.  that can be added manually by editing your .bashrc file.
+# Note: this does not yet ensure that the profile is executed on shell
+# startup.  that can be added manually by editing your .bashrc file.
 # read the examples/feisty_meow_startup/bashrc_user file for more details.
 
 ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && \pwd )"
-YETI_CORE_SCRIPTS_DIR="$(echo "$ORIGINATING_FOLDER" | tr '\\\\' '/' )"
+CORE_SCRIPTS_DIR="$(echo "$ORIGINATING_FOLDER" | tr '\\\\' '/' )"
 THIS_TOOL_NAME="$(basename "$0")"
 
 # set up the feisty_meow dir.
-pushd "$YETI_CORE_SCRIPTS_DIR/../.." &>/dev/null
+pushd "$CORE_SCRIPTS_DIR/../.." &>/dev/null
 export FEISTY_MEOW_DIR="$(pwd)"
 popd &>/dev/null
 

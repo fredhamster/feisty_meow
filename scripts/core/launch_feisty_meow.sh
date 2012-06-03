@@ -20,7 +20,7 @@ export ERROR_OCCURRED=
 ##############
 
 if [ -z "$FEISTY_MEOW_GENERATED" ]; then
-  # FEISTY_MEOW_GENERATED is where the generated files yeti uses are located.
+  # FEISTY_MEOW_GENERATED is where the generated files are located.
   # this is our single entry point we can use without knowing any variables
   # yet in the initialization process.
   export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
@@ -30,7 +30,7 @@ if [ -z "$FEISTY_MEOW_GENERATED" ]; then
   GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/fmc_variables.sh"
   if [ ! -f "$GENERATED_FEISTY_MEOW_VARIABLES" ]; then
     echo -e '\n\n'
-    echo "The yeti scripts need to be initialized via the bootstrap process, e.g.:"
+    echo "Feisty meow scripts need initialization via the bootstrap process, e.g.:"
     echo "  bash $HOME/feisty_meow/scripts/core/bootstrap_shells.sh"
     echo -e '\n\n'
     ERROR_OCCURRED=true

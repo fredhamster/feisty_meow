@@ -8,10 +8,10 @@
 #
 #  Purpose:
 #
-#    This script generates YETI alias files.  Alias files contain a list of
-#  definitions for command aliases that are written in the specified shell
-#  dialect (such as bash or perl) and which are additionally tailored for the
-#  operating system to be used.
+#    This script generates feisty meow script alias files.  Alias files
+#  contain a list of definitions for command aliases that are written in the
+#  specified shell dialect (such as bash or perl) and which are additionally
+#  tailored for the operating system to be used.
 #
 ##############
 #  This program is free software; you can redistribute it and/or modify it
@@ -155,7 +155,7 @@ if ( ! length("$FEISTY_MEOW_GENERATED") ) {
 The FEISTY_MEOW_GENERATED variable is not defined.  This must point to the location where\n\
 the generated scripts are stored.  Perhaps you still need to run\n\
 bootstrap_shells.sh and set up some environment variables.  Please see\n\
-http://yeticode.org for more details.\n";
+http://feistymeow.org for more details.\n";
   exit 1;
 #really need to use better exit codes.
 }
@@ -171,7 +171,7 @@ if (! -d $FEISTY_MEOW_GENERATED) {
 
 ##############
 
-# set the executable bit for yeti binaries for just this current user.
+# set the executable bit for binaries for just this current user.
 if (-d $BINDIR) {
   system("chmod -R u+x \"$BINDIR\"/*");
 }
@@ -195,7 +195,7 @@ open(she, ">> $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
 # find the list of files in the scripts directory.
 #opendir(scripts, "$FEISTY_MEOW_SCRIPTS");
 #@shell_files = sort(readdir(scripts));
-#print "yeti scripts: @shell_files\n";
+#print "scripts: @shell_files\n";
 
 @shell_files = &load_file_names("$FEISTY_MEOW_SCRIPTS");
 

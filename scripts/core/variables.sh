@@ -134,20 +134,12 @@ if [ -z "$NECHUNG" ]; then
     fi
     # now augment the environment if we found our build variables.
     if [ $found_build_vars == 1 ]; then
-      # the binary directory contains handy programs we use a lot in yeti.  we set up the path to it
-      # here based on the operating system.
-      # note that yeti has recently become more dependent on hoople.  hoople was always the source of
-      # the binaries, but now we don't ship them with yeti any more as pre-built items.  this reduces
-      # the size of the code package a lot and shortens up our possible exposure to compromised
-      # binaries.  people can bootstrap up their own set from hoople now instead.
+      # the binary directory contains handy programs we use a lot.  we set
+      # up the path to it here based on the operating system.
       export BINDIR=$FEISTY_MEOW_DIR/production/binaries
-  
       # add binaries created within build to the path.
-#    export PATH="$(dos_to_msys_path $BUILD_TOP/build/bin):$PATH"
       export PATH="$BINDIR:$PATH"
-  
       # Shared libraries are located via this variable.
-#    export LD_LIBRARY_PATH="$(dos_to_msys_path $LD_LIBRARY_PATH):$(dos_to_msys_path $BINDIR)"
       export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$BINDIR"
     fi
   }
