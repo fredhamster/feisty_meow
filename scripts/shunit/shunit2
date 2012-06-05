@@ -862,6 +862,10 @@ _shunit_generateReport()
     _shunit_msg_="${_shunit_msg_})"
   fi
 
+  if [ -z "$suite_end" ]; then
+    # make sure we don't get confused, since suite aborted early.
+    suite_end=$(date +%s)
+  fi
   duration_s=$(($suite_end - $suite_start))
   duration_m=$(($duration_s / 60))
   duration_h=$(($duration_m / 60))
