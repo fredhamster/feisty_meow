@@ -7,8 +7,6 @@ second, add these packages to get the full recommended set...
 shells:
   python
   perl
-  perl-win32-gui
-  perl-libwin32
 
 network:
   ncftp
