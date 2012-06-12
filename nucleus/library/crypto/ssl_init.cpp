@@ -36,7 +36,7 @@ const int SEED_SIZE = 100;
 // our global initialization object.
 SAFE_STATIC_CONST(ssl_init, static_ssl_initializer, )
 
-//#define DEBUG_SSL
+#define DEBUG_SSL
   // uncomment to cause more debugging information to be generated, plus
   // more checking to be performed in the SSL support.
 
