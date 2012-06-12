@@ -49,6 +49,11 @@ namespace octopi {
 const int MAX_CHUNK_RFC_COPY_HIER = 1 * MEGABYTE;
   // maximum size for each transfer chunk.
 
+const int EXPECTED_MAXIMUM_TRANSFER_TIME = 10 * HOUR_ms;
+  // how long do we allow the scanned file lists to stay relevant.
+  // we allow it a long time, since this is a copy and not an active
+  // synchronization.
+
 recursive_file_copy::~recursive_file_copy() {}
 
 const char *recursive_file_copy::outcome_name(const outcome &to_name)
@@ -85,7 +90,7 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
   ring_leader.add_tentacle(tran);
 
   outcome add_ret = tran->add_correspondence("snootums", source_dir,
-      10 * MINUTE_ms);
+      EXPECTED_MAXIMUM_TRANSFER_TIME);
   if (add_ret != tentacle::OKAY)
     RETURN_ERROR_RFC("failed to add the correspondence", NOT_FOUND);
 
