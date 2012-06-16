@@ -1,8 +1,0 @@
-include variables.def
-
-PROJECT = crypto_libraries
-BUILD_BEFORE = crypto \
-  tests_crypto 
-
-include rules.def
-
