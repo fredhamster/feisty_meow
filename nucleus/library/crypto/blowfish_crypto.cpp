@@ -41,11 +41,16 @@ const int FUDGE = 128;
 #undef set_key
   // get rid of a macro we don't want.
 
-#undef LOG
-#define LOG(t) CLASS_EMERGENCY_LOG(program_wide_logger::get(), t)
-
 //#define DEBUG_BLOWFISH
   // uncomment for noisier version.
+
+#ifdef DEBUG_BLOWFISH
+  #undef LOG
+  #define LOG(t) CLASS_EMERGENCY_LOG(program_wide_logger::get(), t)
+#else
+  #undef LOG
+  #define LOG(t) 
+#endif
 
 #ifdef DEBUG_BLOWFISH
   // this macro checks on the validity of the key sizes (in bits).
@@ -78,37 +83,51 @@ blowfish_crypto::blowfish_crypto(int key_size)
 : _key_size(key_size),
   _key(new byte_array)
 {
-//  FUNCDEF("constructor [int]");
+  FUNCDEF("ctor(int)");
   static_ssl_initializer();
+  LOG("prior to key size discuss");
   DISCUSS_KEY_SIZE(key_size);
   if (key_size < minimum_key_size())
     _key_size = minimum_key_size();
   if (key_size > maximum_key_size())
     _key_size = maximum_key_size();
+  LOG("prior to generate key");
   generate_key(_key_size, *_key);
+  LOG("after generate key");
 }
 
 blowfish_crypto::blowfish_crypto(const byte_array &key, int key_size)
 : _key_size(key_size),
   _key(new byte_array(key))
 {
-//  FUNCDEF("constructor [byte_array/int]");
+  FUNCDEF("ctor(byte_array,int)");
   // any problems with the key provided are horrid.  they will yield a
   // non-working blowfish object.
+  LOG("prior to key size discuss");
   DISCUSS_KEY_SIZE(key_size);
+  LOG("prior to provided key discuss");
   DISCUSS_PROVIDED_KEY(key_size, key);
+  LOG("prior to ssl static init");
   static_ssl_initializer();
+  LOG("after ssl static init");
 }
 
 blowfish_crypto::blowfish_crypto(const blowfish_crypto &to_copy)
 : root_object(),
   _key_size(to_copy._key_size),
   _key(new byte_array(*to_copy._key))
-{ static_ssl_initializer(); }
+{
+  FUNCDEF("copy ctor");
+  static_ssl_initializer(); 
+  LOG("after ssl static init");
+}
 
 blowfish_crypto::~blowfish_crypto()
 {
+  FUNCDEF("dtor");
+  LOG("prior to key whack");
   WHACK(_key);
+  LOG("after key whack");
 }
 
 int blowfish_crypto::key_size() const { return _key_size; }
@@ -129,7 +148,7 @@ blowfish_crypto &blowfish_crypto::operator = (const blowfish_crypto &to_copy)
 
 bool blowfish_crypto::set_key(const byte_array &new_key, int key_size)
 {
-//  FUNCDEF("set_key");
+  FUNCDEF("set_key");
   if (!new_key.length()) return false;
   DISCUSS_KEY_SIZE(key_size);
   DISCUSS_PROVIDED_KEY(key_size, new_key);
@@ -143,7 +162,7 @@ bool blowfish_crypto::set_key(const byte_array &new_key, int key_size)
 
 void blowfish_crypto::generate_key(int size, byte_array &new_key)
 {
-//  FUNCDEF("generate_key");
+  FUNCDEF("generate_key");
   DISCUSS_KEY_SIZE(size);
   if (size < minimum_key_size())
     size = minimum_key_size();
@@ -160,14 +179,18 @@ SAFE_STATIC(mutex, __vector_init_lock, )
 
 const byte_array &blowfish_crypto::init_vector()
 {
+  FUNCDEF("init_vector");
   auto_synchronizer locking(__vector_init_lock());
   static byte_array to_return(EVP_MAX_IV_LENGTH);
   static bool initted = false;
+  LOG("prior to initted check");
   if (!initted) {
+    LOG("actually doing init");
     for (int i = 0; i < EVP_MAX_IV_LENGTH; i++)
       to_return[i] = 214 - i;
     initted = true;
   }
+  LOG("leaving init check");
   return to_return;
 }
 
@@ -199,7 +222,7 @@ bool blowfish_crypto::encrypt(const byte_array &source,
     to_return = false;
   } else {
     // chop any extra space off.
-//    LOG(a_sprintf("encrypting bytes %d to %d.\n", i, edge));
+    LOG(a_sprintf("chopping bytes %d to %d.\n", encoded_len, encoded.last()));
     encoded.zap(encoded_len, encoded.last());
     target = encoded;
   }
@@ -215,7 +238,7 @@ bool blowfish_crypto::encrypt(const byte_array &source,
           "failed, result=%d.", enc_ret));
       to_return = false;
     } else {
-//      LOG(a_sprintf("padding added %d bytes.\n", pad_len));
+      LOG(a_sprintf("padding added %d bytes.\n", pad_len));
       encoded.zap(pad_len, encoded.last());
       target += encoded;
     }
@@ -234,7 +257,7 @@ bool blowfish_crypto::decrypt(const byte_array &source,
   bool to_return = true;
   EVP_CIPHER_CTX session;
   EVP_CIPHER_CTX_init(&session);
-//LOG(a_sprintf("key size %d bits.\n", BITS_PER_BYTE * _key->length()));
+  LOG(a_sprintf("key size %d bits.\n", BITS_PER_BYTE * _key->length()));
   EVP_DecryptInit_ex(&session, EVP_bf_cbc(), NIL, _key->observe(),
       init_vector().observe());
   EVP_CIPHER_CTX_set_key_length(&session, _key_size);
@@ -249,7 +272,7 @@ bool blowfish_crypto::decrypt(const byte_array &source,
     continuable_error(class_name(), func, "decryption failed.");
     to_return = false;
   } else {
-//    LOG(a_sprintf("  decrypted size in bytes is %d.\n", decoded_len));
+    LOG(a_sprintf("  decrypted size in bytes is %d.\n", decoded_len));
     decoded.zap(decoded_len, decoded.last());
     target = decoded;
   }
@@ -259,7 +282,7 @@ bool blowfish_crypto::decrypt(const byte_array &source,
     decoded.reset(FUDGE);  // reinflate for padding.
     int pad_len = 0;
     dec_ret = EVP_DecryptFinal_ex(&session, decoded.access(), &pad_len);
-//    LOG(a_sprintf("padding added %d bytes.\n", pad_len));
+    LOG(a_sprintf("padding added %d bytes.\n", pad_len));
     if (dec_ret != 1) {
       continuable_error(class_name(), func, a_sprintf("finalizing decryption "
           "failed, result=%d, padlen=%d, target had %d bytes.", dec_ret,

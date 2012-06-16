@@ -16,6 +16,7 @@
 
 #include <basis/functions.h>
 #include <basis/mutex.h>
+#include <loggers/program_wide_logger.h>
 #include <structures/static_memory_gremlin.h>
 
 #include <openssl/crypto.h>
@@ -23,12 +24,23 @@
 #include <openssl/rand.h>
 
 using namespace basis;
+using namespace loggers;
 using namespace mathematics;
 using namespace structures;
 
 namespace crypto {
 
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+//#define DEBUG_SSL
+  // uncomment to cause more debugging information to be generated, plus
+  // more checking to be performed in the SSL support.
+
+#ifdef DEBUG_SSL
+  #undef LOG
+  #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+#else
+  #undef LOG
+  #define LOG(s)
+#endif
 
 const int SEED_SIZE = 100;
   // the size of the random seed that we'll use.
@@ -36,26 +48,33 @@ const int SEED_SIZE = 100;
 // our global initialization object.
 SAFE_STATIC_CONST(ssl_init, static_ssl_initializer, )
 
-#define DEBUG_SSL
-  // uncomment to cause more debugging information to be generated, plus
-  // more checking to be performed in the SSL support.
-
 ssl_init::ssl_init()
 : c_rando()
 {
+  FUNCDEF("ctor");
 #ifdef DEBUG_SSL
+  LOG("prior to crypto debug init");
   CRYPTO_malloc_debug_init();
+  LOG("prior to dbg set options");
   CRYPTO_dbg_set_options(V_CRYPTO_MDEBUG_ALL);
+  LOG("prior to mem ctrl");
   CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON);
 #endif
+  LOG("prior to rand seed");
   RAND_seed(random_bytes(SEED_SIZE).observe(), SEED_SIZE);
+  LOG("after rand seed");
 }
 
 ssl_init::~ssl_init()
 {
+  FUNCDEF("dtor");
+  LOG("prior to crypto cleanup");
   CRYPTO_cleanup_all_ex_data();
+  LOG("prior to err remove state");
   ERR_remove_state(0);
+  LOG("prior to mem leaks fp");
   CRYPTO_mem_leaks_fp(stderr);
+  LOG("after mem leaks fp");
 }
 
 const chaos &ssl_init::randomizer() const { return c_rando; }
