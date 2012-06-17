@@ -91,6 +91,7 @@ astring application_configuration::get_cmdline_from_proc()
   // command line are all separated by zero characters.
   __check_once_app_path = filebuff;
   delete [] filebuff;
+printf("got an app name before chewing: %s\n", __check_once_app_path.s());
   // clean out quote characters from the name.
   for (int i = __check_once_app_path.length() - 1; i >= 0; i--) {
     if (__check_once_app_path[i] == '"') __check_once_app_path.zap(i, i);
@@ -101,6 +102,7 @@ astring application_configuration::get_cmdline_from_proc()
   if (testing.had_directory()) return __check_once_app_path;  // all set.
 
 //hmmm: the below might be better off as a find app in path method, which relies on which.
+printf("no dir part found, app name after chewing: %s\n", __check_once_app_path.s());
 
   // there was no directory component, so we'll try to guess one.
   astring temp_filename(environment::get("TMP")
@@ -294,24 +296,10 @@ const astring &application_configuration::LOGGING_FOLDER_NAME() { STATIC_STRING(
 const int MAX_LOG_PATH = 200;
   // the maximum length of the entry stored for the log path.
 
-/*
-astring application_configuration::installation_root()
-{
-  astring to_return = read_item(LOCAL_FOLDER_NAME());
-  if (!to_return) {
-    // well, if this other guy has a path, we'll give that back.  otherwise,
-    // we don't know what the path should be at all.
-    to_return = filename(application_configuration_file()).dirname();
-  }
-  return to_return;
-}
-*/
-
 astring application_configuration::get_logging_directory()
 {
   // start with the root of our installation.
   astring def_log = application_directory();
-///installation_root();
   // add logs directory underneath that.
   def_log += "/logs";
     // add the subdirectory for logs.
@@ -353,8 +341,6 @@ astring application_configuration::get_logging_directory()
 
 astring application_configuration::make_logfile_name(const astring &base_name)
 { return get_logging_directory() + "/" + base_name; }
-
-///astring application_configuration::core_bin_directory() { return read_item("core_bin"); }
 
 astring application_configuration::read_item(const astring &key_name)
 {
