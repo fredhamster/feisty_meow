@@ -1,0 +1,16 @@
+
+# shell option parsing -- old school version only handles single dash options.
+
+while getopts "fr:q:a:h" opt; do
+    case "${opt}" in
+        f) force_query=1; ;;
+        r) row_num="${OPTARG}"; ;;
+        q) queue_name="${OPTARG}"; ;;
+        a) alias_name="${OPTARG}"; ;;
+        h) usage 1>&2;  exit ${EX_OK}; ;;
+        ?) usage 1>&2;  exit ${EX_USAGE}; ;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
