@@ -304,6 +304,18 @@ bool filename::is_executable() const
   return !!(fill.st_mode & S_IEXEC);
 }
 
+bool filename::is_normal() const
+{
+  status_info fill;
+  if (!get_info(&fill))
+    return false;
+  bool weird = S_ISCHR(fill.st_mode)
+      || S_ISBLK(fill.st_mode)
+      || S_ISFIFO(fill.st_mode)
+      || S_ISSOCK(fill.st_mode);
+  return !weird;
+}
+
 int filename::find_last_separator(const astring &look_at) const
 {
   int last_sep = -1;

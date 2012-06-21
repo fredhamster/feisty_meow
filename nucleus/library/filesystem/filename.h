@@ -141,6 +141,10 @@ public:
   bool is_readable() const;
   bool is_executable() const;
 
+  // is_normal makes sure that the file or directory is not a named pipe or other
+  // special type of file.  symbolic links are considered normal.
+  bool is_normal() const;
+
   enum write_modes {
     ALLOW_NEITHER = 0x0,
     ALLOW_READ = 0x1, ALLOW_WRITE = 0x2,

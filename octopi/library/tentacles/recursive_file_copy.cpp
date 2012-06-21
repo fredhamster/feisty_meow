@@ -141,7 +141,7 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
 
   int iter = 0;
   while (true) {
-//LOG(a_sprintf("ongoing chunk %d", ++iter));
+LOG(a_sprintf("ongoing chunk %d", ++iter));
 
     // keep going until we find a broken reply.
     file_transfer_infoton *ongoing = new file_transfer_infoton;

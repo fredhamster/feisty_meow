@@ -32,7 +32,7 @@ using namespace structures;
 using namespace nodes;
 using namespace textual;
 
-//#define DEBUG_DIRECTORY_TREE
+#define DEBUG_DIRECTORY_TREE
   // uncomment for noisier version.
 
 #undef LOG
@@ -187,6 +187,10 @@ void directory_tree::traverse(const astring &path, const char *pattern,
 #ifdef DEBUG_DIRECTORY_TREE
     LOG(astring("seeking path: ") + new_path);
 #endif
+    if (!filename(new_path).is_normal()) {
+LOG(astring("bailing on weird dir: ") + new_path);
+      continue;  // only regular directories please.
+    }
     for (int q = 0; q < add_to.branches(); q++) {
       filename_tree *curr_kid = (filename_tree *)add_to.branch(q);
 #ifdef DEBUG_DIRECTORY_TREE
@@ -610,7 +614,13 @@ bool directory_tree::compare_trees(const directory_tree &source,
       if (!target_now  // there was no node, so we're adding everything...
           || !target_now->_files.member_with_state(*files[i], how_compare) ) {
         // ... or we need to add this file since it's missing.
-
+/*
+//hmmm: this one might be redundant.  we shouldn't add it in the first place.
+        if (!files[i]->is_normal()) {
+          LOG(astring("skipping abnormal file:  ") + *files[i]);
+          continue;  // wasn't useful to do this one.
+        }
+*/
 #ifdef DEBUG_DIRECTORY_TREE
         LOG(astring("adding record: ") + files[i]->text_form());
 #endif
@@ -778,12 +788,16 @@ outcome directory_tree::add_path(const astring &new_item, bool just_size)
   filename adding(new_item);
   if (!adding.good()) {
     LOG(astring("non-existent new item!  ") + new_item);
+    return common::NOT_FOUND;  // not an existing path.
+  }
+  if (!adding.is_normal()) {
+    LOG(astring("abnormal new item:  ") + new_item);
     return common::BAD_INPUT;  // not a good path.
   }
   int file_subtract = 0;  // if it's a file, then we remove last component.
   if (!adding.is_directory()) file_subtract = 1;
 #ifdef DEBUG_DIRECTORY_TREE
-  if (file_subtract) LOG(astring("adding a file ") + new_item)
+  if (file_subtract) LOG(astring("adding a file ") + new_item);
   else LOG(astring("adding a directory ") + new_item);
 #endif
 

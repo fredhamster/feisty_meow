@@ -161,15 +161,20 @@ bool directory::rescan()
     if (!strcmp(filename_transcoded.s(), par_dir.s())) continue;
 
 #ifdef UNICODE
-//temp
+/*temp
     to_unicode_persist(fudgemart, filename_transcoded);
     if (memcmp((wchar_t*)fudgemart, wfd.cFileName, wcslen(wfd.cFileName)*2))
       printf("failed to compare the string before and after transcoding\n");
+*/
 #endif
 
 //wprintf(to_unicode_temp("file is %ls\n"), (wchar_t*)to_unicode_temp(filename_transcoded));
     
     filename temp_name(*_path, filename_transcoded.s());
+    if (!temp_name.is_normal()) {
+      LOG(astring("skipping abnormal file:  ") + temp_name);
+      continue;  // cannot be adding goofy named pipes etc; cannot manage those.
+    }
 
     // add this to the appropriate list.
     if (temp_name.is_directory()) {
