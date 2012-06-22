@@ -158,14 +158,12 @@ void directory_tree::text_form(astring &target, bool show_files)
 void directory_tree::traverse(const astring &path, const char *pattern,
     filename_tree &add_to)
 {
-#ifdef DEBUG_DIRECTORY_TREE
   FUNCDEF("traverse");
-#endif
   // prepare the current node.
   add_to._dirname = filename(path, astring::empty_string());
   add_to._files.reset();
 #ifdef DEBUG_DIRECTORY_TREE
-  LOG(astring("working on node ") + add_to._dirname.raw());
+  LOG(astring("working on node ") + add_to._dirname);
 #endif
 
   // open the directory.
@@ -188,7 +186,9 @@ void directory_tree::traverse(const astring &path, const char *pattern,
     LOG(astring("seeking path: ") + new_path);
 #endif
     if (!filename(new_path).is_normal()) {
-LOG(astring("bailing on weird dir: ") + new_path);
+//#ifdef DEBUG_DIRECTORY_TREE
+      LOG(astring("bailing on weird dir: ") + new_path);
+//#endif
       continue;  // only regular directories please.
     }
     for (int q = 0; q < add_to.branches(); q++) {
@@ -264,9 +264,7 @@ dir_tree_iterator *directory_tree::start(traversal_types type) const
 bool directory_tree::jump_to(dir_tree_iterator &scanning,
     const astring &sub_path)
 {
-#ifdef DEBUG_DIRECTORY_TREE
   FUNCDEF("jump_to");
-#endif
   string_array pieces;
   filename(sub_path).separate(pieces);
   for (int i = 0; i < pieces.length(); i++) {
@@ -492,6 +490,13 @@ bool directory_tree::calculate(filename_tree *start, bool just_size)
   filename_list *files;  // the filenames held at the iterator.
 
   while (directory_tree::current_dir(*ted, curr)) {
+    if (!curr.is_normal()) {
+//#ifdef DEBUG_DIRECTORY_TREE
+      LOG(astring("skipping abnormal dir:  ") + curr);
+//#endif
+      directory_tree::next(*ted);
+      continue;  // scary non-simple file type.
+    }
     // we have a good directory to show.
 #ifdef DEBUG_DIRECTORY_TREE
     LOG(astring("calcing node ") + curr.raw());
@@ -499,6 +504,16 @@ bool directory_tree::calculate(filename_tree *start, bool just_size)
     files = directory_tree::access(*ted);
     directory_tree::depth(*ted, depth);
     for (int i = 0; i < files->elements(); i++) {
+      filename curr_file = curr + "/" + *files->borrow(i);
+#ifdef DEBUG_DIRECTORY_TREE
+      LOG(astring("got a curr file: ") + curr_file);
+#endif
+      if (!curr_file.is_normal()) {
+//#ifdef DEBUG_DIRECTORY_TREE
+        LOG(astring("skipping abnormal file:  ") + curr);
+//#endif
+        continue;
+      }
       if (!files->borrow(i)->calculate(curr.raw(), just_size)) {
         LOG(astring("failure to calculate ") + files->get(i)->text_form());
       }
@@ -614,13 +629,6 @@ bool directory_tree::compare_trees(const directory_tree &source,
       if (!target_now  // there was no node, so we're adding everything...
           || !target_now->_files.member_with_state(*files[i], how_compare) ) {
         // ... or we need to add this file since it's missing.
-/*
-//hmmm: this one might be redundant.  we shouldn't add it in the first place.
-        if (!files[i]->is_normal()) {
-          LOG(astring("skipping abnormal file:  ") + *files[i]);
-          continue;  // wasn't useful to do this one.
-        }
-*/
 #ifdef DEBUG_DIRECTORY_TREE
         LOG(astring("adding record: ") + files[i]->text_form());
 #endif
@@ -678,9 +686,7 @@ outcome directory_tree::find_common_root(const astring &finding, bool exists,
     filename_tree * &found, astring &reassembled, string_array &pieces,
     int &match_place)
 {
-#ifdef DEBUG_DIRECTORY_TREE
   FUNCDEF("find_common_root");
-#endif
   // test the path to find what it is.
   filename adding(finding);
   if (exists && !adding.good())
@@ -791,7 +797,9 @@ outcome directory_tree::add_path(const astring &new_item, bool just_size)
     return common::NOT_FOUND;  // not an existing path.
   }
   if (!adding.is_normal()) {
+//#ifdef DEBUG_DIRECTORY_TREE
     LOG(astring("abnormal new item:  ") + new_item);
+//#endif
     return common::BAD_INPUT;  // not a good path.
   }
   int file_subtract = 0;  // if it's a file, then we remove last component.
@@ -888,9 +896,7 @@ outcome directory_tree::add_path(const astring &new_item, bool just_size)
 
 outcome directory_tree::remove_path(const astring &zap_item)
 {
-#ifdef DEBUG_DIRECTORY_TREE
   FUNCDEF("remove_path");
-#endif
   // find the common root, if one exists.  if not, we're not going to do this.
   string_array pieces;
   filename_tree *last_match = NIL;

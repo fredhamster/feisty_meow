@@ -183,11 +183,13 @@ bool directory::rescan()
       _files->concatenate(filename_transcoded);
 
 #ifdef UNICODE
+/*temp
       to_unicode_persist(fudgemart2, temp_name.raw());
       FILE *fpjunk = _wfopen(fudgemart2, to_unicode_temp("rb"));
       if (!fpjunk)
         LOG(astring("failed to open the file for testing: ") + temp_name.raw() + "\n");
       if (fpjunk) fclose(fpjunk);
+*/
 #endif
 
 	}
@@ -248,7 +250,7 @@ bool directory::remove_directory(const astring &path)
 
 bool directory::recursive_create(const astring &directory_name)
 {
-//  FUNCDEF("recursive_create");
+  FUNCDEF("recursive_create");
   filename dir(directory_name);
   string_array pieces;
   dir.separate(pieces);

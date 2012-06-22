@@ -46,7 +46,7 @@ const int FTT_CLEANING_INTERVAL = 30 * SECOND_ms;
 const int TRANSFER_TIMEOUT = 10 * MINUTE_ms;
   // if it hasn't been touched in this long, it's out of there.
 
-#define DEBUG_FILE_TRANSFER_TENTACLE
+//#define DEBUG_FILE_TRANSFER_TENTACLE
   // uncomment for noisier version.
 
 #undef LOG
