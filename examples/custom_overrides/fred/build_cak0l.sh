@@ -7,27 +7,22 @@ function build_cak0l()
   # fix memory limits.
 #hmmm: clean these up.
   if [ -f runContainer.sh ]; then
-    sed -e "s/-Xmx512M/-Xmx2G/" < "runContainer.sh" >"$TMP/${USER}_edited.tmp"
-    mv "$TMP/${USER}_edited.tmp" "runContainer.sh" 
+    sed -i -e "s/-Xmx512M/-Xmx2G/" "runContainer.sh" 
     chmod 755 "runContainer.sh" 
   fi
   if [ -f grid ]; then
-#    sed -e "s/-Xmx512M/-Xmx1G/" < "grid" >"$TMP/${USER}_edited.tmp"
-    mv "$TMP/${USER}_edited.tmp" "grid" 
+#    sed -i -e "s/-Xmx512M/-Xmx1G/" "grid"
     chmod 755 "grid"
-    popd
   fi
   if [ -f runContainer.bat ]; then
-    sed -e "s/-Xmx512M/-Xmx2G/" < "runContainer.bat" >"$TMP/${USER}_edited.tmp"
-    mv "$TMP/${USER}_edited.tmp" "runContainer.bat" 
+    sed -i -e "s/-Xmx512M/-Xmx2G/" "runContainer.bat"
     chmod 755 "runContainer.bat" 
   fi
   if [ -f grid.bat ]; then
-#    sed -e "s/-Xmx512M/-Xmx1G/" < "grid.bat" >"$TMP/${USER}_edited.tmp"
-    mv "$TMP/${USER}_edited.tmp" "grid.bat" 
+#    sed -i -e "s/-Xmx512M/-Xmx1G/" "grid.bat"
     chmod 755 "grid.bat"
-    popd
   fi
+  popd
 }
 
 function rebuild_cak0l()
