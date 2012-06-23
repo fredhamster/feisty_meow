@@ -12,7 +12,7 @@ function build_cak0l()
     chmod 755 "runContainer.sh" 
   fi
   if [ -f grid ]; then
-    sed -e "s/-Xmx512M/-Xmx1G/" < "grid" >"$TMP/${USER}_edited.tmp"
+#    sed -e "s/-Xmx512M/-Xmx1G/" < "grid" >"$TMP/${USER}_edited.tmp"
     mv "$TMP/${USER}_edited.tmp" "grid" 
     chmod 755 "grid"
     popd
@@ -23,7 +23,7 @@ function build_cak0l()
     chmod 755 "runContainer.bat" 
   fi
   if [ -f grid.bat ]; then
-    sed -e "s/-Xmx512M/-Xmx1G/" < "grid.bat" >"$TMP/${USER}_edited.tmp"
+#    sed -e "s/-Xmx512M/-Xmx1G/" < "grid.bat" >"$TMP/${USER}_edited.tmp"
     mv "$TMP/${USER}_edited.tmp" "grid.bat" 
     chmod 755 "grid.bat"
     popd
