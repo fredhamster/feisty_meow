@@ -80,6 +80,7 @@ Current information overload consists of:\n\
 # notes are individual files of tasks, usually, although some are combined.
 analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes"
 
+####
 #hmmm: make an html todo scanning function from this.
 # scan web documents for to-do lists.  individual items are marked with <li>.
 # we do this one a bit differently since we have different criteria for html to-do items.
@@ -88,9 +89,9 @@ total_overload=$(($html_item_depth + $total_overload))
 html_item_weight=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -c | tr -d ' ')
 total_weight=$(($total_weight + $html_item_weight))
 full_report+="$(format_report_line "$html_item_depth" "$html_item_weight" "to-do notes in html")"
+####
 
-# is that things that are intended are not always followed up on right away.  this catches us
-# being too hopeful and makes sure nothing seems to be getting done that's lagging.
+# scan all the items declared as active projects.
 analyze_by_dir_patterns "active items" ~/cloud/*active*
 
 # scan across all appropriately named project or research folders that live in the "cloud".
@@ -106,6 +107,10 @@ analyze_by_dir_patterns "trivial notes" ~/cloud/*trivia*
 # and then count up the things that we think will be cleaned soon, but one thing we have learned
 # unsorted files haven't been categorized yet.
 analyze_hierarchy_and_report ~/cloud/unsorted "unsorted files"
+
+# we now consider the backlog of things to read to be a relevant fact.  this is going to hose
+# up our weight accounting considerably.
+analyze_hierarchy_and_report ~/cloud/reading "reading list"
 
 full_report+="\n\
   =====================================\n\
