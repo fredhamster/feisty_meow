@@ -20,6 +20,7 @@
 
 #include <basis/functions.h>
 #include <basis/contracts.h>
+#include <loggers/program_wide_logger.h>
 #include <structures/object_packers.h>
 #include <structures/string_array.h>
 #include <textual/parser_bits.h>
@@ -28,16 +29,17 @@
 #include <stdio.h>
 
 using namespace basis;
-using namespace structures;
+using namespace loggers;
 using namespace nodes;
+using namespace structures;
 using namespace textual;
 
-#define DEBUG_DIRECTORY_TREE
+//#define DEBUG_DIRECTORY_TREE
   // uncomment for noisier version.
 
 #undef LOG
-#define LOG(to_print) printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
-//CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+#define LOG(to_print) CLASS_EMERGENCY_LOG(program_wide_logger::get(), to_print)
+//printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
 
 //////////////
 
@@ -434,6 +436,12 @@ filename_tree *directory_tree::seek(const astring &dir_name_in,
     for (posn = 0; posn < examining.length(); posn++) {
       check = examining[posn];
       filename current(check->_dirname);
+      if (!current.is_normal()) {
+//#ifdef DEBUG_DIRECTORY_TREE
+        LOG(astring("skipping abnormal dir:  ") + current);
+//#endif
+        continue;
+      }
 #ifdef DEBUG_DIRECTORY_TREE
       LOG(astring("looking at ") + current.raw());
 #endif
@@ -805,8 +813,8 @@ outcome directory_tree::add_path(const astring &new_item, bool just_size)
   int file_subtract = 0;  // if it's a file, then we remove last component.
   if (!adding.is_directory()) file_subtract = 1;
 #ifdef DEBUG_DIRECTORY_TREE
-  if (file_subtract) LOG(astring("adding a file ") + new_item);
-  else LOG(astring("adding a directory ") + new_item);
+  if (file_subtract) { LOG(astring("adding a file ") + new_item); }
+  else { LOG(astring("adding a directory ") + new_item); }
 #endif
 
   // find the common root, break up the path into pieces, and tell us where

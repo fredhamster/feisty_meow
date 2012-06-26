@@ -47,6 +47,9 @@
 #endif
 */
 
+//#define DEBUG_DIRECTORY
+  // uncomment for noisier runs.
+
 #undef LOG
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
@@ -161,20 +164,16 @@ bool directory::rescan()
     if (!strcmp(filename_transcoded.s(), par_dir.s())) continue;
 
 #ifdef UNICODE
-/*temp
-    to_unicode_persist(fudgemart, filename_transcoded);
-    if (memcmp((wchar_t*)fudgemart, wfd.cFileName, wcslen(wfd.cFileName)*2))
+  #ifdef DEBUG_DIRECTORY
+    to_unicode_persist(kludgemart, filename_transcoded);
+    if (memcmp((wchar_t*)kludgemart, wfd.cFileName, wcslen(wfd.cFileName)*2))
       printf("failed to compare the string before and after transcoding\n");
-*/
+  #endif
 #endif
 
 //wprintf(to_unicode_temp("file is %ls\n"), (wchar_t*)to_unicode_temp(filename_transcoded));
     
     filename temp_name(*_path, filename_transcoded.s());
-    if (!temp_name.is_normal()) {
-      LOG(astring("skipping abnormal file:  ") + temp_name);
-      continue;  // cannot be adding goofy named pipes etc; cannot manage those.
-    }
 
     // add this to the appropriate list.
     if (temp_name.is_directory()) {
@@ -183,13 +182,13 @@ bool directory::rescan()
       _files->concatenate(filename_transcoded);
 
 #ifdef UNICODE
-/*temp
-      to_unicode_persist(fudgemart2, temp_name.raw());
-      FILE *fpjunk = _wfopen(fudgemart2, to_unicode_temp("rb"));
+  #ifdef DEBUG_DIRECTORY
+      to_unicode_persist(kludgemart2, temp_name.raw());
+      FILE *fpjunk = _wfopen(kludgemart2, to_unicode_temp("rb"));
       if (!fpjunk)
         LOG(astring("failed to open the file for testing: ") + temp_name.raw() + "\n");
       if (fpjunk) fclose(fpjunk);
-*/
+  #endif
 #endif
 
 	}
@@ -209,6 +208,13 @@ bool directory::rescan()
     // make sure that the filename matches the pattern also.
     if (add_it && !fnmatch(_pattern->s(), file, 0)) {
       filename temp_name(*_path, file);
+      if (!temp_name.is_normal()) {
+#ifdef DEBUG_DIRECTORY
+        LOG(astring("skipping abnormal file:  ") + temp_name);
+#endif
+        entry = readdir(dir);
+        continue;  // cannot be adding goofy named pipes etc; cannot manage those.
+      }
       // add this to the appropriate list.
       if (temp_name.is_directory())
         _folders->concatenate(file);
