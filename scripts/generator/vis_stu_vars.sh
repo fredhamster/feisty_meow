@@ -51,9 +51,9 @@ if [ ! -d "$PLATFORM_DIR" ]; then
 fi
 export WindowsSdkDir="$PLATFORM_DIR"
 
-echo "path before is $PATH"
+#echo "path before is $PATH"
 export PATH="$DevEnvDir:$VCINSTALLDIR/BIN:$VSxTOOLS:$VSxTOOLS/bin:$FrameworkDir/$FrameworkVersion:$FrameworkDir/v3.5:$VCINSTALLDIR/VCPackages:$VSINSTALLDIR/Common7/Tools:$PLATFORM_DIR/bin:$PATH"
-echo "path after is $PATH"
+#echo "path after is $PATH"
 
 export INCLUDE="$VCINSTALLDIR/ATLMFC/INCLUDE:$VCINSTALLDIR/INCLUDE:$PLATFORM_DIR/include"
 #:$FrameworkSDKDir/include"
@@ -84,12 +84,12 @@ export FrameworkDir=$(msys_to_dos_path $FrameworkDir)
 
 ##############
 
-echo "common tools dir is \"$VSxTOOLS\""
-echo cleaned windir is $WINDIR
-echo cleaned comn tools is $VSxTOOLS 
-echo root of visual studio is $VSINSTALLDIR
-echo platform dir is $PLATFORM_DIR
-echo framedir now $FrameworkDir
+#echo "common tools dir is \"$VSxTOOLS\""
+#echo cleaned windir is $WINDIR
+#echo cleaned comn tools is $VSxTOOLS 
+#echo root of visual studio is $VSINSTALLDIR
+#echo platform dir is $PLATFORM_DIR
+#echo framedir now $FrameworkDir
 
 ##############
 
