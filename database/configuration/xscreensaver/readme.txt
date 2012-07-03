@@ -1,6 +1,7 @@
 
 
-how to fix your screensaver after ubuntu oneiric ocelot wipes everything out:
+how to fix your screensaver after ubuntu oneiric ocelot or later wipes
+xscreensaver out:
 
 this page has good info about most of what's needed:
   http://www.webupd8.org/2011/10/things-to-tweak-after-installing-ubuntu.html
