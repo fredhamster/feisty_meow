@@ -56,12 +56,15 @@ public:
 
 const astring &TEST_FILE()
 {
-  const char *TEST_FILE_BASE = "/zz_garbage.txt";
+  const char *TEST_FILE_BASE = "/zz_garbage";
+  const char *TEST_FILE_SUFFIX = ".txt";
   static astring __hidden_filename;
   if (!__hidden_filename) {
     __hidden_filename = environment::get("TMP");
     if (!__hidden_filename) __hidden_filename = "/tmp";
-    __hidden_filename += astring(TEST_FILE_BASE);
+    __hidden_filename += TEST_FILE_BASE;
+    __hidden_filename += a_sprintf("%d", chaos().inclusive(0, 65535));
+    __hidden_filename += TEST_FILE_SUFFIX;
   }
   return __hidden_filename;
 }
