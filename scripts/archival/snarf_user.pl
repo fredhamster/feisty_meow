@@ -18,8 +18,9 @@
 #  version of the License.  Please send any updates to "fred@gruntose.com".   #
 ###############################################################################
 
-require "importenv.pl";
 require "shared_snarfer.pl";
+
+use Env qw(HOME USER);
 
 &initialize_snarfer;
 

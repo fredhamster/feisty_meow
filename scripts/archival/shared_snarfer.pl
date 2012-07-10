@@ -21,12 +21,12 @@
 ###############################################################################
 
 require "filename_helper.pl";
-require "hostname.pl";
-require "importenv.pl";
 require "inc_num.pl";
 
 use Cwd;
+use Sys::Hostname;
 use File::Which;
+use Env qw(FEISTY_MEOW_SCRIPTS TMP);
 
 $null_log = "/dev/null";
 
@@ -74,7 +74,8 @@ sub initialize_snarfer {
 
 # returns the current hostname, but without any domain included.
 sub short_hostname {
-  local($temphost) = &hostname();
+  local($temphost) = hostname();
+#&hostname();
   $temphost =~ s/([^.]*)\..*/\1/;
   return &lower($temphost);
 }
@@ -84,12 +85,6 @@ sub short_hostname {
 sub snarf_prefix {
   local($base) = @_;
   $date_tool = "date";
-
-#  if ($OS =~ /win/i) {
-#    # just hope that this is running under msys in our build bin.
-#    $date_tool = "$PRODUCTION_DIR/msys/bin/date";
-#  }
-
   local($date_part) = `$date_tool +%Y-%m-%d-%H%M`;
   while ($date_part =~ /[\r\n]$/) { chop $date_part; }
   local($host) = &short_hostname();

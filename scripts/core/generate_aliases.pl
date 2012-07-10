@@ -23,7 +23,7 @@
 
 require "filename_helper.pl";
 
-require "importenv.pl";
+use Env qw(BINDIR BUILD_TOP FEISTY_MEOW_DIR FEISTY_MEOW_GENERATED FEISTY_MEOW_SCRIPTS SHELL_DEBUG );
 
 # given a possible aliasable filename, this will decide whether to create a perl
 # or bash alias for it.  it needs the filename of the possible alias and the
@@ -189,8 +189,6 @@ if (length($SHELL_DEBUG)) {
 
 # open the alias files to be created.
 open(she, ">> $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
-
-#print "os is $OS\n";
 
 # find the list of files in the scripts directory.
 #opendir(scripts, "$FEISTY_MEOW_SCRIPTS");

@@ -19,7 +19,8 @@
 ###############################################################################
 
 require "filename_helper.pl";
-require "importenv.pl";
+
+use Env qw(TMP);
 
 $new_version = `mktemp "$TMP/zz_add_cr_tmp.XXXXXX"`;
 chop($new_version);

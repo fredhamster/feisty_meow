@@ -23,9 +23,9 @@
 # support from CPAN.  this can be installed by using cpan and telling it
 #    install Text::Diff
 
-require "ctime.pl";
 require "filename_helper.pl";
-require "importenv.pl";
+
+use Env qw(FEISTY_MEOW_DIR);
 
 use Text::Diff;
 
@@ -146,7 +146,7 @@ sub print_header {
   # this function prints out the header prior to printing out any real
   # data.  if there are no diffs, the header should never get printed.
   print "$break_line\n";
-  local($printable_date) = &ctime(time);
+  local($printable_date) = scalar(localtime());
   $printable_date =~ s/\n//g;
   print "[$printable_date]\n";
   print "Left (<) is \"$temp_src\".\n";

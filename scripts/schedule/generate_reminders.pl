@@ -26,7 +26,7 @@
 # The day must be a number, followed by a space.  Anything after that
 # space is considered the description of the event.
 
-require "importenv.pl";
+use Env qw(CLOUD_DIR TMP);
 
 ##############
 

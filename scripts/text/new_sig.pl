@@ -19,7 +19,8 @@
 ###############################################################################
 
 require "filename_helper.pl";
-require "importenv.pl";
+
+use Env qw(HOME TMP);
 
 # creates a new signature file for outgoing email.
 local($temp_filename) = "$TMP/zz_signate";

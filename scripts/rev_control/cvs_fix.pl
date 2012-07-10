@@ -20,7 +20,6 @@
 ###############################################################################
 
 #require "filename_helper.pl";
-#require "importenv.pl";
 
 $new_cmd="cvs";
 
