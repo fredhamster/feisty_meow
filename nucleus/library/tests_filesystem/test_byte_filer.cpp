@@ -128,11 +128,8 @@ int test_byte_filer::run_simple_test()
     int should_be_failure = fred.write(to_fake_stuff);
     ASSERT_EQUAL(should_be_failure, 0, "write on read only, should not succeed");
 
-///    int fredsize = int(fred.size());
-///    fred.chunk_factor(fredsize);
-
 #ifdef DEBUG_BYTE_FILER
-    LOG(a_sprintf("about to try reading from file %d bytes", fredsize));
+    LOG(a_sprintf("about to try reading from file %d bytes", block_size * 2));
 #endif
     byte_array file_contents;
     int bytes_read = fred.read(file_contents, block_size * 2);
