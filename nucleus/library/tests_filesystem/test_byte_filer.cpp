@@ -44,7 +44,7 @@ using namespace unit_test;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
-#define DEBUG_BYTE_FILER
+//#define DEBUG_BYTE_FILER
   // uncomment for noisy test run.
 
 class test_byte_filer : virtual public unit_base, virtual public application_shell
