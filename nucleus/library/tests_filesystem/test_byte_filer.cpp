@@ -65,6 +65,8 @@ const astring &TEST_FILE()
   if (!__hidden_filename) {
     __hidden_filename = environment::get("TMP");
     if (!__hidden_filename) __hidden_filename = "/tmp";
+    // try to create it just in case it wasn't there already.
+    directory::make_directory(__hidden_filename);
     __hidden_filename += TEST_FILE_BASE;
     __hidden_filename += a_sprintf("%d", chaos().inclusive(0, 65535));
     __hidden_filename += TEST_FILE_SUFFIX;
