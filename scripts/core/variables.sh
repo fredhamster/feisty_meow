@@ -38,6 +38,22 @@ if [ -z "$NECHUNG" ]; then
   export IS_DARWIN=$(echo $OSTYPE | grep -i darwin)
   
   ##############
+
+  # guess the current platform.
+  IS_UNIX=$(uname | grep -i linux)
+  if [ -z "$IS_UNIX" ]; then IS_UNIX=$(uname | grep -i unix); fi
+  if [ -z "$IS_UNIX" ]; then IS_UNIX=$(uname | grep -i darwin); fi
+  IS_DOS=$(uname | grep -i ming)
+  if [ -z "$IS_DOS" ]; then IS_DOS=$(uname | grep -i cygwin); fi
+
+  # now if we're stuck in DOS, try to determine the type of system.
+  if [ ! -z "$IS_DOS" ]; then
+    # IS_MSYS will be non-empty if this is the msys toolset.  otherwise
+    # we assume that it's cygwin.
+    IS_MSYS=$(uname | grep -i ming)
+  fi
+
+  ##############
   
   # fallbacks to set crucial variables for feisty meow...
   

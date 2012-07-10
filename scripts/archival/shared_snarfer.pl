@@ -179,10 +179,9 @@ sub snarfer {
     push(@missing_log, $base);
   }
 
-print "snarfer function assumes msys canonicalization is appropriate--not cygwin compat.\n";
   local($outcome) = 0xff & system $tar_tool, 
-      "-rf", &msys_canonicalize($target_file), @excludes,
-      "--files-from=" . &msys_canonicalize($temp_file);
+      "-rf", &canonicalize($target_file), @excludes,
+      "--files-from=" . &canonicalize($temp_file);
   if ($outcome) {
     unlink($temp_file);
     die("failure to archive");
@@ -219,10 +218,9 @@ sub snarf_file_list {
     if ($i =~ /^\.\//) {
       $i = substr $i, 2, length($i) - 2;
     }
-print "snarf_file_list function assumes msys canonicalization is appropriate--not cygwin compat.\n";
     local($outcome) = 0xff & system $tar_tool,
 #"--directory=" . "$root",
-        @extra_flags, "-rf", &msys_canonicalize($target_file), @excludes, $i;
+        @extra_flags, "-rf", &canonicalize($target_file), @excludes, $i;
     if ($outcome) { die("failure to archive"); }
   }
   chdir("$currdir");
@@ -258,8 +256,7 @@ sub remove_from_backup {
 #print "remove_from_backup: pref=$prefix, num=$number, patt=$pattern,\n";
   local($target_file) = &snarf_name($prefix, $number);
 
-print "remove_from_backup function assumes msys canonicalization is appropriate--not cygwin compat.\n";
-  open(TARPROC, "$tar_tool --delete -f " . &msys_canonicalize($target_file)
+  open(TARPROC, "$tar_tool --delete -f " . &canonicalize($target_file)
       . " \"$pattern\" 2>$null_log |");
   <TARPROC>;
 }
@@ -371,9 +368,8 @@ sub backup_number {
   local($currdir) = cwd();
   chdir($TMP);
 
-print "backup_number function assumes msys canonicalization is appropriate--not cygwin compat.\n";
   local($outcome) = 0xff & system $tar_tool, "-cf",
-      &msys_canonicalize($target_file), &msys_canonicalize($number_file);
+      &canonicalize($target_file), &canonicalize($number_file);
   if ($outcome) { die("failure to archive"); }
 
   local($prefix_file) = "prefix.bac";
@@ -382,7 +378,7 @@ print "backup_number function assumes msys canonicalization is appropriate--not 
   close(NUM_PREFIX);
 
   $outcome = 0xff & system $tar_tool, "-rf",
-      &msys_canonicalize($target_file), &msys_canonicalize($prefix_file);
+      &canonicalize($target_file), &canonicalize($prefix_file);
   if ($outcome) { die("failure to archive"); }
   unlink($prefix_file);
   chdir($currdir);
@@ -450,9 +446,8 @@ sub restore_archive {
     $filename = "../" . $filename;
   }
 
-print "restore_archive function assumes msys canonicalization is appropriate--not cygwin compat.\n";
   local($outcome) = 0xff & system $tar_tool, "-xzf",
-      &msys_canonicalize($filename);
+      &canonicalize($filename);
   if ($outcome) { die("failure to undo archive"); }
 
   local($outcome) =

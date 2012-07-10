@@ -18,7 +18,7 @@
 #  version of the License.  Please send any updates to "fred@gruntose.com".   #
 ###############################################################################
 
-use Env qw(OS);
+use Env qw(OS IS_MSYS);
 
 ############################################################################
 
@@ -233,34 +233,22 @@ sub unix_canonicalize {
   return &canonicalizer(@_, "/");
 }
 
-# similar to the normal unix version, but supports msys's weird paths.
-sub msys_canonicalize {
-  return &canonicalizer(@_, "/", 1);
-}
-
-# similar to the msys version, but services cygwin.
-sub cygwin_canonicalize {
-  return &canonicalizer(@_, "/", 2);
-}
-
-
 # this more general routine gets a directory separator passed in.  it then
 # replaces all the separators with that one.
-
 sub canonicalizer {
   local($directory_name) = $_[0];
   local($dirsep) = $_[1];
-  local($do_funky) = $_[2];
-#print "do funky is set to \"$do_funky\"\n";
 
 #print "old dir name is \"$directory_name\"\n";
   
   if ($OS =~ /win/i) {
 #somewhat abbreviated check; only catches windoze systems, not dos or os2.
-    if ($do_funky eq "1") {
+    # IS_MSYS is calculated by feisty meow scripts startup; it will be
+    # non-empty if this is the msys tool kit.
+    if (length($IS_MSYS) > 0) {
       # msys utilities version (http://www.mingw.org)
       $directory_name =~ s/^(.):[\\\/](.*)$/\/\1\/\2/;
-    } elsif ($do_funky eq "2") {
+    } else {
       # cygwin utilities version (http://www.cygwin.com)
       $directory_name =~ s/^(.):[\\\/](.*)$/\/cygdrive\/\1\/\2/;
     }

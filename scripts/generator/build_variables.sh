@@ -72,11 +72,11 @@ export CLAM_DIR="$(cd $BUILD_SCRIPTS_DIR/../clam ; \pwd)"
 export BUILDER_DIR="$BUILDING_HIERARCHY"
 
 # guess the current platform.
-IS_UNIX=$(uname | grep -i linux)
-if [ -z "$IS_UNIX" ]; then IS_UNIX=$(uname | grep -i unix); fi
-if [ -z "$IS_UNIX" ]; then IS_UNIX=$(uname | grep -i darwin); fi
-IS_DOS=$(uname | grep -i ming)
-if [ -z "$IS_DOS" ]; then IS_DOS=$(uname | grep -i cygwin); fi
+#IS_UNIX=$(uname | grep -i linux)
+#if [ -z "$IS_UNIX" ]; then IS_UNIX=$(uname | grep -i unix); fi
+#if [ -z "$IS_UNIX" ]; then IS_UNIX=$(uname | grep -i darwin); fi
+#IS_DOS=$(uname | grep -i ming)
+#if [ -z "$IS_DOS" ]; then IS_DOS=$(uname | grep -i cygwin); fi
 
 # set some clam parameters for compilation.  if the script can't guess the
 # right configuration, then you will need to set them in the last 'else'
