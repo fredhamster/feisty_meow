@@ -19,7 +19,8 @@
 ###############################################################################
 
 require "filename_helper.pl";
-require "importenv.pl";
+
+use Env qw(TMP);
 
 local($chewed_line) = "";
 local(@arg_list);

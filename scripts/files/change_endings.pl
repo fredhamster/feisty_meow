@@ -25,9 +25,6 @@
 
 require "filename_helper.pl";
 
-#require "importenv.pl";
-#require "inc_num.pl";
-
 local($first) = $ARGV[0];
 local($second) = $ARGV[1];
 

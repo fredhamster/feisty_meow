@@ -18,7 +18,7 @@
 #  version of the License.  Please send any updates to "fred@gruntose.com".   #
 ###############################################################################
 
-require "importenv.pl";
+use Env qw(OS);
 
 ############################################################################
 

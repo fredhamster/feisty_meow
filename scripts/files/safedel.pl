@@ -20,11 +20,11 @@
 ###############################################################################
 
 require Cwd;
-require "ctime.pl";
 require "filename_helper.pl";
 require "inc_num.pl";
-require "importenv.pl";
 require "zap_the_dir.pl";
+
+use Env qw(TMP OS);
 
 #hmmm: need a usage statement.
 
@@ -125,7 +125,8 @@ sub safedel {
     print "Trashed [@deleted].\n";
     open(REPORT, ">>$TMP/zz_safedel.rpt");
 
-    local($printable_date) = &ctime(time);
+    local($printable_date) = scalar(localtime());
+#&ctime(time);
     $printable_date =~ s/\n//g;
     print REPORT $printable_date . " -- safedel: \"temp" . $number . ".zip\" <= [@deleted]\n";
     close(REPORT);

@@ -21,7 +21,6 @@
 ###############################################################################
 
 require "filename_helper.pl";
-require "importenv.pl";
 
 sub interrupt_handler {
     # skip doing any deletions.
