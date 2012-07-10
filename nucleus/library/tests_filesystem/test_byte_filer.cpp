@@ -44,6 +44,9 @@ using namespace unit_test;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
+#define DEBUG_BYTE_FILER
+  // uncomment for noisy test run.
+
 class test_byte_filer : virtual public unit_base, virtual public application_shell
 {
 public:
@@ -72,7 +75,7 @@ const astring &TEST_FILE()
 int test_byte_filer::run_simple_test()
 {
   FUNCDEF("run_simple_test");
-#ifdef DEBUG
+#ifdef DEBUG_BYTE_FILER
   LOG("ahoy, beginning file test...");
   LOG(astring("test file is ") + TEST_FILE());
 #endif
@@ -93,7 +96,7 @@ int test_byte_filer::run_simple_test()
   test1.unlink();
 
   int block_size = randomizer.inclusive(3000, 30000);
-#ifdef DEBUG
+#ifdef DEBUG_BYTE_FILER
   LOG(a_sprintf("block size=%d", block_size));
 #endif
   abyte *original_block = new abyte[block_size];
@@ -102,7 +105,7 @@ int test_byte_filer::run_simple_test()
   unsigned int original_checksum
       = checksums::bizarre_checksum((abyte *)original_block, block_size);
   if (original_checksum) {} // compiler quieting.
-#ifdef DEBUG
+#ifdef DEBUG_BYTE_FILER
   LOG(a_sprintf("random block checksum=%d", original_checksum));
 #endif
   {
@@ -111,7 +114,7 @@ int test_byte_filer::run_simple_test()
     byte_filer fred(TEST_FILE(), "w+");
     fred.write(to_stuff_in_file);
   }
-#ifdef DEBUG
+#ifdef DEBUG_BYTE_FILER
   LOG(astring("about to compare file to checksum"));
 #endif
   {
@@ -119,7 +122,7 @@ int test_byte_filer::run_simple_test()
     byte_array to_fake_stuff(21309, temp_array);
     delete [] temp_array;
     byte_filer fred(TEST_FILE(), "r");
-#ifdef DEBUG
+#ifdef DEBUG_BYTE_FILER
     LOG(astring("about to try writing to file"));
 #endif
     int should_be_failure = fred.write(to_fake_stuff);
@@ -128,7 +131,7 @@ int test_byte_filer::run_simple_test()
 ///    int fredsize = int(fred.size());
 ///    fred.chunk_factor(fredsize);
 
-#ifdef DEBUG
+#ifdef DEBUG_BYTE_FILER
     LOG(a_sprintf("about to try reading from file %d bytes", fredsize));
 #endif
     byte_array file_contents;
