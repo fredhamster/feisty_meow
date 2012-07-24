@@ -42,14 +42,32 @@ SECURITY_KEY="-i $HOME/.ssh/id_dsa_fred"
 
 ##############
 
+# how often to play sounds when reconnecting.
+NOISE_PERIOD=60
+
+# when we last played a sound.
+LAST_SOUND_TIME=0
+
+play_sound_periodically()
+{
+  CURRENT_TIME=$(date +"%s")
+  if (( $CURRENT_TIME - $LAST_SOUND_TIME >= $NOISE_PERIOD )); then
+    echo playing sound now.
+    bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile &>/dev/null </dev/null &
+#hmmm: parameterize this for the sound to be played.  doofus.
+    LAST_SOUND_TIME=$CURRENT_TIME
+  fi
+}
+
+##############
+
 while true; do
   echo Connecting sendmail to serenely zooty.
   ssh  -2 -N -v ${TUNNEL_LIST[*]} "$USER_PLUS_HOST"
-  bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile &>/dev/null </dev/null &
-#hmmm: parameterize this for the sound to be played.  doofus.
   echo "Got dumped from tunnels; re-establishing connection."
+  play_sound_periodically
   echo "Note: if you're being asked for a password, you haven't set up an RSA key yet."
-  sleep 14
+  sleep 1
 done
 
 #-L 8028:localhost:3128 
