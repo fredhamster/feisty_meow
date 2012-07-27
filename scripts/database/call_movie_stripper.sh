@@ -7,5 +7,5 @@ vids="$DOCUMENT_ROOT/Info/Quartz/video/video_tapes.csv"
 echo "Content-type: text/plain"
 echo ""
 echo ""
-sh movie_stripper.sh "$vids" "$movie_name"
+bash movie_stripper.sh "$vids" "$movie_name"
 

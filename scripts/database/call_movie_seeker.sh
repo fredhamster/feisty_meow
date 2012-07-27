@@ -7,7 +7,7 @@ vids="$DOCUMENT_ROOT/Info/Quartz/video/video_tapes.csv"
 
 randof="$(mktemp "$TMP/zz_randocgi.XXXXXX")"
 
-sh movie_seeker.sh "$vids" "$movie_name" &>"$randof"
+bash movie_seeker.sh "$vids" "$movie_name" &>"$randof"
 
 if [ -s "$randof" ]; then
 

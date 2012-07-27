@@ -6,7 +6,7 @@ vids="$DOCUMENT_ROOT/Info/Quartz/video/video_tapes.csv"
 
 randof="$(mktemp "$TMP/zz_randocgi.XXXXXX")"
 
-sh show_stripper.sh "$vids" "$show_name" &>"$randof"
+bash show_stripper.sh "$vids" "$show_name" &>"$randof"
 
 if [ -s "$randof" ]; then
 
