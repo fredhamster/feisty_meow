@@ -20,7 +20,7 @@ if [ -z "$NETHACKOPTIONS" ]; then
   # add a bunch of folders to the list for checkin & checkout.  these are
   # definitely personal, and some of them are fairly dated (the yeti and
   # hoople folders, for example).
-  REPOSITORY_LIST+=" cloud ebooks hoople hoople1 hoople2 inova_codebase quartz web yeti xsede/xsede_tests xsede/code/cak0l xsede/docs"
+  REPOSITORY_LIST+=" cloud ebooks hoople hoople1 hoople2 inova_codebase quartz web yeti xsede/xsede_tests xsede/code/cak0l xsede/docs xsede/secrets"
 
   # point to our local certificate for ssh usage.
   export SVN_SSH="ssh -i $HOME/.ssh/id_dsa_sourceforge"
