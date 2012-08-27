@@ -5,7 +5,18 @@
 
 source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 
-#hmmm: take a dir to go to for this.
+#hmmm: take a dir parameter to go to for this.
 dir=.
 
-for i in $(find $dir -mindepth 1 -maxdepth 1 -type d) ; do zip -rm "${i}_$(date_stringer)" "$i"; done
+function flattenizer()
+{
+  while read dirname; do
+    if [ ! -z "$dirname" ]; then
+      echo "flattening dir name is '$dirname'..."
+      zip -rm "${dirname}_$(date_stringer)" "$dirname" &>/dev/null
+    fi
+  done
+}
+
+find $dir -mindepth 1 -maxdepth 1 -type d | flattenizer
+
