@@ -54,7 +54,7 @@ print "[" . $print_list . "]\n\n";
 local($temp_file)=`mktemp "$TMP/zz_frdsumdir.XXXXXX"`;
 chop($temp_file);
 
-system("ls -lF $chewed_line >$temp_file");
+system("ls -hlF $chewed_line >$temp_file");
 
 ##print "file is: $temp_file\n";
 

@@ -45,9 +45,9 @@ else
 fi
 # re-use work we did on 'exp' macro for longer command.
 alias explorer=exp
-alias l='\ls -FC $color_add'
-alias ls='\ls -FC $color_add'
-alias lsd='ls -l'
+alias l='\ls -hFC $color_add'
+alias ls='\ls -hFC $color_add'
+alias lsd='ls -hl'
 alias md='mkdir'
 alias more='less'
 alias move='mv -i -v '
