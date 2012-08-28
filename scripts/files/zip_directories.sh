@@ -12,7 +12,7 @@ function flattenizer()
 {
   while read dirname; do
     if [ ! -z "$dirname" ]; then
-      echo "flattening dir name is '$dirname'..."
+      echo "flattening directory '$dirname'..."
       zip -rm "${dirname}_$(date_stringer)" "$dirname" &>/dev/null
     fi
   done
