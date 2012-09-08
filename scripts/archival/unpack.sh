@@ -55,16 +55,17 @@ if [[ $unpack_file =~ .*\.tar$ \
     || $unpack_file =~ .*\.tar\.gz$ \
     || $unpack_file =~ .*\.tar\.bz2$ \
     || $unpack_file =~ .*\.tgz$ ]]; then
-  tar -xf $unpack_file
+  tar -xf $unpack_file &>/dev/null
 elif [[ $unpack_file =~ .*\.zip$ ]]; then
-  unzip $unpack_file
+  unzip $unpack_file &>/dev/null
 fi
 save_err=$?
+
+popd &>/dev/null
 
 if [ $save_err -ne 0 ]; then
   echo "There was a failure reported while unpacking: $unpack_file"
   echo "into the directory: $unpack_dir"
-  popd &>/dev/null
   exit 1
 else
   echo "Unpacked file $(basename $unpack_file) into folder: $unpack_dir"
