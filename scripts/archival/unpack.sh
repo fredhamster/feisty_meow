@@ -37,7 +37,7 @@ if [ ! -d "$unpack_dir" ]; then
 fi
 
 # save where we started out.
-ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && \pwd )"
+ORIGINATING_FOLDER="$( \pwd )"
 
 pushd "$unpack_dir" &>/dev/null
 
@@ -51,13 +51,12 @@ if [ ! -f "$unpack_file" ]; then
   fi
 fi
 
-if [[ $unpack_file =~ .*\.tar ]]; then
-  tar -f $unpack_file
-elif [[ $unpack_file =~ .*\.tar\.gz \
-    || $unpack_file =~ .*\.tar\.bz2 \
-    || $unpack_file =~ .*\.tgz ]]; then
+if [[ $unpack_file =~ .*\.tar$ \
+    || $unpack_file =~ .*\.tar\.gz$ \
+    || $unpack_file =~ .*\.tar\.bz2$ \
+    || $unpack_file =~ .*\.tgz$ ]]; then
   tar -xf $unpack_file
-elif [[ $unpack_file =~ .*\.zip ]]; then
+elif [[ $unpack_file =~ .*\.zip$ ]]; then
   unzip $unpack_file
 fi
 save_err=$?
