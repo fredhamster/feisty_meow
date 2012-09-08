@@ -5,15 +5,6 @@ package org.feistymeow.process;
 // not compilable yet probably, 
 // plus missing the timed features of ethread.
 
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,6 +23,7 @@ class ethread implements Runnable
   // the only variable on which both synchronize is the "thread finished" variable.
   public ethread()
   {
+	  c_logger.warn("this class needs to be implemented and used in an example.");
   }
 
   /**

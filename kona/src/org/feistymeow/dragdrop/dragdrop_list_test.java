@@ -21,14 +21,15 @@ import org.apache.log4j.PropertyConfigurator;
  * @license This file is free software; you can modify and redistribute it under the terms of the
  *          Apache License v2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "rawtypes"})
 public class dragdrop_list_test extends JFrame implements ListSelectionListener
 {
     private DraggableDroppableList list;
     private JTextField fileName;
     static private Log logger = LogFactory.getLog(dragdrop_list_test.DraggableDroppableList.class);
 
-    public dragdrop_list_test(String startPath)
+    @SuppressWarnings("unchecked")
+	public dragdrop_list_test(String startPath)
     {
         super("dragdrop_test");
 
@@ -97,7 +98,8 @@ public class dragdrop_list_test extends JFrame implements ListSelectionListener
 
     public class DraggableDroppableList extends JList implements IDragonDropDataProvider
     {
-        public DraggableDroppableList()
+        @SuppressWarnings("unchecked")
+		public DraggableDroppableList()
         {
             setModel(new DefaultListModel());
             setTransferHandler(new DragonTransferHandler(this));
