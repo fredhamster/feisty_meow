@@ -211,26 +211,6 @@ if [ -z "$skip_all" ]; then
     fi
   }
   
-  # buntar is a long needed uncompressing macro that feeds into tar -x.
-  # it takes a list of bz2 file names and extracts their contents into
-  # sequentially numbered directories.
-  function buntar() {
-    index=1
-    for i in $*; do
-      mkdir buntar_$index
-      pushd buntar_$index &>/dev/null
-      file=$i
-      # if the filename has no directory component, we will assume it used to
-      # be above our unzipping directory here.
-      if [ "$(basename $file)" = $file ]; then
-        file=../$file
-      fi
-      bunzip2 -d -c $file | tar -xf -
-      popd &>/dev/null
-      index=$(expr $index + 1)
-    done
-  }
-  
   # trashes the .#blah files that cvs and svn leave behind when finding conflicts.
   # this kind of assumes you've already checked them for any salient facts.
   function clean_cvs_junk() {

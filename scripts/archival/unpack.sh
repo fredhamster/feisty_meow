@@ -51,7 +51,9 @@ if [ ! -f "$unpack_file" ]; then
   fi
 fi
 
-if [[ $unpack_file =~ .*\.tar\.gz \
+if [[ $unpack_file =~ .*\.tar ]]; then
+  tar -f $unpack_file
+elif [[ $unpack_file =~ .*\.tar\.gz \
     || $unpack_file =~ .*\.tar\.bz2 \
     || $unpack_file =~ .*\.tgz ]]; then
   tar -xf $unpack_file
