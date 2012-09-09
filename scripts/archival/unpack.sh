@@ -56,7 +56,10 @@ if [[ $unpack_file =~ .*\.tar$ \
     || $unpack_file =~ .*\.tar\.bz2$ \
     || $unpack_file =~ .*\.tgz$ ]]; then
   tar -xf $unpack_file &>/dev/null
-elif [[ $unpack_file =~ .*\.zip$ ]]; then
+elif [[ $unpack_file =~ .*\.zip$ \
+    || $unpack_file =~ .*\.jar$ \
+    || $unpack_file =~ .*\.iar$ \
+    || $unpack_file =~ .*\.oar$ ]]; then
   unzip $unpack_file &>/dev/null
 fi
 save_err=$?
