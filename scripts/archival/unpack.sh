@@ -57,6 +57,7 @@ if [[ $unpack_file =~ .*\.tar$ \
     || $unpack_file =~ .*\.tgz$ ]]; then
   tar -xf $unpack_file &>/dev/null
 elif [[ $unpack_file =~ .*\.zip$ \
+    || $unpack_file =~ .*\.odt$ \
     || $unpack_file =~ .*\.jar$ \
     || $unpack_file =~ .*\.iar$ \
     || $unpack_file =~ .*\.oar$ ]]; then
