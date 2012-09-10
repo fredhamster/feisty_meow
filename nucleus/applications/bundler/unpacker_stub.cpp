@@ -196,11 +196,6 @@ int unpacker_stub::execute()
   astring target;
   cmds.get_value("target", target);
   if (!target) {
-/* no, this is wrong headed.  make them supply a target if there is
- * no default target provided in the bundle.
-    // a bogus default is provided if they don't specify the destination.
-    target = environment::get("TMP") + "/unbundled";
-*/
     provided_target = false;
   } else {
 //LOG(astring("target is now ") + target);
@@ -212,7 +207,7 @@ int unpacker_stub::execute()
     astring logdir = environment::get(LOGDIR_WORD);
 #ifdef __WIN32__
     if (!logdir) {
-      logdir = environment::get("TMP") + "/logs";
+      logdir = environment::TMP() + "/logs";
       environment::set(LOGDIR_WORD, logdir);
     }
 #else

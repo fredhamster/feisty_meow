@@ -105,7 +105,7 @@ printf("got an app name before chewing: %s\n", __check_once_app_path.s());
 printf("no dir part found, app name after chewing: %s\n", __check_once_app_path.s());
 
   // there was no directory component, so we'll try to guess one.
-  astring temp_filename(environment::get("TMP")
+  astring temp_filename(environment::TMP()
       + a_sprintf("/zz_cmdfind.%d", chaos().inclusive(0, 999999999)));
   system((astring("which ") + __check_once_app_path + " >" + temp_filename).s());
   FILE *which_file = fopen(temp_filename.s(), "r");
@@ -191,7 +191,7 @@ astring application_configuration::query_for_process_info()
     fclose(output); \
     unlink(tmpfile.s()); \
   } \
-  astring home_dir = env_string("HOME"); \
+  astring home_dir = environment::get("HOME"); \
   to_return = home_dir + "/failed_to_determine.exe"; \
 }
 

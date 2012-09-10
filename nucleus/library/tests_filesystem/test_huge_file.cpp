@@ -57,9 +57,8 @@ void test_huge_file::run_file_scan()
   files.zap(0, 0);  // toss the first element since that's our app filename.
 
   if (!files.length()) {
-    // pretend they gave us the list of files in the TMP directory.  some of
+    // pretend they gave us the list of files in the current directory.  some of
     // these might fail if they're locked up.
-//    astring tmpdir = environment::get("TMP");
     astring tmpdir = application_configuration::current_directory();
     directory dir(tmpdir);
     for (int i = 0; i < dir.files().length(); i++) {

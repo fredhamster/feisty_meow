@@ -80,7 +80,7 @@ astring version_checker::text_form() const
 
 bool version_checker::good_version() const
 {
-  astring version_disabler = environment::get("TMP");
+  astring version_disabler = environment::TMP();
   version_disabler += "/no_version_check.txt";
   FILE *always_okay = fopen(version_disabler.s(), "r");
   if (always_okay) {

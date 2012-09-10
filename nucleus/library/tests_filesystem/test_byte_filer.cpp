@@ -63,7 +63,7 @@ const astring &TEST_FILE()
   const char *TEST_FILE_SUFFIX = ".txt";
   static astring __hidden_filename;
   if (!__hidden_filename) {
-    __hidden_filename = environment::get("TMP");
+    __hidden_filename = environment::TMP();
     if (!__hidden_filename) __hidden_filename = "/tmp";
     // try to create it just in case it wasn't there already.
     directory::make_directory(__hidden_filename);
@@ -174,9 +174,8 @@ int test_byte_filer::run_file_scan()
   files.zap(0, 0);  // toss the first element since that's our app filename.
 
   if (!files.length()) {
-    // pretend they gave us the list of files in the TMP directory.  some of
+    // pretend they gave us the list of files in the current directory.  some of
     // these might fail if they're locked up.
-//    astring tmpdir = environment::get("TMP");
     astring tmpdir = application_configuration::current_directory();
     directory dir(tmpdir);
     for (int i = 0; i < dir.files().length(); i++) {

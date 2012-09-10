@@ -29,6 +29,23 @@
 
 namespace basis {
 
+astring environment::TMP()
+{
+  const static astring TMP_VARIABLE_NAME("TMP");
+  astring to_return = get(TMP_VARIABLE_NAME);
+  if (!to_return) {
+    // they did not see fit to set this in the environment.  let's make something up.
+#ifdef __WIN32__
+    // windows default does not necessarily exist.
+    to_return = "c:/tmp";
+#else
+    // most reasonable OSes have a /tmp directory.
+    to_return = "/tmp";
+#endif
+  }
+  return to_return;
+}
+
 astring environment::get(const astring &variable_name)
 {
 #ifdef __WIN32__

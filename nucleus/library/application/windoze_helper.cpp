@@ -406,45 +406,6 @@ istring query_for_process_info()
 }
 #endif
 
-// used as a return value when the name cannot be determined.
-#ifndef EMBEDDED_BUILD
-  #define SET_BOGUS_NAME(error) { \
-    COMPLAIN(error); \
-    if (output) { \
-      fclose(output); \
-      unlink(tmpfile.s()); \
-    } \
-    istring home_dir = env_string("HOME"); \
-    to_return = home_dir + "/failed_to_determine.exe"; \
-  }
-#else
-  #define SET_BOGUS_NAME(error) { \
-    COMPLAIN(error); \
-    to_return = "unknown"; \
-  }
-#endif
-
-istring application_name()
-{
-  FUNCDEF("application_name");
-  istring to_return;
-#ifdef __UNIX__
-  to_return = get_cmdline_from_proc();
-#elif defined(__WIN32__)
-  flexichar low_buff[MAX_ABS_PATH + 1];
-  GetModuleFileName(NIL, low_buff, MAX_ABS_PATH - 1);
-  istring buff = from_unicode_temp(low_buff);
-  buff.to_lower();  // we lower-case the name since windows seems to UC it.
-  to_return = buff;
-#elif defined(EMBEDDED_BUILD)
-  SET_BOGUS_NAME("embedded_exe");
-#else
-  #pragma error("hmmm: no means of finding app name is implemented.")
-  SET_BOGUS_NAME("not_implemented_for_this_OS");
-#endif
-  return to_return;
-}
-
 istring module_name(const void *module_handle)
 {
 #ifdef __UNIX__
@@ -552,32 +513,6 @@ istring current_directory()
   to_return = ".";
 #endif
   return to_return;
-}
-
-istring env_string(const istring &variable_name)
-{
-#ifdef __WIN32__
-  char *value = getenv(variable_name.upper().observe());
-    // dos & os/2 require upper case for the name, so we just do it that way.
-#else
-  char *value = getenv(variable_name.observe());
-    // reasonable OSes support mixed-case environment variables.
-#endif
-  istring to_return;
-  if (value)
-    to_return = istring(value);
-  return to_return;
-}
-
-bool set_environ(const istring &variable_name, const istring &value)
-{
-  int ret = 0;
-#ifdef __WIN32__
-  ret = putenv((variable_name + "=" + value).s());
-#else
-  ret = setenv(variable_name.s(), value.s(), true);
-#endif
-  return !ret;
 }
 
 timeval fill_timeval_ms(int duration)

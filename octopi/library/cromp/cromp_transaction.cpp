@@ -14,8 +14,11 @@
 
 #include "cromp_transaction.h"
 
+#include <basis/environment.h>
 #include <basis/mutex.h>
+#include <loggers/critical_events.h>
 #include <loggers/file_logger.h>
+#include <loggers/program_wide_logger.h>
 #include <octopus/entity_defs.h>
 #include <octopus/infoton.h>
 #include <sockets/tcpip_stack.h>
@@ -33,7 +36,7 @@ using namespace textual;
 
 namespace cromp {
 
-//#define DEBUG_CROMP_TRANSACTION
+#define DEBUG_CROMP_TRANSACTION
   // uncomment for noisy version.
 
 const int MAXIMUM_TRANSACTION = 100 * MEGABYTE;
@@ -45,7 +48,7 @@ const int MAXIMUM_TRANSACTION = 100 * MEGABYTE;
   // since the transaction stuff is so low-level, we risk a feedback loop if
   // we log stuff when the program wide logger is itself a communication
   // object.
-  #define LOG(s) CLASS_EMERGENCY_LOG(file_logger(portable::env_string("TMP") + "/cromp_transaction.log"), s)
+  #define LOG(s) CLASS_EMERGENCY_LOG(file_logger(environment::TMP() + "/cromp_transaction.log"), s)
 #else
   #define LOG(s) 
 #endif

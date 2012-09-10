@@ -26,6 +26,12 @@ namespace basis {
 class environment : public virtual root_object
 {
 public:
+  static astring TMP();
+    //!< provides a single place to get the temporary directory.
+    /*!< this will locate the value of the TMP variable and return it.  if the TMP
+    variable is not currently defined, this will try to do something reasonable for
+    a default value. */
+
   static astring get(const astring &variable_name);
     //!< looks up the "variable_name" in the current environment variables.
     /*!< this returns the value for "variable_name" as it was found in the
@@ -33,17 +39,10 @@ public:
     in time for the user and process.  the returned string will be empty if no
     variable under that name could be found. */
 
-//  static astring get(const char *variable_name) { return get(astring(variable_name)); }
-    //!< synonym using simpler char pointer.
-
   static bool set(const astring &variable_name, const astring &value);
     //!< adds or creates "variable_name" in the environment.
     /*!< changes the current set of environment variables by adding or
     modifying the "variable_name".  its new value will be "value". */
-
-//  static bool set(const char *variable_name, const char *value)
-//      { return set(astring(variable_name), astring(value)); }
-    //!< synonym using simpler char pointers.
 
   static basis::un_int system_uptime();
     //!< gives the operating system's uptime in a small form that rolls over.

@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
   tmp.zap( (end + 1) - extension.length(), end);
   tmp += "idx";
   astring base_part = filename(tmp).basename();
-  index_file_name = environment::get("TMP") + "/" + base_part;
+  index_file_name = environment::TMP() + "/" + base_part;
 #ifdef DEBUG_NECHUNG
   LOG(astring("index file is ") + index_file_name);
 #endif
