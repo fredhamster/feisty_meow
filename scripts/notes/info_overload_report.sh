@@ -101,9 +101,6 @@ analyze_by_dir_patterns "project files" ~/cloud/*project* ~/cloud/*research*
 # supposed to pile up here.
 analyze_hierarchy_and_report ~/cloud/example_source "source examples"
 
-# also snag the files labelled as trivia, since they're still to-dos...
-analyze_by_dir_patterns "trivial notes" ~/cloud/*trivia*
-
 # and then count up the things that we think will be cleaned soon, but one thing we have learned
 # unsorted files haven't been categorized yet.
 analyze_hierarchy_and_report ~/cloud/unsorted "unsorted files"
