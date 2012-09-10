@@ -54,13 +54,16 @@ fi
 if [[ $unpack_file =~ .*\.tar$ \
     || $unpack_file =~ .*\.tar\.gz$ \
     || $unpack_file =~ .*\.tar\.bz2$ \
-    || $unpack_file =~ .*\.tgz$ ]]; then
+    || $unpack_file =~ .*\.iar$ \
+    || $unpack_file =~ .*\.oar$ \
+    || $unpack_file =~ .*\.tgz$ \
+    ]]; then
   tar -xf $unpack_file &>/dev/null
 elif [[ $unpack_file =~ .*\.zip$ \
     || $unpack_file =~ .*\.odt$ \
     || $unpack_file =~ .*\.jar$ \
-    || $unpack_file =~ .*\.iar$ \
-    || $unpack_file =~ .*\.oar$ ]]; then
+    || $unpack_file =~ .*\.war$ \
+    ]]; then
   unzip $unpack_file &>/dev/null
 fi
 save_err=$?

@@ -59,10 +59,7 @@ astring unix_rendez_file(const astring &lock_name)
   filename::detooth_filename(clean_name);
   // make sure our target directory exists.
 
-  // this choice is only user specific.
-//  astring tmp_dir = portable::env_string("TMP") + "/rendezvous";
-
-  // this choice uses a system-wide location.
+  // use a system-wide location for rendezvous state files.
   astring tmp_dir = "/tmp/rendezvous";
 
   mkdir(tmp_dir.observe(), 0777);

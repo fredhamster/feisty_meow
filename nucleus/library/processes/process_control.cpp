@@ -507,7 +507,7 @@ bool process_control::get_processes_with_toolhelp(process_entry_array &to_fill)
 
 #ifdef __UNIX__
 
-#define CLOSE_TMP_FILE { \
+#define CLOSE_TEMPORARY_FILE { \
 /*  continuable_error("process_control", "get_processes_with_ps", error); */ \
   if (output) { \
     fclose(output); \
@@ -528,13 +528,13 @@ bool process_control::get_processes_with_ps(process_entry_array &to_fill)
   int sysret = system(cmd.s());
   if (negative(sysret)) {
 LOG("got negative return from system()!");
-    CLOSE_TMP_FILE;
+    CLOSE_TEMPORARY_FILE;
     return false;
   }
   output = fopen(tmpfile.s(), "r");
   if (!output) {
 LOG("failed to open process list file!");
-    CLOSE_TMP_FILE;
+    CLOSE_TEMPORARY_FILE;
     return false;
   }
   const int max_buff = 10000;
@@ -548,7 +548,7 @@ LOG("failed to open process list file!");
     if (size_read > 0)
       accumulator += astring(astring::UNTERMINATED, buff, size_read);
   }
-  CLOSE_TMP_FILE;
+  CLOSE_TEMPORARY_FILE;
   // parse the string up now.
   bool first_line = true;
   while (accumulator.length()) {

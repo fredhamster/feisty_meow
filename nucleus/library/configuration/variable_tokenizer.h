@@ -94,7 +94,7 @@ public:
     possible by using the current separator and assignment characters.  
     E.G.: if the separator is ';' and the assignment character
     is '=', then one's string would look something like: @code
-      TEMP=c:\tmp; GLOB=c:\glob.exe; ....  @endcode
+      state_folder=/home/fred/state; GLOB=/usr/bin/glob.exe; ....  @endcode
     whitespace is ignored if it's found (1) after a separator and before
     the next variable name, (2) after the variable name and before the
     assignment character, (3) after the assignment character and before the
