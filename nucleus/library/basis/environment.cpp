@@ -42,6 +42,7 @@ astring environment::TMP()
     // most reasonable OSes have a /tmp directory.
     to_return = "/tmp";
 #endif
+    if (!!to_return) set("TMP", to_return);
   }
   return to_return;
 }
