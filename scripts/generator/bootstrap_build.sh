@@ -31,9 +31,9 @@ export INCLUDED_FROM_BOOTSTRAP=true
 
 # pull in our build variables using the path to this script.
 export BUILD_SCRIPTS_DIR="$( \cd "$(\dirname "$0")" && \pwd )"
-echo build script initial from bootstrap: $BUILD_SCRIPTS_DIR
+#echo build scripts dir initial value: $BUILD_SCRIPTS_DIR
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
-echo build script after: $BUILD_SCRIPTS_DIR
+#echo build scripts dir after chewing: $BUILD_SCRIPTS_DIR
 
 # load in feisty meow basic scripts, if not already loaded.
 if [ -z "$FEISTY_MEOW_SCRIPTS_LOADED" ]; then

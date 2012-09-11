@@ -465,7 +465,7 @@ int bundle_creator::read_manifest()
       BASE_LOG(astring("will set ") + _manifest_list[i]._payload + " = "
           + _manifest_list[i]._parms);
       astring new_value = parser_bits::substitute_env_vars(_manifest_list[i]._parms);
-      environment::set(_manifest_list[i]._payload, new_value);
+///why oh why are we allowing them to overwrite our actual environment just because they're bundling something?      environment::set(_manifest_list[i]._payload, new_value);
           
 #ifdef DEBUG_BUNDLER
       BASE_LOG(astring("** variable ") + _manifest_list[i]._payload + " should have value=" + new_value);

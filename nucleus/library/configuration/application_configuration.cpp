@@ -101,9 +101,9 @@ astring application_configuration::get_cmdline_from_proc()
   filename testing(__check_once_app_path);
   if (testing.had_directory()) return __check_once_app_path;  // all set.
 
-//hmmm: the below might be better off as a find app in path method, which relies on which.
-printf("no dir part found, app name after chewing: %s\n", __check_once_app_path.s());
+//printf("no dir part found, app name after chewing: %s\n", __check_once_app_path.s());
 
+//hmmm: the below might be better off as a find app in path method, which relies on which.
   // there was no directory component, so we'll try to guess one.
   astring temp_filename(environment::TMP()
       + a_sprintf("/zz_cmdfind.%d", chaos().inclusive(0, 999999999)));
@@ -293,13 +293,14 @@ const astring &application_configuration::LOGGING_FOLDER_NAME() { STATIC_STRING(
 
 //////////////
 
-const int MAX_LOG_PATH = 200;
+////const int MAX_LOG_PATH = 512;
   // the maximum length of the entry stored for the log path.
 
 astring application_configuration::get_logging_directory()
 {
-  // start with the root of our installation.
-  astring def_log = application_directory();
+  // new scheme is to just use the temporary directory, which can vary per user
+  // and which hopefully is always set to something usable.
+  astring def_log = environment::TMP();
   // add logs directory underneath that.
   def_log += "/logs";
     // add the subdirectory for logs.
@@ -309,6 +310,7 @@ astring application_configuration::get_logging_directory()
     // get the entry for the logging path.
   if (!log_dir) {
     // if the entry was absent, we set it.
+//printf("did not find log dir in config file\n");
     ini_configurator ini(application_configuration_file(),
         ini_configurator::RETURN_ONLY,
         ini_configurator::APPLICATION_DIRECTORY);
@@ -317,6 +319,7 @@ astring application_configuration::get_logging_directory()
     // they gave us something.  let's replace the environment variables
     // in their string so we resolve paths and such.
     log_dir = parser_bits::substitute_env_vars(log_dir);
+//printf("%s", (char *)a_sprintf("got log dir with %s value\n", log_dir.s()).s());
   }
 
   // now we make sure the directory exists.
