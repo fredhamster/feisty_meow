@@ -78,7 +78,7 @@ recurse=1
 keyword=sources
 
 [docs]
-source=$FEISTY_MEOW_DIR/doc/*
+source=$FEISTY_MEOW_DIR/doc
 target=$TARGET/doc
 recurse=1
 keyword=sources
