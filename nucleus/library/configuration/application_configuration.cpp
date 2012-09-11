@@ -92,7 +92,7 @@ astring application_configuration::get_cmdline_from_proc()
   // command line are all separated by zero characters.
   __check_once_app_path = filebuff;
   delete [] filebuff;
-printf("got an app name before chewing: %s\n", __check_once_app_path.s());
+//printf("got an app name before chewing: %s\n", __check_once_app_path.s());
   // clean out quote characters from the name.
   for (int i = __check_once_app_path.length() - 1; i >= 0; i--) {
     if (__check_once_app_path[i] == '"') __check_once_app_path.zap(i, i);
@@ -102,7 +102,7 @@ printf("got an app name before chewing: %s\n", __check_once_app_path.s());
   filename testing(__check_once_app_path);
   if (testing.had_directory()) return __check_once_app_path;  // all set.
 
-printf("no dir part found, app name after chewing: %s\n", __check_once_app_path.s());
+//printf("no dir part found, app name after chewing: %s\n", __check_once_app_path.s());
 
 //hmmm: the below might be better off as a find app in path method, which relies on which.
   // there was no directory component, so we'll try to guess one.
@@ -311,7 +311,7 @@ astring application_configuration::get_logging_directory()
     // get the entry for the logging path.
   if (!log_dir) {
     // if the entry was absent, we set it.
-printf("did not find log dir in config file\n");
+//printf("did not find log dir in config file\n");
     ini_configurator ini(application_configuration_file(),
         ini_configurator::RETURN_ONLY,
         ini_configurator::APPLICATION_DIRECTORY);
@@ -320,7 +320,7 @@ printf("did not find log dir in config file\n");
     // they gave us something.  let's replace the environment variables
     // in their string so we resolve paths and such.
     log_dir = parser_bits::substitute_env_vars(log_dir);
-printf("%s", (char *)a_sprintf("got log dir with %s value\n", log_dir.s()).s());
+//printf("%s", (char *)a_sprintf("got log dir with %s value\n", log_dir.s()).s());
   }
 
   // now we make sure the directory exists.
@@ -339,28 +339,6 @@ printf("%s", (char *)a_sprintf("got log dir with %s value\n", log_dir.s()).s());
     }
   }
     
-#if 0
-  struct stat to_fill;
-  int stat_ret = stat(log_dir.observe(), &to_fill);
-  if (stat_ret || !(to_fill.st_mode & S_IFDIR) ) {
-    // if it's not anything yet or if it's not a directory, then we need
-    // to create it.
-
-//if it's something besides a directory... should it be deleted?
-#ifdef __UNIX__
-    int mk_ret = mkdir(log_dir.s(), 0777);
-#endif
-#ifdef __WIN32__
-    int mk_ret = mkdir(log_dir.s());
-#endif
-    if (mk_ret) {
-printf("creating logging directory failed with outcome %d.\n", mk_ret);
-      return "";
-//can't have a log file if we can't make the directory successfully???
-    }
-  }
-#endif
-
   return log_dir;
 }
 

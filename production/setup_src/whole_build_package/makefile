@@ -10,7 +10,7 @@ include cpp/rules.def
 
 create_package:
 ifeq "$(NO_BUILD_PACK)" ""
-	$(HIDE)mkdir $(TARGET)/waste
+	$(HIDE)-mkdir $(TARGET)/waste
 	$(HIDESH)create_whole_build_pack.sh "$(major).$(minor).$(revision).$(build)"
 endif
 

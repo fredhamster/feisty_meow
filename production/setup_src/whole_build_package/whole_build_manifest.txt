@@ -4,18 +4,31 @@
 [toc]
 set_temp=t
 set_tmp=t
-top_inis=t
-3rdparty=t
+production_inis=t
 docs=t
-makefile=t
-build=t
-packages=t
-source=t
+top_makefile=t
+production_makefile=t
+customizing=t
+database=t
+examples=t
+scripts=t
+nucleus=t
+octopi=t
+graphiq=t
+kona=t
+huffware=t
+webby=t
 text_files=t
+check_versions=t
+assign_bases=t
+setup_src=t
 
 ; not included in the source pack...
+3rdparty=t
 binaries=t
-fonts=t
+clam_bin=t
+packages=t
+win32_helper=t
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -32,9 +45,9 @@ keyword=sources
 
 ; this section is included in both types of package.
 
-[top_inis]
-source=$FEISTY_MEOW_DIR/*.ini
-target=$TARGET
+[production_inis]
+source=$PRODUCTION_DIR/*.ini
+target=$TARGET/production
 keyword=sources
 
 [text_files]
@@ -42,47 +55,124 @@ source=$FEISTY_MEOW_DIR/*.txt
 target=$TARGET
 keyword=sources
 
-[docs]
-source=$FEISTY_MEOW_DIR/doc/*
-target=$TARGET/doc
-keyword=sources
-
-[makefile]
+[top_makefile]
 source=$FEISTY_MEOW_DIR/makefile
 target=$TARGET/makefile
 keyword=sources
 
-[build]
-source=$FEISTY_MEOW_DIR/build
-target=$TARGET/build
+[production_makefile]
+source=$PRODUCTION_DIR/makefile
+target=$TARGET/production/makefile
+keyword=sources
+
+[customizing]
+source=$FEISTY_MEOW_DIR/customizing
+target=$TARGET/customizing
 recurse=1
 keyword=sources
 
-[source]
-source=$FEISTY_MEOW_DIR/source
-target=$TARGET/source
+[database]
+source=$FEISTY_MEOW_DIR/database
+target=$TARGET/database
+recurse=1
+keyword=sources
+
+[docs]
+source=$FEISTY_MEOW_DIR/doc/*
+target=$TARGET/doc
+recurse=1
+keyword=sources
+
+[examples]
+source=$FEISTY_MEOW_DIR/examples
+target=$TARGET/examples
+recurse=1
+keyword=sources
+
+[scripts]
+source=$FEISTY_MEOW_DIR/scripts
+target=$TARGET/scripts
+recurse=1
+keyword=sources
+
+[nucleus]
+source=$FEISTY_MEOW_DIR/nucleus
+target=$TARGET/nucleus
+recurse=1
+keyword=sources
+
+[octopi]
+source=$FEISTY_MEOW_DIR/octopi
+target=$TARGET/octopi
+recurse=1
+keyword=sources
+
+[graphiq]
+source=$FEISTY_MEOW_DIR/graphiq
+target=$TARGET/graphiq
+recurse=1
+keyword=sources
+
+[huffware]
+source=$FEISTY_MEOW_DIR/huffware
+target=$TARGET/huffware
+recurse=1
+keyword=sources
+
+[kona]
+source=$FEISTY_MEOW_DIR/kona
+target=$TARGET/kona
+recurse=1
+keyword=sources
+
+[webby]
+source=$FEISTY_MEOW_DIR/webby
+target=$TARGET/webby
+recurse=1
+keyword=sources
+
+[assign_bases]
+source=$PRODUCTION_DIR/assign_bases
+target=$TARGET/production/assign_bases
+recurse=1
+keyword=sources
+
+[check_versions]
+source=$PRODUCTION_DIR/check_versions
+target=$TARGET/production/check_versions
+recurse=1
+keyword=sources
+
+[setup_src]
+source=$PRODUCTION_DIR/setup_src
+target=$TARGET/production/setup_src
 recurse=1
 keyword=sources
 
 ; this section is only included in the full package (not in sources).
 
 [3rdparty]
-source=$FEISTY_MEOW_DIR/3rdparty
-target=$TARGET/3rdparty
+source=$PRODUCTION_DIR/3rdparty
+target=$TARGET/production/3rdparty
 recurse=1
 
 [binaries]
-source=$FEISTY_MEOW_DIR/binaries
-target=$TARGET/binaries
+source=$PRODUCTION_DIR/binaries
+target=$TARGET/production/binaries
 recurse=1
 
-[fonts]
-source=$FEISTY_MEOW_DIR/fonts
-target=$TARGET/fonts
+[clam_bin]
+source=$PRODUCTION_DIR/clam_bin
+target=$TARGET/production/clam_bin
 recurse=1
 
 [packages]
-source=$FEISTY_MEOW_DIR/packages
-target=$TARGET/packages
+source=$PRODUCTION_DIR/packages
+target=$TARGET/production/packages
+recurse=1
+
+[win32_helper]
+source=$PRODUCTION_DIR/win32_helper
+target=$TARGET/production/win32_helper
 recurse=1
 
