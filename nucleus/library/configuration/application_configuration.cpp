@@ -91,7 +91,7 @@ astring application_configuration::get_cmdline_from_proc()
   // command line are all separated by zero characters.
   __check_once_app_path = filebuff;
   delete [] filebuff;
-printf("got an app name before chewing: %s\n", __check_once_app_path.s());
+//printf("got an app name before chewing: %s\n", __check_once_app_path.s());
   // clean out quote characters from the name.
   for (int i = __check_once_app_path.length() - 1; i >= 0; i--) {
     if (__check_once_app_path[i] == '"') __check_once_app_path.zap(i, i);
