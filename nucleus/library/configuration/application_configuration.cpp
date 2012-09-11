@@ -19,6 +19,7 @@
 #include <basis/guards.h>
 #include <basis/mutex.h>
 #include <basis/utf_conversion.h>
+#include <filesystem/directory.h>
 #include <filesystem/filename.h>
 #include <mathematics/chaos.h>
 #include <structures/static_memory_gremlin.h>
@@ -323,11 +324,28 @@ printf("%s", (char *)a_sprintf("got log dir with %s value\n", log_dir.s()).s());
   }
 
   // now we make sure the directory exists.
+  filename testing(log_dir);
+  if (!testing.exists()) {
+    bool okay = directory::make_directory(log_dir);
+    if (!okay) {
+      LOG(astring("failed to create logging directory: ") + log_dir);
+      // return a directory almost guaranteed to exist; best we can do in this case.
+#ifdef __UNIX__
+      return "/tmp";
+#endif
+#ifdef __WIN32__
+      return "c:/";
+#endif
+    }
+  }
+    
+#if 0
   struct stat to_fill;
   int stat_ret = stat(log_dir.observe(), &to_fill);
   if (stat_ret || !(to_fill.st_mode & S_IFDIR) ) {
     // if it's not anything yet or if it's not a directory, then we need
     // to create it.
+
 //if it's something besides a directory... should it be deleted?
 #ifdef __UNIX__
     int mk_ret = mkdir(log_dir.s(), 0777);
@@ -335,9 +353,13 @@ printf("%s", (char *)a_sprintf("got log dir with %s value\n", log_dir.s()).s());
 #ifdef __WIN32__
     int mk_ret = mkdir(log_dir.s());
 #endif
-    if (mk_ret) return "";
+    if (mk_ret) {
+printf("creating logging directory failed with outcome %d.\n", mk_ret);
+      return "";
 //can't have a log file if we can't make the directory successfully???
+    }
   }
+#endif
 
   return log_dir;
 }

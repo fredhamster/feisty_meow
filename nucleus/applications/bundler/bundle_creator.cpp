@@ -239,6 +239,10 @@ Abandoning bundling process.\n", _app_name.s()));
   environment::set("DLL_START", "");
   environment::set("DLL_END", ".dll");
 #endif
+  // specify a target variable on the source side so that we can operate in there,
+  // even if the bundle doesn't specify one.  otherwise we can't run source side commands
+  // properly if the paths are based on TARGET (like TMP often is).
+  environment::set("TARGET", environment::TMP());
 
   int ret = 0;
   if ( (ret = read_manifest()) ) FAIL_RETURN(ret, "reading manifest");
