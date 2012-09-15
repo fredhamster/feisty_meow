@@ -72,6 +72,8 @@ export TMPO_CHK=$TMP/zz_chk.log
 
 rm -f "$TMPO_CHK"
 
+echo "Getting repositories at: $(date)"
+
 # perform the checkouts as appropriate per OS.
 if [ "$OS" != "Windows_NT" ]; then
   checkout_list $HOME 2>&1 | tee -a "$TMPO_CHK"

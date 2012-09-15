@@ -39,6 +39,8 @@ function checkin_list {
   done
 }
 
+echo "Committing repositories at: $(date)"
+
 if [ "$OS" != "Windows_NT" ]; then
   # first get individual folders.
   checkin_list $HOME
