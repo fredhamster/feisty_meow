@@ -8,7 +8,8 @@ REPORT_FILE="$HOME/cloud/overload_history.txt"
 function calculate_depth()
 {
   local dir="$1"; shift
-  find "$dir" -type f -exec echo \"{}\" ';' |  grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | wc -l | tr -d ' '
+  depth=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null |  grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | wc -l | tr -d ' ')
+  if [ -z "$depth" ]; then echo 0; else echo "$depth"; fi
 }
 
 # calculates the size in kilobytes of all the note files in a hierarchy.
@@ -18,7 +19,8 @@ function calculate_depth()
 function calculate_weight()
 {
   local dir="$1"; shift
-  find "$dir" -type f -exec echo \"{}\" ';' |  grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | xargs ls -al | awk '{ print $5 }' | paste -sd+ | bc
+  weight=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null | grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | xargs ls -al | awk '{ print $5 }' | paste -sd+ | bc 2>/dev/null)
+  if [ -z "$weight" ]; then echo 0; else echo "$weight"; fi
 }
 
 # produces a report line in our format.
@@ -96,6 +98,9 @@ analyze_by_dir_patterns "active items" ~/cloud/*active*
 
 # scan across all appropriately named project or research folders that live in the "cloud".
 analyze_by_dir_patterns "project files" ~/cloud/*project* ~/cloud/*research*
+
+# scan all the trivial project folders.
+analyze_by_dir_patterns "trivial items" ~/cloud/*trivia*
 
 # source examples need to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.
