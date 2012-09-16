@@ -63,10 +63,7 @@ public:
   enum outcomes {
     OKAY = basis::common::OKAY,
     BAD_INPUT = basis::common::BAD_INPUT,
-//    GARBAGE = basis::common::GARBAGE,
-//    NOT_FOUND = basis::common::NOT_FOUND,
-//    NONE_READY = basis::common::NONE_READY,
-//    FAILURE = basis::common::FAILURE,
+    FINISHED = basis::common::IS_EMPTY,  // nothing left to pack.
     DEFINE_OUTCOME(SOURCE_MISSING, -43, "The source file is not accessible"),
     DEFINE_OUTCOME(TARGET_DIR_ERROR, -44, "The target's directory could not "
         "be created"),

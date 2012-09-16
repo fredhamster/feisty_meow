@@ -38,7 +38,7 @@ public:
       is the packed filename list that represents the differences between the
       two hierarchies.  this is considered to start a file transfer based on
       those differences. */
-    PLACE_FILE_CHUNKS
+    PLACE_FILE_CHUNKS,
       //!< the destination side requests a new set of chunks.
       /*!< this is based on the source's memory of where the transfer is at.
       this will only perform properly when the file transfer was requested to
@@ -47,6 +47,11 @@ public:
       number of pairs of @code
       [ file_transfer_header + file chunk described in header ]
       @endcode */
+    CONCLUDE_TRANSFER_MARKER
+      //!< this infoton marks the end of the transfer process.
+      /*!< we've added this type of transfer infoton to handle the finish
+      of the transfer.  previously this was marked by a null data packet,
+      which turns out to be a really bad idea. */
   };
 
   basis::outcome _success;  //!< reports what kind of result occurred.

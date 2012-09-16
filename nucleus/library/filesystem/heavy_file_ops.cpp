@@ -235,14 +235,12 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
     const filename_list &to_transfer, file_transfer_header &last_action,
     byte_array &storage, int maximum_bytes)
 {
-#ifdef DEBUG_HEAVY_FILE_OPS
-//  FUNCDEF("buffer_files");
-#endif
+  FUNCDEF("buffer_files");
   storage.reset();  // clear out the current contents.
 
   if (!to_transfer.elements()) {
     // we seem to be done.
-    return OKAY;
+    return FINISHED;
   }
 
   outcome to_return = OKAY;

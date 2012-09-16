@@ -39,6 +39,9 @@ using namespace textual;
 
 namespace octopi {
 
+//#define DEBUG_RECURSIVE_FILE_COPY
+  // uncomment for noisier debugging.
+
 #define FAKE_HOSTNAME "internal_fake_host"
 
 #undef LOG
@@ -141,7 +144,9 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
 
   int iter = 0;
   while (true) {
-LOG(a_sprintf("ongoing chunk %d", ++iter));
+#ifdef DEBUG_RECURSIVE_FILE_COPY
+    LOG(a_sprintf("ongoing chunk %d", ++iter));
+#endif
 
     // keep going until we find a broken reply.
     file_transfer_infoton *ongoing = new file_transfer_infoton;
@@ -160,25 +165,38 @@ LOG(a_sprintf("ongoing chunk %d", ++iter));
     if (!reply)
       RETURN_ERROR_RFC("failed to get ongoing transfer reply", NONE_READY);
 
-    if (!reply->_packed_data.length()) {
+    if (reply->_command == file_transfer_infoton::CONCLUDE_TRANSFER_MARKER) {
       BASE_LOG(astring("finished transfer from \"") + source_dir
           + "\" to \"" + target_dir + "\"");
       break;
     }
 
+    if (!reply->_packed_data.length()) {
+      RETURN_ERROR_RFC("file transfer had no packed data", GARBAGE);
+    }
+
     byte_array copy = reply->_packed_data;
     while (copy.length()) {
+#ifdef DEBUG_RECURSIVE_FILE_COPY
+      LOG(a_sprintf("starging size in array: %d", copy.length()));
+#endif
       file_time empty;
       file_transfer_header head(empty);
       if (!head.unpack(copy)) 
         RETURN_ERROR_RFC("failed to unpack header", GARBAGE);
-//LOG(a_sprintf("size in array: %d", copy.length()));
+#ifdef DEBUG_RECURSIVE_FILE_COPY
+      LOG(a_sprintf("removed head size in array: %d", copy.length()));
+#endif
       if (copy.length() < head._length)
         RETURN_ERROR_RFC("not enough length in array", GARBAGE);
 //hmmm: are we doing nothing here besides validating that we GOT something in the header?
       copy.zap(0, head._length - 1);
-//LOG(a_sprintf("size in array now: %d", copy.length()));
+#ifdef DEBUG_RECURSIVE_FILE_COPY
+      LOG(a_sprintf("size in array now: %d", copy.length()));
+#endif
 
+//hmmm: this needs better formatting, and should not repeat the same file name even
+//      if it's in multiple chunks.
 //hmmm: if logging, then...
       BASE_LOG(head.readable_text_form());
     }

@@ -175,6 +175,10 @@ private:
           const octopus_request_id &item_id);
   basis::outcome handle_storage_response(file_transfer_infoton &req,
           const octopus_request_id &item_id);
+  basis::outcome conclude_storage_request(file_transfer_infoton &req,
+          const octopus_request_id &item_id);
+  basis::outcome conclude_storage_response(file_transfer_infoton &req,
+          const octopus_request_id &item_id);
 };
 
 } //namespace.
