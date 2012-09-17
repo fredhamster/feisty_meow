@@ -60,6 +60,7 @@ if [[ $unpack_file =~ .*\.tar$ \
     ]]; then
   tar -xf $unpack_file &>/dev/null
 elif [[ $unpack_file =~ .*\.zip$ \
+    || $unpack_file =~ .*\.epub$ \
     || $unpack_file =~ .*\.odt$ \
     || $unpack_file =~ .*\.jar$ \
     || $unpack_file =~ .*\.war$ \
