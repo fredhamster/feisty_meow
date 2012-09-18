@@ -46,7 +46,7 @@ const int FTT_CLEANING_INTERVAL = 30 * SECOND_ms;
 const int TRANSFER_TIMEOUT = 10 * MINUTE_ms;
   // if it hasn't been touched in this long, it's out of there.
 
-//#define DEBUG_FILE_TRANSFER_TENTACLE
+#define DEBUG_FILE_TRANSFER_TENTACLE
   // uncomment for noisier version.
 
 #undef LOG
@@ -253,9 +253,7 @@ outcome file_transfer_tentacle::add_correspondence
     (const astring &source_mapping, const astring &source_root,
      int refresh_interval)
 {
-#ifdef DEBUG_FILE_TRANSFER_TENTACLE
   FUNCDEF("add_correspondence");
-#endif
   AUTO_LOCK;
 
   remove_correspondence(source_mapping);  // clean the old one out first.
@@ -343,7 +341,7 @@ outcome file_transfer_tentacle::register_file_transfer
     (const octopus_entity &ent, const astring &src_root,
     const astring &dest_root, const string_array &includes)
 {
-//  FUNCDEF("register_file_transfer");
+  FUNCDEF("register_file_transfer");
   AUTO_LOCK;
   // make sure that this isn't an existing transfer.  if so, we just update
   // the status.
@@ -408,9 +406,7 @@ bool file_transfer_tentacle::remove_path(const astring &key,
 
 void file_transfer_tentacle::periodic_actions()
 {
-#ifdef DEBUG_FILE_TRANSFER_TENTACLE
   FUNCDEF("periodic_actions");
-#endif
   AUTO_LOCK;
 
   // first, we'll clean out old transfers.
@@ -626,7 +622,9 @@ outcome file_transfer_tentacle::handle_storage_request
   if (bufret == heavy_file_operations::FINISHED) {
 //here we go.  finish by setting command to conclude.
 LOG("got the final marker saying heavy file ops done!");
+    the_rec->_done = true;
     resp->_command = file_transfer_infoton::CONCLUDE_TRANSFER_MARKER;
+    bufret = OKAY;  // now it's no longer an exceptional outcome.
   } else if (bufret != OKAY) {
     // complain, but still send.
     LOG(astring("buffer files returned an error on item=")
@@ -634,8 +632,13 @@ LOG("got the final marker saying heavy file ops done!");
         + req._dest_root);
   }
 
-  if ( (bufret == OKAY) && !resp->_packed_data.length() ) {
+//  if ( (bufret == OKAY) && !resp->_packed_data.length() ) {
+//    LOG(astring("failed to pack any data for file: ") + req._src_root);
+//  }
+
+  if (!the_rec->_done && (bufret == OKAY) && !resp->_packed_data.length() ) {
     // seems like the transfer is done.
+    LOG("marking empty transfer as done; why not caught above at FINISHED check?");
     the_rec->_done = true;
     resp->_command = file_transfer_infoton::CONCLUDE_TRANSFER_MARKER;
   }
@@ -800,9 +803,7 @@ outcome file_transfer_tentacle::consume(infoton &to_chow,
 
 outcome file_transfer_tentacle::refresh_now(const astring &source_mapping)
 {
-#ifdef DEBUG_FILE_TRANSFER_TENTACLE
   FUNCDEF("refresh_now");
-#endif
   AUTO_LOCK;
   for (int i = 0; i < _correspondences->elements(); i++) {
     file_transfer_record *curr = _correspondences->borrow(i);

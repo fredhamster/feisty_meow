@@ -27,7 +27,7 @@ using namespace structures;
 
 namespace filesystem {
 
-//#define DEBUG_HEAVY_FILE_OPS
+#define DEBUG_HEAVY_FILE_OPS
   // uncomment for noisier debugging.
 
 #undef LOG
@@ -280,9 +280,8 @@ LOG(astring("skipping bad file: ") + full_file);
       continue;
     }
 
-    if ((last_action._byte_start + last_action._length >= current.length())
-        && current.length()) {
-//LOG(astring("finished handling file: ") + full_file);
+    if (last_action._byte_start + last_action._length >= current.length()) {
+LOG(astring("finished handling file: ") + full_file);
       // this file is done now.  go to the next one.
       if (!advance(to_transfer, last_action)) break;
       continue;

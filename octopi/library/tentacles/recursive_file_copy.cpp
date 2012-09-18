@@ -39,7 +39,7 @@ using namespace textual;
 
 namespace octopi {
 
-//#define DEBUG_RECURSIVE_FILE_COPY
+#define DEBUG_RECURSIVE_FILE_COPY
   // uncomment for noisier debugging.
 
 #define FAKE_HOSTNAME "internal_fake_host"
@@ -48,6 +48,11 @@ namespace octopi {
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 #undef BASE_LOG
 #define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), s)
+
+#define RETURN_ERROR_RFC(msg, err) { \
+  LOG(msg); \
+  return err; \
+}
 
 const int MAX_CHUNK_RFC_COPY_HIER = 1 * MEGABYTE;
   // maximum size for each transfer chunk.
@@ -61,11 +66,6 @@ recursive_file_copy::~recursive_file_copy() {}
 
 const char *recursive_file_copy::outcome_name(const outcome &to_name)
 { return common::outcome_name(to_name); }
-
-#define RETURN_ERROR_RFC(msg, err) { \
-  LOG(msg); \
-  return err; \
-}
 
 outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
   const astring &source_dir, const astring &target_dir,
@@ -171,29 +171,20 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
       break;
     }
 
-    if (!reply->_packed_data.length()) {
-      RETURN_ERROR_RFC("file transfer had no packed data", GARBAGE);
-    }
+//    if (!reply->_packed_data.length()) {
+//      RETURN_ERROR_RFC("file transfer had no packed data", GARBAGE);
+//    }
 
     byte_array copy = reply->_packed_data;
     while (copy.length()) {
-#ifdef DEBUG_RECURSIVE_FILE_COPY
-      LOG(a_sprintf("starging size in array: %d", copy.length()));
-#endif
       file_time empty;
       file_transfer_header head(empty);
       if (!head.unpack(copy)) 
         RETURN_ERROR_RFC("failed to unpack header", GARBAGE);
-#ifdef DEBUG_RECURSIVE_FILE_COPY
-      LOG(a_sprintf("removed head size in array: %d", copy.length()));
-#endif
       if (copy.length() < head._length)
         RETURN_ERROR_RFC("not enough length in array", GARBAGE);
-//hmmm: are we doing nothing here besides validating that we GOT something in the header?
-      copy.zap(0, head._length - 1);
-#ifdef DEBUG_RECURSIVE_FILE_COPY
-      LOG(a_sprintf("size in array now: %d", copy.length()));
-#endif
+      if (head._length > 0)
+        copy.zap(0, head._length - 1);
 
 //hmmm: this needs better formatting, and should not repeat the same file name even
 //      if it's in multiple chunks.
