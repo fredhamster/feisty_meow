@@ -136,7 +136,7 @@ public:
 
   // turns a source mapping into the location that it corresponds to.
   astring translate(const astring &source_path) const {
-//    FUNCDEF("translate");
+    FUNCDEF("translate");
     string_array pieces;
     filename(source_path).separate(pieces);
     astring source_mapping = pieces[0];
@@ -300,7 +300,7 @@ outcome file_transfer_tentacle::remove_correspondence
 bool file_transfer_tentacle::get_differences(const octopus_entity &ent,
     const astring &src, const astring &dest, filename_list &diffs)
 {
-//  FUNCDEF("get_differences");
+  FUNCDEF("get_differences");
   diffs.reset();
   AUTO_LOCK;
   file_transfer_record *the_rec = _transfers->find(ent, src, dest);
@@ -315,7 +315,7 @@ bool file_transfer_tentacle::status(const octopus_entity &ent,
     int &total_files, double &current_size, int &current_files, bool &done,
     time_stamp &last_active)
 {
-//  FUNCDEF("status");
+  FUNCDEF("status");
   total_size = 0;
   total_files = 0;
   current_files = 0;
@@ -714,7 +714,7 @@ outcome file_transfer_tentacle::handle_storage_response
 outcome file_transfer_tentacle::conclude_storage_request
     (file_transfer_infoton &req, const octopus_request_id &item_id)
 {
-  FUNCDEF("handle_storage_request");
+  FUNCDEF("conclude_storage_request");
   if (_mode & ONLY_REPORT_DIFFS) {
     // store an unhandled infoton.
     unhandled_request *deny = new unhandled_request(item_id, req.classifier(), NO_HANDLER);
@@ -741,13 +741,17 @@ outcome file_transfer_tentacle::conclude_storage_request
   the_rec->_done = true;  // we're concluding the transfer, so that's that.
   resp->_request = false;  // it's a response now.
   store_product(resp, item_id);
+
+  LOG(astring("concluding transfer request on src=") + req._src_root + " dest="
+      + req._dest_root);
+
   return common::OKAY;
 }
 
 outcome file_transfer_tentacle::conclude_storage_response
     (file_transfer_infoton &resp, const octopus_request_id &item_id)
 {
-  FUNCDEF("handle_storage_response");
+  FUNCDEF("conclude_storage_response");
   if (_mode & ONLY_REPORT_DIFFS) {
     // not spoken here.
     return NO_HANDLER;
@@ -762,6 +766,9 @@ outcome file_transfer_tentacle::conclude_storage_response
 
   // mark that we're done now.
   the_rec->_done = true;
+
+  LOG(astring("concluding transfer response on src=") + resp._src_root + " dest="
+      + resp._dest_root);
 
   // there is no response product to store.
   return OKAY;

@@ -211,12 +211,10 @@ outcome heavy_file_operations::write_file_chunk(const astring &target,
 basis::outcome heavy_file_operations::advance(const filename_list &to_transfer,
     file_transfer_header &last_action)
 {
-#ifdef DEBUG_HEAVY_FILE_OPS
   FUNCDEF("advance");
-#endif
   int indy = to_transfer.locate(last_action._filename);
   if (negative(indy)) return BAD_INPUT;  // error, file not found in list.
-  if (indy == to_transfer.elements() - 1) return FINISHED;  // done.
+  if (indy >= to_transfer.elements() - 1) return FINISHED;  // done.
   const file_info *currfile = to_transfer.get(indy + 1);
   last_action._filename = currfile->raw();
   last_action._time = currfile->_time;

@@ -165,16 +165,6 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
     if (!reply)
       RETURN_ERROR_RFC("failed to get ongoing transfer reply", NONE_READY);
 
-    if (reply->_command == file_transfer_infoton::CONCLUDE_TRANSFER_MARKER) {
-      BASE_LOG(astring("finished transfer from \"") + source_dir
-          + "\" to \"" + target_dir + "\"");
-      break;
-    }
-
-//    if (!reply->_packed_data.length()) {
-//      RETURN_ERROR_RFC("file transfer had no packed data", GARBAGE);
-//    }
-
     byte_array copy = reply->_packed_data;
     while (copy.length()) {
       file_time empty;
@@ -193,6 +183,12 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
     }
     if (copy.length())
       RETURN_ERROR_RFC("still had data in array", GARBAGE);
+
+    if (reply->_command == file_transfer_infoton::CONCLUDE_TRANSFER_MARKER) {
+      BASE_LOG(astring("finished transfer from \"") + source_dir
+          + "\" to \"" + target_dir + "\"");
+      break;
+    }
 
     octopus_request_id resp_id(ent, iter + 11);
     outcome resp_ret = client_spider.evaluate(reply, resp_id);
