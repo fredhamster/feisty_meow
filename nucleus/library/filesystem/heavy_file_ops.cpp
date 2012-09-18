@@ -275,12 +275,14 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
     huge_file current(full_file, "rb");
     if (!current.good()) {
       // we need to skip this file.
+LOG(astring("skipping bad file: ") + full_file);
       if (!advance(to_transfer, last_action)) break;
       continue;
     }
 
     if ((last_action._byte_start + last_action._length >= current.length())
         && current.length()) {
+//LOG(astring("finished handling file: ") + full_file);
       // this file is done now.  go to the next one.
       if (!advance(to_transfer, last_action)) break;
       continue;
