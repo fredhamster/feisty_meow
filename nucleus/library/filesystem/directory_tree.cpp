@@ -438,7 +438,7 @@ filename_tree *directory_tree::seek(const astring &dir_name_in,
       filename current(check->_dirname);
       if (!current.is_normal()) {
 //#ifdef DEBUG_DIRECTORY_TREE
-        LOG(astring("skipping abnormal dir:  ") + current);
+        LOG(astring("skipping abnormal dir: \"") + current + "\"");
 //#endif
         continue;
       }
@@ -500,7 +500,7 @@ bool directory_tree::calculate(filename_tree *start, bool just_size)
   while (directory_tree::current_dir(*ted, curr)) {
     if (!curr.is_normal()) {
 //#ifdef DEBUG_DIRECTORY_TREE
-      LOG(astring("skipping abnormal dir:  ") + curr);
+      LOG(astring("skipping abnormal dir: \"") + curr + "\"");
 //#endif
       directory_tree::next(*ted);
       continue;  // scary non-simple file type.
@@ -518,7 +518,7 @@ bool directory_tree::calculate(filename_tree *start, bool just_size)
 #endif
       if (!curr_file.is_normal()) {
 //#ifdef DEBUG_DIRECTORY_TREE
-        LOG(astring("skipping abnormal file:  ") + curr);
+        LOG(astring("skipping abnormal file: \"") + curr + "\"");
 //#endif
         continue;
       }

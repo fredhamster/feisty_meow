@@ -3,7 +3,7 @@
 function check_if_failed()
 {
   if [ $? -ne 0 ]; then
-    echo "Step failed: $*"
+    echo "Step FAILed: $*"
     return 1
   fi
 }
@@ -14,6 +14,27 @@ function exit_if_failed()
   if [ $? -ne 0 ]; then
     exit 1
   fi
+}
+
+function synch_to_backup()
+{
+  local source="$1"; shift
+  local dest="$1"; shift
+  if [ -z "$source" -o -z "$dest" ]; then
+    echo synch_to_backup function requires a source and a target folder to synch.
+    exit 1
+  fi
+  echo "Synchronizing $source into $dest."
+#hmmm: temporary measure until top-level dir bug fixed in synch_files app.
+  if [ ! -d "$dest" ]; then
+    mkdir -p "$dest"
+    if [ $? -ne 0 ]; then
+      echo "FAILed to make target directory: $dest"
+      return 1
+    fi
+  fi
+  synch_files "$source" "$dest"
+  check_if_failed "synching $source to $dest"
 }
 
 # just undo it first, to try to be sure we know we are mounted properly later.
@@ -30,42 +51,17 @@ exit_if_failed "mounting backup folder"
 
 ##############
 
-synch_files /etc /z/backup/etc/
-check_if_failed "synching etc to backup"
+synch_to_backup /etc /z/backup/etc/
 
 ##############
 
-synch_files /home/albums /z/backup/home/albums
-check_if_failed "synching home/albums to backup"
-
-synch_files /home/deepcore /z/backup/home/deepcore
-check_if_failed "synching home/deepcore to backup"
-
-synch_files /home/drupal /z/backup/home/drupal
-check_if_failed "synching home/drupal to backup"
-
-synch_files /home/fred /z/backup/home/fred
-check_if_failed "synching home/fred to backup"
-
-synch_files /home/git /z/backup/home/git
-check_if_failed "synching home/git to backup"
-
-synch_files /home/sharedspam /z/backup/home/sharedspam
-check_if_failed "synching home/sharedspam to backup"
-
-synch_files /home/sim /z/backup/home/sim
-check_if_failed "synching home/sim to backup"
-
-synch_files /home/svn /z/backup/home/svn
-check_if_failed "synching home/svn to backup"
-
-synch_files /home/trac /z/backup/home/trac
-check_if_failed "synching home/trac to backup"
+for subdir in albums deepcore drupal fred git sharedspam sim svn trac ; do 
+  synch_to_backup /home/$subdir /z/backup/home/$subdir
+done
 
 ##############
 
-synch_files /var/lib/mailman /z/backup/var/lib/mailman
-check_if_failed "synching var/lib/mailman to backup"
+synch_to_backup /var/lib/mailman /z/backup/var/lib/mailman
 
 ##############
 

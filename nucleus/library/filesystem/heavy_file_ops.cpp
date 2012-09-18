@@ -27,7 +27,7 @@ using namespace structures;
 
 namespace filesystem {
 
-//#define DEBUG_HEAVY_FILE_OPS
+#define DEBUG_HEAVY_FILE_OPS
   // uncomment for noisier debugging.
 
 #undef LOG
@@ -279,8 +279,8 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
       continue;
     }
 
-    if ((last_action._byte_start + last_action._length >= current.length())
-        && current.length()) {
+    if (last_action._byte_start + last_action._length >= current.length()) {
+//        && current.length()) {
       // this file is done now.  go to the next one.
       if (!advance(to_transfer, last_action)) break;
       continue;
