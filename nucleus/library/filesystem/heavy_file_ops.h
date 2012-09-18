@@ -107,7 +107,8 @@ public:
     out before bytes are stored into it; this is not an additive operation. */
 
 private:
-  static bool advance(const filename_list &to_transfer, file_transfer_header &last_action);
+  static basis::outcome advance(const filename_list &to_transfer,
+          file_transfer_header &last_action);
     //!< advances to the next file in the transfer list "to_transfer".
 };
 

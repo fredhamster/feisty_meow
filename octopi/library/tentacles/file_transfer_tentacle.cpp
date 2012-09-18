@@ -620,8 +620,7 @@ outcome file_transfer_tentacle::handle_storage_request
       (_correspondences->translate(the_rec->_src_root), *the_rec->_diffs,
       the_rec->_last_sent, resp->_packed_data, _maximum_transfer);
   if (bufret == heavy_file_operations::FINISHED) {
-//here we go.  finish by setting command to conclude.
-LOG("got the final marker saying heavy file ops done!");
+    // finish by setting command to be a conclude marker.
     the_rec->_done = true;
     resp->_command = file_transfer_infoton::CONCLUDE_TRANSFER_MARKER;
     bufret = OKAY;  // now it's no longer an exceptional outcome.
@@ -632,16 +631,13 @@ LOG("got the final marker saying heavy file ops done!");
         + req._dest_root);
   }
 
-//  if ( (bufret == OKAY) && !resp->_packed_data.length() ) {
-//    LOG(astring("failed to pack any data for file: ") + req._src_root);
-//  }
-
-  if (!the_rec->_done && (bufret == OKAY) && !resp->_packed_data.length() ) {
-    // seems like the transfer is done.
+//can remove this block if stops saying it.
+  if ((bufret == OKAY) && !resp->_packed_data.length() ) {
     LOG("marking empty transfer as done; why not caught above at FINISHED check?");
     the_rec->_done = true;
     resp->_command = file_transfer_infoton::CONCLUDE_TRANSFER_MARKER;
   }
+//end of can remove.
 
   resp->_request = false;  // it's a response now.
   store_product(resp, item_id);

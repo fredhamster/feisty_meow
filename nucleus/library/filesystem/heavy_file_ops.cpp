@@ -208,15 +208,15 @@ outcome heavy_file_operations::write_file_chunk(const astring &target,
   return OKAY;
 }
 
-bool heavy_file_operations::advance(const filename_list &to_transfer,
+basis::outcome heavy_file_operations::advance(const filename_list &to_transfer,
     file_transfer_header &last_action)
 {
 #ifdef DEBUG_HEAVY_FILE_OPS
   FUNCDEF("advance");
 #endif
   int indy = to_transfer.locate(last_action._filename);
-  if (negative(indy)) return false;  // error.
-  if (indy == to_transfer.elements() - 1) return false;  // done.
+  if (negative(indy)) return BAD_INPUT;  // error, file not found in list.
+  if (indy == to_transfer.elements() - 1) return FINISHED;  // done.
   const file_info *currfile = to_transfer.get(indy + 1);
   last_action._filename = currfile->raw();
   last_action._time = currfile->_time;
@@ -228,7 +228,7 @@ bool heavy_file_operations::advance(const filename_list &to_transfer,
 
   last_action._byte_start = 0;
   last_action._length = 0;
-  return true;
+  return OKAY;
 }
 
 outcome heavy_file_operations::buffer_files(const astring &source_root,
@@ -276,14 +276,16 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
     if (!current.good()) {
       // we need to skip this file.
 LOG(astring("skipping bad file: ") + full_file);
-      if (!advance(to_transfer, last_action)) break;
+      to_return = advance(to_transfer, last_action);
+      if (to_return != OKAY) break;
       continue;
     }
 
     if (last_action._byte_start + last_action._length >= current.length()) {
-LOG(astring("finished handling file: ") + full_file);
+LOG(astring("finished stuffing file: ") + full_file);
       // this file is done now.  go to the next one.
-      if (!advance(to_transfer, last_action)) break;
+      to_return = advance(to_transfer, last_action);
+      if (to_return != OKAY) break;
       continue;
     }
 
@@ -302,7 +304,8 @@ LOG(astring("finished handling file: ") + full_file);
     if (bytes_read != new_len) {
       if (!bytes_read) {
         // some kind of problem reading the file.
-        if (!advance(to_transfer, last_action)) break;
+        to_return = advance(to_transfer, last_action);
+        if (to_return != OKAY) break;
         continue;
       }
 //why would this happen?  just complain, i guess.
@@ -319,7 +322,8 @@ LOG(astring("finished handling file: ") + full_file);
     if (!current.length()) {
       // ensure we don't get stuck redoing zero length files, which we allowed
       // to go past their end above (since otherwise we'd never see them).
-      if (!advance(to_transfer, last_action)) break;
+      to_return = advance(to_transfer, last_action);
+      if (to_return != OKAY) break;
       continue;
     }
     
