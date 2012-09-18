@@ -34,7 +34,7 @@ endif
 
 # Provides a time-stamp in the make log.
 show_date.%:
-	$(HIDER)echo "The time right now is $(shell date)"
+	$(HIDER)echo "{$(shell date)}"
 
 # The .make rule changes to the directory with the same first part of the
 # pattern and makes whatever projects are there.  This is used by the build
