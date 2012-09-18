@@ -620,10 +620,12 @@ outcome file_transfer_tentacle::handle_storage_request
       (_correspondences->translate(the_rec->_src_root), *the_rec->_diffs,
       the_rec->_last_sent, resp->_packed_data, _maximum_transfer);
   if (bufret == heavy_file_operations::FINISHED) {
-    // finish by setting command to be a conclude marker.
-    the_rec->_done = true;
-    resp->_command = file_transfer_infoton::CONCLUDE_TRANSFER_MARKER;
-    bufret = OKAY;  // now it's no longer an exceptional outcome.
+    bufret = OKAY;  // in either case, we don't emit a finished outcome; handled elsewhere.
+    if (!resp->_packed_data.length()) {
+      // blank packages, so finish by setting command to be a conclude marker.
+      the_rec->_done = true;
+      resp->_command = file_transfer_infoton::CONCLUDE_TRANSFER_MARKER;
+    }
   } else if (bufret != OKAY) {
     // complain, but still send.
     LOG(astring("buffer files returned an error on item=")

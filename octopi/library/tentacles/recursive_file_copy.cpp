@@ -165,6 +165,12 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
     if (!reply)
       RETURN_ERROR_RFC("failed to get ongoing transfer reply", NONE_READY);
 
+    if (reply->_command == file_transfer_infoton::CONCLUDE_TRANSFER_MARKER) {
+      BASE_LOG(astring("finished transfer from \"") + source_dir
+          + "\" to \"" + target_dir + "\"");
+      break;
+    }
+
     byte_array copy = reply->_packed_data;
     while (copy.length()) {
       file_time empty;
@@ -178,17 +184,10 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
 
 //hmmm: this needs better formatting, and should not repeat the same file name even
 //      if it's in multiple chunks.
-//hmmm: if logging, then...
       BASE_LOG(head.readable_text_form());
     }
     if (copy.length())
       RETURN_ERROR_RFC("still had data in array", GARBAGE);
-
-    if (reply->_command == file_transfer_infoton::CONCLUDE_TRANSFER_MARKER) {
-      BASE_LOG(astring("finished transfer from \"") + source_dir
-          + "\" to \"" + target_dir + "\"");
-      break;
-    }
 
     octopus_request_id resp_id(ent, iter + 11);
     outcome resp_ret = client_spider.evaluate(reply, resp_id);
