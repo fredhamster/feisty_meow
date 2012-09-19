@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# backs up crucial directories on my server into the allotted backup area.
+#
+# Author: Chris Koeritz
+
+# tests whether the last action worked or not, and if not, it issues the
+# complaint passed as the arguments.
 function check_if_failed()
 {
   if [ $? -ne 0 ]; then
@@ -8,6 +14,8 @@ function check_if_failed()
   fi
 }
 
+# uses the failure checking function, but actually exits out of the script
+# if there was a failure detected.
 function exit_if_failed()
 {
   check_if_failed
@@ -16,6 +24,7 @@ function exit_if_failed()
   fi
 }
 
+# given a source and target folder, this synchronizes the source into the target.
 function synch_to_backup()
 {
   local source="$1"; shift
@@ -25,17 +34,21 @@ function synch_to_backup()
     exit 1
   fi
   echo "Synchronizing $source into $dest."
-#hmmm: temporary measure until top-level dir bug fixed in synch_files app.
-  if [ ! -d "$dest" ]; then
-    mkdir -p "$dest"
-    if [ $? -ne 0 ]; then
-      echo "FAILed to make target directory: $dest"
-      return 1
-    fi
-  fi
+####hmmm: temporary measure until top-level dir bug fixed in synch_files app.
+###  if [ ! -d "$dest" ]; then
+###    mkdir -p "$dest"
+###    if [ $? -ne 0 ]; then
+###      echo "FAILed to make target directory: $dest"
+###      return 1
+###    fi
+###  fi
   synch_files "$source" "$dest"
   check_if_failed "synching $source to $dest"
 }
+
+##############
+
+# main body of script...
 
 # just undo it first, to try to be sure we know we are mounted properly later.
 umount /z/backup &>/dev/null
