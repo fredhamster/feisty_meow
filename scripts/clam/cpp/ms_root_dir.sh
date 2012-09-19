@@ -10,7 +10,8 @@ if [ -z "$VSxTOOLS" ]; then
   fi
 fi
 if [ -z "$VSxTOOLS" ]; then
-  echo Failure to locate visual studio tools.
+  #echo Failure to locate visual studio tools.
+  # don't want to echo anything; need to be able to check that this provided nothing.
   exit 33
 fi
 
