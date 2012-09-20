@@ -251,7 +251,7 @@ bool tcpip_stack::enumerate_adapters(machine_uid_array &ip_addresses,
 
 sockaddr tcpip_stack::convert(const internet_address &make_from)
 {
-//  FUNCDEF("convert [to sockaddr]");
+  FUNCDEF("convert [to sockaddr]");
   sockaddr_in new_socket;  // our socket.
   memset(&new_socket, 0, sizeof(new_socket));  // clear it out.
   new_socket.sin_family = AF_INET;
@@ -308,7 +308,7 @@ byte_array tcpip_stack::full_resolve(const astring &hostname,
 bool tcpip_stack::resolve_any(const astring &hostname,
     internet_address &to_return) const
 {
-//  FUNCDEF("resolve_any");
+  FUNCDEF("resolve_any");
   to_return = internet_address();
   if (!hostname) return false;  // blank hostnames go nowhere.
   astring full_host;
@@ -324,7 +324,7 @@ bool tcpip_stack::resolve_any(const astring &hostname,
 
 astring tcpip_stack::dns_resolve(const astring &hostname) const
 {
-//  FUNCDEF("dns_resolve");
+  FUNCDEF("dns_resolve");
   if (!hostname) return "";  // blank hostnames go nowhere.
   if (hostname.iequals("local") || hostname.iequals("localhost")) {
     return "127.0.0.1";

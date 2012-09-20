@@ -186,10 +186,12 @@ public:
     character that is substituted instead of illegal characters. */
 
   void separate(structures::string_array &pieces) const;
-    //!< breaks the filename into its component directories.
+    //!< breaks the filename into its component parts.
     /*!< this returns an array containing the component names.  the last
     component, unless the filename held is actually a directory, should be the
-    name of the file.  if the first character is a directory, then the first
+    name of the file.
+//hmmm: what does this mean, below?
+  if the first character is a directory, then the first
     component will be empty. */
 
   void join(const structures::string_array &pieces);

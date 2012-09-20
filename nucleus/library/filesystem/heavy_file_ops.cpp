@@ -40,6 +40,11 @@ namespace filesystem {
 
 //////////////
 
+// the smallest we let the packing area's available space get before we stop filling it.
+const int MINIMUM_ARRAY_SIZE = 1024;
+
+//////////////
+
 file_transfer_header::file_transfer_header(const file_time &time_stamp)
 : _filename(),
   _byte_start(0),
@@ -167,9 +172,7 @@ outcome heavy_file_operations::write_file_chunk(const astring &target,
     double byte_start, const byte_array &chunk, bool truncate,
     int copy_chunk_factor)
 {
-#ifdef DEBUG_HEAVY_FILE_OPS
-//  FUNCDEF("write_file_chunk");
-#endif
+  FUNCDEF("write_file_chunk");
   if (byte_start < 0) return BAD_INPUT;
 
   filename targ_name(target);
@@ -247,7 +250,7 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
   while (storage.length() < maximum_bytes) {
     double remaining_in_array = maximum_bytes - storage.length()
         - last_action.packed_size();
-    if (remaining_in_array < 128) {
+    if (remaining_in_array < MINIMUM_ARRAY_SIZE) {
       // ensure that we at least have a reasonable amount of space left
       // for storing into the array.
       break;
@@ -273,15 +276,15 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
     huge_file current(full_file, "rb");
     if (!current.good()) {
       // we need to skip this file.
-LOG(astring("skipping bad file: ") + full_file);
+      LOG(astring("skipping bad file: ") + full_file);
       to_return = advance(to_transfer, last_action);
       if (to_return != OKAY) break;
       continue;
     }
 
     if (last_action._byte_start + last_action._length >= current.length()) {
-LOG(astring("finished stuffing file: ") + full_file);
       // this file is done now.  go to the next one.
+      LOG(astring("finished stuffing file: ") + full_file);
       to_return = advance(to_transfer, last_action);
       if (to_return != OKAY) break;
       continue;

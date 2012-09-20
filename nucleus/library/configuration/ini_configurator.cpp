@@ -227,7 +227,7 @@ bool ini_configurator::delete_entry(const astring &section, const astring &ent)
 bool ini_configurator::put(const astring &section, const astring &entry,
     const astring &to_store)
 {
-///  FUNCDEF("put");
+  FUNCDEF("put");
   if (!to_store.length()) return delete_entry(section, entry);
   else if (!entry.length()) return delete_section(section);
   else if (!section.length()) return false;
@@ -259,7 +259,7 @@ bool ini_configurator::get(const astring &section, const astring &entry,
 
 bool ini_configurator::get_section(const astring &section, string_table &info)
 {
-///  FUNCDEF("get_section");
+  FUNCDEF("get_section");
 #ifndef __WIN32__
   return _parser->get_section(section, info);
 #else

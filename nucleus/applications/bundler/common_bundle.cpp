@@ -59,7 +59,7 @@ bool manifest_chunk::unpack(byte_array &source)
 
 bool manifest_chunk::read_an_int(byte_filer &bundle, un_int &found)
 {
-//  FUNCDEF("read_an_int");
+  FUNCDEF("read_an_int");
   byte_array temp;
   if (bundle.read(temp, sizeof(int)) != sizeof(int)) return false;
   if (!structures::detach(temp, found)) return false;
@@ -68,7 +68,7 @@ bool manifest_chunk::read_an_int(byte_filer &bundle, un_int &found)
 
 bool manifest_chunk::read_an_obscured_int(byte_filer &bundle, un_int &found)
 {
-//  FUNCDEF("read_an_obscured_int");
+  FUNCDEF("read_an_obscured_int");
   byte_array temp;
   if (bundle.read(temp, 2 * sizeof(int)) != 2 * sizeof(int)) return false;
   if (!structures::obscure_detach(temp, found)) return false;
@@ -77,7 +77,7 @@ bool manifest_chunk::read_an_obscured_int(byte_filer &bundle, un_int &found)
 
 bool manifest_chunk::read_a_filetime(byte_filer &bundle, byte_array &found)
 {
-//  FUNCDEF("read_a_filetime");
+  FUNCDEF("read_a_filetime");
   byte_array temp;
   // the trick below only works because we know we have a constant sized packed version
   // for the file time.
@@ -88,7 +88,7 @@ bool manifest_chunk::read_a_filetime(byte_filer &bundle, byte_array &found)
 
 astring manifest_chunk::read_a_string(byte_filer &bundle)
 {
-//  FUNCDEF("read_a_string");
+  FUNCDEF("read_a_string");
   astring found;
   byte_array temp;
   // read in the zero-terminated character string.

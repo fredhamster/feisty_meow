@@ -99,7 +99,7 @@ ethread::ethread()
   _next_activation(new time_stamp),
   _how(TIGHT_INTERVAL)  // unused.
 {
-//  FUNCDEF("constructor [one-shot]");
+  FUNCDEF("constructor [one-shot]");
 }
 
 ethread::ethread(int sleep_timer, timed_thread_types how)
@@ -117,7 +117,7 @@ ethread::ethread(int sleep_timer, timed_thread_types how)
   _next_activation(new time_stamp),
   _how(how)
 {
-//  FUNCDEF("constructor [periodic]");
+  FUNCDEF("constructor [periodic]");
   if (sleep_timer < MINIMUM_SLEEP_PERIOD) {
     _sleep_time = MINIMUM_SLEEP_PERIOD;
   }
@@ -226,7 +226,7 @@ void ethread::one_shot_thread_driver(void *hidden_pointer)
 #error unknown thread signature.
 #endif
 {
-//  FUNCDEF("one_shot_thread_driver");
+  FUNCDEF("one_shot_thread_driver");
   ethread *manager = (ethread *)hidden_pointer;
 #ifdef __UNIX__
   if (!manager) return NIL;
@@ -260,7 +260,7 @@ void ethread::periodic_thread_driver(void *hidden_pointer)
 #error unknown thread signature.
 #endif
 {
-//  FUNCDEF("periodic_thread_driver");
+  FUNCDEF("periodic_thread_driver");
   ethread *manager = (ethread *)hidden_pointer;
 #ifdef __UNIX__
   if (!manager) return NIL;

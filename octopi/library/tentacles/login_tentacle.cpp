@@ -59,7 +59,7 @@ void login_tentacle::expunge(const octopus_entity &to_remove)
 outcome login_tentacle::consume(infoton &to_chow,
     const octopus_request_id &item_id, byte_array &transformed)
 {
-//  FUNCDEF("consume");
+  FUNCDEF("consume");
   transformed.reset();
   security_infoton *inf = dynamic_cast<security_infoton *>(&to_chow);
   if (!inf) {

@@ -140,7 +140,7 @@ cromp_common::cromp_common(const astring &host, int max_per_ent)
   _still_flat(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NIL)),
   _last_cleanup(new time_stamp)
 {
-//  FUNCDEF("constructor [host/max_per_ent]");
+  FUNCDEF("constructor [host/max_per_ent]");
   // clear pre-existing space.
   _accumulator->reset();
   _sendings->reset();
@@ -179,7 +179,7 @@ cromp_common::cromp_common(spocket *preexisting, octopus *singleton)
 
 cromp_common::~cromp_common()
 {
-//  FUNCDEF("destructor");
+  FUNCDEF("destructor");
   close_common();  // shuts down our socket and other stuff.
   if (_singleton) {
     _singleton = NIL;  // reset the pointer we had.
@@ -277,7 +277,7 @@ void cromp_common::max_bytes_per_entity(int max_bytes_per_entity)
 
 void cromp_common::conditional_cleaning()
 {
-//  FUNCDEF("conditional_cleaning");
+  FUNCDEF("conditional_cleaning");
   if (time_stamp(-CLEANUP_INTERVAL) > *_last_cleanup) {
     _requests->clean_out_deadwood();
       // flush any items that are too old.
@@ -500,7 +500,7 @@ outcome cromp_common::send_buffer()
 outcome cromp_common::retrieve_and_restore_root(bool get_anything,
     infoton * &item, octopus_request_id &req_id, int timeout)
 {
-//  FUNCDEF("retrieve_and_restore_root");
+  FUNCDEF("retrieve_and_restore_root");
   item = NIL;
   if (!_commlink) return BAD_INPUT;  // they haven't opened this yet.
   octopus_request_id tmp_id;

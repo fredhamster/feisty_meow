@@ -42,7 +42,7 @@ public:
 
 int synch_files_tentacle::execute()
 {
-//  FUNCDEF("execute");
+  FUNCDEF("execute");
 
   if (_global_argc < 3) {
     log(astring("\

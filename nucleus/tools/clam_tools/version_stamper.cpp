@@ -65,7 +65,7 @@ version_stamper::~version_stamper() {}
 
 int version_stamper::execute()
 {
-///  FUNCDEF("execute");
+  FUNCDEF("execute");
   SETUP_CONSOLE_LOGGER;  // override the file_logger from app_shell.
   if (application::_global_argc < 2) {
     log(astring("The directory where the 'version.ini' file is located\n"

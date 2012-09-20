@@ -201,7 +201,7 @@ outcome list_manager::consume(infoton &to_chow,
 
 void list_manager::expunge(const octopus_entity &formal(to_remove))
 {
-//  FUNCDEF("expunge");
+  FUNCDEF("expunge");
 }
 
 } //namespace.

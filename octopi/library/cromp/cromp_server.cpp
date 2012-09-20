@@ -182,7 +182,7 @@ public:
   // stops the background activity of this object and drops the connection
   // to the client.
   void croak() {
-//    FUNCDEF("croak");
+    FUNCDEF("croak");
     _grabber.stop();
     int actions = 0;
     while (get_incoming_data(actions)) {
@@ -450,7 +450,7 @@ public:
     _parent(parent) {}
 
   void perform_activity(void *formal(ptr)) {
-//    FUNCDEF("perform_activity");
+    FUNCDEF("perform_activity");
     _parent.drop_dead_clients(); 
   }
 
@@ -468,7 +468,7 @@ public:
     _parent(parent) {}
 
   void perform_activity(void *formal(ptr)) {
-//    FUNCDEF("perform_activity");
+    FUNCDEF("perform_activity");
     _parent.look_for_clients(*this); 
   }
 
@@ -498,7 +498,7 @@ cromp_server::cromp_server(const internet_address &where,
   _default_security(new cromp_security),
   _security_arm(NIL)
 {
-//  FUNCDEF("constructor");
+  FUNCDEF("constructor");
 }
  
 cromp_server::~cromp_server()
@@ -613,7 +613,7 @@ outcome cromp_server::enable_servers(bool encrypt, cromp_security *security)
 
 void cromp_server::disable_servers()
 {
-//  FUNCDEF("disable_servers");
+  FUNCDEF("disable_servers");
   if (!_enabled) return;
   _dropper->stop();  // signal the thread to leave when it can.
   _accepters->stop_all();  // signal the accepting threads to exit.
@@ -648,7 +648,7 @@ int cromp_server::clients() const
 
 bool cromp_server::disconnect_entity(const octopus_entity &id)
 {
-//  FUNCDEF("disconnect_entity");
+  FUNCDEF("disconnect_entity");
   if (!_enabled) return false;
   LOCK_LISTS;
   int indy = _clients->find(id);
@@ -662,7 +662,7 @@ bool cromp_server::disconnect_entity(const octopus_entity &id)
 bool cromp_server::find_entity(const octopus_entity &id,
     internet_address &found)
 {
-//  FUNCDEF("find_entity");
+  FUNCDEF("find_entity");
   if (!_enabled) return false;
   found = internet_address();
   LOCK_LISTS;
@@ -761,7 +761,7 @@ outcome cromp_server::send_to_client(const octopus_request_id &id,
 outcome cromp_server::get_from_client(const octopus_request_id &id,
     infoton * &data, int timeout)
 {
-//  FUNCDEF("get_from_client");
+  FUNCDEF("get_from_client");
   if (!_enabled) return common::INCOMPLETE;
 //hmmm: this implementation locks the lists; can't we get the client to do
 //      most of the work for this?

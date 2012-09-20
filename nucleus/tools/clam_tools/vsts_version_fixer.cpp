@@ -96,7 +96,7 @@ HOOPLE_MAIN(vsts_version_fixer, )
 bool vsts_version_fixer::spider_directory(directory start,
     spider_method to_invoke)
 {
-//  FUNCDEF("spider_directory");
+  FUNCDEF("spider_directory");
 
   using namespace basis;
 
@@ -133,7 +133,7 @@ string_array global_dir_whacks;
 
 bool whacking_spider(const directory &current)
 {
-//  FUNCDEF("whacking_spider");
+  FUNCDEF("whacking_spider");
   using namespace basis;
 //LOG(astring("whacking_spider: ") + current.path());
   // iterate across the files in the directory and check for evil ones.
@@ -205,7 +205,7 @@ basis::astring global_build_ini;
 
 bool stamping_spider(const directory &current)
 {
-//  FUNCDEF("stamping_spider");
+  FUNCDEF("stamping_spider");
   using namespace basis;
 //LOG(astring("stamping_spider: ") + current.path());
 
@@ -232,7 +232,7 @@ bool stamping_spider(const directory &current)
 
 bool vsts_version_fixer::perform_version_stamping(const filename &start_name)
 {
-//  FUNCDEF("perform_version_stamping");
+  FUNCDEF("perform_version_stamping");
   directory start(start_name);
   return spider_directory(start, stamping_spider);
 }

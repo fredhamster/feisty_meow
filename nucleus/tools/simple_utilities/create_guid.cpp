@@ -57,7 +57,7 @@ public:
 
 int create_guid::execute()
 {
-//  FUNCDEF("execute");
+  FUNCDEF("execute");
   SETUP_CONSOLE_LOGGER;
 #ifdef __UNIX__
 

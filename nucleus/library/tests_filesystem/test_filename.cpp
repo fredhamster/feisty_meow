@@ -60,11 +60,11 @@ int test_filename::execute()
     filename turkey("/omega/ralph/turkey/buzzard.txt");
     string_array pieces;
     turkey.separate(pieces);
-    ASSERT_TRUE(pieces[1].equal_to("omega"), GROUP + "the first piece didn't match.");
-    ASSERT_TRUE(pieces[2].equal_to("ralph"), GROUP + "the second piece didn't match.");
-    ASSERT_TRUE(pieces[3].equal_to("turkey"), GROUP + "the third piece didn't match.");
-    ASSERT_TRUE(pieces[4].equal_to("buzzard.txt"), GROUP + "the fourth piece didn't match.");
-    ASSERT_EQUAL(pieces.length(), 5, GROUP + "the list was the wrong length");
+    ASSERT_TRUE(pieces[0].equal_to("omega"), GROUP + "the first piece didn't match.");
+    ASSERT_TRUE(pieces[1].equal_to("ralph"), GROUP + "the second piece didn't match.");
+    ASSERT_TRUE(pieces[2].equal_to("turkey"), GROUP + "the third piece didn't match.");
+    ASSERT_TRUE(pieces[3].equal_to("buzzard.txt"), GROUP + "the fourth piece didn't match.");
+    ASSERT_EQUAL(pieces.length(), 4, GROUP + "the list was the wrong length");
   }
 
   {

@@ -434,7 +434,7 @@ void filename::separate(string_array &pieces) const
     if (separator(raw_form[i])) {
       // this is a separator character, so eat it and add the accumulated
       // string to the list.
-      if (!i || accumulator.length()) pieces += accumulator;
+      if (i && accumulator.length()) pieces += accumulator;
       // now reset our accumulated text.
       accumulator = astring::empty_string();
     } else {

@@ -34,7 +34,7 @@ using namespace nodes;
 using namespace structures;
 using namespace textual;
 
-//#define DEBUG_DIRECTORY_TREE
+#define DEBUG_DIRECTORY_TREE
   // uncomment for noisier version.
 
 #undef LOG
@@ -224,11 +224,17 @@ void directory_tree::traverse(const astring &path, const char *pattern,
 
 bool directory_tree::reset(const astring &path, const char *pattern)
 {
+  FUNCDEF("reset");
   _scanned_okay = false;
   WHACK(_real_tree);
+//  filename temp_path(path);
+//  temp_path.canonicalize();
   *_path = path;
+//temp_path.raw();
   *_pattern = pattern;
   _real_tree = new filename_tree;
+
+LOG(astring("dirtree::reset to path: ") + path);
 
   // check that the top-level is healthy.
   directory curr(path, "*");
@@ -617,6 +623,11 @@ bool directory_tree::compare_trees(const directory_tree &source,
     if (target_start.raw().t()) {
       corresponding_name = filename(target_start.raw()
           + filename::default_separator() + corresponding_name.raw());
+/*doesn't help, not right yet.    } else {
+      // if they didn't give us a place to start, we start at the top.
+      corresponding_name = filename(target.path()
+          + filename::default_separator() + corresponding_name.raw());
+*/
     }
 #ifdef DEBUG_DIRECTORY_TREE
     LOG(astring("target with start is: ") + corresponding_name);

@@ -273,14 +273,14 @@ outcome file_transfer_tentacle::add_correspondence
   }
 #ifdef DEBUG_FILE_TRANSFER_TENTACLE
   LOG(astring("adding tree for: ent=") + new_record->_ent.text_form()
-      + " src=" + new_record->_src_root + " dest=" + new_record->_dest_root);
+      + " src=" + new_record->_src_root);
 #endif
   // calculate size and checksum info for the directory.
   new_record->_local_dir->calculate( !(_mode & COMPARE_CONTENT_SAMPLE) );
 
 #ifdef DEBUG_FILE_TRANSFER_TENTACLE
   LOG(astring("done adding tree for: ent=") + new_record->_ent.text_form()
-      + " src=" + new_record->_src_root + " dest=" + new_record->_dest_root);
+      + " src=" + new_record->_src_root);
 #endif
 
   _correspondences->append(new_record);

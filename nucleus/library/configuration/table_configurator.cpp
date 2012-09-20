@@ -170,7 +170,7 @@ astring table_configurator::clean_comments(const astring &to_clean,
 bool table_configurator::get_section(const astring &section,
     string_table &info)
 {
-///  FUNCDEF("get_section");
+  FUNCDEF("get_section");
   info.reset();
   string_table *sect = _real_table->find(section);
   if (!sect) return false;
@@ -182,7 +182,7 @@ bool table_configurator::get_section(const astring &section,
 bool table_configurator::put_section(const astring &section,
     const string_table &info)
 {
-///  FUNCDEF("put_section");
+  FUNCDEF("put_section");
   string_table *sect = _real_table->find(section);
   if (!sect) {
     // none exists yet, so add one.

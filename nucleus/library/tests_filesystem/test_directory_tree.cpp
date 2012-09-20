@@ -122,10 +122,10 @@ int test_directory_tree::execute()
     directory_tree dir2(path, pattern.s());
     ASSERT_TRUE(dir2.good(), "the directory should read the second time fine too");
 
-//    LOG("comparing the two trees.");
+    LOG("comparing the two trees.");
     filename_list diffs;
     directory_tree::compare_trees(dir, dir2, diffs, file_info::EQUAL_CHECKSUM_TIMESTAMP_FILESIZE);
-//LOG(diffs.text_form());
+LOG(diffs.text_form());
 
     ASSERT_FALSE(diffs.elements(), "there should be no differences comparing identical dirs");
   }

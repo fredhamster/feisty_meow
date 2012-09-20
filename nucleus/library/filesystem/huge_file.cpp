@@ -254,7 +254,7 @@ outcome huge_file::seek(double new_position, byte_filer::origins origin)
 
 outcome huge_file::read(byte_array &to_fill, int desired_size, int &size_read)
 {
-//  FUNCDEF("read");
+  FUNCDEF("read");
   size_read = 0;
   int ret = _real_file->read(to_fill, desired_size);
   if (ret < 0)
@@ -266,7 +266,7 @@ outcome huge_file::read(byte_array &to_fill, int desired_size, int &size_read)
 
 outcome huge_file::write(const byte_array &to_write, int &size_written)
 {
-//  FUNCDEF("write");
+  FUNCDEF("write");
   size_written = 0;
   int ret = _real_file->write(to_write);
   if (ret < 0)

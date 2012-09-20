@@ -168,7 +168,7 @@ version_record &version_ini::access_record() { return *_held_record; }
 
 version_record version_ini::get_record()
 {
-//  FUNCDEF("get_record");
+  FUNCDEF("get_record");
   if (_loaded) return *_held_record;
   version_record to_return;
   to_return.description = _ini->load(VERSION_SECTION, DESCRIPTION, "");
@@ -450,7 +450,7 @@ bool replace_version_entry(astring &full_string, const astring &look_for,
 bool version_ini::write_assembly(const version_record &to_write,
     bool do_logging)
 {
-//  FUNCDEF("write_assembly");
+  FUNCDEF("write_assembly");
   filename just_dir = _path_name->dirname();
 //LOG(astring("dir is set to: ") + just_dir);
   directory dir(just_dir);

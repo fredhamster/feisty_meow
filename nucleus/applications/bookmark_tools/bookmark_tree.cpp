@@ -135,7 +135,7 @@ inner_mark_tree &bookmark_tree::access_root() { return *_mark_tree; }
 
 bool bookmark_tree::magic_category_comparison(const astring &a, const astring &b)
 {
-//  FUNCDEF("magic_category_comparison");
+  FUNCDEF("magic_category_comparison");
 //LOG(astring("compare: a=") + a + " b=" + b);
   if (a.iequals(b)) return true;
   astring a_name, a_nick;
@@ -409,7 +409,7 @@ void bookmark_tree::process_link(const string_array &items)
 
 void bookmark_tree::process_comment(const astring &current_line_in)
 {
-///  FUNCDEF("process_comment");
+  FUNCDEF("process_comment");
   astring current_line = current_line_in;
 
   // output the comment as simple text.

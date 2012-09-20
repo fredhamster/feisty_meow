@@ -84,7 +84,7 @@ system_values::system_values(const astring &section_tag)
   _list(new system_values_lookup_list),
   _file(new astring(DEFAULT_MANIFEST))
 {
-//  FUNCDEF("constructor");
+  FUNCDEF("constructor");
   open_values();
 }
   
@@ -113,7 +113,7 @@ const char *system_values::EVENT_VALUES() { return "DEFINE_EVENT"; }
 
 bool system_values::open_values()
 {
-//  FUNCDEF("open_values");
+  FUNCDEF("open_values");
   ini_configurator ini(*_file, ini_configurator::RETURN_ONLY,
       ini_configurator::APPLICATION_DIRECTORY);
 

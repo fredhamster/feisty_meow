@@ -126,7 +126,7 @@ astring memory_limiter::text_form(int indent) const
 
 bool memory_limiter::okay_allocation(int individual, int memory_desired)
 {
-//  FUNCDEF("okay_allocation");
+  FUNCDEF("okay_allocation");
   // check the overall allocation limits first.
   if (_overall_limit
       && (_overall_size + memory_desired > _overall_limit) ) return false;

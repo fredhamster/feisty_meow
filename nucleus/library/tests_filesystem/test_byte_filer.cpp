@@ -226,7 +226,7 @@ int test_byte_filer::run_file_scan()
 
 int test_byte_filer::execute()
 {
-//  FUNCDEF("execute");
+  FUNCDEF("execute");
   int ret = run_simple_test();
   if (ret) return ret;  // failed.
   ret = run_file_scan();

@@ -68,7 +68,7 @@ configured_applications::configured_applications(const astring &config_file,
   _sector(new section_manager(*_config, astring(basename) + "_TOC",
       astring(PRODUCT_HEADING()) + "_"))
 {
-//  FUNCDEF("constructor");
+  FUNCDEF("constructor");
   string_table startup_info;
   if (!find_section(STARTUP_SECTION(), startup_info)) {
     // if there's no startup section, we do nothing right now.
@@ -179,7 +179,7 @@ bool configured_applications::add_program(const astring &product,
 bool configured_applications::remove_program(const astring &product,
     const astring &app_name)
 {
-//  FUNCDEF("remove_program");
+  FUNCDEF("remove_program");
   auto_synchronizer l(*_lock);
   // if the section's missing, there's nothing to remove...
   string_table info_table;
@@ -194,7 +194,7 @@ bool configured_applications::remove_program(const astring &product,
 bool configured_applications::find_section(const astring &section_name,
     string_table &info_found)
 {
-//  FUNCDEF("find_section");
+  FUNCDEF("find_section");
   info_found.reset();
   auto_synchronizer l(*_lock);
   if (!_sector->find_section(section_name, info_found)) {
@@ -230,7 +230,7 @@ astring configured_applications::make_startup_entry(const astring &product,
 bool configured_applications::parse_startup_entry(const astring &info,
     astring &product, astring &parms, bool &one_shot)
 {
-//  FUNCDEF("parse_startup_section");
+  FUNCDEF("parse_startup_section");
   // parse the items that are in the entry for this program.
   variable_tokenizer entry_parser(SEPARATOR_TOKEN(), ASSIGN_TOKEN());
   entry_parser.parse(info);
@@ -259,7 +259,7 @@ bool configured_applications::find_entry(const string_table &table,
 bool configured_applications::add_startup_entry(const astring &product,
     const astring &app_name, const astring &parameters, int one_shot)
 {
-//  FUNCDEF("add_startup_entry");
+  FUNCDEF("add_startup_entry");
   auto_synchronizer l(*_lock);
 
   LOG(astring("product \"") + product + "\", application \"" + app_name
@@ -286,7 +286,7 @@ bool configured_applications::add_startup_entry(const astring &product,
 bool configured_applications::remove_startup_entry(const astring &product,
     const astring &app_name)
 {
-//  FUNCDEF("remove_startup_entry");
+  FUNCDEF("remove_startup_entry");
   auto_synchronizer l(*_lock);
 
   LOG(astring("product \"") + product + "\", application \"" + app_name + "\"");

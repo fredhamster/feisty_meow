@@ -41,20 +41,20 @@ const abyte FAST_PACK_VERSION = 0x14;
 infoton::infoton(const string_array &classifier)
 : _classifier(new string_array(classifier))
 {
-//  FUNCDEF("constructor [string_array]");
+  FUNCDEF("constructor [string_array]");
 }
 
 infoton::infoton(const astring &class_1)
 : _classifier(new string_array)
 {
-//  FUNCDEF("constructor [one string]");
+  FUNCDEF("constructor [one string]");
   *_classifier += class_1;
 }
 
 infoton::infoton(const astring &class_1, const astring &class_2)
 : _classifier(new string_array)
 {
-//  FUNCDEF("constructor [two strings]");
+  FUNCDEF("constructor [two strings]");
   *_classifier += class_1;
   *_classifier += class_2;
 }
@@ -63,7 +63,7 @@ infoton::infoton(const astring &class_1, const astring &class_2,
     const astring &class_3)
 : _classifier(new string_array)
 {
-//  FUNCDEF("constructor [three strings]");
+  FUNCDEF("constructor [three strings]");
   *_classifier += class_1;
   *_classifier += class_2;
   *_classifier += class_3;
@@ -161,7 +161,7 @@ int infoton::fast_pack_overhead(const string_array &classifier)
 
 void infoton::fast_pack(byte_array &packed_form, const infoton &to_pack)
 {
-//  FUNCDEF("fast_pack");
+  FUNCDEF("fast_pack");
   structures::attach(packed_form, FAST_PACK_VERSION);
     // add the tasty version byte as the very first item.
   structures::pack_array(packed_form, to_pack.classifier());
@@ -185,7 +185,7 @@ void infoton::fast_pack(byte_array &packed_form, const infoton &to_pack)
 bool infoton::test_fast_unpack(const byte_array &packed_form,
     int &packed_length)
 {
-//  FUNCDEF("test_fast_unpack");
+  FUNCDEF("test_fast_unpack");
   packed_length = 0;
   if (!packed_form.length()) return false;
 

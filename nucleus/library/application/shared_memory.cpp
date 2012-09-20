@@ -53,7 +53,7 @@ shared_memory::shared_memory(int size, const char *identity)
   _identity(new astring(identity)),
   _size(size)
 {
-//  FUNCDEF("constructor");
+  FUNCDEF("constructor");
   bool first_use = false;  // assume already existing until told otherwise.
   _locking->lock();  // force all others to wait on our finishing creation.
 #ifdef __UNIX__

@@ -105,7 +105,7 @@ bool encryption_infoton::unpack(byte_array &packed_form)
 
 outcome encryption_infoton::prepare_blowfish_key(blowfish_crypto &new_key)
 {
-//  FUNCDEF("prepare_blowfish_key");
+  FUNCDEF("prepare_blowfish_key");
   _encrypted_blowfish_key.reset();  // clean out stuff to create.
   if (!_public_key.length()) {
     // wrong type of request being seen or something.
@@ -143,7 +143,7 @@ outcome encryption_infoton::prepare_public_key(const rsa_crypto &private_key)
 outcome encryption_infoton::extract_response(const rsa_crypto &private_key,
     blowfish_crypto &new_key) const
 {
-//  FUNCDEF("extract_response");
+  FUNCDEF("extract_response");
   if (_success != tentacle::OKAY) return _success;
   byte_array decrypted;
   bool worked = private_key.private_decrypt(_encrypted_blowfish_key, decrypted);

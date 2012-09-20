@@ -166,7 +166,7 @@ outcome write_build_config::output_decorated_macro(const astring &symbol_in,
 outcome write_build_config::output_definition_macro
     (const astring &embedded_value, astring &accumulator)
 {
-//  FUNCDEF("output_definition_macro");
+  FUNCDEF("output_definition_macro");
 //LOG(astring("into output def with: ") + embedded_value);
   variable_tokenizer t;
   t.parse(embedded_value);

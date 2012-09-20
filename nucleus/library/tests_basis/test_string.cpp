@@ -512,7 +512,7 @@ void test_string::run_test_12()
 
 void test_string::run_test_13()
 {
-//  FUNCDEF("run_test_13");
+  FUNCDEF("run_test_13");
   // check for possible memory leaks in these combined ops....  13th.
   const astring churg("borjh sjh oiweoklj");
   astring pud = churg;
@@ -603,7 +603,7 @@ void test_string::run_test_16()
 
 void test_string::run_test_17()
 {
-//  FUNCDEF("run_test_17");
+  FUNCDEF("run_test_17");
   // 17th test checks construction of temporaries.
 /* this test set causes the obnoxious 16 bit codeguard error from hell, as
    does use of temporary objects in ostream << operators.  argh! */
@@ -810,7 +810,7 @@ void test_string::run_test_25()
 
 void test_string::run_test_26()
 {
-//  FUNCDEF("run_test_26");
+  FUNCDEF("run_test_26");
   // 26th test group does simple time_stamp::notarize operations.  these are more for
   // ensuring boundschecker gets to see some of this.
   astring t2 = time_stamp::notarize(false);
@@ -819,7 +819,7 @@ void test_string::run_test_26()
 
 void test_string::run_test_27()
 {
-//  FUNCDEF("run_test_27");
+  FUNCDEF("run_test_27");
   // 27th test group plays around with idate in an attempt to get
   // boundschecker to complain.
   timely::day_in_year d1 = date_now();
@@ -859,7 +859,7 @@ void test_string::run_test_29()
 
 void standard_sprintf_test(const char *parm_string)
 {
-//  FUNCDEF("standard_sprintf_test");
+  FUNCDEF("standard_sprintf_test");
   astring print_into(' ', 20000);
   print_into[0] = '\0';
 //check these!!!:
@@ -993,7 +993,7 @@ void test_string::run_test_33()
 
 void test_string::run_test_34()
 {
-//  FUNCDEF("run_test_34");
+  FUNCDEF("run_test_34");
 
 //not in use right now.
 
@@ -1070,7 +1070,7 @@ void test_string::run_test_37()
 
 void test_string::run_test_38()
 {
-//  FUNCDEF("run_test_38");
+  FUNCDEF("run_test_38");
   double to_print = 2.345;
   a_sprintf non_deadly("%.1f", to_print);
 ///  LOG(astring("printed: ") + non_deadly);

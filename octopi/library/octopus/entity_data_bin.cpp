@@ -189,7 +189,7 @@ bool scramble_applier(const octopus_entity &formal(key), entity_basket &bask,
 {
   #undef static_class_name
   #define static_class_name() "entity_data_bin"
-//  FUNCDEF("scramble_applier");
+  FUNCDEF("scramble_applier");
   int *county = (int *)data_link;
   *county += bask.elements();
   return true;
@@ -219,7 +219,7 @@ int entity_data_bin::scramble_counter()
 bool entity_data_bin::add_item(infoton *to_add,
     const octopus_request_id &orig_id)
 {
-//  FUNCDEF("add_item");
+  FUNCDEF("add_item");
   GRAB_LOCK;
   // create a record to add to the appropriate bin.
   infoton_holder *holder = new infoton_holder(orig_id, to_add);
@@ -253,10 +253,8 @@ bool entity_data_bin::add_item(infoton *to_add,
 bool any_item_applier(const octopus_entity &formal(key), entity_basket &bask,
     void *data_link)
 {
-//#ifdef DEBUG_ENTITY_DATA_BIN
-//  #define static_class_name() "entity_data_bin"
-//  FUNCDEF("any_item_applier");
-//#endif
+  #define static_class_name() "entity_data_bin"
+  FUNCDEF("any_item_applier");
   apply_struct *apple = (apply_struct *)data_link;
   // check the basket to see if it has any items.
   if (!bask.elements()) {
@@ -304,7 +302,7 @@ infoton *entity_data_bin::acquire_for_any(octopus_request_id &id)
 int entity_data_bin::acquire_for_entity(const octopus_entity &requester,
     infoton_list &items, int maximum_size)
 {
-//  FUNCDEF("acquire_for_entity [multiple]");
+  FUNCDEF("acquire_for_entity [multiple]");
   // this method does not grab the lock because it simply composes other
   // class methods without interacting with class data members.
   items.reset();
@@ -473,7 +471,7 @@ void entity_data_bin::clean_out_deadwood(int decay_interval)
 bool entity_data_bin::get_sizes(const octopus_entity &id, int &items,
     int &bytes)
 {
-//  FUNCDEF("get_sizes");
+  FUNCDEF("get_sizes");
   items = 0;
   bytes = 0;
   GRAB_LOCK;

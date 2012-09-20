@@ -111,7 +111,7 @@ The HOOPLE link format is documented here:\n\
 
 void marks_maker_javascript::write_category(inner_mark_tree *node, astring &output)
 {
-//  FUNCDEF("write_category");
+  FUNCDEF("write_category");
   // output a javascript line for the category.
 
   int node_num = node->_uid;
@@ -133,7 +133,7 @@ void marks_maker_javascript::write_category(inner_mark_tree *node, astring &outp
 void marks_maker_javascript::write_link(inner_mark_tree *node, const link_record &linko, 
     astring &output)
 {
-//  FUNCDEF("write_link");
+  FUNCDEF("write_link");
   // write a javascript link definition.
   int parent_node = node->_uid;
   astring chewed_name = linko._description;
@@ -177,7 +177,7 @@ void marks_maker_javascript::write_link(inner_mark_tree *node, const link_record
 
 int marks_maker_javascript::execute()
 {
-//  FUNCDEF("execute");
+  FUNCDEF("execute");
   SETUP_COMBO_LOGGER;
 
   command_line cmds(_global_argc, _global_argv);  // process the command line parameters.

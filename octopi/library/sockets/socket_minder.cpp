@@ -145,7 +145,7 @@ astring socket_minder::text_form() const
 
 void socket_minder::snoozy_select()
 {
-//  FUNCDEF("snoozy_select");
+  FUNCDEF("snoozy_select");
   int_array read_sox;
   int_array write_sox;
   int_array pending;
@@ -264,7 +264,7 @@ bool socket_minder::add_socket_data(int socket, bool server, int server_socket,
 
 bool socket_minder::remove_socket_data(int socket)
 {
-//  FUNCDEF("remove_socket_data");
+  FUNCDEF("remove_socket_data");
   auto_synchronizer l(*_lock);
   for (int i = 0; i < _socket_list->elements(); i++) {
     if (_socket_list->borrow(i)->_socket == socket) {

@@ -137,7 +137,7 @@ launch_manager::launch_manager(configured_applications &config)
   _gag_exclusions(new string_set),
   _tracking_exclusions(new string_set)
 {
-//  FUNCDEF("constructor");
+  FUNCDEF("constructor");
 
   // start the application checking thread.
   _checker->start(NIL);
@@ -578,7 +578,7 @@ bool launch_manager::get_processes(process_entry_array &processes)
 
 bool launch_manager::find_process(const astring &app_name_in, int_set &pids)
 {
-//  FUNCDEF("find_process");
+  FUNCDEF("find_process");
   pids.clear();
   process_entry_array processes;
   if (!get_processes(processes)) return false;

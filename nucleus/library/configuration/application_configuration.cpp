@@ -137,7 +137,7 @@ astring application_configuration::get_cmdline_from_proc()
 // deprecated; better to use the /proc/pid/cmdline file.
 astring application_configuration::query_for_process_info()
 {
-//  FUNCDEF("query_for_process_info");
+  FUNCDEF("query_for_process_info");
   astring to_return = "unknown";
   // we ask the operating system about our process identifier and store
   // the results in a temporary file.
@@ -198,7 +198,7 @@ astring application_configuration::query_for_process_info()
 
 astring application_configuration::application_name()
 {
-//  FUNCDEF("application_name");
+  FUNCDEF("application_name");
   astring to_return;
 #ifdef __APPLE__
   char buffer[MAX_ABS_PATH] = { '\0' };

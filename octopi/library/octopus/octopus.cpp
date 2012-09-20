@@ -159,7 +159,7 @@ octopus::octopus(const astring &name, int max_per_ent)
 
 octopus::~octopus()
 {
-//  FUNCDEF("destructor");
+  FUNCDEF("destructor");
   WHACK(_filters);
   WHACK(_tentacles);
   WHACK(_responses);
@@ -497,7 +497,7 @@ outcome octopus::evaluate(infoton *request, const octopus_request_id &id,
 
 void octopus::periodic_cleaning()
 {
-//  FUNCDEF("periodic_cleaning");
+  FUNCDEF("periodic_cleaning");
   time_stamp next_time;
   {
     auto_synchronizer l(*_clean_lock);

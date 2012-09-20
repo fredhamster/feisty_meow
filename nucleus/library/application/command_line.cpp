@@ -236,7 +236,7 @@ bool command_line::zap(int field)
 
 string_array command_line::get_command_line()
 {
-//  FUNCDEF("get_command_line");
+  FUNCDEF("get_command_line");
   string_array listo_cmds;
   // the temporary string below can be given a flat formatting of the commands
   // and it will be popped out into a list of arguments.

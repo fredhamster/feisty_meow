@@ -218,7 +218,7 @@ outcome stdio_redirecter::create_pipes()
 
 outcome stdio_redirecter::launch_program(int &new_process_id)
 {
-//  FUNCDEF("launch_program");
+  FUNCDEF("launch_program");
   new_process_id = 0;
 #ifdef __UNIX__
   int fork_ret = fork();
@@ -438,7 +438,7 @@ outcome stdio_redirecter::write(const astring &to_write, int &written)
 
 outcome stdio_redirecter::write(const byte_array &to_write, int &written)
 {
-//  FUNCDEF("write");
+  FUNCDEF("write");
   written = 0;
   if (_persistent_result != OKAY) return _persistent_result;
 #ifdef __UNIX__
@@ -470,7 +470,7 @@ outcome stdio_redirecter::read_stderr(byte_array &received)
 
 void stdio_redirecter::std_thread_action(bool is_stdout)
 {
-//  FUNCDEF("std_thread_action");
+  FUNCDEF("std_thread_action");
   byte_array buff(BUFFER_SIZE + 1);
 #ifdef __UNIX__
   bool ret = false;

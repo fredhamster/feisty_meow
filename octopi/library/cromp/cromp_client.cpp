@@ -154,7 +154,7 @@ cromp_client::cromp_client(const internet_address &addr, int connection_wait,
 
 cromp_client::~cromp_client()
 {
-//  FUNCDEF("destructor");
+  FUNCDEF("destructor");
   disconnect();
   close_common();
   _identified = false;
@@ -175,7 +175,7 @@ const byte_array &cromp_client::verification() const
 
 void cromp_client::enable_encryption()
 {
-//  FUNCDEF("enable_encryption");
+  FUNCDEF("enable_encryption");
   AUTO_LOCK;
 
 #ifdef DEBUG_CROMP_CLIENT
@@ -398,7 +398,7 @@ outcome cromp_client::login()
 
 outcome cromp_client::connect(const byte_array &verification)
 {
-//  FUNCDEF("connect");
+  FUNCDEF("connect");
   stop_asynch_thread();
   AUTO_LOCK;  // protect from multiple connect attempts.
   *c_verification = verification;

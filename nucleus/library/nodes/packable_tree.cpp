@@ -23,7 +23,7 @@
 using namespace basis;
 using namespace structures;
 
-//#define DEBUG_PACKABLE_TREE
+#define DEBUG_PACKABLE_TREE
   // uncomment for noisy debugging.
 
 #undef LOG
@@ -92,8 +92,8 @@ LOG(a_sprintf("len A %d", size_accumulator));
 
 void packable_tree::packit(byte_array &packed_form, const packable_tree *current_node)
 {
-LOG(a_sprintf("packing node %x", current_node));
-LOG(a_sprintf("size A %d", packed_form.length()));
+//LOG(a_sprintf("packing node %x", current_node));
+//LOG(a_sprintf("size A %d", packed_form.length()));
   FUNCDEF("packit");
   if (!current_node) throw_error(static_class_name(), func, "current node is nil");
 
@@ -119,9 +119,9 @@ throw_error(current_node->class_name(), func, "failure calculating size");
   }
   // stuff the command unit.
   command.pack(packed_form);
-LOG(a_sprintf("size B %d", packed_form.length()));
+//LOG(a_sprintf("size B %d", packed_form.length()));
   packed_form += temp_store;  // main chunk is not packed, just added.
-LOG(a_sprintf("size C %d", packed_form.length()));
+//LOG(a_sprintf("size C %d", packed_form.length()));
 }
 
 int packable_tree::recursive_packed_size() const

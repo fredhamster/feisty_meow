@@ -105,7 +105,7 @@ machine_uid internet_address::convert() const
 bool internet_address::ip_appropriate_number(const astring &to_check, int indy,
     astring &accum)
 {
-//  FUNCDEF("ip_appropriate_number");
+  FUNCDEF("ip_appropriate_number");
   accum.reset();
   for (int i = indy; (i < indy + 3) && (i < to_check.length()); i++) {
     // make sure it looks like a good number.
@@ -127,7 +127,7 @@ bool internet_address::ip_appropriate_number(const astring &to_check, int indy,
 bool internet_address::has_ip_address(const astring &to_check,
     astring &ip_found)
 {
-//  FUNCDEF("has_ip_address");
+  FUNCDEF("has_ip_address");
   int nums_seen = 0;
   ip_found.reset();
   for (int i = 0; i < to_check.length(); i++) {

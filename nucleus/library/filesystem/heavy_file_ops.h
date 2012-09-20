@@ -30,6 +30,7 @@ class file_transfer_header : public basis::packable
 {
 public:
   basis::astring _filename;  //!< the name of the file being transferred.
+//hmmm: consider adding full length here so we know it.
   double _byte_start;  //!< the starting location in the file being sent.
   int _length;  //!< the length of the transferred piece.
   file_time _time;  //!< the timestamp on the file.

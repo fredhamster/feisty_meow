@@ -297,7 +297,7 @@ bool process_control::zap_process(basis::un_int to_zap)
 
 process_entry process_control::query_process(basis::un_int to_query)
 {
-//  FUNCDEF("query_process");
+  FUNCDEF("query_process");
   process_entry to_return;
 
   process_entry_array to_fill;

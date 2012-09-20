@@ -196,7 +196,7 @@ bool raw_socket::set_keep_alive(basis::un_int socket, bool keep_alive)
 
 int raw_socket::select(basis::un_int socket, int mode, int timeout) const
 {
-//  FUNCDEF("select [single]");
+  FUNCDEF("select [single]");
   if (!socket) return SI_ERRONEOUS;
   fd_set_wrapper read_list, write_list, exceps;
   int ret = inner_select(socket, mode, timeout, read_list, write_list, exceps);

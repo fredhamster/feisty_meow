@@ -328,7 +328,7 @@ int bundle_creator::add_files_here(directory &dirndl, const astring &source,
 int bundle_creator::recurse_into_dir(const astring &source,
     const astring &target, int manifest_index)
 {
-//  FUNCDEF("recurse_into_dir");
+  FUNCDEF("recurse_into_dir");
 //LOG(astring("src=") + source + " dest=" + target);
 
   // we won't include the subversion folder.
@@ -366,7 +366,7 @@ int bundle_creator::recurse_into_dir(const astring &source,
 int bundle_creator::patch_recursive_target(const astring &source,
     const astring &target, int manifest_index)
 {
-//  FUNCDEF("patch_recursive_target");
+  FUNCDEF("patch_recursive_target");
 //LOG(astring("patch recurs src=") + source + " targ=" + target);
   return recurse_into_dir(source, target, manifest_index);
 }
@@ -374,7 +374,7 @@ int bundle_creator::patch_recursive_target(const astring &source,
 int bundle_creator::patch_wildcard_target(const astring &source,
     const astring &target, int manifest_index)
 {
-//  FUNCDEF("patch_wildcard_target");
+  FUNCDEF("patch_wildcard_target");
   // find the last slash.  the rest is our wildcard component.
   int src_end = source.end();
   int slash_indy = source.find('/', src_end, true);
@@ -922,7 +922,7 @@ int bundle_creator::finalize_file()
 
 int bundle_creator::write_offset()
 {
-//  FUNCDEF("write_offset");
+  FUNCDEF("write_offset");
   byte_filer bun(_output_file, "r+b");  // open the file for updating.
 
   astring magic_string("muftiloc");  // our sentinel string.
