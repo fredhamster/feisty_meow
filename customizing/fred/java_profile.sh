@@ -77,7 +77,7 @@ fi
 
 # intuit where we have our local eclipse.
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  export ECLIPSE_DIR=/usr/local/eclipse_jee
+  export ECLIPSE_DIR=/usr/local/eclipse
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR=$HOME/eclipse
