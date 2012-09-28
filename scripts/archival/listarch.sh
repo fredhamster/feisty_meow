@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##############
-# Name   : unpack
+# Name   : listarch
 # Author : Chris Koeritz
 # Rights : Copyright (C) 2012-$now by Feisty Meow Concerns, Ltd.
 ##############
@@ -10,36 +10,22 @@
 # Feel free to send updates to: [ fred@gruntose.com ]
 ##############
 #
-# An arbitrary format archive unpacker, although really we are mainly supporting
+# An arbitrary format archive lister, although really we are mainly supporting
 # tar and zip currently, including compressed formats.
 
 archive_file="$1"; shift
 if [ -z "$archive_file" ]; then
   echo "This script takes one archive name (in .tar.gz, .zip, etc. formats) and"
-  echo "unpacks the archive with the appropriate tool."
+  echo "lists the archive with the appropriate tool."
   exit 1
 fi
 if [ ! -f "$archive_file" ]; then
-  echo "The file specified for unpacking cannot be located: $archive_file"
+  echo "The file specified for listing cannot be located: $archive_file"
   exit 1
-fi
-unpack_dir="$1"; shift
-if [ -z "$unpack_dir" ]; then
-  unpack_dir=$(echo unpacked_$(basename $archive_file) | sed -e 's/^\([^\.]*\)\..*/\1/')
-fi
-
-if [ ! -d "$unpack_dir" ]; then
-  mkdir "$unpack_dir"
-  if [ $? -ne 0 ]; then
-    echo "Could not create the unpacking directory: $unpack_dir"
-    exit 1
-  fi
 fi
 
 # save where we started out.
 ORIGINATING_FOLDER="$( \pwd )"
-
-pushd "$unpack_dir" &>/dev/null
 
 if [ ! -f "$archive_file" ]; then
   # we're assuming we left it behind in our previous directory.
@@ -58,25 +44,12 @@ if [[ $archive_file =~ .*\.tar$ \
     || $archive_file =~ .*\.oar$ \
     || $archive_file =~ .*\.tgz$ \
     ]]; then
-  tar -xf $archive_file &>/dev/null
+  tar -tf $archive_file
 elif [[ $archive_file =~ .*\.zip$ \
     || $archive_file =~ .*\.epub$ \
     || $archive_file =~ .*\.odt$ \
     || $archive_file =~ .*\.jar$ \
     || $archive_file =~ .*\.war$ \
     ]]; then
-  unzip $archive_file &>/dev/null
+  unzip -v $archive_file
 fi
-save_err=$?
-
-popd &>/dev/null
-
-if [ $save_err -ne 0 ]; then
-  echo "There was a failure reported while unpacking: $archive_file"
-  echo "into the directory: $unpack_dir"
-  exit 1
-else
-  echo "Unpacked file $(basename $archive_file) into folder: $unpack_dir"
-fi
-
-
