@@ -20,7 +20,7 @@ if [ -z "$archive_file" ]; then
   exit 1
 fi
 if [ ! -f "$archive_file" ]; then
-  echo "The file specified for listing cannot be located: $archive_file"
+  echo "The file specified cannot be located: $archive_file"
   exit 1
 fi
 
@@ -43,6 +43,7 @@ if [[ $archive_file =~ .*\.tar$ \
     || $archive_file =~ .*\.iar$ \
     || $archive_file =~ .*\.oar$ \
     || $archive_file =~ .*\.tgz$ \
+    || $archive_file =~ .*\.ova$ \
     ]]; then
   tar -tf $archive_file
 elif [[ $archive_file =~ .*\.zip$ \

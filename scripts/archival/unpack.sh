@@ -20,7 +20,7 @@ if [ -z "$archive_file" ]; then
   exit 1
 fi
 if [ ! -f "$archive_file" ]; then
-  echo "The file specified for unpacking cannot be located: $archive_file"
+  echo "The file specified cannot be located: $archive_file"
   exit 1
 fi
 unpack_dir="$1"; shift
@@ -57,6 +57,7 @@ if [[ $archive_file =~ .*\.tar$ \
     || $archive_file =~ .*\.iar$ \
     || $archive_file =~ .*\.oar$ \
     || $archive_file =~ .*\.tgz$ \
+    || $archive_file =~ .*\.ova$ \
     ]]; then
   tar -xf $archive_file &>/dev/null
 elif [[ $archive_file =~ .*\.zip$ \
