@@ -25,7 +25,7 @@ if [ ! -f "$archive_file" ]; then
 fi
 unpack_dir="$1"; shift
 if [ -z "$unpack_dir" ]; then
-  unpack_dir=$(echo unpacked_$(basename $archive_file) | sed -e 's/^\([^\.]*\)\..*/\1/')
+  unpack_dir=$(echo from_$(basename $archive_file) | sed -e 's/^\([^\.]*\)\..*/\1/')
 fi
 
 if [ ! -d "$unpack_dir" ]; then
