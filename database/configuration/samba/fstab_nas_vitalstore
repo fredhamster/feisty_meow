@@ -5,21 +5,23 @@
 # fred's bastion of drives...
 #
 
-# link to shaggy's archive drive.
-shaggy:/z/archivonia    /z/archivonia   nfs     exec,dev,suid,rw,user 0 0
+# shaggy's archive drive.
+#shaggy:/z/archivonia    /z/archivonia   nfs     exec,dev,suid,rw,user 0 0
+
+# hal's buffalo drive.
+hal:/z/buffaloon    /z/buffaloon   nfs     exec,dev,suid,rw,user 0 0
 
 # NAS mounts...
 
 #nfs not currently allowing writes.  grrrrr.
 #vitalstore:/DataVolume/chunky		/z/chunky	nfs	exec,dev,suid,rw,user 0 0
-#vitalstore:/DataVolume/stuffing		/z/stuffing	nfs	exec,dev,suid,rw,user 0 0
+#vitalstore:/DataVolume/stuffing	/z/stuffing	nfs	exec,dev,suid,rw,user 0 0
 #vitalstore:/DataVolume/walrus		/z/walrus	nfs	exec,dev,suid,ro,user 0 0
 
 //vitalstore/chunky		/z/chunky	cifs	credentials=/etc/samba/vitalstore_cifs.txt,uid=1008,gid=1008 0 0
 //vitalstore/stuffing		/z/stuffing	cifs	credentials=/etc/samba/vitalstore_cifs.txt,uid=1008,gid=1008 0 0
 //vitalstore/walrus		/z/walrus	cifs	credentials=/etc/samba/vitalstore_cifs.txt,uid=1008,gid=1008 0 0
-# only for the subversion server, currently hal.
-# //vitalstore/subversion		/z/repo		cifs	credentials=/etc/samba/vitalstore_cifs.txt,uid=1008,gid=1008 0 0
+//vitalstore/virtual-fred       /z/fredgrid     cifs    credentials=/etc/samba/vitalstore_cifs.txt,uid=1008,gid=1008 0 0
 
 #
 ##############

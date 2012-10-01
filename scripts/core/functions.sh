@@ -238,6 +238,17 @@ if [ -z "$skip_all" ]; then
     nechung
   }
 
+  # generates a random password where the first parameter is the number of characters
+  # in the password (default 20) and the second parameter specifies whether to use
+  # special characters (1) or not (0).
+  # found function at http://legroom.net/2010/05/06/bash-random-password-generator
+  function random_password()
+  {
+    [ "$2" == "0" ] && CHAR="[:alnum:]" || CHAR="[:graph:]"
+    cat /dev/urandom | tr -cd "$CHAR" | head -c ${1:-32}
+    echo
+  }
+
   function function_sentinel() { return 0; }
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo function definitions end....; fi
