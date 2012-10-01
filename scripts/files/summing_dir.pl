@@ -65,17 +65,36 @@ local($lengths) = 0;
 
 # open the file and process the lines to get file lengths.
 open(DIRLIST, "<$temp_file");
+# we only want to match ls -al style output lines, and only want to keep the size.
+$pattern="^[^ ]+ +[^ ]+ +[^ ]+ +[^ ]+ +([0-9.]+[KMG]?).*\$";
 foreach $file_line (<DIRLIST>) {
-  (local $munged = $file_line) =~ s/^[^ ]* *[^ ]* *[^ ]* *[^ ]* *([0-9]+).*$/\1/;
-#  print "munge=$munged\n";
-  $lengths += $munged;
+  if ($file_line =~ /$pattern/) {
+    (local $munged = $file_line) =~ s/$pattern/\1/;
+    #print "munge=$munged\n";
+    if ($munged =~ /K$/) {
+      chop $munged;
+      $munged *= 1024.0;
+      #print "K munged is now $munged\n";
+    }
+    if ($munged =~ /M$/) {
+      chop $munged;
+      $munged *= 1024.0 * 1024.0;
+      #print "M munged is now $munged\n";
+    }
+    if ($munged =~ /G$/) {
+      chop $munged;
+      $munged *= 1024.0 * 1024.0 * 1024.0;
+      #print "G munged is now $munged\n";
+    }
+    $lengths += $munged;
+  }
 }
 close(DIRLIST);
 unlink($temp_file);  # clean up.
 
 #print "lens are: $lengths\n";
 
-local($total)=$lengths;
+local($total)=int($lengths);
 local($kbytes)=int($total / 102.4) / 10;
 local($mbytes)=int($kbytes / 102.4) / 10;
 
