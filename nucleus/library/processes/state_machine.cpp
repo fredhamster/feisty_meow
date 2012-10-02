@@ -230,7 +230,7 @@ int transition_map::transition_index(int state_index, int next, int &start)
   state_info &state = (*_state_list)[state_index];
   bounds_return(start, 0, state.transitions.length() - 1, common::BAD_INPUT);
   // loop over the transitions by using our external index.
-  for (start = start; start < state.transitions.length(); start++)
+  for (; start < state.transitions.length(); start++)
     if (state.transitions[start].next_state == next) {
       start++;  // position it after this index.
       return start - 1;  // return this index.
