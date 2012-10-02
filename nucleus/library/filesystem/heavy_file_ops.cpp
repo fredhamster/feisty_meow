@@ -27,16 +27,12 @@ using namespace structures;
 
 namespace filesystem {
 
-#define DEBUG_HEAVY_FILE_OPS
+//#define DEBUG_HEAVY_FILE_OPS
   // uncomment for noisier debugging.
 
 #undef LOG
-#ifdef DEBUG_HEAVY_FILE_OPS
-  #include <stdio.h>
-  #define LOG(to_print) printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
-#else
-  #define LOG(s) {if(!!s){}}
-#endif
+#include <stdio.h>
+#define LOG(to_print) printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
 
 //////////////
 
@@ -290,7 +286,9 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
 
     if (last_action._byte_start + last_action._length >= current.length()) {
       // this file is done now.  go to the next one.
+#ifdef DEBUG_HEAVY_FILE_OPS
       LOG(astring("finished stuffing file: ") + full_file);
+#endif
       to_return = advance(to_transfer, last_action);
       if (to_return != OKAY) break;
       continue;

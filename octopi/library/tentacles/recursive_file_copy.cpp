@@ -29,6 +29,7 @@
 #include <octopus/octopus.h>
 #include <structures/static_memory_gremlin.h>
 #include <textual/string_manipulation.h>
+#include <timely/time_control.h>
 
 using namespace application;
 using namespace basis;
@@ -36,6 +37,7 @@ using namespace filesystem;
 using namespace loggers;
 using namespace structures;
 using namespace textual;
+using namespace timely;
 
 namespace octopi {
 

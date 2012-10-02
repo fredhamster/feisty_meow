@@ -34,7 +34,7 @@ using namespace nodes;
 using namespace structures;
 using namespace textual;
 
-#define DEBUG_DIRECTORY_TREE
+//#define DEBUG_DIRECTORY_TREE
   // uncomment for noisier version.
 
 #undef LOG
