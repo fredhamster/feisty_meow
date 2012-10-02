@@ -176,8 +176,10 @@ outcome heavy_file_operations::write_file_chunk(const astring &target,
   if (byte_start < 0) return BAD_INPUT;
 
   filename targ_name(target);
-  if (!directory::recursive_create(targ_name.dirname().raw()))
+  if (!directory::recursive_create(targ_name.dirname().raw())) {
+    LOG(astring("failed to create directory: ") + targ_name.dirname().raw());
     return TARGET_DIR_ERROR;
+  }
 
   if (!targ_name.exists()) {
     huge_file target_file(target, "w");
