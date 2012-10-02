@@ -259,12 +259,13 @@ bool directory::recursive_create(const astring &directory_name)
   FUNCDEF("recursive_create");
   filename dir(directory_name);
   string_array pieces;
-  dir.separate(pieces);
+  bool rooted;
+  dir.separate(rooted, pieces);
   for (int i = 0; i < pieces.length(); i++) {
     // check each location along the way.
     string_array partial = pieces.subarray(0, i);
     filename curr;
-    curr.join(partial);  // this is our current location.
+    curr.join(rooted, partial);  // this is our current location.
     // make sure, if we see a drive letter component, that we call it
     // a proper directory name.
     if (curr.raw()[curr.raw().end()] == ':')

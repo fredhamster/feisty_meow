@@ -185,20 +185,19 @@ public:
     the file to be created or accessed).  the "replacement" is used as the
     character that is substituted instead of illegal characters. */
 
-  void separate(structures::string_array &pieces) const;
+  void separate(bool &rooted, structures::string_array &pieces) const;
     //!< breaks the filename into its component parts.
-    /*!< this returns an array containing the component names.  the last
-    component, unless the filename held is actually a directory, should be the
-    name of the file.
-//hmmm: what does this mean, below?
-  if the first character is a directory, then the first
-    component will be empty. */
+    /*!< this returns an array containing the component names for the path in
+    this filename object.  if the "rooted" flag is set to true, then the path
+    was absolute (i.e. started at '/' in unix.  this notion is not needed for
+    dos/windoze, as the first component will be something like 'a:'). */
 
-  void join(const structures::string_array &pieces);
+  void join(bool rooted, const structures::string_array &pieces);
     //!< undoes a separate() operation to get the filename back.
     /*!< "this" is set to a filename made from each of the "pieces".  if there
-    are any directory separators inside the pieces, then they will be removed
-    by canonicalize(). */
+    are any directory separators inside the pieces themselves, then they will
+    be removed by canonicalize().  if separate() said the path was rooted,
+    then join needs to be told that. */
 
   // these implement the packing functionality.
   virtual void pack(basis::byte_array &packed_form) const;

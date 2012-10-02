@@ -425,11 +425,12 @@ bool filename::unpack(byte_array &packed_form)
   return true;
 }
 
-void filename::separate(string_array &pieces) const
+void filename::separate(bool &rooted, string_array &pieces) const
 {
   pieces.reset();
   const astring &raw_form = raw();
   astring accumulator;  // holds the names we find.
+  rooted = raw_form.length() && separator(raw_form[0]);
   for (int i = 0; i < raw_form.length(); i++) {
     if (separator(raw_form[i])) {
       // this is a separator character, so eat it and add the accumulated
@@ -445,9 +446,10 @@ void filename::separate(string_array &pieces) const
   if (accumulator.length()) pieces += accumulator;
 }
 
-void filename::join(const string_array &pieces)
+void filename::join(bool rooted, const string_array &pieces)
 {
   astring constructed_name;  // we'll make a filename here.
+  if (rooted) constructed_name += DEFAULT_SEPARATOR;
   for (int i = 0; i < pieces.length(); i++) {
     constructed_name += pieces[i];
     if (!i || (i != pieces.length() - 1))
@@ -459,8 +461,13 @@ void filename::join(const string_array &pieces)
 bool filename::base_compare_prefix(const filename &to_compare,
     string_array &first, string_array &second)
 {
-  separate(first);
-  to_compare.separate(second);
+  bool first_rooted;
+  separate(first_rooted, first);
+  bool second_rooted;
+  to_compare.separate(second_rooted, second);
+  if (first_rooted != second_rooted) {
+    return false;
+  }
   // that case should never be allowed, since there are some bits missing
   // in the name to be compared.
   if (first.length() > second.length())
@@ -509,8 +516,10 @@ bool filename::compare_prefix(const filename &to_compare)
 bool filename::base_compare_suffix(const filename &to_compare,
     string_array &first, string_array &second)
 {
-  separate(first);
-  to_compare.separate(second);
+  bool first_rooted;
+  separate(first_rooted, first);
+  bool second_rooted;
+  to_compare.separate(second_rooted, second);
   // that case should never be allowed, since there are some bits missing
   // in the name to be compared.
   if (first.length() > second.length())

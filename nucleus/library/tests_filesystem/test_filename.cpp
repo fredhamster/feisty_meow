@@ -59,7 +59,9 @@ int test_filename::execute()
     astring GROUP = "separate-- ";
     filename turkey("/omega/ralph/turkey/buzzard.txt");
     string_array pieces;
-    turkey.separate(pieces);
+    bool rooted;
+    turkey.separate(rooted, pieces);
+    ASSERT_TRUE(rooted, GROUP + "the rooted value is erreonous.");
     ASSERT_TRUE(pieces[0].equal_to("omega"), GROUP + "the first piece didn't match.");
     ASSERT_TRUE(pieces[1].equal_to("ralph"), GROUP + "the second piece didn't match.");
     ASSERT_TRUE(pieces[2].equal_to("turkey"), GROUP + "the third piece didn't match.");

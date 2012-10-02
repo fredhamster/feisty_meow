@@ -138,7 +138,8 @@ public:
   astring translate(const astring &source_path) const {
     FUNCDEF("translate");
     string_array pieces;
-    filename(source_path).separate(pieces);
+    bool rooted;
+    filename(source_path).separate(rooted, pieces);
     astring source_mapping = pieces[0];
     pieces.zap(0, 0);  // remove source part.
 
@@ -466,13 +467,14 @@ outcome file_transfer_tentacle::handle_tree_compare_request
   // get the mapping from the specified location on this side.
   filename splitting(req._src_root);
   string_array pieces;
-  splitting.separate(pieces);
+  bool rooted;
+  splitting.separate(rooted, pieces);
   astring source_mapping = pieces[0];
 
   // patch the name up to find the sub_path for the source.
   filename source_start;
   pieces.zap(0, 0);
-  source_start.join(pieces);
+  source_start.join(rooted, pieces);
 
   // locate the allowed transfer depot for the mapping they provided.
   file_transfer_record *mapping_record
@@ -698,6 +700,7 @@ outcome file_transfer_tentacle::handle_storage_response
 
     astring full_file = resp._dest_root + filename::default_separator()
         + recorded_info->secondary();
+LOG(astring("telling it to write to fullfile: ") + full_file);
 
     outcome ret = heavy_file_operations::write_file_chunk(full_file,
         found._byte_start, to_write);

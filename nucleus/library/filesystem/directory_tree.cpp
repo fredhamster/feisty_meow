@@ -274,7 +274,8 @@ bool directory_tree::jump_to(dir_tree_iterator &scanning,
 {
   FUNCDEF("jump_to");
   string_array pieces;
-  filename(sub_path).separate(pieces);
+  bool rooted;
+  filename(sub_path).separate(rooted, pieces);
   for (int i = 0; i < pieces.length(); i++) {
     filename_tree *curr = dynamic_cast<filename_tree *>(scanning.current());
 #ifdef DEBUG_DIRECTORY_TREE
@@ -282,7 +283,7 @@ bool directory_tree::jump_to(dir_tree_iterator &scanning,
 #endif
     string_array sub_pieces = pieces.subarray(i, i);
     filename curr_path;
-    curr_path.join(sub_pieces);
+    curr_path.join(rooted, sub_pieces);
     curr_path = filename(curr->_dirname.raw() + filename::default_separator()
         + curr_path.raw());
 #ifdef DEBUG_DIRECTORY_TREE
@@ -583,7 +584,8 @@ bool directory_tree::compare_trees(const directory_tree &source,
   int source_pieces = 0;
   {
     string_array temp;
-    filename(real_source_start).separate(temp);
+    bool rooted_source;
+    filename(real_source_start).separate(rooted_source, temp);
     source_pieces = temp.length();
   }
 
@@ -597,7 +599,8 @@ bool directory_tree::compare_trees(const directory_tree &source,
 #endif
 
     string_array pieces;
-    curr.separate(pieces);  // get the components of the current location.
+    bool curr_rooted;
+    curr.separate(curr_rooted, pieces);  // get the components of the current location.
 #ifdef DEBUG_DIRECTORY_TREE
     LOG(astring("name in pieces:") + pieces.text_form());
 #endif
@@ -605,7 +608,8 @@ bool directory_tree::compare_trees(const directory_tree &source,
       // snap the root components out of there.
 
     filename corresponding_name;
-    corresponding_name.join(pieces);
+//hmmm: is that right decision?
+    corresponding_name.join(false, pieces);
 #ifdef DEBUG_DIRECTORY_TREE
     LOG(astring("computed target name as: ") + corresponding_name);
 #endif
@@ -715,13 +719,15 @@ outcome directory_tree::find_common_root(const astring &finding, bool exists,
 
   // break up the path into pieces.
   pieces.reset();
-  adding.separate(pieces);
+  bool rooted;
+  adding.separate(rooted, pieces);
 
   // break up our root into pieces; we must take off components that are
   // already in the root.
   string_array root_pieces;
+  bool root_rooted;
   filename temp_file(path());
-  temp_file.separate(root_pieces);
+  temp_file.separate(root_rooted, root_pieces);
 
   // locate the last place where the path we were given touches our tree.
   // it could be totally new, partially new, or already contained.
@@ -866,7 +872,8 @@ outcome directory_tree::add_path(const astring &new_item, bool just_size)
 #endif
       // handle the case for files now that we have our proper node.
       string_array partial_pieces;
-      filename(reassembled).separate(partial_pieces);
+      bool partial_rooted;
+      filename(reassembled).separate(partial_rooted, partial_pieces);
       int levels_missing = pieces.length() - partial_pieces.length();
 
       // we loop over all the pieces that were missing in between the last
