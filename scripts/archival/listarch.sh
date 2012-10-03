@@ -24,6 +24,16 @@ if [ ! -f "$archive_file" ]; then
   exit 1
 fi
 
+if [ -z "$PAGER" ]; then
+  PAGER=$(which less)
+  if [ -z "$PAGER" ]; then
+    PAGER=$(which more)
+    if [ -z "$PAGER" ]; then
+      PAGER="cat"
+    fi
+  fi
+fi
+
 # save where we started out.
 ORIGINATING_FOLDER="$( \pwd )"
 
@@ -45,12 +55,12 @@ if [[ $archive_file =~ .*\.tar$ \
     || $archive_file =~ .*\.tgz$ \
     || $archive_file =~ .*\.ova$ \
     ]]; then
-  tar -tf $archive_file
+  tar -tf $archive_file | $PAGER
 elif [[ $archive_file =~ .*\.zip$ \
     || $archive_file =~ .*\.epub$ \
     || $archive_file =~ .*\.odt$ \
     || $archive_file =~ .*\.jar$ \
     || $archive_file =~ .*\.war$ \
     ]]; then
-  unzip -v $archive_file
+  unzip -v $archive_file | $PAGER
 fi
