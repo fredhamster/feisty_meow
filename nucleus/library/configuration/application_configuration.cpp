@@ -326,7 +326,7 @@ astring application_configuration::get_logging_directory()
   // now we make sure the directory exists.
   filename testing(log_dir);
   if (!testing.exists()) {
-    bool okay = directory::make_directory(log_dir);
+    bool okay = directory::recursive_create(log_dir);
     if (!okay) {
       LOG(astring("failed to create logging directory: ") + log_dir);
       // return a directory almost guaranteed to exist; best we can do in this case.
