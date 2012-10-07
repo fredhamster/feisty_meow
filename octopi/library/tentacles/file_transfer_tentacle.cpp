@@ -21,6 +21,7 @@
 #include <filesystem/heavy_file_ops.h>
 #include <loggers/program_wide_logger.h>
 #include <octopus/entity_defs.h>
+#include <octopus/entity_data_bin.h>
 #include <octopus/unhandled_request.h>
 #include <processes/ethread.h>
 #include <textual/parser_bits.h>
@@ -558,8 +559,12 @@ outcome file_transfer_tentacle::handle_tree_compare_request
 //      before the client starts the transfer.
 
   reply->_request = false;  // it's a response now.
+LOG("storing product from transfer processing");
   store_product(reply, item_id);
     // send back the comparison list.
+
+LOG("now showing bin before return:");
+LOG(get_storage()->text_form());
 
   return OKAY;
 }

@@ -26,6 +26,7 @@
 #include <filesystem/huge_file.h>
 #include <loggers/program_wide_logger.h>
 #include <octopus/entity_defs.h>
+#include <octopus/entity_data_bin.h>
 #include <octopus/octopus.h>
 #include <structures/static_memory_gremlin.h>
 #include <textual/string_manipulation.h>
@@ -117,8 +118,11 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
 
   file_transfer_infoton *reply_from_init
       = (file_transfer_infoton *)ring_leader.acquire_specific_result(req_id);
-  if (!reply_from_init)
+  if (!reply_from_init) {
+LOG("spewing list of what IS there...");
+LOG(ring_leader.responses().text_form());
     RETURN_ERROR_RFC("no response to tree compare start", NONE_READY);
+  }
 
   filename_list diffs;
   byte_array pack_copy = reply_from_init->_packed_data;

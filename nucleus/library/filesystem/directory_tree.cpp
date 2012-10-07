@@ -39,7 +39,6 @@ using namespace textual;
 
 #undef LOG
 #define LOG(to_print) CLASS_EMERGENCY_LOG(program_wide_logger::get(), to_print)
-//printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
 
 //////////////
 
@@ -234,7 +233,9 @@ bool directory_tree::reset(const astring &path, const char *pattern)
   *_pattern = pattern;
   _real_tree = new filename_tree;
 
-LOG(astring("dirtree::reset to path: ") + path);
+#ifdef DEBUG_DIRECTORY_TREE
+  LOG(astring("dirtree::reset to path: ") + path);
+#endif
 
   // check that the top-level is healthy.
   directory curr(path, "*");
@@ -445,7 +446,7 @@ filename_tree *directory_tree::seek(const astring &dir_name_in,
       filename current(check->_dirname);
       if (!current.is_normal()) {
 //#ifdef DEBUG_DIRECTORY_TREE
-        LOG(astring("seek: skipping abnormal dir: \"") + current + "\" with came from " + check->class_name());
+        LOG(astring("seek: skipping abnormal dir: \"") + current + "\"");
 //#endif
         continue;
       }
@@ -495,6 +496,9 @@ bool directory_tree::calculate(bool just_size)
 bool directory_tree::calculate(filename_tree *start, bool just_size)
 {
   FUNCDEF("calculate");
+//#ifdef DEBUG_DIRECTORY_TREE
+  LOG(astring("calculate: got tree to start with at ") + start->_dirname.raw());
+//#endif
   dir_tree_iterator *ted = start_at(start, directory_tree::postfix);
     // create our iterator to do a postfix traversal.  why postfix?  well,
     // prefix has been used elsewhere and since it doesn't really matter what
@@ -641,10 +645,10 @@ bool directory_tree::compare_trees(const directory_tree &source,
     if (!target_now) {
       // that entire sub-tree is missing.  add all of the files here into
       // the list.
-#ifdef DEBUG_DIRECTORY_TREE
+//#ifdef DEBUG_DIRECTORY_TREE
       LOG(astring("could not find dir in target for ") + curr.raw()
           + " which we computed corresp as " + corresponding_name.raw());
-#endif
+//#endif
     }
 
     // now scan across all the files that are in our source list.

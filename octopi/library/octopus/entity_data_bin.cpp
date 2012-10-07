@@ -241,6 +241,7 @@ bool entity_data_bin::add_item(infoton *to_add,
 
   if (current_size + to_add->packed_size() > _max_per_ent) {
     WHACK(holder);
+LOG(astring("size limit would be exceeded if we stored this product"));
     return false;
   }
   

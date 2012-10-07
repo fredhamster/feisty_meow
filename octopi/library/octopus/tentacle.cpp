@@ -19,10 +19,12 @@
 
 #include <basis/astring.h>
 #include <basis/mutex.h>
+#include <loggers/program_wide_logger.h>
 #include <processes/ethread.h>
 #include <structures/amorph.h>
 
 using namespace basis;
+using namespace loggers;
 using namespace processes;
 using namespace structures;
 
@@ -99,6 +101,8 @@ const char *tentacle::outcome_name(const outcome &to_name)
 int tentacle::motivational_rate() const
 { if (_action) return _action->sleep_time(); else return 0; }
 
+entity_data_bin *tentacle::get_storage() { return _products; }
+
 void tentacle::attach_storage(entity_data_bin &storage)
 {
   _products = &storage;
@@ -114,13 +118,11 @@ void tentacle::detach_storage()
 bool tentacle::store_product(infoton *product,
     const octopus_request_id &original_id)
 {
-#ifdef DEBUG_TENTACLE
   FUNCDEF("store_product");
-#endif
   if (!_products) {
-#ifdef DEBUG_TENTACLE
+//#ifdef DEBUG_TENTACLE
     LOG("storage bunker has not been established!");
-#endif
+//#endif
     return false;
   }
   return _products->add_item(product, original_id);
@@ -167,9 +169,7 @@ infoton *tentacle::next_request(octopus_request_id &item_id)
 
 void tentacle::propel_arm()
 {
-#ifdef DEBUG_TENTACLE
   FUNCDEF("propel_arm");
-#endif
   infoton *next_item = NIL;
   do {
     octopus_request_id id;

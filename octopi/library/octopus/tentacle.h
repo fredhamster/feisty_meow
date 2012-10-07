@@ -164,6 +164,8 @@ public:
     when detach is called. */
   void detach_storage();
     //!< unhooks the storage bin from this tentacle.
+  entity_data_bin *get_storage();
+    //!< returns the current pointer, which might be nil.
 
   void propel_arm();
     //!< invoked by our thread to cause requests to be processed.

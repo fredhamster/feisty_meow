@@ -21,7 +21,7 @@ ifneq "$(findstring test, $(TYPE))" ""
   # and run them again.
 #hmmm: this is a kludge to make sure we always run the tests.  there has got
 #      to be a better way.
-  LAST_TARGETS += clean
+#  LAST_TARGETS += clean
 endif
 
 # see if they have got the clean flag set.  if so, we will not build anything.
