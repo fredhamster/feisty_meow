@@ -81,8 +81,6 @@ else
   checkout_list $HOME c:/ d:/ e:/ 2>&1 | tee -a "$TMPO_CHK"
 fi
 
-less $TMPO_CHK
-
 ##############
 
 # we now regenerate the scripts after getme, to ensure it's done automatically.
