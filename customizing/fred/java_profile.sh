@@ -43,11 +43,11 @@ export JAVA_BIN_PIECE=bin
 
 if [ ! -d "$JAVA_HOME" ]; then
   # first try a recent linux version.
-  export JAVA_HOME=/usr/lib/jvm/java-6-sun/jre
+  export JAVA_HOME=/usr/lib/jvm/java-6-sun
 fi
 if [ ! -d "$JAVA_HOME" ]; then
   # try an even more recent version.
-  export JAVA_HOME=/usr/lib/jvm/java-7-oracle/jre
+  export JAVA_HOME=/usr/lib/jvm/java-7-oracle
 fi
 if [ ! -d "$JAVA_HOME" ]; then
   JAVA_HOME="$(ls -d c:/tools/*jdk* 2>/dev/null)"
