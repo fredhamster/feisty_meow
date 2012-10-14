@@ -223,6 +223,7 @@ public class BasicWebServer
 					while ((n = f.read(a)) > 0)
 						out.write(a, 0, n);
 					logger.debug("wrote file back for request, closing stream.");
+					f.close();
 					out.close();
 				} catch (FileNotFoundException x) {
 					logger.error("failed to find requested file: " + filename);
