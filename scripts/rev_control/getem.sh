@@ -36,7 +36,7 @@ function do_update()
   elif [ -d ".svn" ]; then
     svn update .
   elif [ -d ".git" ]; then
-    git pull
+    git pull 2>&1 | grep -v "X11 forwarding request failed"
   else
     echo unknown repository for $directory...
   fi
