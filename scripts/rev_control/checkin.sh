@@ -12,9 +12,12 @@ function do_checkin()
   if [ -d "CVS" ]; then cvs ci . ;
   elif [ -d ".svn" ]; then svn ci . ;
   elif [ -d ".git" ]; then
-    git add .  # snag all new files.  not to everyone's liking.
-    git commit .  # tell git about all the files and get a check-in comment.
-    git push  # upload the files to the server so others can see them.
+    # snag all new files.  not to everyone's liking.
+    git add .
+    # tell git about all the files and get a check-in comment.
+    git commit .
+    # upload the files to the server so others can see them.
+    git push 2>&1 | grep -v "X11 forwarding request failed"
   else
     echo unknown repository for $directory...
   fi
