@@ -1,0 +1,45 @@
+
+copy the included files into /etc in the same hierarchy structure, which is:
+
+  etc/
+  etc/init.d
+  etc/init.d/stunnel
+  etc/stunnel
+  etc/stunnel/stunnel.conf
+
+fix permissions:
+
+  chmod 755 /etc/init.d/stunnel
+
+fix configuration:
+
+  modify /etc/stunnel/stunnel.conf to represent your desired tunneling
+  configuration.  the example turns a trac install on localhost with standard
+  http protocol into a TLS version on the https protocol.
+
+run this command to get stunnel registered:
+
+  sudo /sbin/chkconfig --add stunnel
+
+afterwards the service should start with:
+
+  /etc/init.d/stunnel start
+
+if problems result from starting the service:
+
+  + maybe you need to fix the path in the /etc/init.d/stunnel script.
+    try running:
+       "which stunnel"  (or "whence stunnel")
+    and updating the script with the path shown for stunnel.
+
+  + maybe there's a port conflict from another service?
+    check with the configuration files or ask the system administrators for
+    assistance.  the telnet tool will connect to an arbitrary tcp service and
+    inform you if the connection succeeded, e.g. "telnet myhost 23230".
+    if it says "Connected to ...." then the connection was successful,
+    regardless of the type of tcp protocol actually on that port.  if that
+    reports instead "unable to connect to remote host", then no answer was
+    received.  if the telnet session just says "Trying ...." and never comes
+    back or takes a really long time, then a firewall may be blocking the
+    port or the machine may be down.
+
