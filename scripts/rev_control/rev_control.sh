@@ -7,7 +7,7 @@
 # is a DOS path, but we need it to be a DOS path for our XSEDE testing, so that blows.
 # to get past this, TMP gets changed below to a hopefully generic and safe place.
 
-if [[ $TMP =~ .:.* ]]; then
+if [[ "$TMP" =~ .:.* ]]; then
   echo making weirdo temporary directory for DOS path.
   export TMP=/tmp/rev_control_$USER
 fi
