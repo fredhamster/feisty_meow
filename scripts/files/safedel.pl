@@ -72,9 +72,15 @@ sub safedel {
 #  print "final list of whackees: @to_delete\n";
 
   # we store the deleted files in a directory under the temporary directory.
+  if (! -d $TMP) { 
+    mkdir "$TMP", 0700;
+    if (! -d $TMP) {
+      die "the TMP directory $TMP could not be created!\n";
+    }
+  }
   $temp_subdir = $TMP . "/zz_del_keep";
   if (! -d $temp_subdir) {
-    mkdir "$temp_subdir", 0777;
+    mkdir "$temp_subdir", 0700;
       # create the subdirectory under temp if missing.
     if (! -d $temp_subdir) {
       die "the directory $temp_subdir could not be created!\n";
