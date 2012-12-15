@@ -5,4 +5,13 @@ set viminfo='100,<1000,s10,h
 " this size though, so if you save to a lot of different ones, you will use more space in your
 " viminfo file.
 
+set nobk
+" tells vim not to make a backup of the file before editing it; this is living dangerously.
+
+set nocompatible
+" nocompatible|nocp turns off compatibility mode, allowing filename completion.
+
+colorscheme elflord
+" elflord just happens to be the color scheme i prefer.  there are a bunch.
+
 
