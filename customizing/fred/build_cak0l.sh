@@ -3,6 +3,7 @@
 function build_xsede()
 {
   pushd ~/xsede/code/cak0l/trunk
+  echo "Build starting at: $(date)"
   ant -Dbuild.targetArch=64 build
   # fix memory limits.
 #hmmm: clean these up.
@@ -22,6 +23,7 @@ function build_xsede()
 #    sed -i -e "s/-Xmx512M/-Xmx1G/" "grid.bat"
     chmod 755 "grid.bat"
   fi
+  echo "Build done at: $(date)"
   popd
 }
 
