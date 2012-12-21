@@ -45,7 +45,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 # translate to dos format if there's a cygdrive in there; otherwise microsoft's tools
 # will hose up completely due to unknown paths.
-export FEISTY_MEOW_DIR="$(unix_to_dos $FEISTY_MEOW_DIR)"
+export FEISTY_MEOW_DIR="$(unix_to_dos_path $FEISTY_MEOW_DIR)"
 
 # load in build variables based on our deduced paths.
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"

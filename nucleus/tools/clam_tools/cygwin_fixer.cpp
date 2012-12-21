@@ -27,7 +27,7 @@ char *translate_cygwin(char *fname)
     strncat(newprefix, fname + 11, oldlen - 11 + 1);  // one extra for null char.
     return newprefix;  // mem leak here; cannot be helped for quick fix using functional style.
   } else if ( (fname[0] == '-') && (oldlen > 12)
-      && (!strncmp(fname + 2, "/cygdrive/", 10) ) {
+      && (!strncmp(fname + 2, "/cygdrive/", 10)) ) {
     // in the second case we are looking for command line options.  this code handles a parameter
     // that starts with a single dash and has a single flag character after that.
     char *newprefix = (char *)malloc(oldlen);
@@ -45,12 +45,15 @@ char *translate_cygwin(char *fname)
 }
 
 
+/*
+
 function dossify_and_run_commands()
 {
-  declare -a darc_commands=()
 
+
+  declare -a darc_commands=()
   for i in "$@"; do
-    # we only mess with the command line on windows.
+    // we only mess with the command line on windows.
     if [ "$OS" == "Windows_NT" ]; then
       if [[ "$i" =~ ^-[a-zA-z][/\"].* ]]; then
 #echo matched on our pattern for parameters
@@ -71,7 +74,9 @@ function dossify_and_run_commands()
     fi
   done
 
+}
 
+*/
 
 int main(int argc, char *argv[])
 {
