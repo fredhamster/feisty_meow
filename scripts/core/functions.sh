@@ -157,13 +157,18 @@ if [ -z "$skip_all" ]; then
   }
   
   # switches from a /X/path form to an X:/ form.  this also processes cygwin paths.
-  function msys_to_dos_path() {
-    # we always remove dos slashes in favor of forward slashes.
-    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
+  function unix_to_dos_path() {
+    # we usually remove dos slashes in favor of forward slashes.
+    if [ ! -z "$SERIOUS_SLASH_TREATMENT" ]; then
+      # unless this flag is set, in which case we force dos slashes.
+      echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/' | sed -e 's/\//\\/g'
+    else
+      echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
+    fi
   }
   
   # switches from an X:/ form to an /X/path form.
-  function dos_to_msys_path() {
+  function dos_to_unix_path() {
     # we always remove dos slashes in favor of forward slashes.
     echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
   }

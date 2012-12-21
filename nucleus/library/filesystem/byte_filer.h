@@ -19,6 +19,8 @@
 #include <basis/byte_array.h>
 #include <basis/definitions.h>
 
+#include "filename.h"
+
 namespace filesystem {
 
 // forward declarations.
@@ -33,8 +35,8 @@ public:
     //!< constructs an object that doesn't access a file yet.
     /*!< use open() to make the object valid. */
 
-  byte_filer(const basis::astring &filename, const basis::astring &permissions);
-    //!< opens a file "filename" as specified in "permissions".
+  byte_filer(const basis::astring &fname, const basis::astring &permissions);
+    //!< opens a file "fname" as specified in "permissions".
     /*!< these are identical to the standard I/O permissions:
 
     - "r"  - opens text file for reading.
@@ -47,7 +49,7 @@ public:
     a "b" can be added to the end of these to indicate a binary file should
     be used instead of a text file. */
 
-  byte_filer(const char *filename, const char *permissions);
+  byte_filer(const char *fname, const char *permissions);
     //!< synonym for above but takes char pointers.
 
   byte_filer(bool auto_close, void *opened);
@@ -62,16 +64,16 @@ public:
     //!< returns the maximum size that seek and length can support.
     /*!< use the huge_file class if you need to exceed the stdio limits. */
 
-  bool open(const basis::astring &filename, const basis::astring &permissions);
-    //!< opens a file with "filename" and "permissions" as in the constructor.
+  bool open(const basis::astring &fname, const basis::astring &permissions);
+    //!< opens a file with "fname" and "permissions" as in the constructor.
     /*!< if a different file had already been opened, it is closed. */
 
   void close();
     //!< shuts down the open file, if any.
     /*!< open() will have to be invoked before this object can be used again. */
 
-  basis::astring filename() const;
-    //!< returns the filename that this was opened with.
+  basis::astring name() const;
+    //!< returns the file name that the object is operating on.
 
   bool good();
     //!< returns true if the file seems to be in the appropriate desired state.
@@ -145,7 +147,7 @@ public:
 
 private:
   file_hider *_handle;  //!< the standard I/O support that we rely upon.
-  basis::astring *_filename;  //!< holds onto our current filename.
+  filename *_filename;  //!< holds onto our current filename.
   bool _auto_close;  //!< true if the object should close the file.
 
   // not to be called.

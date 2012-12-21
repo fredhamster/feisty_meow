@@ -51,25 +51,25 @@ public:
 
 byte_filer::byte_filer()
 : _handle(new file_hider),
-  _filename(new astring),
+  _filename(new filename),
   _auto_close(true)
 {}
 
-byte_filer::byte_filer(const astring &filename, const astring &perms)
+byte_filer::byte_filer(const astring &fname, const astring &perms)
 : _handle(new file_hider),
-  _filename(new astring),
+  _filename(new filename),
   _auto_close(true)
-{ open(filename, perms); }
+{ open(fname, perms); }
 
-byte_filer::byte_filer(const char *filename, const char *perms)
+byte_filer::byte_filer(const char *fname, const char *perms)
 : _handle(new file_hider),
-  _filename(new astring),
+  _filename(new filename),
   _auto_close(true)
-{ open(filename, perms); }
+{ open(fname, perms); }
 
 byte_filer::byte_filer(bool auto_close, void *handle)
 : _handle(new file_hider),
-  _filename(new astring),
+  _filename(new filename),
   _auto_close(auto_close)
 {
   if (handle) {
@@ -79,25 +79,25 @@ byte_filer::byte_filer(bool auto_close, void *handle)
 
 byte_filer::~byte_filer() { close(); WHACK(_handle); WHACK(_filename); }
 
-astring byte_filer::filename() const { return *_filename; }
+astring byte_filer::name() const { return _filename->raw(); }
 
 size_t byte_filer::file_size_limit() { return BTFL_FILE_TELL_LIMIT; }
 
-bool byte_filer::open(const astring &filename, const astring &perms)
+bool byte_filer::open(const astring &fname, const astring &perms)
 {
   close();
   _auto_close = true;  // reset since we know we're opening this.
-  *_filename = filename;
+  _filename->reset(fname);
 #ifndef __WIN32__
-  _handle->fp = filename.t()? fopen(filename.s(), perms.s()) : NIL;
+  _handle->fp = _filename->raw().t()? fopen(_filename->raw().s(), perms.s()) : NIL;
 #else
-  _handle->fp = filename.t()? _wfopen((wchar_t *)(UTF16 *)transcode_to_utf16(filename),
+  _handle->fp = _filename->raw().t()? _wfopen((wchar_t *)(UTF16 *)transcode_to_utf16(_filename->raw()),
       (wchar_t *)(UTF16 *)transcode_to_utf16(perms)) : NIL;
 
 #ifdef DEBUG_BYTE_FILER
   if (!_handle->fp)
     wprintf((wchar_t *)(UTF16 *)transcode_to_utf16("could not open: %ls\n"),
-        (wchar_t *)(UTF16 *)transcode_to_utf16(filename));
+        (wchar_t *)(UTF16 *)transcode_to_utf16(_filename->raw()));
 #endif
 
 #endif
@@ -106,7 +106,7 @@ bool byte_filer::open(const astring &filename, const astring &perms)
 
 void byte_filer::close()
 {
-  *_filename = "";
+  _filename->reset("");
   if (_auto_close && _handle->fp) fclose(_handle->fp);
   _handle->fp = NIL;
 }

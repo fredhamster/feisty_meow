@@ -654,7 +654,7 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
     export VIS_STU_ROOT := $(shell $(SHELL) $(CLAM_DIR)/cpp/ms_root_dir.sh )
   endif
   ifneq "$(VIS_STU_ROOT)" ""
-    export COMPILER_ROOT_DIR = $(VIS_STU_ROOT)/vc
+    export COMPILER_ROOT_DIR = $(VIS_STU_ROOT)/VC
   endif
   ifeq "$(COMPILER_ROOT_DIR)" ""
     HOSEUP = $(shell echo The compiler directory is not set.  Please define the environment variable)
@@ -671,8 +671,8 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
   export PDB_DIR = $(TARGETS_DIR)
 
   # set these way up here so we can override them later.
-  CC = bash $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/cl
-  LINK_TOOL = bash $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/link
+  CC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/cl.exe
+  LINK_TOOL = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/link.exe
 
   # This is needed to protect against the use of 64-bit time_t structure
   # on windows.  We are casting to time_t from a 32-bit structure.

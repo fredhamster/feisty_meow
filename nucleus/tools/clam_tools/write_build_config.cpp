@@ -208,10 +208,10 @@ if (read < 1) LOG("why is existing header contentless?");
     byte_filer build_header(filename, "wb");
     if (!build_header.good())
       non_continuable_error(static_class_name(), func, astring("failed to create "
-          "build header file in ") + build_header.filename());
+          "build header file in ") + build_header.name());
     build_header.write(new_contents);
     LOG(astring(static_class_name()) + ": wrote config to "
-        + build_header.filename());
+        + build_header.name());
   } else {
     // nothing has changed.
 //    LOG(astring(static_class_name()) + ": config already up to date in "
@@ -263,7 +263,7 @@ int write_build_config::execute()
   byte_filer ini(fname, "r");
   if (!ini.good())
     non_continuable_error(static_class_name(), func, astring("failed to open "
-        "build configuration file for reading at ") + ini.filename());
+        "build configuration file for reading at ") + ini.name());
 //hmmm: parameterize the build ini thing above!
 
   // now we build strings that represents the output files we want to create.

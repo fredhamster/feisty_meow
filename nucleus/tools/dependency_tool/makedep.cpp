@@ -139,6 +139,21 @@ c_catch(int sig)
 struct sigaction sig_act;
 #endif /* USGISH */
 
+// turns the cygwin name format into a usable windos filename.
+char *translate_cygwin(char *fname)
+{
+  if (!strncmp(fname, "/cygdrive/", 10)) {
+    int oldlen = strlen(fname);
+    char *newprefix = (char *)malloc(oldlen); // at least long enough.
+    newprefix[0] = fname[10];
+    newprefix[1] = ':';
+    newprefix[2] = '\0';
+    strncat(newprefix, fname + 11, oldlen - 11 + 1);  // one extra for null char.
+printf("translate cygwin: new filename is %s\n", newprefix);
+    return newprefix;  // ignoring mem leak here.  cannot be helped for quicky fix.
+  } else return fname;
+}
+
 /* fatty boombalatty, and wrong idea here.
 
 // adds any subdirectories under dirname into the list of
@@ -189,8 +204,8 @@ int main(int argc, char  **argv)
       char quotechar = '\0';
 
       nargc = 1;
-      if ((afd = open(argv[1]+1, O_RDONLY)) < 0)
-    fatalerr("cannot open \"%s\"\n", argv[1]+1);
+      if ((afd = open(translate_cygwin(argv[1]+1), O_RDONLY)) < 0)
+    fatalerr("cannot open \"%s\"\n", translate_cygwin(argv[1]+1));
       fstat(afd, &ast);
       args = (char *)malloc(ast.st_size + 2);
       if ((ast.st_size = read(afd, args, ast.st_size)) < 0)
@@ -346,6 +361,7 @@ int main(int argc, char  **argv)
         objprefix = argv[0];
       } else
         objprefix = argv[0]+2;
+        objprefix = translate_cygwin(objprefix);
       break;
     case 'v':
       if (endmarker) break;
@@ -505,9 +521,9 @@ struct filepointer *getfile(char  *file)
   struct stat  st;
 
   content = (struct filepointer *)malloc(sizeof(struct filepointer));
-  content->f_name = strdup(file);
+  content->f_name = strdup(translate_cygwin(file));
   if ((fd = open(file, O_RDONLY)) < 0) {
-    warning("cannot open \"%s\"\n", file);
+    warning("cannot open \"%s\"\n", translate_cygwin(file));
     content->f_p = content->f_base = content->f_end = (char *)malloc(1);
     *content->f_p = '\0';
     return(content);
@@ -517,7 +533,7 @@ struct filepointer *getfile(char  *file)
   if (content->f_base == NULL)
     fatalerr("cannot allocate mem\n");
   if ((st.st_size = read(fd, content->f_base, st.st_size)) < 0)
-    fatalerr("failed to read %s\n", file);
+    fatalerr("failed to read %s\n", translate_cygwin(file));
   close(fd);
   content->f_len = st.st_size+1;
   content->f_p = content->f_base;
@@ -686,21 +702,21 @@ void redirect(char  *line, char  *makefile)
   }
   else
       stat(makefile, &st);
-  if ((fdin = fopen(makefile, "r")) == NULL)
-    fatalerr("cannot open \"%s\"\n", makefile);
+  if ((fdin = fopen(translate_cygwin(makefile), "r")) == NULL)
+    fatalerr("cannot open \"%s\"\n", translate_cygwin(makefile));
   sprintf(backup, "%s.bak", makefile);
   unlink(backup);
 #if defined(WIN32) || defined(__EMX__) || defined(__OS2__)
   fclose(fdin);
 #endif
-  if (rename(makefile, backup) < 0)
-    fatalerr("cannot rename %s to %s\n", makefile, backup);
+  if (rename(translate_cygwin(makefile), translate_cygwin(backup)) < 0)
+    fatalerr("cannot rename %s to %s\n", translate_cygwin(makefile), translate_cygwin(backup));
 #if defined(WIN32) || defined(__EMX__) || defined(__OS2__)
-  if ((fdin = fopen(backup, "r")) == NULL)
-    fatalerr("cannot open \"%s\"\n", backup);
+  if ((fdin = fopen(translate_cygwin(backup), "r")) == NULL)
+    fatalerr("cannot open \"%s\"\n", translate_cygwin(backup));
 #endif
-  if ((fdout = freopen(makefile, "w", stdout)) == NULL)
-    fatalerr("cannot open \"%s\"\n", backup);
+  if ((fdout = freopen(translate_cygwin(makefile), "w", stdout)) == NULL)
+    fatalerr("cannot open \"%s\"\n", translate_cygwin(backup));
   len = int(strlen(line));
   while (!found && fgets(buf, BUFSIZ, fdin)) {
     if (*buf == '#' && strncmp(line, buf, len) == 0)

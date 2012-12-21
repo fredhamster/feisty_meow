@@ -100,6 +100,12 @@ bool filename::good() const { return exists(); }
 
 bool filename::unlink() const { return ::unlink(observe()) == 0; }
 
+void filename::reset(const astring &name) {
+  *this = name;
+  _had_directory = true;  // until we know better.
+  canonicalize();
+}
+
 astring filename::null_device()
 {
 #ifdef __WIN32__
@@ -309,10 +315,15 @@ bool filename::is_normal() const
   status_info fill;
   if (!get_info(&fill))
     return false;
+#if defined(__WIN32__) || defined(__VMS__)
+//hmmm: is there a corresponding set of functions for windows, where applicable?
+  bool weird = false;
+#else
   bool weird = S_ISCHR(fill.st_mode)
       || S_ISBLK(fill.st_mode)
       || S_ISFIFO(fill.st_mode)
       || S_ISSOCK(fill.st_mode);
+#endif
   return !weird;
 }
 

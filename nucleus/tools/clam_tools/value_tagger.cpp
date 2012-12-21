@@ -481,7 +481,7 @@ variables before running a build.\r\n";
 
   byte_filer build_file(fname, "r");
   if (!build_file.good()) {
-    non_continuable_error(class_name(), build_file.filename(),
+    non_continuable_error(class_name(), build_file.name(),
         "Could not find the build configuration; is FEISTY_MEOW_DIR set?");
   }
   byte_array full_config;
@@ -501,7 +501,7 @@ variables before running a build.\r\n";
   build_number += ".";
   build_number += temp_ini.load("version", "build", "");
   if (build_number.equal_to("...")) {
-    non_continuable_error(class_name(), build_file.filename(),
+    non_continuable_error(class_name(), build_file.name(),
         "Could not read the build number; is build parameter file malformed?");
   }
 

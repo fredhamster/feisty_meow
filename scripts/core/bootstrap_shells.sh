@@ -15,6 +15,7 @@ THIS_TOOL_NAME="$(basename "$0")"
 
 # set up the feisty_meow dir.
 pushd "$CORE_SCRIPTS_DIR/../.." &>/dev/null
+source "$CORE_SCRIPTS_DIR/functions.sh"
 export FEISTY_MEOW_DIR="$(pwd)"
 popd &>/dev/null
 

@@ -41,6 +41,12 @@ if [ -z "$FEISTY_MEOW_SCRIPTS_LOADED" ]; then
   source "$BUILD_SCRIPTS_DIR/../core/launch_feisty_meow.sh"
 fi
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
+# translate to dos format if there's a cygdrive in there; otherwise microsoft's tools
+# will hose up completely due to unknown paths.
+export FEISTY_MEOW_DIR="$(unix_to_dos $FEISTY_MEOW_DIR)"
+
 # load in build variables based on our deduced paths.
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
 
@@ -218,7 +224,8 @@ if [ ! -f "$BINARY_DIR/value_tagger$EXE_ENDING" \
   promote value_tagger # tool scrambles through headers to standardize outcomes.
   promote version_stamper  # used for version stamping.
   promote vsts_version_fixer  # used for version stamping.
-  promote write_build_config # creates a header of build-specific config info.
+  promote write_build_config  # creates a header of build-specific config info.
+  promote cygwin_fixer  # translates cygwin paths into dos-style equivalents.
 
   popd &>/dev/null
 fi

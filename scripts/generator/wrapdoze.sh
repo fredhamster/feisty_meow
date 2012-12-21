@@ -1,24 +1,43 @@
 #!/bin/bash
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 
-declare -a commands=()
+function dossify_and_run_commands()
+{
+  declare -a darc_commands=()
 
-for i in "$@"; do
-  # we only mess with the command line on windows.
-  if [ "$OS" == "Windows_NT" ]; then
-    commands+=($(msys_to_dos_path $i))
-  else
-    commands+=("$i")
-  fi
-done
+  for i in "$@"; do
+    # we only mess with the command line on windows.
+    if [ "$OS" == "Windows_NT" ]; then
+      if [[ "$i" =~ ^-[a-zA-z][/\"].* ]]; then
+#echo matched on our pattern for parameters
+        flag="${i:0:2}"
+        filename="$(unix_to_dos_path ${i:2})"
 
-#  echo commands are now:
-#  for i in "${commands[@]}"; do
-#    echo $i
-#  done
+#echo "first two chars are $flag"
+#echo "last after that are $filename"
+#combined="$flag$filename"
+#echo combined is $combined
+      
+        darc_commands+=("$flag$filename")
+      else 
+        darc_commands+=($(unix_to_dos_path $i))
+      fi
+    else
+      darc_commands+=("$i")
+    fi
+  done
 
-# now actually run the possibly chewed command.
-"${commands[@]}"
+#temp!
+  echo commands are now: >>/tmp/wrapdoze.log
+  for i in "${darc_commands[@]}"; do
+    echo $i >>/tmp/wrapdoze.log
+  done
+#end temp
 
+  # now actually run the possibly chewed command.
+  "${darc_commands[@]}"
+}
+
+dossify_and_run_commands "$@"
 

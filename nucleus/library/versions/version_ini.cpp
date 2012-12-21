@@ -519,8 +519,8 @@ bool version_ini::write_assembly(const version_record &to_write,
     modfile.truncate();  // chop off anything left from previous versions.
     if (do_logging) {
       // let the people know about this...
-      filename dirbase = filename(modfile.filename()).dirname().basename();
-      filename just_base = filename(modfile.filename()).basename();
+      filename dirbase = filename(modfile.name()).dirname().basename();
+      filename just_base = filename(modfile.name()).basename();
       program_wide_logger::get().log(astring("    patching: ") + dirbase
           + "/" + just_base, basis::ALWAYS_PRINT);
     }

@@ -177,7 +177,7 @@ if [ -z "$NECHUNG" ]; then
   
   # set the path for locating applications.  this is done after any
   # potential overrides from the user.
-  #export PATH="$(dos_to_msys_path $BINDIR):$(dos_to_msys_path $FEISTY_MEOW_GENERATED):$PATH:/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:."
+  #export PATH="$(dos_to_unix_path $BINDIR):$(dos_to_unix_path $FEISTY_MEOW_GENERATED):$PATH:/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:."
   export PATH="$FEISTY_MEOW_GENERATED:$PATH:/sbin:."
 ###noise! :/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/lib:/usr/games:/usr/bin:.
   

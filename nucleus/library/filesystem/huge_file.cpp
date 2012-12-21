@@ -124,7 +124,7 @@ double huge_file::length()
         // something malfunctioned.  we should always be able to get back to
         // the last good size we found if the file is static.
         LOG(a_sprintf("failed to seek back to best highest %.0f on ",
-            best_highest) + _real_file->filename());
+            best_highest) + _real_file->name());
         // try to repair our ideas about the file by starting the process
         // over.
 //hmmm: count the number of times restarted and bail after N.
@@ -134,7 +134,7 @@ double huge_file::length()
           // the heck with this.  we can't even go back to the start.  this
           // file seems to be screwed up now.
           LOG(astring("failed to seek back to start of file!  on ")
-              + _real_file->filename());
+              + _real_file->name());
           return 0;
         }
         // reset the rest of the positions for our failed attempt to return

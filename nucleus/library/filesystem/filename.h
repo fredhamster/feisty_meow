@@ -63,6 +63,9 @@ public:
     /*!< this means that not only was the pathname parsed and found valid,
     but the file actually exists. */
 
+  void reset(const basis::astring &name);
+    //!< changes the file name held by the object.
+
   const basis::astring &raw() const;
     //!< returns the astring that we're holding onto for the path.
   basis::astring &raw();

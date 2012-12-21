@@ -13,7 +13,7 @@ DEFINITIONS += __BUILD_STATIC_APPLICATION__
 ifeq "$(OMIT_VERSIONS)" ""
   SOURCE += clamtools_version.rc 
 endif
-TARGETS = value_tagger.exe version_stamper.exe vsts_version_fixer.exe write_build_config.exe
+TARGETS = cygwin_fixer.exe value_tagger.exe version_stamper.exe vsts_version_fixer.exe write_build_config.exe
 
 include cpp/rules.def
 
