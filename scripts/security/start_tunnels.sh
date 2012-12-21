@@ -43,7 +43,7 @@ SECURITY_KEY="-i $HOME/.ssh/id_dsa_fred"
 ##############
 
 # how often to play sounds when reconnecting.
-NOISE_PERIOD=60
+NOISE_PERIOD=180
 
 # when we last played a sound.
 LAST_SOUND_TIME=0
