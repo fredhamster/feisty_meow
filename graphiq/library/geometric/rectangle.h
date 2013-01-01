@@ -170,19 +170,19 @@ numeric_type rectangle<numeric_type>::width() const
 
 template <class numeric_type>
 numeric_type rectangle<numeric_type>::minimum_x() const
-{ return minimum(_vertex_1.x(), _vertex_2.x()); }
+{ return basis::minimum(_vertex_1.x(), _vertex_2.x()); }
 
 template <class numeric_type>
 numeric_type rectangle<numeric_type>::minimum_y() const
-{ return minimum(_vertex_1.y(), _vertex_2.y()); }
+{ return basis::minimum(_vertex_1.y(), _vertex_2.y()); }
 
 template <class numeric_type>
 numeric_type rectangle<numeric_type>::maximum_x() const
-{ return maximum(_vertex_1.x(), _vertex_2.x()); }
+{ return basis::maximum(_vertex_1.x(), _vertex_2.x()); }
 
 template <class numeric_type>
 numeric_type rectangle<numeric_type>::maximum_y() const
-{ return maximum(_vertex_1.y(), _vertex_2.y()); }
+{ return basis::maximum(_vertex_1.y(), _vertex_2.y()); }
 
 template <class numeric_type>
 rectangle<numeric_type> rectangle<numeric_type>::order() const
@@ -191,8 +191,8 @@ rectangle<numeric_type> rectangle<numeric_type>::order() const
   numeric_type x2 = _vertex_2.x();
   numeric_type y1 = _vertex_1.y();
   numeric_type y2 = _vertex_2.y();
-  flip_increasing(x1, x2);
-  flip_increasing(y1, y2);
+  basis::flip_increasing(x1, x2);
+  basis::flip_increasing(y1, y2);
   return rectangle<numeric_type>(x1, y1, x2, y2);
 }
 
@@ -341,10 +341,10 @@ template <class numeric_type>
 bool rectangle<numeric_type>::intersection(const rectangle &r2, rectangle &result)
 {
   if (disjoint(r2)) return false;
-  result = rectangle<numeric_type>(maximum(minimum_x(), r2.minimum_x()),
-      maximum(minimum_y(), r2.minimum_y()),
-      minimum(maximum_x(), r2.maximum_x()),
-      minimum(maximum_y(), r2.maximum_y()));
+  result = rectangle<numeric_type>(basis::maximum(minimum_x(), r2.minimum_x()),
+      basis::maximum(minimum_y(), r2.minimum_y()),
+      basis::minimum(maximum_x(), r2.maximum_x()),
+      basis::minimum(maximum_y(), r2.maximum_y()));
   return true;
 }
 

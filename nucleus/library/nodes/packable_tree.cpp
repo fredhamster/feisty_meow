@@ -157,7 +157,7 @@ packable_tree *packable_tree::recursive_unpack(byte_array &packed_form,
   // get the first command out of the package.
   if (!cmd.unpack(packed_form)) {
 //complain.
-    return false;
+    return NIL;
   }
 
   packable_tree *new_branch = NIL;

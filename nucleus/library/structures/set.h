@@ -232,7 +232,7 @@ template <class contents>
 bool set<contents>::add(const contents &to_add)
 {
   if (member(to_add)) return false; 
-  concatenate(to_add);
+  this->concatenate(to_add);
   return true;
 }
 

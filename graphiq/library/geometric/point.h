@@ -121,7 +121,7 @@ void point<numeric_type>::set(numeric_type x, numeric_type y)
 template <class numeric_type>
 numeric_type point<numeric_type>::r() const
 {
-  const double sumsquar = square(x()) + square(y());
+  const double sumsquar = basis::square(x()) + basis::square(y());
   return numeric_type(sqrt(sumsquar)); 
 }
 
@@ -132,7 +132,7 @@ void point<numeric_type>::set(numeric_type r, double_angle theta)
 template <class numeric_type>
 numeric_type point<numeric_type>::distance(const point &p2) const
 {
-  const double sumsquar = square(p2.x() - x()) + square(p2.y() - y());
+  const double sumsquar = basis::square(p2.x() - x()) + basis::square(p2.y() - y());
   return numeric_type(sqrt(sumsquar));
 }
 
@@ -170,7 +170,7 @@ bool point<contents>::unpack(basis::byte_array &packed_form)
 template <class numeric_type>
 numeric_type point<numeric_type>::magnitude() const
 {
-  const double sumsquar = square(x()) + square(y());
+  const double sumsquar = basis::square(x()) + basis::square(y());
   return numeric_type(sqrt(sumsquar)); 
 }
 
@@ -195,8 +195,8 @@ bool point<numeric_type>::operator == (const point &arg2) const
 {
 // this bit should be part of the floating point stuff...
   double epsilon = 1e-10;
-  return (absolute_value(x() - arg2.x()) <= epsilon)
-      && (absolute_value(y() - arg2.y()) <= epsilon);
+  return (basis::absolute_value(x() - arg2.x()) <= epsilon)
+      && (basis::absolute_value(y() - arg2.y()) <= epsilon);
 }
 
 template <class numeric_type>

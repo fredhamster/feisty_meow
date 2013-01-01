@@ -208,8 +208,8 @@ void matrix<contents>::redimension(int new_rows, int new_columns)
 {
   if ( (_rows == new_rows) && (_cols == new_columns) ) return;
   matrix<contents> new_this(new_rows, new_columns);
-  for (int r = 0; r < minimum(new_rows, rows()); r++)
-    for (int c = 0; c < minimum(new_columns, columns()); c++)
+  for (int r = 0; r < basis::minimum(new_rows, rows()); r++)
+    for (int c = 0; c < basis::minimum(new_columns, columns()); c++)
       new_this[r][c] = (*this)[r][c];
   *this = new_this;
 }

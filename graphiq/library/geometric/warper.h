@@ -208,8 +208,8 @@ rectangle<numeric_type> rectangle_warper<numeric_type>::flip_accordingly
   vertical_component vert2;
   separate_vertical(targo, vert2);
   bool flip_y = bool(vert1 != vert2);
-  if (flip_x) swap_values(x1, x2);
-  if (flip_y) swap_values(y1, y2);
+  if (flip_x) basis::swap_values(x1, x2);
+  if (flip_y) basis::swap_values(y1, y2);
 //LOG(basis::astring("it becomes ") + rectangle<numeric_type>(x1, y1, x2, y2).text_form());
   return rectangle<numeric_type>(x1, y1, x2, y2);
 }

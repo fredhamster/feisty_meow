@@ -22,6 +22,8 @@
 #include "guards.h"
 #include "outcome.h"
 
+#include <string.h>
+
 #define DEBUG_ARRAY
   // uncomment for the noisier debugging version.
 

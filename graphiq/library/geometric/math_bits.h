@@ -41,7 +41,7 @@ type. */
 template <class numeric_type>
 bool is_floating_point(numeric_type t)
     { t = numeric_type(5.1); t = numeric_type(t * 3.0);
-          return 0.001 < float(absolute_value(numeric_type(t - 15.0))); }
+          return 0.001 < float(basis::absolute_value(numeric_type(t - 15.0))); }
 
 //! returns true if the instantiation type is an integer.
 template <class numeric_type>

@@ -370,7 +370,7 @@ basis::outcome amorph<contents>::put(int field, const contents *data)
   CHECK_FIELDS;
   bounds_return(field, 0, elements() - 1, basis::common::OUT_OF_RANGE);
   contents *to_whack = acquire(field);
-  WHACK(to_whack);
+  delete to_whack;
   if (data) {
     basis::array<contents *>::access()[field] = (contents *)data;
     _fields_used++; 
