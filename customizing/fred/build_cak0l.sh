@@ -4,6 +4,7 @@ function build_xsede()
 {
   pushd ~/xsede/code/cak0l/trunk
   echo "Build starting at: $(date)"
+  \rm -rf unit-test-reports
   ant -Dbuild.targetArch=64 build
   # fix memory limits.
 #hmmm: clean these up.
