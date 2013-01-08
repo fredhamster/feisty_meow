@@ -1,8 +1,0 @@
-gimp -i -b '(batch-whiteboard-clean "*.png")' -b '(gimp-quit 0)'
-
-# the batch-whiteboard-clean.scm script should go in: ~/.gimp-2.6/scripts
-
-# from sites:
-#   http://matthew.mceachen.us/blog/how-to-clean-up-photos-of-whiteboards-with-gimp-403.html
-#   http://registry.gimp.org/node/19822
-
