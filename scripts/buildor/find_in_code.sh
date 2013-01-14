@@ -18,5 +18,6 @@ find . -type f \( -iname "*" \
   ! -iname "*.jar" \
   ! -iname "*.zip" \
   ! -iname "*.tar" \
+  ! -iname "*.svn-base" \
   ! -iname "*.gz" \) \
   -exec echo "\"{}\"" ';' | xargs grep -li "$seek" 
