@@ -8,16 +8,17 @@ if [ -z "$seek" ]; then
 fi
 
 find . -type f \( -iname "*" \
-  ! -iname "*.svn" \
-  ! -iname "*.git" \
-  ! -iname "*.exe" \
-  ! -iname "*.obj" \
   ! -iname "*.class" \
   ! -iname "*.dll" \
-  ! -iname "*.lib" \
+  ! -iname "*.exe" \
+  ! -iname "entries" \
+  ! -iname "*.git" \
+  ! -iname "*.gz" \
   ! -iname "*.jar" \
-  ! -iname "*.zip" \
-  ! -iname "*.tar" \
+  ! -iname "*.lib" \
+  ! -iname "*.obj" \
+  ! -iname "*.svn" \
   ! -iname "*.svn-base" \
-  ! -iname "*.gz" \) \
+  ! -iname "*.tar" \
+  ! -iname "*.zip" \) \
   -exec echo "\"{}\"" ';' | xargs grep -li "$seek" 
