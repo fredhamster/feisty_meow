@@ -20,5 +20,6 @@ find . -type f \( -iname "*" \
   ! -iname "*.svn" \
   ! -iname "*.svn-base" \
   ! -iname "*.tar" \
+  ! -iname "*.tmp" \
   ! -iname "*.zip" \) \
   -exec echo "\"{}\"" ';' | xargs grep -li "$seek" 
