@@ -177,7 +177,7 @@ if [ -z "$NECHUNG" ]; then
   
   # add to the PATH variables used for locating applications.  this step is taken after any
   # potential overrides from the user.
-  export PATH="$FEISTY_MEOW_GENERATED:$PATH:/sbin:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)."
+  export PATH="$FEISTY_MEOW_GENERATED:$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
   
   ##############
 
