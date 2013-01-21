@@ -5,6 +5,7 @@
 *#
 __build_configuration.h
 *.class
+.DS_Store
 *.log
 *.gz
 *.o
