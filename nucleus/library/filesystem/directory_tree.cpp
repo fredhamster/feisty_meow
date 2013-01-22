@@ -496,9 +496,9 @@ bool directory_tree::calculate(bool just_size)
 bool directory_tree::calculate(filename_tree *start, bool just_size)
 {
   FUNCDEF("calculate");
-//#ifdef DEBUG_DIRECTORY_TREE
+#ifdef DEBUG_DIRECTORY_TREE
   LOG(astring("calculate: got tree to start with at ") + start->_dirname.raw());
-//#endif
+#endif
   dir_tree_iterator *ted = start_at(start, directory_tree::postfix);
     // create our iterator to do a postfix traversal.  why postfix?  well,
     // prefix has been used elsewhere and since it doesn't really matter what
@@ -993,6 +993,46 @@ outcome directory_tree::remove_path(const astring &zap_item)
   return common::OKAY;
 }
 
-} //namespace.
+basis::outcome directory_tree::make_directories(const basis::astring new_root)
+{
+  FUNCDEF("make_directories");
+  // iterate down the tree, making all the directories requested.
+  dir_tree_iterator *ted = start(directory_tree::prefix);
 
+  int depth;  // current depth in tree.
+  filename curr;  // the current path the iterator is at.
+  string_array files;  // the filenames held at the iterator.
+
+#ifdef DEBUG_DIRECTORY_TREE
+  LOG(astring("new root is ") + new_root);
+#endif
+  filename old_root = path();
+#ifdef DEBUG_DIRECTORY_TREE
+  LOG(astring("old root was ") + old_root.raw());
+#endif
+
+  while (current(*ted, curr, files)) {
+    // we have a good directory to show.
+    directory_tree::depth(*ted, depth);
+    int found = curr.find(old_root);
+    if (found < common::OKAY) {
+      LOG(astring("failed to find prefix of path '") + old_root
+          + "' in the current directory '" + curr + "'");
+      return found;
+    }
+    curr = curr.substring(found + old_root.length(), curr.end());
+//LOG(astring("curr now is: ") + curr);
+    filename dir_to_make(new_root + "/" + curr);
+#ifdef DEBUG_DIRECTORY_TREE
+    LOG(astring("creating dir: ") + dir_to_make.raw());
+#endif
+    directory::recursive_create(dir_to_make.raw());
+    next(*ted);
+  }
+
+  throw_out(ted);
+  return common::OKAY;
+}
+
+} //namespace.
 

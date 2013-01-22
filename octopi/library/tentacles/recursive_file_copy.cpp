@@ -85,7 +85,9 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
   }
 */
 
-  astring source_root = "snootums";
+  const astring transfer_name = "snootums";
+
+  astring source_root = transfer_name;
   if (source_start.t()) {
     source_root += filename::default_separator() + source_start;
   }
@@ -95,34 +97,72 @@ outcome recursive_file_copy::copy_hierarchy(int transfer_mode,
       (MAX_CHUNK_RFC_COPY_HIER, (file_transfer_tentacle::transfer_modes)transfer_mode);
   ring_leader.add_tentacle(tran);
 
-  outcome add_ret = tran->add_correspondence("snootums", source_dir,
+  outcome add_ret = tran->add_correspondence(transfer_name, source_dir,
       EXPECTED_MAXIMUM_TRANSFER_TIME);
   if (add_ret != tentacle::OKAY)
     RETURN_ERROR_RFC("failed to add the correspondence", NOT_FOUND);
 
+//hmmm: this kind of object creation should be packaged in helper functions.
   file_transfer_infoton *initiate = new file_transfer_infoton;
   initiate->_request = true;
-  initiate->_command = file_transfer_infoton::TREE_COMPARISON;
+  initiate->_command = file_transfer_infoton::BUILD_TARGET_TREE;
   initiate->_src_root = source_root;
   initiate->_dest_root = target_dir;
-  directory_tree target_area(target_dir);
-//hmmm: simple asset counting debugging in calculate would be nice too.
-  target_area.calculate( !(transfer_mode & file_transfer_tentacle::COMPARE_CONTENT_SAMPLE) );
-  initiate->package_tree_info(target_area, includes);
+
+  // make a directory snapshot with just directories, no files.
+  directory_tree target_area_just_dirs(source_dir, "*", true);
+  initiate->package_tree_info(target_area_just_dirs, includes);
 
   octopus_entity ent = ring_leader.issue_identity();
   octopus_request_id req_id(ent, 1);
   outcome start_ret = ring_leader.evaluate(initiate, req_id);
   if (start_ret != tentacle::OKAY)
-    RETURN_ERROR_RFC("failed to start the comparison", NONE_READY);
+    RETURN_ERROR_RFC("failed to build target tree", NONE_READY);
 
   file_transfer_infoton *reply_from_init
       = (file_transfer_infoton *)ring_leader.acquire_specific_result(req_id);
   if (!reply_from_init) {
 LOG("spewing list of what IS there...");
 LOG(ring_leader.responses().text_form());
-    RETURN_ERROR_RFC("no response to tree compare start", NONE_READY);
+    RETURN_ERROR_RFC("no response to request to build target tree", NONE_READY);
   }
+
+  if (reply_from_init->_success != OKAY) {
+    RETURN_ERROR_RFC("failed to get good result from building target tree", reply_from_init->_success);
+  }
+
+//now repeating a lot of above to get tree compare going.
+
+//hmmm: this kind of object creation should be packaged in helper functions.
+  file_transfer_infoton *comparison_req = new file_transfer_infoton;
+  comparison_req->_request = true;
+  comparison_req->_command = file_transfer_infoton::TREE_COMPARISON;
+  comparison_req->_src_root = source_root;
+  comparison_req->_dest_root = target_dir;
+  // make a directory snapshot with just directories, no files.
+  directory_tree target_area(target_dir);
+
+//hmmm: simple asset counting debugging in calculate would be nice too.
+  target_area.calculate( !(transfer_mode & file_transfer_tentacle::COMPARE_CONTENT_SAMPLE) );
+
+  comparison_req->package_tree_info(target_area, includes);
+
+  ent = ring_leader.issue_identity();
+  req_id = octopus_request_id(ent, 1);
+  start_ret = ring_leader.evaluate(comparison_req, req_id);
+  if (start_ret != tentacle::OKAY)
+    RETURN_ERROR_RFC("failed to build target tree", NONE_READY);
+
+  reply_from_init = (file_transfer_infoton *)ring_leader.acquire_specific_result(req_id);
+  if (!reply_from_init) {
+LOG("spewing list of what IS there...");
+LOG(ring_leader.responses().text_form());
+    RETURN_ERROR_RFC("no response to request to build target tree", NONE_READY);
+  }
+
+
+//resuming
+
 
   filename_list diffs;
   byte_array pack_copy = reply_from_init->_packed_data;

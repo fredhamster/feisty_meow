@@ -167,17 +167,21 @@ private:
   int _mode;  //!< how will the comparison be done?
 
   // these process the request and response infotons that are passed to us.
+  basis::outcome handle_build_target_tree_request(file_transfer_infoton &req,
+          const octopus_request_id &item_id);
+  basis::outcome handle_build_target_tree_response(file_transfer_infoton &resp,
+          const octopus_request_id &item_id);
   basis::outcome handle_tree_compare_request(file_transfer_infoton &req,
           const octopus_request_id &item_id);
-  basis::outcome handle_tree_compare_response(file_transfer_infoton &req,
+  basis::outcome handle_tree_compare_response(file_transfer_infoton &resp,
           const octopus_request_id &item_id);
   basis::outcome handle_storage_request(file_transfer_infoton &req,
           const octopus_request_id &item_id);
-  basis::outcome handle_storage_response(file_transfer_infoton &req,
+  basis::outcome handle_storage_response(file_transfer_infoton &resp,
           const octopus_request_id &item_id);
   basis::outcome conclude_storage_request(file_transfer_infoton &req,
           const octopus_request_id &item_id);
-  basis::outcome conclude_storage_response(file_transfer_infoton &req,
+  basis::outcome conclude_storage_response(file_transfer_infoton &resp,
           const octopus_request_id &item_id);
 };
 

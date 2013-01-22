@@ -190,6 +190,25 @@ LOG(diffs.text_form());
     ASSERT_FALSE(diffs.elements(), "no differences for reverse compare identical dirs");
   }
 
+  {
+    // sixth test: see if the make_directories function works.
+LOG("reading tree to recreate");
+    directory_tree dir(path, pattern.s());
+    ASSERT_TRUE(dir.good(), "makedirs test directory reading");
+    filename tmpdir(environment::get("TMP") + "/zz_balfazzaral");
+    LOG(astring("will write to tmp in ") + tmpdir);
+    basis::outcome result = dir.make_directories(tmpdir.raw());
+    ASSERT_EQUAL(result.value(), common::OKAY, "makedirs should succeed");
+    
+
+LOG("what happened with that?  did it work?");
+
+//hmmm: compare the directories with what we expect to be made;
+//      do a dirtree iterator on the path, and make sure each of those exists in the target place.
+
+  }
+
+
 // nth test:
 // combine the results of the second test with a comparison like in the
 // third test.  delete all of those temporary files that were added.

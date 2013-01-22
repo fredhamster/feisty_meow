@@ -104,6 +104,9 @@ public:
     removed in the filesystem.  if the item is still really there, then the
     next rescan will put it back into the tree. */
 
+  basis::outcome make_directories(const basis::astring new_root);
+    //!< creates all of the directories in this object, but start at the "new_root".
+
   static bool compare_trees(const directory_tree &source,
           const directory_tree &target, filename_list &differences,
           file_info::file_similarity how_to_compare);

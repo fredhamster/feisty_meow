@@ -31,6 +31,10 @@ class file_transfer_infoton : public infoton
 public:
   //! the commands specify what this package is intended to do.
   enum commands {
+    BUILD_TARGET_TREE = 4,
+      //!< asks the target side to build the directory tree from the source.
+      /*!< this is a new first step for the transfer.  we want to make sure
+      the target will look right for what we're going to transfer over. */
     TREE_COMPARISON = 1,
       //!< the destination root will be compared with the source root.
       /*!< the packed data in the request holds a packed symbol tree
@@ -38,7 +42,7 @@ public:
       is the packed filename list that represents the differences between the
       two hierarchies.  this is considered to start a file transfer based on
       those differences. */
-    PLACE_FILE_CHUNKS,
+    PLACE_FILE_CHUNKS = 2,
       //!< the destination side requests a new set of chunks.
       /*!< this is based on the source's memory of where the transfer is at.
       this will only perform properly when the file transfer was requested to
@@ -47,7 +51,7 @@ public:
       number of pairs of @code
       [ file_transfer_header + file chunk described in header ]
       @endcode */
-    CONCLUDE_TRANSFER_MARKER
+    CONCLUDE_TRANSFER_MARKER = 3,
       //!< this infoton marks the end of the transfer process.
       /*!< we've added this type of transfer infoton to handle the finish
       of the transfer.  previously this was marked by a null data packet,

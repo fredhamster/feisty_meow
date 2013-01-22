@@ -47,7 +47,7 @@ const int FTT_CLEANING_INTERVAL = 30 * SECOND_ms;
 const int TRANSFER_TIMEOUT = 10 * MINUTE_ms;
   // if it hasn't been touched in this long, it's out of there.
 
-#define DEBUG_FILE_TRANSFER_TENTACLE
+//#define DEBUG_FILE_TRANSFER_TENTACLE
   // uncomment for noisier version.
 
 #undef LOG
@@ -460,6 +460,100 @@ outcome file_transfer_tentacle::reconstitute(const string_array &classifier,
 // the "handle_" and "conclude_" methods are thread-safe because the mutex is locked before
 // their invocations.
 
+basis::outcome file_transfer_tentacle::handle_build_target_tree_request(file_transfer_infoton &req,
+    const octopus_request_id &item_id)
+{
+  FUNCDEF("handle_build_target_tree_request");
+
+  // get the mapping from the specified location on this side.
+  filename splitting(req._src_root);
+  string_array pieces;
+  bool rooted;
+  splitting.separate(rooted, pieces);
+  astring source_mapping = pieces[0];
+
+  // patch the name up to find the sub_path for the source.
+  filename source_start;
+  pieces.zap(0, 0);
+  source_start.join(rooted, pieces);
+
+  // locate the allowed transfer depot for the mapping they provided.
+  file_transfer_record *mapping_record = _correspondences->find_mapping(source_mapping);
+  if (!mapping_record) {
+    LOG(astring("could not find source mapping of ") + source_mapping);
+    return NOT_FOUND;
+  }
+
+  // unpack the tree that they sent us which describes their local area.
+  directory_tree *dest_tree = new directory_tree;
+  if (!dest_tree->unpack(req._packed_data)) {
+    LOG(astring("could not unpack requester's directory tree"));
+    WHACK(dest_tree);
+    return GARBAGE;
+  }
+
+  string_array requested_names;
+  if (!requested_names.unpack(req._packed_data)) {
+    LOG(astring("could not unpack requester's filename includes"));
+    WHACK(dest_tree);
+    return GARBAGE;
+  }
+
+  // look up to see if this is about something that has already been seen.
+  // we don't want to add a new transfer record if they're already working on
+  // this.  that also lets them do a new tree compare to restart the transfer.
+  file_transfer_record *the_rec = _transfers->find(item_id._entity,
+      req._src_root, req._dest_root);
+  if (!the_rec) {
+    // there was no existing record; we'll create a new one.
+    the_rec = new file_transfer_record;
+    the_rec->_ent = item_id._entity;
+    the_rec->_src_root = req._src_root;
+    the_rec->_dest_root = req._dest_root;
+    _transfers->append(the_rec);
+  } else {
+    // record some activity on this record.
+    the_rec->_done = false;
+    the_rec->_last_active.reset();
+  }
+
+  // create any directories that are missing at this point.
+  basis::outcome result = dest_tree->make_directories(req._dest_root);
+  if (result != common::OKAY) {
+    LOG("ERROR: got bad result from make_directories!");
+  }
+
+  req._packed_data.reset();  // clear out existing stuff before cloning.
+  file_transfer_infoton *reply = dynamic_cast<file_transfer_infoton *>(req.clone());
+
+  reply->_request = false;  // it's a response now.
+  reply->_success = result;
+  store_product(reply, item_id);
+    // send back the comparison list.
+
+  return OKAY;
+}
+
+basis::outcome file_transfer_tentacle::handle_build_target_tree_response(file_transfer_infoton &resp,
+    const octopus_request_id &item_id)
+{
+//go to next step, tree comparison.
+//look at the handle tree compare response for help though.
+  FUNCDEF("handle_build_target_tree_response");
+  file_transfer_record *the_rec = _transfers->find(item_id._entity,
+      resp._src_root, resp._dest_root);
+  if (!the_rec) {
+    LOG(astring("could not find the record for this transfer: item=")
+        + item_id.text_form() + " src=" + resp._src_root + " dest="
+        + resp._dest_root);
+    return NOT_FOUND;  // not registered, so reject it.
+  }
+
+  the_rec->_last_active.reset();  // record some activity on this record.
+
+  return resp._success;
+}
+
 outcome file_transfer_tentacle::handle_tree_compare_request
     (file_transfer_infoton &req, const octopus_request_id &item_id)
 {
@@ -542,7 +636,6 @@ outcome file_transfer_tentacle::handle_tree_compare_request
         filename req_curr(requested_names[j]);
         if (req_curr.compare_suffix(diff_curr)) {
           found = true;
-//LOG(astring("will use: ") + req_curr);
           break;
         }
       }
@@ -559,12 +652,8 @@ outcome file_transfer_tentacle::handle_tree_compare_request
 //      before the client starts the transfer.
 
   reply->_request = false;  // it's a response now.
-LOG("storing product from transfer processing");
   store_product(reply, item_id);
     // send back the comparison list.
-
-LOG("now showing bin before return:");
-LOG(get_storage()->text_form());
 
   return OKAY;
 }
@@ -705,7 +794,7 @@ outcome file_transfer_tentacle::handle_storage_response
 
     astring full_file = resp._dest_root + filename::default_separator()
         + recorded_info->secondary();
-LOG(astring("telling it to write to fullfile: ") + full_file);
+//LOG(astring("telling it to write to fullfile: ") + full_file);
 
     outcome ret = heavy_file_operations::write_file_chunk(full_file,
         found._byte_start, to_write);
@@ -798,6 +887,10 @@ outcome file_transfer_tentacle::consume(infoton &to_chow,
   AUTO_LOCK;  // protect our lists while we're working on them.
 
   switch (inf->_command) {
+    case file_transfer_infoton::BUILD_TARGET_TREE: {
+      if (inf->_request) return handle_build_target_tree_request(*inf, item_id);
+      else return handle_build_target_tree_response(*inf, item_id);
+    }
     case file_transfer_infoton::TREE_COMPARISON: {
       if (inf->_request) return handle_tree_compare_request(*inf, item_id);
       else return handle_tree_compare_response(*inf, item_id);
