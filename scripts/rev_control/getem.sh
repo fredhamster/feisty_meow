@@ -26,17 +26,35 @@ if [ "$(\pwd)" != "$tmpdir" ]; then
   exec "$new_name"
 fi
 
+# takes out the first few carriage returns that are in the input.
+function squash_first_few_crs()
+{
+  i=0
+  while read line; do
+    i=$((i+1))
+    if [ $i -le 3 ]; then
+      echo -n "$line  "
+    else
+      echo $line
+    fi
+  done
+  if [ $i -le 3 ]; then
+    # if we're still squashing eols, make sure we don't leave them hanging.
+    echo
+  fi
+}
+
 # selects the checkout method based on where we are (the host the script runs on).
 function do_update()
 {
   directory="$1"; shift
-
+ 
   if [ -d "CVS" ]; then
-    cvs update .
+    cvs update . | squash_first_few_crs
   elif [ -d ".svn" ]; then
-    svn update .
+    svn update . | squash_first_few_crs
   elif [ -d ".git" ]; then
-    git pull 2>&1 | grep -v "X11 forwarding request failed"
+    git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
   else
     echo unknown repository for $directory...
   fi
