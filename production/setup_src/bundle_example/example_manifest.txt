@@ -44,7 +44,7 @@ variable=BOGUS=petunias
 ; passing them on the command line to the unpacker exe.
 
 [set_source_temporary_dir]
-variable=SOURCE_TEMP=$HOME/.tmp_nechung
+variable=SOURCE_TEMP=$TMP/.tmp_nechung
 ; provides a folder to use for testing nechung stuff.
 
 [establish_new_temp_dir]
