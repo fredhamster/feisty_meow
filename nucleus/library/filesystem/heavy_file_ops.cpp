@@ -189,6 +189,7 @@ outcome heavy_file_operations::write_file_chunk(const astring &target,
     // open the file for updating (either read or write).
   if (!target_file.good()) return TARGET_ACCESS_ERROR;
   double curr_len = target_file.length();
+  target_file.touch();
 
   if (curr_len < byte_start) {
     byte_array new_chunk;

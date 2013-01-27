@@ -134,7 +134,10 @@ bool file_info::calculate(const astring &prefix, bool just_size, int checksum_ed
   bool skip_tail = false;  // true if we don't need the tail piece.
   double head_start = 0, head_end = 0, tail_start = 0,
       tail_end = _file_size - 1;
-  if (_file_size <= double(2 * checksum_edge)) {
+  if (_file_size == 0) {
+    head_end = 0;
+    skip_tail = true;
+  } else if (_file_size <= double(2 * checksum_edge)) {
     // we're applying a rule for when the file is too small compared to
     // the chunk factor doubled; we'll just read the whole file.
     head_end = _file_size - 1;
@@ -188,6 +191,7 @@ int file_info::packed_size() const
 
 void file_info::pack(byte_array &packed_form) const
 {
+  FUNCDEF("pack");
   filename::pack(packed_form);
   attach(packed_form, _file_size);
   _time.pack(packed_form);

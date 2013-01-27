@@ -383,11 +383,10 @@ bool filename::exists() const
 {
   if (is_directory())
     return true;
+  // if the file name is empty, that cannot exist.
   if (!length())
     return false;
   return is_readable();
-///  byte_filer opened(observe(), "rb");
-///  return opened.good();
 }
 
 bool filename::legal_character(char to_check)

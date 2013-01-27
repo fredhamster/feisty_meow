@@ -20,6 +20,7 @@
 #include <basis/guards.h>
 
 #include <stdio.h>
+#include <sys/time.h>
 
 #undef LOG
 #define LOG(to_print) printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
@@ -273,6 +274,25 @@ outcome huge_file::write(const byte_array &to_write, int &size_written)
     return FAILURE;  // couldn't write the bytes.
   _file_pointer += double(size_written);
   size_written = ret;
+  return OKAY;
+}
+
+basis::outcome huge_file::touch()
+{
+  if (filename(_real_file->name()).exists()) {
+    // file exists, so just update time.
+    int ret = utimes(_real_file->name().observe(), NIL);
+    if (ret != 0)
+      return FAILURE;
+  } else {
+    // file doesn't exist yet.
+    byte_array junk(1);
+    int written;
+    outcome ret = write(junk, written);
+    if (ret != OKAY) ret;
+    if (!truncate())
+      return FAILURE;
+  }
   return OKAY;
 }
 

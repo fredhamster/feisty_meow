@@ -83,6 +83,9 @@ public:
   bool truncate();
     //!< truncates the file after the current position.
 
+  basis::outcome touch();
+    //<! creates the file if it doesn't exist, or updates the time on the file.
+
   void flush();
     //!< forces any pending writes to actually be saved to the file.
 

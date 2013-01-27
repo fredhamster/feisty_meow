@@ -209,9 +209,9 @@ bool directory::rescan()
     if (add_it && !fnmatch(_pattern->s(), file, 0)) {
       filename temp_name(*_path, file);
       if (!temp_name.is_normal()) {
-#ifdef DEBUG_DIRECTORY
+//#ifdef DEBUG_DIRECTORY
         LOG(astring("skipping abnormal file:  ") + temp_name);
-#endif
+//#endif
         entry = readdir(dir);
         continue;  // cannot be adding goofy named pipes etc; cannot manage those.
       }
