@@ -1,44 +1,34 @@
 #!/bin/bash
-# this script acquires our local IP address and connects over to zooty
-# to write a status file there.  this enables us to later connect backwards
-# to our home system without being hosed by the floating IP address.
+# this script connects to a remote machine and records the IP address of the
+# local machine there.  this enables the machine's owner to connect back to
+# the system even if the IP address floats around (changes).
 
-#hmmm:  none of the user info below will work for others: parameterize it.
+server="$1"; shift
+remote_user="$1"; shift
+local_user="$1"; shift
 
-server=serene.feistymeow.org
-username=fred
-local_user=fred
-tempdir=/tmp  # where we generate our files.
-
-source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
-
-soundfile=$FEISTY_MEOW_DIR/database/sounds/woouoo.wav
-if [ ! -z "$1" ]; then
-  soundfile=$1
+if [ -z "$server" -o -z "$remote_user" -o -z "$local_user" ]; then
+  echo "This script will write a record of the IP address for the host where it is"
+  echo "run into a file in a remote computer.  To do this feat, it needs the"
+  echo "following parameters:"
+  echo "  $(basename $0) {server} {remote-user} {local-user}"
+  echo "Note that this script must be run as root, but it uses the local user's"
+  echo "capability to connect to the remote system without a password (given the"
+  echo "user's possession of an ssh certificate on the remote host).  The remote"
+  echo "user, in other words, must have an entry in the ssh authorized_keys that"
+  echo "allows the local user to connect."
 fi
 
-ip_file="$(mktemp ${tempdir}/ip_${USER}_$(hostname | sed -e "s/\..*$//").XXXXXX)"
+ip_file="$(hostname | sed -e "s/\..*$//")_ip_address.txt"
+echo ip file is $ip_file
 
-# get live ip address
-pushd $tempdir
-wget http://automation.whatismyip.com/n09230945.asp -O "$ip_file" 
-
-chmod 644 "$ip_file"
-my_ip=$(head "$ip_file")
-
-echo "my ip is [$my_ip]"
-
-# send the file over to the server.
+# go over to the server and write a file recording our IP address.
 # note that the local_user here is expected to have a certificate that
 # gets us access to the server.  this needs to be on the local machine
-# for sftp to run without a login prompt.
-sudo -u $local_user sftp $username@$server <<eof
-mkdir gen
-cd gen
-put $ip_file $(hostname | sed -e "s/\..*$//")_ip.txt
+# to enable ssh to run without a login prompt.
+sudo -u $local_user ssh $remote_user@$server <<eof
+  if [ ! -d gen ]; then mkdir gen; fi
+  cd gen
+  echo "\$SSH_CLIENT" | awk '{ print \$1; }' >$ip_file
 eof
-
-\rm -f "$ip_file"
-
-popd
 
