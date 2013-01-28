@@ -63,7 +63,7 @@ if [ -z "$NECHUNG" ]; then
   if [ -z "$FEISTY_MEOW_DIR" ]; then
     if [ -d "$HOME/feisty_meow" ]; then
       export FEISTY_MEOW_DIR="$HOME/feisty_meow"
-      export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"
+      export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
     fi
   fi
   
@@ -142,7 +142,7 @@ if [ -z "$NECHUNG" ]; then
     # we need to know the feisty meow directory, or we bail.
     if [ -z "$FEISTY_MEOW_DIR" ]; then return; fi
     # pick from our expected generator folder, but make sure it's there...
-    buildvars="$FEISTY_MEOW_DIR/scripts/generator/build_variables.sh"
+    buildvars="$FEISTY_MEOW_SCRIPTS/generator/build_variables.sh"
     if [ -f "$buildvars" ]; then
       # yep, that one looks good, so pull in the build defs.
       source "$buildvars" "$buildvars"

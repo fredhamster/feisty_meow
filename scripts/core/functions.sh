@@ -172,15 +172,25 @@ if [ -z "$skip_all" ]; then
     # we always remove dos slashes in favor of forward slashes.
     echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
   }
+
+  # returns a successful value (0) if this system is debian or ubuntu.
+  function debian_like() {
+    # decide if we think this is debian or ubuntu or a variant.
+    DEBIAN_LIKE=$(if [ ! -z "$(grep -i debian /etc/issue)" \
+        -o ! -z "$(grep -i ubuntu /etc/issue)" ]; then echo 1; else echo 0; fi)
+    if [ $DEBIAN_LIKE -eq 1 ]; then
+      # success; this is debianish.
+      return 0
+    else
+      # this seems like some other OS.
+      return 1
+    fi
+  }
   
   # su function: makes su perform a login.
   # for some OSes, this transfers the X authority information to the new login.
   function su() {
-    # decide if we think this is debian or ubuntu or a variant.
-    DEBIAN_LIKE=$(if [ ! -z "$(grep -i debian /etc/issue)" \
-        -o ! -z "$(grep -i ubuntu /etc/issue)" ]; then echo 1; else echo 0; fi)
-  
-    if [ $DEBIAN_LIKE -eq 1 ]; then
+    if debian_like; then
       # debian currently requires the full version which imports X authority
       # information for su.
   
@@ -230,7 +240,7 @@ if [ -z "$skip_all" ]; then
     if [ -z "$wheres_nechung" ]; then
       echo "The nechung oracle program cannot be found.  You may want to consider"
       echo "rebuilding the feisty meow applications with this command:"
-      echo "   bash $FEISTY_MEOW_DIR/scripts/generator/bootstrap_build.sh"
+      echo "   bash $FEISTY_MEOW_SCRIPTS/generator/bootstrap_build.sh"
     else
       $wheres_nechung
     fi
