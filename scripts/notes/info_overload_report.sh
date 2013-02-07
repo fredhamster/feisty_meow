@@ -86,11 +86,11 @@ analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes"
 #hmmm: make an html todo scanning function from this.
 # scan web documents for to-do lists.  individual items are marked with <li>.
 # we do this one a bit differently since we have different criteria for html to-do items.
-html_item_depth=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -l | tr -d ' ')
-total_overload=$(($html_item_depth + $total_overload))
-html_item_weight=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -c | tr -d ' ')
-total_weight=$(($total_weight + $html_item_weight))
-full_report+="$(format_report_line "$html_item_depth" "$html_item_weight" "to-do notes in html")"
+#html_item_depth=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -l | tr -d ' ')
+#total_overload=$(($html_item_depth + $total_overload))
+#html_item_weight=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -c | tr -d ' ')
+#total_weight=$(($total_weight + $html_item_weight))
+#full_report+="$(format_report_line "$html_item_depth" "$html_item_weight" "to-do notes in html")"
 ####
 
 # scan all the items declared as active projects.
