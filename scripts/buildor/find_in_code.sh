@@ -6,8 +6,14 @@ if [ -z "$seek" ]; then
   echo pattern.
   exit 1
 fi
+#hmmm: might be nice to support multiple directories...
+#      just need to pass them to find as an array maybe?
+dir="$1"; shift
+if [ -z "$dir" ]; then
+  dir=.
+fi
 
-find . -type f \( -iname "*" \
+find "$dir" -type f \( -iname "*" \
   ! -iname "*.class" \
   ! -iname "*.dll" \
   ! -iname "*.exe" \
