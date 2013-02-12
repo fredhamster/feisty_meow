@@ -50,6 +50,9 @@ public:
     BAD_INPUT = basis::common::BAD_INPUT
   };
 
+  const basis::astring &name() const;
+    //!< returns the name of the file this operates on.
+
   bool good() const;
     //!< reports if the file was opened successfully.
 

@@ -249,6 +249,9 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
 
   outcome to_return = OKAY;
 
+  // this records if we're working on a new file.
+  bool fresh_file = false;
+
   // start filling the array with bytes from the files.
   while (storage.length() < maximum_bytes) {
     double remaining_in_array = maximum_bytes - storage.length()
@@ -267,11 +270,13 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
       last_action._time = currfile->_time;
       last_action._byte_start = 0;
       last_action._length = 0;
+      fresh_file = true;
     }
 
     const file_info *found = to_transfer.find(last_action._filename);
     if (!found) {
       // they have referenced a file that we don't have.  that's bad news.
+      LOG(astring("unknown last file requested in transfer: ") + last_action._filename);
       return BAD_INPUT;
     }
 
@@ -280,20 +285,27 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
     if (!current.good()) {
       // we need to skip this file.
       LOG(astring("skipping bad file: ") + full_file);
+      fresh_file = true;
       to_return = advance(to_transfer, last_action);
       if (to_return != OKAY) break;
       continue;
     }
+LOG(astring("working on file: ") + current.name());
 
-    if (last_action._byte_start + last_action._length >= current.length()) {
+    // we don't try to check done if we just started this file.
+    if (!fresh_file && (last_action._byte_start + last_action._length >= current.length())) {
       // this file is done now.  go to the next one.
 #ifdef DEBUG_HEAVY_FILE_OPS
       LOG(astring("finished stuffing file: ") + full_file);
 #endif
+      fresh_file = true;
       to_return = advance(to_transfer, last_action);
       if (to_return != OKAY) break;
       continue;
     }
+    // now that we tested if the file was fresh in our 'finished' check above, we
+    // consider the file not to be fresh until told otherwise.
+    fresh_file = false;
 
     // calculate the largest piece remaining of that file that will fit in the
     // allotted space.
@@ -310,6 +322,7 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
     if (bytes_read != new_len) {
       if (!bytes_read) {
         // some kind of problem reading the file.
+        fresh_file = true;
         to_return = advance(to_transfer, last_action);
         if (to_return != OKAY) break;
         continue;
@@ -328,6 +341,7 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
     if (!current.length()) {
       // ensure we don't get stuck redoing zero length files, which we allowed
       // to go past their end above (since otherwise we'd never see them).
+      fresh_file = true;
       to_return = advance(to_transfer, last_action);
       if (to_return != OKAY) break;
       continue;

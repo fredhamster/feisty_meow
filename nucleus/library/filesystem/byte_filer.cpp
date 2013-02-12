@@ -79,7 +79,7 @@ byte_filer::byte_filer(bool auto_close, void *handle)
 
 byte_filer::~byte_filer() { close(); WHACK(_handle); WHACK(_filename); }
 
-astring byte_filer::name() const { return _filename->raw(); }
+const astring &byte_filer::name() const { return _filename->raw(); }
 
 size_t byte_filer::file_size_limit() { return BTFL_FILE_TELL_LIMIT; }
 

@@ -794,7 +794,7 @@ outcome file_transfer_tentacle::handle_storage_response
 
     astring full_file = resp._dest_root + filename::default_separator()
         + recorded_info->secondary();
-//LOG(astring("telling it to write to fullfile: ") + full_file);
+//     LOG(astring("telling it to write to fullfile: ") + full_file);
 
     outcome ret = heavy_file_operations::write_file_chunk(full_file,
         found._byte_start, to_write);

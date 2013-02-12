@@ -72,7 +72,7 @@ public:
     //!< shuts down the open file, if any.
     /*!< open() will have to be invoked before this object can be used again. */
 
-  basis::astring name() const;
+  const basis::astring &name() const;
     //!< returns the file name that the object is operating on.
 
   bool good();

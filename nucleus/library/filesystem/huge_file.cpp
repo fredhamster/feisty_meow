@@ -43,6 +43,8 @@ huge_file::~huge_file()
   WHACK(_real_file);
 }
 
+const astring &huge_file::name() const { return _real_file->name(); }
+
 void huge_file::flush() { _real_file->flush(); }
 
 bool huge_file::truncate() { return _real_file->truncate(); }
