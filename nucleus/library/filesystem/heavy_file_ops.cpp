@@ -290,7 +290,7 @@ outcome heavy_file_operations::buffer_files(const astring &source_root,
       if (to_return != OKAY) break;
       continue;
     }
-LOG(astring("working on file: ") + current.name());
+//LOG(astring("working on file: ") + current.name());
 
     // we don't try to check done if we just started this file.
     if (!fresh_file && (last_action._byte_start + last_action._length >= current.length())) {
