@@ -253,14 +253,26 @@ int transporter::push_client_download()
   // prepare a client request
   file_transfer_infoton initiate;
   initiate._request = true;
-  initiate._command = file_transfer_infoton::TREE_COMPARISON;
+  initiate._command = file_transfer_infoton::BUILD_TARGET_TREE;
   initiate._src_root = _source;
   initiate._dest_root = _target;
+
+  // make a directory snapshot with just directories, no files.
+  directory_tree target_area_just_dirs(_target, "*", true);
+  string_set includes;
+  initiate.package_tree_info(target_area_just_dirs, includes);
+  octopus_request_id cmd_id;
+  outcome build_ret = _client_side->submit(initiate, cmd_id);
+  if (build_ret != tentacle::OKAY)
+    non_continuable_error(class_name(), func, astring("failed to build the "
+        " target tree: ") + cromp_client::outcome_name(build_ret));
+
+  // now get the full contents going on.
+  initiate._command = file_transfer_infoton::TREE_COMPARISON;
   directory_tree target_area(_target);
   target_area.calculate(false);
-  string_set includes;
+  includes.reset();
   initiate.package_tree_info(target_area, includes);
-  octopus_request_id cmd_id;
   outcome start_ret = _client_side->submit(initiate, cmd_id);
   if (start_ret != tentacle::OKAY)
     non_continuable_error(class_name(), func, astring("failed to initiate "
