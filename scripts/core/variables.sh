@@ -79,8 +79,8 @@ if [ -z "$NECHUNG" ]; then
   ##############
   
   # umask sets a permission mask for all file creations.  the mask used here
-  # disallows writing by the "group" and "others" categories.
-  umask 022
+  # disallows writes by the "group" and disallows "others" completely.
+  umask 027
   # ulimit sets user limits.  we set the maximum allowed core dump file size
   # to zero, because it is obnoxious to see the core dumps from crashed
   # programs lying around everywhere.
