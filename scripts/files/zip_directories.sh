@@ -17,7 +17,7 @@ if [ ${#dirs[@]} -eq 0 ]; then
   tempfile="$(mktemp /tmp/dirlist.XXXXXX)"
   find $dir -mindepth 1 -maxdepth 1 -type d -exec echo "dirs+=(\"{}\");" ';' >$tempfile
   source "$tempfile"
-echo dirs default to: ${dirs[@]}
+#echo dirs default to: ${dirs[@]}
   \rm -f $tempfile
 fi
 
