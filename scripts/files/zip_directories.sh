@@ -31,7 +31,7 @@ function flattenizer()
     done
     if [ ! -z "$dirname" -a -d "$dirname" ]; then
       echo "flattening '$dirname'..."
-      zip -rm "${dirname}_$(date_stringer)" "$dirname" &>/dev/null
+      zip -rm "${dirname}_$(date_stringer).zip" "$dirname" &>/dev/null
     fi
   done
 }
