@@ -12,7 +12,8 @@ integer SCRIPT_ZAPS_SELF_AFTER_REPORT = FALSE;
 // the list of UUIDs for reporting the customer event.
 list IDS_TO_ALERT = [
 //    "addfa58f-e42e-4dde-9eb0-755bbf4e23ec",  // damara's alt.
-    "71649242-6abe-4288-b45b-a057621d35ea"   // fred.
+    "71649242-6abe-4288-b45b-a057621d35ea"   // SL fred.
+    "1e7f0c5e-9d15-428b-8873-846d87a9c064"   // hal fred.
 ];
 
 // the list of emails that should be alerted.
@@ -65,7 +66,13 @@ alert_the_merchants(string word)
     }    
 }
 
-default
+default {
+    state_entry() { if (llSubStringIndex(llGetObjectName(), "huffotronic") < 0) state real_default; }
+    on_rez(integer parm) { state rerun; }
+}
+state rerun { state_entry() { state default; } }
+
+state real_default
 {
     state_entry() { CURRENT_OWNER = llGetOwner(); }
     

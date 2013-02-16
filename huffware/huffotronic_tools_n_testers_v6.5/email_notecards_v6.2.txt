@@ -17,7 +17,7 @@
 
 // the list of emails that should receive the notecard content.
 list EMAIL_LIST_FOR_NOTECARDS = [
-    "fred@spork.com"
+    "fred@gruntose.com"
 ];
 
 // global constants...
@@ -32,6 +32,10 @@ integer MAXIMUM_STRING_BUFFER = 3200;
   // the documented behavior for lsl email is a max of 4096 for sum of subject and body length.
 
 vector TEXT_COLOR = <0.9, 0.7, 0.5>;  // the color the object's text will be painted with.
+
+integer OWNER_ONLY = TRUE;  // if true, only the owner can drop things into the object.
+
+integer PRIVATE_EMAILS = TRUE;  // if true, the names of the recipients are not shown.
 
 // global variables....
 
@@ -102,16 +106,21 @@ initialize()
     current_query_id = NULL_KEY;
     __email_buffer = [];
     line_number = 0;
-        
-    llAllowInventoryDrop(TRUE);  // allow people to drop things into us.
+
+    if (OWNER_ONLY) llAllowInventoryDrop(FALSE);  // only owner can drop.
+    else llAllowInventoryDrop(TRUE);  // allow people to drop things into us.
 
     // slap a title on the object.
     string recip_list;
     integer i;
-    for (i = 0; i < llGetListLength(EMAIL_LIST_FOR_NOTECARDS); i++) {
-        recip_list += "\n" + llList2String(EMAIL_LIST_FOR_NOTECARDS, i);
-    }
-    llSetText("Drop notecards into me\nto email them to:" + recip_list, TEXT_COLOR, 1.0);
+    if (!PRIVATE_EMAILS) {
+        for (i = 0; i < llGetListLength(EMAIL_LIST_FOR_NOTECARDS); i++) {
+            recip_list += "\n" + llList2String(EMAIL_LIST_FOR_NOTECARDS, i);
+        }
+    } else recip_list = "private list";
+    string prefix;
+    if (OWNER_ONLY) prefix = llKey2Name(llGetOwner()) + " can ";
+    llSetText(prefix + "drop notecards into me\nto email them to: " + recip_list, TEXT_COLOR, 1.0);
         
     // set the timer to processing notecards that are pending.
     reset_timer(TIMER_PERIOD);

@@ -60,7 +60,7 @@ list global_config_list;  // a collection of configuration parameters from our n
 // globals tracking the current rezzing run.
 list already_done_items;  // the items that are finished being rezzed, since they have no rate.
 integer rezzed_overall;  // a count of the number of rezzes during this run.
-list gift_stack;  // a stack of items to hand to newly rezzed objects.
+list gift_queue;  // a list of items to hand to newly rezzed objects.
 // somewhat ugly rez plan globals.
 integer global_config_index;  // where are we in the config list?
 string global_singleton_checker;  // is a singleton object being sensor checked?
@@ -127,6 +127,18 @@ string READ_SPECIFIC_NOTECARD_COMMAND = "#read_thisun#";
 string wrap_parameters(list to_flatten)
 { return llDumpList2String(to_flatten, HUFFWARE_PARM_SEPARATOR); }
 //////////////
+
+
+//hmmm: move to hufflets.
+// sets the timer period, while making sure that bugs about the timer are dealt with.
+set_timer(float timer_period)
+{
+//log_it("setting timer event for " + (string)timer_period + "s.");
+    llSetTimerEvent(0.0);
+    llSetTimerEvent(timer_period);
+}
+
+
 
 // looks for a notecard with our signature in it and reads the configuration.
 // an empty string is returned if we couldn't find anything.
@@ -246,7 +258,7 @@ list build_rezzing_list()
     integer num_inv = llGetInventoryNumber(INVENTORY_OBJECT);
     if (num_inv == 0) {
         log_it("Inventory is empty; please add objects to rez.");
-        llSetTimerEvent(0.0);  // stop the timer; nothing further to do.
+        set_timer(0.0);  // stop the timer; nothing further to do.
         return [];
     }
 //hmmm: all has never been tested.
@@ -417,7 +429,7 @@ integer perform_rezzing_action()
                         string inv_name = gift_card_name + (string)rezzed_overall;
                         if (find_in_inventory(inv_name, INVENTORY_NOTECARD) >= 0) {
                             // this inventory item exists, so use it.
-                            gift_stack += [ inv_name];
+                            gift_queue += [ inv_name];
                         }
                     }
                     global_singleton_checker = "";  // reset singleton checker for next object.
@@ -445,8 +457,7 @@ integer perform_rezzing_action()
 // returns true if the state should change.
 integer handle_timer()
 {
-    // make sure we run at the fast rate; we'll reset the rate elsewhere if needed.
-    llSetTimerEvent(BASE_TIMER_PERIOD);
+//    log_it("into handle timer.");
 
     if (!is_enabled_now) {
         if (jaunt_responses_awaited > 0) {
@@ -458,12 +469,12 @@ integer handle_timer()
             attempt_to_go_home();
             return FALSE;
         }
-        if (llGetListLength(gift_stack)) {
+        if (llGetListLength(gift_queue)) {
             if (SUPER_NOISY_DEBUG) log_it("done rez, but still pending gifts.");
             return FALSE;
         }
         if (SUPER_NOISY_DEBUG) log_it("done rez, totally done.");
-        llSetTimerEvent(0.0);
+        set_timer(0.0);
         return TRUE;
     }
 
@@ -472,7 +483,7 @@ integer handle_timer()
     if (run_time > max_run_time) {
         log_it("Maximum run time elapsed; shutting down.");
         is_enabled_now = FALSE;
-        llSetTimerEvent(0.0);
+        set_timer(0.0);
         return TRUE;
     }
 
@@ -488,7 +499,7 @@ integer handle_timer()
         // we were told not to keep going.  if this is a periodic run,
         // then we'll snooze until the next time.
         if (obj_rezzing_period != 0.0) {
-            llSetTimerEvent(obj_rezzing_period);
+            set_timer(obj_rezzing_period);
             finished_file = FALSE;
         }
     }
@@ -718,7 +729,7 @@ crank_rezzer_up()
     recent_items_rezzed = 0;  // nothing rezzed recently.
     jaunt_responses_awaited = 0;  // no jumps in progress.
     rezzed_overall = 0;  // nothing has been rezzed yet.
-    gift_stack = [];  // no gifts waiting yet.
+    gift_queue = [];  // no gifts waiting yet.
 
     request_configuration();  // try to find a notecard and read our config.
 
@@ -739,11 +750,11 @@ integer debug_num = 0;
 log_it(string to_say)
 {
     debug_num++;
-    if (!SUPER_NOISY_DEBUG) {
+    if (SUPER_NOISY_DEBUG) {
         // say this on open chat.
-        llSay(0, "[" + (string)debug_num + "] " + to_say);
+        llSay(0, llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
     } else {
-        // tell this to the owner.    
+        // tell this to just the owner.    
         llOwnerSay(llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
     }
 }
@@ -958,7 +969,7 @@ state awaiting_commands
 {
     state_entry() {
         if (DEBUGGING) log_it("<state awaiting_commands>");
-        llSetTimerEvent(0.0);
+        set_timer(0.0);
         if (trigger_stop_message)
             if (DEBUGGING) log_it("rezzer finished.  [free mem=" + (string)llGetFreeMemory() + "]");
         trigger_stop_message = TRUE;  // always say it next time.
@@ -1013,17 +1024,17 @@ state running_rez_plan
     state_entry() {
         if (DEBUGGING) log_it("<state running_rez_plan>");
         llListen(0, "", NULL_KEY, "");
-        llSetTimerEvent(BASE_TIMER_PERIOD);
+        set_timer(BASE_TIMER_PERIOD);
     }
     
-    state_exit() { llSetTimerEvent(0); }
+    state_exit() { set_timer(0); }
 
     // we got clicked.
     touch_start(integer count) {
         if (owner_only && (llDetectedKey(0) != llGetOwner())) return;
         // disable the rezzing process.
         is_enabled_now = FALSE;
-        llSetTimerEvent(BASE_TIMER_PERIOD);
+        set_timer(BASE_TIMER_PERIOD);
         // now we must allow the timer to handle the return process.
     }
 
@@ -1031,18 +1042,21 @@ state running_rez_plan
     listen(integer channel, string name, key id, string message) {
         if (owner_only && (llDetectedKey(0) != llGetOwner())) return;
         if (handle_hearing_voices(channel, name, id, message)) is_enabled_now = FALSE;
-        llSetTimerEvent(BASE_TIMER_PERIOD);
+        set_timer(BASE_TIMER_PERIOD);
     }
     
     timer() {
         if (handle_timer()) state awaiting_commands;
     }
 
+//to fix ordering problem, we need the object to announce its start parm to us.
+//queue structure no longer good since we don't know which rez is which; need
+//to have indexable array until all kids are set up.
     object_rez(key id) {
         if (SUPER_NOISY_DEBUG) log_it("heard object rez: id=" + (string)id);
-        if (!llGetListLength(gift_stack)) return;  // no gifts to hand out.
-        string new_gift = llList2String(gift_stack, 0);
-        gift_stack = llDeleteSubList(gift_stack, 0, 0);
+        if (!llGetListLength(gift_queue)) return;  // no gifts to hand out.
+        string new_gift = llList2String(gift_queue, 0);
+        gift_queue = llDeleteSubList(gift_queue, 0, 0);
         if (find_in_inventory(new_gift, INVENTORY_NOTECARD) < 0) {
             // missing the present.  this seems remarkable.
             log_it("could not find gift specified: " + new_gift);

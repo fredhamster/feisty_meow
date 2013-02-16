@@ -94,6 +94,7 @@ show_menu(string menu_name, string title, list buttons,
     _private_global_buttons = buttons;
     menu_system_channel = menu_channel;
     _private_global_av_key = listen_to;
+//log_it("showing menu to " + llKey2Name(listen_to) + " with key " + (string)listen_to);
     if (DEBUGGING) {
         log_it("menu name: " + global_menu_name);
         log_it("title: " + _private_global_title);
@@ -166,13 +167,14 @@ handle_link_message(integer sender, integer huff_id, string msg, key id)
     if (msg == SHOW_MENU_COMMAND) {
         _menu_base_start = 0;  // reset the position in the menus.
         // separate the list out.
-//log_it("id showing: " + id);
-        list parms = llParseString2List(id, [HUFFWARE_PARM_SEPARATOR], []);
+//log_it("id showing: " + (string)id);
+        list parms = llParseStringKeepNulls(id, [HUFFWARE_PARM_SEPARATOR], []);
+//log_it("parm len " + (string)llGetListLength(parms) + ", parms are: " + (string)parms);
         // toss any existing menu info.
         clear_menu();
 //log_it("key here early: " + llList2String(parms, 4));
         show_menu(llList2String(parms, 0), llList2String(parms, 1),
-            llParseString2List(llList2String(parms, 2),
+            llParseStringKeepNulls(llList2String(parms, 2),
                 [HUFFWARE_ITEM_SEPARATOR], []),
             (integer)llList2String(parms, 3),
             (key)llList2String(parms, 4));
@@ -397,7 +399,7 @@ example_handle_link_message(integer sender, integer num, string msg, key id)
 {
     if (num != MENUTINI_HUFFWARE_ID + REPLY_DISTANCE) return;  // not for us.
     if (msg != SHOW_MENU_COMMAND) return;  // also not for us.
-    list parms = llParseString2List(id, [HUFFWARE_PARM_SEPARATOR], []);
+    list parms = llParseStringKeepNulls(id, [HUFFWARE_PARM_SEPARATOR], []);
     string menu_name = llList2String(parms, 0);
     string which_choice = llList2String(parms, 1);
     react_to_menu(menu_name, which_choice);

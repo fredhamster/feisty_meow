@@ -1,61 +1,97 @@
 ﻿
-// huffware script: text label, by fred huffhines
+// huffware script: bouncer, by fred huffhines.
 //
-// a super simple script for giving an object readable text.
+// this script repels an object or avatar that slams into it.
 //
-// this script is licensed by the GPL v3 which is documented at: http://www.gnu.org/licenses/gpl.html
-// do not use it in objects without fully realizing you are implicitly accepting that license.
+//   this script is licensed by the GPL v3 which is documented at: http://www.gnu.org/licenses/gpl.html
+//   do not use it in objects without fully realizing you are implicitly accepting that license.
 //
 
-string OBJECT_LABEL = "default";  // change this if you want a specific name.
+integer PUSH_UPWARDS = TRUE;
+    // if this is true, the velocity is reflected upwards.  this is sort of
+    // a trampoline effect.
+integer PUSH_DIRECTLY_BACK = TRUE;
+    // if this is true, then the object's velocity is reflected directly back.
+    // this is not a realistic bounce since it is like every bounce hits the
+    // object at a tangent rather than having the angle be rotated as a
+    // reflection.
 
-vector LABEL_COLOR = <0.3, 0.9, 0.4>;  // color of the text above object.
+integer AVATARS_ONLY = FALSE;
+    // if true, then the bouncer will only react to people and not things.
 
-set_text()
+float PUSH_MULTIPLIER = 32.0;
+    // increase the object's velocity by this factor, as part of how we
+    // help it along when it collides with us.
+
+integer LOCAL_AXIS = FALSE;
+    // use the axis relative to the object's rotation?
+
+// originally came from reverse_velocity from concussive script.
+vector push_back(key act_upon, integer local_axis)
 {
-    string object_label = OBJECT_LABEL;
-    // reset the label to a decorated version of object name if it was default.
-    if (object_label == "default") object_label = llGetObjectName();
-    integer indy;
-    integer keep_going = TRUE;
-    while (keep_going) {
-        indy = find_substring(object_label, "\\n");
-        if (indy < 0) {
-            keep_going = FALSE;
-        } else {
-            object_label = llGetSubString(object_label, 0, indy - 1)
-                + "\n" + llGetSubString(object_label, indy + 2, -1);
+    list details = llGetObjectDetails(act_upon, [ OBJECT_VELOCITY ]);
+    vector current_velocity = llList2Vector(details, 0);    
+
+    if (local_axis) {
+        rotation rot = llGetRot();
+        current_velocity /= rot;  // undo the rotation.
+    }
+    // here's where we return the velocity exactly backwards along
+    // its own axis.  this is not really very true to physics.
+    vector new_velocity = -PUSH_MULTIPLIER * current_velocity;
+    new_velocity *= llGetMass();
+//    llPushObject(act_upon, new_velocity, ZERO_VECTOR, local_axis);
+    return new_velocity;
+}
+
+// causes the object to be thrown up into the air and magnifies their
+// velocity.
+vector push_up(key act_upon, integer local_axis)
+{
+    list details = llGetObjectDetails(act_upon, [ OBJECT_VELOCITY ]);
+    vector current_velocity = llList2Vector(details, 0);
+    if (local_axis) {
+        rotation rot = llGetRot();
+        current_velocity /= rot;  // undo the rotation.
+    }
+    // another example that's like the trampoline...
+//    vector new_velocity = PUSH_MULTIPLIER * llRot2Up(llGetRot());
+    vector new_velocity = current_velocity;
+    new_velocity.z = -PUSH_MULTIPLIER * new_velocity.z;
+    new_velocity *= llGetMass();
+//    llPushObject(act_upon, new_velocity, ZERO_VECTOR, local_axis);
+    return new_velocity;
+}
+
+// a newer method that can be used to 'continue' the velocity away from
+// the bouncer but more upwards from an elastic collision than back at the av.
+/////not implemented yet.
+// needs good physics normal vector implementation.
+
+// called by the collision event handler when we detect something
+// bumping into us.
+handle_collisions(integer count)
+{
+    integer i;
+    for (i = 0; i < count; i++) {
+        if ( (AVATARS_ONLY && (llDetectedType(i) & AGENT) )
+                || !AVATARS_ONLY) {
+            vector upwards;
+            if (PUSH_UPWARDS)
+                upwards = push_up(llDetectedKey(i), LOCAL_AXIS);
+            vector back;
+            if (PUSH_DIRECTLY_BACK)
+                back = push_back(llDetectedKey(i), LOCAL_AXIS);
+            llPushObject(llDetectedKey(i), upwards + back, ZERO_VECTOR, LOCAL_AXIS);
         }
     }
-//log_it("setting text: " + object_label);
-    llSetText(object_label, LABEL_COLOR, 1.0);
 }
 
 //////////////
 // from hufflets...
 
-integer debug_num = 0;
-
-// a debugging output method.  can be disabled entirely in one place.
-log_it(string to_say)
-{
-    debug_num++;
-    // tell this to the owner.    
-    llOwnerSay(llGetDate() + ": " + llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
-//llWhisper(0, llGetDate() + ": " + llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
-    // say this on an unusual channel for chat if it's not intended for general public.
-//    llSay(108, llGetDate() + ": " + llGetScriptName() + "[" + (string)debug_num + "] " + to_say);
-    // say this on open chat that anyone can hear.  we take off the bling for this one.
-//    llSay(0, to_say);
-}
-
-// returns the index of the first occurrence of "pattern" inside
-// the "full_string".  if it is not found, then a negative number is returned.
-integer find_substring(string full_string, string pattern)
-{ return llSubStringIndex(llToLower(full_string), llToLower(pattern)); }
-
 //////////////
-// huffware script: auto-retire, by fred huffhines, version 2.8.
+// huffware script: auto-retire, by fred huffhines, version 2.5.
 // distributed under BSD-like license.
 //   !!  keep in mind that this code must be *copied* into another
 //   !!  script that you wish to add auto-retirement capability to.
@@ -89,6 +125,7 @@ auto_retire() {
     integer posn;
     // find any scripts that match the basename.  they are variants of this script.
     for (posn = llGetInventoryNumber(INVENTORY_SCRIPT) - 1; posn >= 0; posn--) {
+//log_it("invpo=" + (string)posn);
         string curr_script = llGetInventoryName(INVENTORY_SCRIPT, posn);
         if ( (curr_script != self) && (llSubStringIndex(curr_script, basename) == 0) ) {
             // found a basic match at least.
@@ -118,17 +155,21 @@ list compute_basename_and_version(string to_chop_up)
         (space_v_posn >= 2) && (llGetSubString(to_chop_up, space_v_posn, space_v_posn + 1) != " v");
         space_v_posn--) {
         // look for space and v but do nothing else.
+//log_it("pos=" + (string)space_v_posn);
     }
     if (space_v_posn < 2) return [];  // no space found.
+//log_it("space v@" + (string)space_v_posn);
     // now we zoom through the stuff after our beloved v character and find any evil
     // space characters, which are most likely from SL having found a duplicate item
     // name and not so helpfully renamed it for us.
     integer indy;
     for (indy = llStringLength(to_chop_up) - 1; indy > space_v_posn; indy--) {
+//log_it("indy=" + (string)space_v_posn);
         if (llGetSubString(to_chop_up, indy, indy) == " ") {
             // found one; zap it.  since we're going backwards we don't need to
             // adjust the loop at all.
             to_chop_up = llDeleteSubString(to_chop_up, indy, indy);
+//log_it("saw case of previously redundant item, aieee.  flattened: " + to_chop_up);
         }
     }
     string full_suffix = llGetSubString(to_chop_up, space_v_posn, -1);
@@ -150,8 +191,9 @@ list compute_basename_and_version(string to_chop_up)
 //
 //////////////
 
-//end hufflets...
+// end hufflets.
 //////////////
+
 
 default
 {
@@ -162,9 +204,8 @@ state rerun { state_entry() { state default; } }
 
 state real_default
 {
-    state_entry() { auto_retire(); set_text(); }
-    on_rez(integer start_parm) { state default; }
-    touch_start(integer count) { set_text(); }
-    changed(integer change) { if (change & CHANGED_INVENTORY) set_text(); }
+    state_entry() { auto_retire(); }
+
+    collision(integer count) { handle_collisions(count); }
 }
 

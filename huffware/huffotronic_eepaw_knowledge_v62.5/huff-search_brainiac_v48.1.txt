@@ -68,11 +68,27 @@ float MAX_UPWARDS_DISTANCE = 30.0;
 float SEARCH_ROD_ANGULAR_SWEEP = PI_BY_TWO;
     // angular arc of the sensor cone, placeholder.
 
+integer SEARCH_OBJECT_TYPE = 7;
+    // the kind of objects to find.  default is anything.
+
+// these enable or disable items in the list displayed to the user for matches.
+integer SHOW_NAME = TRUE;
+integer SHOW_POSITION = TRUE;
+integer SHOW_UUID = TRUE;
+
+// the style of how searchbert presents its arms.
+integer PRESENT_ARMS_STYLE = 0;  // PAS_CENTERED is the default.
+
 //////////////
 
 // constants that are not configurable in a notecard...
 
 integer DEBUGGING = FALSE;  // set to true to make the script noisier.
+
+// SENSOR_TYPE_ALL: a constant that tells the sensor to look for (ACTIVE|PASSIVE|AGENT).
+integer SENSOR_TYPE_ALL = 7;
+
+integer LARGEST_STRING = 800;  // the longest string we try to build at once.
 
 //////////////
 
@@ -117,16 +133,24 @@ integer REPLY_DISTANCE = 100008;  // offset added to service's huffware id in re
 //////////////
 string HUFF_SEARCH_RESET = "#reset#";
     // returns the script to its starting state.
+// constants for controlling how searchbert presents its arms when pointing.  they are the
+// Present Arms Styles (PAS).
+integer PAS_CENTERED = 0;
+    // original style of arm positioning for searchbert.  the arms are centered at the root prim's
+    // center, and they point towards the target.
 string HUFF_SEARCH_POINT_PARTY = "#point_particles#";
-    // aim at an object and show a particle stream leading to it.
+    // aim at an object and show a particle stream leading to it.  parms are a UUID key for the
+    // target, the target location vector and a PAS value.
 string HUFF_SEARCH_JUST_POINT = "#just_point#";
-    // aim at an object, but don't do any particles.
+    // aim at an object, but don't do any particles.  parms are the target vector
+    // and a PAS value.
 string HUFF_SEARCH_SENSEI = "#sensor#";
     // set up a sensor request for a search pattern.  pings will cause
     // the pattern to be sought in names of nearby objects.  the parameters are:
     // (1) the maximum range for the sensor, (2) the arc angle to use in sensing,
     // (3) the search pattern to look for in object names, (4) the maximum number
-    // of matches to look for.
+    // of matches to look for, (5) the type of objects to find (e.g. SENSOR_TYPE_ALL
+    // or other values).
 string HUFF_SEARCH_STOP_SENSE = "#stop_sensor#";
     // turn off the sensor but don't totally reset.
 string HUFF_SEARCH_PING = "#ping#";
@@ -212,18 +236,6 @@ integer JAUNT_HUFFWARE_ID = 10008;
 // commands available via the jaunting library:
 string JAUNT_COMMAND = "#jaunt#";
     // command used to tell jaunt script to move object.  pass a vector with the location.
-//string FULL_STOP_COMMAND = "#fullstop#";
-    // command used to bring object to a halt.
-//string REVERSE_VELOCITY_COMMAND = "#reverse#";
-    // makes the object reverse its velocity and travel back from whence it came.
-//string SET_VELOCITY_COMMAND = "#setvelocity#";
-    // makes the velocity equal to the vector passed as the first parameter.
-//string JAUNT_UP_COMMAND = "#jauntup#";
-//string JAUNT_DOWN_COMMAND = "#jauntdown#";
-    // commands for height adjustment.  pass a float for number of meters to move.
-//string JAUNT_LIST_COMMAND = "#jauntlist#";
-    // like regular jaunt, but expects a string in jaunt notecard format with vectors.
-    // the second parameter, if any, should be 1 for forwards traversal and 0 for backwards.
 //
 //////////////
 
@@ -291,20 +303,32 @@ vector last_jaunt_target;
 
 //////////////
 
+//hmmm: copy this to hufflets
+
+// sets the timer safely, to get around a second life bug that sometimes
+// drops the timer set unless there's a reset first.  nasty!
+set_timer(float interval)
+{
+    llSetTimerEvent(0);
+    llSetTimerEvent(interval);
+}
+
+//////////////
+
 // main functions for getting work done as the searchbert...
 
 // pointing that doesn't use particles, but just aims a search rod.
-aim_at_position(integer which_seeker, vector targetPosition) {
-    list paramList = [targetPosition];
+aim_at_position(integer which_seeker, vector targetPosition, integer pas_style) {
+    list paramList = [targetPosition, pas_style];
     request_from_seeker(which_seeker, llDumpList2String(paramList,
         HUFFWARE_PARM_SEPARATOR), HUFF_SEARCH_JUST_POINT);
 }
 
 // tells the rod at "which_seeker" link to do a sensor scan.
 start_sensing(integer which_seeker, float max_range, float arc_angle, string search_pattern,
-    integer matches_sought)
+    integer matches_sought, integer object_type)
 {
-    list paramList = [max_range, arc_angle, search_pattern, matches_sought];
+    list paramList = [max_range, arc_angle, search_pattern, matches_sought, object_type];
     request_from_seeker(which_seeker, llDumpList2String(paramList,
         HUFFWARE_PARM_SEPARATOR), HUFF_SEARCH_SENSEI);
 }
@@ -396,15 +420,19 @@ chat_about_matches()
     // only show a maximum number of matches as we have seeker objects.
     if (len > MAX_MATCHES) len = MAX_MATCHES;
     for (i = 0; i < len; i++) {
-        if (llStringLength(match_description) > 350) {
+        if (llStringLength(match_description) > LARGEST_STRING) {
             llSay(0, "\n" + match_description);
             match_description = "";
-        } else if (i != 0) match_description += "\n";
+        } else if ( (i != 0) && (SHOW_NAME || SHOW_POSITION || SHOW_UUID) ) {
+            match_description += "\n";
+        }
         key targetKey = llList2Key(global_matches_found, i);
-        vector targetPos = llList2Vector(global_positions_found, i);
-        match_description += llKey2Name(targetKey)
-            + " @ " + vector_to_string(targetPos)
-            + " [" + (string) targetKey + "]";
+        if (SHOW_NAME) match_description += llKey2Name(targetKey) + " ";
+        if (SHOW_POSITION) {
+            vector targetPos = llList2Vector(global_positions_found, i);
+            match_description += "@ " + vector_to_string(targetPos) + " ";
+        }
+        if (SHOW_UUID) match_description += "[" + (string)targetKey + "]";
     }
     llSay(0, "\n" + match_description);
 }
@@ -424,7 +452,7 @@ show_matches()
     for (i = 0; i < len; i++) {
         key targetKey = llList2Key(global_matches_found, i);
         vector targetPos = llList2Vector(global_positions_found, i);
-        point_at_with_particles(which_locater++, targetKey, targetPos);
+        point_at_with_particles(which_locater++, targetKey, targetPos, PRESENT_ARMS_STYLE);
     }
 }
 
@@ -464,7 +492,7 @@ show_off_what_was_found()
 {
     // show the positions of what was found.
     show_matches();
-    llSetTimerEvent(SNOOZE_BEFORE_RESET);
+    set_timer(SNOOZE_BEFORE_RESET);
     reset_for_next_timer = TRUE;
 }
 
@@ -493,7 +521,7 @@ integer finish_spiral_traversal()
 //log_it("finish spiral success, showing off matches");
     
     // this object has done enough spiraling.
-    llSetTimerEvent(NORMAL_TIMER_INTERVAL);  // turn off jump timer.
+    set_timer(NORMAL_TIMER_INTERVAL);  // turn off jump timer.
     running_a_search = FALSE;  // reset our state since the search is done.
     show_off_what_was_found();
     return FALSE;
@@ -637,17 +665,6 @@ process_jaunt_response(string str)
 
 reset_search()
 {
-    reset_for_next_timer = FALSE;
-
-    llSetTimerEvent(NORMAL_TIMER_INTERVAL);  // back to slow timer hits.
-    reset_rod(ALL_SEEKER_ALERT);  // reset the pointers to camber position.
-    llSetRot(llEuler2Rot(ZERO_VECTOR));  // set the object to point at the zero vector.
-
-    // set the home position to wherever we happen to be right now.
-    global_home_posn = clean_target(llGetPos());
-    llSetPos(global_home_posn);  // get us off the ground.
-    last_safe_target = global_home_posn;
-
     global_current_step = 0;
     global_current_pass = 0;
     global_matches_found = [];
@@ -663,7 +680,15 @@ reset_search()
     SEARCH_ROD_ANGULAR_SWEEP = (PI_BY_TWO / 4.0);
         // PI_BY_TWO / 4 is 22.25 degrees, which when turned into a sensor cone
         // will be a range of 45 degrees around the zero vector.
-    
+
+    set_timer(NORMAL_TIMER_INTERVAL);  // back to slow timer hits.
+    reset_rod(ALL_SEEKER_ALERT);  // reset the pointers to camber position.
+    llSetRot(llEuler2Rot(ZERO_VECTOR));  // set the object to point at the zero vector.
+
+    // set the home position to wherever we happen to be right now.
+    global_home_posn = clean_target(llGetPos());
+    llSetPos(global_home_posn);  // get us off the ground.
+    last_safe_target = global_home_posn;    
 }
 
 initialize()
@@ -671,6 +696,8 @@ initialize()
     llSay(0, "Initializing... this may take a few seconds.");
     auto_retire();
     llSleep(0.2);  // we ensure part of the claim above by waiting for sub-scripts to start.
+    // cannot initialize this in statics for some reason...
+    SEARCH_OBJECT_TYPE = SENSOR_TYPE_ALL;
     request_configuration("");
 }
 
@@ -689,7 +716,7 @@ finish_initializing()
 
     llSay(0, "Running and ready to search.  Touch for more instructions.");
 
-    llSetTimerEvent(NORMAL_TIMER_INTERVAL);    
+    set_timer(NORMAL_TIMER_INTERVAL);    
 }
 
 // this points the rods at all angles we possibly can to get the best coverage.
@@ -711,9 +738,9 @@ skew_rod_angles(integer show_particles)
             radius * llCos((float)which_child * angle_per_step / 2.0)>;
         vector target_location = llGetPos() + spinner;
         if (!show_particles) {
-            aim_at_position(which_child, target_location);
+            aim_at_position(which_child, target_location, PAS_CENTERED);
         } else {
-            point_at_with_particles(which_child, NULL_KEY, target_location);
+            point_at_with_particles(which_child, NULL_KEY, target_location, PAS_CENTERED);
         }
     }
 }
@@ -803,32 +830,27 @@ handle_link_message(integer which, integer num, string msg, key id)
 apply_variable_definition(string var, string value)
 {
 //log_it("[" + var + "=" + value + "]");
-    if (var == "max_matches") {
-        MAX_MATCHES = (integer)value;
-    } else if (var == "max_spiral_radius") {
-        MAX_SPIRAL_RADIUS = (float)value;
-    } else if (var == "sensor_max_range") {
-        SENSOR_MAX_RANGE = (float)value;
-    } else if (var == "huff_search_chat_channel") {
+    if (var == "max_matches") MAX_MATCHES = (integer)value;
+    else if (var == "max_spiral_radius") MAX_SPIRAL_RADIUS = (float)value;
+    else if (var == "sensor_max_range") SENSOR_MAX_RANGE = (float)value;
+    else if (var == "huff_search_chat_channel") {
         // we have to hook up our ears to the new channel here.
         if (listening_handle) llListenRemove(listening_handle);
         HUFF_SEARCH_CHAT_CHANNEL = (integer)value;
         listening_handle = llListen(HUFF_SEARCH_CHAT_CHANNEL, "", NULL_KEY, "");
-    } else if (var == "traverse_lands") {
-        TRAVERSE_LANDS = (integer)value;
-    } else if (var == "spiral_loops") {
-        SPIRAL_LOOPS = (integer)value;
-    } else if (var == "total_steps") {
-        TOTAL_STEPS = (integer)value;
-    } else if (var == "max_spiral_traversals") {
-        MAX_SPIRAL_TRAVERSALS = (integer)value;
-    } else if (var == "search_rod_angular_sweep") {
-        SEARCH_ROD_ANGULAR_SWEEP = (float)value;
-    } else if (var == "travelling_upwards") {
-        TRAVELLING_UPWARDS = (integer)value;
-    } else if (var == "max_upwards_distance") {
-        MAX_UPWARDS_DISTANCE = (float)value;
-    } else {
+    } else if (var == "traverse_lands") TRAVERSE_LANDS = (integer)value;
+    else if (var == "spiral_loops") SPIRAL_LOOPS = (integer)value;
+    else if (var == "total_steps") TOTAL_STEPS = (integer)value;
+    else if (var == "max_spiral_traversals") MAX_SPIRAL_TRAVERSALS = (integer)value;
+    else if (var == "search_rod_angular_sweep") SEARCH_ROD_ANGULAR_SWEEP = (float)value;
+    else if (var == "travelling_upwards") TRAVELLING_UPWARDS = (integer)value;
+    else if (var == "max_upwards_distance") MAX_UPWARDS_DISTANCE = (float)value;
+    else if (var == "search_type") SEARCH_OBJECT_TYPE = (integer)value;
+    else if (var == "show_name") SHOW_NAME = (integer)value;
+    else if (var == "show_position") SHOW_POSITION = (integer)value;
+    else if (var == "show_uuid") SHOW_UUID = (integer)value;
+    else if (var == "present_arms") PRESENT_ARMS_STYLE = (integer)value;
+    else {
         if (DEBUGGING)
             log_it("unknown variable '" + var + "' tried to define value = " + value);
     }
@@ -878,9 +900,9 @@ request_from_seeker(integer which_seeker, string parameters, string command)
 }
 
 // aim the specified seeker rod at the object with the key and position.
-point_at_with_particles(integer which_seeker, key targetId, vector targetPosition)
+point_at_with_particles(integer which_seeker, key targetId, vector targetPosition, integer pas_style)
 {
-    list paramList = [targetId, targetPosition];
+    list paramList = [targetId, targetPosition, pas_style];
     request_from_seeker(which_seeker, llDumpList2String(paramList, HUFFWARE_PARM_SEPARATOR),
         HUFF_SEARCH_POINT_PARTY);
 }
@@ -916,7 +938,7 @@ request_configuration(string notecard_name)
     }
 
     // make sure we complete this in time.
-    llSetTimerEvent(STARTUP_TIME_ALLOWED);
+    set_timer(STARTUP_TIME_ALLOWED);
 }
 
 // this is used when we've totally failed to start up properly.
@@ -1162,7 +1184,7 @@ state rerun { state_entry() { state default; } }
 state real_default {
     state_entry() { initialize(); }
     
-    state_exit() { llSetTimerEvent(0); }
+    state_exit() { set_timer(0); }
     
     on_rez(integer parm) { state default; }
     
@@ -1194,14 +1216,14 @@ state real_default {
             // look for any objects near each seeker and in the direction it's pointing.
             // we double the arc we might need to try to get more matches.
             start_sensing(ALL_SEEKER_ALERT, SENSOR_MAX_RANGE,
-                SEARCH_ROD_ANGULAR_SWEEP, global_target_name, MAX_MATCHES);
+                SEARCH_ROD_ANGULAR_SWEEP, global_target_name, MAX_MATCHES, SEARCH_OBJECT_TYPE);
             // start stepping through our search spirals.
-            llSetTimerEvent(FAST_TIMER_INTERVAL);
+            set_timer(FAST_TIMER_INTERVAL);
             llSay(0, "Searching for " + global_target_name);
         } else if (is_prefix(msg, "#initialize")) {
             llResetScript();
         } else if (is_prefix(msg, "#skew")) {
-            llSetTimerEvent(SNOOZE_BEFORE_RESET);
+            set_timer(SNOOZE_BEFORE_RESET);
             reset_for_next_timer = TRUE;
             skew_rod_angles(TRUE);
         } else if (is_prefix(msg, "#channel")) {
@@ -1239,10 +1261,16 @@ state real_default {
 
 // note by fred huffhines:
 //   much of this script was originally written by the attributed authors above.  however,
-//   i have spent a ton of time improving this pair of scripts...  (the brain and the
-//   search pointer).  i've added pattern matching (rather than needing to know exact
-//   names), added the spiral search traversal method to improve search behavior and
-//   get more results, improved the particle streams, and other bits.  i just recently added
-//   configurability from notecards for searchbert options and a menuing system to provide
-//   help and runtime control over some of the options.  wheeee, it's been a lot of fun.
+//   i have spent a ton of time improving and adding features to this pair of scripts...
+//   (the brain and the search pointer).  i've added pattern matching (rather than needing
+//   to know exact names for the search targets), added the spiral search traversal method
+//   to improve search behavior and get more results, improved the particle streams, and
+//   many other bits.  i just recently added configurability from notecards for searchbert
+//   options and a menuing system to provide help and runtime control over some of the
+//   options (v46.3 or so?).  wheeee, it's been a lot of fun.
 //      --fred.
+//   more changes added recently, may-june 2012: selection of the types of objects to find,
+//   using the bit patterns for active, passive, and agent.  control over what items are printed
+//   in match list (object uuid, name, and location).  and the "present arms style", that controls
+//   how searchbert points at the matches.
+

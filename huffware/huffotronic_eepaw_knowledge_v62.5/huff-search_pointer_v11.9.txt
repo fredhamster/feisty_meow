@@ -1,15 +1,13 @@
 ﻿
 // huffware script: huff-search pointer, by fred huffhines
 //
-// note: parts of this script were written by the attributed authors below.
-//
 // this script is one portion of a search system.  the pointer is meant to be in a child prim.
 // it is told what to point at by the root prim.
 //
 // the newer version of this supports a search command that locates objects in the
 // direction specified.
 //
-// original attributions: started life as "Particle Script 0.4, Created by Ama Omega, 3-7-2004"
+// attributions: started life as "Particle Script 0.4, Created by Ama Omega, 3-7-2004"
 // some code in this script is also from: Christopher Omega.
 //
 // this script is licensed by the GPL v3 which is documented at: http://www.gnu.org/licenses/gpl.html
@@ -31,16 +29,33 @@ integer REPLY_DISTANCE = 100008;  // offset added to service's huffware id in re
 //////////////
 string HUFF_SEARCH_RESET = "#reset#";
     // returns the script to its starting state.
+// constants for controlling how searchbert presents its arms when pointing.  they are the
+// Present Arms Styles (PAS).
+integer PAS_CENTERED = 0;
+    // original style of arm positioning for searchbert.  the arms are centered at the root prim's
+    // center, and they point towards the target.
+integer PAS_OPPOSITE_WALL = 1;
+    // the arms will be positioned so that they start at the outer wall on the opposite side of
+    // the root prim from the target, and they point towards the target.  basically it looks like
+    // they've been partly sucked inside searchbert.
+integer PAS_NEAREST_WALL = 2;
+    // contrary to the opposite wall style, this starts the arms on the sphere's wall closest to the
+    // target and points the arm toward the target.  the effect is somewhat like a hedgehog.
+integer PAS_END_CENTERED = 3;
+    // the arms originate at the center of searchbert, and point towards the targets.
 string HUFF_SEARCH_POINT_PARTY = "#point_particles#";
-    // aim at an object and show a particle stream leading to it.
+    // aim at an object and show a particle stream leading to it.  parms are a UUID key for the
+    // target, the target location vector and a PAS value.
 string HUFF_SEARCH_JUST_POINT = "#just_point#";
-    // aim at an object, but don't do any particles.
+    // aim at an object, but don't do any particles.  parms are the target vector
+    // and a PAS value.
 string HUFF_SEARCH_SENSEI = "#sensor#";
     // set up a sensor request for a search pattern.  pings will cause
     // the pattern to be sought in names of nearby objects.  the parameters are:
     // (1) the maximum range for the sensor, (2) the arc angle to use in sensing,
     // (3) the search pattern to look for in object names, (4) the maximum number
-    // of matches to look for.
+    // of matches to look for, (5) the type of objects to find (e.g. SENSOR_TYPE_ACTIVE
+    // or other values).
 string HUFF_SEARCH_STOP_SENSE = "#stop_sensor#";
     // turn off the sensor but don't totally reset.
 string HUFF_SEARCH_PING = "#ping#";
@@ -51,9 +66,6 @@ string HUFF_SEARCH_MATCH_EVENT = "#match#";
 //////////////
 
 // global variables...
-
-// SENSOR_TYPE_ALL: a constant that tells the sensor to look for (ACTIVE|PASSIVE|AGENT).
-integer SENSOR_TYPE_ALL = 7;
 
 // AXIS_* constants, represent the unit vector 1 unit on the specified axis.
 vector AXIS_UP = <0.0, 0.0, 1.0>;
@@ -79,6 +91,15 @@ integer our_link_number = 0;
     // set to the number for our link if we ever see ourselves as a link greater than 1.
     // this only happens when we have been made a sub-prim and are definitely not the root prim,
     // so it is our key for whether the prim should die if it becomes unlinked.
+
+vector original_position = <-128, -128, -128>;  // default we can count on.
+    // where did this arm start out, relative to the root prim?
+
+// SENSOR_TYPE_ALL: a constant that tells the sensor to look for (ACTIVE|PASSIVE|AGENT).
+integer SENSOR_TYPE_ALL = 7;
+
+integer search_type;
+    // the type of objects being sought in the search.
 
 // Mask Flags - set to TRUE to enable
 integer glow = TRUE;            // Make the particles glow
@@ -133,8 +154,6 @@ float life = 0;             // Life in seconds for the system to make particles
 integer precision = 2;          //Adjust the precision of the generated list.
 
 integer running_particles = FALSE;  // is the particle system running?
-
-///integer start_parm;  // set from the on_rez parameter.
 
 string float2String(float in)
 {
@@ -212,21 +231,17 @@ integer outside_of_sim(vector to_check)
 
 ///////////////
 
-// SetLocalRot
 // In a linked set, points a child object to the rotation.
 // @param rot The rotation to rotate to.
-SetLocalRot(rotation rot)
+rotation LocalRot(rotation rot)
 {
-    if(llGetLinkNumber() > 1)
-    {
-        rotation locRot = llGetLocalRot();
-        locRot.s = -locRot.s; // Invert local rot.
-        
-        rotation parentRot = locRot * llGetRot();
-        parentRot.s = -parentRot.s; // Invert parent's rot.
+    rotation locRot = llGetLocalRot();
+    locRot.s = -locRot.s; // Invert local rot.
     
-        llSetLocalRot(rot * parentRot);
-    }
+    rotation parentRot = locRot * llGetRot();
+    parentRot.s = -parentRot.s; // Invert parent's rot.
+
+    return rot * parentRot;
 }
 
 // Gets the rotation to point the specified axis at the specified position.
@@ -238,10 +253,33 @@ rotation getRotToPointAxisAt(vector axis, vector target)
     return llGetRot() * llRotBetween(axis * llGetRot(), target - llGetPos());
 }
 
-// aims in the direction of the target.
-aim_at(vector targetPos)
+// aims in the direction of the target using a rod pointing style.
+aim_at(vector targetPos, integer point_style)
 {
-    SetLocalRot(getRotToPointAxisAt(AXIS_UP, targetPos));
+    if (llGetLinkNumber() <= 1) return;  // no root prim mods.
+    list mods;
+    vector obj_size = (vector)llList2String(llGetLinkPrimitiveParams(LINK_ROOT, [PRIM_SIZE]), 0);
+    float radius = obj_size.x;  // safe to assume for a sphere.
+    obj_size = (vector)llList2String(llGetLinkPrimitiveParams(llGetLinkNumber(), [PRIM_SIZE]), 0);
+    float arm_length = obj_size.z;  // longest component.
+    // the default is to use our original placement for the intersection point.
+    vector intersect = original_position;
+    // see if they're using a different and interesting arms presentation.
+    if (point_style == PAS_OPPOSITE_WALL) {
+        intersect = <0, 0, arm_length / 2.0 - radius / 2.0>
+            * LocalRot(getRotToPointAxisAt(AXIS_UP, targetPos));
+    } else if (point_style == PAS_NEAREST_WALL) {
+        intersect = <0, 0, arm_length / 2.0 + radius / 2.0>
+            * LocalRot(getRotToPointAxisAt(AXIS_UP, targetPos));
+    } else if (point_style == PAS_END_CENTERED) {
+        intersect = <0, 0, arm_length / 2.0>
+            * LocalRot(getRotToPointAxisAt(AXIS_UP, targetPos));
+    }
+    // use the proper rotation based on the target and place the arm at the intersection
+    // point we just computed.
+    mods += [ PRIM_POS_LOCAL, intersect,
+        PRIM_ROT_LOCAL, LocalRot(getRotToPointAxisAt(AXIS_UP, targetPos)) ];
+    llSetPrimitiveParams(mods);
 }
 
 // locates the string "text" in the list to "search_in".
@@ -256,13 +294,12 @@ integer find_in_list(list search_in, string text)
     return -1;
 }
 
-// point_at
-// Points up axis at targetPos, and emits a particle system at targetKey.
-// @param targetKey The UUID of the target to emit particles to.
-// @param targetPos The poaition of the target in region-local coordinates.
-point_at(key targetKey, vector targetPos)
+// points the upward axis at targetPos, and emits a particle system at targetKey.
+// requires the UUID of the target to emit particles at, the position of the target
+// in region-local coordinates, and the style to point the arm with.
+point_at(key targetKey, vector targetPos, integer point_style)
 {
-    aim_at(targetPos);
+    aim_at(targetPos, point_style);
     target = targetKey;
     create_particles();
 }
@@ -441,7 +478,14 @@ state real_default
         auto_retire();
         llParticleSystem([]);
         running_particles = FALSE;
-        SetLocalRot(<0.0, 0.0, 0.0, 1.0>);
+        if (original_position == <-128, -128, -128>) {
+            original_position = (vector)llList2String
+                (llGetLinkPrimitiveParams(llGetLinkNumber(), [PRIM_POS_LOCAL]), 0);
+        }
+        // can't initialize static with another static...
+        search_type = SENSOR_TYPE_ALL;
+        llSetLinkPrimitiveParams(llGetLinkNumber(), [ PRIM_ROT_LOCAL,
+            LocalRot(<0.0, 0.0, 0.0, 1.0>) ]);
         global_matches_found = [];
         record_link_num_if_useful();
     }
@@ -455,7 +499,8 @@ state real_default
         if (command == HUFF_SEARCH_RESET) {
             // returns to the normal state of the object.
             reset_sensors();
-            SetLocalRot(<0, 0, 0, 1>);
+            llSetLinkPrimitiveParams(llGetLinkNumber(), [ PRIM_ROT_LOCAL,
+                LocalRot(<0.0, 0.0, 0.0, 1.0>), PRIM_POS_LOCAL, original_position ]);
             llParticleSystem([]);
             running_particles = FALSE;
             global_matches_found = [];
@@ -465,13 +510,15 @@ state real_default
             list parsedParameters = llParseString2List(parameters, [HUFFWARE_PARM_SEPARATOR], []);
             key targetKey = (key)llList2String(parsedParameters, 0);
             vector targetPos = (vector)llList2String(parsedParameters, 1);
-            point_at(targetKey, targetPos);
+            integer point_style = (integer)llList2String(parsedParameters, 2);
+            point_at(targetKey, targetPos, point_style);
         } else if (command == HUFF_SEARCH_JUST_POINT) {
             // aim at an object, but don't do any particles.
             reset_sensors();
             list parsedParameters = llParseString2List(parameters, [HUFFWARE_PARM_SEPARATOR], []);
             vector targetPos = (vector)llList2String(parsedParameters, 0);
-            aim_at(targetPos);
+            integer point_style = (integer)llList2String(parsedParameters, 1);
+            aim_at(targetPos, point_style);
         } else if (command == HUFF_SEARCH_SENSEI) {
             // set up a sensor request for a search pattern.  pings will cause
             // the pattern to be sought in names of nearby objects.
@@ -482,10 +529,7 @@ state real_default
             arc_angle = (float)llList2String(parsedParameters, 1);
             search_pattern = llToLower((string)llList2String(parsedParameters, 2));
             MAX_LIST_LEN = (integer)llList2String(parsedParameters, 3);
-if (!MAX_LIST_LEN) {
-MAX_LIST_LEN = 17; 
-log_it("failed to get list length param");
-}
+            search_type = (integer)llList2String(parsedParameters, 4);
         } else if (command == HUFF_SEARCH_STOP_SENSE) {
             // turn off the sensor but don't totally reset yet.
             reset_sensors();
@@ -497,7 +541,7 @@ log_it("failed to get list length param");
             radius = 5;
             if (!running_particles) create_particles();
             // they want to check for objects right here, right now...
-            llSensor("", NULL_KEY, SENSOR_TYPE_ALL, max_range, arc_angle);
+            llSensor("", NULL_KEY, search_type, max_range, arc_angle);
         }
     }
     changed(integer change) {
@@ -510,6 +554,10 @@ log_it("failed to get list length param");
                 // we had no link number recorded, so let's track this if needed.
                 record_link_num_if_useful();
             }
+            // if we were relinked, get the local position again, since it changes to relative
+            // after being linked to another prim.
+            original_position = (vector)llList2String
+                (llGetLinkPrimitiveParams(llGetLinkNumber(), [PRIM_POS_LOCAL]), 0);
         }
     }
     sensor(integer num_detected) {

@@ -18,11 +18,13 @@
 integer DEBUGGING = FALSE;
     // if this is true, then a lot of extra noise is generated when notecards are read.
 
-float TIME_OUT_ON_ONE_NOTECARD = 42.0;
+float TIME_OUT_ON_ONE_NOTECARD = 10.0;
     // we allow one line of a notecard this long to be read before we decide it's hosed.
     // some sims are very very slow, and a time-out of one minute has been found lacking;
     // we saw at least one case where the first notecard line to be read took longer than
     // 60 seconds.  that's why we kept cranking this time-out up...
+    // but now is the time for non-craziness, and that's absolutely crazy to wait that long.
+    // exploring the 10 second allottance time frame...
 
 // constants that should not be changed...
 
@@ -166,6 +168,8 @@ integer try_next_notecard()
     }
     // so, now we'll try the next notecard to look for our signature.
     select_notecard(trying_notecard_at);
+    // reset the timer in case we were close on the last card.
+    llSetTimerEvent(TIME_OUT_ON_ONE_NOTECARD);
     return TRUE;
 }
 

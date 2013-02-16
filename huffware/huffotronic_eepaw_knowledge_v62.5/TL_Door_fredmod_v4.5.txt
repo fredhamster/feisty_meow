@@ -100,8 +100,7 @@ string      doorBellSound       = ""; // Setting to empty stops door announcemen
 float       autoCloseTime       = 120.0; // 0 seconds to disable auto close.
 integer     allowGroupToo       = TRUE; // Set to FALSE to disallow same group access to door.
 list        allowedAgentUUIDs   = []; // Comma-separated, quoted list of avatar UUIDs who are allowed access to this door.
-// was allowing this sneaky guy: "8efecbac-35de-4f40-89c1-2c772b83cafa"
-integer     listenChannel       = 10106;
+integer     listenChannel       = 100008;
 float       RESPONSE_DISTANCE   = 120.0;  // how far to allow a command from users with permission.
 integer     DEBUGGING           = FALSE;
 integer     PASS_COMMANDS       = TRUE;

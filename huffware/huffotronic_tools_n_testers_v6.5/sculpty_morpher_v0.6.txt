@@ -1,0 +1,46 @@
+﻿//
+// sculpty morpher
+//needs header.
+
+integer position;  // which texture are we on?
+
+change_sculpture()
+{
+    integer textures_available = llGetInventoryNumber(INVENTORY_TEXTURE);
+    if (textures_available == 0) {
+        // nothing to morph into.
+        return;
+    }
+    position++;
+    if (position >= textures_available) {
+        // we rolled over, so go back.
+        position = 0;
+    }
+    string texture_name = llGetInventoryName(INVENTORY_TEXTURE, position);
+    llSetPrimitiveParams([PRIM_TYPE, PRIM_TYPE_SCULPT, texture_name, PRIM_SCULPT_TYPE_SPHERE]); 
+}
+
+default {
+    state_entry() { if (llSubStringIndex(llGetObjectName(), "huffotronic") < 0) state real_default; }
+    on_rez(integer parm) { state rerun; }
+}
+state rerun { state_entry() { state default; } }
+
+state real_default
+{
+    state_entry()
+    {
+        llSetTimerEvent(4.0);
+        position = 0;
+    }
+    
+    timer() {
+        change_sculpture();
+    }
+    
+    changed(integer type) {
+        if (type & CHANGED_INVENTORY) {
+            change_sculpture();
+        }
+    }
+}

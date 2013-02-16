@@ -29,11 +29,15 @@ string RESET_CHOICE = "Reset";
 // configuration menu items...
 string MAX_MATCHES_CHOICE = "Max Match";
 string CHAT_CHANNEL_CHOICE = "Channel";
+string SEARCH_TYPE_CHOICE = "SearchType";
+string PRESENT_ARMS_CHOICE = "PresentArms";
 
 // menu indices...
 integer MAIN_MENU_INDEX = 0;  // we always do main menu as zero.
 integer CONFIG_MENU_INDEX = 1;  // choices for configurable items.
 integer MAX_MATCHES_MENU_INDEX = 2;  // changing the number of matches.
+integer SEARCH_TYPE_CHOICE_INDEX = 3;  // menu for search types.
+integer PRESENT_ARMS_CHOICE_INDEX = 4;  // menu for searchbert arm styles.
 
 // searchbert menus API.
 //////////////
@@ -158,13 +162,24 @@ prepare_all_menus()
 
     // configuration menu provides tasty options for changing the way searchbert behaves.
     string menu_name = CONFIG_CHOICE;  // reusing menu button from main menu for the menu name.
-    string menu_title = "Configurable Options...\n[" + MAX_MATCHES_CHOICE + "] selects number of items to find.\n[" + CHAT_CHANNEL_CHOICE + "] changes listening channel for commands.\n";
-    list menu_button_list = [ MAX_MATCHES_CHOICE, CHAT_CHANNEL_CHOICE ];
+    string menu_title = "Configurable Options...\n[" + MAX_MATCHES_CHOICE + "] selects number of items to find.\n[" + CHAT_CHANNEL_CHOICE + "] changes listening channel for commands.\n[" + SEARCH_TYPE_CHOICE + "] selects types to find.\n[" + PRESENT_ARMS_CHOICE + "] arm style for pointing";
+    list menu_button_list = [ MAX_MATCHES_CHOICE, CHAT_CHANNEL_CHOICE,
+        SEARCH_TYPE_CHOICE, PRESENT_ARMS_CHOICE ];
     add_menu(menu_name, menu_title, menu_button_list);
 
     menu_name = MAX_MATCHES_CHOICE;  // reusing menu button from config menu.
     menu_title = "Choose a new maximum number of items to find:";
     menu_button_list = produce_nums(17);  // ultimate number of arms available (magic constant!).
+    add_menu(menu_name, menu_title, menu_button_list);
+
+    menu_name = SEARCH_TYPE_CHOICE;  // reusing type button too.
+    menu_title = "Look for what types?:\n1=Agent, 2=Active,\n3=Agent+Active, 4=Passive,\n5=Agent+Passive, 6=Agent+Passive\n7=Agent+Active+Passive (i.e. anything)";
+    menu_button_list = produce_nums(7);  // max bit pattern to allow.
+    add_menu(menu_name, menu_title, menu_button_list);
+
+    menu_name = PRESENT_ARMS_CHOICE;  // this is becoming a trend.
+    menu_title = "Which arm pointing style should be used?\n0 = arm middles centered\n1 = arm ends at opposite wall\n2 = arm ends at nearest wall\n3 = arm ends centered";
+    menu_button_list = [ "0" ] + produce_nums(3);  // 0, plus 1-3.
     add_menu(menu_name, menu_title, menu_button_list);
 
 }
@@ -198,7 +213,7 @@ handle_link_message(integer sender, integer num, string msg, key id)
     // make sure we're already initialized.
     maybe_really_setup_menus();
 
-    list parms = llParseString2List(id, [HUFFWARE_PARM_SEPARATOR], []);
+    list parms = llParseStringKeepNulls(id, [HUFFWARE_PARM_SEPARATOR], []);
 
     if (num == MENU_LIST_MANAGER_HUFFWARE_ID + REPLY_DISTANCE) {
         if (msg == MENU_LIST_MGR_CHOICE_MADE_ALERT) {
@@ -225,7 +240,7 @@ request_menu_popup(integer menu_index, string av_name, string av_key)
 {
     llMessageLinked(LINK_ROOT, MENU_LIST_MANAGER_HUFFWARE_ID, MENU_LIST_MGR_SHOW_MENU,
         wrap_parameters([menu_index, av_name, av_key]));
-//log_it("sent menu popup...  memory left=" + (string)llGetFreeMemory());
+//log_it("sent menu popup to av " + av_name + " with key " + av_key + "...  memory left=" + (string)llGetFreeMemory());
 }
 
 // generates a list of numbers up to and including the "max".
@@ -279,9 +294,15 @@ process_menu_choice(string menu_name, string av_name, string av_key, string whic
             llSay(0, "To change the chat channel, say '" + channel_string()
                 + "#channel N' where N is your new channel number.");
             return;
+        } else if (which_choice == SEARCH_TYPE_CHOICE) {
+            // ask what types to allow.
+            request_menu_popup(SEARCH_TYPE_CHOICE_INDEX, av_name, av_key);
+            return;
+        } else if (which_choice == PRESENT_ARMS_CHOICE) {
+            // ask them how they want their arms arranged.
+            request_menu_popup(PRESENT_ARMS_CHOICE_INDEX, av_name, av_key);
+            return;
         }
-//more config options...        
-
     } else if (menu_name == MAX_MATCHES_CHOICE) {
         integer max = (integer)which_choice;
         if (max >= 1) {
@@ -290,6 +311,23 @@ process_menu_choice(string menu_name, string av_name, string av_key, string whic
             llSay(0, "Maximum number of matches is now set to " + (string)max + ".");
             return;
         }
+    } else if (menu_name == SEARCH_TYPE_CHOICE) {
+        integer type = (integer)which_choice;
+        if (type >= 1) {
+            // set the types to look for during the search.
+            send_data_burst(["search_type", type]);
+            llSay(0, "Search type now set to " + (string)type + ".");
+            return;
+        }
+    } else if (menu_name == PRESENT_ARMS_CHOICE) {
+        integer pas_type = (integer)which_choice;
+        send_data_burst(["present_arms", pas_type]);
+        string arm_type = "middles centered";
+        if (pas_type == 1) arm_type = "opposite wall";
+        else if (pas_type == 2) arm_type = "nearer wall";
+        else if (pas_type == 3) arm_type = "ends centered";
+        llSay(0, "Arm presentation style is now " + arm_type + ".");
+        return;
     }
 
     // cases that aren't handled get forwarded to the client script.    
@@ -493,7 +531,7 @@ state real_default
         initialize();
     }
     
-    on_rez(integer parm) { llResetScript(); }
+    on_rez(integer parm) { state default; }
     
     timer() { handle_timer_hit(); }
 

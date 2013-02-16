@@ -121,14 +121,14 @@ simply_display_menu(string menu_name, string title, list buttons,
     _private_global_av_key = av_key;
 
     integer menu_channel = random_channel();
-    key listen_to = llGetOwner();
+///    key listen_to = llGetOwner();
 //log_it("passing in key to use: " + (string)listen_to);
     llMessageLinked(LINK_THIS, MENUTINI_HUFFWARE_ID, SHOW_MENU_COMMAND,
         menu_name + HUFFWARE_PARM_SEPARATOR
         + title + HUFFWARE_PARM_SEPARATOR
         + wrap_item_list(buttons) + HUFFWARE_PARM_SEPARATOR
         + (string)menu_channel + HUFFWARE_PARM_SEPARATOR
-        + (string)listen_to);
+        + (string)av_key);
 }
 
 replace_vars_and_display_menu(integer menu_index, string av_name, string av_key)
@@ -138,7 +138,7 @@ replace_vars_and_display_menu(integer menu_index, string av_name, string av_key)
     string button_text = llList2String(menu_button_lists, menu_index);
 
     simply_display_menu(llList2String(menu_names, menu_index), title,
-        llParseString2List(button_text, [HUFFWARE_ITEM_SEPARATOR], []),
+        llParseStringKeepNulls(button_text, [HUFFWARE_ITEM_SEPARATOR], []),
         av_name, av_key);
 }
 
@@ -199,7 +199,7 @@ show_gift_menu(string av_name, string av_key)
 // handles a request for this library itself.
 process_hud_menu_mgr_request(integer sender, integer num, string msg, key id)
 {
-    list parms = llParseString2List(id, [HUFFWARE_PARM_SEPARATOR], []);
+    list parms = llParseStringKeepNulls(id, [HUFFWARE_PARM_SEPARATOR], []);
     if (msg == MENU_LIST_MGR_RESET) {
         llResetScript();
     } else if (msg == MENU_LIST_MGR_ADD_MENU) {
@@ -259,7 +259,7 @@ handle_link_message(integer sender, integer num, string msg, key id)
         || (msg != SHOW_MENU_COMMAND) ) return;  // not for us.
 
 //log_it("menu reply: sndr=" + (string)sender + " num=" + (string)num + " msg=" + msg + " id=" + (string)id);
-    list parms = llParseString2List(id, [HUFFWARE_PARM_SEPARATOR], []);
+    list parms = llParseStringKeepNulls(id, [HUFFWARE_PARM_SEPARATOR], []);
     string menu_name = llList2String(parms, 0);
     string which_choice = llList2String(parms, 1);
 ///not used:    key av_key = llList2String(parms, 2);

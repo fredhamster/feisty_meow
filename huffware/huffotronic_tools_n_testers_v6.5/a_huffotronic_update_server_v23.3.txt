@@ -476,14 +476,13 @@ propel_upgrade_process(integer channel, key id, string message)
                     // assume it's a script, and use script pin to stuff it.
                     curr = backpatch_script_name(curr);
                     if (curr != "") {
-//                        integer starting_state = FALSE;
-// second life was okay with scripts being plugged in unstarted.  opensim is not.
-// and second life appears to be unhappy with scripts plugged in as started.  so we
-// have an impasse.
-// this should be: true for opensim, and false for second life.
-                        integer starting_state = IS_OPENSIM;
+                        // second life was okay with scripts being plugged in unstarted; opensim is not.
+                        // and second life appears to be unhappy when scripts are added to objects in
+                        // a running state.  so we have an impasse.  so 'running' should be true
+                        // for opensim, and false for second life.
+                        integer running = IS_OPENSIM;
 //                        if (DEBUGGING) log_it("installing script using updater pin.");
-                        llRemoteLoadScriptPin(id, curr, UPDATER_SCRIPT_PIN, starting_state, 0);
+                        llRemoteLoadScriptPin(id, curr, UPDATER_SCRIPT_PIN, running, 0);
                     }
                 }
             }
@@ -785,7 +784,7 @@ scrub_items_by_type(string this_guy, integer inventory_type)
     }
     
     if (IS_OPENSIM && (llGetListLength(removal_list) > 0) ) {
-        log_it("now restarting to avoid opensim late updating change event.");
+//        log_it("now restarting to avoid opensim late updating change event.");
         llResetScript();
     }
 }

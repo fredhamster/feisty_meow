@@ -1,0 +1,41 @@
+﻿#searchbert
+
+# chat channel searchbert listens on for commands.
+huff_search_chat_channel = 0
+
+# can point to max of 17 things.
+max_matches = 17
+# how far to sense objects, in meters.
+sensor_max_range = 96.0
+# width of angle to sense with.  default is pi / 2 (90 degrees).
+search_rod_angular_sweep = 1.57079632679
+
+# radius of circle circumscribing entire spiral.
+max_spiral_radius = 72.0
+# how many loops (# vector crossings from center of spiral).
+spiral_loops = 7
+# total jumps along the spiral.
+total_steps = 42
+# times to run same spiral.
+max_spiral_traversals = 1
+
+# vertical traversal mode (0=off, 1=on)
+travelling_upwards = 0
+# max upwards offset for vertical search.
+max_upwards_distance = 30.0
+
+# cross land-owner boundaries during search?
+traverse_lands = 0
+
+# type of objects or avs to find; a bit-wise 'or' operation, agent = 1, active = 2, passive = 4, scripted = 8
+# default of 7 includes all but scripted (scripted is exclusive, others are inclusive).
+search_type = 7
+
+# show_X: control how the results are displayed.
+show_name = 1
+show_position = 1
+show_uuid = 0
+
+# how searchbert will present arms: 0 middles centered, 1 sucked in, 2 pushed out, 3 edge centered.
+present_arms = 0
+

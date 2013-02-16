@@ -35,6 +35,8 @@ string PARTYCULIAR_POWER_COMMAND = "#powrpcl";
 float MIN_ROTATION = 0.1;  // rotations used for omega value to rotate particles.
 float MAX_ROTATION = 4.0;
 
+integer MAX_NOTECARD_READ_TIME = 34;
+
 // items controlled by the notecard...
 
 // noisiness...
@@ -106,10 +108,14 @@ string current_notecard_name;  // the name of the card we're reading now.
 key current_query_id;  // the query ID for the current notecard.
 list query_contents;  // the lines we have read from the notecard.
 integer line_number;  // which line are we at in notecard?
+integer notecard_good = FALSE;  // is the notecard usable?
+integer current_notecard;  // what notecard are we at in inventory?
 
 initialize()
 {
     current_notecard_name = "";
+    current_notecard = 0;
+    notecard_good = FALSE;
     current_query_id = NULL_KEY;
     query_contents = [];
     line_number = 0;
@@ -338,14 +344,16 @@ stop_timer() { llSetTimerEvent(0.0); }
 
 check_for_notecard()
 {
-    if (current_notecard_name != "") return;
     // if there's a notecard, then we will start reading it.
-    if (llGetInventoryNumber(INVENTORY_NOTECARD) > 0) {
-        current_notecard_name = llGetInventoryName(INVENTORY_NOTECARD, 0);
+    if (llGetInventoryNumber(INVENTORY_NOTECARD) > current_notecard) {
+        current_notecard_name = llGetInventoryName(INVENTORY_NOTECARD, current_notecard++);
         line_number = 0;
         query_contents = [];
         current_query_id = llGetNotecardLine(current_notecard_name, 0);
-        llSetTimerEvent(80);
+        llSetTimerEvent(MAX_NOTECARD_READ_TIME);
+    } else {
+        log_it("No appropriate notecard was found.  Shutting down.");
+        llSetTimerEvent(0);
     }
 }
 
@@ -572,9 +580,9 @@ state real_default
     }
     
     timer() {
-        if (current_query_id != NULL_KEY) {
+        if ( (current_query_id != NULL_KEY) || !notecard_good) {
             // there's been a failure of some sort; we were supposed to get a notecard to read.
-            llWhisper(0, "Failed to read the notecard, now restarting.");
+            llWhisper(0, "Failed to read the config notecard; restarting.");
             llResetScript();
         }
         create_particle_system();
@@ -600,7 +608,8 @@ state real_default
     
     dataserver(key query_id, string data) {
         if (query_id != current_query_id) {
-log_it("not our query id somehow?  weird query had: id=" + (string)query_id + " data=" + (string)data);
+            log_it("not our query id somehow?  weird query had: id="
+                + (string)query_id + " data=" + (string)data);
             // to heck with all this weirdness; if there's a failure, start over.
             llResetScript();
         }
@@ -610,6 +619,9 @@ log_it("not our query id somehow?  weird query had: id=" + (string)query_id + " 
                 if (data != "#party culiar") {
                     // this card has the wrong signature at the top.  quit bothering
                     // with it now.
+                    log_it("wrong notecard signature found in " + current_notecard_name
+                        + "; skipping to next card.");
+                    check_for_notecard();
                     return;
                 }
                 log_it("starting to read notecard " + current_notecard_name + "...");    
@@ -630,6 +642,8 @@ log_it("not our query id somehow?  weird query had: id=" + (string)query_id + " 
                 current_notecard_name = "";  // toss bad card.
                 return;
             }
+            // we set this just for getting to the point of having read the whole thing.
+            notecard_good = TRUE;
 //log_it("notecard said:\n" + dump_list(query_contents));
             process_particle_settings(query_contents);
             if (start_enabled) {

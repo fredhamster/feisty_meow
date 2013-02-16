@@ -192,7 +192,7 @@ state real_default
         next_movement = llGetUnixTime() + (integer)SLEEP_DURATION;
         // we move at one second intervals due to our use of unix time,
         // which has a resolution of seconds.
-        llSetTimerEvent(1.0);
+        llSetTimerEvent(4.0);
     }
     
 //need commands, like start, or call to come down.
