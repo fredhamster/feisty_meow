@@ -10,8 +10,13 @@
 # rats: how did i set up that archive?
 #       we need to have those steps someplace.
 
+dir="$1"; shift
+if [ -z "$dir" ]; then
+  dir=.
+fi
+
+pushd "$dir"
 git fetch upstream
 git merge upstream/master
-
 git push origin master
-
+popd
