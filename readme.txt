@@ -1,7 +1,7 @@
 
-This is the "feisty meow (TM) concerns" codebase top folder.
+This is the "feisty meow® concerns" codebase top folder.
 
-Feisty Meow (TM) Concerns codebase comprises some but probably not all of several projects that
+Feisty Meow® Concerns codebase comprises some but probably not all of several projects that
 have come before.  These include the Twain.COM library scripts, the Yeti / YetiCode library
 scripts, the HOOPLE 1 and HOOPLE 2 C++ Codebases, the Fred Huffhines open source LSL scripts,
 the CLAM build system, and a variety of other efforts.
@@ -13,7 +13,7 @@ scripts/
     languages, such as bash and perl.  These were the core of the YetiCode scripts library.
 
 nucleus/
-    Source for the basic modules of the Feisty Meow (TM) codebase.  This includes generic
+    Source for the basic modules of the Feisty Meow® codebase.  This includes generic
     data structures, useful utilities, and the like.  This hierarchy, plus octopi and graphiq,
     formed the major parts of hoople1 and hoople2.
 
