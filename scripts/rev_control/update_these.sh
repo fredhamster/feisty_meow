@@ -1,7 +1,16 @@
 #!/bin/bash
-# a simple script for updating a set of folders on a usb stick from subversion or git.  currently
+# a simple script for updating a set of folders on a usb stick from subversion or git.
+#  currently
 # just runs with no parameters and expects to get all archives from wherever the files originally
 # came from.
+
+dir="$1"; shift
+if [ -z "$dir" ]; then
+  dir=.
+fi
+
+pushd "$dir"
+
 for i in * ; do
   if [ -d "$i" ]; then
     pushd $i
@@ -16,3 +25,7 @@ for i in * ; do
     popd
   fi
 done
+
+popd
+
+
