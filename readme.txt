@@ -44,6 +44,11 @@ kona/
     Our burgeoning Java libraries.  Not much to see here yet, but there is some code piling
     up for these that we will try to release soon.
 
+osgi/
+    Some example bundles for Java OSGi.  These may eventually fill out with real material,
+    but currently they are just tracking the investigation we did into creating bundles and
+    running using them.
+
 production/
     Machinery for getting releases out the door, including the generated files such as binaries
     and build system tools.

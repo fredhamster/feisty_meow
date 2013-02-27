@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HelloOSGi
+Bundle-SymbolicName: org.feistymeow.bundle.helloOSGi
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.feistymeow.bundle.helloosgi.Activator
+Bundle-Vendor: feistymeow.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.feistymeow.bundle.serviceosgi,
+ org.osgi.framework;version="1.3.0"
