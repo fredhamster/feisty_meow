@@ -2,9 +2,9 @@
 #!/usr/bin/perl
 #!/usr/bin/python
 ##############
-# Name   : {script name}
+# Name   : NAMEOFSCRIPT
 # Author : Chris Koeritz
-# Rights : Copyright (C) 2012-$now by Feisty Meow Concerns, Ltd.
+# Rights : Copyright (C) 2013-$now by Feisty Meow Concerns, Ltd.
 ##############
 # This script is free software; you can modify/redistribute it under the terms
 # of the GNU General Public License. [ http://www.gnu.org/licenses/gpl.html ]

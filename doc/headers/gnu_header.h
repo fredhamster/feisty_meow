@@ -1,8 +1,8 @@
-#ifndef {NAME}_CLASS
-#define {NAME}_CLASS
+#ifndef NAMEOF_CLASS
+#define NAMEOF_CLASS
 
 //////////////
-// Name   : {class name}
+// Name   : THISCLASSNAME
 // Author : Chris Koeritz
 // Rights : Copyright (c) 2012-$now By Author
 //////////////
