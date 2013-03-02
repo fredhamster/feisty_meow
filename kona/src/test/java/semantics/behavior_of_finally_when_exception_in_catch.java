@@ -2,8 +2,6 @@ package test.java.semantics;
 
 import java.io.FileNotFoundException;
 
-//import java.util.List;
-
 class finally_behavior_test
 {
     int calibrador = 17;

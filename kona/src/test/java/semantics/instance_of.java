@@ -1,5 +1,3 @@
-
-
 package test.java.semantics;
 
 import java.util.List;
@@ -25,5 +23,4 @@ class instance_of
         }
         
     }
-
 }
