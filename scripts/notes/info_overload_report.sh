@@ -5,11 +5,11 @@ REPORT_FILE="$HOME/cloud/overload_history.txt"
 
 # given a path, this will find how many items are under it, ignoring svn and git files, plus
 # other patterns we happen to notice are not useful.
-function calculate_depth()
+function calculate_count()
 {
   local dir="$1"; shift
-  depth=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null |  grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | wc -l | tr -d ' ')
-  if [ -z "$depth" ]; then echo 0; else echo "$depth"; fi
+  count=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null |  grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | wc -l | tr -d ' ')
+  if [ -z "$count" ]; then echo 0; else echo "$count"; fi
 }
 
 # calculates the size in kilobytes of all the note files in a hierarchy.
@@ -23,27 +23,39 @@ function calculate_weight()
   if [ -z "$weight" ]; then echo 0; else echo "$weight"; fi
 }
 
+# calculate_complexity gets a very simple metric of how many directory components are
+# present at the target location and below.
+function calculate_complexity()
+{
+  local dir="$1"; shift
+  complexity=$(find "$dir" -type d | wc -l)
+  if [ -z "$complexity" ]; then echo 0; else echo "$complexity"; fi
+}
+
 # produces a report line in our format.
 function format_report_line()
 {
-  local depth="$1"; shift
+  local count="$1"; shift
   local weight="$1"; shift
   weight=$((weight / 1024))
-  echo "  $depth\t${weight}kb\t$*\n"
+  local complexity="$1"; shift
+  echo "$count\t${weight}\t\t${complexity}\t\t$*\n"
 }
 
 # two parameters are needed: the directory to sum up and the label to use for it in the report.
-# this will calculate the depth and weight for a hierarchy of notes, and then produce a
+# this will calculate the count and weight for a hierarchy of notes, and then produce a
 # line of reporting for those.
 function analyze_hierarchy_and_report()
 {
   local dir="$1"; shift
   local label="$1"; shift
-  local depth=$(calculate_depth "$dir")
-  total_overload=$(($depth + $total_overload))
+  local count=$(calculate_count "$dir")
+  total_overload=$(($count + $total_overload))
   local weight=$(calculate_weight "$dir")
   total_weight=$(($total_weight + $weight))
-  full_report+=$(format_report_line "$depth" "$weight" "$label")
+  local complexity=$(calculate_complexity "$dir")
+  total_complexity=$(($total_complexity + $complexity))
+  full_report+=$(format_report_line "$count" "$weight" "$complexity" "$label")
 }
 
 # scans through items in the notes folder that begin with a pattern.
@@ -53,17 +65,21 @@ function analyze_hierarchy_and_report()
 function analyze_by_dir_patterns()
 {
   local title="$1"; shift
-  local hier_depth=0
+  local hier_count=0
   local hier_weight=0
+#  full_report+=$(format_report_line "$hier_count" "$hier_weight" "$hier_complexity" "$title")
   for i in $@; do
-    temp_depth=$(calculate_depth $i)
-    hier_depth=$(($hier_depth + $temp_depth))
+    temp_count=$(calculate_count $i)
+    hier_count=$(($hier_count + $temp_count))
     temp_weight=$(calculate_weight $i)
     hier_weight=$(($hier_weight + $temp_weight))
+    temp_complexity=$(calculate_complexity $i)
+    hier_complexity=$(($hier_complexity + $temp_complexity))
   done
-  total_overload=$(($hier_depth + $total_overload))
+  total_overload=$(($hier_count + $total_overload))
   total_weight=$(($total_weight + $hier_weight))
-  full_report+=$(format_report_line "$hier_depth" "$hier_weight" "$title")
+  total_complexity=$(($total_complexity + $hier_complexity))
+  full_report+=$(format_report_line "$hier_count" "$hier_weight" "$hier_complexity" "$title")
 }
 
 ##############
@@ -78,23 +94,15 @@ full_report="\
 Current information overload consists of:\n\
 \n\
 "
+full_report+="count\tweight (kb)\tcomplexity\tcategory\n\
+================================================================\n\
+"
 
 # notes are individual files of tasks, usually, although some are combined.
 analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes"
 
 # feisty notes are about feisty meow(r) concerns ltd codebase development.
 analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes"
-
-####
-#hmmm: make an html todo scanning function from this.
-# scan web documents for to-do lists.  individual items are marked with <li>.
-# we do this one a bit differently since we have different criteria for html to-do items.
-#html_item_depth=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -l | tr -d ' ')
-#total_overload=$(($html_item_depth + $total_overload))
-#html_item_weight=$(find ~/cloud/grunty_notes/ -type f -iname "*.html" -exec grep "<li" "{}" ';' | wc -c | tr -d ' ')
-#total_weight=$(($total_weight + $html_item_weight))
-#full_report+="$(format_report_line "$html_item_depth" "$html_item_weight" "to-do notes in html")"
-####
 
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active items" ~/cloud/*active*
@@ -117,10 +125,9 @@ analyze_hierarchy_and_report ~/cloud/unsorted "unsorted files"
 # up our weight accounting considerably.
 analyze_hierarchy_and_report ~/cloud/reading "reading list"
 
-full_report+="\n\
-  =====================================\n\
+full_report+="================================================================\n\
 "
-full_report+="$(format_report_line "$total_overload" "$total_weight" "Total Overload")"
+full_report+="$(format_report_line "$total_overload" "$total_weight" "$total_complexity" "Total Overload")"
 full_report+="\n\
 [gathered on $(date)]\n\n\
 ##############"
