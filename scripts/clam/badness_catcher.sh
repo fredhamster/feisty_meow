@@ -1,7 +1,9 @@
 #!/bin/bash
 # badness_catcher: runs the command line passed in and catches error conditions.
 
-#echo args are: $*
+if [ ! -z "$NOISY" ]; then
+  echo $*
+fi
 eval "$@"
 
 # get exit status.
