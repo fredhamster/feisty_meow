@@ -82,6 +82,9 @@ Current information overload consists of:\n\
 # notes are individual files of tasks, usually, although some are combined.
 analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes"
 
+# feisty notes are about feisty meow(r) concerns ltd codebase development.
+analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes"
+
 ####
 #hmmm: make an html todo scanning function from this.
 # scan web documents for to-do lists.  individual items are marked with <li>.
