@@ -24,6 +24,7 @@ namespace textual {
 
 xml_parser::xml_parser(const astring &to_parse)
 {
+	_xml_stream = new astring;
   if (!to_parse) {}
 }
 

@@ -12,23 +12,22 @@
 * Please send any updates to: fred@gruntose.com                               *
 */
 
-#include <mathematics/chaos.h>
+#include <application/hoople_main.h>
 #include <basis/guards.h>
 #include <basis/astring.h>
-#include <structures/set.h>
-#include <structures/byte_hasher.h>
-#include <structures/hash_table.h>
-#include <timely/time_stamp.h>
-#include <application/hoople_main.h>
 #include <loggers/console_logger.h>
 #include <loggers/file_logger.h>
+#include <mathematics/chaos.h>
+#include <structures/byte_hasher.h>
+#include <structures/hash_table.h>
+#include <structures/set.h>
 #include <structures/static_memory_gremlin.h>
 #include <textual/string_manipulation.h>
+#include <timely/time_stamp.h>
 #include <unit_test/unit_base.h>
 
 using namespace application;
 using namespace basis;
-///using namespace configuration;
 using namespace mathematics;
 using namespace filesystem;
 using namespace loggers;

@@ -78,7 +78,7 @@ int application_shell::execute_application()
     c_exit_value = execute();
   } catch (const char *message) {
     printf("caught exception:\n%s\n", message);
-  } catch (astring message) {
+  } catch (astring &message) {
     printf("caught exception:\n%s\n", message.s());
   } catch (...) {
     printf("caught exception: unknown type!\n");

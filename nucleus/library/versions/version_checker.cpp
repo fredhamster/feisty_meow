@@ -111,7 +111,7 @@ void *version_checker::get_handle(const astring &library_file_name)
   return GetModuleHandle(to_unicode_temp(library_file_name));
 #else
 //hmmm: there really isn't this concept on OSes that i'm aware of.
-  return 0 && library_file_name.t();
+  if (library_file_name.t()) return NIL; else return NIL;
 #endif
 }
 
@@ -129,7 +129,7 @@ astring version_checker::module_name(const void *module_handle)
   return buff;
 #else
   #pragma message("module_name unknown for this operating system.")
-  return application_name();
+  return application_configuration::application_name();
 #endif
 }
 

@@ -180,7 +180,7 @@ private:
   // not to be used: amorphs should not be copied because it is intended that
   // they support storing heavyweight objects that either have no copy
   // constructors or have high-cost copy constructors.
-  amorph(const amorph &to_copy) {}  //!< not to be used.
+  amorph(const amorph &to_copy) {_fields_used = 0;}  //!< not to be used.
   amorph &operator = (const amorph &to_copy) { return *this; }
     //!< not to be used.
 };
