@@ -252,6 +252,7 @@ int test_int_hash::unused_random_id()
     int checking = raw_random_id();
     if (!_keys_in_use.member(checking)) return checking;  // got one.
   } // keep going until we find unused id.
+  return -1;
 }
 
 bool test_int_hash::test_add()

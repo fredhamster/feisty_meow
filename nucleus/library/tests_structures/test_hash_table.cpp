@@ -47,44 +47,24 @@ const int MAX_ELEMENTS = 8;
 
 //////////////
 
-enum test_actions {
-  FIRST_TEST = 38,  // place-holder.
-  ADD = FIRST_TEST,
-    // adds an item that is probably new.
-  ADD_ADD,
-    // adds an item that is probably new, followed by another item under the
-    // same key id.  this ensures the overwriting gets tested.
-  ZAP,
-    // finds an item we know is in the list and whacks it.
-  ADD_ZAP,
-    // adds a new item and immediately finds and zaps it.
-  ZAP_ADD,
-    // zaps an item that we know about and then adds a new item with the same
-    // identifier.
-  FIND,
-    // locates an item in the list which we know should exist.
-  ACQUIRE,
-    // grabs an item out of the list (and tosses it).
-  FIND_ZAP_ADD,
-    // finds an item we know should exist, zaps it out of the list, then adds
-    // a new item with the same id.
-  ACQUIRE_ADD_ZAP,
-    // removes an item from the list that we know should be there, adds it back
-    // in, and then whacks it.
-  FIND_ADD_FIND,
-    // find an item with a particular id (one that we know should be in the
-    // list) and then adds a different item using the same id.  the new item
-    // is then sought.
-  RESET,
-    // tosses all data out of the hash table.  not done very often.
-  CHECK_SANITY,
-    // look for any problems or irregularities; print the contents of the list
-    // if any are found.
-  REHASH,
-    // resizes the hash table.
-  COPY,
-    // copies a hash table to another hash table.
-  LAST_TEST = COPY // place-holder; must equal test just prior.
+enum test_actions
+{
+	FIRST_TEST = 38,  // place-holder.
+	ADD = FIRST_TEST,  // adds an item that is probably new.
+	ADD_ADD,  // adds a probably new item, then adds different item under same key id to test overwriting.
+	ZAP,  // finds an item we know is in the list and whacks it.
+	ADD_ZAP,  // adds a new item and immediately finds and zaps it.
+	ZAP_ADD,  // zaps an item that we know about and then adds a new item with the same identifier.
+	FIND,  // locates an item in the list which we know should exist.
+	ACQUIRE,  // grabs an item out of the list (and tosses it).
+	FIND_ZAP_ADD,  // finds an item we know should exist, zaps it out of the list, then adds a new item with the same id.
+	ACQUIRE_ADD_ZAP,  // removes an item from the list that we know should be there, adds it back in, and then whacks it.
+	FIND_ADD_FIND,  // finds item with particular id, adds different item using same id, refinds new item.
+	RESET,  // tosses all data out of the hash table.  not done very often.
+	CHECK_SANITY,  // look for any problems or irregularities; print the contents of the list if any are found.
+	REHASH,  // resizes the hash table.
+	COPY,  // copies a hash table to another hash table.
+	LAST_TEST = COPY  // place-holder; must equal test just prior.
 };
 
 //////////////
@@ -102,7 +82,7 @@ public:
 
   data_shuttle()
   : snacky_string(string_manipulation::make_random_name()),
-    chunk(chao.inclusive(100, 10000)) {}
+    chunk(chao.inclusive(100, 10000)), food_bar(0), hungry(false) {}
 };
 
 //////////////
@@ -264,7 +244,7 @@ bool test_hash_table::test_add()
   to_add->snacky_string = string_manipulation::make_random_name();
   to_add->food_bar = random_id;
   outcome expected = common::IS_NEW;
-  if (_keys_in_use.member(random_id)) common::EXISTING;
+  if (_keys_in_use.member(random_id)) return common::EXISTING;
   ASSERT_EQUAL(_the_table.add(random_id, to_add).value(), expected.value(),
       "add should give proper outcome based on expectation");
   if (_keys_in_use.member(random_id))
