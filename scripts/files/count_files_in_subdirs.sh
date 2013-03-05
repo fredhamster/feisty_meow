@@ -1,7 +1,9 @@
 #!/bin/bash
-dirs=$*
-if [ -z "$dirs" ]; then dirs=*; fi
-for i in $dirs; do
-  ls -1 $i | wc | sed -e "s/^ *\([0-9]*\) *.*$/$i: \1/"
+dirs=($*)
+if [ -z "$dirs" ]; then dirs=($(find . -mindepth 1 -maxdepth 1 -type d ) ); fi
+#echo dirs are ${dirs[*]}
+for i in "${dirs[@]}"; do
+  echo -n $(ls -1 $i | wc -l)
+  echo -e "\t\t$i"
 done
 
