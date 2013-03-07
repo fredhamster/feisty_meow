@@ -109,9 +109,12 @@ int find_includes(struct filepointer *filep, inclist *file, inclist *file_red, i
     case ELIF:
       if (!recursion)
         gobble(filep, file, file_red);
+        //hmmm: is this right?
+        /* no break */
     case ENDIF:
       if (recursion)
         return(type);
+      break;
     case DEFINE:
       define(line, file);
       break;
@@ -287,6 +290,7 @@ int deftype(register char  *line, register struct filepointer *filep,
   case IFNDEF:
     debug(0,("%s, line %d: #%s %s\n",
       file->i_file, filep->f_line, directives[ret], p));
+    //hmmm: no break here either?
   case UNDEF:
     /*
      * separate the name of a single symbol.

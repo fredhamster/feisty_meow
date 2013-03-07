@@ -102,7 +102,7 @@ public:
 
   data_shuttle()
   : snacky_string(string_manipulation::make_random_name()),
-    chunk(chao.inclusive(100, 10000)) {}
+    chunk(chao.inclusive(100, 10000)), food_bar(0), hungry(false) {}
 };
 
 //////////////

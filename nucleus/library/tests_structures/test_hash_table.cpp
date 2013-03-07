@@ -95,7 +95,9 @@ public:
   DEFINE_CLASS_NAME("test_hash_table");
 
   int raw_random_id();  //!< returns an unvetted random number.
-  int unused_random_id();  //!< returns an unused (so far) random number.
+
+  //! returns an unused (so far) random number.
+  int unused_random_id();
 
   int execute();
     // the main startup for the test.
@@ -159,6 +161,7 @@ int test_hash_table::unused_random_id()
     int checking = raw_random_id();
     if (!_keys_in_use.member(checking)) return checking;  // got one.
   } // keep going until we find unused id.
+  return -1;  // this is a failure, but we will never get here.
 }
 
 int test_hash_table::execute()

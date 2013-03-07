@@ -171,6 +171,7 @@ static const char *parse_value(IfParser *g, const char *cp, int *valp)
 	    *valp = (*(g->funcs.eval_defined)) (g, var, int(cp - var));
 	    return cp + paren;		/* skip the right paren */
 	}
+	break;
 	/* fall out */
     }
 

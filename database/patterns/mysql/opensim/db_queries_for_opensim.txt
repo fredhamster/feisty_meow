@@ -12,9 +12,6 @@ find all the tables that have a CreatorID column:
 => yields assets inventoryitems prims primitems
 as tables matching the column.
 
-(note: replacing all creator ids like below still did not secure total ownership
-to fred; some things retained their original creator.  how!?)
-
 ==============
 
 replace all the creator ids with fred's id on ducky:
@@ -39,5 +36,8 @@ if you have a more selective update to do, try replacing using a pattern:
 
 ==============
 
-
+note: replacing all creator ids like above still does not secure total
+ownership for everything in inventory or even in the sim; nested objects in
+inventory do not seem to be affected, and the contents of objects nested in
+live objects also are not affected.
 

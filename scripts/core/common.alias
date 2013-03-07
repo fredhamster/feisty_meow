@@ -78,6 +78,7 @@ alias up='cd ..'
 
 # extended aliases for meta-operations.
 alias dvd_rip='vobcopy -m'
+alias blu_rip='echo "what would this command be?"'
 alias mplayer='\mplayer -ao arts'
 alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 

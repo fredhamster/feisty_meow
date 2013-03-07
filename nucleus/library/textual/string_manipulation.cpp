@@ -190,7 +190,7 @@ void string_manipulation::split_lines(const astring &input_in, astring &output,
         break_line = true;
         just_had_break = true;
         put_accum_before_break = true;
-        // intentional fall-through.
+        // intentional fall-through, so no break.
       case '\t': case ' ':
         invisible = true;
         next_break--;  // don't include it in what's printed.

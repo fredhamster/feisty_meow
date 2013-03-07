@@ -89,7 +89,7 @@ int stopwatch::common_measure()
       // stop stopwatch, restart afterwards.
       halt();
       restart = true;
-      // intentional fall through to default.
+      // intentional fall through to default, so no break.
     default:
       // set the return value to the accumulated time.
       to_return = _total_so_far;

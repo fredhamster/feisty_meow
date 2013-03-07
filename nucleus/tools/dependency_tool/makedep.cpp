@@ -404,6 +404,7 @@ int main(int argc, char  **argv)
       if (endmarker) break;
   /*    fatalerr("unknown opt = %s\n", argv[0]); */
       warning("ignoring option %s\n", argv[0]);
+      break;
     }
   }
 

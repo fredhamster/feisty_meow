@@ -75,20 +75,39 @@ struct override { int current; int next; int duration;
     : current(_current), next(_next), duration(_duration) {}
 };
 
-struct transition_info {
-  enum transition_type { SIMPLE, RANGE, TIMED };
-  transition_type type;
-  int next_state;
-  int low_trigger, high_trigger;
-  int time_span;
+	struct transition_info
+	{
+		enum transition_type
+		{
+			SIMPLE, RANGE, TIMED
+		};
+		transition_type type;
+		int next_state;
+		int low_trigger, high_trigger;
+		int time_span;
 
-  transition_info() {}  // blank.
-  transition_info(int next) : type(SIMPLE), next_state(next) {}
-  transition_info(int next, int time) : type(TIMED), next_state(next),
-      time_span(time) {}
-  transition_info(int next, int low, int high) : type(RANGE),
-      next_state(next), low_trigger(low), high_trigger(high) {}
-};
+		// blank constructor.
+		transition_info()
+		: type(RANGE), next_state(0), low_trigger(0), high_trigger(0), time_span(0)
+		{
+		}
+
+		transition_info(int next)
+				: type(SIMPLE), next_state(next),
+				  low_trigger(0), high_trigger(0), time_span(0)
+		{
+		}
+
+		transition_info(int next, int time)
+				: type(TIMED), next_state(next), time_span(time), low_trigger(0), high_trigger(0)
+		{
+		}
+
+		transition_info(int next, int low, int high)
+				: type(RANGE), next_state(next), low_trigger(low), high_trigger(high), time_span(0)
+		{
+		}
+	};
 
 struct state_info {
   int state_id;  // id for this state.

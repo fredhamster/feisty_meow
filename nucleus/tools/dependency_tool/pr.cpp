@@ -33,7 +33,7 @@ in this Software without prior written authorization from the X Consortium.
 
 #include <string.h>
 
-extern struct  inclist  inc_list[ MAXFILES ], *inclistp;
+//extern struct  inclist  inc_list[ MAXFILES ], *inclistp;
 extern char  *objprefix;
 extern char  *objsuffix;
 extern int  width;
