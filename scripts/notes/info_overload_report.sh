@@ -91,7 +91,7 @@ total_weight=0
 # start out the report with a header.
 full_report="\
 \n\
-Current information overload consists of:\n\
+current information overload consists of:\n\
 \n\
 "
 full_report+="count\tweight (kb)\tcomplexity\tcategory\n\
@@ -127,7 +127,7 @@ analyze_hierarchy_and_report ~/cloud/reading "reading list"
 
 full_report+="================================================================\n\
 "
-full_report+="$(format_report_line "$total_overload" "$total_weight" "$total_complexity" "Total Overload")"
+full_report+="$(format_report_line "$total_overload" "$total_weight" "$total_complexity" "total overload")"
 full_report+="\n\
 [gathered on $(date)]\n\n\
 ##############"
