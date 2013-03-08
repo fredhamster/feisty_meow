@@ -25,9 +25,6 @@ namespace textual {
 
 //! Parses XML input and invokes a callback for the different syntactic pieces.
 
-// hmmm, could this be the first class ever named this?  perhaps it should be
-// in a textual namespace.  -->after current sprint.
-
 class xml_parser
 {
 public:

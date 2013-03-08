@@ -75,7 +75,8 @@ public:
     true if the size is different (when EQUAL_FILESIZE is true), when the timestamp is different
     (when EQUAL_TIMESTAMP is true), and when the checksum is different (you get the idea). */
 
-  basis::astring text_form() const;
+  //! max_lines is the maximum number of lines to print into the string.
+  basis::astring text_form(int max_lines = MAXINT32) const;
 
   virtual int packed_size() const;
 

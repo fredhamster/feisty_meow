@@ -289,7 +289,7 @@ int write_build_config::execute()
   astring buffer;
   while (!ini.eof()) {
     int chars = ini.getline(buffer, MAX_LINE_SIZE);
-    if (!chars) continue;  // hmmm.
+    if (!chars) continue;  // hmmm: what does no chars mean?
     
     variable_tokenizer t;
     t.parse(buffer);

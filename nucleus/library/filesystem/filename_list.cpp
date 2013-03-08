@@ -152,10 +152,9 @@ bool filename_list::member_with_state(const file_info &to_check, file_info::file
   return false;
 }
 
-astring filename_list::text_form() const
+astring filename_list::text_form(int max_lines) const
 {
   astring to_return;
-//hmmm: a length limit might be nice?
   for (int i = 0; i < elements(); i++) {
     to_return += a_sprintf("%d. ", i + 1);
     if (get(i))

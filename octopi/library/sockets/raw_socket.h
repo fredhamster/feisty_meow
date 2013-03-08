@@ -61,9 +61,6 @@ public:
 
   DEFINE_CLASS_NAME("raw_socket");
 
-//  int open(
-//hmmm...
-
   int close(basis::un_int &socket);
     // disconnects, destroys and resets the "socket" to zero.
 

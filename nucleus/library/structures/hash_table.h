@@ -59,7 +59,7 @@ public:
   The buckets are currently simple lists, but if the hashing algorithm is well
   chosen, then that's not a major problem.  This makes lookups a lot faster
   than a linear search, but no particular performance guarantees are made at
-  this time (hmmm).
+  this time.
 */
 
 template <class key_type, class contents>
