@@ -32,7 +32,7 @@
 <setting id="org.eclipse.cdt.core.formatter.insert_space_before_opening_bracket" value="do not insert"/>
 <setting id="org.eclipse.cdt.core.formatter.insert_space_before_closing_paren_in_for" value="do not insert"/>
 <setting id="org.eclipse.cdt.core.formatter.insert_space_before_prefix_operator" value="do not insert"/>
-<setting id="org.eclipse.cdt.core.formatter.tabulation.size" value="4"/>
+<setting id="org.eclipse.cdt.core.formatter.tabulation.size" value="2"/>
 <setting id="org.eclipse.cdt.core.formatter.insert_new_line_before_else_in_if_statement" value="do not insert"/>
 <setting id="org.eclipse.cdt.core.formatter.alignment_for_enumerator_list" value="48"/>
 <setting id="org.eclipse.cdt.core.formatter.insert_space_after_opening_paren_in_parenthesized_expression" value="do not insert"/>

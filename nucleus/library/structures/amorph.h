@@ -76,8 +76,11 @@ public:
     index "new_maximum" and upwards are thrown away.  existing fields are
     kept. */
 
-  void reset(int new_maximum = 0);
+  void resize(int new_maximum = 0);
     //!< like adjust but doesn't keep existing contents.
+
+  void reset() { this->resize(0); }
+  	//!< cleans out all of the contents.
 
   basis::outcome put(int field, const contents *data);
     //!< Enters an object into the field at index "field" in the amorph.
@@ -280,7 +283,7 @@ void amorph<contents>::check_fields(const char *where) const
 }
 
 template <class contents>
-void amorph<contents>::reset(int new_maximum)
+void amorph<contents>::resize(int new_maximum)
 {
   FUNCDEF("reset");
   CHECK_FIELDS;
