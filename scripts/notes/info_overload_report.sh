@@ -39,7 +39,7 @@ function format_report_line()
   local weight="$1"; shift
   weight=$((weight / 1024))
   local complexity="$1"; shift
-  echo "$count\t${weight}\t\t${complexity}\t\t$*\n"
+  echo "$count\t${complexity}\t\t${weight}\t\t$*\n"
 }
 
 # two parameters are needed: the directory to sum up and the label to use for it in the report.
@@ -94,7 +94,7 @@ full_report="\
 current information overload consists of:\n\
 \n\
 "
-full_report+="count\tweight (kb)\tcomplexity\tcategory\n\
+full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 ================================================================\n\
 "
 
