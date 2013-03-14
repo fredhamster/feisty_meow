@@ -75,6 +75,7 @@ done
 ##############
 
 synch_to_backup /var/lib/mailman /z/backup/var/lib/mailman
+synch_to_backup /var/lib/mysql /z/backup/var/lib/mysql
 
 ##############
 
