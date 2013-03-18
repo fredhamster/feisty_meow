@@ -1,3 +1,7 @@
+
+
+*outdated: coming up with more complete list.
+
 recommended packages to install in cygwin's setup
 if you're going to use cygwin on windows:
 
