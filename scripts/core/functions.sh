@@ -264,6 +264,27 @@ if [ -z "$skip_all" ]; then
     echo
   }
 
+  # copies a set of custom scripts into the proper location for feisty meow
+  # to merge their functions and aliases with the standard set.
+  function recustomize()
+  {
+    user="$1"; shift
+    if [ -z "$user" ]; then
+      # use our default example user if there was no name provided.
+      user=fred
+    fi
+    if [ ! -d "$FEISTY_MEOW_DIR/customizing/$user" ]; then
+      echo "The customization folder provided for $user should be:"
+      echo "  '$FEISTY_MEOW_DIR/customizing/$user'"
+      echo "but that folder does not exist.  Skipping customization."
+      return 1
+    fi
+    regenerate >/dev/null
+    echo "copying custom overrides for $user"
+    perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_GENERATED/custom"
+    regenerate
+  }
+
   function function_sentinel() { return 0; }
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo function definitions end....; fi
