@@ -14,6 +14,10 @@ dir="$1"; shift
 if [ -z "$dir" ]; then
   dir=.
 fi
+certfile="$1"; shift
+if [ -z "$certfile" ]; then
+  certfile=$HOME/.ssh/id_dsa_sourceforge
+fi
 
 pushd "$dir"
 git fetch upstream
