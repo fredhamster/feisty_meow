@@ -14,13 +14,21 @@ dir="$1"; shift
 if [ -z "$dir" ]; then
   dir=.
 fi
-certfile="$1"; shift
-if [ -z "$certfile" ]; then
-  certfile=$HOME/.ssh/id_dsa_sourceforge
+
+# this file needs to have our sourceforge password in it.
+PASSWORD_FILE="$HOME/.secrets/sourceforge_password"
+
+if [ ! -f "$PASSWORD_FILE" ]; then
+  echo "This script requires a password stored in the file:"
+  echo "  $PASSWORD_FILE"
+  exit 1
 fi
 
 pushd "$dir"
 git fetch upstream
 git merge upstream/master
-git push -i "$certfile" origin master
+unset GIT_SSH
+git push origin master <"$PASSWORD_FILE"
 popd
+
+
