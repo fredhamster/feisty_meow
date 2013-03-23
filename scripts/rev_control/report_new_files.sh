@@ -13,12 +13,14 @@ pushd "$dir"
 
 for i in * ; do
   if [ -d "$i" ]; then
-    pushd $i
+    echo "[$i]"
+    pushd $i &>/dev/null
     # only update if we see a repository living there.
     if [ -d ".svn" ]; then
       bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
     fi
-    popd
+    popd &>/dev/null
+    echo "======="
   fi
 done
 

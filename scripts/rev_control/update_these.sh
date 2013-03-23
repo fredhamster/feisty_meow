@@ -9,11 +9,12 @@ if [ -z "$dir" ]; then
   dir=.
 fi
 
-pushd "$dir"
+pushd "$dir" &>/dev/null
 
 for i in * ; do
   if [ -d "$i" ]; then
-    pushd $i
+    echo "[$i]"
+    pushd $i &>/dev/null
     # only update if we see a repository living there.
     if [ -d ".svn" ]; then
       svn update .
@@ -22,10 +23,11 @@ for i in * ; do
     elif [ -d "CVS" ]; then
       cvs update .
     fi
-    popd
+    popd &>/dev/null
+    echo "======="
   fi
 done
 
-popd
+popd &>/dev/null
 
 
