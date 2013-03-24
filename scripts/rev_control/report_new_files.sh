@@ -9,7 +9,7 @@ if [ -z "$dir" ]; then
   dir=.
 fi
 
-pushd "$dir"
+pushd "$dir" &>/dev/null
 
 for i in * ; do
   if [ -d "$i" ]; then
@@ -24,4 +24,4 @@ for i in * ; do
   fi
 done
 
-popd
+popd &>/dev/null
