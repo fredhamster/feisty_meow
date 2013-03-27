@@ -12,12 +12,12 @@
 # scours through the archive files (tar, zip, etc) in a directory looking for a pattern
 # in the file.  any matches are reported.
 
-dir="$1"; shift
 pattern="$1"; shift
+dir="$1"; shift
 
 if [ -z "$dir" -o -z "$pattern" ]; then
-  echo This utility requires a directory to scan for archives, and a pattern to
-  echo look for within each archive.  Any matches are reported.
+  echo This utility requires a pattern string that will be sought within a
+  echo directory, and the directory to scan.  Any matches are reported.
   exit 1
 fi
 
