@@ -132,8 +132,10 @@ if [ -z "$NECHUNG" ]; then
   export GIT_SSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
   
   # the base checkout list is just to update feisty_meow.  additional folder
-  # names can be added in your customized scripts.
-  export REPOSITORY_LIST="feisty_meow"
+  # names can be added in your customized scripts.  the space at the end of
+  # this variable is important and allows users to extend the list like:
+  #    export REPOSITORY_DIR+="muppets configs"
+  export REPOSITORY_LIST="feisty_meow "
   
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()
