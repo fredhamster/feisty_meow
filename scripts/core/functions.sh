@@ -32,7 +32,18 @@ if [ -z "$skip_all" ]; then
     if [ ! -d "$1" ]; then mkdir -p "$1"; fi
     cd "$1"
   }
-  
+
+  # checks the result of the last command that was run, and if it failed,
+  # then this complains and exits from bash.  the function parameters are
+  # used as the message to print as a complaint.
+  function check_result()
+  {
+    if [ $? -ne 0 ]; then
+      echo -e "failed on: $*"
+      exit 1
+    fi
+  }
+
   # locates a process given a search pattern to match in the process list.
   function psfind() {
     local PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
