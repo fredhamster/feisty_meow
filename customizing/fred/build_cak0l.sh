@@ -1,15 +1,15 @@
 #!/bin/bash
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"  # for check_result.
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 function build_xsede()
 {
   pushd ~/xsede/code/cak0l/trunk
-  check_result "entering trunk directory"
+  if [ $? -ne 0 ]; then return 1; fi
   echo "Build starting at: $(date)"
   \rm -rf unit-test-reports
   ant -Dbuild.targetArch=64 build
-  check_result "building the trunk"
+  if [ $? -ne 0 ]; then return 1; fi
   # fix memory limits.
 #hmmm: clean these up.
   if [ -f runContainer.sh ]; then
@@ -36,7 +36,7 @@ function rebuild_xsede()
 {
   pushd ~/xsede/code/cak0l/trunk
   ant clean
-  check_result "cleaning the trunk"
+  if [ $? -ne 0 ]; then return 1; fi
   popd
   build_xsede
 }
