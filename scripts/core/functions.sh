@@ -251,7 +251,7 @@ if [ -z "$skip_all" ]; then
     if [ -z "$wheres_nechung" ]; then
       echo "The nechung oracle program cannot be found.  You may want to consider"
       echo "rebuilding the feisty meow applications with this command:"
-      echo "   bash $FEISTY_MEOW_SCRIPTS/generator/bootstrap_build.sh"
+      echo "bash $FEISTY_MEOW_SCRIPTS/generator/bootstrap_build.sh"
     else
       $wheres_nechung
     fi
