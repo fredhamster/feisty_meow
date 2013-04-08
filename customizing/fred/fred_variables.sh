@@ -40,7 +40,7 @@ if [ -z "$NETHACKOPTIONS" ]; then
   export BROWSER=/usr/bin/firefox
 
   # editor and other mixed settings...
-  export EDITOR="$(which vi)"
+  export EDITOR="$(which vim)"
   export VISUAL="$EDITOR"
   # the editors for revision control must wait while document is edited,
   # so gvim and others launched to x window are not appropriate.
