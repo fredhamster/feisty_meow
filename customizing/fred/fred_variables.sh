@@ -41,6 +41,15 @@ if [ -z "$NETHACKOPTIONS" ]; then
 
   # editor and other mixed settings...
   export EDITOR="$(which vim)"
+  if [ -z "$EDITOR" ]; then
+    EDITOR="$(which vi)"
+    if [ -z "$EDITOR" ]; then
+      EDITOR="$(which emacs)"
+      if [ -z "$EDITOR" ]; then
+        echo "Cannot find a friendly editor."
+      fi
+    fi
+  fi
   export VISUAL="$EDITOR"
   # the editors for revision control must wait while document is edited,
   # so gvim and others launched to x window are not appropriate.
