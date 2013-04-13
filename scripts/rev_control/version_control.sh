@@ -97,3 +97,100 @@ function compute_modifier()
   fi
 }
 
+# selects the method for check-in based on where we are.
+function do_checkin()
+{
+  local directory="$1"; shift
+  pushd "$directory" &>/dev/null
+  if [ -d "CVS" ]; then cvs ci . ;
+  elif [ -d ".svn" ]; then svn ci . ;
+  elif [ -d ".git" ]; then
+    # snag all new files.  not to everyone's liking.
+    git add .
+    # tell git about all the files and get a check-in comment.
+    git commit .
+    # upload the files to the server so others can see them.
+    git push 2>&1 | grep -v "X11 forwarding request failed"
+  else
+    echo unknown repository for $directory...
+  fi
+  popd &>/dev/null
+}
+
+# checks in all the folders in a specified list.
+function checkin_list {
+  local list=$*
+  for i in $list; do
+    # turn repo list back into an array.
+    eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+    for j in "${repository_list[@]}"; do
+      # add in the directory component.
+      j="$i/$j"
+      if [ ! -d "$j" ]; then continue; fi
+
+#      pushd $j &>/dev/null
+      echo "checking in '$j'..."
+      do_checkin $j
+#      popd &>/dev/null
+    done
+  done
+}
+
+# takes out the first few carriage returns that are in the input.
+function squash_first_few_crs()
+{
+  i=0
+  while read line; do
+    i=$((i+1))
+    if [ $i -le 3 ]; then
+      echo -n "$line  "
+    else
+      echo $line
+    fi
+  done
+  if [ $i -le 3 ]; then
+    # if we're still squashing eols, make sure we don't leave them hanging.
+    echo
+  fi
+}
+
+# selects the checkout method based on where we are (the host the script runs on).
+function do_update()
+{
+  directory="$1"; shift
+ 
+  pushd "$directory" &>/dev/null
+  if [ -d "CVS" ]; then
+    cvs update . | squash_first_few_crs
+  elif [ -d ".svn" ]; then
+    svn update . | squash_first_few_crs
+  elif [ -d ".git" ]; then
+    git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+  else
+    echo unknown repository for $directory...
+  fi
+  popd &>/dev/null
+}
+
+# gets all the updates for a list of folders under revision control.
+function checkout_list {
+  list=$*
+  for i in $list; do
+    # turn repo list back into an array.
+    eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+    for j in "${repository_list[@]}"; do
+      # add in the directory for our purposes here.
+      j="$i/$j"
+      if [ ! -d $j ]; then
+        if [ ! -z "$SHELL_DEBUG" ]; then
+          echo "No directory called $j exists."
+        fi
+        continue
+      fi
+
+      echo -n "retrieving '$j'...  "
+      do_update $j
+    done
+  done
+}
+

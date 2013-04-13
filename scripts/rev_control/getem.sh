@@ -3,7 +3,7 @@
 # gets any updates for the repository folders present in the REPOSITORY_LIST variable.
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
-source "$FEISTY_MEOW_SCRIPTS/rev_control/rev_control.sh"
+source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
 # trickery to ensure we can always update this file, even when the operating system has some
 # rude behavior with regard to file locking (ahem, windows...).
@@ -25,64 +25,6 @@ if [ "$(\pwd)" != "$tmpdir" ]; then
   chmod a+x "$new_name"
   exec "$new_name"
 fi
-
-# takes out the first few carriage returns that are in the input.
-function squash_first_few_crs()
-{
-  i=0
-  while read line; do
-    i=$((i+1))
-    if [ $i -le 3 ]; then
-      echo -n "$line  "
-    else
-      echo $line
-    fi
-  done
-  if [ $i -le 3 ]; then
-    # if we're still squashing eols, make sure we don't leave them hanging.
-    echo
-  fi
-}
-
-# selects the checkout method based on where we are (the host the script runs on).
-function do_update()
-{
-  directory="$1"; shift
- 
-  if [ -d "CVS" ]; then
-    cvs update . | squash_first_few_crs
-  elif [ -d ".svn" ]; then
-    svn update . | squash_first_few_crs
-  elif [ -d ".git" ]; then
-    git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-  else
-    echo unknown repository for $directory...
-  fi
-}
-
-# gets all the updates for a list of folders under revision control.
-function checkout_list {
-  list=$*
-  for i in $list; do
-    # turn repo list back into an array.
-    eval "repository_list=( ${REPOSITORY_LIST[*]} )"
-    for j in "${repository_list[@]}"; do
-      # add in the directory for our purposes here.
-      j="$i/$j"
-      if [ ! -d $j ]; then
-        if [ ! -z "$SHELL_DEBUG" ]; then
-          echo "No directory called $j exists."
-        fi
-        continue
-      fi
-
-      pushd $j &>/dev/null
-      echo -n "retrieving '$j'...  "
-      do_update $j
-      popd &>/dev/null
-    done
-  done
-}
 
 ##############
 

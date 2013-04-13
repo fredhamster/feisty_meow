@@ -1,8 +1,8 @@
 #!/bin/bash
-# a simple script for updating a set of folders on a usb stick from subversion or git.
-#  currently
-# just runs with no parameters and expects to get all archives from wherever the files originally
-# came from.
+# does differences on a set of folders checked out from subversion or git.
+# this can take a directory as parameter, but will default to the current
+# working directory.  all the directories under the passed directory will
+# be examined.
 
 dir="$1"; shift
 if [ -z "$dir" ]; then
@@ -17,11 +17,11 @@ for i in * ; do
     pushd $i &>/dev/null
     # only update if we see a repository living there.
     if [ -d ".svn" ]; then
-      svn update .
+      svn diff .
     elif [ -d ".git" ]; then
-      git pull 
+      git diff 
     elif [ -d "CVS" ]; then
-      cvs update .
+      cvs diff .
     fi
     popd &>/dev/null
     echo "======="
