@@ -8,7 +8,8 @@
 # List all conflicted files:
 # svnapply C ls -l
 #
-# found on web at: http://stackoverflow.com/questions/160104/how-do-you-add-all-untracked-files-in-svn-something-like-git-add-i
+# found on web at:
+# http://stackoverflow.com/questions/160104/how-do-you-add-all-untracked-files-in-svn-something-like-git-add-i
 #
 
 PATTERN="$1"; shift

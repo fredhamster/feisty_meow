@@ -17,16 +17,6 @@ for i in * ; do
   if [ -d "$i" ]; then
     echo "[$i]"
     do_update "$i"
-#    pushd $i &>/dev/null
-#    # only update if we see a repository living there.
-#    if [ -d ".svn" ]; then
-#      svn update .
-#    elif [ -d ".git" ]; then
-#      git pull 
-#    elif [ -d "CVS" ]; then
-#      cvs update .
-#    fi
-#    popd &>/dev/null
     echo "======="
   fi
 done
