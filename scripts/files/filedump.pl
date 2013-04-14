@@ -27,7 +27,7 @@ if ($#ARGV < 0) {
 
 # iterate over the list of files and dump them to standard output.
 
-foreach $filename (&glob_list(@ARGV)) {
+foreach $filename (sort &glob_list(@ARGV)) {
   &do_dump($filename);
 }
 
