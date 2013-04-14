@@ -111,6 +111,13 @@ if [ $LAUNCHING_TUNNEL -eq 1 ]; then
   # loop does not exit on its own.
 else
   # this version re-launches the script but tells it to start the tunnel.
+  existingScreens="$(screen -ls | grep "$TUNNEL_SCREEN_NAME")"
+  if [ ! -z "$existingScreens" ]; then
+    echo "This script is already running a screen for: $TUNNEL_SCREEN_NAME"
+    echo "Connect to that and zap it first before we try to start a new one,"
+    echo "e.g.: screen -r -S \"$TUNNEL_SCREEN_NAME\""
+    exit 1
+  fi
   screen -L -S "$TUNNEL_SCREEN_NAME" -d -m bash $0 "$TUNNEL_USER_PLUS_HOST" "$TUNNEL_LINK" "$TUNNEL_SCREEN_NAME" "$TUNNEL_SECURITY_KEY" go
 fi
 
