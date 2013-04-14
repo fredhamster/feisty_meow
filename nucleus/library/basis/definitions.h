@@ -182,7 +182,7 @@ public:
     //    condition; the address of a local variable is being returned, making
     //    the returned object junk in almost all cases.
     // 4996 turns off warnings about deprecated functions, which are mostly
-    //    bullshit, since these are mainly the core posix functions.
+    //    nonsense, since these are mainly the core posix functions.
 #endif  // ms visual c++.
 
 //////////////

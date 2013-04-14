@@ -70,7 +70,7 @@ function setup_visual_studio_variables()
   # convert framework dir back or things yell like hell.
   export FrameworkDir=$(unix_to_dos_path $FrameworkDir)
     # the redirection of stderr to null is to get around an obnoxious cygwin
-    # warning that seems to be erroneously bitching about backslashes.
+    # warning that seems to be erroneously complaining about backslashes.
   
   # convert all other relevant paths back to dos form, or visual studio barfs.
   #export BUILD_SCRIPTS_DIR=$(unix_to_dos_path $BUILD_SCRIPTS_DIR)
