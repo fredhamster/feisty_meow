@@ -12,7 +12,20 @@
 
 ##############
 
+# check for parameters on the command line.
+launch_it="$1"; shift
+
+##############
+
+LAUNCHING_TUNNEL=0
+if [ "$launch_it" == "go" ]; then
+  LAUNCHING_TUNNEL=1
+fi
+
+##############
+
 # these variables are configurable from plug-ins.
+#hmmm: what?
 
 soundfile=$FEISTY_MEOW_DIR/database/sounds/woouoo.wav
 if [ ! -z "$1" ]; then
@@ -23,22 +36,31 @@ fi
 
 # provides a list of properly formatted tunnels for ssh to create.  if this list
 # is empty, then we do nothing.
-# TUNNEL_LIST=()
+TUNNEL_LIST=()
 
 # set this to the hostname that will be providing the tunnel.  this is
 # usually a remote system.
-USER_PLUS_HOST=""
+TUNNEL_USER_PLUS_HOST=""
 
 # set this to your key file, plus the -i flag, such as: 
 #   SECURITY_KEY="-i $HOME/.ssh/id_rsa" 
-SECURITY_KEY=""
+TUNNEL_SECURITY_KEY=""
+
+# this variable should be set to the name for the tunnel.  one can then
+# open the tunnel screen with: screen -r -S "name"
+TUNNEL_SCREEN_NAME="tunnely"
+
+# a comment for when we make the connection
+TUNNEL_COMMENT="Connecting tunnel to destination..."
 
 ##############
 
 #hmmm:move to fred configs!
 TUNNEL_LIST+=(-L 14008:localhost:25)
-USER_PLUS_HOST="fred@serene.feistymeow.org"
-SECURITY_KEY="-i $HOME/.ssh/id_dsa_fred" 
+TUNNEL_USER_PLUS_HOST="fred@serene.feistymeow.org"
+TUNNEL_SECURITY_KEY="-i $HOME/.ssh/id_dsa_fred" 
+TUNNEL_COMMENT="Connecting sendmail to serenely zooty."
+TUNNEL_SCREEN_NAME="zooty"
 
 ##############
 
@@ -61,14 +83,19 @@ play_sound_periodically()
 
 ##############
 
-while true; do
-  echo Connecting sendmail to serenely zooty.
-  ssh  -2 -N -v ${TUNNEL_LIST[*]} "$USER_PLUS_HOST"
-  echo "Got dumped from tunnels; re-establishing connection."
-  play_sound_periodically
-  echo "Note: if you're being asked for a password, you haven't set up an RSA key yet."
-  sleep 1
-done
+function main_tunnely_loop()
+{
+  while true; do
+    echo "$TUNNEL_COMMENT"
+    ssh -2 -N -v ${TUNNEL_LIST[*]} "$TUNNEL_SECURITY_KEY" "$TUNNEL_USER_PLUS_HOST"
+    echo "Got dumped from tunnels; re-establishing connection."
+    play_sound_periodically
+    echo "Note: if you're being asked for a password, you haven't set up an RSA key yet."
+    sleep 1
+  done
+}
+
+# notes...
 
 #-L 8028:localhost:3128 
 
@@ -88,5 +115,14 @@ done
 #        becomes an alias for the remote port.  note that the connection
 #        being made to host and hostport is from the perspective of the ssh
 #        server, not the local host.
+
+if [ $LAUNCHING_TUNNEL -eq 1 ]; then
+  # this version is already ready to tunnel already, so let's tunnel.
+  main_tunnely_loop
+  # loop does not exit on its own.
+else
+  # this version re-launches the script but tells it to start the tunnel.
+  screen -L -S "$TUNNEL_SCREEN_NAME" -d -m bash $0 go
+fi
 
 
