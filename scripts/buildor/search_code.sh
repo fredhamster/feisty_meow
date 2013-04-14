@@ -13,16 +13,24 @@ if [ -z "$dir" ]; then
   dir=.
 fi
 
+#hmmm: we need to encode this useful logic as a list of binary file endings.
 find "$dir" -type f \( -iname "*" \
+  ! -iname "*.bz2" \
   ! -iname "*.class" \
   ! -iname "*.dll" \
+  ! -iname "*.deb" \
+  ! -iname "*.dmg" \
   ! -iname "*.exe" \
   ! -iname "entries" \
   ! -iname "*.git" \
   ! -iname "*.gz" \
+  ! -iname "*.iar" \
   ! -iname "*.jar" \
   ! -iname "*.lib" \
+  ! -iname "*.oar" \
   ! -iname "*.obj" \
+  ! -iname "*.png" \
+  ! -iname "*.snarf" \
   ! -iname "*.svn" \
   ! -iname "*.svn-base" \
   ! -iname "*.tar" \
