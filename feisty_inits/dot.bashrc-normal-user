@@ -1,0 +1,13 @@
+
+# this script is for normal users running bash (not the root user).
+# it can be added to your ~/.bashrc file to automatically load the feisty
+# meow script environment.
+
+### this should be set to your name...
+export NAME='Frunkooleon Q. Grendervasp'
+
+if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
+  # sets up the feisty_meow scripts.
+  source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
+fi
+

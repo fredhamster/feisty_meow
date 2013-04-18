@@ -1,8 +1,0 @@
-
-# example additions to make windoze not suck as much.
-export PATH=/bin:$PATH:/d/utilities/emacs-23.2/bin:/d/utilities/vim/vim71:/d/system/perl/site/bin:/d/system/perl/bin:/d/tools/doxygen/bin:/d/tools/graphviz/Graphviz/bin
-
-if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
-  source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
-fi
-

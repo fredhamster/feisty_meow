@@ -1,0 +1,13 @@
+
+# some example path additions to make windoze less awful.
+# they depend on msys style paths, but can work under cygwin if you do:
+#   ln -s /cygdrive/c /c; ln -s /cygdrive/d /d; and so on.
+# this is just an example because your installation paths are almost certainly
+# different.
+export PATH=/bin:$PATH:/d/utilities/emacs-23.2/bin:/d/utilities/vim/vim71:/d/system/perl/site/bin:/d/system/perl/bin:/d/tools/doxygen/bin:/d/tools/graphviz/Graphviz/bin
+
+if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
+  # windows startup of the feisty meow script environment.
+  source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
+fi
+
