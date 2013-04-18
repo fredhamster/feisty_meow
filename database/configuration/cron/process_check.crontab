@@ -1,0 +1,11 @@
+
+SHELL=/bin/bash
+
+# m h dom mon dow command
+
+USER=fred
+
+# a crontab for periodically dumping the process state.
+* * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/processes/show_hot_ones.sh) &>>/home/$USER/zz_hot_processes.log 
+
+
