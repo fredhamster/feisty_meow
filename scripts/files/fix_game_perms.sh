@@ -6,3 +6,5 @@
 find /home/games -type f -perm /100 -exec chmod a+x {} ';'
 find /home/games -type f -perm /400 -exec chmod a+r {} ';'
 
+find /home/games -type d -exec chmod a+rx {} ';'
+
