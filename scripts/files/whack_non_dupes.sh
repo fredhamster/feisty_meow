@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# whacks the files in the current directory which are duplicates of the
+# whacks the files in the current directory which are NOT duplicates of the
 # files in the directory passed as a parameter.
 # if there is a second parameter, then it is used as the "current directory"
 # and it will be the target of any deletions.
@@ -12,12 +12,12 @@ whack_dir="$1"; shift
 if [ -z "$exemplar_dir" ]; then
   echo "$(basename $0 .sh): This program needs at least one directory parameter."
   echo "The files in the current directory will be removed if a file in the specified directory"
-  echo "already exists.  So... the current directory is the less important one and is presumed"
-  echo "to have duplicates AND the directory given as parameter is considered important and has"
-  echo "the best versions of the files."
+  echo "does not exist.  So... the current directory is the less important one and is presumed"
+  echo "to have rogue files AND the directory given as parameter is considered important and has"
+  echo "the best canonical versions of the files."
   echo "If there is an optional second parameter, then that is used as the"
   echo "\"current\" directory where we start from; it will be the less important"
-  echo "directory and will have its entries cleaned if they're duplicates."
+  echo "directory and will have its entries cleaned if they're non-duplicates."
   exit 1
 fi
 
@@ -54,7 +54,7 @@ fi
 
 # do the real work now...
 for i in *; do
-  if [ -f "$exemplar_dir/$i" ]; then
+  if [ ! -f "$exemplar_dir/$i" ]; then
     echo "whacking $i"
     rm -f "$i"
   fi

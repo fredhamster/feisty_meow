@@ -291,9 +291,16 @@ if [ -z "$skip_all" ]; then
       return 1
     fi
     regenerate >/dev/null
+    pushd "$FEISTY_MEOW_GENERATED/custom" &>/dev/null
+    local incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_GENERATED/custom")"
+    if [ ${#incongruous_files} -ge 1 ]; then
+      echo "cleaning unknown older overrides..."
+      perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
+      echo
+    fi
+    popd &>/dev/null
     echo "copying custom overrides for $user"
-    perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" "$FEISTY_MEOW_GENERATED/custom"
-    mkdir "$FEISTY_MEOW_GENERATED/custom"
+    mkdir "$FEISTY_MEOW_GENERATED/custom" 2>/dev/null
     perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_GENERATED/custom"
     regenerate
   }
