@@ -4,7 +4,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 function build_xsede()
 {
-  pushd ~/xsede/code/cak0l/trunk
+  pushd ~/xsede/code/fred/trunk
   if [ $? -ne 0 ]; then return 1; fi
   echo "Build starting at: $(date)"
   \rm -rf unit-test-reports
@@ -34,7 +34,7 @@ function build_xsede()
 
 function rebuild_xsede()
 {
-  pushd ~/xsede/code/cak0l/trunk
+  pushd ~/xsede/code/fred/trunk
   ant clean
   if [ $? -ne 0 ]; then return 1; fi
   popd

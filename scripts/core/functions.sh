@@ -292,6 +292,8 @@ if [ -z "$skip_all" ]; then
     fi
     regenerate >/dev/null
     echo "copying custom overrides for $user"
+    perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" "$FEISTY_MEOW_GENERATED/custom"
+    mkdir "$FEISTY_MEOW_GENERATED/custom"
     perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_GENERATED/custom"
     regenerate
   }
