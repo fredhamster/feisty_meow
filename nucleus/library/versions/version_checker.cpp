@@ -110,7 +110,6 @@ void *version_checker::get_handle(const astring &library_file_name)
 #ifdef __WIN32__
   return GetModuleHandle(to_unicode_temp(library_file_name));
 #else
-//hmmm: there really isn't this concept on OSes that i'm aware of.
   if (library_file_name.t()) return NIL; else return NIL;
 #endif
 }
@@ -118,7 +117,6 @@ void *version_checker::get_handle(const astring &library_file_name)
 astring version_checker::module_name(const void *module_handle)
 {
 #ifdef __UNIX__
-//hmmm: implement module name for linux if that makes sense.
   if (module_handle) {}
   return application_configuration::application_name();
 #elif defined(__WIN32__)

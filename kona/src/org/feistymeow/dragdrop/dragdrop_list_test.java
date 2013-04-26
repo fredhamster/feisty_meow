@@ -28,13 +28,14 @@ public class dragdrop_list_test extends JFrame implements ListSelectionListener
     private JTextField fileName;
     static private Log logger = LogFactory.getLog(dragdrop_list_test.DraggableDroppableList.class);
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
 	public dragdrop_list_test(String startPath)
     {
         super("dragdrop_test");
 
         // Create the list and put it in a scroll pane
         list = new DraggableDroppableList();
-        DefaultListModel listModel = (DefaultListModel) list.getModel();
+		DefaultListModel listModel = (DefaultListModel) list.getModel();
         list.setCellRenderer(new CustomCellRenderer());
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
@@ -95,8 +96,10 @@ public class dragdrop_list_test extends JFrame implements ListSelectionListener
         return hashtable;
     }
 
-    public class DraggableDroppableList extends JList implements IDragonDropDataProvider
+    @SuppressWarnings("rawtypes")
+	public class DraggableDroppableList extends JList implements IDragonDropDataProvider
     {
+		@SuppressWarnings("unchecked")
 		public DraggableDroppableList()
         {
             setModel(new DefaultListModel());
@@ -130,7 +133,8 @@ public class dragdrop_list_test extends JFrame implements ListSelectionListener
         }
     }
 
-    public class CustomCellRenderer implements ListCellRenderer
+    @SuppressWarnings("rawtypes")
+	public class CustomCellRenderer implements ListCellRenderer
     {
         DefaultListCellRenderer listCellRenderer = new DefaultListCellRenderer();
 
