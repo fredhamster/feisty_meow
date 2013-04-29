@@ -5,7 +5,7 @@ source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 function dossify_and_run_commands()
 {
   # we only mess with the command line on windows...
-  if [ "$OS" == "Windows_NT" ]; then
+  if [ "$OS" != "Windows_NT" ]; then
     # for non windows, just run the commands straight up.
     $*
     return $?
