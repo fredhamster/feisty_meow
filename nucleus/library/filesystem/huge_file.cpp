@@ -20,7 +20,11 @@
 #include <basis/guards.h>
 
 #include <stdio.h>
-#include <sys/time.h>
+#ifndef __WIN32__
+  #include <sys/time.h>
+#else
+  #include <time.h>
+#endif
 
 #undef LOG
 #define LOG(to_print) printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
@@ -281,11 +285,31 @@ outcome huge_file::write(const byte_array &to_write, int &size_written)
 
 basis::outcome huge_file::touch()
 {
+  FUNCDEF("touch")
   if (filename(_real_file->name()).exists()) {
     // file exists, so just update time.
+#ifndef __WIN32__
     int ret = utimes(_real_file->name().observe(), NIL);
     if (ret != 0)
       return FAILURE;
+#else
+    // open the file, although the function says create in its name...
+    HANDLE f = CreateFile(_real_file->name().observe(),
+        GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        NIL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NIL);
+    if (!f) {
+      LOG(a_sprintf("failed to open file %s", _real_file->name().observe()));
+      return FAILURE;
+    }
+    // get current system time in UTC.
+    SYSTEMTIME *st = new SYSTEMTIME;
+    GetSystemTime(st);
+    // convert system time into file time.
+    FILETIME *t = new FILETIME;
+    SystemTimeToFileTime(st, t);
+    // set the file's time.
+    SetFileTime(f, NIL, t, t);
+#endif
   } else {
     // file doesn't exist yet.
     byte_array junk(1);

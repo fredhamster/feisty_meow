@@ -238,7 +238,8 @@ ifeq "$(HOOPLE_HEADERS)" ""
       echo "$(FEISTY_MEOW_DIR)/nucleus" "$(FEISTY_MEOW_DIR)/octopi" "$(FEISTY_MEOW_DIR)/graphiq" ; \
     else \
       echo ""; \
-    fi | sed -e "s/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/" ')
+    fi | tr "\\\\" / | sed -e "s/\([a-zA-Z]\):\/\([^ ]*\)/\/cygdrive\/\1\/\2/g" ')
+    # above assumes cygwin support for windows!  was assuming msys support.
   HOOPLE_HEADERS := $(shell $(FIND) $(LOCUS_LIBRARY_HEADERS) -mindepth 1 -maxdepth 1 -type d )
 endif
 
