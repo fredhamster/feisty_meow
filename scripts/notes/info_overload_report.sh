@@ -8,7 +8,7 @@ REPORT_FILE="$HOME/cloud/overload_history.txt"
 function calculate_count()
 {
   local dir="$1"; shift
-  count=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null |  grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | wc -l | tr -d ' ')
+  local count=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null |  grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | wc -l | tr -d ' ')
   if [ -z "$count" ]; then echo 0; else echo "$count"; fi
 }
 
@@ -19,7 +19,7 @@ function calculate_count()
 function calculate_weight()
 {
   local dir="$1"; shift
-  weight=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null | grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | xargs ls -al | awk '{ print $5 }' | paste -sd+ | bc 2>/dev/null)
+  local weight=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null | grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | xargs ls -al | awk '{ print $5 }' | paste -sd+ | bc 2>/dev/null)
   if [ -z "$weight" ]; then echo 0; else echo "$weight"; fi
 }
 
@@ -28,7 +28,7 @@ function calculate_weight()
 function calculate_complexity()
 {
   local dir="$1"; shift
-  complexity=$(find "$dir" -type d | wc -l)
+  local complexity=$(find "$dir" -type d | wc -l)
   if [ -z "$complexity" ]; then echo 0; else echo "$complexity"; fi
 }
 
@@ -67,13 +67,13 @@ function analyze_by_dir_patterns()
   local title="$1"; shift
   local hier_count=0
   local hier_weight=0
-#  full_report+=$(format_report_line "$hier_count" "$hier_weight" "$hier_complexity" "$title")
-  for i in $@; do
-    temp_count=$(calculate_count $i)
+  local hier_complexity=0
+  for folder in $@; do
+    temp_count=$(calculate_count $folder)
     hier_count=$(($hier_count + $temp_count))
-    temp_weight=$(calculate_weight $i)
+    temp_weight=$(calculate_weight $folder)
     hier_weight=$(($hier_weight + $temp_weight))
-    temp_complexity=$(calculate_complexity $i)
+    temp_complexity=$(calculate_complexity $folder)
     hier_complexity=$(($hier_complexity + $temp_complexity))
   done
   total_overload=$(($hier_count + $total_overload))
