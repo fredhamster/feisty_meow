@@ -8,6 +8,10 @@ function build_xsede()
   if [ $? -ne 0 ]; then return 1; fi
   echo "Build starting at: $(date)"
   \rm -rf unit-test-reports
+  # update the libs first.
+  ant update
+  if [ $? -ne 0 ]; then return 1; fi
+  # then build the trunk.
   ant -Dbuild.targetArch=64 build
   if [ $? -ne 0 ]; then return 1; fi
   # fix memory limits.
