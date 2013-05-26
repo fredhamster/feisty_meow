@@ -1,10 +1,12 @@
 
 filename="$1"; shift
-if [ -z "$filename" ]; then
-  echo This script needs a base portion for the certificate filename to create.
+alias="$1"; shift
+if [ -z "$filename" -o -z "$alias" ]; then
+  echo This script needs a base portion for the certificate filename to create
+  echo and the alias for the certificate.
   echo For example:
-  echo   $0 DrakeKey
-  echo would create DrakeKey.pem and DrakeKey.pfx.
+  echo -e "\t$(basename $0 .sh) DrakeKey \"DrakeContainer\""
+  echo would create DrakeKey.pem and DrakeKey.pfx with an alias of DrakeContainer.
   exit 1
 fi
 
@@ -12,10 +14,10 @@ fi
 openssl req -x509 -nodes -days 3650 \
   -newkey rsa:1024 -keyout ${filename}.pem -out ${filename}.pem
 
-# export PFX file.
-openssl pkcs12 -export -out ${filename}.pfx -in ${filename}.pem -name "Drake Container Certificate"
+# export the PEM to a PFX file.
+openssl pkcs12 -export -out ${filename}.pfx -in ${filename}.pem -name "$alias"
 
-# export the PFX to a certificate file.  this can be given to other folks.
+# export the PEM to a DER certificate file.
 openssl x509 -inform pem -in ${filename}.pem -outform der -out ${filename}.cer
 
 
