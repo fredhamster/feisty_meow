@@ -54,6 +54,7 @@ if [[ $archive_file =~ .*\.tar$ \
     || $archive_file =~ .*\.oar$ \
     || $archive_file =~ .*\.tgz$ \
     || $archive_file =~ .*\.ova$ \
+    || $archive_file =~ .*\.snarf$ \
     ]]; then
   tar -tf $archive_file | $PAGER
 elif [[ $archive_file =~ .*\.zip$ \

@@ -59,6 +59,7 @@ if [[ $archive_file =~ .*\.tar$ \
     || $archive_file =~ .*\.oar$ \
     || $archive_file =~ .*\.tgz$ \
     || $archive_file =~ .*\.ova$ \
+    || $archive_file =~ .*\.snarf$ \
     ]]; then
   tar -xf $archive_file &>/dev/null
 elif [[ $archive_file =~ .*\.zip$ \

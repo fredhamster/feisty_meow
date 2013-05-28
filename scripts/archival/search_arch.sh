@@ -28,7 +28,7 @@ TMPFILE="$(mktemp "$TMP/jarfinding.XXXXXX")"
 
 # locate all the archive files under the path.
 find "$dir" -iname "*.jar" -o -iname "*.zip" -o -iname "*.tar" \
-  -o -iname "*.iar" -o -iname "*.oar" -iname "*.bz2" \
+  -o -iname "*.iar" -o -iname "*.oar" -o -iname "*.bz2" -o -iname "*.snarf" \
   >"$TMPFILE"
 
 while read line; do
