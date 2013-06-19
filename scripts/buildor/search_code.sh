@@ -15,6 +15,8 @@ fi
 
 #hmmm: we need to encode this useful logic as a list of binary file endings.
 find "$dir" -type f \( -iname "*" \
+  ! -iname "*~" \
+  ! -iname "*.bin" \
   ! -iname "*.bz2" \
   ! -iname "*.class" \
   ! -iname "*.dll" \
@@ -31,6 +33,8 @@ find "$dir" -type f \( -iname "*" \
   ! -iname "*.obj" \
   ! -iname "*.png" \
   ! -iname "*.snarf" \
+  ! -iname "*.so" \
+  ! -iname "*.so.2" \
   ! -iname "*.svn" \
   ! -iname "*.svn-base" \
   ! -iname "*.tar" \
