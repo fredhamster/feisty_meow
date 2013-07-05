@@ -21,6 +21,10 @@ word=Verified
 if [ ! -d "$TMP" ]; then
   mkdir $TMP
   word=Created
+  chown $USER $TMP
+  if [ $? -ne 0 ]; then
+    echo "failed to chown $TMP to user's ownership."
+  fi
 fi
 if [ -z "$LIGHTWEIGHT_INIT" ]; then
   echo "$word transient area \"$TMP\" for $USER on $(date_stringer)." >>$LOG_FILE
