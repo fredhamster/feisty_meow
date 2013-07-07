@@ -40,7 +40,10 @@ function launch_screen()
 ##why? --debug 
 #-console=basic 
   echo "$(date_stringer ' '): $screen_name started."
-  sleep $SNOOZE_TIME
+  # only sleep if we are not at the last process that gets started.
+  if [ "$app_name" != "OpenSim.exe" ]; then
+    sleep $SNOOZE_TIME
+  fi
 }
 
 # finds the opensim process specified or returns a blank string in the

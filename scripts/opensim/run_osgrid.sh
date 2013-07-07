@@ -7,7 +7,7 @@ source $FEISTY_MEOW_SCRIPTS/opensim/opensim_utils.sh
 
 # jump into the opensim binaries directory so we can run stuff.
 pushd $HOME/opensim/bin &>/dev/null
-launch_screen OpenSim OpenSim.exe 
+launch_screen opensim OpenSim.exe 
 popd &>/dev/null
 
 
