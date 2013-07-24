@@ -15,15 +15,6 @@
 # This section manipulates variable values to prepare them for their use
 # in the standard CLAM support.
 
-# special actions for projects that are tests.
-ifneq "$(findstring test, $(TYPE))" ""
-  # add the clean task at the end, so that we will always rebuild the tests
-  # and run them again.
-#hmmm: this is a kludge to make sure we always run the tests.  there has got
-#      to be a better way.
-#  LAST_TARGETS += clean
-endif
-
 # see if they have got the clean flag set.  if so, we will not build anything.
 ifneq "$(CLEAN)" ""
   NO_COMPILE = t

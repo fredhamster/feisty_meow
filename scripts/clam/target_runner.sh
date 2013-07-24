@@ -16,8 +16,9 @@
 #echo -e "\tDIRTY_FILE=${DIRTY_FILE}"
 #echo -e "\tSUBMAKE_FLAG=${SUBMAKE_FLAG}"
 #echo -e "\tFAILURE_FILE=${FAILURE_FILE}"
+#echo -e "\tNO_TEST_RUNS=${NO_TEST_RUNS}"
 
-if [ ! -z "${RUN_TARGETS}" ]; then
+if [ ! -z "${RUN_TARGETS}" -a -z "${NO_TEST_RUNS}" ]; then
   if [ -f "${DIRTY_FILE}" -o -f "${SUBMAKE_FLAG}" ]; then
     total_exitval=0;
     for program_name in ${RUN_TARGETS}; do
