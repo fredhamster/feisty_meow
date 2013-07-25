@@ -106,7 +106,7 @@ function do_checkin()
   elif [ -d ".svn" ]; then svn ci . ;
   elif [ -d ".git" ]; then
     # snag all new files.  not to everyone's liking.
-    git add .
+    git add --all .
     # tell git about all the files and get a check-in comment.
     git commit .
     # upload the files to the server so others can see them.
