@@ -117,9 +117,17 @@ sub recurse_dirs
     local($compare_name) = $dest . "/" . $name;
 #    print "name is $name and to compare is $compare_name.\n";
     local($new_name) = $src . "/" . $name;
+#hmmm: need an is important dirname check for this.
     if ( (-d $new_name) && ($name ne ".") && ($name ne "..")
         && ($name ne ".svn") 
         && ($name ne ".git") 
+        && ($name ne "bin") 
+        && ($name ne "bin-eclipse") 
+        && ($name ne "bin.eclipse") 
+        && ($name ne "genned-src") 
+        && ($name ne "genned-obj") 
+        && ($name ne "codegen") 
+        && ($name ne "unit-test-reports") 
         && ($name ne "CVS") ) {
 #      print "recursing on: source $name and destination $compare_name.\n";
       &recurse_dirs($new_name, $compare_name);

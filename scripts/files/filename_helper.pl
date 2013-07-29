@@ -324,12 +324,8 @@ sub important_filename {
   # these are endings that we consider unimportant.  where a caret is used
   # at the front, we will match only the whole string.  double slashes are
   # used before periods to ensure we match a real period character.
-
-#      "AssemblyInfo.c.*",
-#need to regenerate these automatically.
-
   local(@junk_files) = ("~", "^\\.#.*", "^\\._.*", "\\.aps", "\\.bak",
-      "^binaries", 
+      "^binaries",
       "\\.clw", "^cpdiff_tmp\\.txt", "^\\.ds_store", "^diffs\\.txt",
       "^diff_tmp\\.txt", "\\.dsp", "\\.dsw", "\\.gid", "gmon\\.out", "\\.isr",
       "^isconfig\\.ini", "\\.log", "^manifest.txt", "^obj",
@@ -339,8 +335,6 @@ sub important_filename {
       "\\.stackdump", "^string1033\\.txt", "\\.suo", "\\.swp",
       "^thumbs.db", "\\.tmp", "^trans\\.tbl", "\\.user", "_version\\.h",
       "_version\\.rc", "^waste", "\\.ws4", "\\.wsm");
-#this whacks too much.  what was it for?
-#"^generated_.*", 
 
   foreach $temp (@junk_files) {
     $temp = $temp . '$';
