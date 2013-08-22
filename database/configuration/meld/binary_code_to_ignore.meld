@@ -1,0 +1,23 @@
+
+this is a meld config file explanation...
+meld is a great tool for comparing a large directory tree against another
+large directory tree (or even against 1 or two more trees).
+
+what we want out of this file is to have a list of items that will be ignored
+when meld does a comparison on our tree of java projects.  the list provided
+below may or may not be useful to you, but some variant might be.
+
+to add a new filter that will get meld to ignore any files in any folder named
+in our list, open meld's settings via the menu path "Edit | Preferences | File Filters".
+
+once you're in that tab of the dialog, create a new filter called something like:
+  binary-code
+and add these folder names as values for the filter:
+  bin bin.eclipse subprojects bin-eclipse codegen genned-src genned-obj unit-test-reports
+
+any directory listed there will be ignored during comparisons and merges, which is
+more convenient than the alternative of seeing all the binaries that are different,
+in every compare.  ugh.
+  --fred the hamster
+
+
