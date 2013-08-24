@@ -147,6 +147,21 @@ function do_diff
   return $retval
 }
 
+function do_report_new
+{
+  local directory="$1"; shift
+  pushd "$directory" &>/dev/null
+  retval=0  # normally successful.
+
+  # only update if we see a repository living there.
+  if [ -d ".svn" ]; then
+    # this action so far only makes sense and is needed for svn.
+    bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
+  fi
+
+  popd &>/dev/null
+  return $retval
+}
 
 # checks in all the folders in a specified list.
 function checkin_list()
@@ -232,8 +247,8 @@ function generate_rev_ctrl_filelist()
   local dirhere="$(\pwd)"
   local tempfile=$(mktemp /tmp/zz_rev_checkin.XXXXXX)
   echo >$tempfile
-  find $dirhere -maxdepth 3 -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile
-  find $dirhere -maxdepth 3 -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile
+  find $dirhere -maxdepth 4 -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile
+  find $dirhere -maxdepth 4 -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile
 #CVS is not well behaved, and we seldom use it anymore.
 #  find $dirhere -maxdepth 3 -type d -iname "CVS" -exec echo {}/.. ';' >>$tempfile
   popd &>/dev/null

@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # this script reports files that are not checked in yet in a set of folders.
 # it works with subversion only, since git handles new files well whereas
 # subversion ignores them until you tell it about them.  this script can take
@@ -11,19 +10,9 @@ if [ -z "$dir" ]; then
   dir=.
 fi
 
-pushd "$dir" &>/dev/null
+source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
-for i in * ; do
-  if [ -d "$i" ]; then
-    echo "[$i]"
-    pushd $i &>/dev/null
-    # only update if we see a repository living there.
-    if [ -d ".svn" ]; then
-      bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
-    fi
-    popd &>/dev/null
-    echo "======="
-  fi
-done
+tempfile=$(generate_rev_ctrl_filelist)
 
-popd &>/dev/null
+perform_action_on_file "$tempfile" do_report_new
+
