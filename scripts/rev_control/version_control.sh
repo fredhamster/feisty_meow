@@ -89,7 +89,8 @@ function compute_modifier()
   if [ "$home_system" == "true" ]; then
     if [ "$in_or_out" == "out" ]; then
       # need the right home machine for modifier when checking out.
-      modifier="svn://shaggy/"
+#huhhh?      modifier="svn://shaggy/"
+      modifier=
     else 
       # no modifier for checkin.
       modifier=
@@ -102,23 +103,54 @@ function do_checkin()
 {
   local directory="$1"; shift
   pushd "$directory" &>/dev/null
-  if [ -d "CVS" ]; then cvs ci . ;
-  elif [ -d ".svn" ]; then svn ci . ;
+  retval=0  # normally successful.
+  if [ -d "CVS" ]; then
+    cvs ci .
+    retval=$?
+  elif [ -d ".svn" ]; then
+    svn ci .
+    retval=$?
   elif [ -d ".git" ]; then
     # snag all new files.  not to everyone's liking.
     git add --all .
+    retval=$?
     # tell git about all the files and get a check-in comment.
     git commit .
+    retval+=$?
     # upload the files to the server so others can see them.
     git push 2>&1 | grep -v "X11 forwarding request failed"
+    retval+=$?
   else
     echo unknown repository for $directory...
+    retval=1
   fi
   popd &>/dev/null
+  return $retval
 }
 
+function do_diff
+{
+  local directory="$1"; shift
+  pushd "$directory" &>/dev/null
+  retval=0  # normally successful.
+
+  # only update if we see a repository living there.
+  if [ -d ".svn" ]; then
+    svn diff .
+  elif [ -d ".git" ]; then
+    git diff 
+  elif [ -d "CVS" ]; then
+    cvs diff .
+  fi
+
+  popd &>/dev/null
+  return $retval
+}
+
+
 # checks in all the folders in a specified list.
-function checkin_list {
+function checkin_list()
+{
   local list=$*
   for i in $list; do
     # turn repo list back into an array.
@@ -127,11 +159,8 @@ function checkin_list {
       # add in the directory component.
       j="$i/$j"
       if [ ! -d "$j" ]; then continue; fi
-
-#      pushd $j &>/dev/null
       echo "checking in '$j'..."
       do_checkin $j
-#      popd &>/dev/null
     done
   done
 }
@@ -193,4 +222,43 @@ function checkout_list {
     done
   done
 }
+
+# provides a list of absolute paths of revision control directories
+# that are located under the directory passed as the first parameter.
+function generate_rev_ctrl_filelist()
+{
+  local dir="$1"; shift
+  pushd "$dir" &>/dev/null
+  local dirhere="$(\pwd)"
+  local tempfile=$(mktemp /tmp/zz_rev_checkin.XXXXXX)
+  echo >$tempfile
+  find $dirhere -maxdepth 3 -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile
+  find $dirhere -maxdepth 3 -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile
+#CVS is not well behaved, and we seldom use it anymore.
+#  find $dirhere -maxdepth 3 -type d -iname "CVS" -exec echo {}/.. ';' >>$tempfile
+  popd &>/dev/null
+  echo "$tempfile"
+}
+
+# iterates across a list of directories contained in a file (first parameter).
+# on each directory name, it performs the action (second parameter) provided.
+function perform_action_on_file()
+{
+  local tempfile="$1"; shift
+  local action="$1"; shift
+
+  dirs=($(cat $tempfile))
+
+  for dirname in ${dirs[@]}; do
+    if [ -z "$dirname" ]; then continue; fi
+    pushd $dirname &>/dev/null
+    echo "[$(pwd)]"
+    $action .
+    echo "======="
+    popd &>/dev/null
+  done 
+
+  rm $tempfile
+}
+
 
