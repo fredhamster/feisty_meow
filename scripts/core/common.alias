@@ -9,12 +9,7 @@
 # Feel free to send updates to: [ fred@gruntose.com ]
 ##############
 
-# common aliases for feisty_meow are located here.
-# most of these should work in any bash environment...
-# although some may require more than bash, like the aliases
-# that invoke perl scripts.
-
-##############
+# a list of core aliases for feisty meow codebase.
 
 # repurposes certain commands that feisty meow does a little differently.
 alias cls='clear_colormap; clear'
