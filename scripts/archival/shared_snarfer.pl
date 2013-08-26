@@ -129,7 +129,9 @@ sub chdir_to_top {
     # magic to get the paths to work right.
     local($drive) = substr($directory, 0, 4);  # get just drive letter biz.
 #print "going to change to $drive\n";
-    chdir($drive);
+    if (length($drive) > 0) {
+      chdir($drive);
+    }
 #print "cwd now=" . cwd() . "\n";
     $directory = substr($directory, 4);  # rip off absolutist path.
 #print "using dir now as $directory\n";
