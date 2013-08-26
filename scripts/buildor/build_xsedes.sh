@@ -4,7 +4,11 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 function build_xsede()
 {
-  pushd ~/xsede/code/fred/trunk
+  if [ -z "$GENII_INSTALL_DIR" ]; then
+    echo GENII_INSTALL_DIR is not set.
+    return 1
+  fi
+  pushd $GENII_INSTALL_DIR
   if [ $? -ne 0 ]; then return 1; fi
   echo "Build starting at: $(date)"
   \rm -rf unit-test-reports
@@ -38,7 +42,11 @@ function build_xsede()
 
 function rebuild_xsede()
 {
-  pushd ~/xsede/code/fred/trunk
+  if [ -z "$GENII_INSTALL_DIR" ]; then
+    echo GENII_INSTALL_DIR is not set.
+    return 1
+  fi
+  pushd $GENII_INSTALL_DIR
   ant clean
   if [ $? -ne 0 ]; then return 1; fi
   popd
