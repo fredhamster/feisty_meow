@@ -129,9 +129,7 @@ sub chdir_to_top {
     # magic to get the paths to work right.
     local($drive) = substr($directory, 0, 4);  # get just drive letter biz.
 #print "going to change to $drive\n";
-    if (length($drive) > 0) {
-      chdir($drive);
-    }
+    chdir($drive);
 #print "cwd now=" . cwd() . "\n";
     $directory = substr($directory, 4);  # rip off absolutist path.
 #print "using dir now as $directory\n";
@@ -206,6 +204,7 @@ sub snarf_file_list {
   local($target_file) = &snarf_name($prefix, $number);
 
   local($currdir) = cwd();
+print "got root as: '$root'\n";
   chdir("$root");
 
   local(@files) = &glob_list($file_pattern);
