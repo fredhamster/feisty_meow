@@ -11,7 +11,9 @@ fi
 
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+pushd "$dir" &>/dev/null
 tempfile=$(generate_rev_ctrl_filelist)
+popd &>/dev/null
 
 perform_action_on_file "$tempfile" do_checkin
 
