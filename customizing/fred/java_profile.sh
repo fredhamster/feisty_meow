@@ -6,16 +6,18 @@
 
 ############################
 
-function whichable()
-{
-  to_find="$1"; shift
-  which which &>/dev/null
-  if [ $? -ne 0 ]; then
-    # there is no which command here.  we produce nothing due to this.
-    echo
-  fi
-  echo $(which $to_find)
-}
+source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+
+#function whichable()
+#{
+#  to_find="$1"; shift
+#  which which &>/dev/null
+#  if [ $? -ne 0 ]; then
+#    # there is no which command here.  we produce nothing due to this.
+#    echo
+#  fi
+#  echo $(which $to_find)
+#}
 
 # this reports when we have totally failed to figure out where a folder
 # is actually located on the machine.

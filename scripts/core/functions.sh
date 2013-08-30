@@ -275,6 +275,20 @@ if [ -z "$skip_all" ]; then
     echo
   }
 
+  # a wrapper for the which command that finds items on the path.  some OSes
+  # do not provide which, so we want to not be spewing errors when that
+  # happens.
+  function whichable()
+  {
+    to_find="$1"; shift
+    which which &>/dev/null
+    if [ $? -ne 0 ]; then
+      # there is no which command here.  we produce nothing due to this.
+      echo
+    fi
+    echo $(which $to_find)
+  }
+
   # copies a set of custom scripts into the proper location for feisty meow
   # to merge their functions and aliases with the standard set.
   function recustomize()
