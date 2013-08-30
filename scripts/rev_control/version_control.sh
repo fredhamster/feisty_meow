@@ -121,7 +121,7 @@ function do_checkin()
     git push 2>&1 | grep -v "X11 forwarding request failed"
     retval+=$?
   else
-    echo unknown repository for $directory...
+    echo no repository in $directory
     retval=1
   fi
   popd &>/dev/null
