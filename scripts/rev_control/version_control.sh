@@ -211,7 +211,7 @@ function do_update()
   elif [ -d ".git" ]; then
     git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
   else
-    echo unknown repository for $directory...
+    echo no repository in $directory
   fi
   popd &>/dev/null
 }
