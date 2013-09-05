@@ -12,7 +12,7 @@ fi
 
 while [ $# -gt 0 ]; do
   file="$1"; shift
-  newname="$(echo "$file" | tr A-Z a-z | tr -s ' ' '_' | tr -d "\\\~',:?" | sed -e 's/\([0-9]\)_\./\1./g' | sed -e 's/_-_/-/' )"
+  newname="$(echo "$file" | tr A-Z a-z | tr -s ' ' '_' | tr -d "][\\\~',:?" | sed -e 's/\([0-9]\)_\./\1./g' | sed -e 's/_-_/-/' )"
   if [ "$file" != "$newname" ]; then
     # we've effected a name change, so let's actually do it.
     echo "moving '$file' => '$newname'  "
