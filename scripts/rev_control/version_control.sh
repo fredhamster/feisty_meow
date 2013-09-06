@@ -247,10 +247,9 @@ function generate_rev_ctrl_filelist()
   local dirhere="$(\pwd)"
   local tempfile=$(mktemp /tmp/zz_rev_checkin.XXXXXX)
   echo >$tempfile
-  find $dirhere -maxdepth 4 -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile
-  find $dirhere -maxdepth 4 -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile
-#CVS is not well behaved, and we seldom use it anymore.
-#  find $dirhere -maxdepth 3 -type d -iname "CVS" -exec echo {}/.. ';' >>$tempfile
+  find $dirhere -maxdepth 5 -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile
+  find $dirhere -maxdepth 5 -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile
+  # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
   echo "$tempfile"
 }
