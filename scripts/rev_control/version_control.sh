@@ -251,7 +251,10 @@ function generate_rev_ctrl_filelist()
   find $dirhere -maxdepth 5 -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
-  echo "$tempfile"
+  local sortfile=$(mktemp /tmp/zz_rev_checkin_sort.XXXXXX)
+  sort <"$tempfile" >"$sortfile"
+  \rm "$tempfile"
+  echo "$sortfile"
 }
 
 # iterates across a list of directories contained in a file (first parameter).
