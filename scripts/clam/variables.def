@@ -155,8 +155,8 @@ ACTUAL_LAST_TARGETS = $(LAST_TARGETS)
 
 # "RUN_TARGETS" is a list of programs that should be executed as part of a make.
 export RUN_TARGETS
-# "NO_TEST_RUNS" turns off execution of the RUN_TARGETS.
-export NO_TEST_RUNS
+# "RUN_ALL_TESTS" turns on execution of the RUN_TARGETS.
+export RUN_ALL_TESTS
 
 # "MAKEFILE_NAME" works with BUILD_BEFORE and BUILD_AFTER.  This allows
 # the name of the makefile in the subdirectory to be changed to something other
