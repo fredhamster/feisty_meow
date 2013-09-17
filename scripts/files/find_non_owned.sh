@@ -13,7 +13,7 @@ done
 # check for files not in same group as the user.
 GROUP="$(groups | awk '{print $1}')"
   # assumption above that the first group is the 'primary' one.
-echo "These files are owned by primary group of $GROUP:" >>$outfile
+echo "These files are not owned by primary group of $GROUP:" >>$outfile
 for i; do
   find $i ! -group $GROUP >>$outfile
 done
