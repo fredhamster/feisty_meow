@@ -65,7 +65,7 @@ LIBS_USED += Xmu
 
   ifneq "$(USE_CURL)" ""
     COMPILER_FLAGS += `curl-config --cflags`
-    LOAD_FLAG_SUFFIX += `curl-config --static-libs`
+    LOAD_FLAG_SUFFIX += `curl-config --libs`
   endif
 
 endif
