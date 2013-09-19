@@ -4,7 +4,7 @@ PROJECT = Whole_Build_Pack
 FIRST_TARGETS = create_package
 CLEANUPS = $(PRODUCTION_DIR)/install/whole_build*
 TYPE = hierarchy
-export TARGET=/tmp/zz_wholebuild
+export TARGET=/tmp/zz_wholebuild_$(USER)
 
 include cpp/rules.def
 
