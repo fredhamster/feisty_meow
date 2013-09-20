@@ -8,7 +8,10 @@ echo
 echo Your user name is $USER on a computer named $(hostname).
 echo Your machine platform is $(uname -m)
 if [ $OPERATING_SYSTEM == "UNIX" ]; then
-  lsb_release -a
+  which lsb_release &>/dev/null
+  if [ $? -eq 0 ]; then
+    lsb_release -a
+  fi
 fi
 echo The time is $(date_stringer | sed -e 's/_/ /g' | sed -e 's/\([0-9][0-9]\) \([0-9][0-9]\)$/:\1:\2/')
 echo
