@@ -204,7 +204,7 @@ sub snarf_file_list {
   local($target_file) = &snarf_name($prefix, $number);
 
   local($currdir) = cwd();
-print "got root as: '$root'\n";
+#print "got root as: '$root'\n";
   chdir("$root");
 
   local(@files) = &glob_list($file_pattern);
