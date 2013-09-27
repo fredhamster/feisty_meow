@@ -2,6 +2,8 @@
 # this locates the main opensim process if possible.  if we cannot find it,
 # then the process is restarted.
 
+#hmmm: this is really more for osgrid, since opensim has two servers.
+
 source $FEISTY_MEOW_SCRIPTS/opensim/opensim_utils.sh
 
 # see if the process is findable.
@@ -12,7 +14,7 @@ find_opensim_process OpenSim.exe
 if [ -z "$OS_PROC_ID" ]; then
   # jump into the opensim binaries directory so we can run stuff.
   pushd $HOME/opensim/bin &>/dev/null
-  launch_screen OpenSim OpenSim.exe 
+  launch_screen opensim OpenSim.exe 
   echo "$(date): Restarted opensim instance on $(hostname)."
   echo
   popd &>/dev/null
