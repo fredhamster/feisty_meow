@@ -325,6 +325,23 @@ if [ -z "$skip_all" ]; then
     done
   }
 
+
+  # takes a file to modify, and then it will replace any occurrences of the
+  # pattern provided as the second parameter with the text in the third
+  # parameter.
+  function replace_pattern_in_file()
+  {
+    local file="$1"; shift
+    local pattern="$1"; shift
+    local replacement="$1"; shift
+    if [ -z "$file" -o -z "$pattern" -o -z "$replacement" ]; then
+      echo "replace_pattern_in_file: needs a filename, a pattern to replace, and the"
+      echo "text to replace that pattern with."
+      return 1
+    fi
+    sed -i -e "s/$pattern/$replacement/" "$file"
+  }
+
   function function_sentinel() { return 0; }
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo function definitions end....; fi
