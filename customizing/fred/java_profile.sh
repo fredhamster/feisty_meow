@@ -91,12 +91,12 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR="c:/tools/eclipse"
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  if [ ! -z "$(grep -i 'd:' /proc/mounts)" ]; then
+  if [ ! -z "$(grep -i 'd:' /proc/mounts 2>/dev/null)" ]; then
     ECLIPSE_DIR="d:/tools/eclipse"
   fi
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  if [ ! -z "$(grep -i 'e:' /proc/mounts)" ]; then
+  if [ ! -z "$(grep -i 'e:' /proc/mounts 2>/dev/null)" ]; then
     ECLIPSE_DIR="e:/tools/eclipse"
   fi
 fi
