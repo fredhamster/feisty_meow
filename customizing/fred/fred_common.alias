@@ -3,8 +3,8 @@
 # based on some of the mount configurations available at home or abroad.
 
 # moo and unmoo mount the local folders i use most.
-alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky '
-alias unmoo='umount /z/stuffing ; umount /z/walrus ; umount /z/chunky '
+alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky ; check_mount /z/fredgrid'
+alias unmoo='umount /z/stuffing ; umount /z/walrus ; umount /z/chunky ; umount /z/fredgrid'
 
 # cleans up the ownership for all my files.
 alias refred='(chown -R fred:fred /home/fred /home/games /home/archives ; normal_perm /var/log )'
