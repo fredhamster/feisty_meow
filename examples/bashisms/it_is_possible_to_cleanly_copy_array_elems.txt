@@ -1,0 +1,16 @@
+
+
+# when the array elements have spaces, it is still possible to get them back right.
+
+
+a=("ted row" "boon" "moopy dongle")
+echo ${#a[@]}
+# 3
+borg=( "${a[@]}" )
+echo ${#borg[@]}
+# 3
+
+# normally the setting of borg would not preserve the elements with spaces in them as separate.
+# but by using the @ to get all the array members and the spaces around the reference, you get
+# the list back properly.
+
