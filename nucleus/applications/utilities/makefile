@@ -9,7 +9,7 @@ ifeq "$(OMIT_VERSIONS)" ""
 endif
 LOCAL_LIBS_USED = application basis configuration filesystem loggers mathematics nodes processes textual timely structures 
 TARGETS = await_app_exit.exe bytedump.exe checker.exe dirtree.exe ini_edit.exe mdate.exe \
-  splitter.exe 
+  splitter.exe time_set_effective_id.exe time_running_app.exe
 
 include cpp/rules.def
 
