@@ -5,7 +5,7 @@
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 # set up some parameters that we believe (or have been told) are beneficial.
-export MONO_THREADS_PER_CPU=408
+export MONO_THREADS_PER_CPU=808
 
 # we run the processes with a little cpu de-prioritization.  we do not want
 # them taking over completely if there's a runaway mono tornado.
