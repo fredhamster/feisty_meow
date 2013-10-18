@@ -4,9 +4,6 @@
 if [ -z "$NETHACKOPTIONS" ]; then
   # if we don't see the nethack variable defined, this probably hasn't run yet.
 
-  # The quartz directory has *really* personalized items.
-  export QUARTZDIR=$HOME/quartz
-
   # The cloud directory is our new repository that's always available.  It serves as our
   # personal cloud for data.
   export CLOUD_DIR=$HOME/cloud
