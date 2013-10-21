@@ -1,0 +1,96 @@
+
+====
+
+Quick Start for the Feisty Meow Codebase:
+
+  Getting the Codebase:
+
+    Retrieve a clone of the feisty meow codebase.
+
+    git clone git://feistymeow.org:feisty_meow
+
+    The rest of these notes assume that you stored the codebase in:
+      ~/feisty_meow (aka $HOME/feisty_meow).
+
+  Building the Codebase:
+
+    Run the following command to build the Feisty Meow libraries and
+    applications.
+    Note that you may need to install some dependencies first (see below
+    for installation instructions).
+
+    bash ~/feisty_meow/scripts/generator/bootstrap_build.sh
+
+    All the applications can be found in ~/feisty_meow/production/binaries
+    after the build is complete.
+
+  Cleaning the Codebase:
+
+    Once you've got a bootstrapped build, you can clean out all the generated
+    files with this command:
+
+    bash ~/feisty_meow/scripts/generator/whack_build.sh clean
+
+  Loading the Feisty Meow scripting environment:
+
+    Set up the feisty_meow scripts the first time; this is only needed once,
+    unless you want to regenerate the scripts from the latest version.
+
+    bash ~/feisty_meow/scripts/core/bootstrap_shells.sh
+
+    Load the script environment into the current shell.
+
+    source ~/feisty_meow/scripts/core/launch_feisty_meow.sh
+
+    Loading the feisty meow script environment with the above command allows
+    you to build specific projects in feisty meow by changing into the
+    project's directory and running 'make'.
+    Some example start-up files for loading feisty meow can be found in
+    ~/feisty_meow/feisty_inits.
+
+====
+
+Feisty Meow Dependencies:
+
+The feisty meow scripts depend on these scripting languages and tools:
+  bash
+  perl
+    Text::Diff
+    File::Which
+  python
+  gnumake
+
+The feisty meow libraries and applications depend on these tools (see below
+for installation steps):
+  Gnu C++
+  RTMP streams
+  Curl
+  Open SSL
+
+====
+
+How to install the most frequently needed compiler and library dependencies:
+
+  Ubuntu / Debian:
+    sudo apt-get install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
+
+  Centos / Redhat / Fedora:
+    yum install gcc gcc-c++ openssl-devel.x86_64
+#hmmm: there may be missing items for centos.
+
+====
+
+How to install the Feisty Meow script dependencies:
+
+  cpan install Text::Diff File::Which
+
+  These perl modules are required for a few of the feisty meow scripts to
+  work properly.  The differ utility and the feisty meow customization system
+  will be affected without these modules installed.
+
+====
+
+More information is available at the official site http://feistymeow.org
+
+====
+
