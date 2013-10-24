@@ -6,7 +6,9 @@ BUILD_BEFORE = octopus \
   tentacles \
   cromp \
   synchronic \
-  tests_sockets
+  tests_sockets 
+
+#  tests_octopus
 
 include rules.def
 
