@@ -22,7 +22,8 @@ alias df='\df -mh'
 alias dir='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
 alias du='\du -h'
 alias erase='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
-# elaborate replacement for explorer command, which we shorten to exp.
+# elaborate replacement for filesystem explorer command, which we have
+# shortened to "exp".
 if [ "$OS" != "Windows_NT" ]; then
   if [ -n "$IS_DARWIN" ]; then
     # case for mac os x.
@@ -38,7 +39,7 @@ else
   # windows gets routed to our helpful script instead.
   alias exp="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
 fi
-# re-use work we did on 'exp' macro for longer command.
+# re-use work we did on 'exp' macro for the longer windows command.
 alias explorer=exp
 alias l='\ls -hFC $color_add'
 alias ls='\ls -hFC $color_add'
@@ -53,6 +54,7 @@ alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 alias ren='\mv -v -i '
 alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
+alias s='echo "##############"'
 alias path='echo $PATH'
 alias whence=which
 
