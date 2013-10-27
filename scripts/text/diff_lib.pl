@@ -71,12 +71,12 @@ sub diff_dirs {
     &differ_instructions;
     return;
   }
-  if (-l $compare_directory) {
-    # we will not operate on links, due to recursion issues.
-##    &differ_instructions;
-    print "skipping link: $compare_directory\n";
-    return;
-  }
+#  if (-l $compare_directory) {
+#    # we will not operate on links, due to recursion issues.
+###    &differ_instructions;
+#    print "skipping link: $compare_directory\n";
+#    return;
+#  }
   if (! -d $compare_directory) {
     # a missing directory is just not good.
     print "skipping missing directory: $compare_directory\n";
@@ -90,12 +90,12 @@ sub diff_dirs {
     $source_directory = $arguments[1];
   }
   $source_directory = &sanitize_name($source_directory);
-  if (-l $source_directory) {
-    # we will not operate on links, due to recursion issues.
-#    &differ_instructions;
-    print "skipping link: $source_directory\n";
-    return;
-  }
+#  if (-l $source_directory) {
+#    # we will not operate on links, due to recursion issues.
+##    &differ_instructions;
+#    print "skipping link: $source_directory\n";
+#    return;
+#  }
   if (! -d $source_directory) {
     # a missing directory is just not good.
     print "skipping missing directory: $source_directory\n";
@@ -164,10 +164,10 @@ This program needs a directory name.  The directory name is used to
 specify a target directory where there are files which are mostly similar
 to the files in this directory.  The files in the current directory are
 compared to those in the specified target directory and the differences
-are sent to the standard output.  Note that neither directory may be
-a symbolic link, as that can lead to crazy recursion.
+are sent to the standard output.
 ";
 }
+#Note that neither directory may be a symbolic link, as that can lead to crazy recursion.
 
 ############################################################################
 
@@ -378,11 +378,11 @@ sub copy_diff_dirs {
     &cpdiff_instructions;
     return;
   }
-  if (-l $source_directory) {
-    # we will not operate on links, due to recursion issues.
-    &cpdiff_instructions;
-    return;
-  }
+#  if (-l $source_directory) {
+#    # we will not operate on links, due to recursion issues.
+#    &cpdiff_instructions;
+#    return;
+#  }
 
   # get the comparison directory from the arguments.
   local($compare_directory) = &sanitize_name($arguments[1]);
@@ -391,11 +391,11 @@ sub copy_diff_dirs {
     &cpdiff_instructions;
     return;
   }
-  if (-l $compare_directory) {
-    # we will not operate on links, due to recursion issues.
-    &cpdiff_instructions;
-    return;
-  }
+#  if (-l $compare_directory) {
+#    # we will not operate on links, due to recursion issues.
+#    &cpdiff_instructions;
+#    return;
+#  }
 
 #  print "src=$source_directory, dest=$compare_directory\n";
 
