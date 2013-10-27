@@ -339,7 +339,7 @@ if [ -z "$skip_all" ]; then
       echo "text to replace that pattern with."
       return 1
     fi
-    sed -i -e "s/$pattern/$replacement/" "$file"
+    sed -i -e "s%$pattern%$replacement%g" "$file"
   }
 
   function function_sentinel() { return 0; }
