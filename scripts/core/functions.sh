@@ -230,7 +230,7 @@ if [ -z "$skip_all" ]; then
   # label if they're doing an su with the sudo.
   function sudo() {
     local first_command="$1"
-    /usr/bin/sudo $*
+    /usr/bin/sudo "$@"
     if [ "$first_command" == "su" ]; then
       # yep, they were doing an su, but they're back now.
       bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
