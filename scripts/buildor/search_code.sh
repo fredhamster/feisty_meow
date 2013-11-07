@@ -29,8 +29,10 @@ find "$dir" -type f \( -iname "*" \
   ! -iname "*.iar" \
   ! -iname "*.jar" \
   ! -iname "*.lib" \
+  ! -iname "*.ncb" \
   ! -iname "*.oar" \
   ! -iname "*.obj" \
+  ! -iname "*.pch" \
   ! -iname "*.png" \
   ! -iname "*.snarf" \
   ! -iname "*.so" \
