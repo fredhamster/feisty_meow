@@ -333,7 +333,7 @@ sub important_filename {
       "\\.sbr", ".*scc", "^Setup\\.dbg", "^Setup\\.inx",
       "^Setup\\.map", "^Setup\\.obs", "^Selenium_.*Login.html",
       "\\.stackdump", "^string1033\\.txt", "\\.suo", "\\.swp",
-      "^thumbs.db", "\\.tmp", "^trans\\.tbl", "\\.user", "_version\\.h",
+      "^thumbs.db", "[a-zA-Z0-9]\\.tmp", "^trans\\.tbl", "\\.user", "_version\\.h",
       "_version\\.rc", "^waste", "\\.ws4", "\\.wsm");
 
   foreach $temp (@junk_files) {
@@ -394,9 +394,16 @@ sub upper {
 # recursively deletes a directory that is passed as the single parameter.
 # from http://developer.novell.com/wiki/index.php/Recursive_Directory_Remove
 sub recursive_delete {
-  my $dir = shift;
-  local *DIR;
 
+#hmmm: this should iterate across all params.
+  my $dir = shift;
+
+  if ( -f "$dir" ) {
+print "this is not a dir: $dir\nshould whack it here?\n";
+return;
+  }
+
+  local *DIR;
   opendir DIR, $dir or die "opendir $dir: $!";
   my $found = 0;
   while ($_ = readdir DIR) {

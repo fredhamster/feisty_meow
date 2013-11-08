@@ -42,9 +42,11 @@ sub remove_whackables {
       $fname = $from_dir . '/' . $fname;
 #print "whacking: $fname.\n";
       unlink $fname;
-      if (-d "$fname") {
-        print "recursively deleting directory: $fname\n";
+      if (-f "$fname") {
+        print "cleaning file: $fname\n";
         &recursive_delete($fname);
+      } else {
+        print "not touching unimportant dir right now: $fname\n";
       }
     }
   }

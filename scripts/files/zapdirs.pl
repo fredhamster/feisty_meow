@@ -47,7 +47,7 @@ if ($#ARGV < 0) {
   }
 }
 
-#print "zap list is:\n@to_zap\n";
+print "zap list is:\n@to_zap\n";
 
 &recursively_zap_dirs(@to_zap);
 
