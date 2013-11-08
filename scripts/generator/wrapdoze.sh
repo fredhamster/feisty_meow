@@ -4,21 +4,15 @@ source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 
 function dossify_and_run_commands()
 {
-
-
-eval "${@}"
-return $?
-
-
-#all primordial gunk.  try above first.
   # we only mess with the command line on windows...
   if [ "$OS" != "Windows_NT" ]; then
     # for non windows, just run the commands straight up.
-    $*
+    eval "${@}"
     return $?
   fi
 
   declare -a darc_commands=()
+#hmmm: may need the serious slash treatment.
 
   for i in "$@"; do
     if [[ "$i" =~ ^-[a-zA-z][/\"].* ]]; then
