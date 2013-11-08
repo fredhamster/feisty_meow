@@ -39,14 +39,17 @@ local($root) = &canonicalize("$HOME/feisty_meow");
 
 # snarf up all the important directories.
 # CAK: current as of 2012-05-05.
+&backup_hierarchy($snarf_file_base, $number, $root, "customizing");
 &backup_hierarchy($snarf_file_base, $number, $root, "database");
 &backup_hierarchy($snarf_file_base, $number, $root, "doc");
 &backup_hierarchy($snarf_file_base, $number, $root, "examples");
+&backup_hierarchy($snarf_file_base, $number, $root, "feisty_inits");
 &backup_hierarchy($snarf_file_base, $number, $root, "graphiq");
 &backup_hierarchy($snarf_file_base, $number, $root, "huffware");
 &backup_hierarchy($snarf_file_base, $number, $root, "kona");
 &backup_hierarchy($snarf_file_base, $number, $root, "nucleus");
 &backup_hierarchy($snarf_file_base, $number, $root, "octopi");
+&backup_hierarchy($snarf_file_base, $number, $root, "osgi");
 &backup_hierarchy($snarf_file_base, $number, $root, "scripts");
 &backup_hierarchy($snarf_file_base, $number, $root, "webby");
 
