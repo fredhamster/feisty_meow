@@ -2,8 +2,10 @@
 seek="$1"; shift
 if [ -z "$seek" ]; then
   echo This script needs a pattern to look for in the current directory.
-  echo All code files here and in subdirectories will be searched for the
+  echo All non-binary files here and in subdirectories will be searched for the
   echo pattern.
+  echo A directory can be passed as an optional second parameter, which will
+  echo cause the search to occur in that directory instead.
   exit 1
 fi
 #hmmm: might be nice to support multiple directories...
