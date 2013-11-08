@@ -957,6 +957,7 @@ HOOPLE_MAIN(value_tagger, )
   // static dependencies found by buildor_gen_deps.sh:
   #include <application/application_shell.cpp>
   #include <application/command_line.cpp>
+  #include <application/windoze_helper.cpp>
   #include <basis/astring.cpp>
   #include <basis/common_outcomes.cpp>
   #include <basis/environment.cpp>
@@ -973,10 +974,10 @@ HOOPLE_MAIN(value_tagger, )
   #include <filesystem/directory.cpp>
   #include <filesystem/directory_tree.cpp>
   #include <filesystem/file_info.cpp>
+  #include <filesystem/file_time.cpp>
   #include <filesystem/filename.cpp>
   #include <filesystem/filename_list.cpp>
   #include <filesystem/filename_tree.cpp>
-  #include <filesystem/file_time.cpp>
   #include <filesystem/huge_file.cpp>
   #include <loggers/combo_logger.cpp>
   #include <loggers/console_logger.cpp>

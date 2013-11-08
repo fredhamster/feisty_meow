@@ -389,9 +389,11 @@ HOOPLE_MAIN(write_build_config, )
   // static dependencies found by buildor_gen_deps.sh:
   #include <application/application_shell.cpp>
   #include <application/command_line.cpp>
+  #include <application/windoze_helper.cpp>
   #include <basis/astring.cpp>
   #include <basis/common_outcomes.cpp>
   #include <basis/environment.cpp>
+  #include <basis/guards.cpp>
   #include <basis/mutex.cpp>
   #include <basis/utf_conversion.cpp>
   #include <configuration/application_configuration.cpp>
