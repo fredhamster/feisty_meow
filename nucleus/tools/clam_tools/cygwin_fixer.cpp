@@ -44,13 +44,13 @@ char *translate_cygwin(char *fname)
   }
 }
 
-
+ 
 /*
 
 function dossify_and_run_commands()
 {
 
-
+ 
   declare -a darc_commands=()
   for i in "$@"; do
     // we only mess with the command line on windows.
@@ -85,4 +85,8 @@ int main(int argc, char *argv[])
   }
   return 0;
 }
+
+#ifdef __BUILD_STATIC_APPLICATION__
+  // static dependencies found by buildor_gen_deps.sh:
+#endif // __BUILD_STATIC_APPLICATION__
 
