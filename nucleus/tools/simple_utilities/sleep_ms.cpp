@@ -48,9 +48,11 @@ int main(int argc, char *argv[])
 #ifdef __BUILD_STATIC_APPLICATION__
   // static dependencies found by buildor_gen_deps.sh:
   #include <application/command_line.cpp>
+  #include <application/windoze_helper.cpp>
   #include <basis/astring.cpp>
   #include <basis/common_outcomes.cpp>
   #include <basis/environment.cpp>
+  #include <basis/guards.cpp>
   #include <basis/mutex.cpp>
   #include <basis/utf_conversion.cpp>
   #include <configuration/application_configuration.cpp>
@@ -62,6 +64,7 @@ int main(int argc, char *argv[])
   #include <filesystem/byte_filer.cpp>
   #include <filesystem/directory.cpp>
   #include <filesystem/filename.cpp>
+  #include <loggers/console_logger.cpp>
   #include <loggers/program_wide_logger.cpp>
   #include <structures/checksums.cpp>
   #include <structures/object_packers.cpp>

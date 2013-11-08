@@ -12,6 +12,7 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include "console_logger.h"
 #include "program_wide_logger.h"
 
 using namespace basis;
@@ -19,7 +20,7 @@ using namespace loggers;
 
 namespace loggers {
 
-standard_log_base *program_wide_logger::c_the_wide_log = new null_logger;
+standard_log_base *program_wide_logger::c_the_wide_log = new console_logger();
 
 standard_log_base &program_wide_logger::get() { return *c_the_wide_log; }
 

@@ -16,7 +16,9 @@ THIS_TOOL_NAME="$(basename "$0")"
 # set up the feisty_meow dir.
 pushd "$CORE_SCRIPTS_DIR/../.." &>/dev/null
 source "$CORE_SCRIPTS_DIR/functions.sh"
-export FEISTY_MEOW_DIR="$(pwd)"
+
+###unset SERIOUS_SLASH_TREATMENT
+export FEISTY_MEOW_DIR="$(unix_to_dos_path $(\pwd) )"
 popd &>/dev/null
 
 export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"
@@ -40,7 +42,7 @@ for i in FEISTY_MEOW_DIR FEISTY_MEOW_SCRIPTS FEISTY_MEOW_GENERATED; do
   echo "export $i=${!i}" >>"$GENERATED_FEISTY_MEOW_VARIABLES"
 done
 
-# load our variables so we get a useful PERLLIB variable.
+# load our variables so we can run our perl scripts successfully.
 source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
 
 # create our common aliases.

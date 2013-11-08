@@ -88,10 +88,10 @@ if [ ! -z "$SHELL_DEBUG" ]; then
   echo "[FEISTY_MEOW_DIR is $FEISTY_MEOW_DIR]"
 fi
 
-if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
-  # harsh on the paths and make them use backwards slashes.
-  export SERIOUS_SLASH_TREATMENT=true
-fi
+#if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
+#  # harsh on the paths and make them use backwards slashes.
+#  export SERIOUS_SLASH_TREATMENT=true
+#fi
 
 # new BUILD_TOP variable points at the utter top-most level of any files
 # in the building hierarchy.
@@ -193,7 +193,7 @@ if [ -z "$got_bad" ]; then
   
   # we should have established our internal variables now, so let's try
   # using them.
-  export PATH=$BINARY_DIR:$PATH
+  export PATH=$(dos_to_unix_path $BINARY_DIR):$PATH
   
   # load up the helper variables for visual studio on winders.
   if [ "$OPERATING_SYSTEM" == "WIN32" ]; then

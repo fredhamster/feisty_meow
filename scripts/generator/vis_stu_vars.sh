@@ -20,7 +20,7 @@ fi
 function setup_visual_studio_variables()
 {
   chmod 755 $PRODUCTION_DIR/win32_helper/*.exe
-  export PATH=$PRODUCTION_DIR/win32_helper:$PATH
+  export PATH="$(dos_to_unix_path $PRODUCTION_DIR)/win32_helper:$PATH"
 
   # we try to use the most recent compiler location, and work backwards as
   # needed for the supported range (10 = vs 2010, 9 = vs 2008, 8 = vs 2005).
@@ -40,7 +40,7 @@ function setup_visual_studio_variables()
   export VIS_STU_ROOT="$(echo $VSxTOOLS | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' | sed -e 's/^\(.\):/\/\1/' )"
   export VSINSTALLDIR="$VIS_STU_ROOT"
   
-  export WINDIR="$(short_path "$WINDIR" | sed -e 's/\\/\//g' | sed -e 's/^\(.\):/\/\1/' )"
+  export WINDIR="$(short_path "$WINDIR" | tr A-Z a-z | sed -e 's/\\/\//g' | sed -e 's/^\(.\):/\/\1/' )"
   
   export VCINSTALLDIR="$VSINSTALLDIR/VC"
   export VSCOMMONROOT="$VSINSTALLDIR/Common7"
@@ -58,7 +58,10 @@ function setup_visual_studio_variables()
   export WindowsSdkDir="$PLATFORM_DIR"
   
   #echo "path before is $PATH"
-  export PATH="$DevEnvDir:$VCINSTALLDIR/BIN:$VSxTOOLS:$VSxTOOLS/bin:$FrameworkDir/$FrameworkVersion:$FrameworkDir/v3.5:$VCINSTALLDIR/VCPackages:$VSINSTALLDIR/Common7/Tools:$PLATFORM_DIR/bin:$PATH"
+  local filena
+  for filena in "$DevEnvDir" "$VCINSTALLDIR/BIN" "$VSxTOOLS" "$VSxTOOLS/bin" "$FrameworkDir/$FrameworkVersion" "$FrameworkDir/v3.5" "$VCINSTALLDIR/VCPackages" "$VSINSTALLDIR/Common7/Tools" "$PLATFORM_DIR/bin"; do 
+    export PATH="$PATH:$(dos_to_unix_path $filena)"
+  done
   #echo "path after is $PATH"
   
   export INCLUDE="$VCINSTALLDIR/ATLMFC/INCLUDE:$VCINSTALLDIR/INCLUDE:$PLATFORM_DIR/include"

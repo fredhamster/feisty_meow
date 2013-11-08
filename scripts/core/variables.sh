@@ -100,10 +100,8 @@ if [ -z "$NECHUNG" ]; then
   
   # variables for perl.
   
-  export PERLLIB
-  if [ "$OS" != "Windows_NT" ]; then
-    PERLLIB+="/usr/lib/perl5"
-  else
+  export PERLLIB+="/usr/lib/perl5"
+  if [ "$OS" == "Windows_NT" ]; then
     export PERLIO=:perlio
       # choose perl's IO over the ms-windows version so we can handle file
       # bytes properly.
@@ -116,7 +114,7 @@ if [ -z "$NECHUNG" ]; then
       # check if there is a perl file present; add the folder to PERLLIB if so.
       ls $i/*.pl &>/dev/null
       if [ $? -eq 0 ]; then
-        PERLLIB+=":$i"
+        PERLLIB+=":$(dos_to_unix_path $i)"
       fi
     fi
   done
@@ -156,9 +154,9 @@ if [ -z "$NECHUNG" ]; then
       # up the path to it here based on the operating system.
       export BINDIR=$FEISTY_MEOW_DIR/production/binaries
       # add binaries created within build to the path.
-      export PATH="$BINDIR:$PATH"
+      export PATH="$(dos_to_unix_path $BINDIR):$PATH"
       # Shared libraries are located via this variable.
-      export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$BINDIR"
+      export LD_LIBRARY_PATH="$(dos_to_unix_path $LD_LIBRARY_PATH):$(dos_to_unix_path $BINDIR)"
     fi
   }
   
@@ -179,7 +177,7 @@ if [ -z "$NECHUNG" ]; then
   
   # add to the PATH variables used for locating applications.  this step is taken after any
   # potential overrides from the user.
-  export PATH="$FEISTY_MEOW_GENERATED:$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
+  export PATH="$(dos_to_unix_path $FEISTY_MEOW_GENERATED):$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
   
   ##############
 
