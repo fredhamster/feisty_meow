@@ -2,6 +2,29 @@
 
 source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 
+#hmmm: make this support multiple vars as parameters.
+# replaces a specific environment variable with a dos approved equivalent.
+function dossify_environment_variable()
+{
+  local var="$1"; shift
+
+  old_value="${!var}"
+  if [[ ! "$old_value" =~ \/cygdrive\/ ]]; then
+#echo didnt have a cygdrive in it: $old_value
+    return 0
+#hmmm: want this to continue in multi parm version.
+  fi
+
+  # replace single back-slashes with double ones.
+  local new_value="$(unix_to_dos_path "${old_value}")"
+
+  # remove any quote characters in the value.
+  new_value="${new_value//\"/}"
+
+#  echo "new value: $var  =  $new_value"
+  eval "export $var=\"$new_value\""
+}
+
 # for a windows build, this will replace any forward slashes
 # and other cygwin notation with the appropriate dos style paths.
 function dossify_and_run_commands()
@@ -14,6 +37,8 @@ function dossify_and_run_commands()
 
   # force all slashes to be dossy.
 #  export SERIOUS_SLASH_TREATMENT=true
+
+  dossify_environment_variable INCLUDE
 
   declare -a darc_commands=()
 
