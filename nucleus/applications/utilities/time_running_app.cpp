@@ -25,6 +25,10 @@
 
 #include <stdio.h>
 
+#ifdef __WIN32__
+  #include <io.h>
+#endif
+
 using namespace application;
 using namespace basis;
 using namespace loggers;

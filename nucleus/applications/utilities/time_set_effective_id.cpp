@@ -48,6 +48,7 @@ int time_set_effective_id::execute()
   FUNCDEF("execute");
   SETUP_COMBO_LOGGER;
 
+#ifndef __WIN32__
   int test_runs = 1000000;
 
   time_stamp start;  // start of test.
@@ -72,6 +73,7 @@ int time_set_effective_id::execute()
   LOG(a_sprintf("test run took %0.2f milliseconds or %0.2f seconds or %0.2f minutes.", durat, secs, secs / 60.0));
   // divide by two because we're doing two calls above.
   LOG(a_sprintf("individual call takes %0.0f milliseconds.", durat / double(test_runs) / 2.0));
+#endif
 
   return 0;
 }

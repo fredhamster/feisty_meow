@@ -500,7 +500,9 @@ $(DYNAMIC_LIBRARY_DIR)/%.dll: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL
 	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
   endif
 	$(HIDER)rm -f $(@:%.dll=%.lib)
+	echo about to run link tool.
 	$(CATCHER)$(LINK_TOOL) $(LINKER_OUTPUT_FLAG)$@ -dll $(LOAD_FLAG_PREFIX) $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_RESX_FLAGS) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)$(LIB_PREFIX)%$(LIB_ENDING)) $(LOAD_FLAG_SUFFIX)
+	echo ran link tool.
   ifeq "$(COMPILER_VERSION)" "8"
 	$(HIDESH)$(CLAM_DIR)/cpp/ms_manifest.sh "$@" "2"
   endif

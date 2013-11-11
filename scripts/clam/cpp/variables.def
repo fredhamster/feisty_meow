@@ -674,6 +674,7 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
   # set these way up here so we can override them later.
   CC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/cl.exe
   LINK_TOOL = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/link.exe
+  LIBRARY_TOOL = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/lib
 
   # This is needed to protect against the use of 64-bit time_t structure
   # on windows.  We are casting to time_t from a 32-bit structure.
@@ -683,19 +684,19 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
   ifeq "$(COMPILER_VERSION)" "6"
     COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atl/include
     COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atl/lib
-    RC = $(COMPILER_ROOT_DIR)/../common/msdev98/bin/rc
+    RC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/../common/msdev98/bin/rc
   endif
   ifeq "$(COMPILER_VERSION)" "7"
     COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atlmfc/include $(COMPILER_ROOT_DIR)/platformsdk/include $(FRAMEWORK_DIR)
     COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atlmfc/lib $(COMPILER_ROOT_DIR)/platformsdk/lib
-    RC = $(COMPILER_ROOT_DIR)/bin/rc
+    RC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/rc
     COMPILER_FLAGS += -Zc:forScope
       # turn on proper loop scoping.
   endif
   ifeq "$(COMPILER_VERSION)" "8"
     COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atlmfc/include $(COMPILER_ROOT_DIR)/platformsdk/include $(FRAMEWORK_DIR)
     COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atlmfc/lib $(COMPILER_ROOT_DIR)/platformsdk/lib
-    RC = $(COMPILER_ROOT_DIR)/bin/rc
+    RC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/rc
     COMPILER_FLAGS += -Zc:forScope
       # turn on proper loop scoping.
     DEFINITIONS += _WIN32_WINNT=0x501 
@@ -711,7 +712,7 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
     COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atlmfc/lib $(PLATYPUS)/lib
     DEFINITIONS += _WIN32_WINNT=0x501 
     DEPENDENCY_DEFINITIONS += _WIN32_WINNT=0x501 
-    RC = $(PLATYPUS)/bin/rc
+    RC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(PLATYPUS)/bin/rc
     COMPILER_FLAGS += -Zc:forScope
       # turn on proper loop scoping.
   endif
@@ -731,7 +732,6 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
 
   DEFINITIONS += _Windows _WINDOWS WIN32 __WIN32__ __FLAT__ VC_EXTRALEAN WIN32_LEAN_AND_MEAN ATL_NO_LEAN_AND_MEAN 
   DEF_FILE =
-  LIBRARY_TOOL = $(COMPILER_ROOT_DIR)/bin/lib
   LOAD_FLAG_PREFIX = -subsystem:windows -machine:X86 -nologo
   LOAD_FLAG_SUFFIX =
 

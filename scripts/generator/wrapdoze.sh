@@ -2,17 +2,20 @@
 
 source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 
+# for a windows build, this will replace any forward slashes
+# and other cygwin notation with the appropriate dos style paths.
 function dossify_and_run_commands()
 {
-  # we only mess with the command line on windows...
   if [ "$OS" != "Windows_NT" ]; then
     # for non windows, just run the commands straight up.
     eval "${@}"
     return $?
   fi
 
+  # force all slashes to be dossy.
+#  export SERIOUS_SLASH_TREATMENT=true
+
   declare -a darc_commands=()
-#hmmm: may need the serious slash treatment.
 
   for i in "$@"; do
     if [[ "$i" =~ ^-[a-zA-z][/\"].* ]]; then
@@ -33,13 +36,13 @@ function dossify_and_run_commands()
     real_commands+=($(echo $i | sed -e 's/\\/\\\\/g'))
   done
 
-#temp!
-  echo commands are now:
-  for i in "${real_commands[@]}"; do
-    echo -n "$i "
-  done
-  echo
-#end temp
+  if [ ! -z "$SHELL_DEBUG" ]; then
+    echo commands are now:
+    for i in "${real_commands[@]}"; do
+      echo -n "$i "
+    done
+    echo
+  fi
 
   # now actually run the chewed command.
   cmd /c "${real_commands[@]}"

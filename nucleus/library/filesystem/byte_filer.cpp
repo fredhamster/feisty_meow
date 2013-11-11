@@ -29,7 +29,7 @@
   #include <io.h>
 #endif
 
-//#define DEBUG_BYTE_FILER
+#define DEBUG_BYTE_FILER
   // uncomment for noisy version of class.
 
 using namespace basis;
@@ -88,19 +88,8 @@ bool byte_filer::open(const astring &fname, const astring &perms)
   close();
   _auto_close = true;  // reset since we know we're opening this.
   _filename->reset(fname);
-#ifndef __WIN32__
   _handle->fp = _filename->raw().t()? fopen(_filename->raw().s(), perms.s()) : NIL;
-#else
-  _handle->fp = _filename->raw().t()? _wfopen((wchar_t *)(UTF16 *)transcode_to_utf16(_filename->raw()),
-      (wchar_t *)(UTF16 *)transcode_to_utf16(perms)) : NIL;
-
-#ifdef DEBUG_BYTE_FILER
-  if (!_handle->fp)
-    wprintf((wchar_t *)(UTF16 *)transcode_to_utf16("could not open: %ls\n"),
-        (wchar_t *)(UTF16 *)transcode_to_utf16(_filename->raw()));
-#endif
-
-#endif
+  if (_handle->fp == NIL) return false;
   return good();
 }
 

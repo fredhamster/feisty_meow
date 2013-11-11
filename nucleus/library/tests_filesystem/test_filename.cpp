@@ -259,7 +259,7 @@ int test_filename::execute()
     filename test17("r/");
     ASSERT_EQUAL(test17, astring("r\\"), GROUP + "test 17 failed");
     filename test18("/kr/soop");
-    ASSERT_NOT_EQUAL(test18, astring("\\kr\\soop"), GROUP + "test 18 failed");
+    ASSERT_INEQUAL(test18, astring("\\kr\\soop"), GROUP + "test 18 failed");
   }
 #endif
 

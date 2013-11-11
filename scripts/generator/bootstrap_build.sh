@@ -225,7 +225,6 @@ if [ ! -f "$BINARY_DIR/value_tagger$EXE_ENDING" \
   promote version_stamper  # used for version stamping.
   promote vsts_version_fixer  # used for version stamping.
   promote write_build_config  # creates a header of build-specific config info.
-  promote cygwin_fixer  # translates cygwin paths into dos-style equivalents.
 
   popd &>/dev/null
 fi

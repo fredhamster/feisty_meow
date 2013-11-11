@@ -229,6 +229,7 @@ int value_tagger::print_instructions_and_exit()
 {
   LOG(a_sprintf("%s usage:", filename(_global_argv[0]).basename().raw().s()));
   LOG("");
+
   LOG("\
 This utility scans a code base for outcome and filter definitions.  It will\n\
 only scan the header files (*.h) found in the directories specified.  The\n\

@@ -190,6 +190,7 @@ Booleano isLegalUTF8Sequence(const UTF8 *source, const UTF8 *sourceEnd);
 // compliant functions that required Unicode in win32 but not in Unix systems.
 
 #if defined(UNICODE)
+#error should not be in here right now --cak
 ///holding to test wx && defined(__WIN32__)
   //! to_unicode_temp() converts to UTF-16 as needed for win32 system calls.
   /*! this conversion is only appropriate to use within expressions.  it does
