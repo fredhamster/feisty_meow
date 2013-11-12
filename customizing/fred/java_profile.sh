@@ -130,5 +130,5 @@ fi
 
 ############################
 
-echo "after running $0 JAVA_HOME='$JAVA_HOME' and eclipse is $ECLIPSE_DIR"
+#echo "java_profile: JAVA_HOME='$JAVA_HOME' ECLIPSE_DIR='$ECLIPSE_DIR'"
 
