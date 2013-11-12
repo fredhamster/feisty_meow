@@ -8,17 +8,6 @@
 
 source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 
-#function whichable()
-#{
-#  to_find="$1"; shift
-#  which which &>/dev/null
-#  if [ $? -ne 0 ]; then
-#    # there is no which command here.  we produce nothing due to this.
-#    echo
-#  fi
-#  echo $(which $to_find)
-#}
-
 # this reports when we have totally failed to figure out where a folder
 # is actually located on the machine.
 function intuition_failure()
@@ -53,6 +42,12 @@ if [ ! -d "$JAVA_HOME" ]; then
 fi
 if [ ! -d "$JAVA_HOME" ]; then
   JAVA_HOME="$(ls -d c:/tools/*jdk* 2>/dev/null)"
+fi
+if [ ! -d "$JAVA_HOME" ]; then
+  JAVA_HOME="$(ls -d "c:/Program Files"/*jdk* 2>/dev/null)"
+fi
+if [ ! -d "$JAVA_HOME" ]; then
+  JAVA_HOME="$(ls -d "c:/Program Files (x86)"/*jdk* 2>/dev/null)"
 fi
 if [ ! -d "$JAVA_HOME" ]; then
   if [ ! -z "$(grep -i 'd:' /proc/mounts 2>/dev/null)" ]; then
@@ -136,3 +131,5 @@ fi
 ############################
 
 
+echo here at end of script java home is $JAVA_HOME
+echo and eclipse is $ECLIPSE_DIR
