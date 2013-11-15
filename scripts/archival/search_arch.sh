@@ -32,7 +32,7 @@ find "$dir" -iname "*.jar" -o -iname "*.zip" -o -iname "*.tar" \
   >"$TMPFILE"
 
 while read line; do
-  bash $FEISTY_MEOW_SCRIPTS/archival/listarch.sh "$line" 2>&1 | grep -i "$pattern" >/dev/null
+  bash $FEISTY_MEOW_SCRIPTS/archival/list_arch.sh "$line" 2>&1 | grep -i "$pattern" >/dev/null
   if [ $? -eq 0 ]; then echo ==== Found pattern in $line ====; fi
 done <"$TMPFILE"
 
