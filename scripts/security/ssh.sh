@@ -4,7 +4,11 @@
 
 source "$FEISTY_MEOW_SCRIPTS/security/pick_credentials.sh"
 
-\ssh -i "$keyfile" -X $*
+if [ ! -z "$keyfile" ]; then
+  \ssh -i "$keyfile" -X $*
+else
+  \ssh -X $*
+fi
 
 if [ $? -eq 0 ]; then
   # we don't want to emit anything extra if this is being driven by git.

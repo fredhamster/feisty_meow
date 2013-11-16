@@ -14,7 +14,7 @@ SPAM_SPOOL="/var/spool/sa-exim"
 SPAM_HOLD="$HOME/spamcrud"
 # the white list needs to be a file of good email addresses that will
 # probably never send spam.  it should be formatted one address to a line.
-EMAIL_WHITE_LIST="$HOME/cloud/database/lists/email_addresses.txt"
+EMAIL_WHITE_LIST="$HOME/cloud/infobase/lists/email_addresses.txt"
 # we'll save a report of the spam checks in the file below.
 REPORT_FILE="$HOME/spam_check_report_$(date_stringer).txt"
 

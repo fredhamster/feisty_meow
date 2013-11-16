@@ -12,3 +12,6 @@ if [ ! -z "$(echo $* | grep -i sourceforge)" ]; then
   keyfile="$HOME/.ssh/id_dsa_sourceforge"
 fi
 
+if [ ! -f "$keyfile" ]; then
+  unset keyfile
+fi
