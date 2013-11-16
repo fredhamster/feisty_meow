@@ -21,7 +21,7 @@ else
   echo "Content-type: text/html"
   echo ""
   echo ""
-  cat /home/www-data/feisty_meow/database/pictures/no_matches.html
+  cat /home/www-data/feisty_meow/infobase/pictures/no_matches.html
 
 fi
 

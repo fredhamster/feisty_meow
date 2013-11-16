@@ -123,7 +123,7 @@ if [ -z "$NECHUNG" ]; then
   ##############
   
   # set this so nechung can find its data.
-  export NECHUNG=$FEISTY_MEOW_DIR/database/fortunes.dat
+  export NECHUNG=$FEISTY_MEOW_DIR/infobase/fortunes.dat
   
   # ensure we use the right kind of secure shell.
   export CVS_RSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh

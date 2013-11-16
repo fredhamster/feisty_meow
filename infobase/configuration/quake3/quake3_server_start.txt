@@ -10,6 +10,6 @@ that i don't know but which i have heard of.
 
 this just automates the copying of the config file before running quake.
 
-cp ~/feisty_meow/database/quake3/fred_free_for_all.cfg /usr/local/games/quake3/baseq3/ ; nohup quake3 +set dedicated 1 +exec fred_free_for_all.cfg 
+cp ~/feisty_meow/infobase/quake3/fred_free_for_all.cfg /usr/local/games/quake3/baseq3/ ; nohup quake3 +set dedicated 1 +exec fred_free_for_all.cfg 
 
 

@@ -16,7 +16,7 @@ cd ~/feisty_meow/scripts/files
 cp show_directory_listing.sh \
   /usr/lib/cgi-bin
 
-cd ~/feisty_meow/database
+cd ~/feisty_meow/infobase
 cp fortunes.dat \
   /usr/lib/cgi-bin
 

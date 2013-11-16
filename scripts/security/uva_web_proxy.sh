@@ -15,7 +15,7 @@
 #ssh_host=khandroma.cs.virginia.edu
 ssh_host=mason.cs.virginia.edu
 
-soundfile=$FEISTY_MEOW_DIR/database/sounds/woouoo.wav
+soundfile=$FEISTY_MEOW_DIR/infobase/sounds/woouoo.wav
 if [ ! -z "$1" ]; then
   soundfile=$1
 fi

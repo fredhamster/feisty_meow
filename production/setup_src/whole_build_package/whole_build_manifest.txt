@@ -72,8 +72,8 @@ recurse=1
 keyword=sources
 
 [database]
-source=$FEISTY_MEOW_DIR/database
-target=$TARGET/database
+source=$FEISTY_MEOW_DIR/infobase
+target=$TARGET/infobase
 recurse=1
 keyword=sources
 
