@@ -1,0 +1,5 @@
+
+
+bin bin.eclipse subprojects bin-eclipse codegen genned-src genned-obj unit-test-reports
+
+
