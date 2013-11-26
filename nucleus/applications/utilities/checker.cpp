@@ -36,7 +36,7 @@ using namespace timely;
 
 const int buffer_size = 4096;
 
-#define DEBUG_CHECKER
+//#define DEBUG_CHECKER
   // uncomment for noisy version.
 
 #undef LOG
