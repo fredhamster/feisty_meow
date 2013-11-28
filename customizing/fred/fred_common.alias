@@ -7,7 +7,7 @@ alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chun
 alias unmoo='umount /z/stuffing ; umount /z/walrus ; umount /z/chunky ; umount /z/fredgrid'
 
 # cleans up the ownership for all my files.
-alias refred='(chown -R fred:fred /home/fred /home/games /home/archives ; normal_perm /var/log )'
+#moved alias refred='(chown -R fred:fred /home/fred /home/games /home/archives ; normal_perm /var/log )'
 
 # load in the xsede build scripts.
 source "$FEISTY_MEOW_SCRIPTS/buildor/build_xsedes.sh"
