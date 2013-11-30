@@ -1,7 +1,6 @@
 
 
-%o;%a/%A/%T_%t.m4a;%a/%A/%T_%t.mp3;%t.wav
-
+%a/%A/%T_%t.m4a;%a/%A/%T_%t.mp3;%t.wav;%o
 
 that puts the things in directories under artist,
 then under the album name, and
