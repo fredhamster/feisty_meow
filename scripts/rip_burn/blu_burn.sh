@@ -27,7 +27,7 @@ if [ ! -b "$device_name" ]; then
   exit 3
 fi
 
-"$iso_name" "$device_name"
+echo iso "$iso_name" dev "$device_name"
 
 growisofs -speed=2 -dvd-compat -Z ${device_name}=${iso_name}
 
