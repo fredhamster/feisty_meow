@@ -44,9 +44,10 @@ $TMP =~ s/\\/\//g;  # fix the temp variable for ms-winders.
     "octalforty.Wizardby", "*.obr", "*.opt", "packages", 
     "*.pch", "*.pdb", "*.plg", "*.r$p", "*.rcs", "Release",
     "*.res", "*.RES", "*.rws", "*.sbr", "*.scc", "*.spx", "*.stackdump",
+    "Steam",
     "*.sdf", "*.suo", ".svn", "*.sym", "*.td", "*.tds", "*.tdw", "*.tlb",
     "*.trw", "*.tmp", "*.tr", "*.user", "*_version.h", "*_version.rc",
-    "*.vspscc", "waste");
+    "*.vspscc", "waste", "zeitgeist");
 #print "junk list=@junk_file_list\n";
 @excludes = ();
 for (local($i) = 0; $i < scalar(@junk_file_list); $i++) {
