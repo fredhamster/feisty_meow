@@ -33,6 +33,20 @@ if [ -z "$skip_all" ]; then
     cd "$1"
   }
 
+  function success_sound()
+  {
+    if [ ! -z "$CLAM_FINISH_SOUND" ]; then
+      play "$CLAM_FINISH_SOUND"
+    fi
+  }
+
+  function error_sound()
+  {
+    if [ ! -z "$CLAM_ERROR_SOUND" ]; then
+      play "$CLAM_ERROR_SOUND"
+    fi
+  }
+
   # checks the result of the last command that was run, and if it failed,
   # then this complains and exits from bash.  the function parameters are
   # used as the message to print as a complaint.
@@ -40,6 +54,7 @@ if [ -z "$skip_all" ]; then
   {
     if [ $? -ne 0 ]; then
       echo -e "failed on: $*"
+      error_sound
       exit 1
     fi
   }

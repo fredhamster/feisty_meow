@@ -11,33 +11,22 @@ function build_xsede()
   pushd $GENII_INSTALL_DIR
   if [ $? -ne 0 ]; then return 1; fi
   echo "Build starting at: $(date)"
-  \rm -rf unit-test-reports
-#  # update the libs first.
-#  ant update
-  if [ $? -ne 0 ]; then return 1; fi
-  # then build the trunk.
+
+# clean up some things.
+#maybe not needed.
+if [ ! -d unit-test-reports ]; then
+echo this chunk in build_xsedes could be removed to clean up unit tests
+else
+\rm -rf unit-test-reports
+fi
+
+  # build the trunk.
   ant -Dbuild.targetArch=64 build
   if [ $? -ne 0 ]; then return 1; fi
-  # fix memory limits.
-#hmmm: clean these up.
-  if [ -f runContainer.sh ]; then
-    sed -i -e "s/-Xmx512M/-Xmx2G/" "runContainer.sh" 
-    chmod 755 "runContainer.sh" 
-  fi
-  if [ -f grid ]; then
-#    sed -i -e "s/-Xmx512M/-Xmx1G/" "grid"
-    chmod 755 "grid"
-  fi
-  if [ -f runContainer.bat ]; then
-    sed -i -e "s/-Xmx512M/-Xmx2G/" "runContainer.bat"
-    chmod 755 "runContainer.bat" 
-  fi
-  if [ -f grid.bat ]; then
-#    sed -i -e "s/-Xmx512M/-Xmx1G/" "grid.bat"
-    chmod 755 "grid.bat"
-  fi
   echo "Build done at: $(date)"
   popd
+
+  success_sound  
 }
 
 function rebuild_xsede()
@@ -52,4 +41,17 @@ function rebuild_xsede()
   popd
   build_xsede
 }
+
+# a shortcut for doing a new build and creating a bootstrap container with it.
+function rebu_bootstrap()
+{
+  rebuild_xsede 
+  check_result "failed to rebuild xsede code"
+
+  bash $GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh
+  check_result "failed to bootstrap a container"
+
+  success_sound  
+}
+
 

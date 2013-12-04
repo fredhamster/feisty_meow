@@ -18,7 +18,7 @@ function check_if_failed()
 # if there was a failure detected.
 function exit_if_failed()
 {
-  check_if_failed
+  check_if_failed $*
   if [ $? -ne 0 ]; then
     exit 1
   fi
