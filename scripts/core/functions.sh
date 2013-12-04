@@ -36,14 +36,14 @@ if [ -z "$skip_all" ]; then
   function success_sound()
   {
     if [ ! -z "$CLAM_FINISH_SOUND" ]; then
-      play "$CLAM_FINISH_SOUND"
+      bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh "$CLAM_FINISH_SOUND"
     fi
   }
 
   function error_sound()
   {
     if [ ! -z "$CLAM_ERROR_SOUND" ]; then
-      play "$CLAM_ERROR_SOUND"
+      bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh "$CLAM_ERROR_SOUND"
     fi
   }
 
