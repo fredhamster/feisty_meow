@@ -2,6 +2,9 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
+#hmmm: if this works well, we can use it in lots of places.
+alias BAIL_ON_FAIL='if [ $? -ne 0 ]; then echo "A problem occurred.  $msg"; return 1; fi'
+
 function build_xsede()
 {
   if [ -z "$GENII_INSTALL_DIR" ]; then
@@ -46,10 +49,22 @@ function rebuild_xsede()
 function rebu_bootstrap()
 {
   rebuild_xsede 
-  check_result "failed to rebuild xsede code"
+  if [ $? -ne 0 ]; then echo "failed to rebuild xsede code"; return 1; fi
 
   bash $GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh
-  check_result "failed to bootstrap a container"
+  if [ $? -ne 0 ]; then echo "failed to bootstrap a container"; return 1; fi
+
+  success_sound  
+}
+
+# a shortcut for doing a quick build and then creating an installer.
+function fast_install_build()
+{
+  build_xsede 
+  if [ $? -ne 0 ]; then echo "failed to build xsede code"; return 1; fi
+
+  bash $GENII_INSTALL_DIR/xsede_tools/tools/installer/fast_installer_build.sh $*
+  if [ $? -ne 0 ]; then echo "failed to create the installer."; return 1; fi
 
   success_sound  
 }
