@@ -357,6 +357,8 @@ if [ -z "$skip_all" ]; then
     sed -i -e "s%$pattern%$replacement%g" "$file"
   }
 
+  ##############
+
   function function_sentinel() { return 0; }
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo function definitions end....; fi
