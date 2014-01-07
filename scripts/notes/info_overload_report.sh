@@ -104,6 +104,9 @@ analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes"
 # feisty notes are about feisty meow(r) concerns ltd codebase development.
 analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes"
 
+# home notes are a new top-level category; used to be under the grunty.
+analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes"
+
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active items" ~/cloud/*active*
 
