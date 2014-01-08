@@ -6,6 +6,8 @@ echo '=============='
 echo
 echo Your user name is $USER on a computer named $(hostname).
 echo Your machine platform is $(uname -m)
+echo -n Uptime: 
+uptime
 if [ $OPERATING_SYSTEM == "UNIX" ]; then
   which lsb_release &>/dev/null
   if [ $? -eq 0 ]; then
