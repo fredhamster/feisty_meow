@@ -79,7 +79,7 @@ endif
 ifeq "$(NOT_FIRST_MAKE)" ""
 	$(HIDESH) -c '\
 if [ ! -f "$(FAILURE_FILE)" ]; then \
-  $(SHELL) $(CLAM_DIR)/sound_play.sh $(CLAM_FINISH_SOUND); \
+  $(SHELL) $(FEISTY_MEOW_SCRIPTS)/multimedia/sound_play.sh $(CLAM_FINISH_SOUND); \
 fi'
 endif
 # toss the flag files so we do not see them again.
