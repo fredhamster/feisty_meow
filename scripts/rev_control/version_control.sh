@@ -220,8 +220,8 @@ function do_update()
     git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
     retval=${PIPESTATUS[0]}
   else
+    # this is not an error necessarily; we'll just pretend they planned this.
     echo no repository in $directory
-    retval=1
   fi
   popd &>/dev/null
   return $retval
