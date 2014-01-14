@@ -102,6 +102,11 @@ function compute_modifier()
 function do_checkin()
 {
   local directory="$1"; shift
+  do_update "$directory"
+  if [ $? -ne 0 ]; then
+    echo "Repository update failed; this should be fixed before check-in."
+    return 1
+  fi
   pushd "$directory" &>/dev/null
   retval=0  # normally successful.
   if [ -d "CVS" ]; then
@@ -202,18 +207,24 @@ function squash_first_few_crs()
 function do_update()
 {
   directory="$1"; shift
- 
+  # plan on success for now.
+  retval=0
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
     cvs update . | squash_first_few_crs
+    retval=${PIPESTATUS[0]}
   elif [ -d ".svn" ]; then
     svn update . | squash_first_few_crs
+    retval=${PIPESTATUS[0]}
   elif [ -d ".git" ]; then
     git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+    retval=${PIPESTATUS[0]}
   else
     echo no repository in $directory
+    retval=1
   fi
   popd &>/dev/null
+  return $retval
 }
 
 # gets all the updates for a list of folders under revision control.
