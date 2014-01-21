@@ -78,7 +78,7 @@ sub safedel {
       die "the TMP directory $TMP could not be created!\n";
     }
   }
-  $temp_subdir = $TMP . "/zz_del_keep";
+  $temp_subdir = $TMP . "/zz_safedel_keep";
   if (! -d $temp_subdir) {
     mkdir "$temp_subdir", 0700;
       # create the subdirectory under temp if missing.
