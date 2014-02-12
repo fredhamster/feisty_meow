@@ -33,6 +33,16 @@ if [ -z "$skip_all" ]; then
     cd "$1"
   }
 
+  # displays the value of a variable in bash friendly format.
+  function var() {
+    local varname="$1"; shift
+    if [ -z "${!varname}" ]; then
+      echo "$varname undefined"
+    else
+      echo "$varname=${!varname}"
+    fi
+  }
+
   function success_sound()
   {
     if [ ! -z "$CLAM_FINISH_SOUND" ]; then
