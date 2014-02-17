@@ -129,7 +129,7 @@ sub safedel {
   }
   if (@deleted) {
     print "Trashed [@deleted].\n";
-    open(REPORT, ">>$TMP/zz_safedel.rpt");
+    open(REPORT, ">>$TMP/zz_safedel_report.txt");
 
     local($printable_date) = scalar(localtime());
 #&ctime(time);
