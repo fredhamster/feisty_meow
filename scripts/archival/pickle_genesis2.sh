@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#untested recently!!!
-
 # load in our helper functions, like date_stringer.
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
