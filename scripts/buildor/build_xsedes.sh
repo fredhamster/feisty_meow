@@ -12,7 +12,10 @@ function build_xsede()
     return 1
   fi
   pushd $GENII_INSTALL_DIR
-  if [ $? -ne 0 ]; then return 1; fi
+  if [ $? -ne 0 ]; then
+    error_sound
+    return 1
+  fi
   echo "Build starting at: $(date)"
 
   # clean up some things.
@@ -20,7 +23,10 @@ function build_xsede()
 
   # build the trunk.
   ant -Dbuild.targetArch=64 build
-  if [ $? -ne 0 ]; then return 1; fi
+  if [ $? -ne 0 ]; then
+    error_sound
+    return 1
+  fi
   echo "Build done at: $(date)"
   popd
 
@@ -36,7 +42,10 @@ function rebuild_xsede()
   pushd $GENII_INSTALL_DIR
   ant clean
 
-  if [ $? -ne 0 ]; then return 1; fi
+  if [ $? -ne 0 ]; then
+    error_sound
+    return 1
+  fi
   popd
   build_xsede
 }
@@ -48,7 +57,11 @@ function rebu_bootstrap()
   if [ $? -ne 0 ]; then echo "failed to rebuild xsede code"; return 1; fi
 
   bash $GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh
-  if [ $? -ne 0 ]; then echo "failed to bootstrap a container"; return 1; fi
+  if [ $? -ne 0 ]; then
+    echo "failed to bootstrap a container."
+    error_sound
+    return 1
+  fi
 
   success_sound  
 }
@@ -60,7 +73,11 @@ function bu_bootstrap()
   if [ $? -ne 0 ]; then echo "failed to rebuild xsede code"; return 1; fi
 
   bash $GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh
-  if [ $? -ne 0 ]; then echo "failed to bootstrap a container"; return 1; fi
+  if [ $? -ne 0 ]; then
+    echo "failed to bootstrap a container."
+    error_sound
+    return 1
+  fi
 
   success_sound  
 }
@@ -72,7 +89,11 @@ function fast_install_build()
   if [ $? -ne 0 ]; then echo "failed to build xsede code"; return 1; fi
 
   bash $GENII_INSTALL_DIR/xsede_tools/tools/installer/fast_installer_build.sh $*
-  if [ $? -ne 0 ]; then echo "failed to create the installer."; return 1; fi
+  if [ $? -ne 0 ]; then
+    echo "failed to bootstrap create the installer."
+    error_sound
+    return 1
+  fi
 
   success_sound  
 }
