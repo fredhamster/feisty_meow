@@ -3,8 +3,8 @@
 # cleans up the ownership for all my files.
 function refred()
 {
-  chown -R fred:fred /home/fred /home/games /home/archives
-  bash $FEISTY_MEOW_SCRIPTS/files/normal_perm.sh /var/log
+  sudo chown -R fred:fred /home/fred /home/games /home/archives
+  sudo bash $FEISTY_MEOW_SCRIPTS/files/normal_perm.sh /var/log
 }
 
 # this block should execute when the script is actually run, rather
