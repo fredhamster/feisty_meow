@@ -98,6 +98,8 @@ full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 ================================================================\n\
 "
 
+analyze_hierarchy_and_report ~/cloud/urgent "high priority"
+
 # notes are individual files of tasks, usually, although some are combined.
 analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes"
 
