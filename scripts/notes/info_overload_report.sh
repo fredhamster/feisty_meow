@@ -124,7 +124,7 @@ analyze_hierarchy_and_report ~/cloud/example_source "source examples"
 
 # and then count up the things that we think will be cleaned soon, but one thing we have learned
 # unsorted files haven't been categorized yet.
-analyze_hierarchy_and_report ~/cloud/unsorted "unsorted files"
+analyze_hierarchy_and_report ~/cloud/disordered "unsorted files"
 
 # we now consider the backlog of things to read to be a relevant fact.  this is going to hose
 # up our weight accounting considerably.
