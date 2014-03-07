@@ -104,16 +104,11 @@ if [ -z "$skip_all" ]; then
       local CR='
 '  # embedded carriage return.
       local appropriate_pattern="s/^.*  *\([0-9][0-9]*\)[ $CR]*\$/\1/p"
+      local -a PIDS_SOUGHT
       for i in "${patterns[@]}"; do
-        local -a PIDS_SOUGHT+=($(cat $PID_DUMP \
+        PIDS_SOUGHT+=($(cat $PID_DUMP \
           | grep -i "$i" \
           | sed -n -e "$appropriate_pattern"))
-        if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
-          # we want to bail as soon as we get matches, because on the same
-          # platform, the same set of patterns should work to find all
-          # occurrences of the genesis java.
-          break;
-        fi
       done
     else
       /bin/ps $extra_flags wuax >$PID_DUMP
@@ -122,20 +117,15 @@ if [ -z "$skip_all" ]; then
       # remove the first line of the file, search for the pattern the
       # user wants to find, and just pluck the process ids out of the
       # results.
+      local -a PIDS_SOUGHT
       for i in "${patterns[@]}"; do
-        local -a PIDS_SOUGHT=($(cat $PID_DUMP \
+        PIDS_SOUGHT+=($(cat $PID_DUMP \
           | sed -e '1d' \
           | grep -i "$i" \
           | sed -n -e "$appropriate_pattern"))
-        if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
-          # we want to bail as soon as we get matches, because on the same
-          # platform, the same set of patterns should work to find all
-          # occurrences of the genesis java.
-          break;
-        fi
       done
     fi
-    if [ ! -z "$PIDS_SOUGHT" ]; then echo "$PIDS_SOUGHT"; fi
+    if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then echo ${PIDS_SOUGHT[*]}; fi
     /bin/rm $PID_DUMP
   }
   
