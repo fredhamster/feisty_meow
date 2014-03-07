@@ -76,9 +76,10 @@ if [ -z "$skip_all" ]; then
 
   # locates a process given a search pattern to match in the process list.
   function psfind() {
+    local -a patterns=("${@}")
+    mkdir $TEST_TEMP/grid_logs &>/dev/null
     local PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
     local PIDS_SOUGHT=()
-    local patterns=($*)
     if [ "$OS" == "Windows_NT" ]; then
       # needs to be a windows format filename for 'type' to work.
       if [ ! -d c:/tmp ]; then
@@ -100,12 +101,13 @@ if [ -z "$skip_all" ]; then
       # we 'type' the file to get rid of the unicode result from wmic.
       cmd $flag type "$tmppid" >$PID_DUMP
       \rm "$tmppid"
-      local CR=''  # embedded carriage return.
+      local CR='
+'  # embedded carriage return.
       local appropriate_pattern="s/^.*  *\([0-9][0-9]*\)[ $CR]*\$/\1/p"
       for i in "${patterns[@]}"; do
-        PIDS_SOUGHT+=$(cat $PID_DUMP \
+        local -a PIDS_SOUGHT+=($(cat $PID_DUMP \
           | grep -i "$i" \
-          | sed -n -e "$appropriate_pattern")
+          | sed -n -e "$appropriate_pattern"))
         if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
           # we want to bail as soon as we get matches, because on the same
           # platform, the same set of patterns should work to find all
@@ -121,10 +123,10 @@ if [ -z "$skip_all" ]; then
       # user wants to find, and just pluck the process ids out of the
       # results.
       for i in "${patterns[@]}"; do
-        PIDS_SOUGHT=$(cat $PID_DUMP \
+        local -a PIDS_SOUGHT=($(cat $PID_DUMP \
           | sed -e '1d' \
           | grep -i "$i" \
-          | sed -n -e "$appropriate_pattern")
+          | sed -n -e "$appropriate_pattern"))
         if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
           # we want to bail as soon as we get matches, because on the same
           # platform, the same set of patterns should work to find all
