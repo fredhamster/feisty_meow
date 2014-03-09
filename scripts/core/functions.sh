@@ -122,11 +122,10 @@ if [ -z "$skip_all" ]; then
       done
     fi
     if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
-      local TMPFUD=$(mktemp $TMP/junkpids.XXXXXX)
-      printf -- '%s\n' ${PIDS_SOUGHT[@]} | sort | uniq >$TMPFUD
-      PIDS_SOUGHT=$(cat $TMPFUD)
+      local PIDS_SOUGHT2=$(printf -- '%s\n' ${PIDS_SOUGHT[@]} | sort | uniq)
+      PIDS_SOUGHT=()
+      PIDS_SOUGHT=${PIDS_SOUGHT2[*]}
       echo ${PIDS_SOUGHT[*]}
-#rm $TMPFUD
     fi
     /bin/rm $PID_DUMP
   }
