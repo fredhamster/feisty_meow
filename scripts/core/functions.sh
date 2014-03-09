@@ -79,7 +79,7 @@ if [ -z "$skip_all" ]; then
     local -a patterns=("${@}")
     mkdir $TEST_TEMP/grid_logs &>/dev/null
     local PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
-    local PIDS_SOUGHT=()
+    local -a PIDS_SOUGHT
     if [ "$OS" == "Windows_NT" ]; then
       # needs to be a windows format filename for 'type' to work.
       if [ ! -d c:/tmp ]; then
@@ -102,7 +102,6 @@ if [ -z "$skip_all" ]; then
       local CR='
 '  # embedded carriage return.
       local appropriate_pattern="s/^.*  *\([0-9][0-9]*\)[ $CR]*\$/\1/p"
-      local -a PIDS_SOUGHT
       for i in "${patterns[@]}"; do
         PIDS_SOUGHT+=($(cat $PID_DUMP \
           | grep -i "$i" \
@@ -115,7 +114,6 @@ if [ -z "$skip_all" ]; then
       # remove the first line of the file, search for the pattern the
       # user wants to find, and just pluck the process ids out of the
       # results.
-      local -a PIDS_SOUGHT
       for i in "${patterns[@]}"; do
         PIDS_SOUGHT+=($(cat $PID_DUMP \
           | sed -e '1d' \
@@ -124,8 +122,11 @@ if [ -z "$skip_all" ]; then
       done
     fi
     if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
-      PIDS_SOUGHT=$(echo ${PIDS_SOUGHT[*]} | sort | uniq)
+      local TMPFUD=$(mktemp $TMP/junkpids.XXXXXX)
+      printf -- '%s\n' ${PIDS_SOUGHT[@]} | sort | uniq >$TMPFUD
+      PIDS_SOUGHT=$(cat $TMPFUD)
       echo ${PIDS_SOUGHT[*]}
+#rm $TMPFUD
     fi
     /bin/rm $PID_DUMP
   }
