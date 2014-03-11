@@ -102,7 +102,7 @@ if [ -z "$skip_all" ]; then
 #      local CR='
 #'  # embedded carriage return.
 #      local appropriate_pattern="s/^.*  *\([0-9][0-9]*\)[ $CR]*\$/\1/p"
-      local appropriate_pattern="s/^.*  *\([0-9][0-9]*\)*\$/\1/p"
+      local appropriate_pattern="s/^.*  *\([0-9][0-9]*\) *\$/\1/p"
       for i in "${patterns[@]}"; do
         PIDS_SOUGHT+=($(cat $PID_DUMP \
           | grep -i "$i" \
