@@ -11,7 +11,7 @@ function build_xsede()
     echo GENII_INSTALL_DIR is not set.
     return 1
   fi
-  pushd $GENII_INSTALL_DIR
+  pushd "$GENII_INSTALL_DIR"
   if [ $? -ne 0 ]; then
     error_sound
     return 1
@@ -39,7 +39,7 @@ function rebuild_xsede()
     echo GENII_INSTALL_DIR is not set.
     return 1
   fi
-  pushd $GENII_INSTALL_DIR
+  pushd "$GENII_INSTALL_DIR"
   ant clean
 
   if [ $? -ne 0 ]; then
@@ -56,7 +56,7 @@ function rebu_bootstrap()
   rebuild_xsede 
   if [ $? -ne 0 ]; then echo "failed to rebuild xsede code"; return 1; fi
 
-  bash $GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh
+  bash "$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
   if [ $? -ne 0 ]; then
     echo "failed to bootstrap a container."
     error_sound
@@ -72,7 +72,7 @@ function bu_bootstrap()
   build_xsede 
   if [ $? -ne 0 ]; then echo "failed to rebuild xsede code"; return 1; fi
 
-  bash $GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh
+  bash "$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
   if [ $? -ne 0 ]; then
     echo "failed to bootstrap a container."
     error_sound
@@ -88,7 +88,7 @@ function fast_install_build()
   build_xsede 
   if [ $? -ne 0 ]; then echo "failed to build xsede code"; return 1; fi
 
-  bash $GENII_INSTALL_DIR/xsede_tools/tools/installer/fast_installer_build.sh $*
+  bash "$GENII_INSTALL_DIR/xsede_tools/tools/installer/fast_installer_build.sh" $*
   if [ $? -ne 0 ]; then
     echo "failed to bootstrap create the installer."
     error_sound
