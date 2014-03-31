@@ -275,16 +275,17 @@ function perform_action_on_file()
   local tempfile="$1"; shift
   local action="$1"; shift
 
-  dirs=($(cat $tempfile))
+#  dirs=($(cat $tempfile))
 
-  for dirname in ${dirs[@]}; do
+  while read -u 3 dirname; do
+#  for dirname in "${dirs[@]}"; do
     if [ -z "$dirname" ]; then continue; fi
-    pushd $dirname &>/dev/null
+    pushd "$dirname" &>/dev/null
     echo "[$(pwd)]"
     $action .
     echo "======="
     popd &>/dev/null
-  done 
+  done 3<"$tempfile"
 
   rm $tempfile
 }
