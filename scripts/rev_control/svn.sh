@@ -6,7 +6,7 @@ if [ "$OPERATING_SYSTEM" = "WIN32" ]; then
   TMP="$(dos_to_unix_path "$TMP")"
 fi
 
-echo TMP is $TMP 
+#echo TMP is $TMP 
 
 /usr/bin/svn $@
 
