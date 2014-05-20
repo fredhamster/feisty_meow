@@ -44,6 +44,6 @@ find "$dir" -type f \( -iname "*" \
   ! -iname "*.tar" \
   ! -iname "*.tmp" \
   ! -iname "*.zip" \) \
-  -exec echo "\"{}\"" ';' | xargs grep -li "$seek" | grep -v "^\.[^\/]\|\/\."
+  -exec echo "\"{}\"" ';' | xargs grep -li -- "$seek" | grep -v "^\.[^\/]\|\/\."
 
 
