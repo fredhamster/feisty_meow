@@ -1,6 +1,8 @@
 
 This is the "feisty meow® concerns" codebase top folder.
 
+For information on building the source code, see the file "building.txt".
+
 ####
 
 Feisty Meow Concerns Ltd. is a small software shop that concentrates on
