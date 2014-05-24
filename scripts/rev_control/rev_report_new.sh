@@ -16,5 +16,5 @@ pushd "$dir" &>/dev/null
 tempfile=$(generate_rev_ctrl_filelist)
 popd &>/dev/null
 
-perform_action_on_file "$tempfile" do_report_new
+perform_revctrl_action_on_file "$tempfile" do_report_new
 

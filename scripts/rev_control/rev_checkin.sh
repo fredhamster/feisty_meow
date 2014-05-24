@@ -15,5 +15,5 @@ pushd "$dir" &>/dev/null
 tempfile=$(generate_rev_ctrl_filelist)
 popd &>/dev/null
 
-perform_action_on_file "$tempfile" do_checkin
+perform_revctrl_action_on_file "$tempfile" do_checkin
 

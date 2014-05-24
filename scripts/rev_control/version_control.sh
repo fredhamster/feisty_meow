@@ -270,7 +270,7 @@ function generate_rev_ctrl_filelist()
 
 # iterates across a list of directories contained in a file (first parameter).
 # on each directory name, it performs the action (second parameter) provided.
-function perform_action_on_file()
+function perform_revctrl_action_on_file()
 {
   local tempfile="$1"; shift
   local action="$1"; shift
