@@ -191,7 +191,7 @@ function squash_first_few_crs()
   i=0
   while read line; do
     i=$((i+1))
-    if [ $i -le 3 ]; then
+    if [ $i -le 5 ]; then
       echo -n "$line  "
     else
       echo $line
