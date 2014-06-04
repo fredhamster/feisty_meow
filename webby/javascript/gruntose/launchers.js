@@ -9,7 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////
 
 function jump_appropriate() {
-  window.location.reload(true);
+//stopped working:  window.location.reload(true);
+  window.location = window.location;
 }
 
 function jump_to_anchor(anchor) {
