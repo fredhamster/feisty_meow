@@ -138,13 +138,13 @@ if [ -z "$skip_all" ]; then
       echo "psa finds processes by pattern, but there was no pattern on the command line."
       return 1
     fi
-    p=$(psfind "$1")
+    p=$(psfind "${@}")
     if [ -z "$p" ]; then
       # no matches.
       return 0
     fi
     echo ""
-    echo "Processes containing \"$1\"..."
+    echo "Processes matching ${@}..."
     echo ""
     if [ -n "$IS_DARWIN" ]; then
       unset fuzil_sentinel
