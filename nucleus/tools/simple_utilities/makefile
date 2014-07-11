@@ -6,6 +6,7 @@ PROJECT = simplistic_utils
 TYPE = application
 TARGETS = create_guid.exe playsound.exe short_path.exe sleep_ms.exe \
   zap_process.exe 
+#run_as_service.exe 
 ifeq "$(OMIT_VERSIONS)" ""
   SOURCE += simple_utils_version.rc
 endif
