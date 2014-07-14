@@ -33,11 +33,7 @@ export ANT_OPTS="-Xms512m -Xmx768m -XX:MaxPermSize=768m"
 export JAVA_BIN_PIECE=bin
 
 if [ ! -d "$JAVA_HOME" ]; then
-  # first try a recent linux version.
-  export JAVA_HOME=/usr/lib/jvm/java-6-sun
-fi
-if [ ! -d "$JAVA_HOME" ]; then
-  # try an even more recent version.
+  # try a recent version.
   export JAVA_HOME=/usr/lib/jvm/java-7-oracle
 fi
 if [ ! -d "$JAVA_HOME" ]; then
