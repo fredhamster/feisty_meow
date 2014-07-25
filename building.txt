@@ -75,8 +75,7 @@ How to install the most frequently needed compiler and library dependencies:
     sudo apt-get install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
 
   Centos / Redhat / Fedora:
-    yum install gcc gcc-c++ openssl-devel.x86_64
-#hmmm: there may be missing items for centos.
+    sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel
 
 ====
 
