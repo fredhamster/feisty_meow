@@ -35,12 +35,15 @@ function setup_visual_studio_variables()
   if [ -z "$VSxTOOLS" ]; then
     return 33
   fi
-  export VSxTOOLS="$(short_path "$VSxTOOLS" | tr "A-Z" "a-z" | sed -e 's/\\/\//g' | sed -e 's/^\(.\):/\/\1/' )"
+  export VSxTOOLS="$(short_path "$VSxTOOLS" | tr "A-Z" "a-z" | sed -e 's/\\/\//g' )"
+#| sed -e 's/^\(.\):/\/\1/' )"
   
-  export VIS_STU_ROOT="$(echo $VSxTOOLS | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' | sed -e 's/^\(.\):/\/\1/' )"
+  export VIS_STU_ROOT="$(echo $VSxTOOLS | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' )"
+#| sed -e 's/^\(.\):/\/\1/' )"
   export VSINSTALLDIR="$VIS_STU_ROOT"
   
-  export WINDIR="$(short_path "$WINDIR" | tr A-Z a-z | sed -e 's/\\/\//g' | sed -e 's/^\(.\):/\/\1/' )"
+  export WINDIR="$(short_path "$WINDIR" | tr A-Z a-z | sed -e 's/\\/\//g' )"
+#| sed -e 's/^\(.\):/\/\1/' )"
   
   export VCINSTALLDIR="$VSINSTALLDIR/VC"
   export VSCOMMONROOT="$VSINSTALLDIR/Common7"
@@ -53,7 +56,12 @@ function setup_visual_studio_variables()
   
   export PLATFORM_DIR="$VCINSTALLDIR/PlatformSDK"
   if [ ! -d "$PLATFORM_DIR" ]; then
-    export PLATFORM_DIR="$(short_path "$PROGRAMFILES/Microsoft SDKs/Windows/v7.0A" | tr "A-Z" "a-z" | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' | sed -e 's/^\(.\):/\/\1/' )"
+
+#on hold:    export PLATFORM_DIR="$(short_path "$PROGRAMFILES/Microsoft SDKs/Windows/v7.0A" | tr "A-Z" "a-z" | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' )"
+##| sed -e 's/^\(.\):/\/\1/' )"
+
+export PLATFORM_DIR="c:\progra~2\micros~1\windows\v7.0a"
+
   fi
   export WindowsSdkDir="$PLATFORM_DIR"
   
@@ -90,12 +98,16 @@ function setup_visual_studio_variables()
   
   ##############
   
-  #echo "common tools dir is \"$VSxTOOLS\""
-  #echo cleaned windir is $WINDIR
-  #echo cleaned comn tools is $VSxTOOLS 
-  #echo root of visual studio is $VSINSTALLDIR
-  #echo platform dir is $PLATFORM_DIR
-  #echo framedir now $FrameworkDir
+  echo "visual studio root is '$VIS_STU_ROOT'"
+  echo "common tools dir is '$VSxTOOLS'"
+  echo "cleaned windir is '$WINDIR'"
+  echo "cleaned comn tools is '$VSxTOOLS'"
+  echo "root of visual studio is '$VSINSTALLDIR'"
+  echo "platform dir is '$PLATFORM_DIR'"
+  echo "framedir now '$FrameworkDir'"
+
+echo new report style:
+var VIS_STU_ROOT VSxTOOLS WINDIR VSxTOOLS VSINSTALLDIR PLATFORM_DIR FrameworkDir
   
   ##############
 }
