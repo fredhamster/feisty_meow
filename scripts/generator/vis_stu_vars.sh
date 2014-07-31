@@ -98,16 +98,8 @@ export PLATFORM_DIR="c:\progra~2\micros~1\windows\v7.0a"
   
   ##############
   
-  echo "visual studio root is '$VIS_STU_ROOT'"
-  echo "common tools dir is '$VSxTOOLS'"
-  echo "cleaned windir is '$WINDIR'"
-  echo "cleaned comn tools is '$VSxTOOLS'"
-  echo "root of visual studio is '$VSINSTALLDIR'"
-  echo "platform dir is '$PLATFORM_DIR'"
-  echo "framedir now '$FrameworkDir'"
-
-echo new report style:
-var VIS_STU_ROOT VSxTOOLS WINDIR VSxTOOLS VSINSTALLDIR PLATFORM_DIR FrameworkDir
+  echo "calculated variables for dos/windoze builds:"
+  var VIS_STU_ROOT VSxTOOLS WINDIR VSxTOOLS VSINSTALLDIR PLATFORM_DIR FrameworkDir
   
   ##############
 }
