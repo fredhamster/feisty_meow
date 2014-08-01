@@ -18,6 +18,18 @@ pushd "$CORE_SCRIPTS_DIR/../.." &>/dev/null
 source "$CORE_SCRIPTS_DIR/functions.sh"
 
 export FEISTY_MEOW_DIR="$(\pwd)"
+
+# repetitive bit stolen from variables.  should make a file out of this somehow.
+IS_DOS=$(uname | grep -i ming)
+if [ -z "$IS_DOS" ]; then IS_DOS=$(uname | grep -i cygwin); fi
+# now if we're stuck in DOS, then fix the feisty meow variable name.
+if [ ! -z "$IS_DOS" ]; then
+  FEISTY_MEOW_DIR="$(cmd /c chdir | tr A-Z a-z | sed -e 's/\\/\//g')"
+echo feisty meow dos is: $FEISTY_MEOW_DIR
+  FEISTY_MEOW_DIR="$(dos_to_unix_path "$FEISTY_MEOW_DIR")"
+echo new feisty meow fixed dir is: $FEISTY_MEOW_DIR
+fi
+
 popd &>/dev/null
 
 export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"
