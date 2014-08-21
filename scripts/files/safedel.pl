@@ -115,14 +115,14 @@ sub safedel {
         # remove the directory itself if possible, since zip did not.
         &recursively_zap_dirs($file);
       }
-      push(@deleted, "$file");
+      push(@deleted, "\"$file\"");
     } elsif (-f $file) {
       # store the file in the trash storage.
       system("chmod u+rw \"$file\"");
 
 #print "about to run: system [$zip -m$use_path $tempfile '$file' $DEV_NULL]";
       system("$zip -m$use_path $tempfile \"$file\" $DEV_NULL");
-      push(@deleted, "$file");
+      push(@deleted, "\"$file\"");
     } else {
       print "$0 cannot find \"$file\" to delete it.\n";
     }
