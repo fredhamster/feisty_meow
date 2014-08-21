@@ -64,8 +64,7 @@ if [ -z "$NETHACKOPTIONS" ]; then
   # setting up other versions if the GENII_INSTALL_DIR changes.  this requires the variables
   # for GENII_INSTALL_DIR and GENII_USER_DIR to be established, since my config file doesn't
   # set those.
-  export XSEDE_TOOLS_CONFIG_FILE=$HOME/xsede/code/fred-trunk/xsede_tools/inputfile.txt
-#hmmm: change this to point at a nice file inside feisty, rather than randomly winging off into my code hierarchy.
+  export XSEDE_TOOLS_CONFIG_FILE=$HOME/xsede/code/fred-trunk/xsede_tools/xsede_tools.cfg
 
 fi
 
