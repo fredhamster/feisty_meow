@@ -77,7 +77,6 @@ if [ -z "$skip_all" ]; then
   # locates a process given a search pattern to match in the process list.
   function psfind() {
     local -a patterns=("${@}")
-    mkdir $TEST_TEMP/grid_logs &>/dev/null
     local PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
     local -a PIDS_SOUGHT
     if [ "$OS" == "Windows_NT" ]; then
