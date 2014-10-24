@@ -51,7 +51,7 @@ public abstract class ethread implements Runnable
 	 * shot threads executed via runOnce, but matters for the periodic threads started with
 	 * runPeriodic.
 	 */
-	abstract boolean performActivity();
+	abstract public boolean performActivity();
 
 	/**
 	 * Begins execution of the thread.
@@ -74,7 +74,7 @@ public abstract class ethread implements Runnable
 	{
 		cancel();
 		while (true) {
-			if (threadRunning()) {
+			if (threadAlive()) {
 				try {
 					Thread.sleep(40);
 				} catch (InterruptedException e) {
@@ -102,9 +102,9 @@ public abstract class ethread implements Runnable
 	}
 
 	/**
-	 * Returns true if the thread isn't null.
+	 * Returns true if the thread object is still alive.  this does not necessarily mean it is currently active.
 	 */
-	public boolean threadRunning()
+	public boolean threadAlive()
 	{
 		synchronized (c_lock) {
 			return this.c_RealThread != null;
@@ -128,7 +128,7 @@ public abstract class ethread implements Runnable
 	@Override
 	public void run()
 	{
-		if (!threadRunning()) {
+		if (!threadAlive()) {
 			return; // stopped before it ever started. how can this be? we just got invoked.
 		}
 		try {
