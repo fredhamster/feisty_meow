@@ -19,13 +19,39 @@ public abstract class ethread implements Runnable
 	private volatile Thread c_RealThread = null;
 	// provides synchronization for the thread.
 	private volatile Object c_lock = new Object();
+	// this is the timing period, for a timed thread. if zero, then this is a single shot thread.
+	private long c_period = 0;
+	// records whether the thread should shut down or not.
+	private boolean c_stopThread = false;
+	// snooze between checks on the stop timer.
+	final long SNOOZE_PERIOD = 20;
 
 	/**
-	 * creates a new ethread without starting it.
+	 * creates a new single-shot ethread without starting it. this type of thread will run just
+	 * once.
 	 */
 	public ethread()
 	{
 	}
+
+	/**
+	 * creates a new periodic ethread without starting it. this type of thread runs every "period"
+	 * milliseconds until stopped or until the performActivity method returns false.
+	 */
+	public ethread(long period)
+	{
+		c_period = period;
+	}
+
+	/**
+	 * this is the main function that derived classes must implement. it does the actual work that
+	 * the thread is intended to perform. note that the derived version must not do anything to
+	 * cause the thread to be ripped out while performActivity is still being invoked. the return
+	 * value should be true if the thread can continue executing. this is meaningless for single
+	 * shot threads executed via runOnce, but matters for the periodic threads started with
+	 * runPeriodic.
+	 */
+	abstract boolean performActivity();
 
 	/**
 	 * Begins execution of the thread.
@@ -46,7 +72,27 @@ public abstract class ethread implements Runnable
 	 */
 	public void stop()
 	{
+		cancel();
+		while (true) {
+			if (threadRunning()) {
+				try {
+					Thread.sleep(40);
+				} catch (InterruptedException e) {
+					// ignoring this since we'll keep snoozing as needed.
+				}
+			} else {
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Signals the thread to stop executing, but does not wait for it.
+	 */
+	void cancel()
+	{
 		synchronized (c_lock) {
+			c_stopThread = true;
 			Thread goAway = c_RealThread;
 			c_RealThread = null;
 			if (null != goAway) {
@@ -56,20 +102,22 @@ public abstract class ethread implements Runnable
 	}
 
 	/**
-	 * this is the main function that derived classes must implement. it does the actual work that
-	 * the thread is intended to perform. note that the derived version must not do anything to
-	 * cause the thread to be ripped out while performActivity is still being invoked.
-	 */
-	// hmmm: should this stay void, or use a bool status to indicate if the thread should die?
-	abstract void performActivity();
-
-	/**
 	 * Returns true if the thread isn't null.
 	 */
 	public boolean threadRunning()
 	{
 		synchronized (c_lock) {
-			return (null != this.c_RealThread);
+			return this.c_RealThread != null;
+		}
+	}
+
+	/**
+	 * returns true if the thread has been told to stop running.
+	 */
+	public boolean shouldStop()
+	{
+		synchronized (c_lock) {
+			return c_stopThread;
 		}
 	}
 
@@ -77,18 +125,38 @@ public abstract class ethread implements Runnable
 	 * this is the override from Runnable that allows us to call our own performActivity method.
 	 * implementors should not override this; they should override performActivity instead.
 	 */
+	@Override
 	public void run()
 	{
-		synchronized (c_lock) {
-			if (false == threadRunning()) {
+			if (!threadRunning()) {
 				return; // stopped before it ever started. how can this be? we just got invoked.
 			}
-			performActivity();
+			try {
+				while (true) {
+					boolean keepGoing = performActivity();
+					if (!keepGoing) {
+						c_logger.debug("thread returned false for single shot thread.  just saying.");
+					}
+					if (c_period == 0) {
+						// not a periodic thread, so we're done now.
+						break;
+					}
+					long nextRun = System.currentTimeMillis() + c_period;
+					while (System.currentTimeMillis() < nextRun) {
+						if (shouldStop()) {
+							break;
+						}
+						try {
+							Thread.sleep(SNOOZE_PERIOD);
+						} catch (InterruptedException e) {
+							// well, we'll hit it again soon.
+						}
+					}
+				}
+			} catch (Throwable t) {
+				c_logger.info("exception thrown from performActivity: " + t.getLocalizedMessage(), t);
+			}
 		}
-	}
+	
 }
-
-// hmmm: still in progress...
-// hmmm: missing the timed features of ethread.
-// hmmm: missing cancel, exempt_stop, sleep_time, should_stop,
 
