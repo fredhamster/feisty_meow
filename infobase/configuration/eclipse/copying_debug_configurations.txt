@@ -1,0 +1,15 @@
+
+
+i copied items i cared about from this folder in a project that had working
+debug configurations:
+
+.metadata/.plugins/org.eclipse.debug.core/.launches
+
+into the same folder in the new project.
+
+with the things all being named the same, like GenesisII-trunk, the debug
+configurations worked without needing to be re-created.  nice.
+
+be careful though; if the new project has environment variables that are
+different from the old project, and those variables are part of the
+configuration, then they'll need to be modified.
