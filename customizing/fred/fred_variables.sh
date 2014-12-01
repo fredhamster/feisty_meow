@@ -64,7 +64,7 @@ if [ -z "$NETHACKOPTIONS" ]; then
   # setting up other versions if the GENII_INSTALL_DIR changes.  this requires the variables
   # for GENII_INSTALL_DIR and GENII_USER_DIR to be established, since my config file doesn't
   # set those.
-  export XSEDE_TOOLS_CONFIG_FILE=$HOME/xsede/code/fred-trunk/xsede_tools/xsede_tools.cfg
+  export XSEDE_TOOLS_CONFIG_FILE=$HOME/xsede/code/xsede_tools.cfg
 
 fi
 
