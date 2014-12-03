@@ -56,7 +56,12 @@ function rebu_bootstrap()
   rebuild_xsede 
   if [ $? -ne 0 ]; then echo "failed to rebuild xsede code"; return 1; fi
 
-  bash "$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
+  quickstarter="$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
+  if [ ! -f "$quickstarter" ]; then
+    quickstarter="$XSEDE_TEST_ROOT/library/bootstrap_quick_start.sh"
+  fi
+
+  bash "$quickstarter"
   if [ $? -ne 0 ]; then
     echo "failed to bootstrap a container."
     error_sound
@@ -72,7 +77,12 @@ function bu_bootstrap()
   build_xsede 
   if [ $? -ne 0 ]; then echo "failed to rebuild xsede code"; return 1; fi
 
-  bash "$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
+  quickstarter="$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
+  if [ ! -f "$quickstarter" ]; then
+    quickstarter="$XSEDE_TEST_ROOT/library/bootstrap_quick_start.sh"
+  fi
+
+  bash "$quickstarter"
   if [ $? -ne 0 ]; then
     echo "failed to bootstrap a container."
     error_sound
