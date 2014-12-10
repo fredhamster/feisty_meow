@@ -11,5 +11,5 @@ if [ -z "$pat1" -o -z "$pat2" ]; then
   exit 1
 fi
 
-find "$folder" -type f -exec grep -lZ "$pat1" ';' | xargs -0 grep -l "$pat2"
+find "$folder" -type f -exec grep -lZ "$pat1" "{}" ';' | xargs -0 grep -l "$pat2"
 
