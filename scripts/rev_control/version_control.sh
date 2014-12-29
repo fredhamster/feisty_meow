@@ -102,6 +102,7 @@ function compute_modifier()
 function do_checkin()
 {
   local directory="$1"; shift
+echo "do_checkin sees directory '$directory'"
   do_update "$directory"
   if [ $? -ne 0 ]; then
     echo "Repository update failed; this should be fixed before check-in."
