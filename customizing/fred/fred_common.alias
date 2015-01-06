@@ -6,9 +6,6 @@
 alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky ; check_mount /z/fredgrid'
 alias unmoo='sudo umount /z/stuffing ; sudo umount /z/walrus ; sudo umount /z/chunky ; sudo umount /z/fredgrid'
 
-# skype needs this to run properly.
-alias skype='env PULSE_LATENCY_MSEC=30 skype'
-
 # load in the xsede build scripts.
 source "$FEISTY_MEOW_SCRIPTS/buildor/build_xsedes.sh"
 
