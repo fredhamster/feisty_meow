@@ -1,7 +1,9 @@
 include variables.def
 
 PROJECT = feisty_meow_sources
-BUILD_BEFORE = start_make nucleus scripts octopi graphiq webby kona production end_make
+FIRST_TARGETS += start_make
+BUILD_BEFORE = nucleus scripts octopi graphiq webby kona production 
+LAST_TARGETS += end_make
 
 include rules.def
 
