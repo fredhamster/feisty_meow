@@ -13,7 +13,7 @@ in our list, open meld's settings via the menu path "Edit | Preferences | File F
 once you're in that tab of the dialog, create a new filter called something like:
   binary-code
 and add these folder names as values for the filter:
-  bin bin.ant bin.eclipse subprojects bin-eclipse codegen genned-src genned-obj unit-test-reports
+  bin.ant bin.eclipse subprojects bin-eclipse codegen genned-src genned-obj unit-test-reports
 
 any directory listed there will be ignored during comparisons and merges, which is
 more convenient than the alternative of seeing all the binaries that are different,
