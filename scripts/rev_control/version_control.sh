@@ -255,11 +255,11 @@ function generate_rev_ctrl_filelist()
 {
   local dir="$1"; shift
   pushd "$dir" &>/dev/null
-  local dirhere="$(\pwd)"
+  local dirhere="$( \cd "$(\dirname "$dir")" && \pwd )"
   local tempfile=$(mktemp /tmp/zz_rev_checkin.XXXXXX)
   echo >$tempfile
-  find $dirhere -maxdepth 5 -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile
-  find $dirhere -maxdepth 5 -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile
+  find $dirhere -follow -maxdepth 5 -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile
+  find $dirhere -follow -maxdepth 5 -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
   local sortfile=$(mktemp /tmp/zz_rev_checkin_sort.XXXXXX)
@@ -275,10 +275,7 @@ function perform_revctrl_action_on_file()
   local tempfile="$1"; shift
   local action="$1"; shift
 
-#  dirs=($(cat $tempfile))
-
   while read -u 3 dirname; do
-#  for dirname in "${dirs[@]}"; do
     if [ -z "$dirname" ]; then continue; fi
     pushd "$dirname" &>/dev/null
     echo "[$(pwd)]"
