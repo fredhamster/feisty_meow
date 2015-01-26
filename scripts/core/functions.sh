@@ -346,7 +346,7 @@ if [ -z "$skip_all" ]; then
 #    fi
     if [ -d "$FEISTY_MEOW_DIR/customizing/$user/scripts" ]; then
       echo "copying custom scripts for $user"
-      cp -v -R "$FEISTY_MEOW_DIR/customizing/$user/scripts" "$FEISTY_MEOW_GENERATED/custom/"
+      cp -R "$FEISTY_MEOW_DIR/customizing/$user/scripts" "$FEISTY_MEOW_GENERATED/custom/"
     fi
     echo
     regenerate
