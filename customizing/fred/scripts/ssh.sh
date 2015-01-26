@@ -2,7 +2,7 @@
 
 # wraps our calling the secure shell and lets us pick our credentials.
 
-source "$FEISTY_MEOW_SCRIPTS/security/pick_credentials.sh"
+source "$FEISTY_MEOW_GENERATED/custom/scripts/pick_credentials.sh"
 
 if [ ! -z "$keyfile" ]; then
   \ssh -i "$keyfile" -X -C -c blowfish-cbc $*
