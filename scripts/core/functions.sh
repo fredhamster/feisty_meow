@@ -339,6 +339,16 @@ if [ -z "$skip_all" ]; then
     echo "copying custom overrides for $user"
     mkdir "$FEISTY_MEOW_GENERATED/custom" 2>/dev/null
     perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_GENERATED/custom"
+    # set up any custom script files which we'll add as aliases.
+#    if [ -e "$FEISTY_MEOW_GENERATED/custom/scripts" ]; then
+#      echo removing older custom scripts.
+#      rm -rf "$FEISTY_MEOW_GENERATED/custom/scripts"
+#    fi
+    if [ -d "$FEISTY_MEOW_DIR/customizing/$user/scripts" ]; then
+      echo "copying custom scripts for $user"
+      cp -v -R "$FEISTY_MEOW_DIR/customizing/$user/scripts" "$FEISTY_MEOW_GENERATED/custom/"
+    fi
+    echo
     regenerate
   }
 

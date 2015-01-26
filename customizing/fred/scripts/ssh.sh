@@ -5,9 +5,9 @@
 source "$FEISTY_MEOW_SCRIPTS/security/pick_credentials.sh"
 
 if [ ! -z "$keyfile" ]; then
-  \ssh -i "$keyfile" -X $*
+  \ssh -i "$keyfile" -X -C -c blowfish-cbc $*
 else
-  \ssh -X $*
+  \ssh -X -C -c blowfish-cbc $*
 fi
 
 if [ $? -eq 0 ]; then

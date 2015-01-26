@@ -195,7 +195,8 @@ open(she, ">> $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
 #@shell_files = sort(readdir(scripts));
 #print "scripts: @shell_files\n";
 
-@shell_files = &load_file_names("$FEISTY_MEOW_SCRIPTS");
+@shell_files = (&load_file_names("$FEISTY_MEOW_SCRIPTS"),
+   &load_file_names("$FEISTY_MEOW_GENERATED/custom/scripts"));
 
 # construct aliases for items in the scripts directory.
 foreach $file (@shell_files) {
@@ -218,6 +219,11 @@ foreach $file (@shell_files) {
     foreach $subfile (@subdir_files) {
       push(@shell_files, "$file/$subfile");
     }
+  } elsif (-f "$FEISTY_MEOW_GENERATED/custom/scripts/$file") {
+    # if we see a file in the auto-generated area that comes from the
+    # customized scripts folder, we add it as an alias.
+    make_alias($file, "$FEISTY_MEOW_GENERATED/custom/scripts/");
+    #print "added custom script file: $FEISTY_MEOW_GENERATED/custom/scripts/$file\n";
   } else {
     # if it's a regular file, we'll try to make an alias for it.  the function
     # will only fire if the ending is appropriate for the script languages we use.
