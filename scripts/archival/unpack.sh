@@ -25,7 +25,7 @@ if [ ! -f "$archive_file" ]; then
 fi
 unpack_dir="$1"; shift
 if [ -z "$unpack_dir" ]; then
-  all_but_last="$(echo "$(basename $archive_file)" | sed -e 's/\([\^.]*\)\.[^\.]*$/\1/')"
+  all_but_last="$(echo "$(basename "$archive_file")" | sed -e 's/\([\^.]*\)\.[^\.]*$/\1/')"
   unpack_dir="arch_${all_but_last}"
 fi
 
@@ -52,23 +52,23 @@ if [ ! -f "$archive_file" ]; then
   fi
 fi
 
-if [[ $archive_file =~ .*\.tar$ \
-    || $archive_file =~ .*\.tar\.gz$ \
-    || $archive_file =~ .*\.tar\.bz2$ \
-    || $archive_file =~ .*\.iar$ \
-    || $archive_file =~ .*\.oar$ \
-    || $archive_file =~ .*\.tgz$ \
-    || $archive_file =~ .*\.ova$ \
-    || $archive_file =~ .*\.snarf$ \
+if [[ "$archive_file" =~ .*\.tar$ \
+    || "$archive_file" =~ .*\.tar\.gz$ \
+    || "$archive_file" =~ .*\.tar\.bz2$ \
+    || "$archive_file" =~ .*\.iar$ \
+    || "$archive_file" =~ .*\.oar$ \
+    || "$archive_file" =~ .*\.tgz$ \
+    || "$archive_file" =~ .*\.ova$ \
+    || "$archive_file" =~ .*\.snarf$ \
     ]]; then
-  tar -xf $archive_file &>/dev/null
-elif [[ $archive_file =~ .*\.zip$ \
-    || $archive_file =~ .*\.epub$ \
-    || $archive_file =~ .*\.odt$ \
-    || $archive_file =~ .*\.jar$ \
-    || $archive_file =~ .*\.war$ \
+  tar -xf "$archive_file" &>/dev/null
+elif [[ "$archive_file" =~ .*\.zip$ \
+    || "$archive_file" =~ .*\.epub$ \
+    || "$archive_file" =~ .*\.odt$ \
+    || "$archive_file" =~ .*\.jar$ \
+    || "$archive_file" =~ .*\.war$ \
     ]]; then
-  unzip $archive_file &>/dev/null
+  unzip "$archive_file" &>/dev/null
 fi
 save_err=$?
 
@@ -79,7 +79,7 @@ if [ $save_err -ne 0 ]; then
   echo "into the directory: $unpack_dir"
   exit 1
 else
-  echo "Unpacked file $(basename $archive_file) into folder: $unpack_dir"
+  echo "Unpacked file $(basename "$archive_file") into folder: $unpack_dir"
 fi
 
 
