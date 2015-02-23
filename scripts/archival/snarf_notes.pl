@@ -41,6 +41,7 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 &backup_files($snarf_file_base, $number, $root, ".", ("*.html", "*.txt"));
 
 # gather any directories in our home that match these often recurring patterns.
+&snarf_by_pattern($snarf_file_base, "$root", "cloud");
 &snarf_by_pattern($snarf_file_base, "$root", "crucial");
 &snarf_by_pattern($snarf_file_base, "$root", "idea");
 &snarf_by_pattern($snarf_file_base, "$root", "issue");
