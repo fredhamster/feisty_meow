@@ -14,6 +14,7 @@ if [ $? -eq 0 ]; then
 fi
 
 if [ -z "$skip_all" ]; then
+
   if [ ! -z "$SHELL_DEBUG" ]; then
     echo function definitions begin...
   fi
@@ -62,7 +63,7 @@ if [ -z "$skip_all" ]; then
     fi
   }
 
-  # checks the result of the last command that was run, and if it failed,
+  # checks the result of the last command that was run, and if that failed,
   # then this complains and exits from bash.  the function parameters are
   # used as the message to print as a complaint.
   function check_result()

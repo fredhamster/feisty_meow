@@ -89,6 +89,7 @@ alias cputemp='acpi -t'
 # makes root user's home directory's permissions right.
 alias reroot='chown -R root:root /root'
 # yes, these are really helpful...
+alias whoareyou='echo -e "Hello, I am a computer named $(hostname)\nand I'\''m very pleased to meet you."'
 alias whereami='echo whoa dude, try not to think about it...'
 alias why='echo just because.'
 
