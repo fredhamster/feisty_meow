@@ -68,7 +68,7 @@ synch_to_backup /etc /z/backup/etc/
 
 ##############
 
-for subdir in albums deepcore drupal fred/Maildir git sharedspam svn trac www-data ; do 
+for subdir in albums deepcore fred/Maildir git sharedspam svn trac www-data ; do 
   synch_to_backup /home/$subdir /z/backup/home/$subdir
 done
 
