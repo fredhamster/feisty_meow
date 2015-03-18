@@ -6,6 +6,12 @@ echo '=============='
 echo $(date_stringer | sed -e 's/_/ /g' | sed -e 's/\([0-9][0-9]\) \([0-9][0-9]\)$/:\1:\2/')
 echo '=============='
 echo
+echo "free memory:"
+echo
+free
+echo
+echo '=============='
+echo
 echo "Simple iostat:"
 echo
 iostat
@@ -23,6 +29,10 @@ echo
 vmstat
 echo
 echo '=============='
+echo
+echo "full process list:"
+echo
+ps wuax
 echo
 echo '=============='
 echo
