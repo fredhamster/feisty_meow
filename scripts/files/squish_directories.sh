@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# goes through the current directory (currently) and zips up any directories
-# into an archive with the same name as the directory plus a time stamp.
+# archives the files / directories passed on the command line into an archive
+# file tagged with a datestamp, and removes the original files / directories.
+# if no names are passed to the script, then it operates on *all* directories
+# under the current location.
+
+#hmmm: may want to revisit default behavior.
 
 source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 
@@ -22,7 +26,7 @@ if [ ${#dirs[@]} -eq 0 ]; then
 fi
 
 # takes a directory name as an argument and sucks the directory
-# into a timestamped zip file.
+# into a timestamped archive file.
 function flattenizer()
 {
   for dirname in "$@"; do
