@@ -102,8 +102,14 @@ sub safedel {
       print "ignoring attempt to remove current or parent directory.\n";
       next;
     }
-    $tempfile = $temp_subdir . "/temp" . "$number";
+
+#hmmm: extract this shared bit of code as new method (also in shared snarfer)
+    $date_tool = "date";
+    local($datestamp) = `$date_tool +%Y-%m-%d-%H%M`;
+    while ($datestamp =~ /[\r\n]$/) { chop $datestamp; }
+    $tempfile = $temp_subdir . "/deleted-#$number-" . $datestamp;
 #print "tempfile is $tempfile; file is $file.\n";
+
     if (-d $file) {
       # ensure there aren't any read only files.
       system("chmod -R u+rw \"$file\"");
@@ -134,7 +140,11 @@ sub safedel {
     local($printable_date) = scalar(localtime());
 #&ctime(time);
     $printable_date =~ s/\n//g;
-    print REPORT $printable_date . " -- safedel: \"temp" . $number . ".zip\" <= [@deleted]\n";
+    local($just_archived_filename) = `basename "$tempfile"`;
+    while ($just_archived_filename =~ /[\r\n]$/) { chop $just_archived_filename; }
+    print REPORT "\n";
+    print REPORT $printable_date . " -- created \"" . $just_archived_filename . ".zip\"\n";
+    print REPORT $printable_date . " -- from [@deleted]\n";
     close(REPORT);
   } else {
     print "No files were deleted.\n";

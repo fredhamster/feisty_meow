@@ -85,9 +85,12 @@ sub short_hostname {
 # a timestamp and hostname.
 sub snarf_prefix {
   local($base) = @_;
+
+#hmmm: extract this shared code to new function (also in safedel)
   $date_tool = "date";
   local($date_part) = `$date_tool +%Y-%m-%d-%H%M`;
   while ($date_part =~ /[\r\n]$/) { chop $date_part; }
+
   local($host) = &short_hostname();
   while ($host =~ /[\r\n]$/) { chop $host; }
   $base = $base . "_" . $host . "_" . $date_part;
