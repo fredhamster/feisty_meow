@@ -107,14 +107,14 @@ sub safedel {
     $date_tool = "date";
     local($datestamp) = `$date_tool +%Y-%m-%d-%H%M`;
     while ($datestamp =~ /[\r\n]$/) { chop $datestamp; }
-    $tempfile = $temp_subdir . "/deleted-#$number-" . $datestamp;
-#print "tempfile is $tempfile; file is $file.\n";
+    $archive_file = $temp_subdir . "/deleted-#$number-" . $datestamp;
+#print "archive_file is $archive_file; file is $file.\n";
 
     if (-d $file) {
       # ensure there aren't any read only files.
       system("chmod -R u+rw \"$file\"");
       # store the directory in the trash storage.
-      system("$zip -rm $use_path $tempfile \"$file$wildcard\" $DEV_NULL");
+      system("$zip -rm $use_path $archive_file \"$file$wildcard\" $DEV_NULL");
         # zip up the files into the safekeeper directory.
       # recursively unlink in case zip doesn't remove the empty dir.
       if (-d $file) {
@@ -126,8 +126,8 @@ sub safedel {
       # store the file in the trash storage.
       system("chmod u+rw \"$file\"");
 
-#print "about to run: system [$zip -m$use_path $tempfile '$file' $DEV_NULL]";
-      system("$zip -m$use_path $tempfile \"$file\" $DEV_NULL");
+#print "about to run: system [$zip -m$use_path $archive_file '$file' $DEV_NULL]";
+      system("$zip -m$use_path $archive_file \"$file\" $DEV_NULL");
       push(@deleted, "\"$file\"");
     } else {
       print "$0 cannot find \"$file\" to delete it.\n";
@@ -140,7 +140,7 @@ sub safedel {
     local($printable_date) = scalar(localtime());
 #&ctime(time);
     $printable_date =~ s/\n//g;
-    local($just_archived_filename) = `basename "$tempfile"`;
+    local($just_archived_filename) = `basename "$archive_file"`;
     while ($just_archived_filename =~ /[\r\n]$/) { chop $just_archived_filename; }
     print REPORT "\n";
     print REPORT $printable_date . " -- created \"" . $just_archived_filename . ".zip\"\n";
