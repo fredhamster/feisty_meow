@@ -1,2318 +1,2328 @@
 <!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
 <html>
-<head>
-  <meta content="text/html; charset=iso-8859-1"
- http-equiv="Content-Type">
-  <meta content="Fred T. Hamster" name="Author">
-  <meta name="generator"
- content="Mozilla/5.0 (X11; U; Linux i686; en-US) [Mozilla]">
-  <title>CLAM Reference Manual</title>
-</head>
-<body alink="#ff9900" bgcolor="#400080" link="#33ff33" text="#ffff99"
- vlink="#009900">
-<center><big>
-</big><small></small>
-<h1><big>CLAM: Coordinated Librarian &amp;</big></h1>
-<h1><big>Automatic Maker</big></h1>
-<small></small></center>
-<center><big><img src="clams_tran.gif" height="347" width="392"></big></center>
-<center><big>
-</big><small></small>
-<h2><big>Tutorial and Reference Manual</big></h2>
-<small></small></center>
-<center><big>
-</big><small></small>
-<address><big><a name="lib_manager"></a>By Chris Koeritz (<a
- href="mailto:koeritz@gruntose.com">koeritz@gruntose.com</a>)</big></address>
-<small></small></center>
-<center><big>
-</big><small></small>
-<h2><small></small>
-<hr noshade="noshade" size="8" width="100%"></h2>
-<small></small></center>
-<center><big>
-</big><small></small>
-<h2><big>Table of Contents</big></h2>
-<small></small></center>
-<ol>
-  <small> </small><big> </big><small> </small>
-  <li><big> <a href="#EXECUTIVE_SUMMARY">Executive Summary</a></big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big> <a href="#PREPARATION">Preparing Your Computer to Use
-CLAM</a></big></li>
-  <small> </small><big> </big><small> </small>
-  <ol>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#STEPS_NEEDED">Necessary Steps</a></big></li>
-    <small> </small><big> </big><small> </small>
-  </ol>
-  <small> </small><big> </big><small> </small>
-  <li><big> <a href="#TUTORIAL">CLAM Tutorial</a></big></li>
-  <small> </small><big> </big><small> </small>
-  <ol>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#CAVEATS">Caveats</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#TUT_BASICS">Basics</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#TUT_COMMON">Common Files</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#TUT_IMPORTANT_VARS">Important Variables</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#TUT_VAR_ASSIGN">Variable Assignment</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#TUT_OPTIONAL_VARS">Optional Variables</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#WRITING_RULES">Writing Your Own Rules</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#TUT_CONCLUSION">Conclusion</a></big></li>
-    <small> </small><big> </big><small> </small>
-  </ol>
-  <small> </small><big> </big><small> </small>
-  <li><big> <a href="#REFERENCE">CLAM Reference</a></big></li>
-  <small> </small><big> </big><small> </small>
-  <ol>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#LANG_INDEP_VARS">Language Independent
-Variables</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#LANG_INDEP_RULES">Language Independent
-Rules</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#LANG_INDEP_TARGETS">Language Independent
-Targets</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#LANG_INDEP_SCRIPTS">Language Independent
-Files</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#CPP_VARS">C++ Specific Variables</a></big></li>
-    <small> </small><big> </big><small> </small>
+  <head>
+    <meta content="text/html; charset=iso-8859-1" http-equiv="content-type">
+    <meta content="Fred T. Hamster" name="Author">
+    <meta name="generator" content="Mozilla/5.0 (X11; U; Linux i686; en-US) [Mozilla]">
+    <title>CLAM Reference Manual</title>
+  </head>
+  <body link="#33ff33" text="#ffff99" vlink="#009900" bgcolor="#400080" alink="#ff9900">
+    <center><big>
+      </big><small></small>
+      <h1><big>CLAM: Coordinated Librarian &amp;</big></h1>
+      <h1><big>Automatic Maker</big></h1>
+      <small></small></center>
+    <center><big><img src="../../infobase/pictures/clams_tran.gif" height="347" width="392"></big></center>
+    <center><big>
+      </big><small></small>
+      <h2><big>Tutorial and Reference Manual</big></h2>
+      <small></small></center>
+    <center><big>
+      </big><small></small>
+      <address><big><a name="lib_manager"></a>By Chris Koeritz (<a href="mailto:koeritz@gruntose.com">koeritz@gruntose.com</a>)</big></address>
+      <small></small></center>
+    <center><big>
+      </big><small></small>
+      <h2><small></small>
+        <hr noshade="noshade" size="8" width="100%"></h2>
+      <small></small></center>
+    <center><big>
+      </big><small></small>
+      <h2><big>Table of Contents</big></h2>
+      <small></small></center>
     <ol>
       <small> </small><big> </big><small> </small>
-      <li><big> <a href="#DIRECTORY_VARS">Directory Structure
-Variables</a></big></li>
+      <li><big> <a href="#EXECUTIVE_SUMMARY">Executive Summary</a></big></li>
       <small> </small><big> </big><small> </small>
-      <li><big> <a href="#CPP_FLAGS">Compiler Dependent Flags</a></big></li>
-      <small> </small><big> </big><small> </small>
-      <li><big><a href="#vcpp_only">Microsoft Visual C++ Only</a><br>
-        </big></li>
-      <small> </small><big> </big><small> </small>
-      <li><big> <a href="#SUPPORT_EXTENSIONS">Support for
-Compilation
-Extensions</a></big></li>
-      <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#CPP_RULES">C++ Specific Rules</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#CPP_TARGETS">C++ Specific Targets</a></big></li>
-    <small> </small><big> </big><small> </small>
-    <li><big> <a href="#CPP_SCRIPTS">C++ Specific Files</a></big></li>
-    <small> </small><big> </big><small> </small>
-  </ol>
-  <small> </small><big> </big><small> </small>
-  <li><big> <a href="#EXAMPLES">Example CLAM Makefiles</a></big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big> <a href="#CLAM_HINTS">CLAM Hints and Troubleshooting</a></big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big> <a href="#ACKS">Acknowledgements</a></big></li>
-  <small> </small><small></small>
-</ol>
-<center><big>
-</big><small></small>
-<h2><small></small>
-<hr noshade="noshade" size="8" width="100%"></h2>
-<small></small></center>
-<center><big>
-</big><small></small>
-<h2><big><a name="EXECUTIVE_SUMMARY"></a>Executive Summary</big></h2>
-<small></small></center>
-<big>&nbsp;&nbsp;&nbsp; The CLAM system is a set of macros and rules
-for the GNU make program
-that
-simplifies the creation of executable programs and code
-libraries.&nbsp;
-Most makefiles that use the CLAM system are ten lines long or
-less.&nbsp;
-Makefiles are stated in terms of a set of special variable names that
-CLAM
-interprets in order to issue the correct sequence of compilation
-directives.&nbsp;
-This document presents a tutorial on the variable names and simple
-rules
-that need to be used with CLAM. &nbsp;Several example makefiles and the
-full
-reference manual for CLAM are also included.<br>
-&nbsp;&nbsp;&nbsp; CLAM is part of the HOOPLE libraries (<a
- href="http://hoople.org/">http://hoople.org/</a>) and can be
-downloaded from there or through a sourceforge mirror site.<br>
-&nbsp;&nbsp;&nbsp; In the remainder of the document, we will often
-refer to CLAM as just "clam".<br>
-&nbsp;
-</big>
-<center><small></small>
-<h2><small></small>
-<hr noshade="noshade" size="8" width="100%"></h2>
-<small></small></center>
-<center><big>
-</big><small></small>
-<h2><big><a name="PREPARATION"></a>Preparing Your Computer to Use
-CLAM</big></h2>
-<small></small></center>
-<h3><big><a name="STEPS_NEEDED"></a>Necessary Steps:</big></h3>
-<ol>
-  <small> </small><big> </big><small> </small>
-  <li><big>Setting environment variables for clam:</big></li>
-  <small> </small><big> </big><small> </small>
-  <ol>
-    <li><big>FEISTY_MEOW_DIR:</big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big> 
-**REVISE** out of date...  
-
-This variable has been needed since clam became
-part of the YETIcode project (at <a href="http://yeticode.org/">http://yeticode.org</a>).</big></li>
-      <small> </small>
-      <li><big>The default location for clam is under the FEISTY_MEOW_DIR
-in a
-folder named clam, although the version of clam shipped with the HOOPLE
-code (http://hoople.org) actually lives under the root of the hoople
-hierarchy.<br>
-        </big></li>
-      <small> </small><big> </big><small> </small>
-      <li><big>If the yeti root directory is in $HOME/yeti
-already, then the
-default for FEISTY_MEOW_DIR will work and it doesn't need to be declared.</big></li>
-      <li><big>Setting the variable:<br>
-        </big></li>
+      <li><big> <a href="#PREPARATION">Preparing Your Computer to Use
+            CLAM</a></big></li>
       <small> </small><big> </big><small> </small>
       <ol>
         <small> </small><big> </big><small> </small>
-        <li><big>On Unix (with the bash shell): <span
- style="font-weight: bold;">export MAKEFLAGS="-I $HOME/yeti/clam"</span></big></li>
-        <small> </small><big> </big><small> </small>
-        <li><big>On win32: <span style="font-weight: bold;">set
-MAKEFLAGS="-I c:/yeti/clam"</span>&nbsp; (or set this in the System
-control panel, under the advanced tab, in environment variables)<span
- style="font-weight: bold;"><br>
-          </span></big></li>
-        <small> </small><big> </big><small> </small>
-        <li><big>Note that the use of
-forward slashes is mandatory in the clam directory in MAKEFLAGS.<br>
-          </big></li>
+        <li><big> <a href="#STEPS_NEEDED">Necessary Steps</a></big></li>
         <small> </small><big> </big><small> </small>
       </ol>
       <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small><big> </big><small> </small>
-    <li><big>MAKEFLAGS:</big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big> This variable is required to be set in the
-environment before using clam with gnu-make.&nbsp; It tells make where
-to find the clam definitions and scripts.</big></li>
-      <small> </small>
-      <li><big>Setting the variable:<br>
-        </big></li>
+      <li><big> <a href="#TUTORIAL">CLAM Tutorial</a></big></li>
       <small> </small><big> </big><small> </small>
       <ol>
         <small> </small><big> </big><small> </small>
-        <li><big>On Unix (assuming bash as shell): <span
- style="font-weight: bold;">export MAKEFLAGS="-I $FEISTY_MEOW_DIR/clam"</span></big></li>
+        <li><big> <a href="#CAVEATS">Caveats</a></big></li>
         <small> </small><big> </big><small> </small>
-        <li><big>On win32: <span style="font-weight: bold;">set
-MAKEFLAGS="-I %FEISTY_MEOW_DIR%/clam"</span></big></li>
+        <li><big> <a href="#TUT_BASICS">Basics</a></big></li>
         <small> </small><big> </big><small> </small>
-        <li><big>This variable also requires forward slashes
-instead of
-backslashes.</big></li>
+        <li><big> <a href="#TUT_COMMON">Common Files</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#TUT_IMPORTANT_VARS">Important Variables</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#TUT_VAR_ASSIGN">Variable Assignment</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#TUT_OPTIONAL_VARS">Optional Variables</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#WRITING_RULES">Writing Your Own Rules</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#TUT_CONCLUSION">Conclusion</a></big></li>
         <small> </small><big> </big><small> </small>
       </ol>
       <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small>
-  </ol>
-  <small> </small>
-  <li><big>Required Tools:</big></li>
-  <small> </small><big> </big><small> </small>
-  <ol>
-    <small> </small><big> </big><small> </small>
-    <li><big>The compiler itself:<br>
-      </big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big>If you are running GNU/Linux (or almost any other
-Posix-compliant operating system), then the GNU C/C++ compiler
-suite is pretty much all that's needed.</big></li>
-      <small> </small><big> </big><small> </small>
-      <li><big>The
-GNU C/C++ compiler (included in the <a href="http://www.mingw.org/">MinGW</a>
-toolkit) should be all that's needed for
-compilation,
-but the Microsoft Visual Studio 6.0-8.0 compilers can be used if
-available.&nbsp; Compatibility is only guaranteed for vc8
-however.<br>
-        </big></li>
-      <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small><big> </big><small> </small>
-    <li><big>Win32 Unix Tools:</big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big>&nbsp;If you are running a win32-based product
-(windows NT,
-windows
-2000,
-windows xp, etc) then a few additional tools are required...<br>
-        </big></li>
-      <small> </small><big> </big><small> </small><small></small>
-      <li><big>The recommended GNU utilities are available for
-win32 in the
-MingW MSYS
-package (http://www.mingw.org/).</big></li>
-      <li><big>Note that you will need to add the binaries directory from MSYS to
-your path.&nbsp; The PATH variable can be accessed under MS-NT type OSes through the
-"control panel | system | advanced | environment variables" menu trail.&nbsp; If you
-plan to use msys outside of clam, then ensure that
-the MSYS bin directory is prior to the
-windows system directory in your path; this causes the Unix "find"
-command to be used instead of the Windows version.</big></li>
-      <li><big>Alternatively, a similar set of GNU utilities is
-available
-in the <a href="http://cygwin.com/">Cygwin package</a>, although these tools are no longer recommended and are, in
-fact, actively deprecated.</big></li>
+      <li><big> <a href="#REFERENCE">CLAM Reference</a></big></li>
       <small> </small><big> </big><small> </small>
       <ol>
         <small> </small><big> </big><small> </small>
-      </ol>
-      <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small><big> </big><small> </small>
-    <li><big>makedep and version_stamper tools:</big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big>The hoople/bin directory in the archive has
-pre-built
-versions of tools used by clam during a build.<br>
-        </big></li>
-      <small> </small><big> </big><small> </small>
-      <li><big>If you would rather rebuild them from source, then
-running
-the script "bin/bootstrap_build.sh" will
-recreate all of these internal tools.<br>
-        </big></li>
-      <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small><big> </big><small> </small>
-  </ol>
-  <small> </small><big> </big><small> </small>
-  <li><big>Third Party Tools Used By or Supported Within clam:</big></li>
-  <small> </small><big> </big><small> </small>
-  <ol>
-    <small> </small><big> </big><small> </small>
-    <li><big>wx widgets:</big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big>home page: http://www.wxwidgets.org/</big></li>
-      <small> </small><big> </big><small> </small>
-      <li><big>As far as the clam team is concerned, this is the
-premier
-portable (and open source) library for graphical user interfaces.<br>
-        </big></li>
-      <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small><big> </big><small> </small>
-    <li><big>OpenSSL:</big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big>home page: http://www.openssl.org/</big></li>
-      <small> </small><big> </big><small> </small>
-      <li><big>This is the team's most favorite library for SSL
-(Secure
-Sockets Layer) and general encryption needs.<br>
-        </big></li>
-      <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small><big> </big><small> </small>
-    <li><big>cURL:</big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big>home page: http://curl.haxx.se/</big></li>
-      <small> </small><big> </big><small> </small>
-      <li><big>The curl library rocks(!) and provides a very
-powerful set of
-tools for programmatically interacting with live web pages.<br>
-        </big></li>
-      <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small><big> </big><small> </small>
-  </ol>
-  <small> </small><big> </big><small> </small>
-  <li><big>Other clam Preconditions:</big></li>
-  <small> </small><big> </big><small> </small>
-  <ol>
-    <small> </small><big> </big><small> </small>
-    <li><big>Linux platforms:</big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big>The standard source code repository is a directory
-called
-"hoople"
-in the user's home directory. &nbsp;If you decompress the hoople
-library archive in your home directory, you should be all set to
-perform a build.</big></li>
-      <small> </small><big> </big><small> </small>
-      <li><big>See the HOOPLE website for more details about
-downloading that codebase (<a href="http://hoople.org">http://hoople.org</a>).<br>
-        </big></li>
-      <small> </small><big> </big><small> </small>
-      <ol>
-        <small></small><small></small>
-      </ol>
-      <small> </small><big> </big><small> </small>
-    </ol>
-    <small> </small><big> </big><small> </small>
-    <li><big>Win32 platforms:</big></li>
-    <small> </small><big> </big><small> </small>
-    <ol>
-      <small> </small><big> </big><small> </small>
-      <li><big>The standard repository for source code is a substituted drive l:, which is where all the other hierarchies start. &nbsp;This
-drive can be mapped to any folder desired using the "subst" command
-(for example, "subst l: c:\build_dir").
-&nbsp;All
-objects and final products will be generated to the l: drive.</big></li>
-      <small> </small><big> </big><small> </small>
-      <li value="2"><big>Using MS Visual Studio as the Compiler:</big></li>
-      <small> </small><big> </big><small> </small>
-      <ol>
+        <li><big> <a href="#LANG_INDEP_VARS">Language Independent
+              Variables</a></big></li>
         <small> </small><big> </big><small> </small>
-        <li><big>VS80COMNTOOLS/VS90COMNTOOLS/VS100COMNTOOLS variable:</big></li>
+        <li><big> <a href="#LANG_INDEP_RULES">Language Independent
+              Rules</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#LANG_INDEP_TARGETS">Language Independent
+              Targets</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#LANG_INDEP_SCRIPTS">Language Independent
+              Files</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#CPP_VARS">C++ Specific Variables</a></big></li>
         <small> </small><big> </big><small> </small>
         <ol>
           <small> </small><big> </big><small> </small>
-          <li><big>This variable should be automatically created by
-Visual Studio upon installation.&nbsp; If it isn't, then Microsoft has
-a bug or you need to restart your current prompt or your computer.<br>
+          <li><big> <a href="#DIRECTORY_VARS">Directory Structure
+                Variables</a></big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big> <a href="#CPP_FLAGS">Compiler Dependent Flags</a></big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big><a href="#vcpp_only">Microsoft Visual C++ Only</a><br>
             </big></li>
-          <li><big>The paths that clam uses to find compiler binaries
-is calculated based on this variable.</big></li>
-          <li><big>Older versions of visual studio are currently
-unsupported because Microsoft constantly rearranges their folders and
-tools in a non-maintainable way.<br>
-            </big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big> <a href="#SUPPORT_EXTENSIONS">Support for
+                Compilation
+                Extensions</a></big></li>
+          <small> </small><big> </big><small> </small>
         </ol>
-        <li><big>Several other environment variables are required
-by Visual
-Studio.&nbsp; They can be set up for your current command prompt by
-running "vcvars32.bat" or "vsvars32.bat" (found under
-the
-compiler's common directory, which varies depending on the version of
-visual studio).<br>
-          </big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#CPP_RULES">C++ Specific Rules</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#CPP_TARGETS">C++ Specific Targets</a></big></li>
+        <small> </small><big> </big><small> </small>
+        <li><big> <a href="#CPP_SCRIPTS">C++ Specific Files</a></big></li>
         <small> </small><big> </big><small> </small>
       </ol>
       <small> </small><big> </big><small> </small>
+      <li><big> <a href="#EXAMPLES">Example CLAM Makefiles</a></big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big> <a href="#CLAM_HINTS">CLAM Hints and Troubleshooting</a></big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big> <a href="#ACKS">Acknowledgements</a></big></li>
+      <small> </small><small></small>
     </ol>
-    <small> </small><big> </big><small> </small>
-  </ol>
-  <small> </small><small></small>
-</ol>
-<center><big>
-</big><small></small>
-<h2><small></small>
-<hr noshade="noshade" size="8" width="100%"></h2>
-<small></small></center>
-<center><big>
-</big><small></small>
-<h2><big><a name="TUTORIAL"></a>CLAM Tutorial</big></h2>
-<small></small></center>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This section provides an overview of
-how clam
-works and how you can make it work for you.&nbsp; It is quite brief,
-but
-should suffice for most common cases of makefiles.&nbsp; For more
-detailed
-usage, consult the CLAM Reference section of this document.
-</big>
-<h3><big><a name="CAVEATS"></a>Caveats</big></h3>
-<ul>
-  <small> </small><big> </big><small> </small>
-  <li><big>Most of the Unix tools employed in the make process are
-case-sensitive.&nbsp;
-This means that they will probably not find any of the clam support if
-the files have been changed to upper-case names.&nbsp; It also means
-that
-all code files must match their descriptions in makefiles, letter for
-letter.&nbsp;
-And any batch files or executables invoked also need to be in
-lower-case
-as clam expects them to be.</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>A corollary case requirement is that the makefile must
-be named
-either
-"makefile" or "Makefile".&nbsp; These are the Unix standard names and
-GNU make
-looks for these by default.&nbsp; If you are willing to type "make -f <i>makefile_name</i>",
-then you can run any makefile.&nbsp; However, the build-ready makefiles
-should be named according to the standard, since the build process will
-look for these automatically.</big></li>
-  <small> </small><small></small>
-</ul>
-<h3><big>
-<a name="TUT_BASICS"></a>Basics</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The C++ Library
-Automatic Maker system (or CLAM) is defined as a set of
-variable
-(or macro) definitions. &nbsp;These variable definitions are
-manipulated in
-order to compile and link programs.&nbsp; By setting the variables'
-values
-appropriately, specific products can be generated from the target rules
-defined
-in clam.&nbsp; Both variables and rules are extensible.&nbsp; The
-general
-procedure for building a clam-based Makefile has four user-defined
-steps:
-</big>
-<ol>
-  <small> </small><big> </big><small> </small>
-  <li><big>loading the default variables for clam,</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>redefining the default variables where necessary,</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>loading the default rule set for clam,</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>defining rules that are local to the user's Makefile.</big></li>
-  <small> </small><small></small>
-</ol>
-<big>Step 4 can usually be omitted unless the project creates
-components
-whose types are not supported by clam.<br>
-&nbsp;&nbsp;&nbsp;&nbsp; clam is structured as a directory hierarchy
-where the root of clam
-supports
-the most general makefile activities. &nbsp;Activities such as
-recursing
-into subdirectories and providing support for cleaning up after a make
-are
-provided at this level. &nbsp; In the remainder of the document, we
-will
-designate this location with a "$" character to clarify what part of
-the clam hierarchy we are describing.<br>
-&nbsp; &nbsp;&nbsp; The root clam
-support files are mostly language independent, since they are used by
-all
-varieties of language dependent derived versions of clam.&nbsp; These
-files
-are generally not of concern unless one is designing a new derived
-version
-of clam for a language not yet supported.<br>
-&nbsp;&nbsp;&nbsp;&nbsp; The subdirectories off of the clam root
-provide
-"derived" makefile services, such as C++ or Ada compilation.&nbsp; Each
-derived clam service implements at least two files to link into the
-rest of the
-clam system: a variables file and a rules file. &nbsp;The variables
-file defines
-the options for the derived make process; by changing the values of
-these,
-different types of targets can be created. &nbsp;The rules file
-implements
-creation of the targets relevant to the programming language being
-supported.<br>
-&nbsp;&nbsp; &nbsp; It may be worth noting that clam can be used to
-drive
-any kind of programmatic process--not just compilation. &nbsp;Currently
-though,
-program compilation is the primary goal.
-</big>
-<h3><big><a name="TUT_COMMON"></a>Common Files</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The top-level file called
-"$/variables.def"
-contains
-definitions and descriptions of the variables used throughout the clam
-system.&nbsp; For a non-derived type of make (using only base clam
-support),
-this file should be included near the start of the user's
-Makefile.&nbsp;
-The rules file (stored in "$/rules.def") should be included after the
-user
-has modified the appropriate variables that will dictate how the make
-is
-performed.
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; This scheme of including variables at the
-top and then rules at the bottom of the user's makefile is employed in
-all clam makefiles.&nbsp; For example, makefiles for C++ compilation
-are structured the
-same way.&nbsp; The user's C++ makefile includes the C++ variables
-(stored
-in a subdirectory called "$/cpp" under the clam root) at the top of the
-makefile and then includes the C++ rules at the bottom.<br>
-&nbsp;&nbsp;&nbsp;&nbsp; An example
-of a C++ makefile is shown below:
-</big>
-<ul>
-  <small> </small><big> <tt>include cpp/variables.def <br>
-  <br>
-PROJECT = basis<br>
-TYPE = library<br>
-SOURCE = chaos.cpp checkup.cpp earth_time.cpp guards.cpp istring.cpp \<br>
-&nbsp; log_base.cpp mutex.cpp occurrence.cpp outcome.cpp
-outcome_table.cpp \<br>
-&nbsp; packable.cpp portable.cpp runtime_history.cpp
-system_outcomes.cpp \<br>
-&nbsp; utility.cpp version_checker.cpp version_record.cpp<br>
-TARGETS = basis.lib<br>
-  <br>
-include cpp/rules.def</tt><br>
-  </big><small></small>
-</ul>
-<big>The interior of the makefile overrides the TYPE, SOURCE
-and TARGETS variables for C++ compilation to specify what is to be
-built
-(basis.lib) and what it consists of (the CPP files mentioned in
-SOURCE).&nbsp;
-&nbsp;The PROJECT variable being overridden is actually defined in the
-$/variables.def;
-a project name is a required feature of all clam makefiles.
-</big>
-<h3><big><a name="TUT_IMPORTANT_VARS"></a>Important Variables</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp;
-The clam root directory is pointed to by an internal variable called
-"CLAM_DIR",
-defined in $/variables.def.&nbsp; This variable is used by the clam
-system
-to find extra files that might be needed by derived makefile
-support.&nbsp;
-It is important to change this to the appropriate value when you are
-using the system in a different location. &nbsp;The CLAM_DIR variable
-can either
-be directly edited in $/variables.def, or it can be overridden in the
-environment
-of the shell running the make, or it can be passed on the command line
-to
-make.<br>
-&nbsp;&nbsp;&nbsp;&nbsp; For C++ compilation, the above example
-makefile
-(for basis.lib) contains examples for most of the required
-elements.&nbsp; Additional elements
-will be discussed in the examples section or can be found in the
-reference.&nbsp;
-The absolutely required variables for C++ are PROJECT, TYPE, SOURCE and
-TARGETS.
-</big>
-<p><big>&nbsp;&nbsp;&nbsp;&nbsp; PROJECT is a variable that
-provides the
-name
-of the project being compiled.&nbsp; This should be a word that can
-also
-be used as a directory name and partial component of filenames.&nbsp;
-Thus,
-spaces and other unusual punctuation characters are discouraged.&nbsp;
-All of the project's temporary directories will be created based on
-this
-variable.&nbsp; This project name should be unique across a full build;
-otherwise files generated by compiling identical project names will be
-jumbled together.
-</big></p>
-<p><big>&nbsp;&nbsp;&nbsp;&nbsp; TYPE is a variable that describes
-the kind
-of project that is being compiled.&nbsp; This is necessary because it
-controls
-some aspects of the compilation, such as where the compilation products
-are
-generated.&nbsp; All files generated by compilation are stored in the
-repository
-directory (by default, either "~/hoople" in Linux or "l:\" in
-win32).&nbsp; There are three TYPEs supported so far: </big></p>
-<ul>
-  <small> </small><big> </big><small> </small>
-  <li><big>library: indicates that the project will primarily be
-creating
-static
-or
-dynamic libraries.</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>application: indicates that the project will create
-executables.</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>test: indicates that the project constructs test
-programs.</big></li>
-  <small> </small><small></small>
-</ul>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Projects of the "library" type will
-be given
-an include directory named after the project, such as
-"~/hoople/include/basis".
-&nbsp;The include directory is created as a copy of the headers in the
-project's
-directory .&nbsp; Library projects will also have their final products
-copied
-to the lib or dll subdirectories of the build directory being created.<br>
-&nbsp;&nbsp;&nbsp; &nbsp;Projects that are of type "application" will
-have their executables
-copied to the executable directory in the repository (such as
-"~/hoople/exe").<br>
-&nbsp; &nbsp; &nbsp;The "test" type of project
-will be promoted to a subdirectory named after the PROJECT that resides
-under the test hierarchy in the repository (such as
-"~/hoople/tests/turbodog").
-</big>
-<p><big>&nbsp;&nbsp;&nbsp;&nbsp; SOURCE is a list of files that
-are to be
-compiled
-in order to create the final products of the project.&nbsp; These can
-be
-C++ source files (*.cpp), MS-Win32 resource files (*.rc) and other
-types
-of source files.&nbsp; The list of objects to create will be determined
-by transforming the list of SOURCE files (such as by turning a file
-called
-"fud.cpp" into an object called "fud.obj").
-</big></p>
-<p><big>&nbsp;&nbsp;&nbsp;&nbsp; TARGETS is a list of the products
-that are
-to be created by compilation and linking.&nbsp; The suffix of a target
-is a well established extension, such as ".lib", ".exe"
-or ".dll" for MS-Win32 compilation products.
-</big></p>
-<h3><big><a name="TUT_VAR_ASSIGN"></a>Variable Assignment Policies</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp;
-The assignment of variable values is mostly straightforward, but it
-might
-be valuable to provide a refresher.&nbsp; In GNU make, a variable
-(a.k.a.
-macro) can be assigned using the following syntax:
-</big>
-<ul>
-  <small> </small><big>FRED = a b c </big><small> </small>
-</ul>
-<big>This sets the variable named FRED to the value of "a
-b c". &nbsp;The variable is referred to as $(FRED) when it is being
-used,
-although its name is just FRED.<br>
-&nbsp;&nbsp;&nbsp; &nbsp;This syntax is fine when the variable is to be
-defined only once.&nbsp;
-In many cases though, a variable is already defined and needs to be
-added
-to instead of redefined.&nbsp; Using the standard equals (=) operator
-would
-wipe out the previous definition, so a special assignment
-is provided:
-</big>
-<ul>
-  <small> </small><big>FRED += d e f </big><small> </small>
-</ul>
-<big>This is quite similar to the C syntax on integers.&nbsp; It
-means that
-FRED will be given a value equal to its old value plus the new
-contents.&nbsp;
-In our example, FRED would be equal to "a b c d e f". &nbsp;Note that
-one cannot say:<br>
-<br>
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; FRED = $(FRED) d e f
-&nbsp; &nbsp; &nbsp; (BAD!)<br>
-<br>
-This is not allowed in GNU make because it includes a macro's own value
-in its definition. &nbsp;This causes a badly formed recursive
-definition
-of the variable; a variable dereferencing operation (such
-as $(FRED)) causes the variable's current value to
-be resolved, which in turn dereferences any other variables in the
-definition.
-&nbsp;Thus, the reference to $(FRED) causes infinite recursion when
-included
-in the definition of FRED.<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; In the case of variables that <u>must</u>
-be defined by the user's makefile, the standard assignment operator
-(via the = character) can
-be used.&nbsp; This includes the PROJECT, TYPE, SOURCE, and TARGETS
-variables.&nbsp;
-Also, any other variables that are set only by the user's makefile can
-use simple assignment.&nbsp; This category includes LOCAL_LIBS_USED,
-LIBS_USED and others of similar nature.<br>
-&nbsp;&nbsp;&nbsp;&nbsp; But several variables are defined partially
-by clam, then added to within the user's makefile, and then possibly
-extended
-after the user's makefile is processed (by the clam rules file).&nbsp;
-These variables cannot use
-standard assignment and must instead use the incremental assignment
-(+=)
-operator.&nbsp; Variables included in this category are DEFINITIONS,
-LOAD_FLAG_PREFIX,
-CLEANUPS, and many others.
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; If you are unsure about the type of variable
-you are defining, then the incremental assignment (+=) operator is
-preferred
-to avoid trashing the variable's previous values.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;
-Note that when variables are "exported", then any make in a subshell
-will
-inherit the parent shell's value.&nbsp; This can induce some weird
-behavior
-for variables that are incrementally constructed with the +=
-operator.&nbsp;
-If this seems to be happening, try using the simple assignment operator
-for
-that variable in the sub-makefile, if this is allowed. &nbsp;In general
-though,
-variables are not exported unless they MUST be seen by shell scripts
-and
-this does not occur overly frequently.
-</big>
-<h3><big><a name="TUT_OPTIONAL_VARS"></a>Optional Variables</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; There are several miscellaneous
-variables that
-are useful, either within one's makefiles or when passed to GNU make on
-the command
-line.&nbsp; These are described below.
-</big>
-<p><big>&nbsp;&nbsp;&nbsp;&nbsp; LOCAL_LIBS_USED is a list of
-library names
-that are to be linked in with the library or executable being
-created.&nbsp;
-These are specially formatted names; they are just the prefix part of
-the
-full library name.&nbsp; For example, if you're building a release
-executable
-and want to link in a data structures library "i_adt.lib" (win32) or
-"libi_adt.a" (Linux), you can specify:
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LOCAL_LIBS_USED = i_adt
-<br>
-The appropriate prefix and suffix will be attached.
-</big></p>
-<p><big>&nbsp;&nbsp;&nbsp;&nbsp; EXTRA_COPIES is a list of files
-that should be copied to a project's output folder when it is done
-being compiled.&nbsp; These should be files that are not already
-copied as the main products, such as extra data or configuration files
-that belong with an application.
-</big></p>
-<p><big>&nbsp;&nbsp;&nbsp;&nbsp; EXTRA_VERSIONS is a list of
-version files
-that
-also need to be updated to the main build version during a
-compilation.&nbsp;
-These are usually needed if a project compiles several executable
-files,
-and each one performs version checking.&nbsp; (By default, any project
-containing a file called "version.ini" will get a version stamp from
-the
-main build version.)
-</big></p>
-<h3><big><a name="WRITING_RULES"></a>Writing Your Own Rules</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; One might need to write new rules
-for
-processing
-file types that are not directly supported by clam.&nbsp; There are a
-number
-of features provided for writing rules, but there are also some
-requirements
-placed on the rules.
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; All rules in makefiles need to be prefaced
-with one of the provided "launcher" macros.&nbsp; These are used to
-ensure
-that the rules can be properly executed on different platforms;
-Windoze95
-was especially hard to implement for until these macros were developed
-(due to what appear to be basic defects in the command line
-support).&nbsp;
-All preaching aside, here are the macros:
-</big>
-<ul>
-  <small> </small><big> </big><small> </small>
-  <li><big>HIDER: Executes a command but hides the
-invocation.&nbsp; Any
-output is
-still sent to standard out.&nbsp; If a verbose
-build is being done, then all of the invocations become visible again.</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>HIDESH: Executes a shell script but hides the
-invocation.
-&nbsp;Similar to HIDER but supports scripts specifically.<br>
-    </big></li>
-  <small> </small><small></small>
-</ul>
-<big>Here are some examples of using the macros properly.&nbsp;
-Note that
-the
-command itself must be contained in single quotes:<br>
-<br>
-$(HIDER) $(MIDL) crumpet_server.idl<br>
-</big>
-<blockquote><big>MIDL is also a provided macro; it executes the
-Microsoft
-IDL compiler. </big></blockquote>
-<big>$(HIDESH) $(CLAM_DIR)/postconditions.sh<br>
-</big>
-<blockquote><big>This runs a shell script that handles the end
-portion of a
-make.</big></blockquote>
-<h3><big>
-<a name="TUT_CONCLUSION"></a>Conclusion</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This tutorial is intended to raise
-awareness
-of
-basic&nbsp; usage.&nbsp; Hopefully the reader will now be able to
-create
-simple makefiles that use .&nbsp; For more aggressive compilation
-requirements,
-the reference section may be needed; it describes every variable and
-rule
-used in the&nbsp; system.&nbsp; However, it is most likely the case
-that
-your unsupported compilation needs will also be required by others in
-the
-future, and it is hoped that you will contribute them to the
-main-line&nbsp; support.&nbsp; Currently, the appropriate way to do
-this is just
-to
-send the makefile code to the <a href="#lib_manager">library
-administrator</a>, who will include them
-in the next version of .
-</big>
-<center><small></small>
-<h2><small></small>
-<hr noshade="noshade" size="8" width="100%"></h2>
-<small></small></center>
-<center><big>
-</big><small></small>
-<h2><big><a name="REFERENCE"></a>CLAM Reference</big></h2>
-<small></small></center>
-<h2><big>
-<a name="LANG_INDEP_VARS"></a><u>Language Independent Variables</u></big></h2>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The language independent variables
-are stored
-in the file "$/variables.def".&nbsp; They define the overall structure
-of a make and can usually be overridden to customize how the make is
-performed.
-</big>
-<h4><big>BUILD_BEFORE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of projects that need
-to be
-created
-before this project can be created.&nbsp; The items in the list are
-interpreted
-as directories that contain a makefile to be run.&nbsp; For example, if
-an item in BUILD_BEFORE is listed as &#8216;fred&#8217;, then the target
-"fred.make"
-will be executed.&nbsp; That target changes to the directory 'fred'
-before
-running the makefile there.&nbsp; The project in the specified
-directory
-is created using make if needed (as determined by that directory's
-Makefile).&nbsp;
-The projects in BUILD_BEFORE are made immediately after the
-FIRST_TARGETS
-are made.
-</big>
-<h4><big>ACTUAL_TARGETS, ACTUAL_FIRST_TARGETS, ACTUAL_LAST_TARGETS</big></h4>
-<big>&nbsp;&nbsp; &nbsp; See below for TARGETS, FIRST_TARGETS and
-LAST_TARGETS.<br>
-</big>
-<h4><big>BUILD_AFTER</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; A list of directory names that
-should be
-recursed
-into after this project finishes. &nbsp;Each listed directory will have
-make
-started on any makefile found.<br>
-</big>
-<h4><big>BUILD_BEFORE<br>
-</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; A list of directory names that
-should be
-recursed into before this project
-starts. &nbsp;Each directory listed will have make started on any
-makefile found.<br>
-</big>
-<h4><big>MAKEFILE_NAME</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; A variable that specifies the name
-of the
-makefile
-for all sub-makes.&nbsp; It works with BUILD_BEFORE and
-BUILD_AFTER and allows the name of the makefile in a
-subdirectory to be changed to something other than 'makefile'.&nbsp;
-This
-supports different types of builds which are controlled by different
-makefile
-names.
-</big>
-<h4><big>PARAMETER_FILE</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;A file name that is
-usually found at the root of the repository. &nbsp;The name is
-often "build.ini", but any name can be used as the parameter file.
-&nbsp;This file is an extension of the variable set included in
-$/variables.def
-and can be used to provide compilation paramters without resorting to
-the
-command line. &nbsp;This file is associated with a particular build
-rather
-than the&nbsp; support, so different releases will have different build
-parameter
-files. &nbsp;On systems supporting version information, the build's
-version
-number is stored here also.<br>
-</big>
-<h4><big>CATCHER</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;A sub-program launcher like HIDESH
-but this will trap errors it sees and play the build error
-CLAM_ERROR_SOUND.<br>
-</big>
-<h4><big>CLAM_BIN</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a folder where the helper
-binaries for&nbsp; are located. The default for this is usually
-CLAM_DIR/../bin.<br>
-</big>
-<h4><big>CLAM_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This variable points at the location
-where the&nbsp; definitions and helper scripts are located.&nbsp; The
-default is
-"~/yeti/clam",
-but this can be overridden for local installations of .<br>
-</big>
-<h4><big>CLAM_ERROR_SOUND</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;This is a list of sound files
-that should be played when a make stops with an error. &nbsp;It serves
-as
-an audible warning that something bad happened.<br>
-</big>
-<h4><big>CLAM_FINISH_SOUND</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;This is a list of sound files
-that should be played when the make has concluded
-successfully. &nbsp;It should play when the outer-most make
-has seen all targets created as intended.<br>
-</big>
-<h4><big>CLAM_TMP</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Specifies the location for temporary
-files generated during a make. &nbsp;The default value usually works
-fine.
-&nbsp;This directory will be created if it does not already exist.<br>
-</big>
-<h4><big>CLEANUPS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of files to be
-removed by the
-make
-clean command.&nbsp; They are possibly acquired from the TARGETS
-defined
-in the user's Makefile, or by language dependent rules for
-cleaning.&nbsp;
-Additional files can be added to this list by the user's makefile also.
-</big>
-<h4><big>DIRTY_FILE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This variable points at a file that
-signifies
-that some targets have been remade.&nbsp; It is not used at the base
-level
-of clam, but language-specific versions might do something special if
-targets
-were remade (such as put them in a build repository).
-</big>
-<h4><big>FAILURE_FILE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This file is used as a flag that
-indicates
-when
-a make has failed.&nbsp; The particular file used depends on the
-project
-name for this makefile.&nbsp; It is cleared at both the beginning and
-end
-of a make.
-</big>
-<h4><big>FIRST_TARGETS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The FIRST_TARGETS are made before
-any
-libraries
-are created and before any executables are compiled.&nbsp; There must
-be
-a rule for making every entry in this list, either through implicit
-rules
-or explicit ones provided by the user's makefile.
-</big>
-<h4><big>FLAG_FILES</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;This is a list of all the files
-that are used for compilation flags. &nbsp;They are whacked at the
-beginning
-and end of a make.<br>
-</big>
-<h4><big>HIDER</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This macro is used throughout&nbsp;
-to hide the
-commands that are being sent to the operating system.&nbsp; It can be
-disabled to allow a verbose make (see the NOISY macro).
-</big>
-<h4><big>HIDESH</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Just like HIDER, but this macro is
-specifically
-for launching shell scripts. &nbsp;Some versions of GNU make (like
-Cygwin's)
-have problems running scripts which don't arise when running executable
-files.
-&nbsp;Those problems led to the creation of the HIDESH macro for those
-specific
-cases. &nbsp;This is not an issue for Unix systems.
-</big>
-<h4><big>&nbsp;LAST_TARGETS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The LAST_TARGETS are made after all
-of the
-other
-standard targets are made.&nbsp; Their must be a rule for making every
-entry in this list, either through implicit rules or explicit ones
-provided
-by the user's makefile.
-</big>
-<h4><big>NOISY</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This variable can be used to cause a
-verbose
-make.&nbsp;
-If the variable is non-empty, then all commands will be echoed to
-standard
-output.&nbsp; Otherwise, the default is to hide the commands that are
-issued
-and just show the output of running those commands.
-</big>
-<h4><big>OP_SYSTEM</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a flag that defines the
-operating
-system
-name.&nbsp; This flag is sometimes used to choose the appropriate tools
-per platform or to conditionally compile code for system
-dependent interfaces.&nbsp; The available possibilities so far are
-UNIX,
-OS2, SYSV (System V Unix), DOS, and WIN32.&nbsp; Only UNIX and WIN32
-are
-currently very functional.
-</big>
-<h4><big>&nbsp;OTHER_CLEANS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These are targets to execute before
-performing
-the main clean up during "make clean".&nbsp; These might be targets
-that
-contain shell commands to execute as part of clean up or they could
-contain
-the "clean_subdirs" command (defined below).
-</big>
-<h4><big>PROJECT</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a variable that provides the
-name of
-the
-project being compiled.&nbsp; This should be a word that can also be
-used
-as a directory name and as a partial component of filenames.&nbsp;
-Thus, spaces
-and other unusual punctuation characters are discouraged.&nbsp; All of
-the project's temporary directories will be created based on this
-variable.
-</big>
-<h4><big>FEISTY_MEOW_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Specifies the root directory
-for compilation or other&nbsp; building activities. &nbsp; The
-repository
-is also where source code and final products of compilation reside,
-unless
-the default is over-ridden (see TARGETS_DIR).<br>
-</big>
-<h4><big>SH &amp; SHELL</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These variables both point at a
-shell program
-that is
-used for starting commands. &nbsp;SHELL is defined by GNU make, whereas
-SH is defined by .
-</big>
-<h4><big>SUB_FLAG_FILES</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;This is a list of the compilation
-flag files
-which
-should be destroyed only at the end of a make.&nbsp; They are used for
-communication
-with submakefiles--makefiles that were invoked by "this" makefile.<br>
-</big>
-<h4><big>SUBMAKE_FLAG</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;This points to a file whose presence
-indicates
-that
-a "submake" performed some actions. &nbsp;The flag can be interpreted
-by
-some language-specific versions of&nbsp; as a reason to set a flag
-using
-the
-DIRTY_FILE.<br>
-</big>
-<h4><big>TARGETS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These are the products to be created
-by .&nbsp;
-Each item listed in TARGETS should have a rule that knows how to create
-that type of file.&nbsp; The language independent system provides very
-few suffix based rules.&nbsp; TARGETS is filled in by the user in
-their&nbsp; file, but it is not used directly by the&nbsp;
-system.&nbsp;
-Instead,
-a generated variable called ACTUAL_TARGETS is used.<br>
-</big>
-<h4><big>TARGETS_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This folder is where all generated
-files are
-to
-be stored. &nbsp;It is usually identical to FEISTY_MEOW_DIR but can be
-overridden
-when the targets should be stored elsewhere.<br>
-</big>
-<h4><big>Version components: major, minor, revision, build<br>
-</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;These four variables specify the
-version of
-this
-particular build. &nbsp;They are usually stored in the
-PARAMETER_FILE.
-&nbsp;The major and minor versions are the traditional 2.3, 4.0, etc
-style
-of release numbers. &nbsp;The revision number is often used to sequence
-the
-builds of that particular release, such that build 3.5.127 is the 127th
-build
-of the 3.5 release.<br>
-&nbsp; &nbsp; &nbsp;A version-tagged file (such as an executable or
-dynamic
-library) with any one of the major, minor or revision numbers differing
-from
-an installed build is incompatible with the installed build. &nbsp;An
-executable
-file or dynamic library will not be allowed to load other dynamic
-libraries
-where these numbers differ.<br>
-&nbsp; &nbsp; &nbsp;The last version component is misleadingly called
-"build";
-this number specifies the service pack level for a file. &nbsp;Files
-whose
-versions only differ in the last "build" component are intended to be
-compatible
-with each other. &nbsp;The understanding is that if only that number
-differs,
-then the external interface to the file has not changed, although the
-interior
-implementation may have.<br>
-</big>
-<h2><big><a name="LANG_INDEP_RULES"></a><u>Language Independent
-Rules</u></big></h2>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The file "$/rules.def" uses the
-composite
-macros
-defined in "$/variables.def" together with a set of make rules to
-perform
-actions during compilation.&nbsp; The rules file should be included in
-the user's Makefile after the compilation variables have been
-initialized
-for the project being compiled.&nbsp; The user's own targets should be
-placed after the directive that includes "$/rules.def".
-</big>
-<h4><big>%.halt</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These targets cause&nbsp; to exit,
-usually to
-avoid
-something that it considers catastrophic.&nbsp; An example of this
-would
-be when&nbsp; finds an inappropriate entry in the list of objects to
-create;
-allowing a "make clean" on this makefile will delete files that are
-probably
-not intended.&nbsp; Hence, when&nbsp; finds this kind of usage, it will
-stop the make and issue a complaint.
-</big>
-<h4><big>%.make</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Used to compile a makefile in a
-subdirectory
-named
-"%".&nbsp; This rule is employed by the BUILD_BEFORE macro, but can be
-used in the user's makefile targets also.
-</big>
-<h2><big><a name="LANG_INDEP_TARGETS"></a><u>Language Independent
-Targets</u></big></h2>
-<big>&nbsp;&nbsp;&nbsp; The following targets are defined by
-"$/rules.def".
-</big>
-<h4><big>all</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a standard target that is
-executed
-when
-no particular target is specified at the make command line.&nbsp; It is
-an umbrella target that invokes all of the other targets required to
-perform
-a make.&nbsp; The order in which the major targets are created is:
-</big>
-<ol>
-  <small> </small><big> </big><small> </small>
-  <li><big>FIRST_TARGETS</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>TARGETS</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>LAST_TARGETS</big></li>
-  <small> </small><small></small>
-</ol>
-<h4><big>
-clean</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This causes all of the files in
-CLEANUPS to be
-removed and also executes all of the targets in OTHER_CLEANS.&nbsp; The
-language dependent system can override some of this behavior or it can
-just add more files to the list of CLEANUPS.
-</big>
-<h4><big>clean_subdirs</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is similar to "make_subdirs" in
-that it
-descends
-into the subdirectories in no particular order, but it runs "make
-clean"
-in each of them.&nbsp; This allows a directory hierarchy of projects to
-be cleaned with one command.
-</big>
-<h4><big>finish</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The "finish" target represents the
-completion
-of a make, whether successful or not.&nbsp; It reports the time and
-date
-(and logs them).
-</big>
-<h4><big>rm_links</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This target causes all link files in
-the
-current
-directory to be deleted.&nbsp; This is only applicable on a Unix
-operating
-system.
-</big>
-<h4><big>make_subdirs</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This target allows a makefile to
-specify that
-all of the subdirectories under the current directory should be scanned
-for makefiles and that those makefiles should be executed.&nbsp; If a
-makefile
-does not exist, it is skipped.&nbsp; Note that the subdirectories are
-descended
-into in no particular order; the order depends on how the operating
-system
-decides to list the directories.&nbsp; If the order of make is
-important,
-use BUILD_BEFORE instead.
-</big>
-<h4><big>start</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The "start" target represents the
-beginning of
-the make.&nbsp; It reports the time and date (and logs them).
-</big>
-<h2><big><a name="LANG_INDEP_SCRIPTS"></a><u>Language Independent
-Files</u></big></h2>
-<h4><big>$(PARAMETER_FILE)</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;This is a special
-file that has at least two purposes in .&nbsp; It is the source of
-the
-version number that will be stamped on all the appropriate DLLs and
-EXEs
-created during a build.&nbsp; It is also a place where build-wide
-compilation
-directives can be included so that they do not have to be passed on the
-command
-line.&nbsp; For C++ compilation, this is usually an INI file
-stored in the
-FEISTY_MEOW_DIR under the build folder.&nbsp;
-Here is a sample parameter file:
-</big>
-<blockquote><big><tt><font size="-1"><big>#\</big></font></tt> <br>
-  <tt><font size="-1"><big>[version]</big></font></tt> <br>
-  <tt><font size="-1"><big>major=14</big></font></tt> <br>
-  <tt><font size="-1"><big>minor=3</big></font></tt> <br>
-  <tt><font size="-1"><big>revision=140</big></font></tt> <br>
-  <tt><font size="-1"><big>build=0</big></font></tt> </big><small> </small>
-  <p><big><tt><font size="-1"><big>DEBUG=t</big></font></tt> <br>
-  <tt><font size="-1"><big>OPTIMIZE=t</big></font></tt> <br>
-  </big></p>
-  <small> </small></blockquote>
-<big>Note the bizarre comment at the top of the makefile; this is
-used to
-hide
-the "[version]" section marker.&nbsp; The comment is required because
-the
-build parameter file is pulled directly into the makefile code to set
-the
-variables after the version stamp.&nbsp; Without a comment in front of
-the section, a syntax error would result.&nbsp; The "[version]" section
-marker is required because this file is also sometimes treated as a
-win32 INI file
-in order to read the version stamp.<br>
-&nbsp;&nbsp;&nbsp;&nbsp; The build version is stored in the first four
-entries.&nbsp; Our interpretation of the stamp is standard for "major"
-and "minor".&nbsp; We treat the "revision" as a build revision number;
-within a release, there will be numerous revisions--one for each new
-build
-that is performed.&nbsp; We then treat the "build" entry as a patch
-level
-within that particular build.&nbsp; When we perform our version
-checking,
-only the first three entries are compared; the patch level in "build"
-is
-considered irrelevant.
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; This example also specifies that the build
-should be a debug style (rather than release) build and that it should
-be optimizer.&nbsp; We can also see that
-the flags for bounds checker instrumentation and true time
-analysis support are commented out.<br>
-</big>
-<h4><big>badness_catcher.sh</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Runs the command line passed
-in as a sub-shell and looks for error conditions. &nbsp;If an error
-occurred,
-the build is stopped and the CLAM_ERROR_SOUND is played.<br>
-</big>
-<h4><big>datestamp.sh</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Echoes the time and date. &nbsp;This
-is a
-separate
-file to make the cross-platform difference less annoying.<br>
-</big>
-<h4><big>exit_make.sh</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Causes the make to stop dead in its
-tracks.
-</big>
-<h4><big>postconditions.sh</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Invoked at the end of the
-language-invariant
-portion of a make.<br>
-</big>
-<h4><big>preconditions.sh</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Invoked at the beginning of the
-language-invariant portion of a make.<br>
-</big>
-
-<h4><big>starter.sh</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This shell script executes a command
-that is
-passed
-to it as its parameters and logs error conditions to standard
-output.&nbsp;
-It's used by the CATCHER macro.
-</big>
-
-<h2><small></small>
-<hr noshade="noshade" size="8" width="100%"></h2>
-<h2><big>
-<a name="CPP_VARS"></a><u>C++ Specific Variables</u></big></h2>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These variables are used throughout
-the C++
-compilation
-support.&nbsp; They are defined in "$/cpp/variables.def".
-</big>
-
-<h4><big>BASE_CPU</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Allows specification of the
-processor that the
-build is targeted for.&nbsp; This is needed when special actions must
-be
-taken for different processor types.&nbsp; Valid values currently
-include
-m68k (for Motorola 68000 series), m68340 (specifically the 68340),
-x86 (intel 386 and upwards), and ppc860 (the PowerPC 860).
-</big>
-<h4><big>BUILD_LIST_FILE</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;The list of files that must
-be rebuilt. &nbsp;This is only used with compilers that support
-compilation
-of multiple source files with one invocation of the compiler (currently
-only
-MS-Visual C++).<br>
-</big>
-<h4><big>BUILD_WHACK_FILE</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;A list of object files that must be
-destroyed
-if
-the make fails. &nbsp;This is only relevant in the same situations as
-BUILD_LIST_FILE.<br>
-</big>
-<h4><big>COMPILER</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This variable chooses the specific
-flags
-needed
-for the compiler.&nbsp; Not all operating system choices above are
-suitable
-with the COMPILER choices, but generally it is fairly obvious which are
-supported.&nbsp; The current possibilities include BORLAND_DOS,
-BORLAND_OS2,
-UNIX (default cc), GNU_OS2, GNU_LINUX, OBJECT_CENTER (Saber compiler),
-SUN_UNIX,
-VISUAL_CPP, and DIAB3.
-</big>
-<h4><big>COMPILER_FLAGS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is the list of flags passed to
-the
-preprocessor
-and compiler. It is composed of the SYSTEM, the DEFINITIONS, the
-SEARCH_DIRS,
-and any user-included options. If flags that don't fit one of the
-categories
-are needed, they can be added here.
-</big>
-<h4><big>CONSOLE_MODE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This causes the program
-to be generated as a console application.&nbsp; This is relevant in
-systems
-(such as win32) where programs have a split personality depending on
-whether
-they are to have graphical user interfaces or just console interfaces.
-</big>
-<h4><big>DEBUG_FLAGS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These are flags used for generating
-specialized
-versions of object files, such as ones that include debugging code
-(e.g.,
-for gdb) or ones that add code for profiling (e.g., gprof). Possible
-values
-in the Sun CenterLine Compiler environment are -g for debugging code
-and
--pg for profiling.
-</big>
-<h4><big>DEFINITIONS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of compiler flags
-that define
-the
-value of C or C++ macros. These usually have the format of
-&#8216;-D&lt;flag&gt;&#8217;,
-but in this particular variable only the &lt;flag&gt; itself should be
-listed
-(because the compiler option characters &#8216;-D&#8217; are added automatically).
-</big>
-<h4><big>DEPENDENCY_ADDITIONS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of extra flags that
-gets passed
-to the auto-dependency tool.&nbsp; The list can vary for each compiler.
-</big>
-<h4><big>DEPS_FILE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This file is where the
-auto-dependency
-information
-is stored.&nbsp; The "makedep" program is used to generate
-auto-dependency
-information for the files listed in SOURCE.&nbsp; During a build, the
-DEPS_FILE
-is pulled into the actual code of the makefile; this causes the
-dependencies
-to be automatically included so that they can dictate the files that
-need
-to be rebuilt.
-</big>
-
-<h4><big>EXTRA_VERSIONS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of version files that
-also need
-to be updated to the main build version during a compilation.&nbsp;
-These
-are usually needed if a project compiles several executable files, and
-each one performs version checking.&nbsp; By default, any project
-containing
-a file called "version.ini" will get a version stamp from the main
-build
-version.
-</big>
-<h4><big>LIBRARIAN_FLAGS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of flags that are
-passed to the
-library creation tool.&nbsp; Sometimes this must be overridden for a
-particular
-compiler.
-</big>
-<h4><big>LIBS_USED</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These are code libraries that the
-executables
-depend upon.&nbsp; They are searched for in any of the directories
-listed
-in the LIBRARY_SEARCH_PATH.
-</big>
-<h4><big>LOAD_FLAG_PREFIX &amp; LOAD_FLAG_SUFFIX</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These tell the linker and loader how
-to deal
-with
-the files and where to locate library components. The prefix is listed
-on the compilation command line before the object files are listed, and
-the suffix after. The prefix should contain information such as the
-directories
-to be searched for code libraries (although they should be added to
-LIBRARY_SEARCH_PATH).&nbsp;
-In the suffix definition, actual library loading statements (like
--lmath)
-can be included (although they should be listed in a different form in
-LIBS_USED or LOCAL_LIBS_USED).
-</big>
-<h4><big>LOCAL_LIBS_USED</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The names in this list actually
-cause the
-OBJECTS
-to be recompiled when the libraries listed have changed.&nbsp; To
-accomplish
-this, these libraries MUST be located in the STATIC_LIBRARY_DIR rather
-than
-at some arbitrary place on the LIBRARY_SEARCH_PATH.&nbsp; These
-libraries
-also must follow the special naming convention followed by ; if
-"basis"
-is an entry in this list, then a library called "basis.lib" will be
-sought
-during the build.
-</big>
-<h4><big>NO_COMPILE</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Specifies that no compilation
-should be performed. &nbsp;Nothing in the SOURCE or TARGETS macros will
-be
-built.<br>
-</big>
-<h4><big>NO_DEPS</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;This is an exclusion flag.&nbsp; If
-it is
-defined,
-then no auto-dependency files will be generated.&nbsp; This is useful
-if
-you're missing the makedep tool and trying to compile it.<br>
-</big>
-<h4><big>OBJECTS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The OBJECTS are all those files that
-need to
-be
-created during compilation.&nbsp; Usually this list is filled based on
-the files in SOURCE.
-</big>
-<h4><big>OPTIMIZE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Causes the make to create optimized
-code.&nbsp;
-The default optimization is for speed.
-</big>
-<h4><big>REBUILD</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; If the REBUILD variable is
-non-empty, then all
-files listed in the SOURCE variable are touched.&nbsp; This should
-cause
-all of those files to be rebuilt during the compilation.&nbsp;
-Occasionally
-GNU make will complain that a file is newer than the current time, but
-this does not usually cause any problems.
-</big>
-<h4><big>SOURCE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The SOURCE variable is a list of
-files that
-are
-to be compiled in order to create the final products of the
-project.&nbsp;
-These can be C++ source files (*.cpp), Win32 resource files (*.rc)
-and
-other types of source files.&nbsp; The list of objects to create will
-be
-determined by transforming the list of SOURCE files (such as by turning
-a file called "fud.cpp" into an object called "fud.obj").&nbsp; More
-file
-types will be added as they are needed.
-</big>
-<h4><big>STATIC</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Causes the make to create statically
-linked
-targets.&nbsp;
-Executables or dynamic libraries will not link in any compiler supplied
-dynamic libraries, nor will they require them during run-time.
-</big>
-<h4><big>TYPE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a variable that describes
-the kind of
-project that is being compiled.&nbsp; Knowing the type of project is
-necessary
-because it controls some elements of the compilation and also of the
-final
-promotion of the compiled products.&nbsp; There are three TYPEs
-supported
-so far:
-</big>
-<ul>
-  <small> </small><big> </big><small> </small>
-  <li><big>library: indicates that the project will be primarily
-creating
-static
-or
-dynamic libraries.</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>application: indicates that the project will create
-executables.</big></li>
-  <small> </small><big> </big><small> </small>
-  <li><big>test: indicates that the project constructs test
-programs.</big></li>
-  <small> </small><small></small>
-</ul>
-<big>Projects of the "library" type will follow the special&nbsp;
-rules for
-their include directory (which is created as a copy of headers in the
-library
-directory).&nbsp; Library projects will also have their final products
-copied to the lib or dll subdirectories of the build directory being
-created.&nbsp;
-Projects that are "application"s will have their executables copied to
-the executable directory in the build.&nbsp; And "test" projects will
-be
-promoted to a subdirectory named after the PROJECT that resides under
-the
-test hierarchy in the build.
-</big>
-<h2><big><a name="DIRECTORY_VARS"></a><u>C++ Directory Structure
-Variables</u></big></h2>
-<h4><big>BASE_OUTPUT_PATH</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;This is the parent directory
-for object files generated for the specified type of CPU and the style
-of
-build (e.g. debug or release builds).<br>
-</big>
-<h4><big>CPU_BUILD_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This variable can be used to
-distinguish
-directory
-names used for output.&nbsp; It includes the cpu name and the type of
-build.
-</big>
-<h4><big>DYNAMIC_LIBRARY_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;The directory where dynamic
-libraries will be
-stored after creation.<br>
-</big>
-<h4><big>EXECUTABLE_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;The directory where executable files
-will be
-stored after creation.<br>
-</big>
-<h4><big>FINAL_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is the name of the directory
-where the
-finished
-compilation products are stored, currently only import libraries for
-dynamic libraries.&nbsp;
-It is usually a directory under the OUTPUT_PATH named "final".
-</big>
-<h4><big>HEADER_SEARCH_PATH</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of directories that
-will be
-searched
-for C++ header files (files ending in &#8216;.h&#8217;).
-</big>
-<h4><big>HOOPLE_HEADERS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The two standard places to look for
-headers
-(the repository and the third party directory) are listed in this
-variable.
-</big>
-<h4><big>HOOPLE_LIBRARIES</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is where our libraries are
-located.&nbsp; It is usually a subdirectory called "lib" under the
-repository
-directory.
-</big>
-<h4><big>LIBRARY_SEARCH_PATH</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of directories that
-will be
-searched
-for C++ library archives (files ending in ".a" or ".lib").
-</big>
-<h4><big>LOCAL_HEADERS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This variable provides a way to
-include
-headers
-prior to the default locations in the search path.&nbsp; For example,
-if
-you are compiling locally and have some headers that are not present in
-the build you are using, then you can specify where they are in this
-variable.
-</big>
-<h4><big>LOCAL_LIBRARIES</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This variable allows other library
-directories
-to be added prior to the default search locations.&nbsp; This enables
-substitute
-static or import libraries to be used instead of the standard ones
-present
-in the build.
-</big>
-<h4><big>STATIC_LIBRARY_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is the location where code
-libraries are
-to be copied during promotion and where they are to be searched for
-when
-listed in LOCAL_LIBS_USED.&nbsp; Under Unix, these libraries have a
-&#8216;.a&#8217;
-suffix and are created with the "ar" program.&nbsp; Under Win32,
-these
-libraries have a &#8216;.lib&#8217; suffix and are created with "link".
-</big>
-<h4><big>OBJECT_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is where object files will be
-stored
-during
-compilation for the target type being produced.
-</big>
-<h4><big>OUTPUT_DIRECTORY_LIST</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of directories that
-need to be
-created under the OUTPUT_PATH.&nbsp; It contains the "final" directory
-where all finished products are stored, as well as all the intermediate
-directories for objects.
-</big>
-<h4><big>OUTPUT_PATH</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is the temporary file storage
-area.&nbsp;
-Any files that are created during the compilation process will be
-stored
-under here in a subdirectory named after the PROJECT.
-</big>
-<h4><big>OUTPUT_ROOT</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This specifies the root portion of
-the
-OUTPUT_PATH.&nbsp;
-It lets a PC build use drive letters for the root, while a Unix build
-can
-specify a directory hierarchy.
-</big>
-<h4><big>SEARCH_DIRS</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of directories that
-will be
-searched
-for both C++ header files and for C++ code libraries.&nbsp; The items
-placed
-on SEARCH_DIRS will be added to both the LIBRARY_SEARCH_PATH and the
-HEADER_SEARCH_PATH.&nbsp;
-The reasoning behind this variable is lost in antiquity.
-</big>
-<h4><big>TESTS_DIR <br>
-</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;The directory where test programs
-will be
-stored after creation.<br>
-</big>
-<h4><big>THIRD_PARTY_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Third party components are sometimes
-used in
-the
-creation of products.&nbsp; The directory is expected to have a
-structure
-containing "include" and "lib" subdirectories where headers and
-libraries
-are stored.
-</big>
-<h2><big><a name="CPP_FLAGS"></a><u>Compiler Dependent Flags</u></big></h2>
-<h4><big>
-CC</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is the name of the C++ compiler
-executable.
-</big>
-<h4><big>COMPILER_HEADER_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is where the compiler's header
-(or
-include)
-root directory is located.&nbsp; It is usually based on the root
-directory.
-</big>
-<h4><big>COMPILER_LIBRARY_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is where the code libraries for
-the
-compiler
-are located.&nbsp; It is usually based on the root directory.
-</big>
-<h4><big>COMPILER_ROOT_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This should automatically be set to
-the
-appropriate
-local directory where the C++ compiler is located.
-</big>
-<h4><big>CREATE_LIBRARY_FLAG</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This flag, if required, specifies
-the text
-that
-must precede the name of a library to create.&nbsp; It is passed to the
-library creation tool.
-</big>
-<h4><big>DEF_FILE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This flag only applies to Win32
-programs.&nbsp;
-It specifies the name of a DEF file for all of the products created in
-the project.
-</big>
-<h4><big>LIB_PREFIX &amp; LIB_SUFFIX</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;The portions of a library's name
-dictated by the operating system. &nbsp;For example, on Unix the prefix
-is "lib"
-and the suffix is ".a", leading to library names like "libbasis.a" for
-the
-basis library. &nbsp;On win32, the prefix is "" and the suffix is
-".lib", leading
-to library names like "basis.lib".<br>
-</big>
-<h4><big>LIBRARY_NAME_FLAG</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This flag contains the text that
-specifies a
-library
-that will be included in a link.&nbsp; It is often "-l".
-</big>
-<h4><big>LIBRARY_PATH_FLAG</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This flag provides the text needed
-to add
-another
-library search path.&nbsp; Multiple occurrences of this flag followed
-by
-a directory name are allowed by most compilers.
-</big>
-<h4><big>LIBRARY_TOOL</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is the name of the program
-responsible
-for
-creating libraries.
-</big>
-<h4><big>LINK_TOOL</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is the name of the program that
-links.&nbsp;
-This is sometimes the same as the compiler (CC) and sometimes the same
-as the librarian (LIBRARY_TOOL).
-</big>
-<h4><big>LINKER_OPTION_SEPARATOR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; In some compilers, linker options
-need to be
-separated
-from compiler options that occur on the same command line.&nbsp; This
-flag
-serves that purpose.
-</big>
-<h4><big>LINKER_OUTPUT_FLAG</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This flag is sometimes required by a
-linker
-for
-specifying the name of the library or executable that it is creating.
-</big>
-<h4><big>OBJECT_NAME_FLAG</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This flag is used to specify the
-name of an
-object
-file being created.&nbsp; It is passed to the compiler to override
-whatever
-default name would be used.
-</big>
-<h2><big><u><a name="vcpp_only"></a>Microsoft-Visual C++ Only</u><br>
-</big></h2>
-<h4><big>USE_MFC</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This flag only applies to Visual C++
-and
-indicates
-that MFC is to be used in creating this project.&nbsp; This is usually
-the case for GUI applications.
-</big>
-<h4><big>VC_ROOT</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This is an override that allows the
-compiler
-root
-directory to be customized without changing the&nbsp; code.&nbsp; If
-VC_ROOT
-is set (either in a makefile or as an external variable), then it will
-be used in place of the COMPILER_ROOT_DIR.&nbsp; The best way to use
-this
-override is as an external environment variable; this allows makefiles
-to remain the same despite your local configuration of the compiler.
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; Note that this variable should use
-forward-slashes,
-where DOS/Win32 would use backslashes.&nbsp; Also, if you have
-installed
-Visual C++ in a directory path containing space characters, then please
-use the 8.3 notation for the directories containing the spaces; this
-allows
-the name to be passed around successfully.&nbsp; For example...
-</big>
-<center><small></small><big> </big><big> </big><big> </big><big> </big><big></big><big></big><big>
-</big><big> </big><big> </big><big> </big><big>
-</big><big> </big><big> </big><big> </big><small> </small><small></small><small>
-</small><small> </small><small> </small><small> </small><small>
-</small><small> </small><small> </small><small> </small><small> </small><small></small><small>
-</small><small> </small><small> </small><small> </small>
-<table cellpadding="8" cellspacing="4">
-  <tbody>
-    <tr>
-      <td><big> </big><small> </small>
-      <center><big><u>If Visual C++ Is Installed In</u></big></center>
-      <small> </small><big> </big></td>
-      <td><big> </big><small> </small>
-      <center><big><u>Then VC_ROOT Should Be</u></big></center>
-      <small> </small><big> </big></td>
-    </tr>
-    <tr>
-      <td><big> </big><small> </small>
-      <center><big>c:\devstudio\vc</big></center>
-      <small> </small><big> </big></td>
-      <td><big> </big><small> </small>
-      <center><big>c:/devstudio/vc</big></center>
-      <small> </small><big> </big></td>
-    </tr>
-    <tr>
-      <td><big> </big><small> </small>
-      <center><big>c:\program files\devstudio\vc</big></center>
-      <small> </small><big> </big></td>
-      <td><big> </big><small> </small>
-      <center><big>c:/progra~1/devstudio/vc</big></center>
-      <small> </small><big> </big></td>
-    </tr>
-  </tbody>
-</table>
-<small></small></center>
-<h4><big>VCS_ROOT</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Similarly to the VC_ROOT, this
-variable points
-at the root of the C# support for Visual Studio.Net.<br>
-</big>
-<h4><big>FRAMEWORK_DIR</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This variable specifies the location
-of the
-.Net framework directory.&nbsp; On MS-Windows XP, the default should be
-fine.&nbsp; For MS-Windows 2000 or other Win32 OSes, the windows
-directory
-should be "winnt" instead.&nbsp; If the operating system is configured
-in a non-default way, the framework directory can be specified in an
-environment variable.<br>
-</big>
-<h4><big>VCPP_USE_BASE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that standard Win32
-libraries should
-be linked in.<br>
-</big>
-<h4><big>VCPP_USE_GUI</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that the MFC libraries
-should be
-linked in.
-</big>
-<h4><big>VCPP_USE_OLE</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that the COM / OLE
-libraries should
-be linked in.
-</big>
-<h4><big>VCPP_USE_RPC</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that the MS-RPC libraries
-should be
-linked in.<br>
-</big>
-<h4><big>VCPP_USE_SOCK</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that the MS-WinSock
-libraries should
-be linked in.<br>
-</big>
-<h2><big><a name="CPP_RULES"></a><u>C++ Specific Rules</u></big></h2>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These types of targets have one
-thing in
-common;
-if any of the items that a target depends on in SOURCE or
-LOCAL_LIBS_USED
-or included files or whatever have changed since the last time the
-target
-was created, then it is recompiled.
-</big>
-<h4><big>%.bad</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Causes the make to die. &nbsp;This
-is added when an incorrect file type is spotted in a list of targets.<br>
-</big>
-<h4><big>%.dll</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These create dynamically linked
-libraries from
-the SOURCE.
-</big>
-<h4><big>%.elf</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Creates elf-formatted binaries for
-use with a
-firmware build (a specialized RTOS is the only one currently supported).<br>
-</big>
-<h4><big>%.exe</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This creates an executable program
-using all
-of
-the objects and libraries specified.&nbsp; It is therefore important in
-a&nbsp; makefile to only have executables that depend on the same group
-of object files.&nbsp; The hidden agenda in the "exe" type of target is
-that a file ending in ".cpp" must exist; this is taken as the root of
-the
-executable.&nbsp; It should usually contain the main() function (or its
-equivalent).
-</big>
-<h4><big>%.lib</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This creates static libraries from
-the files
-listed
-in OBJECTS.
-</big>
-<h4><big>%.nil</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;A blank target for test compiles.<br>
-</big>
-<h4><big>%.obj</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These create object files from C++
-source
-files
-(files ending in .c or .cpp).
-</big>
-<h4><big>%.res</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These create compiled resource files
-from RC
-files
-in the SOURCE list.
-</big>
-<h2><big><a name="CPP_TARGETS"></a><u>C++ Specific Targets</u></big></h2>
-<h4><big>
-check_requirements</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This target ensures that certain
-characteristics
-of the makefile are present.&nbsp; It complains and aborts the make if
-they are missing.
-</big>
-<h4><big>post_compilation</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This target finalizes the
-compilation by
-running
-the postconditions script.&nbsp; If PROMOTE is true, then the final
-products
-are copied into the repository.
-</big>
-<h4><big>pre_compilation</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This target executes the
-preconditions script
-to set up the compilation's output directories.
-</big>
-<h4><big>rebuild</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This target performs the actions of
-rebuilding.&nbsp;
-This mainly involves touching all of the files in SOURCE before the
-compilation
-has really started.
-</big>
-<h2><big><a name="CPP_SCRIPTS"></a><u>C++ Specific Files</u></big></h2>
-
-<h4><big>postconditions.sh</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; After a compilation has succeeded,
-the
-postconditions
-script performs the final actions required.&nbsp; The nature of these
-actions
-depends on the type of project being made.&nbsp; For a library project,
-the script copies the headers to the project's include directory and
-copies
-libraries to the appropriate locations.&nbsp; For application and test
-program targets, the script copies the final products to the
-appropriate
-repository directory.
-</big>
-<h4><big>preconditions.sh</big></h4>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; Before any targets are compiled, the
-preconditions
-script ensures that the appropriate output directories exist for the
-project.&nbsp;
-The script also calls the version utilities to update the project's
-version
-file and to create any required resource files.<br>
-</big>
-<h4><big>rebuild_oldies.sh</big></h4>
-<big>&nbsp;&nbsp;&nbsp; &nbsp;Used for compilers that support
-multiple code
-files
-in one invocation. &nbsp;This is launched to compile a batch of sources
-and
-catch any errors.<br>
-</big>
-<hr noshade="noshade" size="8" width="100%">
-<center><small></small>
-<h2><big><a name="EXAMPLES"></a>CLAM Example Makefiles</big></h2>
-<small></small></center>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; These examples show some common
-patterns for
-how&nbsp; is used.&nbsp; The makefiles below are actually used in real
-software
-projects.
-</big>
-<h3><big>Library-Only Makefile</big></h3>
-<big>This example creates a dynamic library.
-</big>
-<ul>
-  <small> </small><big> <tt>include cpp/variables.def</tt> </big><small>
-  </small>
-  <p><big><tt>PROJECT = mechanisms</tt><br>
-  <tt>TYPE = library</tt> <br>
-  <tt>SOURCE = delayer.cpp eventmgr.cpp event_po.cpp heartbea.cpp
-instance.cpp
-\</tt> <br>
-  <tt>&nbsp; libmain.cpp monitor.cpp semaphor.cpp state_ma.cpp
-timer.cpp
-time_sta.cpp</tt> <br>
-  <tt>TARGETS = mechanisms.dll</tt> <br>
-  <tt>LOCAL_LIBS_USED = basis</tt> <br>
-  <tt>DEFINITIONS += BUILD_MECHANISMS USE_HOOPLE_DLLS</tt> </big></p>
-  <small> </small><big> </big><small> </small>
-  <p><big><tt>include cpp/rules.def</tt></big></p>
-  <small> </small><small></small>
-</ul>
-<big>The dynamic library created here is mechanisms.dll.&nbsp; The
-basis
-library is linked
-in also.&nbsp; The file "roller.cpp" will also be copied to the build
-directory's
-include path, presumably since it is a template code file.
-</big>
-<h3><big>Library Plus Executable Makefile</big></h3>
-<big>This example shows the basis makefile with a couple of test
-programs
-also
-being generated.
-</big>
-<ul>
-  <small> </small><big> <tt>include cpp/variables.def</tt> </big><small>
-  </small>
-  <p><big><tt>PROJECT = basis</tt> <br>
-  <tt>TYPE = library</tt> <br>
-  <tt>SOURCE = chaos.cpp checkup.cpp guards.cpp \</tt> <br>
-  <tt>&nbsp; istring.cpp itime.cpp logger.cpp matrix.cpp
-portable.cpp \</tt> <br>
-  <tt>&nbsp; realtime.cpp textdump.cpp timezone.cpp utility.cpp \</tt> <br>
-  <tt>&nbsp; version_checker.cpp version_record.cpp</tt> <br>
-  <tt>TARGETS = basis.lib t_string.exe t_alloc.exe</tt> </big></p>
-  <small> </small><big> </big><small> </small>
-  <p><big><tt>include cpp/rules.def</tt></big></p>
-  <small> </small><small></small>
-</ul>
-<big>Note that the executables
-"t_string.exe" and "t_alloc.exe" require files called "t_string.cpp"
-and
-"t_alloc.cpp" to exist.&nbsp; These files are expected to contain the
-"main()"
-or "WinMain()" functions (or the MFC application object).&nbsp; All of
-the
-files in the SOURCE variable will be included in each final executable.
-</big>
-<h3><big>Executable-Only Makefile</big></h3>
-<big>This example is produces several test programs that exercise
-the
-associated
-library.
-</big>
-<ul>
-  <small> </small><big> <tt>include cpp/variables.def</tt> </big><small>
-  </small>
-  <p><big><tt>PROJECT = t_basis</tt> <br>
-  <tt>TYPE = test</tt> <br>
-  <tt>SOURCE = instance.cpp t_basis.rc</tt> <br>
-  <tt>TARGETS = t_alloc.exe t_chaos.exe t_checku.exe t_dattim.exe \</tt>
-  <br>
-  <tt>&nbsp; t_matrix.exe t_sequen.exe t_sorts.exe t_string.exe \</tt> <br>
-  <tt>&nbsp; t_texdmp.exe</tt> <br>
-  <tt>LOCAL_LIBS_USED = basis</tt> </big></p>
-  <small> </small><big> </big><small> </small>
-  <p><big><tt>include cpp/rules.def</tt></big></p>
-  <small> </small><small></small>
-</ul>
-<big>The programs "t_alloc.exe" and so on will require C++ files
-with the
-same
-prefix (t_alloc.cpp) to contain the main program (as in the previous
-example).&nbsp;
-The items in the SOURCE list will be included in each executable, and
-the
-basis library will be linked in.
-</big>
-<h2><big><a name="CLAM_HINTS"></a>CLAM Hints</big></h2>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; This section
-is devoted to untangling snags that have been encountered in the
-past.&nbsp;
-Hopefully problems you encounter will be discussed here. &nbsp;Please
-contribute
-any new problems found to the <a href="#lib_manager">library administrator</a>.
-</big>
-<h3><big>Problem:</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; A message like:
-</big>
-<ul>
-  <small> </small><big> </big><small> </small>
-  <ul>
-    <small> </small><big>make: *** No rule to make target
-`o:/x86_w32_rel/project/final/myproj.dll',
-needed by `all'.&nbsp; Stop. </big><small> </small>
-  </ul>
-  <small> </small><small></small>
-</ul>
-<big>is displayed during a make.
-</big>
-<h3><big>Solution:</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The most frequent reason for
-receiving a
-message
-similar to the above is that there is a file listed in SOURCE that
-either
-does not exist or that is capitalized differently from how it is
-listed.&nbsp;
-Check that all the files in SOURCE are in the makefile's directory and
-that the exact spelling of those files (including their case) is
-correct.
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; Another potential cause of this problem is
-if a file is included in the SOURCE that&nbsp; does not
-recognize.&nbsp;
-The standard compilable files are supported (*.cpp, *.c, *.rc), but it
-is possible that a makefile must handle a non-standard extension (such
-as *.idl).&nbsp; Either the user's makefile must supply a rule for
-processing
-this type of file or the user must negotiate with the&nbsp;
-administrator
-to get that type of target added to the&nbsp; support.
-</big>
-<h3><big>Problem:</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Clam is complaining about programs
-not being
-found
-during a build.
-</big>
-<h3><big>Solution:</big></h3>
-<big>&nbsp;&nbsp;&nbsp;&nbsp; The most frequent cause of this
-problem is a
-directory
-not being on your path.&nbsp; The compilation tools bin (~/hoople/bin)
-directory must be in
-the PATH variable.
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; Problems are occasionally seen when the PATH
-contains directory names that have spaces in them.&nbsp; Try using the
-shorter 8.3 form of the directory name.
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; An even more obscure situation sometimes
-occurs: paths with networked drives seem to somehow hide paths with
-local drives that
-are listed later in the PATH variable.&nbsp; The cause of this is
-unknown,
-although it was thought to be caused by NetWare at one point.&nbsp; To
-fix
-the situation, move the local paths before the networked ones.<br>
-<br>
-</big>
-<hr noshade="noshade" size="8" width="100%">
-<center><small></small>
-<h2><big><a name="ACKS"></a>Acknowledgements</big></h2>
-<small></small></center>
-<center><big>Thanks to April Bly Monnen for the wonderful cover
-art.
-</big><small></small>
-<p><big>Thanks to Kevin Wika for some early help with makefiles.
-</big></p>
-<small></small><big><big>
-</big></big><small></small>
-<hr noshade="noshade" size="8" width="100%"></center>
-<big><br>
-<br>
-</big>
-</body>
+    <center><big>
+      </big><small></small>
+      <h2><small></small>
+        <hr noshade="noshade" size="8" width="100%"></h2>
+      <small></small></center>
+    <center><big>
+      </big><small></small>
+      <h2><big><a name="EXECUTIVE_SUMMARY"></a>Executive Summary</big></h2>
+      <small></small></center>
+    <big>&nbsp;&nbsp;&nbsp; The CLAM system is a set of macros and rules
+      for the GNU make program
+      that
+      simplifies the creation of executable programs and code
+      libraries.&nbsp;
+      Most makefiles that use the CLAM system are ten lines long or
+      less.&nbsp;
+      Makefiles are stated in terms of a set of special variable names that
+      CLAM
+      interprets in order to issue the correct sequence of compilation
+      directives.&nbsp;
+      This document presents a tutorial on the variable names and simple
+      rules
+      that need to be used with CLAM. &nbsp;Several example makefiles and the
+      full
+      reference manual for CLAM are also included.<br>
+      &nbsp;&nbsp;&nbsp; CLAM is part of the HOOPLE libraries (<a href="http://hoople.org/">http://hoople.org/</a>)
+      and can be
+      downloaded from there or through a sourceforge mirror site.<br>
+      &nbsp;&nbsp;&nbsp; In the remainder of the document, we will often
+      refer to CLAM as just "clam".<br>
+      &nbsp;
+    </big>
+    <center><small></small>
+      <h2><small></small>
+        <hr noshade="noshade" size="8" width="100%"></h2>
+      <small></small></center>
+    <center><big>
+      </big><small></small>
+      <h2><big><a name="PREPARATION"></a>Preparing Your Computer to Use
+          CLAM</big></h2>
+      <small></small></center>
+    <h3><big><a name="STEPS_NEEDED"></a>Necessary Steps:</big></h3>
+    <ol>
+      <small> </small><big> </big><small> </small>
+      <li><big>Setting environment variables for clam:</big></li>
+      <small> </small><big> </big><small> </small>
+      <ol>
+        <li><big>FEISTY_MEOW_DIR:</big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big> **REVISE** out of date... This variable has been needed
+              since clam became
+              part of the YETIcode project (at <a href="http://yeticode.org/">http://yeticode.org</a>).</big></li>
+          <small> </small>
+          <li><big>The default location for clam is under the FEISTY_MEOW_DIR
+              in a
+              folder named clam, although the version of clam shipped with the
+              HOOPLE
+              code (http://hoople.org) actually lives under the root of the
+              hoople
+              hierarchy.<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big>If the yeti root directory is in $HOME/yeti
+              already, then the
+              default for FEISTY_MEOW_DIR will work and it doesn't need to be
+              declared.</big></li>
+          <li><big>Setting the variable:<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+          <ol>
+            <small> </small><big> </big><small> </small>
+            <li><big>On Unix (with the bash shell): <span style="font-weight: bold;">export
+                  MAKEFLAGS="-I $HOME/yeti/clam"</span></big></li>
+            <small> </small><big> </big><small> </small>
+            <li><big>On win32: <span style="font-weight: bold;">set
+                  MAKEFLAGS="-I c:/yeti/clam"</span>&nbsp; (or set this in the
+                System
+                control panel, under the advanced tab, in environment variables)<span
+                  style="font-weight: bold;"><br>
+                </span></big></li>
+            <small> </small><big> </big><small> </small>
+            <li><big>Note that the use of
+                forward slashes is mandatory in the clam directory in MAKEFLAGS.<br>
+              </big></li>
+            <small> </small><big> </big><small> </small>
+          </ol>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small><big> </big><small> </small>
+        <li><big>MAKEFLAGS:</big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big> This variable is required to be set in the
+              environment before using clam with gnu-make.&nbsp; It tells make
+              where
+              to find the clam definitions and scripts.</big></li>
+          <small> </small>
+          <li><big>Setting the variable:<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+          <ol>
+            <small> </small><big> </big><small> </small>
+            <li><big>On Unix (assuming bash as shell): <span style="font-weight: bold;">export
+                  MAKEFLAGS="-I $FEISTY_MEOW_DIR/clam"</span></big></li>
+            <small> </small><big> </big><small> </small>
+            <li><big>On win32: <span style="font-weight: bold;">set
+                  MAKEFLAGS="-I %FEISTY_MEOW_DIR%/clam"</span></big></li>
+            <small> </small><big> </big><small> </small>
+            <li><big>This variable also requires forward slashes
+                instead of
+                backslashes.</big></li>
+            <small> </small><big> </big><small> </small>
+          </ol>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small>
+      </ol>
+      <small> </small>
+      <li><big>Required Tools:</big></li>
+      <small> </small><big> </big><small> </small>
+      <ol>
+        <small> </small><big> </big><small> </small>
+        <li><big>The compiler itself:<br>
+          </big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big>If you are running GNU/Linux (or almost any other
+              Posix-compliant operating system), then the GNU C/C++ compiler
+              suite is pretty much all that's needed.</big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big>The
+              GNU C/C++ compiler (included in the <a href="http://www.mingw.org/">MinGW</a>
+              toolkit) should be all that's needed for
+              compilation,
+              but the Microsoft Visual Studio 6.0-8.0 compilers can be used if
+              available.&nbsp; Compatibility is only guaranteed for vc8
+              however.<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small><big> </big><small> </small>
+        <li><big>Win32 Unix Tools:</big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big>&nbsp;If you are running a win32-based product
+              (windows NT,
+              windows
+              2000,
+              windows xp, etc) then a few additional tools are required...<br>
+            </big></li>
+          <small> </small><big> </big><small> </small><small></small>
+          <li><big>The recommended GNU utilities are available for
+              win32 in the
+              MingW MSYS
+              package (http://www.mingw.org/).</big></li>
+          <li><big>Note that you will need to add the binaries directory from
+              MSYS to
+              your path.&nbsp; The PATH variable can be accessed under MS-NT
+              type OSes through the
+              "control panel | system | advanced | environment variables" menu
+              trail.&nbsp; If you
+              plan to use msys outside of clam, then ensure that
+              the MSYS bin directory is prior to the
+              windows system directory in your path; this causes the Unix "find"
+              command to be used instead of the Windows version.</big></li>
+          <li><big>Alternatively, a similar set of GNU utilities is
+              available
+              in the <a href="http://cygwin.com/">Cygwin package</a>, although
+              these tools are no longer recommended and are, in
+              fact, actively deprecated.</big></li>
+          <small> </small><big> </big><small> </small>
+          <ol>
+            <small> </small><big> </big><small> </small>
+          </ol>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small><big> </big><small> </small>
+        <li><big>makedep and version_stamper tools:</big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big>The hoople/bin directory in the archive has
+              pre-built
+              versions of tools used by clam during a build.<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big>If you would rather rebuild them from source, then
+              running
+              the script "bin/bootstrap_build.sh" will
+              recreate all of these internal tools.<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small><big> </big><small> </small>
+      </ol>
+      <small> </small><big> </big><small> </small>
+      <li><big>Third Party Tools Used By or Supported Within clam:</big></li>
+      <small> </small><big> </big><small> </small>
+      <ol>
+        <small> </small><big> </big><small> </small>
+        <li><big>wx widgets:</big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big>home page: http://www.wxwidgets.org/</big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big>As far as the clam team is concerned, this is the
+              premier
+              portable (and open source) library for graphical user interfaces.<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small><big> </big><small> </small>
+        <li><big>OpenSSL:</big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big>home page: http://www.openssl.org/</big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big>This is the team's most favorite library for SSL
+              (Secure
+              Sockets Layer) and general encryption needs.<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small><big> </big><small> </small>
+        <li><big>cURL:</big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big>home page: http://curl.haxx.se/</big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big>The curl library rocks(!) and provides a very
+              powerful set of
+              tools for programmatically interacting with live web pages.<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small><big> </big><small> </small>
+      </ol>
+      <small> </small><big> </big><small> </small>
+      <li><big>Other clam Preconditions:</big></li>
+      <small> </small><big> </big><small> </small>
+      <ol>
+        <small> </small><big> </big><small> </small>
+        <li><big>Linux platforms:</big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big>The standard source code repository is a directory
+              called
+              "hoople"
+              in the user's home directory. &nbsp;If you decompress the hoople
+              library archive in your home directory, you should be all set to
+              perform a build.</big></li>
+          <small> </small><big> </big><small> </small>
+          <li><big>See the HOOPLE website for more details about
+              downloading that codebase (<a href="http://hoople.org">http://hoople.org</a>).<br>
+            </big></li>
+          <small> </small><big> </big><small> </small>
+          <ol>
+            <small></small><small></small>
+          </ol>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small><big> </big><small> </small>
+        <li><big>Win32 platforms:</big></li>
+        <small> </small><big> </big><small> </small>
+        <ol>
+          <small> </small><big> </big><small> </small>
+          <li><big>The standard repository for source code is a substituted
+              drive l:, which is where all the other hierarchies start.
+              &nbsp;This
+              drive can be mapped to any folder desired using the "subst"
+              command
+              (for example, "subst l: c:\build_dir").
+              &nbsp;All
+              objects and final products will be generated to the l: drive.</big></li>
+          <small> </small><big> </big><small> </small>
+          <li value="2"><big>Using MS Visual Studio as the Compiler:</big></li>
+          <small> </small><big> </big><small> </small>
+          <ol>
+            <small> </small><big> </big><small> </small>
+            <li><big>VS80COMNTOOLS/VS90COMNTOOLS/VS100COMNTOOLS variable:</big></li>
+            <small> </small><big> </big><small> </small>
+            <ol>
+              <small> </small><big> </big><small> </small>
+              <li><big>This variable should be automatically created by
+                  Visual Studio upon installation.&nbsp; If it isn't, then
+                  Microsoft has
+                  a bug or you need to restart your current prompt or your
+                  computer.<br>
+                </big></li>
+              <li><big>The paths that clam uses to find compiler binaries
+                  is calculated based on this variable.</big></li>
+              <li><big>Older versions of visual studio are currently
+                  unsupported because Microsoft constantly rearranges their
+                  folders and
+                  tools in a non-maintainable way.<br>
+                </big></li>
+            </ol>
+            <li><big>Several other environment variables are required
+                by Visual
+                Studio.&nbsp; They can be set up for your current command prompt
+                by
+                running "vcvars32.bat" or "vsvars32.bat" (found under
+                the
+                compiler's common directory, which varies depending on the
+                version of
+                visual studio).<br>
+              </big></li>
+            <small> </small><big> </big><small> </small>
+          </ol>
+          <small> </small><big> </big><small> </small>
+        </ol>
+        <small> </small><big> </big><small> </small>
+      </ol>
+      <small> </small><small></small>
+    </ol>
+    <center><big>
+      </big><small></small>
+      <h2><small></small>
+        <hr noshade="noshade" size="8" width="100%"></h2>
+      <small></small></center>
+    <center><big>
+      </big><small></small>
+      <h2><big><a name="TUTORIAL"></a>CLAM Tutorial</big></h2>
+      <small></small></center>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This section provides an overview of
+      how clam
+      works and how you can make it work for you.&nbsp; It is quite brief,
+      but
+      should suffice for most common cases of makefiles.&nbsp; For more
+      detailed
+      usage, consult the CLAM Reference section of this document.
+    </big>
+    <h3><big><a name="CAVEATS"></a>Caveats</big></h3>
+    <ul>
+      <small> </small><big> </big><small> </small>
+      <li><big>Most of the Unix tools employed in the make process are
+          case-sensitive.&nbsp;
+          This means that they will probably not find any of the clam support if
+          the files have been changed to upper-case names.&nbsp; It also means
+          that
+          all code files must match their descriptions in makefiles, letter for
+          letter.&nbsp;
+          And any batch files or executables invoked also need to be in
+          lower-case
+          as clam expects them to be.</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>A corollary case requirement is that the makefile must
+          be named
+          either
+          "makefile" or "Makefile".&nbsp; These are the Unix standard names and
+          GNU make
+          looks for these by default.&nbsp; If you are willing to type "make -f
+          <i>makefile_name</i>",
+          then you can run any makefile.&nbsp; However, the build-ready
+          makefiles
+          should be named according to the standard, since the build process
+          will
+          look for these automatically.</big></li>
+      <small> </small><small></small>
+    </ul>
+    <h3><big>
+        <a name="TUT_BASICS"></a>Basics</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The C++ Library
+      Automatic Maker system (or CLAM) is defined as a set of
+      variable
+      (or macro) definitions. &nbsp;These variable definitions are
+      manipulated in
+      order to compile and link programs.&nbsp; By setting the variables'
+      values
+      appropriately, specific products can be generated from the target rules
+      defined
+      in clam.&nbsp; Both variables and rules are extensible.&nbsp; The
+      general
+      procedure for building a clam-based Makefile has four user-defined
+      steps:
+    </big>
+    <ol>
+      <small> </small><big> </big><small> </small>
+      <li><big>loading the default variables for clam,</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>redefining the default variables where necessary,</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>loading the default rule set for clam,</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>defining rules that are local to the user's Makefile.</big></li>
+      <small> </small><small></small>
+    </ol>
+    <big>Step 4 can usually be omitted unless the project creates
+      components
+      whose types are not supported by clam.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp; clam is structured as a directory hierarchy
+      where the root of clam
+      supports
+      the most general makefile activities. &nbsp;Activities such as
+      recursing
+      into subdirectories and providing support for cleaning up after a make
+      are
+      provided at this level. &nbsp; In the remainder of the document, we
+      will
+      designate this location with a "$" character to clarify what part of
+      the clam hierarchy we are describing.<br>
+      &nbsp; &nbsp;&nbsp; The root clam
+      support files are mostly language independent, since they are used by
+      all
+      varieties of language dependent derived versions of clam.&nbsp; These
+      files
+      are generally not of concern unless one is designing a new derived
+      version
+      of clam for a language not yet supported.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp; The subdirectories off of the clam root
+      provide
+      "derived" makefile services, such as C++ or Ada compilation.&nbsp; Each
+      derived clam service implements at least two files to link into the
+      rest of the
+      clam system: a variables file and a rules file. &nbsp;The variables
+      file defines
+      the options for the derived make process; by changing the values of
+      these,
+      different types of targets can be created. &nbsp;The rules file
+      implements
+      creation of the targets relevant to the programming language being
+      supported.<br>
+      &nbsp;&nbsp; &nbsp; It may be worth noting that clam can be used to
+      drive
+      any kind of programmatic process--not just compilation. &nbsp;Currently
+      though,
+      program compilation is the primary goal.
+    </big>
+    <h3><big><a name="TUT_COMMON"></a>Common Files</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The top-level file called
+      "$/variables.def"
+      contains
+      definitions and descriptions of the variables used throughout the clam
+      system.&nbsp; For a non-derived type of make (using only base clam
+      support),
+      this file should be included near the start of the user's
+      Makefile.&nbsp;
+      The rules file (stored in "$/rules.def") should be included after the
+      user
+      has modified the appropriate variables that will dictate how the make
+      is
+      performed.
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; This scheme of including variables at the
+      top and then rules at the bottom of the user's makefile is employed in
+      all clam makefiles.&nbsp; For example, makefiles for C++ compilation
+      are structured the
+      same way.&nbsp; The user's C++ makefile includes the C++ variables
+      (stored
+      in a subdirectory called "$/cpp" under the clam root) at the top of the
+      makefile and then includes the C++ rules at the bottom.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp; An example
+      of a C++ makefile is shown below:
+    </big>
+    <ul>
+      <small> </small><big> <tt>include cpp/variables.def <br>
+          <br>
+          PROJECT = basis<br>
+          TYPE = library<br>
+          SOURCE = chaos.cpp checkup.cpp earth_time.cpp guards.cpp istring.cpp \<br>
+          &nbsp; log_base.cpp mutex.cpp occurrence.cpp outcome.cpp
+          outcome_table.cpp \<br>
+          &nbsp; packable.cpp portable.cpp runtime_history.cpp
+          system_outcomes.cpp \<br>
+          &nbsp; utility.cpp version_checker.cpp version_record.cpp<br>
+          TARGETS = basis.lib<br>
+          <br>
+          include cpp/rules.def</tt><br>
+      </big><small></small>
+    </ul>
+    <big>The interior of the makefile overrides the TYPE, SOURCE
+      and TARGETS variables for C++ compilation to specify what is to be
+      built
+      (basis.lib) and what it consists of (the CPP files mentioned in
+      SOURCE).&nbsp;
+      &nbsp;The PROJECT variable being overridden is actually defined in the
+      $/variables.def;
+      a project name is a required feature of all clam makefiles.
+    </big>
+    <h3><big><a name="TUT_IMPORTANT_VARS"></a>Important Variables</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp;
+      The clam root directory is pointed to by an internal variable called
+      "CLAM_DIR",
+      defined in $/variables.def.&nbsp; This variable is used by the clam
+      system
+      to find extra files that might be needed by derived makefile
+      support.&nbsp;
+      It is important to change this to the appropriate value when you are
+      using the system in a different location. &nbsp;The CLAM_DIR variable
+      can either
+      be directly edited in $/variables.def, or it can be overridden in the
+      environment
+      of the shell running the make, or it can be passed on the command line
+      to
+      make.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp; For C++ compilation, the above example
+      makefile
+      (for basis.lib) contains examples for most of the required
+      elements.&nbsp; Additional elements
+      will be discussed in the examples section or can be found in the
+      reference.&nbsp;
+      The absolutely required variables for C++ are PROJECT, TYPE, SOURCE and
+      TARGETS.
+    </big>
+    <p><big>&nbsp;&nbsp;&nbsp;&nbsp; PROJECT is a variable that
+        provides the
+        name
+        of the project being compiled.&nbsp; This should be a word that can
+        also
+        be used as a directory name and partial component of filenames.&nbsp;
+        Thus,
+        spaces and other unusual punctuation characters are discouraged.&nbsp;
+        All of the project's temporary directories will be created based on
+        this
+        variable.&nbsp; This project name should be unique across a full build;
+        otherwise files generated by compiling identical project names will be
+        jumbled together.
+      </big></p>
+    <p><big>&nbsp;&nbsp;&nbsp;&nbsp; TYPE is a variable that describes
+        the kind
+        of project that is being compiled.&nbsp; This is necessary because it
+        controls
+        some aspects of the compilation, such as where the compilation products
+        are
+        generated.&nbsp; All files generated by compilation are stored in the
+        repository
+        directory (by default, either "~/hoople" in Linux or "l:\" in
+        win32).&nbsp; There are three TYPEs supported so far: </big></p>
+    <ul>
+      <small> </small><big> </big><small> </small>
+      <li><big>library: indicates that the project will primarily be
+          creating
+          static
+          or
+          dynamic libraries.</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>application: indicates that the project will create
+          executables.</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>test: indicates that the project constructs test
+          programs.</big></li>
+      <small> </small><small></small>
+    </ul>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Projects of the "library" type will
+      be given
+      an include directory named after the project, such as
+      "~/hoople/include/basis".
+      &nbsp;The include directory is created as a copy of the headers in the
+      project's
+      directory .&nbsp; Library projects will also have their final products
+      copied
+      to the lib or dll subdirectories of the build directory being created.<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;Projects that are of type "application" will
+      have their executables
+      copied to the executable directory in the repository (such as
+      "~/hoople/exe").<br>
+      &nbsp; &nbsp; &nbsp;The "test" type of project
+      will be promoted to a subdirectory named after the PROJECT that resides
+      under the test hierarchy in the repository (such as
+      "~/hoople/tests/turbodog").
+    </big>
+    <p><big>&nbsp;&nbsp;&nbsp;&nbsp; SOURCE is a list of files that
+        are to be
+        compiled
+        in order to create the final products of the project.&nbsp; These can
+        be
+        C++ source files (*.cpp), MS-Win32 resource files (*.rc) and other
+        types
+        of source files.&nbsp; The list of objects to create will be determined
+        by transforming the list of SOURCE files (such as by turning a file
+        called
+        "fud.cpp" into an object called "fud.obj").
+      </big></p>
+    <p><big>&nbsp;&nbsp;&nbsp;&nbsp; TARGETS is a list of the products
+        that are
+        to be created by compilation and linking.&nbsp; The suffix of a target
+        is a well established extension, such as ".lib", ".exe"
+        or ".dll" for MS-Win32 compilation products.
+      </big></p>
+    <h3><big><a name="TUT_VAR_ASSIGN"></a>Variable Assignment Policies</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp;
+      The assignment of variable values is mostly straightforward, but it
+      might
+      be valuable to provide a refresher.&nbsp; In GNU make, a variable
+      (a.k.a.
+      macro) can be assigned using the following syntax:
+    </big>
+    <ul>
+      <small> </small><big>FRED = a b c </big><small> </small>
+    </ul>
+    <big>This sets the variable named FRED to the value of "a
+      b c". &nbsp;The variable is referred to as $(FRED) when it is being
+      used,
+      although its name is just FRED.<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;This syntax is fine when the variable is to be
+      defined only once.&nbsp;
+      In many cases though, a variable is already defined and needs to be
+      added
+      to instead of redefined.&nbsp; Using the standard equals (=) operator
+      would
+      wipe out the previous definition, so a special assignment
+      is provided:
+    </big>
+    <ul>
+      <small> </small><big>FRED += d e f </big><small> </small>
+    </ul>
+    <big>This is quite similar to the C syntax on integers.&nbsp; It
+      means that
+      FRED will be given a value equal to its old value plus the new
+      contents.&nbsp;
+      In our example, FRED would be equal to "a b c d e f". &nbsp;Note that
+      one cannot say:<br>
+      <br>
+      &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; FRED = $(FRED) d e f
+      &nbsp; &nbsp; &nbsp; (BAD!)<br>
+      <br>
+      This is not allowed in GNU make because it includes a macro's own value
+      in its definition. &nbsp;This causes a badly formed recursive
+      definition
+      of the variable; a variable dereferencing operation (such
+      as $(FRED)) causes the variable's current value to
+      be resolved, which in turn dereferences any other variables in the
+      definition.
+      &nbsp;Thus, the reference to $(FRED) causes infinite recursion when
+      included
+      in the definition of FRED.<br>
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; In the case of variables that <u>must</u>
+      be defined by the user's makefile, the standard assignment operator
+      (via the = character) can
+      be used.&nbsp; This includes the PROJECT, TYPE, SOURCE, and TARGETS
+      variables.&nbsp;
+      Also, any other variables that are set only by the user's makefile can
+      use simple assignment.&nbsp; This category includes LOCAL_LIBS_USED,
+      LIBS_USED and others of similar nature.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp; But several variables are defined partially
+      by clam, then added to within the user's makefile, and then possibly
+      extended
+      after the user's makefile is processed (by the clam rules file).&nbsp;
+      These variables cannot use
+      standard assignment and must instead use the incremental assignment
+      (+=)
+      operator.&nbsp; Variables included in this category are DEFINITIONS,
+      LOAD_FLAG_PREFIX,
+      CLEANUPS, and many others.
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; If you are unsure about the type of variable
+      you are defining, then the incremental assignment (+=) operator is
+      preferred
+      to avoid trashing the variable's previous values.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      Note that when variables are "exported", then any make in a subshell
+      will
+      inherit the parent shell's value.&nbsp; This can induce some weird
+      behavior
+      for variables that are incrementally constructed with the +=
+      operator.&nbsp;
+      If this seems to be happening, try using the simple assignment operator
+      for
+      that variable in the sub-makefile, if this is allowed. &nbsp;In general
+      though,
+      variables are not exported unless they MUST be seen by shell scripts
+      and
+      this does not occur overly frequently.
+    </big>
+    <h3><big><a name="TUT_OPTIONAL_VARS"></a>Optional Variables</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; There are several miscellaneous
+      variables that
+      are useful, either within one's makefiles or when passed to GNU make on
+      the command
+      line.&nbsp; These are described below.
+    </big>
+    <p><big>&nbsp;&nbsp;&nbsp;&nbsp; LOCAL_LIBS_USED is a list of
+        library names
+        that are to be linked in with the library or executable being
+        created.&nbsp;
+        These are specially formatted names; they are just the prefix part of
+        the
+        full library name.&nbsp; For example, if you're building a release
+        executable
+        and want to link in a data structures library "i_adt.lib" (win32) or
+        "libi_adt.a" (Linux), you can specify:
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LOCAL_LIBS_USED = i_adt
+        <br>
+        The appropriate prefix and suffix will be attached.
+      </big></p>
+    <p><big>&nbsp;&nbsp;&nbsp;&nbsp; EXTRA_COPIES is a list of files
+        that should be copied to a project's output folder when it is done
+        being compiled.&nbsp; These should be files that are not already
+        copied as the main products, such as extra data or configuration files
+        that belong with an application.
+      </big></p>
+    <p><big>&nbsp;&nbsp;&nbsp;&nbsp; EXTRA_VERSIONS is a list of
+        version files
+        that
+        also need to be updated to the main build version during a
+        compilation.&nbsp;
+        These are usually needed if a project compiles several executable
+        files,
+        and each one performs version checking.&nbsp; (By default, any project
+        containing a file called "version.ini" will get a version stamp from
+        the
+        main build version.)
+      </big></p>
+    <h3><big><a name="WRITING_RULES"></a>Writing Your Own Rules</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; One might need to write new rules
+      for
+      processing
+      file types that are not directly supported by clam.&nbsp; There are a
+      number
+      of features provided for writing rules, but there are also some
+      requirements
+      placed on the rules.
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; All rules in makefiles need to be prefaced
+      with one of the provided "launcher" macros.&nbsp; These are used to
+      ensure
+      that the rules can be properly executed on different platforms;
+      Windoze95
+      was especially hard to implement for until these macros were developed
+      (due to what appear to be basic defects in the command line
+      support).&nbsp;
+      All preaching aside, here are the macros:
+    </big>
+    <ul>
+      <small> </small><big> </big><small> </small>
+      <li><big>HIDER: Executes a command but hides the
+          invocation.&nbsp; Any
+          output is
+          still sent to standard out.&nbsp; If a verbose
+          build is being done, then all of the invocations become visible again.</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>HIDESH: Executes a shell script but hides the
+          invocation.
+          &nbsp;Similar to HIDER but supports scripts specifically.<br>
+        </big></li>
+      <small> </small><small></small>
+    </ul>
+    <big>Here are some examples of using the macros properly.&nbsp;
+      Note that
+      the
+      command itself must be contained in single quotes:<br>
+      <br>
+      $(HIDER) $(MIDL) crumpet_server.idl<br>
+    </big>
+    <blockquote><big>MIDL is also a provided macro; it executes the
+        Microsoft
+        IDL compiler. </big></blockquote>
+    <big>$(HIDESH) $(CLAM_DIR)/postconditions.sh<br>
+    </big>
+    <blockquote><big>This runs a shell script that handles the end
+        portion of a
+        make.</big></blockquote>
+    <h3><big>
+        <a name="TUT_CONCLUSION"></a>Conclusion</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This tutorial is intended to raise
+      awareness
+      of
+      basic&nbsp; usage.&nbsp; Hopefully the reader will now be able to
+      create
+      simple makefiles that use .&nbsp; For more aggressive compilation
+      requirements,
+      the reference section may be needed; it describes every variable and
+      rule
+      used in the&nbsp; system.&nbsp; However, it is most likely the case
+      that
+      your unsupported compilation needs will also be required by others in
+      the
+      future, and it is hoped that you will contribute them to the
+      main-line&nbsp; support.&nbsp; Currently, the appropriate way to do
+      this is just
+      to
+      send the makefile code to the <a href="#lib_manager">library
+        administrator</a>, who will include them
+      in the next version of .
+    </big>
+    <center><small></small>
+      <h2><small></small>
+        <hr noshade="noshade" size="8" width="100%"></h2>
+      <small></small></center>
+    <center><big>
+      </big><small></small>
+      <h2><big><a name="REFERENCE"></a>CLAM Reference</big></h2>
+      <small></small></center>
+    <h2><big>
+        <a name="LANG_INDEP_VARS"></a><u>Language Independent Variables</u></big></h2>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The language independent variables
+      are stored
+      in the file "$/variables.def".&nbsp; They define the overall structure
+      of a make and can usually be overridden to customize how the make is
+      performed.
+    </big>
+    <h4><big>BUILD_BEFORE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of projects that need
+      to be
+      created
+      before this project can be created.&nbsp; The items in the list are
+      interpreted
+      as directories that contain a makefile to be run.&nbsp; For example, if
+      an item in BUILD_BEFORE is listed as ?fred?, then the target
+      "fred.make"
+      will be executed.&nbsp; That target changes to the directory 'fred'
+      before
+      running the makefile there.&nbsp; The project in the specified
+      directory
+      is created using make if needed (as determined by that directory's
+      Makefile).&nbsp;
+      The projects in BUILD_BEFORE are made immediately after the
+      FIRST_TARGETS
+      are made.
+    </big>
+    <h4><big>ACTUAL_TARGETS, ACTUAL_FIRST_TARGETS, ACTUAL_LAST_TARGETS</big></h4>
+    <big>&nbsp;&nbsp; &nbsp; See below for TARGETS, FIRST_TARGETS and
+      LAST_TARGETS.<br>
+    </big>
+    <h4><big>BUILD_AFTER</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; A list of directory names that
+      should be
+      recursed
+      into after this project finishes. &nbsp;Each listed directory will have
+      make
+      started on any makefile found.<br>
+    </big>
+    <h4><big>BUILD_BEFORE<br>
+      </big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; A list of directory names that
+      should be
+      recursed into before this project
+      starts. &nbsp;Each directory listed will have make started on any
+      makefile found.<br>
+    </big>
+    <h4><big>MAKEFILE_NAME</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; A variable that specifies the name
+      of the
+      makefile
+      for all sub-makes.&nbsp; It works with BUILD_BEFORE and
+      BUILD_AFTER and allows the name of the makefile in a
+      subdirectory to be changed to something other than 'makefile'.&nbsp;
+      This
+      supports different types of builds which are controlled by different
+      makefile
+      names.
+    </big>
+    <h4><big>PARAMETER_FILE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;A file name that is
+      usually found at the root of the repository. &nbsp;The name is
+      often "build.ini", but any name can be used as the parameter file.
+      &nbsp;This file is an extension of the variable set included in
+      $/variables.def
+      and can be used to provide compilation paramters without resorting to
+      the
+      command line. &nbsp;This file is associated with a particular build
+      rather
+      than the&nbsp; support, so different releases will have different build
+      parameter
+      files. &nbsp;On systems supporting version information, the build's
+      version
+      number is stored here also.<br>
+    </big>
+    <h4><big>CATCHER</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;A sub-program launcher like HIDESH
+      but this will trap errors it sees and play the build error
+      CLAM_ERROR_SOUND.<br>
+    </big>
+    <h4><big>CLAM_BIN</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a folder where the helper
+      binaries for&nbsp; are located. The default for this is usually
+      CLAM_DIR/../bin.<br>
+    </big>
+    <h4><big>CLAM_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This variable points at the location
+      where the&nbsp; definitions and helper scripts are located.&nbsp; The
+      default is
+      "~/yeti/clam",
+      but this can be overridden for local installations of .<br>
+    </big>
+    <h4><big>CLAM_ERROR_SOUND</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;This is a list of sound files
+      that should be played when a make stops with an error. &nbsp;It serves
+      as
+      an audible warning that something bad happened.<br>
+    </big>
+    <h4><big>CLAM_FINISH_SOUND</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;This is a list of sound files
+      that should be played when the make has concluded
+      successfully. &nbsp;It should play when the outer-most make
+      has seen all targets created as intended.<br>
+    </big>
+    <h4><big>CLAM_TMP</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Specifies the location for temporary
+      files generated during a make. &nbsp;The default value usually works
+      fine.
+      &nbsp;This directory will be created if it does not already exist.<br>
+    </big>
+    <h4><big>CLEANUPS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of files to be
+      removed by the
+      make
+      clean command.&nbsp; They are possibly acquired from the TARGETS
+      defined
+      in the user's Makefile, or by language dependent rules for
+      cleaning.&nbsp;
+      Additional files can be added to this list by the user's makefile also.
+    </big>
+    <h4><big>DIRTY_FILE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This variable points at a file that
+      signifies
+      that some targets have been remade.&nbsp; It is not used at the base
+      level
+      of clam, but language-specific versions might do something special if
+      targets
+      were remade (such as put them in a build repository).
+    </big>
+    <h4><big>FAILURE_FILE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This file is used as a flag that
+      indicates
+      when
+      a make has failed.&nbsp; The particular file used depends on the
+      project
+      name for this makefile.&nbsp; It is cleared at both the beginning and
+      end
+      of a make.
+    </big>
+    <h4><big>FIRST_TARGETS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The FIRST_TARGETS are made before
+      any
+      libraries
+      are created and before any executables are compiled.&nbsp; There must
+      be
+      a rule for making every entry in this list, either through implicit
+      rules
+      or explicit ones provided by the user's makefile.
+    </big>
+    <h4><big>FLAG_FILES</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;This is a list of all the files
+      that are used for compilation flags. &nbsp;They are whacked at the
+      beginning
+      and end of a make.<br>
+    </big>
+    <h4><big>HIDER</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This macro is used throughout&nbsp;
+      to hide the
+      commands that are being sent to the operating system.&nbsp; It can be
+      disabled to allow a verbose make (see the NOISY macro).
+    </big>
+    <h4><big>HIDESH</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Just like HIDER, but this macro is
+      specifically
+      for launching shell scripts. &nbsp;Some versions of GNU make (like
+      Cygwin's)
+      have problems running scripts which don't arise when running executable
+      files.
+      &nbsp;Those problems led to the creation of the HIDESH macro for those
+      specific
+      cases. &nbsp;This is not an issue for Unix systems.
+    </big>
+    <h4><big>&nbsp;LAST_TARGETS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The LAST_TARGETS are made after all
+      of the
+      other
+      standard targets are made.&nbsp; Their must be a rule for making every
+      entry in this list, either through implicit rules or explicit ones
+      provided
+      by the user's makefile.
+    </big>
+    <h4><big>NOISY</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This variable can be used to cause a
+      verbose
+      make.&nbsp;
+      If the variable is non-empty, then all commands will be echoed to
+      standard
+      output.&nbsp; Otherwise, the default is to hide the commands that are
+      issued
+      and just show the output of running those commands.
+    </big>
+    <h4><big>OP_SYSTEM</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a flag that defines the
+      operating
+      system
+      name.&nbsp; This flag is sometimes used to choose the appropriate tools
+      per platform or to conditionally compile code for system
+      dependent interfaces.&nbsp; The available possibilities so far are
+      UNIX,
+      OS2, SYSV (System V Unix), DOS, and WIN32.&nbsp; Only UNIX and WIN32
+      are
+      currently very functional.
+    </big>
+    <h4><big>&nbsp;OTHER_CLEANS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These are targets to execute before
+      performing
+      the main clean up during "make clean".&nbsp; These might be targets
+      that
+      contain shell commands to execute as part of clean up or they could
+      contain
+      the "clean_subdirs" command (defined below).
+    </big>
+    <h4><big>PROJECT</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a variable that provides the
+      name of
+      the
+      project being compiled.&nbsp; This should be a word that can also be
+      used
+      as a directory name and as a partial component of filenames.&nbsp;
+      Thus, spaces
+      and other unusual punctuation characters are discouraged.&nbsp; All of
+      the project's temporary directories will be created based on this
+      variable.
+    </big>
+    <h4><big>FEISTY_MEOW_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Specifies the root directory
+      for compilation or other&nbsp; building activities. &nbsp; The
+      repository
+      is also where source code and final products of compilation reside,
+      unless
+      the default is over-ridden (see TARGETS_DIR).<br>
+    </big>
+    <h4><big>SH &amp; SHELL</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These variables both point at a
+      shell program
+      that is
+      used for starting commands. &nbsp;SHELL is defined by GNU make, whereas
+      SH is defined by .
+    </big>
+    <h4><big>SUB_FLAG_FILES</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;This is a list of the compilation
+      flag files
+      which
+      should be destroyed only at the end of a make.&nbsp; They are used for
+      communication
+      with submakefiles--makefiles that were invoked by "this" makefile.<br>
+    </big>
+    <h4><big>SUBMAKE_FLAG</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;This points to a file whose presence
+      indicates
+      that
+      a "submake" performed some actions. &nbsp;The flag can be interpreted
+      by
+      some language-specific versions of&nbsp; as a reason to set a flag
+      using
+      the
+      DIRTY_FILE.<br>
+    </big>
+    <h4><big>TARGETS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These are the products to be created
+      by .&nbsp;
+      Each item listed in TARGETS should have a rule that knows how to create
+      that type of file.&nbsp; The language independent system provides very
+      few suffix based rules.&nbsp; TARGETS is filled in by the user in
+      their&nbsp; file, but it is not used directly by the&nbsp;
+      system.&nbsp;
+      Instead,
+      a generated variable called ACTUAL_TARGETS is used.<br>
+    </big>
+    <h4><big>TARGETS_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This folder is where all generated
+      files are
+      to
+      be stored. &nbsp;It is usually identical to FEISTY_MEOW_DIR but can be
+      overridden
+      when the targets should be stored elsewhere.<br>
+    </big>
+    <h4><big>Version components: major, minor, revision, build<br>
+      </big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;These four variables specify the
+      version of
+      this
+      particular build. &nbsp;They are usually stored in the
+      PARAMETER_FILE.
+      &nbsp;The major and minor versions are the traditional 2.3, 4.0, etc
+      style
+      of release numbers. &nbsp;The revision number is often used to sequence
+      the
+      builds of that particular release, such that build 3.5.127 is the 127th
+      build
+      of the 3.5 release.<br>
+      &nbsp; &nbsp; &nbsp;A version-tagged file (such as an executable or
+      dynamic
+      library) with any one of the major, minor or revision numbers differing
+      from
+      an installed build is incompatible with the installed build. &nbsp;An
+      executable
+      file or dynamic library will not be allowed to load other dynamic
+      libraries
+      where these numbers differ.<br>
+      &nbsp; &nbsp; &nbsp;The last version component is misleadingly called
+      "build";
+      this number specifies the service pack level for a file. &nbsp;Files
+      whose
+      versions only differ in the last "build" component are intended to be
+      compatible
+      with each other. &nbsp;The understanding is that if only that number
+      differs,
+      then the external interface to the file has not changed, although the
+      interior
+      implementation may have.<br>
+    </big>
+    <h2><big><a name="LANG_INDEP_RULES"></a><u>Language Independent
+          Rules</u></big></h2>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The file "$/rules.def" uses the
+      composite
+      macros
+      defined in "$/variables.def" together with a set of make rules to
+      perform
+      actions during compilation.&nbsp; The rules file should be included in
+      the user's Makefile after the compilation variables have been
+      initialized
+      for the project being compiled.&nbsp; The user's own targets should be
+      placed after the directive that includes "$/rules.def".
+    </big>
+    <h4><big>%.halt</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These targets cause&nbsp; to exit,
+      usually to
+      avoid
+      something that it considers catastrophic.&nbsp; An example of this
+      would
+      be when&nbsp; finds an inappropriate entry in the list of objects to
+      create;
+      allowing a "make clean" on this makefile will delete files that are
+      probably
+      not intended.&nbsp; Hence, when&nbsp; finds this kind of usage, it will
+      stop the make and issue a complaint.
+    </big>
+    <h4><big>%.make</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Used to compile a makefile in a
+      subdirectory
+      named
+      "%".&nbsp; This rule is employed by the BUILD_BEFORE macro, but can be
+      used in the user's makefile targets also.
+    </big>
+    <h2><big><a name="LANG_INDEP_TARGETS"></a><u>Language Independent
+          Targets</u></big></h2>
+    <big>&nbsp;&nbsp;&nbsp; The following targets are defined by
+      "$/rules.def".
+    </big>
+    <h4><big>all</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a standard target that is
+      executed
+      when
+      no particular target is specified at the make command line.&nbsp; It is
+      an umbrella target that invokes all of the other targets required to
+      perform
+      a make.&nbsp; The order in which the major targets are created is:
+    </big>
+    <ol>
+      <small> </small><big> </big><small> </small>
+      <li><big>FIRST_TARGETS</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>TARGETS</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>LAST_TARGETS</big></li>
+      <small> </small><small></small>
+    </ol>
+    <h4><big>
+        clean</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This causes all of the files in
+      CLEANUPS to be
+      removed and also executes all of the targets in OTHER_CLEANS.&nbsp; The
+      language dependent system can override some of this behavior or it can
+      just add more files to the list of CLEANUPS.
+    </big>
+    <h4><big>clean_subdirs</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is similar to "make_subdirs" in
+      that it
+      descends
+      into the subdirectories in no particular order, but it runs "make
+      clean"
+      in each of them.&nbsp; This allows a directory hierarchy of projects to
+      be cleaned with one command.
+    </big>
+    <h4><big>finish</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The "finish" target represents the
+      completion
+      of a make, whether successful or not.&nbsp; It reports the time and
+      date
+      (and logs them).
+    </big>
+    <h4><big>rm_links</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This target causes all link files in
+      the
+      current
+      directory to be deleted.&nbsp; This is only applicable on a Unix
+      operating
+      system.
+    </big>
+    <h4><big>make_subdirs</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This target allows a makefile to
+      specify that
+      all of the subdirectories under the current directory should be scanned
+      for makefiles and that those makefiles should be executed.&nbsp; If a
+      makefile
+      does not exist, it is skipped.&nbsp; Note that the subdirectories are
+      descended
+      into in no particular order; the order depends on how the operating
+      system
+      decides to list the directories.&nbsp; If the order of make is
+      important,
+      use BUILD_BEFORE instead.
+    </big>
+    <h4><big>start</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The "start" target represents the
+      beginning of
+      the make.&nbsp; It reports the time and date (and logs them).
+    </big>
+    <h2><big><a name="LANG_INDEP_SCRIPTS"></a><u>Language Independent
+          Files</u></big></h2>
+    <h4><big>$(PARAMETER_FILE)</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;This is a special
+      file that has at least two purposes in .&nbsp; It is the source of
+      the
+      version number that will be stamped on all the appropriate DLLs and
+      EXEs
+      created during a build.&nbsp; It is also a place where build-wide
+      compilation
+      directives can be included so that they do not have to be passed on the
+      command
+      line.&nbsp; For C++ compilation, this is usually an INI file
+      stored in the
+      FEISTY_MEOW_DIR under the build folder.&nbsp;
+      Here is a sample parameter file:
+    </big>
+    <blockquote><big><tt><font size="-1"><big>#\</big></font></tt> <br>
+        <tt><font size="-1"><big>[version]</big></font></tt> <br>
+        <tt><font size="-1"><big>major=14</big></font></tt> <br>
+        <tt><font size="-1"><big>minor=3</big></font></tt> <br>
+        <tt><font size="-1"><big>revision=140</big></font></tt> <br>
+        <tt><font size="-1"><big>build=0</big></font></tt> </big><small> </small>
+      <p><big><tt><font size="-1"><big>DEBUG=t</big></font></tt> <br>
+          <tt><font size="-1"><big>OPTIMIZE=t</big></font></tt> <br>
+        </big></p>
+      <small> </small></blockquote>
+    <big>Note the bizarre comment at the top of the makefile; this is
+      used to
+      hide
+      the "[version]" section marker.&nbsp; The comment is required because
+      the
+      build parameter file is pulled directly into the makefile code to set
+      the
+      variables after the version stamp.&nbsp; Without a comment in front of
+      the section, a syntax error would result.&nbsp; The "[version]" section
+      marker is required because this file is also sometimes treated as a
+      win32 INI file
+      in order to read the version stamp.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp; The build version is stored in the first four
+      entries.&nbsp; Our interpretation of the stamp is standard for "major"
+      and "minor".&nbsp; We treat the "revision" as a build revision number;
+      within a release, there will be numerous revisions--one for each new
+      build
+      that is performed.&nbsp; We then treat the "build" entry as a patch
+      level
+      within that particular build.&nbsp; When we perform our version
+      checking,
+      only the first three entries are compared; the patch level in "build"
+      is
+      considered irrelevant.
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; This example also specifies that the build
+      should be a debug style (rather than release) build and that it should
+      be optimizer.&nbsp; We can also see that
+      the flags for bounds checker instrumentation and true time
+      analysis support are commented out.<br>
+    </big>
+    <h4><big>badness_catcher.sh</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Runs the command line passed
+      in as a sub-shell and looks for error conditions. &nbsp;If an error
+      occurred,
+      the build is stopped and the CLAM_ERROR_SOUND is played.<br>
+    </big>
+    <h4><big>datestamp.sh</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Echoes the time and date. &nbsp;This
+      is a
+      separate
+      file to make the cross-platform difference less annoying.<br>
+    </big>
+    <h4><big>exit_make.sh</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Causes the make to stop dead in its
+      tracks.
+    </big>
+    <h4><big>postconditions.sh</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Invoked at the end of the
+      language-invariant
+      portion of a make.<br>
+    </big>
+    <h4><big>preconditions.sh</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Invoked at the beginning of the
+      language-invariant portion of a make.<br>
+    </big>
+    <h4><big>starter.sh</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This shell script executes a command
+      that is
+      passed
+      to it as its parameters and logs error conditions to standard
+      output.&nbsp;
+      It's used by the CATCHER macro.
+    </big>
+    <h2><small></small>
+      <hr noshade="noshade" size="8" width="100%"></h2>
+    <h2><big>
+        <a name="CPP_VARS"></a><u>C++ Specific Variables</u></big></h2>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These variables are used throughout
+      the C++
+      compilation
+      support.&nbsp; They are defined in "$/cpp/variables.def".
+    </big>
+    <h4><big>BASE_CPU</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Allows specification of the
+      processor that the
+      build is targeted for.&nbsp; This is needed when special actions must
+      be
+      taken for different processor types.&nbsp; Valid values currently
+      include
+      m68k (for Motorola 68000 series), m68340 (specifically the 68340),
+      x86 (intel 386 and upwards), and ppc860 (the PowerPC 860).
+    </big>
+    <h4><big>BUILD_LIST_FILE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;The list of files that must
+      be rebuilt. &nbsp;This is only used with compilers that support
+      compilation
+      of multiple source files with one invocation of the compiler (currently
+      only
+      MS-Visual C++).<br>
+    </big>
+    <h4><big>BUILD_WHACK_FILE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;A list of object files that must be
+      destroyed
+      if
+      the make fails. &nbsp;This is only relevant in the same situations as
+      BUILD_LIST_FILE.<br>
+    </big>
+    <h4><big>COMPILER</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This variable chooses the specific
+      flags
+      needed
+      for the compiler.&nbsp; Not all operating system choices above are
+      suitable
+      with the COMPILER choices, but generally it is fairly obvious which are
+      supported.&nbsp; The current possibilities include BORLAND_DOS,
+      BORLAND_OS2,
+      UNIX (default cc), GNU_OS2, GNU_LINUX, OBJECT_CENTER (Saber compiler),
+      SUN_UNIX,
+      VISUAL_CPP, and DIAB3.
+    </big>
+    <h4><big>COMPILER_FLAGS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is the list of flags passed to
+      the
+      preprocessor
+      and compiler. It is composed of the SYSTEM, the DEFINITIONS, the
+      SEARCH_DIRS,
+      and any user-included options. If flags that don't fit one of the
+      categories
+      are needed, they can be added here.
+    </big>
+    <h4><big>CONSOLE_MODE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This causes the program
+      to be generated as a console application.&nbsp; This is relevant in
+      systems
+      (such as win32) where programs have a split personality depending on
+      whether
+      they are to have graphical user interfaces or just console interfaces.
+    </big>
+    <h4><big>DEBUG_FLAGS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These are flags used for generating
+      specialized
+      versions of object files, such as ones that include debugging code
+      (e.g.,
+      for gdb) or ones that add code for profiling (e.g., gprof). Possible
+      values
+      in the Sun CenterLine Compiler environment are -g for debugging code
+      and
+      -pg for profiling.
+    </big>
+    <h4><big>DEFINITIONS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of compiler flags
+      that define
+      the
+      value of C or C++ macros. These usually have the format of
+      ?-D&lt;flag&gt;?,
+      but in this particular variable only the &lt;flag&gt; itself should be
+      listed
+      (because the compiler option characters ?-D? are added automatically).
+    </big>
+    <h4><big>DEPENDENCY_ADDITIONS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of extra flags that
+      gets passed
+      to the auto-dependency tool.&nbsp; The list can vary for each compiler.
+    </big>
+    <h4><big>DEPS_FILE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This file is where the
+      auto-dependency
+      information
+      is stored.&nbsp; The "makedep" program is used to generate
+      auto-dependency
+      information for the files listed in SOURCE.&nbsp; During a build, the
+      DEPS_FILE
+      is pulled into the actual code of the makefile; this causes the
+      dependencies
+      to be automatically included so that they can dictate the files that
+      need
+      to be rebuilt.
+    </big>
+    <h4><big>EXTRA_VERSIONS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of version files that
+      also need
+      to be updated to the main build version during a compilation.&nbsp;
+      These
+      are usually needed if a project compiles several executable files, and
+      each one performs version checking.&nbsp; By default, any project
+      containing
+      a file called "version.ini" will get a version stamp from the main
+      build
+      version.
+    </big>
+    <h4><big>LIBRARIAN_FLAGS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of flags that are
+      passed to the
+      library creation tool.&nbsp; Sometimes this must be overridden for a
+      particular
+      compiler.
+    </big>
+    <h4><big>LIBS_USED</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These are code libraries that the
+      executables
+      depend upon.&nbsp; They are searched for in any of the directories
+      listed
+      in the LIBRARY_SEARCH_PATH.
+    </big>
+    <h4><big>LOAD_FLAG_PREFIX &amp; LOAD_FLAG_SUFFIX</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These tell the linker and loader how
+      to deal
+      with
+      the files and where to locate library components. The prefix is listed
+      on the compilation command line before the object files are listed, and
+      the suffix after. The prefix should contain information such as the
+      directories
+      to be searched for code libraries (although they should be added to
+      LIBRARY_SEARCH_PATH).&nbsp;
+      In the suffix definition, actual library loading statements (like
+      -lmath)
+      can be included (although they should be listed in a different form in
+      LIBS_USED or LOCAL_LIBS_USED).
+    </big>
+    <h4><big>LOCAL_LIBS_USED</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The names in this list actually
+      cause the
+      OBJECTS
+      to be recompiled when the libraries listed have changed.&nbsp; To
+      accomplish
+      this, these libraries MUST be located in the STATIC_LIBRARY_DIR rather
+      than
+      at some arbitrary place on the LIBRARY_SEARCH_PATH.&nbsp; These
+      libraries
+      also must follow the special naming convention followed by ; if
+      "basis"
+      is an entry in this list, then a library called "basis.lib" will be
+      sought
+      during the build.
+    </big>
+    <h4><big>NO_COMPILE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Specifies that no compilation
+      should be performed. &nbsp;Nothing in the SOURCE or TARGETS macros will
+      be
+      built.<br>
+    </big>
+    <h4><big>NO_DEPS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;This is an exclusion flag.&nbsp; If
+      it is
+      defined,
+      then no auto-dependency files will be generated.&nbsp; This is useful
+      if
+      you're missing the makedep tool and trying to compile it.<br>
+    </big>
+    <h4><big>OBJECTS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The OBJECTS are all those files that
+      need to
+      be
+      created during compilation.&nbsp; Usually this list is filled based on
+      the files in SOURCE.
+    </big>
+    <h4><big>OPTIMIZE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Causes the make to create optimized
+      code.&nbsp;
+      The default optimization is for speed.
+    </big>
+    <h4><big>REBUILD</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; If the REBUILD variable is
+      non-empty, then all
+      files listed in the SOURCE variable are touched.&nbsp; This should
+      cause
+      all of those files to be rebuilt during the compilation.&nbsp;
+      Occasionally
+      GNU make will complain that a file is newer than the current time, but
+      this does not usually cause any problems.
+    </big>
+    <h4><big>SOURCE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The SOURCE variable is a list of
+      files that
+      are
+      to be compiled in order to create the final products of the
+      project.&nbsp;
+      These can be C++ source files (*.cpp), Win32 resource files (*.rc)
+      and
+      other types of source files.&nbsp; The list of objects to create will
+      be
+      determined by transforming the list of SOURCE files (such as by turning
+      a file called "fud.cpp" into an object called "fud.obj").&nbsp; More
+      file
+      types will be added as they are needed.
+    </big>
+    <h4><big>STATIC</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Causes the make to create statically
+      linked
+      targets.&nbsp;
+      Executables or dynamic libraries will not link in any compiler supplied
+      dynamic libraries, nor will they require them during run-time.
+    </big>
+    <h4><big>TYPE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a variable that describes
+      the kind of
+      project that is being compiled.&nbsp; Knowing the type of project is
+      necessary
+      because it controls some elements of the compilation and also of the
+      final
+      promotion of the compiled products.&nbsp; There are three TYPEs
+      supported
+      so far:
+    </big>
+    <ul>
+      <small> </small><big> </big><small> </small>
+      <li><big>library: indicates that the project will be primarily
+          creating
+          static
+          or
+          dynamic libraries.</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>application: indicates that the project will create
+          executables.</big></li>
+      <small> </small><big> </big><small> </small>
+      <li><big>test: indicates that the project constructs test
+          programs.</big></li>
+      <small> </small><small></small>
+    </ul>
+    <big>Projects of the "library" type will follow the special&nbsp;
+      rules for
+      their include directory (which is created as a copy of headers in the
+      library
+      directory).&nbsp; Library projects will also have their final products
+      copied to the lib or dll subdirectories of the build directory being
+      created.&nbsp;
+      Projects that are "application"s will have their executables copied to
+      the executable directory in the build.&nbsp; And "test" projects will
+      be
+      promoted to a subdirectory named after the PROJECT that resides under
+      the
+      test hierarchy in the build.
+    </big>
+    <h2><big><a name="DIRECTORY_VARS"></a><u>C++ Directory Structure
+          Variables</u></big></h2>
+    <h4><big>BASE_OUTPUT_PATH</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;This is the parent directory
+      for object files generated for the specified type of CPU and the style
+      of
+      build (e.g. debug or release builds).<br>
+    </big>
+    <h4><big>CPU_BUILD_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This variable can be used to
+      distinguish
+      directory
+      names used for output.&nbsp; It includes the cpu name and the type of
+      build.
+    </big>
+    <h4><big>DYNAMIC_LIBRARY_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;The directory where dynamic
+      libraries will be
+      stored after creation.<br>
+    </big>
+    <h4><big>EXECUTABLE_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;The directory where executable files
+      will be
+      stored after creation.<br>
+    </big>
+    <h4><big>FINAL_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is the name of the directory
+      where the
+      finished
+      compilation products are stored, currently only import libraries for
+      dynamic libraries.&nbsp;
+      It is usually a directory under the OUTPUT_PATH named "final".
+    </big>
+    <h4><big>HEADER_SEARCH_PATH</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of directories that
+      will be
+      searched
+      for C++ header files (files ending in ?.h?).
+    </big>
+    <h4><big>HOOPLE_HEADERS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The two standard places to look for
+      headers
+      (the repository and the third party directory) are listed in this
+      variable.
+    </big>
+    <h4><big>HOOPLE_LIBRARIES</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is where our libraries are
+      located.&nbsp; It is usually a subdirectory called "lib" under the
+      repository
+      directory.
+    </big>
+    <h4><big>LIBRARY_SEARCH_PATH</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of directories that
+      will be
+      searched
+      for C++ library archives (files ending in ".a" or ".lib").
+    </big>
+    <h4><big>LOCAL_HEADERS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This variable provides a way to
+      include
+      headers
+      prior to the default locations in the search path.&nbsp; For example,
+      if
+      you are compiling locally and have some headers that are not present in
+      the build you are using, then you can specify where they are in this
+      variable.
+    </big>
+    <h4><big>LOCAL_LIBRARIES</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This variable allows other library
+      directories
+      to be added prior to the default search locations.&nbsp; This enables
+      substitute
+      static or import libraries to be used instead of the standard ones
+      present
+      in the build.
+    </big>
+    <h4><big>STATIC_LIBRARY_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is the location where code
+      libraries are
+      to be copied during promotion and where they are to be searched for
+      when
+      listed in LOCAL_LIBS_USED.&nbsp; Under Unix, these libraries have a
+      ?.a?
+      suffix and are created with the "ar" program.&nbsp; Under Win32,
+      these
+      libraries have a ?.lib? suffix and are created with "link".
+    </big>
+    <h4><big>OBJECT_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is where object files will be
+      stored
+      during
+      compilation for the target type being produced.
+    </big>
+    <h4><big>OUTPUT_DIRECTORY_LIST</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of directories that
+      need to be
+      created under the OUTPUT_PATH.&nbsp; It contains the "final" directory
+      where all finished products are stored, as well as all the intermediate
+      directories for objects.
+    </big>
+    <h4><big>OUTPUT_PATH</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is the temporary file storage
+      area.&nbsp;
+      Any files that are created during the compilation process will be
+      stored
+      under here in a subdirectory named after the PROJECT.
+    </big>
+    <h4><big>OUTPUT_ROOT</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This specifies the root portion of
+      the
+      OUTPUT_PATH.&nbsp;
+      It lets a PC build use drive letters for the root, while a Unix build
+      can
+      specify a directory hierarchy.
+    </big>
+    <h4><big>SEARCH_DIRS</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is a list of directories that
+      will be
+      searched
+      for both C++ header files and for C++ code libraries.&nbsp; The items
+      placed
+      on SEARCH_DIRS will be added to both the LIBRARY_SEARCH_PATH and the
+      HEADER_SEARCH_PATH.&nbsp;
+      The reasoning behind this variable is lost in antiquity.
+    </big>
+    <h4><big>TESTS_DIR <br>
+      </big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;The directory where test programs
+      will be
+      stored after creation.<br>
+    </big>
+    <h4><big>THIRD_PARTY_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Third party components are sometimes
+      used in
+      the
+      creation of products.&nbsp; The directory is expected to have a
+      structure
+      containing "include" and "lib" subdirectories where headers and
+      libraries
+      are stored.
+    </big>
+    <h2><big><a name="CPP_FLAGS"></a><u>Compiler Dependent Flags</u></big></h2>
+    <h4><big>
+        CC</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is the name of the C++ compiler
+      executable.
+    </big>
+    <h4><big>COMPILER_HEADER_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is where the compiler's header
+      (or
+      include)
+      root directory is located.&nbsp; It is usually based on the root
+      directory.
+    </big>
+    <h4><big>COMPILER_LIBRARY_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is where the code libraries for
+      the
+      compiler
+      are located.&nbsp; It is usually based on the root directory.
+    </big>
+    <h4><big>COMPILER_ROOT_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This should automatically be set to
+      the
+      appropriate
+      local directory where the C++ compiler is located.
+    </big>
+    <h4><big>CREATE_LIBRARY_FLAG</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This flag, if required, specifies
+      the text
+      that
+      must precede the name of a library to create.&nbsp; It is passed to the
+      library creation tool.
+    </big>
+    <h4><big>DEF_FILE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This flag only applies to Win32
+      programs.&nbsp;
+      It specifies the name of a DEF file for all of the products created in
+      the project.
+    </big>
+    <h4><big>LIB_PREFIX &amp; LIB_SUFFIX</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;The portions of a library's name
+      dictated by the operating system. &nbsp;For example, on Unix the prefix
+      is "lib"
+      and the suffix is ".a", leading to library names like "libbasis.a" for
+      the
+      basis library. &nbsp;On win32, the prefix is "" and the suffix is
+      ".lib", leading
+      to library names like "basis.lib".<br>
+    </big>
+    <h4><big>LIBRARY_NAME_FLAG</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This flag contains the text that
+      specifies a
+      library
+      that will be included in a link.&nbsp; It is often "-l".
+    </big>
+    <h4><big>LIBRARY_PATH_FLAG</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This flag provides the text needed
+      to add
+      another
+      library search path.&nbsp; Multiple occurrences of this flag followed
+      by
+      a directory name are allowed by most compilers.
+    </big>
+    <h4><big>LIBRARY_TOOL</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is the name of the program
+      responsible
+      for
+      creating libraries.
+    </big>
+    <h4><big>LINK_TOOL</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is the name of the program that
+      links.&nbsp;
+      This is sometimes the same as the compiler (CC) and sometimes the same
+      as the librarian (LIBRARY_TOOL).
+    </big>
+    <h4><big>LINKER_OPTION_SEPARATOR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; In some compilers, linker options
+      need to be
+      separated
+      from compiler options that occur on the same command line.&nbsp; This
+      flag
+      serves that purpose.
+    </big>
+    <h4><big>LINKER_OUTPUT_FLAG</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This flag is sometimes required by a
+      linker
+      for
+      specifying the name of the library or executable that it is creating.
+    </big>
+    <h4><big>OBJECT_NAME_FLAG</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This flag is used to specify the
+      name of an
+      object
+      file being created.&nbsp; It is passed to the compiler to override
+      whatever
+      default name would be used.
+    </big>
+    <h2><big><u><a name="vcpp_only"></a>Microsoft-Visual C++ Only</u><br>
+      </big></h2>
+    <h4><big>USE_MFC</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This flag only applies to Visual C++
+      and
+      indicates
+      that MFC is to be used in creating this project.&nbsp; This is usually
+      the case for GUI applications.
+    </big>
+    <h4><big>VC_ROOT</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This is an override that allows the
+      compiler
+      root
+      directory to be customized without changing the&nbsp; code.&nbsp; If
+      VC_ROOT
+      is set (either in a makefile or as an external variable), then it will
+      be used in place of the COMPILER_ROOT_DIR.&nbsp; The best way to use
+      this
+      override is as an external environment variable; this allows makefiles
+      to remain the same despite your local configuration of the compiler.
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; Note that this variable should use
+      forward-slashes,
+      where DOS/Win32 would use backslashes.&nbsp; Also, if you have
+      installed
+      Visual C++ in a directory path containing space characters, then please
+      use the 8.3 notation for the directories containing the spaces; this
+      allows
+      the name to be passed around successfully.&nbsp; For example...
+    </big>
+    <center><small></small><big> </big><big> </big><big> </big><big> </big><big></big><big></big><big>
+      </big><big> </big><big> </big><big> </big><big>
+      </big><big> </big><big> </big><big> </big><small> </small><small></small><small>
+      </small><small> </small><small> </small><small> </small><small>
+      </small><small> </small><small> </small><small> </small><small> </small><small></small><small>
+      </small><small> </small><small> </small><small> </small>
+      <table cellpadding="8" cellspacing="4">
+        <tbody>
+          <tr>
+            <td><big> </big><small> </small>
+              <center><big><u>If Visual C++ Is Installed In</u></big></center>
+              <small> </small><big> </big></td>
+            <td><big> </big><small> </small>
+              <center><big><u>Then VC_ROOT Should Be</u></big></center>
+              <small> </small><big> </big></td>
+          </tr>
+          <tr>
+            <td><big> </big><small> </small>
+              <center><big>c:\devstudio\vc</big></center>
+              <small> </small><big> </big></td>
+            <td><big> </big><small> </small>
+              <center><big>c:/devstudio/vc</big></center>
+              <small> </small><big> </big></td>
+          </tr>
+          <tr>
+            <td><big> </big><small> </small>
+              <center><big>c:\program files\devstudio\vc</big></center>
+              <small> </small><big> </big></td>
+            <td><big> </big><small> </small>
+              <center><big>c:/progra~1/devstudio/vc</big></center>
+              <small> </small><big> </big></td>
+          </tr>
+        </tbody>
+      </table>
+      <small></small></center>
+    <h4><big>VCS_ROOT</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Similarly to the VC_ROOT, this
+      variable points
+      at the root of the C# support for Visual Studio.Net.<br>
+    </big>
+    <h4><big>FRAMEWORK_DIR</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This variable specifies the location
+      of the
+      .Net framework directory.&nbsp; On MS-Windows XP, the default should be
+      fine.&nbsp; For MS-Windows 2000 or other Win32 OSes, the windows
+      directory
+      should be "winnt" instead.&nbsp; If the operating system is configured
+      in a non-default way, the framework directory can be specified in an
+      environment variable.<br>
+    </big>
+    <h4><big>VCPP_USE_BASE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that standard Win32
+      libraries should
+      be linked in.<br>
+    </big>
+    <h4><big>VCPP_USE_GUI</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that the MFC libraries
+      should be
+      linked in.
+    </big>
+    <h4><big>VCPP_USE_OLE</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that the COM / OLE
+      libraries should
+      be linked in.
+    </big>
+    <h4><big>VCPP_USE_RPC</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that the MS-RPC libraries
+      should be
+      linked in.<br>
+    </big>
+    <h4><big>VCPP_USE_SOCK</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Specifies that the MS-WinSock
+      libraries should
+      be linked in.<br>
+    </big>
+    <h2><big><a name="CPP_RULES"></a><u>C++ Specific Rules</u></big></h2>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These types of targets have one
+      thing in
+      common;
+      if any of the items that a target depends on in SOURCE or
+      LOCAL_LIBS_USED
+      or included files or whatever have changed since the last time the
+      target
+      was created, then it is recompiled.
+    </big>
+    <h4><big>%.bad</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Causes the make to die. &nbsp;This
+      is added when an incorrect file type is spotted in a list of targets.<br>
+    </big>
+    <h4><big>%.dll</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These create dynamically linked
+      libraries from
+      the SOURCE.
+    </big>
+    <h4><big>%.elf</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Creates elf-formatted binaries for
+      use with a
+      firmware build (a specialized RTOS is the only one currently supported).<br>
+    </big>
+    <h4><big>%.exe</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This creates an executable program
+      using all
+      of
+      the objects and libraries specified.&nbsp; It is therefore important in
+      a&nbsp; makefile to only have executables that depend on the same group
+      of object files.&nbsp; The hidden agenda in the "exe" type of target is
+      that a file ending in ".cpp" must exist; this is taken as the root of
+      the
+      executable.&nbsp; It should usually contain the main() function (or its
+      equivalent).
+    </big>
+    <h4><big>%.lib</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This creates static libraries from
+      the files
+      listed
+      in OBJECTS.
+    </big>
+    <h4><big>%.nil</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;A blank target for test compiles.<br>
+    </big>
+    <h4><big>%.obj</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These create object files from C++
+      source
+      files
+      (files ending in .c or .cpp).
+    </big>
+    <h4><big>%.res</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These create compiled resource files
+      from RC
+      files
+      in the SOURCE list.
+    </big>
+    <h2><big><a name="CPP_TARGETS"></a><u>C++ Specific Targets</u></big></h2>
+    <h4><big>
+        check_requirements</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This target ensures that certain
+      characteristics
+      of the makefile are present.&nbsp; It complains and aborts the make if
+      they are missing.
+    </big>
+    <h4><big>post_compilation</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This target finalizes the
+      compilation by
+      running
+      the postconditions script.&nbsp; If PROMOTE is true, then the final
+      products
+      are copied into the repository.
+    </big>
+    <h4><big>pre_compilation</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This target executes the
+      preconditions script
+      to set up the compilation's output directories.
+    </big>
+    <h4><big>rebuild</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This target performs the actions of
+      rebuilding.&nbsp;
+      This mainly involves touching all of the files in SOURCE before the
+      compilation
+      has really started.
+    </big>
+    <h2><big><a name="CPP_SCRIPTS"></a><u>C++ Specific Files</u></big></h2>
+    <h4><big>postconditions.sh</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; After a compilation has succeeded,
+      the
+      postconditions
+      script performs the final actions required.&nbsp; The nature of these
+      actions
+      depends on the type of project being made.&nbsp; For a library project,
+      the script copies the headers to the project's include directory and
+      copies
+      libraries to the appropriate locations.&nbsp; For application and test
+      program targets, the script copies the final products to the
+      appropriate
+      repository directory.
+    </big>
+    <h4><big>preconditions.sh</big></h4>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; Before any targets are compiled, the
+      preconditions
+      script ensures that the appropriate output directories exist for the
+      project.&nbsp;
+      The script also calls the version utilities to update the project's
+      version
+      file and to create any required resource files.<br>
+    </big>
+    <h4><big>rebuild_oldies.sh</big></h4>
+    <big>&nbsp;&nbsp;&nbsp; &nbsp;Used for compilers that support
+      multiple code
+      files
+      in one invocation. &nbsp;This is launched to compile a batch of sources
+      and
+      catch any errors.<br>
+    </big>
+    <hr noshade="noshade" size="8" width="100%">
+    <center><small></small>
+      <h2><big><a name="EXAMPLES"></a>CLAM Example Makefiles</big></h2>
+      <small></small></center>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; These examples show some common
+      patterns for
+      how&nbsp; is used.&nbsp; The makefiles below are actually used in real
+      software
+      projects.
+    </big>
+    <h3><big>Library-Only Makefile</big></h3>
+    <big>This example creates a dynamic library.
+    </big>
+    <ul>
+      <small> </small><big> <tt>include cpp/variables.def</tt> </big><small>
+      </small>
+      <p><big><tt>PROJECT = mechanisms</tt><br>
+          <tt>TYPE = library</tt> <br>
+          <tt>SOURCE = delayer.cpp eventmgr.cpp event_po.cpp heartbea.cpp
+            instance.cpp
+            \</tt> <br>
+          <tt>&nbsp; libmain.cpp monitor.cpp semaphor.cpp state_ma.cpp
+            timer.cpp
+            time_sta.cpp</tt> <br>
+          <tt>TARGETS = mechanisms.dll</tt> <br>
+          <tt>LOCAL_LIBS_USED = basis</tt> <br>
+          <tt>DEFINITIONS += BUILD_MECHANISMS USE_HOOPLE_DLLS</tt> </big></p>
+      <small> </small><big> </big><small> </small>
+      <p><big><tt>include cpp/rules.def</tt></big></p>
+      <small> </small><small></small>
+    </ul>
+    <big>The dynamic library created here is mechanisms.dll.&nbsp; The
+      basis
+      library is linked
+      in also.&nbsp; The file "roller.cpp" will also be copied to the build
+      directory's
+      include path, presumably since it is a template code file.
+    </big>
+    <h3><big>Library Plus Executable Makefile</big></h3>
+    <big>This example shows the basis makefile with a couple of test
+      programs
+      also
+      being generated.
+    </big>
+    <ul>
+      <small> </small><big> <tt>include cpp/variables.def</tt> </big><small>
+      </small>
+      <p><big><tt>PROJECT = basis</tt> <br>
+          <tt>TYPE = library</tt> <br>
+          <tt>SOURCE = chaos.cpp checkup.cpp guards.cpp \</tt> <br>
+          <tt>&nbsp; istring.cpp itime.cpp logger.cpp matrix.cpp
+            portable.cpp \</tt> <br>
+          <tt>&nbsp; realtime.cpp textdump.cpp timezone.cpp utility.cpp \</tt> <br>
+          <tt>&nbsp; version_checker.cpp version_record.cpp</tt> <br>
+          <tt>TARGETS = basis.lib t_string.exe t_alloc.exe</tt> </big></p>
+      <small> </small><big> </big><small> </small>
+      <p><big><tt>include cpp/rules.def</tt></big></p>
+      <small> </small><small></small>
+    </ul>
+    <big>Note that the executables
+      "t_string.exe" and "t_alloc.exe" require files called "t_string.cpp"
+      and
+      "t_alloc.cpp" to exist.&nbsp; These files are expected to contain the
+      "main()"
+      or "WinMain()" functions (or the MFC application object).&nbsp; All of
+      the
+      files in the SOURCE variable will be included in each final executable.
+    </big>
+    <h3><big>Executable-Only Makefile</big></h3>
+    <big>This example is produces several test programs that exercise
+      the
+      associated
+      library.
+    </big>
+    <ul>
+      <small> </small><big> <tt>include cpp/variables.def</tt> </big><small>
+      </small>
+      <p><big><tt>PROJECT = t_basis</tt> <br>
+          <tt>TYPE = test</tt> <br>
+          <tt>SOURCE = instance.cpp t_basis.rc</tt> <br>
+          <tt>TARGETS = t_alloc.exe t_chaos.exe t_checku.exe t_dattim.exe \</tt>
+          <br>
+          <tt>&nbsp; t_matrix.exe t_sequen.exe t_sorts.exe t_string.exe \</tt> <br>
+          <tt>&nbsp; t_texdmp.exe</tt> <br>
+          <tt>LOCAL_LIBS_USED = basis</tt> </big></p>
+      <small> </small><big> </big><small> </small>
+      <p><big><tt>include cpp/rules.def</tt></big></p>
+      <small> </small><small></small>
+    </ul>
+    <big>The programs "t_alloc.exe" and so on will require C++ files
+      with the
+      same
+      prefix (t_alloc.cpp) to contain the main program (as in the previous
+      example).&nbsp;
+      The items in the SOURCE list will be included in each executable, and
+      the
+      basis library will be linked in.
+    </big>
+    <h2><big><a name="CLAM_HINTS"></a>CLAM Hints</big></h2>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; This section
+      is devoted to untangling snags that have been encountered in the
+      past.&nbsp;
+      Hopefully problems you encounter will be discussed here. &nbsp;Please
+      contribute
+      any new problems found to the <a href="#lib_manager">library
+        administrator</a>.
+    </big>
+    <h3><big>Problem:</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; A message like:
+    </big>
+    <ul>
+      <small> </small><big> </big><small> </small>
+      <ul>
+        <small> </small><big>make: *** No rule to make target
+          `o:/x86_w32_rel/project/final/myproj.dll',
+          needed by `all'.&nbsp; Stop. </big><small> </small>
+      </ul>
+      <small> </small><small></small>
+    </ul>
+    <big>is displayed during a make.
+    </big>
+    <h3><big>Solution:</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The most frequent reason for
+      receiving a
+      message
+      similar to the above is that there is a file listed in SOURCE that
+      either
+      does not exist or that is capitalized differently from how it is
+      listed.&nbsp;
+      Check that all the files in SOURCE are in the makefile's directory and
+      that the exact spelling of those files (including their case) is
+      correct.
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; Another potential cause of this problem is
+      if a file is included in the SOURCE that&nbsp; does not
+      recognize.&nbsp;
+      The standard compilable files are supported (*.cpp, *.c, *.rc), but it
+      is possible that a makefile must handle a non-standard extension (such
+      as *.idl).&nbsp; Either the user's makefile must supply a rule for
+      processing
+      this type of file or the user must negotiate with the&nbsp;
+      administrator
+      to get that type of target added to the&nbsp; support.
+    </big>
+    <h3><big>Problem:</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Clam is complaining about programs
+      not being
+      found
+      during a build.
+    </big>
+    <h3><big>Solution:</big></h3>
+    <big>&nbsp;&nbsp;&nbsp;&nbsp; The most frequent cause of this
+      problem is a
+      directory
+      not being on your path.&nbsp; The compilation tools bin (~/hoople/bin)
+      directory must be in
+      the PATH variable.
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; Problems are occasionally seen when the PATH
+      contains directory names that have spaces in them.&nbsp; Try using the
+      shorter 8.3 form of the directory name.
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; An even more obscure situation sometimes
+      occurs: paths with networked drives seem to somehow hide paths with
+      local drives that
+      are listed later in the PATH variable.&nbsp; The cause of this is
+      unknown,
+      although it was thought to be caused by NetWare at one point.&nbsp; To
+      fix
+      the situation, move the local paths before the networked ones.<br>
+      <br>
+    </big>
+    <hr noshade="noshade" size="8" width="100%">
+    <center><small></small>
+      <h2><big><a name="ACKS"></a>Acknowledgements</big></h2>
+      <small></small></center>
+    <center><big>Thanks to April Bly Monnen for the wonderful cover
+        art.
+      </big><small></small>
+      <p><big>Thanks to Kevin Wika for some early help with makefiles.
+        </big></p>
+      <small></small><big><big>
+        </big></big><small></small>
+      <hr noshade="noshade" size="8" width="100%"></center>
+    <big><br>
+      <br>
+    </big>
+  </body>
 </html>
