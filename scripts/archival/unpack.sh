@@ -69,6 +69,9 @@ elif [[ "$archive_file" =~ .*\.zip$ \
     || "$archive_file" =~ .*\.war$ \
     ]]; then
   unzip "$archive_file" &>/dev/null
+elif [[ "$archive_file" =~ .*\.7z$ \
+    ]]; then
+  7z x "$archive_file" &>/dev/null
 fi
 save_err=$?
 
