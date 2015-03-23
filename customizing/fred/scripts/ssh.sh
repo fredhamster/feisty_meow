@@ -10,6 +10,10 @@ if [ "$TERM" == "xterm" ]; then
   prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
 fi
 
+# force the TERM variable to a more generic version for other side.
+# we don't want the remote side still thinking it's running xterm.
+export TERM=linux
+
 if [ ! -z "$keyfile" ]; then
   \ssh -i "$keyfile" -X -C -c blowfish-cbc $*
 else
