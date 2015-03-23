@@ -5,7 +5,10 @@
 source "$FEISTY_MEOW_GENERATED/custom/scripts/pick_credentials.sh"
 
 # save the former terminal title if we're running in X.
-prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+prior_title=
+if [ ! -z "$DISPLAY" ]; then
+  prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+fi
 
 if [ ! -z "$keyfile" ]; then
   \ssh -i "$keyfile" -X -C -c blowfish-cbc $*
