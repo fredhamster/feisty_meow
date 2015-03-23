@@ -4,9 +4,9 @@
 
 source "$FEISTY_MEOW_GENERATED/custom/scripts/pick_credentials.sh"
 
-# save the former terminal title if we're running in X.
+# save the former terminal title if we're running in X with xterm.
 prior_title=
-if [ ! -z "$DISPLAY" ]; then
+if [ "$TERM" == "xterm" ]; then
   prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
 fi
 
