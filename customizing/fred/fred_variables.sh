@@ -60,12 +60,6 @@ if [ -z "$NETHACKOPTIONS" ]; then
   # options for the lame mp3 encoder.
   export LAMEOPT="--alt-preset extreme"
 
-  # points the xsede tools at our standard config file, so we don't have to worry about
-  # setting up other versions if the GENII_INSTALL_DIR changes.  this requires the variables
-  # for GENII_INSTALL_DIR and GENII_USER_DIR to be established, since my config file doesn't
-  # set those.
-  export XSEDE_TOOLS_CONFIG_FILE=$HOME/xsede/code/xsede_tools.cfg
-
 fi
 
 
