@@ -24,12 +24,16 @@ find "$dir" -type f \( -iname "*" \
   ! -iname "*.dll" \
   ! -iname "*.deb" \
   ! -iname "*.dmg" \
+  ! -iname "*.doc" \
+  ! -iname "*.docx" \
   ! -iname "*.exe" \
   ! -iname "entries" \
   ! -iname "*.git" \
+  ! -iname "*.gif" \
   ! -iname "*.gz" \
   ! -iname "*.iar" \
   ! -iname "*.jar" \
+  ! -iname "*.jpg" \
   ! -iname "*.lib" \
   ! -iname "*.ncb" \
   ! -iname "*.oar" \
@@ -43,6 +47,8 @@ find "$dir" -type f \( -iname "*" \
   ! -iname "*.svn-base" \
   ! -iname "*.tar" \
   ! -iname "*.tmp" \
+  ! -iname "*.xls" \
+  ! -iname "*.xlsx" \
   ! -iname "*.zip" \) \
   -exec echo "\"{}\"" ';' | xargs grep -li -- "$seek" | grep -v "^\.[^\/]\|\/\."
 
