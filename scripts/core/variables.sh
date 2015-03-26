@@ -190,7 +190,6 @@ if [ -z "$NECHUNG" ]; then
   ##############
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization ends....; fi
-
 fi
 
 ##############

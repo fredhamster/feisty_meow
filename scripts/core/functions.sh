@@ -18,7 +18,7 @@ if [ -z "$skip_all" ]; then
   if [ ! -z "$SHELL_DEBUG" ]; then
     echo function definitions begin...
   fi
-  
+
   # a handy little method that can be used for date strings.  it was getting
   # really tiresome how many different ways the script did the date formatting.
   function date_stringer() {
@@ -280,8 +280,14 @@ if [ -z "$skip_all" ]; then
   
   # recreates all the generated files that the feisty meow scripts use.
   function regenerate() {
+    # do the bootstrapping process again.
     bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh
     echo
+    # force a full reload by turning off sentinel variable and alias.
+    unset NECHUNG function_sentinel
+    # reload feisty meow environment in current shell.
+    source ~/feisty_meow/scripts/core/launch_feisty_meow.sh
+    # run nechung oracle to give user a new fortune.
     nechung
   }
 
@@ -337,14 +343,9 @@ if [ -z "$skip_all" ]; then
     echo "copying custom overrides for $user"
     mkdir "$FEISTY_MEOW_GENERATED/custom" 2>/dev/null
     perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_GENERATED/custom"
-    # set up any custom script files which we'll add as aliases.
-#    if [ -e "$FEISTY_MEOW_GENERATED/custom/scripts" ]; then
-#      echo removing older custom scripts.
-#      rm -rf "$FEISTY_MEOW_GENERATED/custom/scripts"
-#    fi
     if [ -d "$FEISTY_MEOW_DIR/customizing/$user/scripts" ]; then
       echo "copying custom scripts for $user"
-      cp -R "$FEISTY_MEOW_DIR/customizing/$user/scripts" "$FEISTY_MEOW_GENERATED/custom/"
+      \cp -R "$FEISTY_MEOW_DIR/customizing/$user/scripts" "$FEISTY_MEOW_GENERATED/custom/"
     fi
     echo
     regenerate
