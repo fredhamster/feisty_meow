@@ -281,7 +281,7 @@ if [ -z "$skip_all" ]; then
   # recreates all the generated files that the feisty meow scripts use.
   function regenerate() {
     # do the bootstrapping process again.
-    echo "Regenerating Feisty Meow script environment."
+    echo "regenerating feisty meow script environment."
     bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh
     echo
     # force a full reload by turning off sentinel variable and alias.
