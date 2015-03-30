@@ -285,9 +285,14 @@ if [ -z "$skip_all" ]; then
     bash $FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh
     echo
     # force a full reload by turning off sentinel variable and alias.
-    unset NECHUNG function_sentinel
+    # the nethack one is used by fred's customizations.
+    # interesting note perhaps: found that the NETHACKOPTIONS variable was
+    # not being unset correctly when preceded by an alias.  split them up
+    # like they are now due to that bug.
+    unset -v FEISTY_MEOW_GENERATED NECHUNG NETHACKOPTIONS 
+    unset -f function_sentinel 
     # reload feisty meow environment in current shell.
-    source ~/feisty_meow/scripts/core/launch_feisty_meow.sh
+    source $FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh
     # run nechung oracle to give user a new fortune.
     nechung
   }

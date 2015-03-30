@@ -27,7 +27,7 @@ if [ -z "$NETHACKOPTIONS" ]; then
   export CLAM_FINISH_SOUND='/z/walrus/media/sounds/cartoons/meepmeep.wav'
 
   # Setup for nethack adventure.
-  export NETHACKOPTIONS='name:Manjusri-W,dogname:Fred,catname:Zonker'
+  export NETHACKOPTIONS="name:Manjusri-W,dogname:Fred,catname:Zonker"
 
   # mail setup for home machines.
 #  export REPLYTO=fred@gruntose.com

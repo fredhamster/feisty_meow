@@ -207,6 +207,6 @@ for i in $FEISTY_MEOW_GENERATED/custom/*.sh; do
   if [ ! -z "$SHELL_DEBUG" ]; then
     echo "loading customization: $(basename $(dirname $i))/$(basename $i)"
   fi
-  source $i
+  source "$i"
 done
   
