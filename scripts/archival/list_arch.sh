@@ -47,6 +47,7 @@ if [ ! -f "$archive_file" ]; then
   fi
 fi
 
+save_err=1
 if [[ $archive_file =~ .*\.tar$ \
     || $archive_file =~ .*\.tar\.gz$ \
     || $archive_file =~ .*\.tar\.bz2$ \
@@ -57,6 +58,7 @@ if [[ $archive_file =~ .*\.tar$ \
     || $archive_file =~ .*\.snarf$ \
     ]]; then
   tar -tf $archive_file | $PAGER
+  save_err=${PIPESTATUS[0]}
 elif [[ $archive_file =~ .*\.zip$ \
     || $archive_file =~ .*\.epub$ \
     || $archive_file =~ .*\.odt$ \
@@ -64,4 +66,17 @@ elif [[ $archive_file =~ .*\.zip$ \
     || $archive_file =~ .*\.war$ \
     ]]; then
   unzip -v $archive_file | $PAGER
+  save_err=${PIPESTATUS[0]}
+elif [[ "$archive_file" =~ .*\.7z$ ]]; then
+  7z l "$archive_file" | $PAGER
+  save_err=${PIPESTATUS[0]}
+elif [[ "$archive_file" =~ .*\.rar$ ]]; then
+  rar l "$archive_file" | $PAGER
+  save_err=${PIPESTATUS[0]}
 fi
+
+if [ $save_err -ne 0 ]; then
+  echo "There was a failure reported while listing: $archive_file"
+  exit 1
+fi
+
