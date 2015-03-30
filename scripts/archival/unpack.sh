@@ -11,7 +11,7 @@
 ##############
 #
 # An arbitrary format archive unpacker, although really we are mainly supporting
-# tar and zip currently, including compressed formats.
+# tar, zip, 7z, and rar at this time.
 
 archive_file="$1"; shift
 if [ -z "$archive_file" ]; then
@@ -52,6 +52,13 @@ if [ ! -f "$archive_file" ]; then
   fi
 fi
 
+#hmmm: we could log to a file and spew the file if there's a failure, then
+#  remove the file after spewing or after successful run.
+#  this is a really commonly repeated pattern that would be nice to support
+#  in general.
+
+# record what happened.
+save_err=1
 if [[ "$archive_file" =~ .*\.tar$ \
     || "$archive_file" =~ .*\.tar\.gz$ \
     || "$archive_file" =~ .*\.tar\.bz2$ \
@@ -62,6 +69,7 @@ if [[ "$archive_file" =~ .*\.tar$ \
     || "$archive_file" =~ .*\.snarf$ \
     ]]; then
   tar -xf "$archive_file" &>/dev/null
+  save_err=$?
 elif [[ "$archive_file" =~ .*\.zip$ \
     || "$archive_file" =~ .*\.epub$ \
     || "$archive_file" =~ .*\.odt$ \
@@ -69,11 +77,14 @@ elif [[ "$archive_file" =~ .*\.zip$ \
     || "$archive_file" =~ .*\.war$ \
     ]]; then
   unzip "$archive_file" &>/dev/null
-elif [[ "$archive_file" =~ .*\.7z$ \
-    ]]; then
+  save_err=$?
+elif [[ "$archive_file" =~ .*\.7z$ ]]; then
   7z x "$archive_file" &>/dev/null
+  save_err=$?
+elif [[ "$archive_file" =~ .*\.rar$ ]]; then
+  rar x "$archive_file" &>/dev/null
+  save_err=$?
 fi
-save_err=$?
 
 popd &>/dev/null
 
