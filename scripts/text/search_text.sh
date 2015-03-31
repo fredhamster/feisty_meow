@@ -50,6 +50,11 @@ find "$dir" -type f \( -iname "*" \
   ! -iname "*.xls" \
   ! -iname "*.xlsx" \
   ! -iname "*.zip" \) \
-  -exec echo "\"{}\"" ';' | xargs grep -li -- "$seek" | grep -v "^\.[^\/]\|\/\."
+  -exec echo "\"{}\"" ';' | xargs grep -li --binary-files=without-match -- "$seek" | grep -v "^\.[^\/]\|\/\."
+
+# first grep looks in every valid file for the pattern requested.
+# second grep strains out dot files.
+#hmmm: why are we doing that second step?
+
 
 

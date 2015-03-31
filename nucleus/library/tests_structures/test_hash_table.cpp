@@ -247,7 +247,8 @@ bool test_hash_table::test_add()
   to_add->snacky_string = string_manipulation::make_random_name();
   to_add->food_bar = random_id;
   outcome expected = common::IS_NEW;
-  if (_keys_in_use.member(random_id)) return common::EXISTING;
+  // make sure it doesn't exist already.
+  if (_keys_in_use.member(random_id)) return false;
   ASSERT_EQUAL(_the_table.add(random_id, to_add).value(), expected.value(),
       "add should give proper outcome based on expectation");
   if (_keys_in_use.member(random_id))
@@ -519,4 +520,5 @@ return false;
 //////////////
 
 HOOPLE_MAIN(test_hash_table, )
+
 
