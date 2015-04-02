@@ -1,0 +1,19 @@
+
+solution to mesh problem in Fallout New Vegas for New Vegas Bounties Mod #1
+
+This is under wine using playonlinux, but it probably applies to any wine setup for Fallout New Vegas when you start modding.
+
+The problem was that the meshes directory had two versions, one called "meshes" and one called "Meshes".  Some mods had put resources into one directory, and some into the other.
+bounties and fallout flora thingy were the only ones that failed, probably because
+they had the files listed under one spelling in their archive but in another spelling in the config file.
+for bounties, the new vegas bounties folder was definitely under Meshes.
+after i made meshes be just a link to Meshes, the whole problem disappeared
+and the missing meshes came back, like for ferguson rifle.
+
+but this is only part of the problem, since there can be two textures directories also (textures and Textures), and mods can list those inaccurately also.
+
+so, also moved all the files out of "textures" into real Textures folder, in corresponding directory locations!, and then made "textures" a link to "Textures".
+
+rsync hoses this up if you tell it to rsync a mod into the Data folder; it crushes the link and replaces it with a real directory.
+
+maybe a hard link would work better?
