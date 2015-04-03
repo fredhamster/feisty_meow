@@ -17,3 +17,13 @@ so, also moved all the files out of "textures" into real Textures folder, in cor
 rsync hoses this up if you tell it to rsync a mod into the Data folder; it crushes the link and replaces it with a real directory.
 
 maybe a hard link would work better?
+==> nope, can't make a hard link that's a directory.  thought that would be possible, but it's not on ubuntu linux at least.
+
+aha, this problem can also be found at lower levels, under the Textures and Meshes folders:
+seeing folders like 'clutter' and such in both caps forms,
+so you may have to examine the next level of folder names also to make
+sure there are no other screw-ups.
+
+
+
+
