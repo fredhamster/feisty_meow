@@ -127,9 +127,9 @@ sub rebuild_script_aliases {
   print GENOUT "##\n";
 
   if (length($test_color)) {
-    print GENOUT "color_add=--color=auto\n";
+    print GENOUT "export color_add=--color=auto\n";
   } else {
-    print GENOUT "color_add=\n";
+    print GENOUT "export color_add=\n";
   }
 
   # plow in the full set of aliases into the file.

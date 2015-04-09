@@ -10,14 +10,17 @@
 
 ##############
 
-#export SHELL_DEBUG=true
-  # this variable causes the scripts that listen to it to print more information
-  # when they run.
+# SHELL_DEBUG: if this variable is non-empty, then it causes the feisty meow
+# scripts to print more diagnostic information when they run.  not all
+# scripts support this, but the core ones do.
 
-export ERROR_OCCURRED=
-  # no error to start with.
+#export SHELL_DEBUG=true
 
 ##############
+
+export ERROR_OCCURRED=
+  # there have been no errors to start with, at least.  we will set this
+  # to non-empty if something bad happens.
 
 if [ -z "$FEISTY_MEOW_GENERATED" ]; then
   # FEISTY_MEOW_GENERATED is where the generated files are located.
@@ -78,14 +81,14 @@ shopt -s checkwinsize
 ##############
 
 if [ -z "$LIGHTWEIGHT_INIT" ]; then
-  # perform the bulkier parts of the login and initialization.
+  # perform the bulkier parts of the initialization process.
 
-  if [ ! -z "$SHELL_DEBUG" ]; then echo heavyweight login begins...; fi
+  if [ ! -z "$SHELL_DEBUG" ]; then echo "heavyweight init begins..."; fi
 
   # set up the aliases for the shell, but only if they are not already set.
   if [ -z "$CORE_ALIASES_LOADED" ]; then
     if [ ! -z "$SHELL_DEBUG" ]; then
-      echo the aliases were missing, now they are added...
+      echo "the aliases were missing, now they are being added..."
     fi
     source "$FEISTY_MEOW_GENERATED/fmc_core_and_custom_aliases.sh"
   fi
@@ -93,7 +96,7 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
   # allow connections to our x server from the local host.
   if [ ! -z "$DISPLAY" ]; then
     if [ ! -z "$(echo "$OS_TYPE" | grep -i darwin)" ]; then
-      if [ ! -z "$SHELL_DEBUG" ]; then echo Enabling localhost X connections...; fi
+      if [ ! -z "$SHELL_DEBUG" ]; then echo "Enabling localhost X connections..."; fi
       xhost + localhost >/dev/null 2>&1
     fi
   fi
@@ -101,7 +104,7 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
   # a minor tickle of the title of the terminal, in case there is one.
   bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
 
-  if [ ! -z "$SHELL_DEBUG" ]; then echo heavyweight login ends....; fi
+  if [ ! -z "$SHELL_DEBUG" ]; then echo "heavyweight init is done."; fi
 fi
 
 if [ -z "$ERROR_OCCURRED" ]; then

@@ -17,6 +17,9 @@ export PS1='\u@\h $ ';
 # sets the history length and max file size so we can get some long history around here.
 export HISTSIZE=1000000
 export HISTFILESIZE=8000000
+
+# make the TERM available to all sub-shells.
+export TERM
   
 ##############
   

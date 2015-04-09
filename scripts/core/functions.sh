@@ -8,7 +8,7 @@ function_sentinel &>/dev/null
 if [ $? -eq 0 ]; then
   # there was no error, so we can skip the inits.
   if [ ! -z "$SHELL_DEBUG" ]; then
-    echo skipping functions.sh because already defined.
+    echo "skipping function definitions, because already defined."
   fi
   skip_all=yes
 fi
@@ -16,7 +16,7 @@ fi
 if [ -z "$skip_all" ]; then
 
   if [ ! -z "$SHELL_DEBUG" ]; then
-    echo function definitions begin...
+    echo "feisty meow function definitions beginning now..."
   fi
 
   # a handy little method that can be used for date strings.  it was getting
@@ -289,7 +289,7 @@ if [ -z "$skip_all" ]; then
     # interesting note perhaps: found that the NETHACKOPTIONS variable was
     # not being unset correctly when preceded by an alias.  split them up
     # like they are now due to that bug.
-    unset -v FEISTY_MEOW_GENERATED NECHUNG NETHACKOPTIONS 
+    unset -v CORE_ALIASES_LOADED FEISTY_MEOW_GENERATED NECHUNG NETHACKOPTIONS 
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
     source $FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh
@@ -384,7 +384,7 @@ if [ -z "$skip_all" ]; then
 
   function function_sentinel() { return 0; }
   
-  if [ ! -z "$SHELL_DEBUG" ]; then echo function definitions end....; fi
+  if [ ! -z "$SHELL_DEBUG" ]; then echo "feisty meow function definitions done."; fi
   
 fi
 

@@ -20,7 +20,7 @@
 
 require "filename_helper.pl";
 
-use Env qw(TMP);
+use Env qw($TMP $color_add $TERM);
 
 local($chewed_line) = "";
 local(@arg_list);
@@ -54,12 +54,14 @@ print "[" . $print_list . "]\n\n";
 local($temp_file)=`mktemp "$TMP/zz_frdsumdir.XXXXXX"`;
 chop($temp_file);
 
-system("ls -hlF $chewed_line >$temp_file");
+# drop the main payload, the list of directory info, but also save that
+# info to a file for analysis.
+system("ls -hlF $color_add $chewed_line");
+system("ls -hlF $color_add $chewed_line > $temp_file");
+  # the color_add variable, if defined, will have flags for setting the
+  # directory listing color scheme.
 
 ##print "file is: $temp_file\n";
-
-# drop the main payload, the list of directory info.
-system("cat $temp_file");
 
 local($lengths) = 0;
 
