@@ -43,9 +43,7 @@ fi
 alias explorer=exp
 alias i=inventory
 alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
-alias ll='\ls -hFC $color_add'
-alias ls='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
-#='\ls -hFC $color_add'
+alias ls='ls -HhFC $color_add'
 alias lsd='ls -hl'
 alias md='mkdir'
 alias more='less'
