@@ -56,8 +56,8 @@ chop($temp_file);
 
 # drop the main payload, the list of directory info, but also save that
 # info to a file for analysis.
-system("ls -hlF $color_add $chewed_line");
-system("ls -hlF $color_add $chewed_line > $temp_file");
+system("ls -HhlF $color_add $chewed_line");
+system("ls -HhlF $color_add $chewed_line > $temp_file");
   # the color_add variable, if defined, will have flags for setting the
   # directory listing color scheme.
 
