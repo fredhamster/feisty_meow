@@ -66,20 +66,26 @@ sub glob_list {
     local(@files_found) = readdir(WHERE);
     closedir WHERE;
     foreach $possible_name (@files_found) {
-      # zoom through the list and see if we need to add it to the ones
-      # matching the passed in patterns.
-#      if ( ($possible_name eq ".") || ($possible_name eq "..") ) { 
-#        # skip the directory entries.
-#        print "skipping dir entries\n";
-#        next;
-#      }
-      # we need to process this a bit; directory patterns are different.
+      # we need to process the pattern a bit; directory patterns are different
+      # from perl regular expression patterns, so we end up massaging any "ls"
+      # wildcards into an equivalent perl-style one below.
       local($match) = $chopped_filename[1];
+#hmmm: would be nice to combine the replacements into a long batch instead of separate commands, but i do not seem to know how to do that yet in perl.
       $match =~ s/\./\\./g;  # replace periods with escaped ones.
       $match =~ s/\*/.*/g;  # replace asterisks with dot star.
       $match =~ s/\+/\\+/g;  # escape plusses.
+      $match =~ s/\?/\\?/g;  # escape question marks.
+      $match =~ s/\|/\\?/g;  # escape pipe char.
+      $match =~ s/\$/\\\$/g;  # escape dollar sign.
+      $match =~ s/\[/\\[/g;  # escape open bracket.
+      $match =~ s/\]/\\]/g;  # escape close bracket.
+      $match =~ s/\(/\\(/g;  # escape open quote.
+      $match =~ s/\)/\\)/g;  # escape close quote.
+      $match =~ s/\{/\\{/g;  # escape open curly bracket.
+      $match =~ s/\}/\\}/g;  # escape close curly bracket.
+
       $match = "^" . $match . "\$";  # make sure the whole thing matches.
-#print "possibname is $possible_name\n";
+#print "possibname is '$possible_name':\n";
       if ($possible_name =~ /$match/) {
         # this one matches so add it.
         push @to_return, $chopped_filename[0] . $possible_name;

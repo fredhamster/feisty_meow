@@ -33,6 +33,7 @@ exit 0;
 sub rename_lower {
   # go through the list of files passed in.
   foreach $current (&glob_list(@_)) {
+#print "unfiltered: '$current'\n";
     if ($current =~ /[A-Z]/) {
 #print "current is '$current'\n";
       local $old_name = $current;
@@ -43,8 +44,10 @@ sub rename_lower {
       local $new_name = $dir . $lc_name; 
 #print "new name='$new_name'\n";
       local $intermediate_name = $dir . "RL" .  rand() . ".tmp";
+#print "\n";
 #print "command A is: rename [$old_name] [$intermediate_name]\n";
 #print "command B is: rename [$intermediate_name] [$new_name]\n";
+#print "\n";
       rename($old_name, $intermediate_name)
           || die "failed to do initial rename";
       rename($intermediate_name, $new_name)
