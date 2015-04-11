@@ -22,7 +22,7 @@ errorfudgetime
 if [ $? -eq 0 ]; then
   up="$(uptime -p)"
 else
-  up="$(uptime | awk '{print $2 " " $3 " " $4 " plus " $1 }')"
+  up="$(uptime | awk '{print $2 " " $3 " " $4 " plus " $1 " hours" }')"
 fi
 
 echo
