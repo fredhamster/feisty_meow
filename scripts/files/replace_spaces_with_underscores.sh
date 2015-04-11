@@ -15,7 +15,7 @@ while [ $# -gt 0 ]; do
   newname="$(echo "$file" | tr -s ' ' '_' | tr -d "}{)(][\\\~',:?><\"" | sed -e 's/\([0-9]\)_\./\1./g' | sed -e 's/_-_/-/' )"
   if [ "$file" != "$newname" ]; then
     # we've effected a name change, so let's actually do it.
-    echo "moving '$file' => '$newname'  "
+    echo "'$file' => '$newname'"
     mv "$file" "$newname"
   fi
 done

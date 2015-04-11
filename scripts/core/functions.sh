@@ -357,12 +357,12 @@ if [ -z "$skip_all" ]; then
     regenerate
   }
 
+#uhhh, this does what now?
   function add_cygwin_drive_mounts() {
     for i in c d e f g h q z ; do
       ln -s /cygdrive/$i $i
     done
   }
-
 
   # takes a file to modify, and then it will replace any occurrences of the
   # pattern provided as the second parameter with the text in the third
@@ -378,6 +378,44 @@ if [ -z "$skip_all" ]; then
       return 1
     fi
     sed -i -e "s%$pattern%$replacement%g" "$file"
+  }
+
+  function spacem()
+  {
+#hmmm: could really use that pattern of 'iterate across all the arguments and do same thing' here.
+
+#hmmm: it actually seems like the below IS the pattern.  it's pretty short, but i wish it could be shorter, like a function in itself....  ah.
+# couldn't we have a functionator deal that takes:
+#  1) a command to run, and
+#  2-n) arguments,
+# where the function just blithely runs that command on all of those arguments!?
+# yes!  that does seem like the pattern being sought, much nicer than the goofy loop below,
+# although this functionator deal needs to handle when there are more than one command also,
+# or this very function couldn't be implemented...
+# maybe a two step process:
+# 1) build a list of commands to run on all arguments,
+# 2) then run through all the arguments passed in using those established commands.
+# yes again!  this seems like it would meet all the needs involved and not be too irksome.
+# for the example below, this would reduce the number of lines, i think.
+# i had better stop bloviating and write this function so i can determine the number of
+# lines omitted by the new approach.
+    while [ $# -gt 0 ]; do
+      arg="$1"; shift
+      # first we rename the file to be lower case.
+      perl $FEISTY_MEOW_SCRIPTS/files/renlower.pl "$arg" &>/dev/null
+      # oops, now the name is all lower-case.  we need to make the
+      # same adjustment.
+      arg2="$(echo "$arg" | tr A-Z a-z)"
+      # we definitely wanted to adjust the case first, rather than doing all
+      # the wacky stuff this script does to the filename...  we will capture
+      # the output of the replace operaton for reporting.
+      final_name="$(perl "$FEISTY_MEOW_SCRIPTS/files/replace_spaces_with_underscores.sh" "$arg2")"
+      # now zap the intermediate part of the name off.
+      final_name="$(echo \"$final_name\" | sed -e 's/.*=> //')"
+      # printout the combined operation results.
+      echo "'$arg' => $final_name"
+    done
+#
   }
 
   ##############

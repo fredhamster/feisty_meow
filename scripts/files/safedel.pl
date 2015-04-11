@@ -89,7 +89,6 @@ sub safedel {
 
   # reset the list of objects actually whacked.
   local(@deleted) = ();
-#  print "deleted list is @deleted\n";
 
   # iterate over the files that we have been told to nuke.
   foreach $file (@to_delete) {
@@ -107,7 +106,7 @@ sub safedel {
     $date_tool = "date";
     local($datestamp) = `$date_tool +%Y-%m-%d-%H%M`;
     while ($datestamp =~ /[\r\n]$/) { chop $datestamp; }
-    $archive_file = $temp_subdir . "/deleted-#$number-" . $datestamp;
+    $archive_file = $temp_subdir . "/del-$number-" . $datestamp;
 #print "archive_file is $archive_file; file is $file.\n";
 
     if (-d $file) {

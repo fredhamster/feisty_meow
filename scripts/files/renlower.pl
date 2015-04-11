@@ -49,6 +49,7 @@ sub rename_lower {
           || die "failed to do initial rename";
       rename($intermediate_name, $new_name)
           || die "failed to do secondary rename";
+      print "'$old_name' => '$new_name'\n";
     }
   }
 }
