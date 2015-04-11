@@ -44,12 +44,6 @@ if ($OS eq "UNIX") {
   die "The Operating System variable (OS) is not set.\n";
 }
 
-# The zip program has slightly different parameters depending on the
-# version that will be run.  The DOS version needs to see a -P to remember
-# the directory names.
-$use_path = '';
-$wildcard = "";  # used for reasonable zips, like os/2 or unix.
-
 # set the filename used for numbering.
 local($NUMBER_FILE) = "$TMP/aa_safedel.num";
 
@@ -111,9 +105,9 @@ sub safedel {
 
     if (-d $file) {
       # ensure there aren't any read only files.
-      system("chmod -R u+rw \"$file\"");
+      system("chmod -R u+rw '$file'");
       # store the directory in the trash storage.
-      system("$zip -rm $use_path $archive_file \"$file$wildcard\" $DEV_NULL");
+      system("$zip -rm $archive_file '$file' $DEV_NULL");
         # zip up the files into the safekeeper directory.
       # recursively unlink in case zip doesn't remove the empty dir.
       if (-d $file) {
@@ -122,11 +116,13 @@ sub safedel {
       }
       push(@deleted, "\"$file\"");
     } elsif (-f $file) {
+print "about to chmod file\n";
+      # make the file writable by our user if possible (which resets any
+      # prior permissions as long as we're the owner).
+      system("chmod u+rw '$file'");
       # store the file in the trash storage.
-      system("chmod u+rw \"$file\"");
-
-#print "about to run: system [$zip -m$use_path $archive_file '$file' $DEV_NULL]";
-      system("$zip -m$use_path $archive_file \"$file\" $DEV_NULL");
+#print "about to run: system [$zip -m $archive_file '$file' $DEV_NULL]";
+      system("$zip -m $archive_file '$file' $DEV_NULL");
       push(@deleted, "\"$file\"");
     } else {
       print "$0 cannot find \"$file\" to delete it.\n";
