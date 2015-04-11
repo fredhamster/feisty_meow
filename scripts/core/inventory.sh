@@ -18,7 +18,6 @@ fi
 
 # test if this uptime knows the -p flag.
 uptime -p &>/dev/null
-errorfudgetime
 if [ $? -eq 0 ]; then
   up="$(uptime -p)"
 else
