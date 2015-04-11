@@ -411,7 +411,7 @@ if [ -z "$skip_all" ]; then
       # the output of the replace operaton for reporting.
       final_name="$(perl "$FEISTY_MEOW_SCRIPTS/files/replace_spaces_with_underscores.sh" "$arg2")"
       # now zap the intermediate part of the name off.
-      final_name="$(echo \"$final_name\" | sed -e 's/.*=> //')"
+      final_name="$(echo $final_name | sed -e 's/.*=> //')"
       # printout the combined operation results.
       echo "'$arg' => $final_name"
     done
