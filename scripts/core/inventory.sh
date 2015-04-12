@@ -29,7 +29,7 @@ else
 fi
 
 echo
-echo "it is $(date +"%A at %H:%M hours on day %e of the %B moon in the gregorian year %Y" | tr A-Z a-z) and our intrepid adventurer $USER is exploring a computer running $osname $osver named $(hostname) (code-name $codename) and has found that the machine's OS platform is $(uname -m) and its current incarnation has been ${up}." | splitter 
+echo "it is $(date +"%A at %H:%M hours on day %e of the %B moon in the gregorian year %Y" | tr A-Z a-z) and our intrepid adventurer $USER is exploring a computer named $(hostname) that is running in a thoughtspace called $osname $osver (code-name $codename), and $USER has deduced that the machine's OS platform is $(uname -m) and its current incarnation has been ${up}." | splitter 
 #hmmm: splitter not accepting these args properly right now:
 #--mincol 2 --maxcol 40
 echo
