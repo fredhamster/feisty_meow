@@ -116,7 +116,7 @@ sub safedel {
       }
       push(@deleted, "\"$file\"");
     } elsif (-f $file) {
-print "about to chmod file\n";
+#print "about to chmod file\n";
       # make the file writable by our user if possible (which resets any
       # prior permissions as long as we're the owner).
       system("chmod u+rw '$file'");
