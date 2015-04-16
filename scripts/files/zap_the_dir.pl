@@ -46,7 +46,7 @@ sub remove_whackables {
         print "cleaning file: $fname\n";
         &recursive_delete($fname);
       } else {
-        print "not touching unimportant dir right now: $fname\n";
+        print "skipping item rather than deleting: $fname\n";
       }
     }
   }
