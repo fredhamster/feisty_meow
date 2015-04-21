@@ -1,5 +1,25 @@
 #!/bin/bash
 
+##############
+#
+#  Name   : process manager helper methods
+#  Author : Chris Koeritz
+#  Rights : Copyright (C) 2015-$now by Author
+#
+#  Purpose:
+#
+# Turns Unix format text files into DOS format text files.
+# relies on the built-in process management to run a bunch of processes
+# in the background, but will limit total number running to a maximum.
+# demonstration method at the end of the file shows how to use the
+# process managing methods.
+#
+##############
+# This script is free software; you can modify/redistribute it under the terms
+# of the GNU General Public License. [ http://www.gnu.org/licenses/gpl.html ]
+# Feel free to send updates to: [ fred@gruntose.com ]
+##############
+
 # process manager helper methods for bash.
 #
 # relies on the built-in process management to run a bunch of processes
