@@ -6,28 +6,18 @@
 #  Author : Chris Koeritz
 #  Rights : Copyright (C) 2015-$now by Author
 #
-#  Purpose:
+# Purpose:
 #
-# Turns Unix format text files into DOS format text files.
-# relies on the built-in process management to run a bunch of processes
-# in the background, but will limit total number running to a maximum.
-# demonstration method at the end of the file shows how to use the
-# process managing methods.
+#   Relies on the built-in process management in bash to run a bunch of
+# processes in the background, but will limit total number running to a
+# maximum count.  There is a demonstration method at the end of the file
+# that shows how to use the process management functions.
 #
 ##############
 # This script is free software; you can modify/redistribute it under the terms
 # of the GNU General Public License. [ http://www.gnu.org/licenses/gpl.html ]
 # Feel free to send updates to: [ fred@gruntose.com ]
 ##############
-
-# process manager helper methods for bash.
-#
-# relies on the built-in process management to run a bunch of processes
-# in the background, but will limit total number running to a maximum.
-# demonstration method at the end of the file shows how to use the
-# process managing methods.
-#
-# by chris koeritz
 
 #hmmm: revisions desired someday:
 #  + allow number of max processes to be passed in.
@@ -65,7 +55,7 @@ function nechung()
       '$BINDIR/nechung'
 }
 
-function login_on_xcg()
+function sum_dir()
 {
   start_background_action \
       'echo "summing directory output coming up..."' \
@@ -100,7 +90,7 @@ launcher_demonstrator()
     case $which in
       0) take_inventory;;
       1) nechung;;
-      2) login_on_xcg;;
+      2) sum_dir;;
     esac
 
     # we have reached the limit on processes and need to wait for a few, defined by
