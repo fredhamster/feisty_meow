@@ -95,12 +95,9 @@ function bu_bootstrap()
 # a shortcut for doing a quick build and then creating an installer.
 function fast_install_build()
 {
-  build_xsede 
-  if [ $? -ne 0 ]; then echo "failed to build xsede code"; return 1; fi
-
   bash "$GENII_INSTALL_DIR/xsede_tools/tools/installer/fast_installer_build.sh" $*
   if [ $? -ne 0 ]; then
-    echo "failed to bootstrap create the installer."
+    echo "failed to create the installer."
     error_sound
     return 1
   fi
