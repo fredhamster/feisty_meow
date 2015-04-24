@@ -38,12 +38,15 @@ if ($#ARGV < 0) {
 }
 
 foreach $dir (@arg_list) {
+  if ($dir == "-al") { next; }  # skip ls directives.
+  if ($dir == "-l") { next; }  # skip ls directives.
   $chewed_line = $chewed_line . " \"$dir\"";
 }
 
 if ("$chewed_line" eq "") {
-  print "No files matched that path specification.\n";
-  exit 0;
+#  print "No files matched that path specification.\n";
+#  exit 0;
+  $chewed_line = "."
 }
 
 # show the header, now that we know there's something to print.
