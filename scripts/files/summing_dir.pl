@@ -38,21 +38,18 @@ if ($#ARGV < 0) {
 }
 
 foreach $dir (@arg_list) {
-  if ($dir == "-al") { next; }  # skip ls directives.
-  if ($dir == "-l") { next; }  # skip ls directives.
+  if ($dir eq "-al") { next; }  # skip ls directives.
+  if ($dir eq "-l") { next; }  # skip ls directives.
   $chewed_line = $chewed_line . " \"$dir\"";
 }
 
 if ("$chewed_line" eq "") {
-#  print "No files matched that path specification.\n";
-#  exit 0;
-  $chewed_line = "."
+  print "No files matched that path specification.\n";
+  exit 0;
 }
 
 # show the header, now that we know there's something to print.
 print "[" . $print_list . "]\n\n";
-
-##print "chewed_line is: $chewed_line\n";
 
 local($temp_file)=`mktemp "$TMP/zz_frdsumdir.XXXXXX"`;
 chop($temp_file);
@@ -64,8 +61,6 @@ system("ls -HhlF $color_add $chewed_line > $temp_file");
   # the color_add variable, if defined, will have flags for setting the
   # directory listing color scheme.
 
-##print "file is: $temp_file\n";
-
 local($lengths) = 0;
 
 # open the file and process the lines to get file lengths.
@@ -75,7 +70,6 @@ $pattern="^[^ ]+ +[^ ]+ +[^ ]+ +[^ ]+ +([0-9.]+[KMG]?).*\$";
 foreach $file_line (<DIRLIST>) {
   if ($file_line =~ /$pattern/) {
     (local $munged = $file_line) =~ s/$pattern/\1/;
-    #print "munge=$munged\n";
     if ($munged =~ /K$/) {
       chop $munged;
       $munged *= 1024.0;
@@ -96,8 +90,6 @@ foreach $file_line (<DIRLIST>) {
 }
 close(DIRLIST);
 unlink($temp_file);  # clean up.
-
-#print "lens are: $lengths\n";
 
 local($total)=int($lengths);
 local($kbytes)=int($total / 102.4) / 10;
