@@ -27,5 +27,5 @@ if [ ! -d "$folder_name" ]; then
   exit 3
 fi
 
-genisoimage -r -J -o "$iso_name" "$folder_name"
+genisoimage -r -J -joliet-long -o "$iso_name" "$folder_name"
 
