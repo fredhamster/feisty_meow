@@ -7,9 +7,10 @@ SHELL=/bin/bash
 0,4,8,12,16,20,24,28,32,36,40,44,48,52,56 * * * * /usr/sbin/sntp -P no -r equanimity
 or
 0,4,8,12,16,20,24,28,32,36,40,44,48,52,56 * * * * /usr/bin/rdate -s -n equanimity
+# -n is nntp which may not work with govt servers.
 
 # one machine on the network uses this version, to synch externally.
-0 0,4,8,12,16,20 * * * /usr/sbin/sntp -P no -r time.nist.gov
-or
-0 0,4,8,12,16,20 * * * /usr/bin/rdate -s -n time.nist.gov
+#0 0,4,8,12,16,20 * * * /usr/sbin/sntp -P no -r time.nist.gov
+#or
+0 0,4,8,12,16,20 * * * /usr/bin/rdate -s time-c.nist.gov
 
