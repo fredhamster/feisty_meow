@@ -45,10 +45,10 @@ local($root) = &canonicalize(&glob_list("$HOME/opensim"));
 
 # snag the main config files.
 &backup_files($snarf_file_base, $number, $root, "bin",
-    ("OpenSim.ini", "Robust.ini", "OpenSim.exe.config", "Robust.exe.config"));
+    ("OpenSim.ini", "Robust*.ini", "OpenSim.exe.config", "Robust.exe.config"));
 
 # snag the configuration include file.
-&backup_files($snarf_file_base, $number, $root, "bin/config-include", ("GridCommon.ini"));
+&backup_files($snarf_file_base, $number, $root, "bin/config-include", ("GridCommon.ini", "osslEnable.ini"));
 
 # get the region definitions.
 &backup_hierarchy($snarf_file_base, $number, "$root", "bin/Regions");

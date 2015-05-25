@@ -21,7 +21,7 @@ export SNOOZE_TIME=6
 
 # lock the limit in for threads, so we don't have any getting out of control.
 # also make sure we've provided enough space for each thread.
-ulimit -s 262144
+ulimit -s 512144
 
 # use more recent versions of mono for opensim if they're available.
 if [ -d /opt/mono-2.10/bin ]; then
@@ -38,7 +38,8 @@ function launch_screen()
   echo "$(date_stringer ' '): starting $screen_name now..."
   screen -L -S "$screen_name" -d -m nice -n $NICENESS_LEVEL mono "$app_name" 
 ##why? --debug 
-#-console=basic 
+#no, makes it ugly: -console=basic 
+
   echo "$(date_stringer ' '): $screen_name started."
   # only sleep if we are not at the last process that gets started.
   if [ "$app_name" != "OpenSim.exe" ]; then
