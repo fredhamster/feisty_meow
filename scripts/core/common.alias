@@ -92,7 +92,7 @@ alias reroot='chown -R root:root /root'
 # yes, these are really helpful...
 alias whoareyou='echo -e "Hello, I am a computer named $(hostname)\nand I'\''m very pleased to meet you."'
 alias whereami='echo whoa dude, try not to think about it...'
-alias why='echo just because.'
+alias why='echo We all wonder what the point of the universe is at times.  If you figure it all out, please write us.'
 
 # done with loading up regular aliases now...
 
