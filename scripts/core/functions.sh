@@ -34,19 +34,48 @@ if [ -z "$skip_all" ]; then
     cd "$1"
   }
 
+  function is_array() {
+    [[ "$(declare -p $1)" =~ "declare -a" ]]
+  }
+
+  function is_alias() {
+    alias $1 &>/dev/null
+    return $?
+  }
+
   # displays the value of a variable in bash friendly format.
   function var() {
+    HOLDIFS="$IFS"
+    IFS=""
     while true; do
       local varname="$1"; shift
       if [ -z "$varname" ]; then
         break
       fi
-      if [ -z "${!varname}" ]; then
+
+      if is_alias "$varname"; then
+#echo found $varname is alias
+        local tmpfile="$(mktemp $TMP/aliasout.XXXXXX)"
+        alias $varname | sed -e 's/.*=//' >$tmpfile
+        echo "alias $varname=$(cat $tmpfile)"
+        \rm $tmpfile
+      elif [ -z "${!varname}" ]; then
         echo "$varname undefined"
       else
-        echo "$varname=${!varname}"
+        if is_array "$varname"; then
+#echo found $varname is array var 
+          local temparray
+          eval temparray="(\${$varname[@]})"
+          echo "$varname=(${temparray[@]})"
+#hmmm: would be nice to print above with elements enclosed in quotes, so that we can properly
+# see ones that have spaces in them.
+        else
+#echo found $varname is simple
+          echo "$varname=${!varname}"
+        fi
       fi
     done
+    IFS="$HOLDIFS"
   }
 
   function success_sound()
