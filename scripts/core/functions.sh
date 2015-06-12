@@ -113,7 +113,7 @@ if [ -z "$skip_all" ]; then
     local PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
     local -a PIDS_SOUGHT
     if [ "$OS" == "Windows_NT" ]; then
-      # needs to be a windows format filename for 'type' to work.
+      # windows case has some odd gyrations to get the user list.
       if [ ! -d c:/tmp ]; then
         mkdir c:/tmp
       fi
@@ -129,6 +129,7 @@ if [ -z "$skip_all" ]; then
         flag='//c'
       fi
       # we 'type' the file to get rid of the unicode result from wmic.
+      # needs to be a windows format filename for 'type' to work.
       cmd $flag type "$tmppid" >$PID_DUMP
       \rm "$tmppid"
       local appropriate_pattern='s/^.*[[:space:]][[:space:]]*\([0-9][0-9]*\) *\$/\1/p'
