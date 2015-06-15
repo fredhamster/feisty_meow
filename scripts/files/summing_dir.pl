@@ -94,9 +94,19 @@ unlink($temp_file);  # clean up.
 local($total)=int($lengths);
 local($kbytes)=int($total / 102.4) / 10;
 local($mbytes)=int($kbytes / 102.4) / 10;
+local($gbytes)=int($mbytes / 102.4) / 10;
 
 print "\n";
-print "These files occupy $total bytes ($kbytes KB / $mbytes MB).\n";
+# print a fancy listing showing bytes at least, but only showing mb and gb if appropriate.
+print "These files occupy $total bytes ($kbytes KB";
+if ($mbytes ne 0) {
+ print " / $mbytes MB";
+}
+if ($gbytes ne 0) {
+ print " / $gbytes GB";
+}
+print ").\n";
+
 print "Overall Drive Usage (megs):\n";
 
 system("df -m $chewed_line >$temp_file");
