@@ -28,7 +28,7 @@ if [ "$OS" != "Windows_NT" ]; then
   if [ -n "$IS_DARWIN" ]; then
     # case for mac os x.
     alias exp='open'
-  elif [ ! -z "$(which nautilus)" ]; then
+  elif [ ! -z "$(which nautilus 2>/dev/null)" ]; then
     # we prefer nautilus if available.
     alias exp='nautilus'
   else
