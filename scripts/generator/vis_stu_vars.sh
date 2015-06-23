@@ -60,7 +60,23 @@ function setup_visual_studio_variables()
 #on hold:    export PLATFORM_DIR="$(short_path "$PROGRAMFILES/Microsoft SDKs/Windows/v7.0A" | tr "A-Z" "a-z" | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' )"
 ##| sed -e 's/^\(.\):/\/\1/' )"
 
-export PLATFORM_DIR="c:\progra~2\micros~1\windows\v7.0a"
+    # guess at where we can find this damned directory in its short form.
+#hmmm: this is needed until there's a replacement for short path, or we can build again.
+    export PLATFORM_DIR="c:/progra~2/micros~1/windows/v7.0a"
+    if [ ! -d "$PLATFORM_DIR" ]; then
+      PLATFORM_DIR="c:/progra~1/micros~1/windows/v7.0a"
+      if [ ! -d "$PLATFORM_DIR" ]; then
+        PLATFORM_DIR="c:/progra~1/micros~2/windows/v7.0a"
+        if [ ! -d "$PLATFORM_DIR" ]; then
+          PLATFORM_DIR="c:/progra~2/micros~2/windows/v7.0a"
+        fi
+      fi
+    fi
+
+    if [ ! -d "$PLATFORM_DIR" ]; then
+      echo "*** Failure to calculate the platform directory based on several attempts using c:\\program files\\microsoft sdks\\windows\\v7.0a as the basic pattern"
+    fi
+  
 
   fi
   export WindowsSdkDir="$PLATFORM_DIR"

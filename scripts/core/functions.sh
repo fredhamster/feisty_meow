@@ -237,11 +237,22 @@ if [ -z "$skip_all" ]; then
   # switches from a /X/path form to an X:/ form.  this also processes cygwin paths.
   function unix_to_dos_path() {
     # we usually remove dos slashes in favor of forward slashes.
+    local DOSSYHOME
+    if [[ ! "$OS" =~ ^WIN ]]; then
+      # fake this value for non-windows (non-cygwin) platforms.
+      DOSSYHOME="$HOME"
+    else
+      # for cygwin, we must replace the /home/X path with an absolute one, since cygwin
+      # insists on the /home form instead of /c/cygwin/home being possible.  this is
+      # super frustrating and nightmarish.
+      DOSSYHOME="$(cygpath -am "$HOME")"
+    fi
+
     if [ ! -z "$SERIOUS_SLASH_TREATMENT" ]; then
       # unless this flag is set, in which case we force dos slashes.
-      echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/' | sed -e 's/\//\\/g'
+      echo "$1" | sed -e "s?^$HOME?$DOSSYHOME?g" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/' | sed -e 's/\//\\/g'
     else
-      echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
+      echo "$1" | sed -e "s?^$HOME?$DOSSYHOME?g" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
     fi
   }
   

@@ -51,6 +51,14 @@ function dossify_and_run_commands()
       recombined="$flag$filename"
 #echo combined flag and file is $recombined
       darc_commands+=("$recombined")
+    elif [[ "$i" =~ ^-libpath:.* ]]; then
+      flag="-libpath:"
+      filename="$(unix_to_dos_path ${i:9})"
+#echo "libflag flag is $flag"
+#echo "name after that is $filename"
+      recombined="$flag$filename"
+#echo combined flag and file is $recombined
+      darc_commands+=("$recombined")
     else 
       darc_commands+=($(unix_to_dos_path $i))
     fi
@@ -58,7 +66,7 @@ function dossify_and_run_commands()
 
   declare -a real_commands=()
   for i in "${darc_commands[@]}"; do
-    real_commands+=($(echo $i | sed -e 's/\\/\\\\/g'))
+    real_commands+=($(echo $i | sed -e 's/\//\\/g'))
   done
 
   if [ ! -z "$SHELL_DEBUG" ]; then
@@ -69,8 +77,26 @@ function dossify_and_run_commands()
     echo
   fi
 
+# this nonsense is only necessary because cygwin is screwing up our carefully constructed
+# command line.  it can't seem to leave the dos style paths alone in some cases, and insists
+# on changing their form to use forward slashes, which breaks the windows compiler.
+# this is NOT what cygwin is supposed to be doing, according to their documentation that
+# claims all styles of paths are supported.  and of course this worked fine in msys.
+
   # now actually run the chewed command.
-  cmd /c "${real_commands[@]}"
+
+# old approach, not working since cygwin is hosing us on some paths.
+#cmd /c "${real_commands[@]}"
+
+#new approach that creates a cmd file.
+  cmdfile="$(mktemp $CLAM_TMP/build_cmds.XXXXXX)"
+  echo "${real_commands[@]}" >"$cmdfile"
+#echo "**** cmd file is $cmdfile"
+  cmd /c $(cat "$cmdfile")
+  retval=$?
+  rm "$cmdfile"
+
+  return $retval
 }
 
 dossify_and_run_commands "$@"
