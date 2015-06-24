@@ -105,6 +105,9 @@ if [ -z "$skip_all" ]; then
   }
 
   # locates a process given a search pattern to match in the process list.
+  # supports a single command line flag style parameter of "-u USERNAME";
+  # if the -u flag is found, a username is expected afterwards, and only the
+  # processes of that user are considered.
   function psfind() {
     local -a patterns=("${@}")
 #echo ====
@@ -114,15 +117,22 @@ if [ -z "$skip_all" ]; then
     local user_flag
     if [ "${patterns[0]}" == "-u" ]; then
       user_flag="-u ${patterns[1]}" 
-echo "found a -u parm and user=${patterns[1]}" 
+#echo "found a -u parm and user=${patterns[1]}" 
       # void the two elements with that user flag so we don't use them as patterns.
       unset patterns[0] patterns[1]=
+    else
+      # select all users.
+      user_flag="-e"
     fi
 
     local PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
     local -a PIDS_SOUGHT
     if [ "$OS" == "Windows_NT" ]; then
+
 #hmmm: windows isn't implementing the user flag yet!
+#try collapsing back to the ps implementation from cygwin?
+# that would simplify things a lot, if we can get it to print the right output.
+
       # windows case has some odd gyrations to get the user list.
       if [ ! -d c:/tmp ]; then
         mkdir c:/tmp
@@ -142,21 +152,21 @@ echo "found a -u parm and user=${patterns[1]}"
       # needs to be a windows format filename for 'type' to work.
       cmd $flag type "$tmppid" >$PID_DUMP
       \rm "$tmppid"
-      local appropriate_pattern='s/^.*[[:space:]][[:space:]]*\([0-9][0-9]*\) *\$/\1/p'
+      local pid_finder_pattern='s/^.*[[:space:]][[:space:]]*\([0-9][0-9]*\) *\$/\1/p'
       local i
       for i in "${patterns[@]}"; do
         PIDS_SOUGHT+=($(cat $PID_DUMP \
           | grep -i "$i" \
-          | sed -n -e "$appropriate_pattern"))
+          | sed -n -e "$pid_finder_pattern"))
       done
     else
-      /bin/ps $user_flag wuax >$PID_DUMP
+      /bin/ps $user_flag -o pid,args >$PID_DUMP
 #echo ====
 #echo got all this stuff in the pid dump file:
 #cat $PID_DUMP
 #echo ====
       # pattern to use for peeling off the process numbers.
-      local appropriate_pattern='s/^[-+a-zA-Z_0-9][-+a-zA-Z_0-9]*[[:space:]][[:space:]]*\([0-9][0-9]*\).*$/\1/p'
+      local pid_finder_pattern='s/^[[:space:]]*\([0-9][0-9]*\).*$/\1/p'
       # remove the first line of the file, search for the pattern the
       # user wants to find, and just pluck the process ids out of the
       # results.
@@ -168,7 +178,7 @@ echo "found a -u parm and user=${patterns[1]}"
         PIDS_SOUGHT+=($(cat $PID_DUMP \
           | sed -e '1d' \
           | grep -i "$i" \
-          | sed -n -e "$appropriate_pattern"))
+          | sed -n -e "$pid_finder_pattern"))
       done
 #echo ====
 #echo pids sought list became:
@@ -191,13 +201,20 @@ echo "found a -u parm and user=${patterns[1]}"
       echo "psa finds processes by pattern, but there was no pattern on the command line."
       return 1
     fi
-    p=$(psfind "${@}")
+    local -a patterns=("${@}")
+    p=$(psfind "${patterns[@]}")
     if [ -z "$p" ]; then
       # no matches.
       return 0
     fi
+
+    if [ "${patterns[0]}" == "-u" ]; then
+      # void the two elements with that user flag so we don't use them as patterns.
+      unset patterns[0] patterns[1]=
+    fi
+
     echo ""
-    echo "Processes matching ${@}..."
+    echo "Processes matching ${patterns[@]}..."
     echo ""
     if [ -n "$IS_DARWIN" ]; then
       unset fuzil_sentinel
@@ -212,8 +229,7 @@ echo "found a -u parm and user=${patterns[1]}"
       done
     else 
       # cases besides mac os x's darwin.
-      extra_flags=
-      if [ "$OS" = "Windows_NT" ]; then
+      if [ "$OS" == "Windows_NT" ]; then
         # special case for windows.
         ps | head -1
         for curr in $p; do
