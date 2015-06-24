@@ -238,7 +238,7 @@ if [ -z "$skip_all" ]; then
   function unix_to_dos_path() {
     # we usually remove dos slashes in favor of forward slashes.
     local DOSSYHOME
-    if [[ ! "$OS" =~ ^WIN ]]; then
+    if [[ ! "$OS" =~ ^[Ww][iI][nN] ]]; then
       # fake this value for non-windows (non-cygwin) platforms.
       DOSSYHOME="$HOME"
     else
