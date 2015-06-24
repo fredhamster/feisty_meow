@@ -110,9 +110,19 @@ if [ -z "$skip_all" ]; then
 #echo ====
 #echo patterns list is: "${patterns[@]}"
 #echo ====
+
+    local user_flag
+    if [ "${patterns[0]}" == "-u" ]; then
+      user_flag="-u ${patterns[1]}" 
+echo "found a -u parm and user=${patterns[1]}" 
+      # void the two elements with that user flag so we don't use them as patterns.
+      unset patterns[0] patterns[1]=
+    fi
+
     local PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
     local -a PIDS_SOUGHT
     if [ "$OS" == "Windows_NT" ]; then
+#hmmm: windows isn't implementing the user flag yet!
       # windows case has some odd gyrations to get the user list.
       if [ ! -d c:/tmp ]; then
         mkdir c:/tmp
@@ -140,7 +150,7 @@ if [ -z "$skip_all" ]; then
           | sed -n -e "$appropriate_pattern"))
       done
     else
-      /bin/ps $extra_flags wuax >$PID_DUMP
+      /bin/ps $user_flag wuax >$PID_DUMP
 #echo ====
 #echo got all this stuff in the pid dump file:
 #cat $PID_DUMP
@@ -205,10 +215,9 @@ if [ -z "$skip_all" ]; then
       extra_flags=
       if [ "$OS" = "Windows_NT" ]; then
         # special case for windows.
-        extra_flags=-W
         ps | head -1
         for curr in $p; do
-          ps $extra_flags | grep "$curr" 
+          ps -W | grep "$curr" 
         done
       else
         # normal OSes can handle a nice simple query.
