@@ -32,7 +32,7 @@ if [ $? -eq 0 ]; then
   fi
 else
   # if we can't do this, then we're not even on windows cygwin.  wth are we?
-  up="$(cat /proc/uptime|awk '{print $1}') seconds, yo"
+  up="up a whole $(cat /proc/uptime|awk '{print $1}') seconds, yo"
 fi
 
 # decide whether they've got splitter available or not.
