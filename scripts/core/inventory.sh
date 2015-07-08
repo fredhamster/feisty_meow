@@ -20,12 +20,19 @@ if [ -z "$codename" ]; then
   osver="0.0?"
 fi
 
-# test if this uptime knows the -p flag.
-uptime -p &>/dev/null
+# see if uptime even exists.
+uptime &>/dev/null
 if [ $? -eq 0 ]; then
-  up="$(uptime -p)"
+  # test if this uptime knows the -p flag.
+  uptime -p &>/dev/null
+  if [ $? -eq 0 ]; then
+    up="$(uptime -p)"
+  else
+    up="$(uptime | awk '{print $2 " " $3 " " $4 " plus " $1 " hours" }')"
+  fi
 else
-  up="$(uptime | awk '{print $2 " " $3 " " $4 " plus " $1 " hours" }')"
+  # if we can't do this, then we're not even on windows cygwin.  wth are we?
+  up="$(cat /proc/uptime|awk '{print $1}') seconds, yo"
 fi
 
 # decide whether they've got splitter available or not.
