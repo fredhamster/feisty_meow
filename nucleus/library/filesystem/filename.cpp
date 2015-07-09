@@ -197,7 +197,7 @@ void filename::canonicalize()
   if ( (length() > CYGDRIVE_PATH.length() + 1) && begins(CYGDRIVE_PATH) ) {
     zap(0, CYGDRIVE_PATH.length() - 1);  // whack the cygdrive portion plus two slashes.
     insert(1, ":");  // add a colon after the imputed drive letter.
-LOG(astring("turned cygdrive string into: ") + *this);
+//LOG(astring("turned cygdrive string into: ") + *this);
   }
   // now we convert msys...
   if ( (length() >= 2) && (get(0) == DEFAULT_SEPARATOR)
@@ -216,7 +216,7 @@ LOG(astring("turned cygdrive string into: ") + *this);
       // then only on the near defunct windows platform.
       zap(0, 0);  // take off initial slash.
       insert(1, ":");  // add the obligatory colon.
-LOG(astring("turned msys string into: ") + *this);
+//LOG(astring("turned msys string into: ") + *this);
     }
   } 
 #endif

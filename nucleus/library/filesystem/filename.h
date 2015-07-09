@@ -56,6 +56,8 @@ public:
     /*!< the "name_of_file" can itself be a directory. */
   filename(const filename &to_copy);  //!< copy constructor.
 
+  DEFINE_CLASS_NAME("filename");
+
   virtual ~filename();
 
   bool good() const;
