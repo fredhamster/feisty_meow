@@ -6,8 +6,8 @@
 alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky ; check_mount /z/fredgrid'
 alias unmoo='sudo umount /z/stuffing ; sudo umount /z/walrus ; sudo umount /z/chunky ; sudo umount /z/fredgrid'
 
-# load in the xsede build scripts.
-source "$FEISTY_MEOW_SCRIPTS/buildor/build_xsedes.sh"
+# load in the gffs build scripts.
+source "$FEISTY_MEOW_SCRIPTS/buildor/gffs_builders.sh"
 
 # just shows a separator line for an 80 column console, or uses the first
 # parameter as the number of columns to expect.

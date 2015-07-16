@@ -5,7 +5,7 @@ SHELL=/bin/bash
 
 USER=jurgis
 
-# we need these for the XSEDE and GenesisII environment.
+# we need these for the GenesisII GFFS environment.
 GENII_INSTALL_DIR=/home/jurgis/gffs/code/GenesisII/trunk
 XSEDE_TESTS_FOLDER=$GENII_INSTALL_DIR/xsede_tools
 GENII_USER_DIR=/home/jurgis/.tmp/dot-genesis-xcg3

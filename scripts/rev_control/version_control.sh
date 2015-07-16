@@ -3,8 +3,9 @@
 # these are helper functions for doing localized revision control.
 # this script should be sourced into other scripts that use it.
 
+#hmmm: re-address this code, since it doesn't make a lot of sense to me right now...
 # one unpleasantry to take care of first; cygwin barfs aggressively if the TMP directory
-# is a DOS path, but we need it to be a DOS path for our XSEDE testing, so that blows.
+# is a DOS path, but we need it to be a DOS path for our GFFS testing, so that blows.
 # to get past this, TMP gets changed below to a hopefully generic and safe place.
 
 if [[ "$TMP" =~ .:.* ]]; then

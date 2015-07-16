@@ -5,7 +5,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 #hmmm: if this works well, we can use it in lots of places.
 alias BAIL_ON_FAIL='if [ $? -ne 0 ]; then echo "A problem occurred.  $msg"; return 1; fi'
 
-function build_xsede()
+function build_gffs()
 {
   if [ -z "$GENII_INSTALL_DIR" ]; then
     echo GENII_INSTALL_DIR is not set.
@@ -33,7 +33,7 @@ function build_xsede()
   success_sound  
 }
 
-function rebuild_xsede()
+function rebuild_gffs()
 {
   if [ -z "$GENII_INSTALL_DIR" ]; then
     echo GENII_INSTALL_DIR is not set.
@@ -47,14 +47,14 @@ function rebuild_xsede()
     return 1
   fi
   popd
-  build_xsede
+  build_gffs
 }
 
 # a shortcut for doing a new build and creating a bootstrap container with it.
 function rebu_bootstrap()
 {
-  rebuild_xsede 
-  if [ $? -ne 0 ]; then echo "failed to rebuild xsede code"; return 1; fi
+  rebuild_gffs 
+  if [ $? -ne 0 ]; then echo "failed to rebuild gffs code"; return 1; fi
 
   quickstarter="$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
   if [ ! -f "$quickstarter" ]; then
@@ -74,8 +74,8 @@ function rebu_bootstrap()
 # a shortcut for building without a clean, and creating a bootstrap container with the code.
 function bu_bootstrap()
 {
-  build_xsede 
-  if [ $? -ne 0 ]; then echo "failed to rebuild xsede code"; return 1; fi
+  build_gffs 
+  if [ $? -ne 0 ]; then echo "failed to rebuild gffs code"; return 1; fi
 
   quickstarter="$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
   if [ ! -f "$quickstarter" ]; then
