@@ -488,6 +488,48 @@ if [ -z "$skip_all" ]; then
 
   ##############
 
+# new breed of definer functions goes here.  still in progress.
+
+  # defines an alias and remembers that this is a new or modified definition.
+  # if the feisty meow codebase is unloaded, then so are all the aliases that
+  # were defined.
+  function define_yeti_alias()
+  {
+# if alias exists already, save old value for restore,
+# otherwise save null value for restore,
+# have to handle unaliasing if there was no prior value of one
+# we newly defined.
+# add alias name to a list of feisty defined aliases.
+
+#hmmm: first implem, just do the alias and get that working...
+alias "${@}"
+
+
+return 0
+  }
+
+  # defines a variable within the feisty meow environment and remembers that
+  # this is a new or modified definition.  if the feisty meow codebase is
+  # unloaded, then so are all the variables that were defined.
+  # this function always exports the variables it defines.
+  function define_yeti_variable()
+  {
+# if variable exists already, save old value for restore,
+# otherwise save null value for restore,
+# have to handle unsetting if there was no prior value of one
+# we newly defined.
+# add variable name to a list of feisty defined variables.
+
+#hmmm: first implem just sets it up and exports the variable.
+#  i.e., this method always exports.
+export "${@}" 
+
+
+return 0
+  }
+
+  ##############
+
   function function_sentinel() { return 0; }
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo "feisty meow function definitions done."; fi

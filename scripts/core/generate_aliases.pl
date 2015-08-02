@@ -47,7 +47,7 @@ sub make_bash_alias {
 #print "alias became $aliasname\n";
   local($source_dir) = shift(@_);
 #print "bash alias is $aliasname, dir is $source_dir\n";
-  print she "alias $aliasname=\"bash $source_dir/$full_alias.sh\"\n";
+  print she "define_yeti_alias $aliasname=\"bash $source_dir/$full_alias.sh\"\n";
 }
 
 # makes an alias for a perl script given the alias name.
@@ -58,7 +58,7 @@ sub make_perl_alias {
 #print "alias became $aliasname\n";
   local($source_dir) = shift(@_);
 #print "perl alias is $aliasname, dir is $source_dir\n";
-  print she "alias $aliasname=\"perl $source_dir/$full_alias.pl\"\n";
+  print she "define_yeti_alias $aliasname=\"perl $source_dir/$full_alias.pl\"\n";
 }
 
 # given a directory, this returns an array of all the filenames found therein.

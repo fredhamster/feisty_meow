@@ -12,87 +12,87 @@
 # a list of core aliases for feisty meow codebase.
 
 # repurposes certain commands that feisty meow does a little differently.
-alias cls='clear_colormap; clear'
-alias copy='\cp -i -v '
-alias cp='\cp -i -v '
-alias cvs='perl $FEISTY_MEOW_SCRIPTS/rev_control/cvs_fix.pl'
-alias del='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
-alias deltree='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
-alias df='\df -mh'
-alias dir='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
-alias du='\du -h'
-alias erase='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
+define_yeti_alias cls='clear_colormap; clear'
+define_yeti_alias copy='\cp -i -v '
+define_yeti_alias cp='\cp -i -v '
+define_yeti_alias cvs='perl $FEISTY_MEOW_SCRIPTS/rev_control/cvs_fix.pl'
+define_yeti_alias del='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
+define_yeti_alias deltree='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
+define_yeti_alias df='\df -mh'
+define_yeti_alias dir='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
+define_yeti_alias du='\du -h'
+define_yeti_alias erase='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 # elaborate replacement for filesystem explorer command, which we have
 # shortened to "exp".
 if [ "$OS" != "Windows_NT" ]; then
   if [ -n "$IS_DARWIN" ]; then
     # case for mac os x.
-    alias exp='open'
+    define_yeti_alias exp='open'
   elif [ ! -z "$(which nautilus 2>/dev/null)" ]; then
     # we prefer nautilus if available.
-    alias exp='nautilus'
+    define_yeti_alias exp='nautilus'
   else
     # last ditch is konqueror browser.
-    alias exp='konqueror'
+    define_yeti_alias exp='konqueror'
   fi
 else
   # windows gets routed to our helpful script instead.
-  alias exp="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
+  define_yeti_alias exp="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
 fi
 # re-use work we did on 'exp' macro for the longer windows command.
-alias explorer=exp
-alias i=inventory
-alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
-alias ls='ls -HhFC $color_add'
-alias lsd='ls -hl'
-alias md='mkdir'
-alias more='less'
-alias move='mv -i -v '
-alias mv='\mv -i -v '
-alias notepad='gedit'
-alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
-alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
-alias ren='\mv -v -i '
-alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
-alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
-alias s='echo "##############"'
-alias path='echo $PATH'
-alias whence=which
+define_yeti_alias explorer=exp
+define_yeti_alias i=inventory
+define_yeti_alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
+define_yeti_alias ls='ls -HhFC $color_add'
+define_yeti_alias lsd='ls -hl'
+define_yeti_alias md='mkdir'
+define_yeti_alias more='less'
+define_yeti_alias move='mv -i -v '
+define_yeti_alias mv='\mv -i -v '
+define_yeti_alias notepad='gedit'
+define_yeti_alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
+define_yeti_alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
+define_yeti_alias ren='\mv -v -i '
+define_yeti_alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
+define_yeti_alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
+define_yeti_alias s='echo "##############"'
+define_yeti_alias path='echo $PATH'
+define_yeti_alias whence=which
 
 ##############
 
 # some aliases that are just generally nice to have.
-alias aliases=alias
-alias calc='kcalc'
-alias cd..='\cd ..'
-alias cd...='\cd ../..'
-alias cd....='\cd ../../..'
-alias cd.....='\cd ../../../..'
-alias mo='less'
-alias np='gvim'
-alias up='cd ..'
+define_yeti_alias aliases=alias
+define_yeti_alias calc='kcalc'
+define_yeti_alias cd..='\cd ..'
+define_yeti_alias cd...='\cd ../..'
+define_yeti_alias cd....='\cd ../../..'
+define_yeti_alias cd.....='\cd ../../../..'
+define_yeti_alias mo='less'
+define_yeti_alias np='gvim'
+define_yeti_alias up='cd ..'
 
 ##############
 
 # extended aliases for meta-operations.
-alias dvd_rip='vobcopy -m'
-alias blu_rip='echo "what would this command be?"'
-alias mplayer='\mplayer -ao arts'
-alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
+define_yeti_alias dvd_rip='vobcopy -m'
+define_yeti_alias blu_rip='echo "what would this command be?"'
+define_yeti_alias mplayer='\mplayer -ao arts'
+define_yeti_alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 
 ##############
 
 # some really eccentric feisty meow aliases...
 
 # says goodbye when leaving a shell.
-alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
-alias cputemp='acpi -t'
+define_yeti_alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
+define_yeti_alias cputemp='acpi -t'
 # makes root user's home directory's permissions right.
-alias reroot='chown -R root:root /root'
+define_yeti_alias reroot='chown -R root:root /root'
 # yes, these are really helpful...
-alias whoareyou='echo -e "Hello, I am a computer named $(hostname)\nand I'\''m very pleased to meet you."'
-alias whereami='echo whoa dude, try not to think about it...'
-alias why='echo We all wonder what the point of the universe is at times.  If you figure it all out, please write us.'
+define_yeti_alias whoareyou='echo -e "Hello, I am a computer named $(hostname)\nand I'\''m very pleased to meet you."'
+define_yeti_alias whereami='echo whoa dude, try not to think about it...'
+define_yeti_alias why='echo We all wonder what the point of the universe is at times.  If you figure it all out, please write us.'
 
 # done with loading up regular aliases now...
 

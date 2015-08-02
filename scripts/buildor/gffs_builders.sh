@@ -3,7 +3,7 @@
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 #hmmm: if this works well, we can use it in lots of places.
-alias BAIL_ON_FAIL='if [ $? -ne 0 ]; then echo "A problem occurred.  $msg"; return 1; fi'
+define_yeti_alias BAIL_ON_FAIL='if [ $? -ne 0 ]; then echo "A problem occurred.  $msg"; return 1; fi'
 
 function build_gffs()
 {
