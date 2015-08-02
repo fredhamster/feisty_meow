@@ -1,6 +1,12 @@
 
 This is the "feisty meow® concerns" codebase top folder.
 
+This software is licensed *per* *file* using either the GNU General Public
+License (GNU GPL) version 3 *or* the Apache Software License version 2.0.
+If a file does not have a license statement attached and it is part of the
+feisty meow® codebase (rather than attributed to some other author), then the
+default license is the GNU GPL.
+
 For information on building the source code, see the file "building.txt".
 
 ####

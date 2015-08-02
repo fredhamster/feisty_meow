@@ -1,13 +1,29 @@
 
+====
 All of the code in this collection is...
-
   [Copyright (C) 1987-$now by Chris Koeritz et al]
-
 ...unless otherwise marked.
+====
 
-This software is distributed under the terms of the Free Software
-Foundation's General Public License.  A copy of this can be found at:
+====
+The majority of this source code is distributed under the terms of the Free
+Software Foundation's General Public License v3.0.  A copy of this license can
+be found at:
   http://www.gnu.org/licenses/gpl.html
+====
+
+====
+Some of this source code is distributed under the Apache License v2.0.  A copy
+of this license can be found at:
+  http://www.apache.org/licenses/LICENSE-2.0
+====
+
+==> To determine which license is applicable, consult the individual source
+    code files in this collection.  If a file does not include a license,
+    then the default license is the GNU GPL v3.0.
+
+====
 The software has no warranty whatsoever; you are free to use it as needed,
 although we suggest peaceful purposes.
+====
 
