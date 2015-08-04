@@ -13,13 +13,13 @@
 # these need to be as minimal as possible.
 
 # sets the main prompt to a simple default, with user@host.
-export PS1='\u@\h $ ';
+define_yeti_variable PS1='\u@\h $ ';
 # sets the history length and max file size so we can get some long history around here.
-export HISTSIZE=1000000
-export HISTFILESIZE=8000000
+define_yeti_variable HISTSIZE=1000000
+define_yeti_variable HISTFILESIZE=8000000
 
 # make the TERM available to all sub-shells.
-export TERM
+define_yeti_variable TERM
   
 ##############
   
@@ -32,13 +32,13 @@ if [ -z "$NECHUNG" ]; then
   
   # start with some simpler things.
   
-  export SCRIPT_SYSTEM=feisty_meow
+  define_yeti_variable SCRIPT_SYSTEM=feisty_meow
   
   # OS variable records the operating system we think we found.
   if [ -z "$OS" ]; then
-    export OS=UNIX
+    define_yeti_variable OS=UNIX
   fi
-  export IS_DARWIN=$(echo $OSTYPE | grep -i darwin)
+  define_yeti_variable IS_DARWIN=$(echo $OSTYPE | grep -i darwin)
   
   ##############
 
@@ -65,8 +65,8 @@ if [ -z "$NECHUNG" ]; then
   # pulled in from our auto-generated config.
   if [ -z "$FEISTY_MEOW_DIR" ]; then
     if [ -d "$HOME/feisty_meow" ]; then
-      export FEISTY_MEOW_DIR="$HOME/feisty_meow"
-      export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
+      define_yeti_variable FEISTY_MEOW_DIR="$HOME/feisty_meow"
+      define_yeti_variable FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
     fi
   fi
   
@@ -76,7 +76,7 @@ if [ -z "$NECHUNG" ]; then
     # The generated scripts directory is where automatically generated files live.
     # It is separate from the main body of the shell scripts in order to keep things from
     # exploding.
-    export FEISTY_MEOW_GENERATED=$HOME/.zz_auto_gen
+    define_yeti_variable FEISTY_MEOW_GENERATED=$HOME/.zz_auto_gen
   fi
   
   ##############
@@ -99,16 +99,16 @@ if [ -z "$NECHUNG" ]; then
   
   # define a default name, if one wasn't already set.
   if [ -z "$NAME" ]; then
-    export NAME='Unset Q. Namington, Fixley Your Name III'
+    define_yeti_variable NAME='Unset Q. Namington, Fixley Your Name III'
   fi
   
   ##############
   
   # variables for perl.
   
-  export PERLLIB+="/usr/lib/perl5"
+  define_yeti_variable PERLLIB+="/usr/lib/perl5"
   if [ "$OS" == "Windows_NT" ]; then
-    export PERLIO=:perlio
+    define_yeti_variable PERLIO=:perlio
       # choose perl's IO over the ms-windows version so we can handle file
       # bytes properly.
   fi
@@ -129,17 +129,17 @@ if [ -z "$NECHUNG" ]; then
   ##############
   
   # set this so nechung can find its data.
-  export NECHUNG=$FEISTY_MEOW_DIR/infobase/fortunes.dat
+  define_yeti_variable NECHUNG=$FEISTY_MEOW_DIR/infobase/fortunes.dat
   
   # ensure we use the right kind of secure shell.
-#  export CVS_RSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
-#  export GIT_SSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
+#  define_yeti_variable CVS_RSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
+#  define_yeti_variable GIT_SSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
   
   # the base checkout list is just to update feisty_meow.  additional folder
   # names can be added in your customized scripts.  the space at the end of
   # this variable is important and allows users to extend the list like:
-  #    export REPOSITORY_DIR+="muppets configs"
-  export REPOSITORY_LIST="feisty_meow "
+  #    define_yeti_variable REPOSITORY_DIR+="muppets configs"
+  define_yeti_variable REPOSITORY_LIST="feisty_meow "
   
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()
@@ -158,11 +158,11 @@ if [ -z "$NECHUNG" ]; then
     if [ $found_build_vars == 1 ]; then
       # the binary directory contains handy programs we use a lot.  we set
       # up the path to it here based on the operating system.
-      export BINDIR=$FEISTY_MEOW_DIR/production/binaries
+      define_yeti_variable BINDIR=$FEISTY_MEOW_DIR/production/binaries
       # add binaries created within build to the path.
-      export PATH="$(dos_to_unix_path $BINDIR):$PATH"
+      define_yeti_variable PATH="$(dos_to_unix_path $BINDIR):$PATH"
       # Shared libraries are located via this variable.
-      export LD_LIBRARY_PATH="$(dos_to_unix_path $LD_LIBRARY_PATH):$(dos_to_unix_path $BINDIR)"
+      define_yeti_variable LD_LIBRARY_PATH="$(dos_to_unix_path $LD_LIBRARY_PATH):$(dos_to_unix_path $BINDIR)"
     fi
   }
   
@@ -171,7 +171,7 @@ if [ -z "$NECHUNG" ]; then
   # windoze specific patching up missing things.
   
   if [ "$OS" == "Windows_NT" ]; then
-    export HOSTNAME=$(echo $HOSTNAME | tr A-Z a-z)
+    define_yeti_variable HOSTNAME=$(echo $HOSTNAME | tr A-Z a-z)
   fi
   
   ##############
@@ -183,12 +183,12 @@ if [ -z "$NECHUNG" ]; then
   
   # add to the PATH variables used for locating applications.  this step is taken after any
   # potential overrides from the user.
-  export PATH="$(dos_to_unix_path $FEISTY_MEOW_GENERATED):$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
+  define_yeti_variable PATH="$(dos_to_unix_path $FEISTY_MEOW_GENERATED):$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
   
   ##############
 
   # set the SHUNIT_DIR so our shunit tests can find the codebase.
-  export SHUNIT_DIR="$FEISTY_MEOW_SCRIPTS/shunit"
+  define_yeti_variable SHUNIT_DIR="$FEISTY_MEOW_SCRIPTS/shunit"
   
   ##############
   
