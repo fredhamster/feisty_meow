@@ -478,7 +478,11 @@ if [ -z "$skip_all" ]; then
       # we definitely wanted to adjust the case first, rather than doing all
       # the wacky stuff this script does to the filename...  we will capture
       # the output of the replace operaton for reporting.
-      final_name="$(perl "$FEISTY_MEOW_SCRIPTS/files/replace_spaces_with_underscores.sh" "$arg2")"
+      final_name="$(bash "$FEISTY_MEOW_SCRIPTS/files/replace_spaces_with_underscores.sh" "$arg2")"
+      if [ -z "$final_name" ]; then
+        # make sure we report something, if there are no further name changes.
+        final_name="$arg2"
+      fi
       # now zap the intermediate part of the name off.
       final_name="$(echo $final_name | sed -e 's/.*=> //')"
       # printout the combined operation results.
