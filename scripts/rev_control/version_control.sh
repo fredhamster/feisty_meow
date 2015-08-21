@@ -256,7 +256,7 @@ function generate_rev_ctrl_filelist()
 {
   local dir="$1"; shift
   pushd "$dir" &>/dev/null
-  local dirhere="$( \cd "$(\dirname "$dir")" && \pwd )"
+  local dirhere="$( \cd "$(\dirname "$dir")" && /bin/pwd )"
   local tempfile=$(mktemp /tmp/zz_rev_checkin.XXXXXX)
   echo >$tempfile
   find $dirhere -follow -maxdepth 5 -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null

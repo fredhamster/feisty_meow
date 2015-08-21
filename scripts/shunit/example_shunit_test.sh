@@ -5,7 +5,7 @@
 # Author: Chris Koeritz
 # license gnu gpl v3
 
-export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export WORKDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.
 if [[ ! "$0" =~ ^/.* ]]; then
   # re-run the script with an absolute path if it didn't start out that way; otherwise,
   # shunit is not happy with finding the script.

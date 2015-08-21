@@ -9,7 +9,7 @@
 # startup.  that can be added manually by editing your .bashrc file.
 # read the examples/feisty_meow_startup/bashrc_user file for more details.
 
-ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && \pwd )"
+ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && /bin/pwd )"
 CORE_SCRIPTS_DIR="$(echo "$ORIGINATING_FOLDER" | tr '\\\\' '/' )"
 THIS_TOOL_NAME="$(basename "$0")"
 
@@ -17,7 +17,9 @@ THIS_TOOL_NAME="$(basename "$0")"
 pushd "$CORE_SCRIPTS_DIR/../.." &>/dev/null
 source "$CORE_SCRIPTS_DIR/functions.sh"
 
-export FEISTY_MEOW_DIR="$(\pwd)"
+#echo originating folder is $ORIGINATING_FOLDER
+export FEISTY_MEOW_DIR="$(/bin/pwd)"
+#echo feisty now is FEISTY_MEOW_DIR=$FEISTY_MEOW_DIR
 
 # repetitive bit stolen from variables.  should make a file out of this somehow.
 IS_DOS=$(uname | grep -i ming)

@@ -30,7 +30,7 @@ export PATH=/bin:$PATH
 export INCLUDED_FROM_BOOTSTRAP=true
 
 # pull in our build variables using the path to this script.
-export BUILD_SCRIPTS_DIR="$( \cd "$(\dirname "$0")" && \pwd )"
+export BUILD_SCRIPTS_DIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"
 #echo build scripts dir initial value: $BUILD_SCRIPTS_DIR
 BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
 #echo build scripts dir after chewing: $BUILD_SCRIPTS_DIR

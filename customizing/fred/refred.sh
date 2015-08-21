@@ -10,7 +10,7 @@ function refred()
 # this block should execute when the script is actually run, rather
 # than when it's just being sourced.
 if [[ $0 =~ .*refred\.sh.* ]]; then
-  THISDIR="$( \cd "$(\dirname "$0")" && \pwd )"
+  THISDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"
   export LIGHTWEIGHT_INIT=true
   source "$THISDIR/../../scripts/core/launch_feisty_meow.sh"
   refred
