@@ -110,13 +110,16 @@ analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes"
 analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes"
 
 # scan all the items declared as active projects.
-analyze_by_dir_patterns "active items" ~/cloud/*active*
+analyze_by_dir_patterns "active items" ~/cloud/active*
 
 # scan across all appropriately named project or research folders that live in the "cloud".
-analyze_by_dir_patterns "project files" ~/cloud/*project* ~/cloud/*research*
+analyze_by_dir_patterns "project files" ~/cloud/project* ~/cloud/research*
+
+# snag any work related items for that category.
+analyze_by_dir_patterns "job and work tasks" ~/cloud/job* 
 
 # scan all the trivial project folders.
-analyze_by_dir_patterns "trivial items" ~/cloud/*trivia*
+analyze_by_dir_patterns "trivial items" ~/cloud/trivia*
 
 # source examples need to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.
