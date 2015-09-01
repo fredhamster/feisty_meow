@@ -516,21 +516,21 @@ return 0
   # this is a new or modified definition.  if the feisty meow codebase is
   # unloaded, then so are all the variables that were defined.
   # this function always exports the variables it defines.
-  function define_yeti_variable()
-  {
-# if variable exists already, save old value for restore,
-# otherwise save null value for restore,
-# have to handle unsetting if there was no prior value of one
-# we newly defined.
-# add variable name to a list of feisty defined variables.
-
-#hmmm: first implem just sets it up and exports the variable.
-#  i.e., this method always exports.
-export "${@}" 
-
-
-return 0
-  }
+#  function define_yeti_variable()
+#  {
+## if variable exists already, save old value for restore,
+## otherwise save null value for restore,
+## have to handle unsetting if there was no prior value of one
+## we newly defined.
+## add variable name to a list of feisty defined variables.
+#
+##hmmm: first implem just sets it up and exports the variable.
+##  i.e., this method always exports.
+#export "${@}" 
+#
+#
+#return 0
+#  }
 
   ##############
 
