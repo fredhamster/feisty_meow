@@ -481,7 +481,7 @@ if [ -z "$skip_all" ]; then
       final_name="$(bash "$FEISTY_MEOW_SCRIPTS/files/replace_spaces_with_underscores.sh" "$arg2")"
       if [ -z "$final_name" ]; then
         # make sure we report something, if there are no further name changes.
-        final_name="$arg2"
+        final_name="'$arg2'"
       fi
       # now zap the intermediate part of the name off.
       final_name="$(echo $final_name | sed -e 's/.*=> //')"
