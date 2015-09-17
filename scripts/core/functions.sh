@@ -470,21 +470,28 @@ if [ -z "$skip_all" ]; then
         echo "failure to find a file or directory named '$arg'."
         continue
       fi
-      # first we rename the file to be lower case.
-      perl $FEISTY_MEOW_SCRIPTS/files/renlower.pl "$arg" &>/dev/null
-      # oops, now the name is all lower-case.  we need to make the
-      # same adjustment.
-      arg2="$(echo "$arg" | tr A-Z a-z)"
-      # we definitely wanted to adjust the case first, rather than doing all
-      # the wacky stuff this script does to the filename...  we will capture
-      # the output of the replace operaton for reporting.
-      final_name="$(bash "$FEISTY_MEOW_SCRIPTS/files/replace_spaces_with_underscores.sh" "$arg2")"
-      if [ -z "$final_name" ]; then
+
+      # first we will capture the output of the character replacement operation for reporting.
+      # this is done first since some filenames can't be properly renamed in perl (e.g. if they
+      # have pipe characters apparently).
+      intermediate_name="$(bash "$FEISTY_MEOW_SCRIPTS/files/replace_spaces_with_underscores.sh" "$arg")"
+      if [ -z "$intermediate_name" ]; then
         # make sure we report something, if there are no further name changes.
-        final_name="'$arg2'"
+        intermediate_name="'$arg'"
+      else 
+        # now zap the first part of the name off (since original name isn't needed).
+        intermediate_name="$(echo $intermediate_name | sed -e 's/.*=> //')"
       fi
-      # now zap the intermediate part of the name off.
-      final_name="$(echo $final_name | sed -e 's/.*=> //')"
+
+      # first we rename the file to be lower case.
+      actual_file="$(echo $intermediate_name | sed -e "s/'\([^']*\)'/\1/")"
+      final_name="$(perl $FEISTY_MEOW_SCRIPTS/files/renlower.pl "$actual_file")"
+      if [ -z "$final_name" ]; then
+        final_name="'$intermediate_name'"
+      else
+        final_name="$(echo $final_name | sed -e 's/.*=> //')"
+      fi
+
       # printout the combined operation results.
       echo "'$arg' => $final_name"
     done
