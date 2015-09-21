@@ -24,7 +24,7 @@ function build_gffs()
 #    echo GENII_INSTALL_DIR is not set.
 #    return 1
 #  fi
-  zapem
+  #zapem
   pushd "$GENII_INSTALL_DIR"
   if [ $? -ne 0 ]; then
     error_sound
@@ -54,7 +54,7 @@ function rebuild_gffs()
 #    echo GENII_INSTALL_DIR is not set.
 #    return 1
 #  fi
-  zapem
+  #zapem
   pushd "$GENII_INSTALL_DIR"
   ant clean
 
