@@ -8,8 +8,8 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Chris Koeritz
  * @copyright Copyright (c) 2010-$now By Feisty Meow Concerns Ltd.
- * @license This file is free software; you can modify and redistribute it under the terms of the
- *          Apache License v2.0: http://www.apache.org/licenses/LICENSE-2.0
+ * @license This file is free software; you can modify and redistribute it under the terms of the Apache License v2.0:
+ *          http://www.apache.org/licenses/LICENSE-2.0
  */
 public abstract class ethread implements Runnable
 {
@@ -27,16 +27,15 @@ public abstract class ethread implements Runnable
 	final long SNOOZE_PERIOD = 20;
 
 	/**
-	 * creates a new single-shot ethread without starting it. this type of thread will run just
-	 * once.
+	 * creates a new single-shot ethread without starting it. this type of thread will run just once.
 	 */
 	public ethread()
 	{
 	}
 
 	/**
-	 * creates a new periodic ethread without starting it. this type of thread runs every "period"
-	 * milliseconds until stopped or until the performActivity method returns false.
+	 * creates a new periodic ethread without starting it. this type of thread runs every "period" milliseconds until stopped or until the
+	 * performActivity method returns false.
 	 */
 	public ethread(long period)
 	{
@@ -44,12 +43,10 @@ public abstract class ethread implements Runnable
 	}
 
 	/**
-	 * this is the main function that derived classes must implement. it does the actual work that
-	 * the thread is intended to perform. note that the derived version must not do anything to
-	 * cause the thread to be ripped out while performActivity is still being invoked. the return
-	 * value should be true if the thread can continue executing. this is meaningless for single
-	 * shot threads executed via runOnce, but matters for the periodic threads started with
-	 * runPeriodic.
+	 * this is the main function that derived classes must implement. it does the actual work that the thread is intended to perform. note
+	 * that the derived version must not do anything to cause the thread to be ripped out while performActivity is still being invoked. the
+	 * return value should be true if the thread can continue executing. this is meaningless for single shot threads executed via runOnce, but
+	 * matters for the periodic threads started with runPeriodic.
 	 */
 	abstract public boolean performActivity();
 
@@ -102,7 +99,7 @@ public abstract class ethread implements Runnable
 	}
 
 	/**
-	 * Returns true if the thread object is still alive.  this does not necessarily mean it is currently active.
+	 * Returns true if the thread object is still alive. this does not necessarily mean it is currently active.
 	 */
 	public boolean threadAlive()
 	{
@@ -122,8 +119,8 @@ public abstract class ethread implements Runnable
 	}
 
 	/**
-	 * this is the override from Runnable that allows us to call our own performActivity method.
-	 * implementors should not override this; they should override performActivity instead.
+	 * this is the override from Runnable that allows us to call our own performActivity method. implementors should not override this; they
+	 * should override performActivity instead.
 	 */
 	@Override
 	public void run()
@@ -135,7 +132,8 @@ public abstract class ethread implements Runnable
 			while (true) {
 				boolean keepGoing = performActivity();
 				if (!keepGoing) {
-					c_logger.debug("thread returned false for single shot thread.  just saying.");
+					c_logger.debug("thread returned false, signifying it wants to exit.  now dropping it.");
+					break;
 				}
 				if (c_period == 0) {
 					// not a periodic thread, so we're done now.
@@ -156,5 +154,8 @@ public abstract class ethread implements Runnable
 		} catch (Throwable t) {
 			c_logger.info("exception thrown from performActivity: " + t.getLocalizedMessage(), t);
 		}
+		// reset the thread held since we're leaving right now.
+		c_stopThread = true;
+		c_RealThread = null;
 	}
 }
