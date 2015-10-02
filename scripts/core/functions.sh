@@ -281,10 +281,12 @@ if [ -z "$skip_all" ]; then
     fi
   }
   
-  # switches from an X:/ form to an /X/path form.
+  # switches from an X:/ form to a /cygdrive/X/path form.  this is only useful
+  # for the cygwin environment currently.
   function dos_to_unix_path() {
     # we always remove dos slashes in favor of forward slashes.
-    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
+#old:    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
+         echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/cygdrive\/\1\/\2/'
   }
 
   # returns a successful value (0) if this system is debian or ubuntu.
