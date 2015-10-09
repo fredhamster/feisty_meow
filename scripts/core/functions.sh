@@ -489,7 +489,7 @@ if [ -z "$skip_all" ]; then
       actual_file="$(echo $intermediate_name | sed -e "s/'\([^']*\)'/\1/")"
       final_name="$(perl $FEISTY_MEOW_SCRIPTS/files/renlower.pl "$actual_file")"
       if [ -z "$final_name" ]; then
-        final_name="'$intermediate_name'"
+        final_name="$intermediate_name"
       else
         final_name="$(echo $final_name | sed -e 's/.*=> //')"
       fi
