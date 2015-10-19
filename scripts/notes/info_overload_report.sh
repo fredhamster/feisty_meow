@@ -1,7 +1,7 @@
 
 # these metrics are how bogged down we are in to-do type items.
 
-REPORT_FILE="$HOME/cloud/overload_history.txt"
+REPORT_FILE="$HOME/cloud/fred_stats/overload_history.txt"
 
 # given a path, this will find how many items are under it, ignoring svn and git files, plus
 # other patterns we happen to notice are not useful.
