@@ -1,0 +1,15 @@
+
+# rips the dvd off of the current dvd drive.  this produces the ripped copy
+# in a folder named after the dvd.
+dvd_rip 
+
+# makes an ISO image from a ripped dvd folder.  the ISO can then be burned
+# to a disc using k3b or other tools.
+dvd_image walnuts.iso WALNUTS_MOVIE
+
+# create an ISO image from a set of files.
+blu_image farples.iso directoryToEnshrine
+
+# burn an ISO image onto a bluray drive.
+blu_burn farples.iso /dev/sr1
+
