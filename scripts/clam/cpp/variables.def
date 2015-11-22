@@ -463,7 +463,7 @@ ifeq "$(COMPILER)" "GNU_LINUX"
   DEFINITIONS += _FILE_OFFSET_BITS=64 
 
   DEPENDENCY_DEFINITIONS += NO_VERSION
-  DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(COMPILER_VERSION) -X/usr/include/c++/$(COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i686-linux-gnu/$(COMPILER_VERSION)/include -X/usr/lib/gcc/x86_64-linux-gnu/$(COMPILER_VERION)/include -X/usr/include/x86_64-linux-gnu
+  DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(COMPILER_VERSION) -X/usr/include/c++/$(COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i686-linux-gnu/$(COMPILER_VERSION)/include -X/usr/lib/gcc/x86_64-linux-gnu/$(COMPILER_VERION)/include -X/usr/include/x86_64-linux-gnu -X/usr/include/i386-linux-gnu
 
   # "USE_XWIN" specifies that this project needs X window system support.
   #USE_XWIN =
