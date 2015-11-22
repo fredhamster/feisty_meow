@@ -37,7 +37,9 @@ fi
 
 # decide whether they've got splitter available or not.
 if [ -f "$BINDIR/splitter" -o -f "$BINDIR/splitter.exe" ]; then
-  splitter="$BINDIR/splitter --maxcol $(($COLUMNS - 1))"
+  # calculate the number of columsn in the terminal.
+  cols=$(stty size | awk '{print $2}')
+  splitter="$BINDIR/splitter --maxcol $(($cols - 1))"
 else
   # not available, so just emit as huge overly long string.
   splitter="cat"
