@@ -65,7 +65,7 @@ Any filenames on the command line are split and sent to standard output.\n\
 The following options change how the splitting is performed:\n\
    --help or -?\tShow this help information.\n\
    --mincol N\tMinimum column to use for output.\n\
-   --maxcol N\tMinimum column to use for output.\n\
+   --maxcol N\tMaximum column to use for output.\n\
 "));
   return -3;
 }
@@ -77,11 +77,19 @@ int splitter_app::execute()
   // retrieve any specific flags first.
   astring temp;
   int min_col = 0;
-  if (cmds.get_value("mincol", temp))
+  int min_indy = 0;
+//hmmm: this whole thing is annoying.  we need a better way to have a list of parms.
+  if (cmds.find("mincol", min_indy)) {
+    cmds.get_value("mincol", temp);
     min_col = temp.convert(min_col);
-  int max_col = 77;
-  if (cmds.get_value("maxcol", temp))
+  }
+  int max_col = 78;
+  int max_indy = 0;
+  if (cmds.find("maxcol", max_indy)) {
+    cmds.get_value("maxcol", temp);
     max_col = temp.convert(max_col);
+  }
+//printf("got max_col=%d\n", max_col);
   // look for help command.
   int junk_index = 0;
   if (cmds.find("help", junk_index, false)
@@ -92,12 +100,16 @@ int splitter_app::execute()
     return 0;
   }
 
+  int skip_index = basis::maximum(min_indy, max_indy);
+  skip_index += 2;
+//printf("got a skip index of %d\n", skip_index);
+
   // gather extra input files.
   string_set input_files;
-  for (int i = 0; i < cmds.entries(); i++) {
+  for (int i = skip_index; i < cmds.entries(); i++) {
     const command_parameter &curr = cmds.get(i);
     if (curr.type() == command_parameter::VALUE) {
-//log(astring("adding input file:") + curr.text());
+log(astring("adding input file:") + curr.text());
       input_files += curr.text();
     }
   }
@@ -112,7 +124,6 @@ int splitter_app::execute()
       if (!num_chars) continue;
 //printf("line len=%d, cont=%s\n", line_read.length(), line_read.s());
       accumulator += line_read;
-////      accumulator += '\n';
     }
   }
 
@@ -124,7 +135,6 @@ int splitter_app::execute()
       if (!got) break;
 //printf("line=%s\n", got);
       accumulator += got;
-////      accumulator += '\n';
     }
   }
 //printf("splitting accum with %d chars...\n", accumulator.length());

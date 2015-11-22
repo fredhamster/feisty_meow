@@ -25,6 +25,9 @@
 #include <textual/parser_bits.h>
 #include <loggers/program_wide_logger.h>
 
+#include <stdio.h>
+//temp
+
 #undef LOG
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
@@ -367,6 +370,7 @@ LOG(astring("found option string with dash!  string is: ") + option_string);
 bool command_line::get_value(char option_character, astring &value,
     bool case_sense) const
 {
+  FUNCDEF("get_value");
   value = "";
   int posn = 0;  // where we find the flag.
   if (!find(option_character, posn, case_sense)) return false;
@@ -394,17 +398,21 @@ LOG(astring("found option string with dash!  string is: ") + option_string);
   value = "";
   int posn = 0;  // where we find the flag.
   if (!find(option_string, posn, case_sense)) return false;
+//printf("found the flag! at %d\n", posn);
 
   // get the value after the flag, if there is such.
   posn++;  // this is where we think our flag's value lives.
   if (posn >= entries()) return false;
+//printf("next posn is still okay at %d\n", posn);
 
   // there's still an entry after where we found our flag; grab it.
   command_parameter cp = get(posn);
+//printf("comm parm has text %s\n", cp.text().s());
   if (cp.type() != command_parameter::VALUE) return false;
 
   // finally; we've found an appropriate text value.
   value = cp.text();
+//printf("assigning value %s\n", value.s());
   return true;
 }
 

@@ -222,11 +222,11 @@ void string_manipulation::split_lines(const astring &input_in, astring &output,
 
     // check that we're still in bounds.
     int chars_added = next_break - j + 1;
-    if (col + chars_added + punct_adder > max_column + 1) {
+    if (col + chars_added + punct_adder > max_column) {
       // we need to break before the next breakable character.
       break_line = true;
       just_had_break = true;
-      if (col + chars_added <= max_column + 1) {
+      if (col + chars_added <= max_column) {
         // it will fit without the punctuation spaces, which is fine since
         // it should be the end of the line.
         invisible = false;
@@ -234,7 +234,7 @@ void string_manipulation::split_lines(const astring &input_in, astring &output,
         end_sentence = false;
         punct_adder = 0;
         keep_on_line = true;
-      } else if (min_column + chars_added > max_column + 1) {
+      } else if (min_column + chars_added > max_column) {
         // this word won't ever fit unless we break it.
         int chars_left = max_column - col + 1;
           // remember to take out room for the dash also.

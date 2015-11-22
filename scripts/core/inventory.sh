@@ -37,7 +37,7 @@ fi
 
 # decide whether they've got splitter available or not.
 if [ -f "$BINDIR/splitter" -o -f "$BINDIR/splitter.exe" ]; then
-  splitter="$BINDIR/splitter"
+  splitter="$BINDIR/splitter --maxcol $(($COLUMNS - 1))"
 else
   # not available, so just emit as huge overly long string.
   splitter="cat"
