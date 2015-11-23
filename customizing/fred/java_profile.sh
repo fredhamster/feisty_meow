@@ -23,7 +23,7 @@ function intuition_failure()
 ############################
 
 # set some fairly liberal limits for ant.
-export ANT_OPTS="-Xms512m -Xmx768m -XX:MaxPermSize=768m"
+#no. export ANT_OPTS="-Xms512m -Xmx768m -XX:MaxPermSize=768m"
 
 ############################
 
