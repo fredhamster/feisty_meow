@@ -77,14 +77,14 @@ int splitter_app::execute()
   // retrieve any specific flags first.
   astring temp;
   int min_col = 0;
-  int min_indy = 0;
+  int min_indy = -1;
 //hmmm: this whole thing is annoying.  we need a better way to have a list of parms.
   if (cmds.find("mincol", min_indy)) {
     cmds.get_value("mincol", temp);
     min_col = temp.convert(min_col);
   }
   int max_col = 78;
-  int max_indy = 0;
+  int max_indy = -1;
   if (cmds.find("maxcol", max_indy)) {
     cmds.get_value("maxcol", temp);
     max_col = temp.convert(max_col);
@@ -100,8 +100,13 @@ int splitter_app::execute()
     return 0;
   }
 
-  int skip_index = basis::maximum(min_indy, max_indy);
-  skip_index += 2;
+  // see if we found any flags that would make us skip some of the parameters.
+//hmmm: automate this!
+  int skip_index = 0;
+  if ( (min_indy >= 0) || (max_indy >= 0) ) {
+    skip_index = basis::maximum(min_indy, max_indy);
+    skip_index += 2;
+  }
 //printf("got a skip index of %d\n", skip_index);
 
   // gather extra input files.

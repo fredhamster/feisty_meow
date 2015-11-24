@@ -3,6 +3,9 @@
 # these are helper functions for doing localized revision control.
 # this script should be sourced into other scripts that use it.
 
+# the maximum depth that the recursive functions will try to go below the starting directory.
+export MAX_DEPTH=5
+
 #hmmm: re-address this code, since it doesn't make a lot of sense to me right now...
 # one unpleasantry to take care of first; cygwin barfs aggressively if the TMP directory
 # is a DOS path, but we need it to be a DOS path for our GFFS testing, so that blows.
@@ -259,8 +262,8 @@ function generate_rev_ctrl_filelist()
   local dirhere="$( \cd "$(\dirname "$dir")" && /bin/pwd )"
   local tempfile=$(mktemp /tmp/zz_rev_checkin.XXXXXX)
   echo >$tempfile
-  find $dirhere -follow -maxdepth 5 -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
-  find $dirhere -follow -maxdepth 5 -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
   local sortfile=$(mktemp /tmp/zz_rev_checkin_sort.XXXXXX)
