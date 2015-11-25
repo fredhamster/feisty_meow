@@ -114,7 +114,7 @@ int splitter_app::execute()
   for (int i = skip_index; i < cmds.entries(); i++) {
     const command_parameter &curr = cmds.get(i);
     if (curr.type() == command_parameter::VALUE) {
-log(astring("adding input file:") + curr.text());
+//log(astring("adding input file:") + curr.text());
       input_files += curr.text();
     }
   }
