@@ -1,13 +1,11 @@
 
-# this script is for normal users running bash (not the root user).
-# it can be added to your ~/.bashrc file to automatically load the feisty
-# meow script environment.
+# when added to ~/.bashrc, this code initializes the feisty meow environment
+# for "normal" users (not intended for the root user).
 
-### this should be set to your name...
-export NAME='Frunkooleon Q. Grendervasp'
+export NAME='Frunkooleon Q. GrendervaspPleaseChangeThis'
 
+# sets up the feisty_meow scripts if appropriate for the environment.
 if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
-  # sets up the feisty_meow scripts.
   source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
 fi
 

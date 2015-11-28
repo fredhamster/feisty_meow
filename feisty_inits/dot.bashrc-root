@@ -1,6 +1,4 @@
 
-# this file can be added to root's ~/.bashrc...
-# it provides the "fredme" macro that enables all the feisty_meow tools.
-
+# the "fredme" macro enables the feisty_meow environment.
 alias fredme='source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh'
 
