@@ -36,7 +36,7 @@ echo "Getting repositories at: $(date)"
 
 # perform the checkouts as appropriate per OS.
 if [ "$OS" != "Windows_NT" ]; then
-  checkout_list $HOME 2>&1 | tee -a "$TMPO_CHK"
+  checkout_list $HOME /usr/local 2>&1 | tee -a "$TMPO_CHK"
 else
   checkout_list $HOME c:/ d:/ e:/ 2>&1 | tee -a "$TMPO_CHK"
 fi

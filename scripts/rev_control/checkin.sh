@@ -9,7 +9,7 @@ echo "Committing repositories at: $(date)"
 
 if [ "$OS" != "Windows_NT" ]; then
   # first get individual folders.
-  checkin_list $HOME
+  checkin_list $HOME /usr/local
 else
   checkin_list $HOME c:/ d:/ e:/ 
 fi
