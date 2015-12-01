@@ -35,7 +35,7 @@ function whack_single_build_area()
 #*** hmmm: above is wrong place now!
   local TEMPORARIES_DIR="$CLEANING_TOP/temporaries"
 
-  # kerzap.
+  # kerzap.  the few cleanups in production directory remove older locations of generated files.
   rm -rf \
     "$FEISTY_MEOW_DIR/generatedJUnitFiles" \
     "$CLEANING_TOP/binaries" \
@@ -45,7 +45,12 @@ function whack_single_build_area()
     "$TEMPORARIES_DIR" \
     "$GENERATED_DIR" \
     "$CLEANING_TOP/__build_"*.h \
-    "$CLEANING_TOP/manifest.txt" 
+    "$CLEANING_TOP/manifest.txt" \
+    "$PRODUCTION_DIR/clam_bin" \
+    "$PRODUCTION_DIR/binaries" \
+    "$PRODUCTION_DIR/install" \
+    "$PRODUCTION_DIR/logs" \
+    "$PRODUCTION_DIR/waste" 
 
 #  echo $(date): "  cleaning generated files in source hierarchy..."
 
