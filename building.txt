@@ -21,7 +21,7 @@ Quick Start for the Feisty Meow Codebase:
 
     bash ~/feisty_meow/scripts/generator/bootstrap_build.sh
 
-    All the applications can be found in ~/feisty_meow/production/binaries
+    All the applications can be found in $BINDIR
     after the build is complete.
 
   Cleaning the Codebase:

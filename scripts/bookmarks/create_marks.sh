@@ -21,25 +21,25 @@ if [ -f $newmarx ]; then rm $newmarx; fi
 if [ -f $genlinx_js ]; then rm $genlinx_js; fi
 if [ -f $genlinx_moz ]; then rm $genlinx_moz; fi
 
-$PRODUCTION_DIR/binaries/marks_sorter -i $GRUNTOSE_DIR/Info/Twain/links_db.csv -o $newmarx
+$RUNTIME_DIR/binaries/marks_sorter -i $GRUNTOSE_DIR/Info/Twain/links_db.csv -o $newmarx
 if [ $? != 0 ]; then
   echo error during sorting of the bookmarks.
   exit 1
 fi
 
-$PRODUCTION_DIR/binaries/marks_maker -i $GRUNTOSE_DIR/Info/Twain/links_db.csv -t $GRUNTOSE_DIR/Info/Twain/marks_template.html -o $genlinx -s human
+$RUNTIME_DIR/binaries/marks_maker -i $GRUNTOSE_DIR/Info/Twain/links_db.csv -t $GRUNTOSE_DIR/Info/Twain/marks_template.html -o $genlinx -s human
 if [ $? != 0 ]; then
   echo error during creation of the normal web page of bookmarks.
   exit 1
 fi
 
-$PRODUCTION_DIR/binaries/marks_maker -i $GRUNTOSE_DIR/Info/Twain/links_db.csv -t $GRUNTOSE_DIR/Info/Twain/marks_template.html -o $genlinx_moz -s mozilla
+$RUNTIME_DIR/binaries/marks_maker -i $GRUNTOSE_DIR/Info/Twain/links_db.csv -t $GRUNTOSE_DIR/Info/Twain/marks_template.html -o $genlinx_moz -s mozilla
 if [ $? != 0 ]; then
   echo error during creation of the mozilla format page of bookmarks.
   exit 1
 fi
 
-$PRODUCTION_DIR/binaries/js_marks_maker -i $GRUNTOSE_DIR/Info/Twain/links_db.csv -t $GRUNTOSE_DIR/Info/Twain/js_template.html -o $genlinx_js
+$RUNTIME_DIR/binaries/js_marks_maker -i $GRUNTOSE_DIR/Info/Twain/links_db.csv -t $GRUNTOSE_DIR/Info/Twain/js_template.html -o $genlinx_js
 if [ $? != 0 ]; then
   echo error during creation of the javascript bookmark page.
   exit 1

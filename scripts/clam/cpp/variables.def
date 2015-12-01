@@ -11,7 +11,7 @@ ifneq "$(BUILD_PARAMETER_FILE)" ""
 endif
 ifeq "$(PARAMETER_FILE)" ""
   # last ditch attempt to get one that will work.
-  export PARAMETER_FILE = $(PRODUCTION_DIR)/build.ini
+  export PARAMETER_FILE = $(PRODUCTION_DIR)/feisty_meow_config.ini
 endif
 
 ###############################################################################
@@ -31,7 +31,7 @@ include variables.def
 #  endif
 #endif
 
-#export CLAM_BIN = $(CLAM_DIR)/../bin
+#export CLAM_BINARY_DIR = $(CLAM_DIR)/../bin
 
 ###############################################################################
 

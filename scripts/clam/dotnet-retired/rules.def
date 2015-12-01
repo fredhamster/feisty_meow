@@ -207,7 +207,7 @@ ifeq "$(OMIT_VERSIONS)" ""
   ifneq "$(VERSION_RC_ROOT)" ""
 # only redo the version resource if it or version.ini is out of date.
 %_version.rc: version.ini $(PARAMETER_FILE)
-	$(CATCHER)$(CLAM_BIN)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
+	$(CATCHER)$(CLAM_BINARY_DIR)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
   endif
 endif
 

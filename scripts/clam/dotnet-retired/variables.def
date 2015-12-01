@@ -9,7 +9,7 @@ include variables.def
 
 ###############################################################################
 
-CLAM_BIN = $(CLAM_DIR)/../bin
+#CLAM_BINARY_DIR = $(CLAM_DIR)/../bin
 
 ###############################################################################
 
@@ -384,7 +384,7 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
   TLBEXPORT = $(COMPILER_ROOT_DIR)/../SDK/v$(SHORT_FRAMEWORK_VERSION)/bin/tlbexp$(EXE_END)
 
   # calculate the visual studio root directory.
-  export VIS_STU_ROOT := $(shell $(SHELL) $(CLAM_DIR)/cpp/ms_root_dir.sh $(CLAM_BIN) )
+  export VIS_STU_ROOT := $(shell $(SHELL) $(CLAM_DIR)/cpp/ms_root_dir.sh $(CLAM_BINARY_DIR) )
   ifneq "$(VIS_STU_ROOT)" ""
     COMPILER_ROOT_DIR = $(VIS_STU_ROOT)/vc#
   endif

@@ -56,13 +56,13 @@ source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variabl
 function prepare_binaries_dir()
 {
   # we'll store binaries here from the bootstrap process.
-  if [ ! -d "$BINARY_DIR" ]; then
-    echo "creating binary dir now in $BINARY_DIR"
-    mkdir "$BINARY_DIR"
+  if [ ! -d "$CLAM_BINARY_DIR" ]; then
+    echo "creating binary dir now in $CLAM_BINARY_DIR"
+    mkdir "$CLAM_BINARY_DIR"
   fi
-  if [ ! -f "$BINARY_DIR/paths.ini" ]; then
+  if [ ! -f "$CLAM_BINARY_DIR/paths.ini" ]; then
     echo "copied paths.ini to binary dir."
-    cp "$PRODUCTION_DIR/paths.ini" "$BINARY_DIR"
+    cp "$PRODUCTION_DIR/paths.ini" "$CLAM_BINARY_DIR"
   fi
 }
 
@@ -136,9 +136,9 @@ if [ "$OPERATING_SYSTEM" = "UNIX" ]; then
       echo "Failed to build the application $1--quitting now."
       exit 1892
     fi
-    cp "$INTERMEDIATE_EXE_DIR/$1" "$BINARY_DIR/$1"
-    strip "$BINARY_DIR/$1"
-    chmod 755 "$BINARY_DIR/$1"
+    cp "$INTERMEDIATE_EXE_DIR/$1" "$CLAM_BINARY_DIR/$1"
+    strip "$CLAM_BINARY_DIR/$1"
+    chmod 755 "$CLAM_BINARY_DIR/$1"
   }
 elif [ "$OPERATING_SYSTEM" = "WIN32" ]; then
   function promote {
@@ -148,8 +148,8 @@ elif [ "$OPERATING_SYSTEM" = "WIN32" ]; then
       echo "Failed to build the application $1.exe--quitting now."
       exit 1892
     fi
-    cp "$INTERMEDIATE_EXE_DIR/$1.exe" "$BINARY_DIR"
-    chmod 755 "$BINARY_DIR/$1.exe"
+    cp "$INTERMEDIATE_EXE_DIR/$1.exe" "$CLAM_BINARY_DIR"
+    chmod 755 "$CLAM_BINARY_DIR/$1.exe"
   }
 else
   echo "The OPERATING_SYSTEM variable is unset or unknown.  Bailing out."
@@ -160,7 +160,7 @@ fi
 
 # start the actual build process now...
 
-# recreate our useful waste directories and other things...
+# load in the feisty meow building environment.
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
 
 # clean out any current contents.
@@ -173,7 +173,7 @@ toolset_names=(makedep value_tagger version_stamper vsts_version_fixer write_bui
 
 if [ -z "$SAVE_BINARIES" ]; then
   for i in ${toolset_names[*]}; do
-    whack_name="$BINARY_DIR/$i$EXE_ENDING"
+    whack_name="$CLAM_BINARY_DIR/$i$EXE_ENDING"
 #echo removing "$whack_name"
     rm -f "$whack_name"
   done
@@ -186,7 +186,7 @@ chmod 755 "$CLAM_DIR"/cpp/*.sh
 
 # rebuild the dependency tool.  needed by everything, pretty much, but
 # since it's from the xfree project, it doesn't need any of our libraries.
-if [ ! -f "$BINARY_DIR/makedep$EXE_ENDING" ]; then
+if [ ! -f "$CLAM_BINARY_DIR/makedep$EXE_ENDING" ]; then
   pushd "$TOOL_SOURCES/dependency_tool" &>/dev/null
   make_code pre_compilation NO_DEPS=t OMIT_VERSIONS=t
   make_code NO_DEPS=t OMIT_VERSIONS=t
@@ -203,10 +203,10 @@ if [ ! -f "$BINARY_DIR/makedep$EXE_ENDING" ]; then
 fi
 
 # rebuild the version tools and other support apps.
-if [ ! -f "$BINARY_DIR/value_tagger$EXE_ENDING" \
-    -o ! -f "$BINARY_DIR/version_stamper$EXE_ENDING" \
-    -o ! -f "$BINARY_DIR/vsts_version_fixer$EXE_ENDING" \
-    -o ! -f "$BINARY_DIR/write_build_config$EXE_ENDING" ]; then
+if [ ! -f "$CLAM_BINARY_DIR/value_tagger$EXE_ENDING" \
+    -o ! -f "$CLAM_BINARY_DIR/version_stamper$EXE_ENDING" \
+    -o ! -f "$CLAM_BINARY_DIR/vsts_version_fixer$EXE_ENDING" \
+    -o ! -f "$CLAM_BINARY_DIR/write_build_config$EXE_ENDING" ]; then
   pushd "$TOOL_SOURCES/clam_tools" &>/dev/null
   make_code pre_compilation OMIT_VERSIONS=t
   make_code OMIT_VERSIONS=t
@@ -230,11 +230,11 @@ if [ ! -f "$BINARY_DIR/value_tagger$EXE_ENDING" \
 fi
 
 # build a few other utilities.
-if [ ! -f "$BINARY_DIR/short_path$EXE_ENDING" \
-    -o ! -f "$BINARY_DIR/sleep_ms$EXE_ENDING" \
-    -o ! -f "$BINARY_DIR/create_guid$EXE_ENDING" \
-    -o ! -f "$BINARY_DIR/zap_process$EXE_ENDING" \
-    -o ! -f "$BINARY_DIR/playsound$EXE_ENDING" ]; then
+if [ ! -f "$CLAM_BINARY_DIR/short_path$EXE_ENDING" \
+    -o ! -f "$CLAM_BINARY_DIR/sleep_ms$EXE_ENDING" \
+    -o ! -f "$CLAM_BINARY_DIR/create_guid$EXE_ENDING" \
+    -o ! -f "$CLAM_BINARY_DIR/zap_process$EXE_ENDING" \
+    -o ! -f "$CLAM_BINARY_DIR/playsound$EXE_ENDING" ]; then
   pushd "$TOOL_SOURCES/simple_utilities" &>/dev/null
   make_code pre_compilation OMIT_VERSIONS=t
   make_code OMIT_VERSIONS=t
@@ -256,7 +256,7 @@ if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
   bash "$BUILD_SCRIPTS_DIR/whack_build.sh" clean
 
   # recreate our useful junk directories...
-  mkdir -p "$WASTE_DIR"
+  mkdir -p "$GENERATED_DIR"
   mkdir -p "$TEMPORARIES_DIR"
   mkdir -p "$LOGS_DIR"
 

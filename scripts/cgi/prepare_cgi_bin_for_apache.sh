@@ -20,7 +20,7 @@ cd ~/feisty_meow/infobase
 cp fortunes.dat \
   /usr/lib/cgi-bin
 
-cp ~fred/feisty_meow/production/binaries/*nechung* /usr/lib/cgi-bin
+cp $BINDIR/*nechung* /usr/lib/cgi-bin
 
 chmod a+x /usr/lib/cgi-bin/*
 

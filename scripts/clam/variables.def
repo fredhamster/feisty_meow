@@ -79,8 +79,9 @@ ifeq "$(FEISTY_MEOW_SCRIPTS)" ""
   export FEISTY_MEOW_SCRIPTS := $(FEISTY_MEOW_DIR)/scripts
 endif
 
-# "PRODUCTION_DIR" is where the built products will be stored, plus any
-# temporary files that are generated during the build.
+# "PRODUCTION_DIR" is where components required for building the code or
+# installers can be found.
+#hmmm: is this redundant?
 export PRODUCTION_DIR
 ifeq "$(PRODUCTION_DIR)" ""
   PRODUCTION_DIR=$(FEISTY_MEOW_DIR)/production
@@ -103,9 +104,6 @@ ifeq "$(TARGETS_DIR)" ""
   # top-level of the repository.
   TARGETS_DIR = $(FEISTY_MEOW_DIR)
 endif
-
-# "CLAM_BIN" points at the location for helper binaries and shell scripts.
-export CLAM_BIN = $(PRODUCTION_DIR)/clam_bin
 
 # "CURRENT_DIR" is the directory where this make was started.
 export CURRENT_DIR := $(shell pwd)
@@ -201,14 +199,15 @@ export CLEAN
 # sets the temporary directory.
 export CLAM_TMP
 ifeq "$(CLAM_TMP)" ""
-  CLAM_TMP := $(WASTE_DIR)
+  CLAM_TMP := $(GENERATED_DIR)/clam_tmp
 endif
 
-ifeq "$(OP_SYSTEM)" "WIN32"
-  # set these so that compilers and such will use them.
-  export TMP := $(CLAM_TMP)
-  export TEMP := $(CLAM_TMP)
-endif
+#turned off for the moment, since this seems like a bad idea; we define clam tmp in terms of tmp sometimes, don't we???
+#ifeq "$(OP_SYSTEM)" "WIN32"
+#  # set these so that compilers and such will use them.
+#  export TMP := $(CLAM_TMP)
+#  export TEMP := $(CLAM_TMP)
+#endif
 
 # "FAILURE_FILE" is a file that is used as a flag to track failures.  if the
 # file exists, then it is assumed that a failure happened during the current

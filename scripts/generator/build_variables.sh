@@ -97,13 +97,30 @@ fi
 # in the building hierarchy.
 export BUILD_TOP="$FEISTY_MEOW_DIR"
 
-# this variable points at a folder where we store most of the generated products
-# of the build.  these tend to be the things that will be used for packaging into
-# different types of products.
+# the production directory is the location for all the scripts and setup
+# code needed to produce the executables for feisty meow.
 export PRODUCTION_DIR="$BUILD_TOP/production"
 
+# set up the top-level for all build creations and logs and such.
+export GENERATED_DIR="$TMP/generated-feisty_meow"
+if [ ! -d "$GENERATED_DIR" ]; then
+  mkdir -p "$GENERATED_DIR"
+fi
+# set up our effluent outsourcing valves.
+export TEMPORARIES_DIR="$GENERATED_DIR/temporaries"
+if [ ! -d "$TEMPORARIES_DIR" ]; then
+  mkdir -p "$TEMPORARIES_DIR"
+fi
+
+# this variable points at a folder where we store the generated products of
+# the build, such as the binaries and installer packages.
+export RUNTIME_DIR="$GENERATED_DIR/runtime"
+if [ ! -d "$RUNTIME_DIR" ]; then
+  mkdir -p "$RUNTIME_DIR"
+fi
+
 # we define a log file storage area that can be relied on by the build.
-export LOGS_DIR="$PRODUCTION_DIR/logs"
+export LOGS_DIR="$GENERATED_DIR/logs"
 if [ ! -d "$LOGS_DIR" ]; then
   mkdir -p "$LOGS_DIR"
 fi
@@ -161,23 +178,15 @@ fi
 if [ -z "$got_bad" ]; then
 
   # where we store the binaries used for building the rest of the code base.
-  export BINARY_DIR="$PRODUCTION_DIR/clam_bin"
+  export CLAM_BINARY_DIR="$RUNTIME_DIR/clam_bin"
     # the final destination for the new binaries which provide the hoople
     # build with all the apps it needs to get going.
-  export TARGETS_DIR="$PRODUCTION_DIR/binaries"
+  export TARGETS_DIR="$RUNTIME_DIR/binaries"
     # targets directory is meaningful to clam, which will use it for output.
   export INTERMEDIATE_EXE_DIR="$TARGETS_DIR"
     # where we are building the apps before they get promoted.
 
-  export WASTE_DIR="$PRODUCTION_DIR/waste"
-  if [ ! -d "$WASTE_DIR" ]; then
-    mkdir -p "$WASTE_DIR"
-  fi
-  export TEMPORARIES_DIR="$WASTE_DIR/temporaries"
-  if [ ! -d "$TEMPORARIES_DIR" ]; then
-    mkdir -p "$TEMPORARIES_DIR"
-  fi
-  
+#hmmm: could allow override on this if already set.
   # calculate which build ini file to use.
   export BUILD_PARAMETER_FILE="$PRODUCTION_DIR/feisty_meow_config.ini"
   if [ ! -f "$BUILD_PARAMETER_FILE" ]; then
@@ -193,7 +202,7 @@ if [ -z "$got_bad" ]; then
   
   # we should have established our internal variables now, so let's try
   # using them.
-  export PATH=$(dos_to_unix_path $BINARY_DIR):$PATH
+  export PATH=$(dos_to_unix_path $CLAM_BINARY_DIR):$PATH
   
   # load up the helper variables for visual studio on winders.
   if [ "$OPERATING_SYSTEM" == "WIN32" ]; then

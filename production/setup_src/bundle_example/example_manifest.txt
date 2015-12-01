@@ -114,7 +114,7 @@ target=$TARGET/bytedunker$EXE_END
 ; operating systems and is blank for others (so far).
 
 [using_vars]
-source=$CLAM_BIN/value_tagger$EXE_END
+source=$CLAM_BINARY_DIR/value_tagger$EXE_END
 target=$TMP/using_varsilator$EXE_END
 ; variables in the source get resolved at packing time.
 ; variables in the target get resolved during unbundling time.

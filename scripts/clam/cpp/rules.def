@@ -602,7 +602,7 @@ ifeq "$(OMIT_VERSIONS)" ""
   ifneq "$(VERSION_RC_ROOT)" ""
 # only redo the version resource if it or version.ini is out of date.
 %_version.rc: version.ini $(PARAMETER_FILE)
-	$(CATCHER)$(CLAM_BIN)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
+	$(CATCHER)$(CLAM_BINARY_DIR)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
   endif
 endif
 
@@ -688,8 +688,8 @@ else
 	-$(HIDESH)$(CLAM_DIR)/cpp/preconditions.sh
 	@touch $@
 #	@echo dep adds: $(DEPENDENCY_ADDITIONS)
-	@$(CLAM_BIN)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
-#	$(CATCHER)$(CLAM_BIN)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
+	@$(CLAM_BINARY_DIR)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
+#	$(CATCHER)$(CLAM_BINARY_DIR)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
 	@echo $@ >$(SUBMAKE_FLAG)
   endif # non-compile.
 endif # no-deps.

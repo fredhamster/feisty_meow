@@ -26,7 +26,7 @@ if [ ! -d $STATIC_LIBRARY_DIR ]; then mkdir $STATIC_LIBRARY_DIR; fi
 
 # set versions on any extras that were specified in the makefile.
 if [ ! -z "$EXTRA_VERSIONS" ]; then
-  for i in $EXTRA_VERSIONS; do $CLAM_BIN/version_stamper$EXE_END $i $PARAMETER_FILE; done
+  for i in $EXTRA_VERSIONS; do $CLAM_BINARY_DIR/version_stamper$EXE_END $i $PARAMETER_FILE; done
 fi
 
 # create all the directories that objects will go into.

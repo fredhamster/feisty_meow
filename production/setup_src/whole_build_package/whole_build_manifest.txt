@@ -35,10 +35,10 @@ win32_helper=t
 ; variables used during installation.
 
 [set_temp]
-variable=TEMP=$TARGET/waste
+variable=TEMP=$TARGET/waste-buildpack
 keyword=sources
 [set_tmp]
-variable=TMP=$TARGET/waste
+variable=TMP=$TARGET/waste-buildpack
 keyword=sources
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -157,18 +157,18 @@ target=$TARGET/production/3rdparty
 recurse=1
 
 [binaries]
-source=$PRODUCTION_DIR/binaries
-target=$TARGET/production/binaries
+source=$RUNTIME_DIR/binaries
+target=$TARGET/runtime/binaries
 recurse=1
 
 [clam_bin]
-source=$PRODUCTION_DIR/clam_bin
-target=$TARGET/production/clam_bin
+source=$RUNTIME_DIR/clam_bin
+target=$TARGET/runtime/clam_bin
 recurse=1
 
 [packages]
-source=$PRODUCTION_DIR/packages
-target=$TARGET/production/packages
+source=$RUNTIME_DIR/packages
+target=$TARGET/runtime/packages
 recurse=1
 
 [win32_helper]

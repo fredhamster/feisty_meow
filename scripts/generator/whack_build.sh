@@ -20,7 +20,8 @@ function whack_single_build_area()
     exit 3
   fi
 
-  export NEW_TMP="$(mktemp -d "$CLEANING_LOCALE/TEMPS.XXXXXX")"
+#old  export NEW_TMP="$(mktemp -d "$CLEANING_LOCALE/TEMPS.XXXXXX")"
+  export NEW_TMP="$(mktemp -d "$TMP/temps-build-whacking.XXXXXX")"
   export CRUDFILE="$(mktemp "$NEW_TMP/whack_build.XXXXXX")"
   echo "" &>"$CRUDFILE"
 
@@ -30,7 +31,8 @@ function whack_single_build_area()
 
   # avoid accidentally removing way too much important stuff if our variables have not
   # been previously established.
-  local WASTE_DIR="$CLEANING_TOP/waste"
+  local GENERATED_DIR="$CLEANING_TOP/generated-feisty_meow"
+#*** hmmm: above is wrong place now!
   local TEMPORARIES_DIR="$CLEANING_TOP/temporaries"
 
   # kerzap.
@@ -41,7 +43,7 @@ function whack_single_build_area()
     "$CLEANING_TOP/logs" \
     "$CLEANING_TOP/objects" \
     "$TEMPORARIES_DIR" \
-    "$WASTE_DIR" \
+    "$GENERATED_DIR" \
     "$CLEANING_TOP/__build_"*.h \
     "$CLEANING_TOP/manifest.txt" 
 
