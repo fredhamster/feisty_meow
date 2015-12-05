@@ -226,7 +226,7 @@ int write_build_config::execute()
   SETUP_CONSOLE_LOGGER;  // override the file_logger from app_shell.
 
   // find our build ini file.
-  astring repodir = environment::get("FEISTY_MEOW_DIR");
+  astring repodir = environment::get("FEISTY_MEOW_APEX");
 
   // the below code should never be needed for a properly configured build.
 #ifdef __WIN32__

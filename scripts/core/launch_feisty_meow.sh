@@ -30,8 +30,8 @@ if [ -z "$FEISTY_MEOW_LOADING_DOCK" ]; then
 #hmmm: the above is kind of a constant.  that's not so great.
 
   # make sure our main variables are established.
-  GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
-  if [ ! -f "$GENERATED_FEISTY_MEOW_VARIABLES" ]; then
+  FEISTY_MEOW_VARIABLES_LOADING_FILE="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
+  if [ ! -f "$FEISTY_MEOW_VARIABLES_LOADING_FILE" ]; then
     echo -e '\n\n'
     echo "Feisty meow scripts need initialization via the bootstrap process, e.g.:"
     echo "  bash $HOME/feisty_meow/scripts/core/bootstrap_shells.sh"
@@ -43,7 +43,7 @@ if [ -z "$FEISTY_MEOW_LOADING_DOCK" ]; then
 
   # pull in our generated variables that are the minimal set we need to find
   # the rest of our resources.
-  source "$GENERATED_FEISTY_MEOW_VARIABLES"
+  source "$FEISTY_MEOW_VARIABLES_LOADING_FILE"
 
   # Set up the temporary directory.
   source $FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh

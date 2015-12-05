@@ -68,7 +68,7 @@ fi
 
 #hmmm: these variables should be configurable from plug-ins someday.
 
-TUNNEL_ALERT_SOUND=$FEISTY_MEOW_DIR/infobase/sounds/woouoo.wav
+TUNNEL_ALERT_SOUND=$FEISTY_MEOW_APEX/infobase/sounds/woouoo.wav
 if [ ! -z "$1" ]; then
   TUNNEL_ALERT_SOUND=$1
 fi

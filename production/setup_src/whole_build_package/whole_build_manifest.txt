@@ -51,12 +51,12 @@ target=$TARGET/production
 keyword=sources
 
 [text_files]
-source=$FEISTY_MEOW_DIR/*.txt
+source=$FEISTY_MEOW_APEX/*.txt
 target=$TARGET
 keyword=sources
 
 [top_makefile]
-source=$FEISTY_MEOW_DIR/makefile
+source=$FEISTY_MEOW_APEX/makefile
 target=$TARGET/makefile
 keyword=sources
 
@@ -66,67 +66,67 @@ target=$TARGET/production/makefile
 keyword=sources
 
 [customizing]
-source=$FEISTY_MEOW_DIR/customizing
+source=$FEISTY_MEOW_APEX/customizing
 target=$TARGET/customizing
 recurse=1
 keyword=sources
 
 [database]
-source=$FEISTY_MEOW_DIR/infobase
+source=$FEISTY_MEOW_APEX/infobase
 target=$TARGET/infobase
 recurse=1
 keyword=sources
 
 [docs]
-source=$FEISTY_MEOW_DIR/doc
+source=$FEISTY_MEOW_APEX/doc
 target=$TARGET/doc
 recurse=1
 keyword=sources
 
 [examples]
-source=$FEISTY_MEOW_DIR/examples
+source=$FEISTY_MEOW_APEX/examples
 target=$TARGET/examples
 recurse=1
 keyword=sources
 
 [scripts]
-source=$FEISTY_MEOW_DIR/scripts
+source=$FEISTY_MEOW_APEX/scripts
 target=$TARGET/scripts
 recurse=1
 keyword=sources
 
 [nucleus]
-source=$FEISTY_MEOW_DIR/nucleus
+source=$FEISTY_MEOW_APEX/nucleus
 target=$TARGET/nucleus
 recurse=1
 keyword=sources
 
 [octopi]
-source=$FEISTY_MEOW_DIR/octopi
+source=$FEISTY_MEOW_APEX/octopi
 target=$TARGET/octopi
 recurse=1
 keyword=sources
 
 [graphiq]
-source=$FEISTY_MEOW_DIR/graphiq
+source=$FEISTY_MEOW_APEX/graphiq
 target=$TARGET/graphiq
 recurse=1
 keyword=sources
 
 [huffware]
-source=$FEISTY_MEOW_DIR/huffware
+source=$FEISTY_MEOW_APEX/huffware
 target=$TARGET/huffware
 recurse=1
 keyword=sources
 
 [kona]
-source=$FEISTY_MEOW_DIR/kona
+source=$FEISTY_MEOW_APEX/kona
 target=$TARGET/kona
 recurse=1
 keyword=sources
 
 [webby]
-source=$FEISTY_MEOW_DIR/webby
+source=$FEISTY_MEOW_APEX/webby
 target=$TARGET/webby
 recurse=1
 keyword=sources

@@ -88,11 +88,16 @@ if [ -z "$NECHUNG" ]; then
   # set the main root directory variable for the feisty meow codebase.
   # this is only used for extreme failure modes, when the values were not
   # pulled in from our auto-generated config.
-  if [ -z "$FEISTY_MEOW_DIR" ]; then
+  if [ -z "$FEISTY_MEOW_APEX" ]; then
     if [ -d "$HOME/feisty_meow" ]; then
-      define_yeti_variable FEISTY_MEOW_DIR="$HOME/feisty_meow"
+      define_yeti_variable FEISTY_MEOW_APEX="$HOME/feisty_meow"
       define_yeti_variable FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
     fi
+  fi
+
+  # main declaration of the transients area.
+  if [ -z "$TMP" ]; then
+    define_yeti_variable TMP=$HOME/.tmp
   fi
 
   # set up the top-level for all build creations and logs and such.
@@ -169,7 +174,7 @@ if [ -z "$NECHUNG" ]; then
   ##############
   
   # set this so nechung can find its data.
-  define_yeti_variable NECHUNG=$FEISTY_MEOW_DIR/infobase/fortunes.dat
+  define_yeti_variable NECHUNG=$FEISTY_MEOW_APEX/infobase/fortunes.dat
   
   # ensure we use the right kind of secure shell.
 #  define_yeti_variable CVS_RSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
@@ -186,7 +191,7 @@ if [ -z "$NECHUNG" ]; then
   {
     found_build_vars=0
     # we need to know the feisty meow directory, or we bail.
-    if [ -z "$FEISTY_MEOW_DIR" ]; then return; fi
+    if [ -z "$FEISTY_MEOW_APEX" ]; then return; fi
     # pick from our expected generator folder, but make sure it's there...
     buildvars="$FEISTY_MEOW_SCRIPTS/generator/build_variables.sh"
     if [ -f "$buildvars" ]; then

@@ -4,7 +4,7 @@ PROJECT = Shells
 TARGETS += regenerate 
 OTHER_CLEANS += clean_generated 
 # override setting from clam.
-export FEISTY_MEOW_SCRIPTS = $(FEISTY_MEOW_DIR)/scripts
+export FEISTY_MEOW_SCRIPTS = $(FEISTY_MEOW_APEX)/scripts
 
 include rules.def
 

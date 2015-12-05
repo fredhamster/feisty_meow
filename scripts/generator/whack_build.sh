@@ -20,11 +20,8 @@ function whack_single_build_area()
     exit 3
   fi
 
-#old  export NEW_TMP="$(mktemp -d "$CLEANING_LOCALE/TEMPS.XXXXXX")"
   export CRUDFILE="$(mktemp "$TMP/zz_whack_build.XXXXXX")"
   echo "" &>"$CRUDFILE"
-
-#  CLEANING_TOP="$CLEANING_LOCALE/production"
 
 #  echo $(date): "  cleaning up the build products..."
 
@@ -39,11 +36,15 @@ function whack_single_build_area()
 
   # kerzap.  the cleanups in production directory remove older locations of generated files.
   rm -rf \
-    "$FEISTY_MEOW_DIR/generatedJUnitFiles" \
+    "$GENERATED_DIR/clam_bin" \
+    "$GENERATED_DIR/binaries" \
+    "$GENERATED_DIR/install" \
+    "$GENERATED_DIR/logs" \
+    "$GENERATED_DIR/waste" \
+    "$FEISTY_MEOW_APEX/generatedJUnitFiles" \
     "$TEMPORARIES_DIR" \
-    "$GENERATED_DIR" \
-    "$CLEANING_TOP/__build_"*.h \
-    "$CLEANING_TOP/manifest.txt" \
+    "$PRODUCTION_DIR/__build_"*.h \
+    "$PRODUCTION_DIR/manifest.txt" \
     "$PRODUCTION_DIR/clam_bin" \
     "$PRODUCTION_DIR/binaries" \
     "$PRODUCTION_DIR/install" \
@@ -54,7 +55,7 @@ function whack_single_build_area()
 
   if [ "$clean_src" == "clean" -o "$clean_src" == "CLEAN"  ]; then
     echo $(date): "    ** aggressive cleaning activated..."
-    perl "$FEISTY_MEOW_SCRIPTS/files/zapdirs.pl" "$FEISTY_MEOW_DIR" >>"$CRUDFILE"
+    perl "$FEISTY_MEOW_SCRIPTS/files/zapdirs.pl" "$FEISTY_MEOW_APEX" >>"$CRUDFILE"
   fi
 
   echo $(date): "cleaned [$choprepo]."
@@ -66,5 +67,5 @@ function whack_single_build_area()
 
 # clean all known hierarchies of build products...
 
-whack_single_build_area "$FEISTY_MEOW_DIR"
+whack_single_build_area "$FEISTY_MEOW_APEX"
 

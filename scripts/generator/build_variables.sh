@@ -85,7 +85,7 @@ if [ ! -z "$SHELL_DEBUG" ]; then
 fi
 
 if [ ! -z "$SHELL_DEBUG" ]; then
-  echo "[FEISTY_MEOW_DIR is $FEISTY_MEOW_DIR]"
+  echo "[FEISTY_MEOW_APEX is $FEISTY_MEOW_APEX]"
 fi
 
 #if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
@@ -95,7 +95,7 @@ fi
 
 # new BUILD_TOP variable points at the utter top-most level of any files
 # in the building hierarchy.
-export BUILD_TOP="$FEISTY_MEOW_DIR"
+export BUILD_TOP="$FEISTY_MEOW_APEX"
 
 # the production directory is the location for all the scripts and setup
 # code needed to produce the executables for feisty meow.
@@ -133,7 +133,7 @@ if [ ! -z "$SHELL_DEBUG" ]; then
   echo scripts: $BUILD_SCRIPTS_DIR
   echo build tools hier: $BUILDING_HIERARCHY
   echo this tool: $THIS_TOOL_NAME
-  echo repository: $FEISTY_MEOW_DIR
+  echo repository: $FEISTY_MEOW_APEX
   echo clam: $CLAM_DIR
 fi
 
@@ -164,7 +164,7 @@ fi
 
 # now compute some more paths with a bit of "heuristics" for where we can
 # find the source code.
-export TOOL_SOURCES="$FEISTY_MEOW_DIR/nucleus/tools"
+export TOOL_SOURCES="$FEISTY_MEOW_APEX/nucleus/tools"
 if [ -z "$got_bad" -a ! -d "$TOOL_SOURCES/dependency_tool" -o ! -d "$TOOL_SOURCES/clam_tools" ]; then
   echo "This script cannot locate the tool source code folder.  This is where the"
   echo "dependency_tool and clam_tools folders are expected to be."

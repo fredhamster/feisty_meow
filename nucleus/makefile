@@ -4,11 +4,11 @@ include variables.def
 
 # Set default locations for the following variables.  If the build_variables
 # have been sourced in, that takes care of setting these.
-ifeq "$(FEISTY_MEOW_DIR)" ""
-  export FEISTY_MEOW_DIR := $(CURRENT_DIR)
+ifeq "$(FEISTY_MEOW_APEX)" ""
+  export FEISTY_MEOW_APEX := $(CURRENT_DIR)
 endif
 #ifeq "$(PRODUCTION_DIR)" ""
-#  export PRODUCTION_DIR = $(FEISTY_MEOW_DIR)/production
+#  export PRODUCTION_DIR = $(FEISTY_MEOW_APEX)/production
 #endif
 ifeq "$(CLAM_DIR)" ""
   export CLAM_DIR = $(FEISTY_MEOW_SCRIPTS)/clam

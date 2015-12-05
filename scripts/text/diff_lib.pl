@@ -25,7 +25,7 @@
 
 require "filename_helper.pl";
 
-use Env qw(FEISTY_MEOW_DIR);
+use Env qw(FEISTY_MEOW_APEX);
 
 use Text::Diff;
 
@@ -191,7 +191,7 @@ synch_build:
 This program needs one directory name to be passed on the command line.
 This directory is where the installation's executable files live.  Any files
 that are in the installation bin directory will be compared against the files
-in the build repository (specified by an environment variable FEISTY_MEOW_DIR).
+in the build repository (specified by an environment variable FEISTY_MEOW_APEX).
 If files differ, they will be copied from the repository into the installation
 directory.
 ";
@@ -490,12 +490,12 @@ sub synchronize_against_build
   }
 
 #  print "install=$install_directory\n";
-#  print "repos=$FEISTY_MEOW_DIR\n";
+#  print "repos=$FEISTY_MEOW_APEX\n";
 
   # iterate over all the files in the source directory.
   opendir CURDIR, $install_directory
       || die("couldn't open $install_directory for reading.\n");
-  $compare_directory = "$FEISTY_MEOW_DIR/dll";
+  $compare_directory = "$FEISTY_MEOW_APEX/dll";
   foreach $filename (readdir CURDIR) {
     if ( ($filename eq ".") || ($filename eq "..") ) { next; }
     if (! ($filename =~ /\.dll$/)) { next; }
@@ -514,7 +514,7 @@ sub synchronize_against_build
   # repeat for the exe directory.
   opendir CURDIR, $install_directory
       || die("couldn't open $install_directory for reading.\n");
-  $compare_directory = "$FEISTY_MEOW_DIR/exe";
+  $compare_directory = "$FEISTY_MEOW_APEX/exe";
   foreach $filename (readdir CURDIR) {
     if ( ($filename eq ".") || ($filename eq "..") ) { next; }
     if (! ($filename =~ /\.exe$/)) { next; }

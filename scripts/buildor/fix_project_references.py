@@ -581,7 +581,7 @@ dealing with the existing buffer.
     test_file = ""
     if len(self.arguments) > 1:
       test_file = self.arguments[1]
-    if test_file == "": test_file = os.getenv("FEISTY_MEOW_DIR") + "/nucleus/applications/nechung/nechung.vcxproj"
+    if test_file == "": test_file = os.getenv("FEISTY_MEOW_APEX") + "/nucleus/applications/nechung/nechung.vcxproj"
     print("test file is: " + test_file)
 
     guid = self.extract_guid_from_project_file(test_file)

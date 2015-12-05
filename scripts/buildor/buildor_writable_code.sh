@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $FEISTY_MEOW_DIR/bin/seek_all_source.sh
+source $FEISTY_MEOW_APEX/bin/seek_all_source.sh
 
 function strip_file {
   file=$1

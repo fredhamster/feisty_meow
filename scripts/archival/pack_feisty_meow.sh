@@ -8,8 +8,8 @@ TEMPO_FILE="$(mktemp "$TMP/zz_feistypack.XXXXXX")"
 # shortcut for the lengthy exclude parameter.
 export XC='--exclude='
 
-parent_dir="$(dirname "$FEISTY_MEOW_DIR")"
-base_dir="$(basename "$FEISTY_MEOW_DIR")"
+parent_dir="$(dirname "$FEISTY_MEOW_APEX")"
+base_dir="$(basename "$FEISTY_MEOW_APEX")"
 
 pushd $parent_dir
 

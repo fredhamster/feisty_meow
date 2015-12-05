@@ -2,7 +2,7 @@
 # tunnels to the khandroma machine for vnc access to the win7 box and for the jenkins
 # server.
 
-soundfile=$FEISTY_MEOW_DIR/infobase/sounds/my_mind_is_going.wav
+soundfile=$FEISTY_MEOW_APEX/infobase/sounds/my_mind_is_going.wav
 if [ ! -z "$1" ]; then
   soundfile=$1
 fi

@@ -45,7 +45,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 # translate to dos format if there's a cygdrive in there; otherwise microsoft's tools
 # will hose up completely due to unknown paths.
-export FEISTY_MEOW_DIR="$(unix_to_dos_path $FEISTY_MEOW_DIR)"
+export FEISTY_MEOW_APEX="$(unix_to_dos_path $FEISTY_MEOW_APEX)"
 
 # load in build variables based on our deduced paths.
 source "$BUILD_SCRIPTS_DIR/build_variables.sh" "$BUILD_SCRIPTS_DIR/build_variables.sh"
@@ -261,7 +261,7 @@ if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
   mkdir -p "$LOGS_DIR"
 
   echo Now starting a normal build of the repository source code.
-  pushd "$FEISTY_MEOW_DIR" &>/dev/null
+  pushd "$FEISTY_MEOW_APEX" &>/dev/null
   unset BUILD_DEFAULTS
   declare -a BUILD_DEFAULTS=( "BOOT_STRAPPING=" "OPTIMIZE=t" "DEBUG=t" "REBUILD=t" )
   make_code

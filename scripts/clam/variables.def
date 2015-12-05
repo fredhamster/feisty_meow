@@ -61,13 +61,13 @@ endif
 
 ###############################################################################
 
-# "FEISTY_MEOW_DIR" is the root of the "build" for our compilation oriented
+# "FEISTY_MEOW_APEX" is the root of the "build" for our compilation oriented
 # features.  All source code and build helper files are usually found there.
 # The build targets to be built are usually stored there also, although the
 # targets can be located elsewhere if desired.  see TARGETS_DIR below.
-export FEISTY_MEOW_DIR
-ifeq "$(FEISTY_MEOW_DIR)" ""
-#  FEISTY_MEOW_DIR = 
+export FEISTY_MEOW_APEX
+ifeq "$(FEISTY_MEOW_APEX)" ""
+#  FEISTY_MEOW_APEX = 
 #uhhh, use the current location?
 #currently we rely on this being set from shell bootstrapping.  is that bad?
 endif
@@ -76,7 +76,7 @@ endif
 # be able to find a few things there reliably.
 export FEISTY_MEOW_SCRIPTS
 ifeq "$(FEISTY_MEOW_SCRIPTS)" ""
-  export FEISTY_MEOW_SCRIPTS := $(FEISTY_MEOW_DIR)/scripts
+  export FEISTY_MEOW_SCRIPTS := $(FEISTY_MEOW_APEX)/scripts
 endif
 
 # "PRODUCTION_DIR" is where components required for building the code or
@@ -84,7 +84,7 @@ endif
 #hmmm: is this redundant?
 export PRODUCTION_DIR
 ifeq "$(PRODUCTION_DIR)" ""
-  PRODUCTION_DIR=$(FEISTY_MEOW_DIR)/production
+  PRODUCTION_DIR=$(FEISTY_MEOW_APEX)/production
 endif
 
 # "CLAM_DIR" points at where the CLAM source files are located.  this is needed
@@ -102,7 +102,7 @@ export TARGETS_DIR
 ifeq "$(TARGETS_DIR)" ""
   # the default is to generate files into subdirectories that are at the
   # top-level of the repository.
-  TARGETS_DIR = $(FEISTY_MEOW_DIR)
+  TARGETS_DIR = $(FEISTY_MEOW_APEX)
 endif
 
 # "CURRENT_DIR" is the directory where this make was started.

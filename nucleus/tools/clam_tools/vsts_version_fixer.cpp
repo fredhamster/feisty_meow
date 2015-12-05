@@ -254,18 +254,18 @@ void vsts_version_fixer::remove_confusing_files()
   source_dir_whacks += "Release";
   source_dir_whacks += "bin";
   source_dir_whacks += "temp_build";
-  directory repo_source(environment::get("FEISTY_MEOW_DIR") + "/source");
+  directory repo_source(environment::get("FEISTY_MEOW_APEX") + "/source");
   whack_in_subdirs(repo_source, source_file_whacks, source_dir_whacks);
-  directory libra_src(environment::get("FEISTY_MEOW_DIR") + "/libraries");
+  directory libra_src(environment::get("FEISTY_MEOW_APEX") + "/libraries");
   whack_in_subdirs(libra_src, source_file_whacks, source_dir_whacks);
-  directory produ_src(environment::get("FEISTY_MEOW_DIR") + "/products");
+  directory produ_src(environment::get("FEISTY_MEOW_APEX") + "/products");
   whack_in_subdirs(produ_src, source_file_whacks, source_dir_whacks);
 
 /* this never helped.
   // clean out a variety of bad files in the objects hierarchy.
   // currently this is just the generated RES files which we have seen cause
   // vsts to think apps and dlls are up to date when they are actually not.
-  directory repo_objects(environment::get("FEISTY_MEOW_DIR"));
+  directory repo_objects(environment::get("FEISTY_MEOW_APEX"));
   string_array objects_file_whacks;
   objects_file_whacks += ".res";
   string_array objects_dir_whacks;  // none right now.
@@ -281,7 +281,7 @@ int vsts_version_fixer::execute()
 
   remove_confusing_files();
 
-  astring repo_dir = environment::get("FEISTY_MEOW_DIR");
+  astring repo_dir = environment::get("FEISTY_MEOW_APEX");
 
   // figure out which build parameter file to use.
   global_build_ini = "";

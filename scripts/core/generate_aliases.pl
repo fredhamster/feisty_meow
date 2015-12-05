@@ -23,7 +23,7 @@
 
 require "filename_helper.pl";
 
-use Env qw(BINDIR BUILD_TOP FEISTY_MEOW_DIR FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS SHELL_DEBUG );
+use Env qw(BINDIR BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS SHELL_DEBUG );
 
 # given a possible aliasable filename, this will decide whether to create a perl
 # or bash alias for it.  it needs the filename of the possible alias and the
@@ -162,7 +162,7 @@ http://feistymeow.org for more details.\n";
 
 $FEISTY_MEOW_LOADING_DOCK =~ s/\\/\//g;
 $FEISTY_MEOW_SCRIPTS =~ s/\\/\//g;
-$FEISTY_MEOW_DIR =~ s/\\/\//g;
+$FEISTY_MEOW_APEX =~ s/\\/\//g;
 
 # create our generated shells directory if it's not already there.
 if (! -d $FEISTY_MEOW_LOADING_DOCK) {

@@ -12,7 +12,7 @@ if [ ! -z "$BUILD_PARAMETER_FILE" ]; then
 fi
 if [ -z "$PARAMETER_FILE" ]; then
   # last ditch attempt to get one that will work.
-  PARAMETER_FILE="$FEISTY_MEOW_DIR/build.ini"
+  PARAMETER_FILE="$FEISTY_MEOW_APEX/build.ini"
 fi
 
 chmod u+w "$PARAMETER_FILE"

@@ -18,23 +18,23 @@ pushd "$CORE_SCRIPTS_DIR/../.." &>/dev/null
 source "$CORE_SCRIPTS_DIR/functions.sh"
 
 #echo originating folder is $ORIGINATING_FOLDER
-export FEISTY_MEOW_DIR="$(/bin/pwd)"
-#echo feisty now is FEISTY_MEOW_DIR=$FEISTY_MEOW_DIR
+export FEISTY_MEOW_APEX="$(/bin/pwd)"
+#echo feisty now is FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX
 
 # repetitive bit stolen from variables.  should make a file out of this somehow.
 IS_DOS=$(uname | grep -i ming)
 if [ -z "$IS_DOS" ]; then IS_DOS=$(uname | grep -i cygwin); fi
 # now if we're stuck in DOS, then fix the feisty meow variable name.
 if [ ! -z "$IS_DOS" ]; then
-  FEISTY_MEOW_DIR="$(cmd /c chdir | tr A-Z a-z | sed -e 's/\\/\//g')"
-echo feisty meow dos is: $FEISTY_MEOW_DIR
-  FEISTY_MEOW_DIR="$(dos_to_unix_path "$FEISTY_MEOW_DIR")"
-echo new feisty meow fixed dir is: $FEISTY_MEOW_DIR
+  FEISTY_MEOW_APEX="$(cmd /c chdir | tr A-Z a-z | sed -e 's/\\/\//g')"
+echo feisty meow dos is: $FEISTY_MEOW_APEX
+  FEISTY_MEOW_APEX="$(dos_to_unix_path "$FEISTY_MEOW_APEX")"
+echo new feisty meow fixed dir is: $FEISTY_MEOW_APEX
 fi
 
 popd &>/dev/null
 
-export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"
+export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
 
 # FEISTY_MEOW_LOADING_DOCK is where the generated files feisty_meow uses are located.
 export FEISTY_MEOW_LOADING_DOCK="$HOME/.zz_feisty_loading"
@@ -48,11 +48,11 @@ if [ ! -d "$FEISTY_MEOW_LOADING_DOCK/custom" ]; then
 fi
 
 # just a variable we use in here to refer to the generated variables file.
-GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
+FEISTY_MEOW_VARIABLES_LOADING_FILE="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
 # create the alias file as totally blank.
-echo -n >"$GENERATED_FEISTY_MEOW_VARIABLES"
-for i in FEISTY_MEOW_DIR FEISTY_MEOW_SCRIPTS FEISTY_MEOW_LOADING_DOCK; do
-  echo "export $i=${!i}" >>"$GENERATED_FEISTY_MEOW_VARIABLES"
+echo -n >"$FEISTY_MEOW_VARIABLES_LOADING_FILE"
+for i in FEISTY_MEOW_APEX FEISTY_MEOW_SCRIPTS FEISTY_MEOW_LOADING_DOCK; do
+  echo "export $i=${!i}" >>"$FEISTY_MEOW_VARIABLES_LOADING_FILE"
 done
 
 # load our variables so we can run our perl scripts successfully.
@@ -64,7 +64,7 @@ perl "$FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl"
 if [ ! -z "$SHELL_DEBUG" ]; then
   echo established these variables for feisty_meow assets:
   echo ==============
-  cat "$GENERATED_FEISTY_MEOW_VARIABLES"
+  cat "$FEISTY_MEOW_VARIABLES_LOADING_FILE"
   echo ==============
 fi
 

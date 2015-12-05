@@ -328,17 +328,17 @@ int value_tagger::execute()
 
   log(time_stamp::notarize(true) + "value_tagger started.", basis::ALWAYS_PRINT);
 
-  astring test_repository = environment::get("FEISTY_MEOW_DIR");
+  astring test_repository = environment::get("FEISTY_MEOW_APEX");
   if (!test_repository) {
     astring msg = "\
 There is a problem with a required build precondition.  The following\r\n\
 variables must be set before the build is run:\r\n\
 \r\n\
-  FEISTY_MEOW_DIR    This should point at the root of the build tree.\r\n\
+  FEISTY_MEOW_APEX    This should point at the root of the build tree.\r\n\
 \r\n\
 There are also a few variables only required for CLAM-based compilation:\r\n\
 \r\n\
-  MAKEFLAGS         This should be set to \"-I $FEISTY_MEOW_DIR/clam\".\r\n\
+  MAKEFLAGS         This should be set to \"-I $FEISTY_MEOW_APEX/clam\".\r\n\
 \r\n\
 Note that on Win32 platforms, these should be set in the System or User\r\n\
 variables before running a build.\r\n";
@@ -381,7 +381,7 @@ variables before running a build.\r\n";
   LOG(astring("Directories to scan..."));
   LOG(_dirs.text_form());
 
-  astring rdir = environment::get("FEISTY_MEOW_DIR");
+  astring rdir = environment::get("FEISTY_MEOW_APEX");
   astring fname;
   astring parmfile = environment::get("BUILD_PARAMETER_FILE");
   if (parmfile.t()) fname = parmfile;
@@ -483,7 +483,7 @@ variables before running a build.\r\n";
   byte_filer build_file(fname, "r");
   if (!build_file.good()) {
     non_continuable_error(class_name(), build_file.name(),
-        "Could not find the build configuration; is FEISTY_MEOW_DIR set?");
+        "Could not find the build configuration; is FEISTY_MEOW_APEX set?");
   }
   byte_array full_config;
   build_file.read(full_config, 100000);  // a good chance to be big enough.

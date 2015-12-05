@@ -22,12 +22,12 @@ include variables.def
 ###############################################################################
 
 #no # set the repository directory if it's still set to the base version.
-#ifeq "$(FEISTY_MEOW_DIR)" ""
+#ifeq "$(FEISTY_MEOW_APEX)" ""
 #  ifeq "$(OP_SYSTEM)" "UNIX"
-#    export FEISTY_MEOW_DIR = $(HOME)/hoople
+#    export FEISTY_MEOW_APEX = $(HOME)/hoople
 #  endif
 #  ifeq "$(OP_SYSTEM)" "WIN32"
-#    export FEISTY_MEOW_DIR = l:
+#    export FEISTY_MEOW_APEX = l:
 #  endif
 #endif
 
@@ -209,7 +209,7 @@ export BASE_OUTPUT_PATH = $(OUTPUT_ROOT)/$(CPU_BUILD_DIR)
 
 # special case when doing arm-linux builds
 ifeq "$(COMPILER)" "GNU_ARM_LINUX"
-  export TARGETS_DIR = $(FEISTY_MEOW_DIR)/$(CPU_BUILD_DIR)
+  export TARGETS_DIR = $(FEISTY_MEOW_APEX)/$(CPU_BUILD_DIR)
   # special output directory for firmware doesn't include CPU name because
   #  the repository already include the CPU name
   BASE_OUTPUT_PATH = $(OUTPUT_ROOT)
@@ -234,8 +234,8 @@ export STATIC_LIBRARY_DIR = $(TARGETS_DIR)
 ifeq "$(HOOPLE_HEADERS)" ""
 #seems like some of this is redundant with earlier 3rdparty exploring.
   LOCUS_LIBRARY_HEADERS = $(shell bash -c '\
-    if [ -d "$(FEISTY_MEOW_DIR)/nucleus" ]; then \
-      echo "$(FEISTY_MEOW_DIR)/nucleus" "$(FEISTY_MEOW_DIR)/octopi" "$(FEISTY_MEOW_DIR)/graphiq" ; \
+    if [ -d "$(FEISTY_MEOW_APEX)/nucleus" ]; then \
+      echo "$(FEISTY_MEOW_APEX)/nucleus" "$(FEISTY_MEOW_APEX)/octopi" "$(FEISTY_MEOW_APEX)/graphiq" ; \
     else \
       echo ""; \
     fi | tr "\\\\" / | sed -e "s/\([a-zA-Z]\):\/\([^ ]*\)/\/cygdrive\/\1\/\2/g" ')
