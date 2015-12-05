@@ -36,15 +36,15 @@ function whack_single_build_area()
 
   # kerzap.  the cleanups in production directory remove older locations of generated files.
   rm -rf \
-    "$GENERATED_DIR/clam_bin" \
-    "$GENERATED_DIR/binaries" \
-    "$GENERATED_DIR/install" \
-    "$GENERATED_DIR/logs" \
-    "$GENERATED_DIR/waste" \
     "$FEISTY_MEOW_APEX/generatedJUnitFiles" \
-    "$TEMPORARIES_DIR" \
+    "$GENERATED_DIR/clam_tmp" \
+    "$GENERATED_DIR/logs" \
     "$PRODUCTION_DIR/__build_"*.h \
     "$PRODUCTION_DIR/manifest.txt" \
+    "$RUNTIME_DIR/binaries" \
+    "$RUNTIME_DIR/install" \
+    "$RUNTIME_DIR/waste" \
+    "$TEMPORARIES_DIR" \
     "$PRODUCTION_DIR/clam_bin" \
     "$PRODUCTION_DIR/binaries" \
     "$PRODUCTION_DIR/install" \
