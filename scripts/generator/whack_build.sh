@@ -21,27 +21,25 @@ function whack_single_build_area()
   fi
 
 #old  export NEW_TMP="$(mktemp -d "$CLEANING_LOCALE/TEMPS.XXXXXX")"
-  export NEW_TMP="$(mktemp -d "$TMP/temps-build-whacking.XXXXXX")"
-  export CRUDFILE="$(mktemp "$NEW_TMP/whack_build.XXXXXX")"
+  export CRUDFILE="$(mktemp "$TMP/zz_whack_build.XXXXXX")"
   echo "" &>"$CRUDFILE"
 
-  CLEANING_TOP="$CLEANING_LOCALE/production"
+#  CLEANING_TOP="$CLEANING_LOCALE/production"
 
 #  echo $(date): "  cleaning up the build products..."
 
-  # avoid accidentally removing way too much important stuff if our variables have not
-  # been previously established.
-  local GENERATED_DIR="$CLEANING_TOP/generated-feisty_meow"
-#*** hmmm: above is wrong place now!
-  local TEMPORARIES_DIR="$CLEANING_TOP/temporaries"
+  # avoid accidentally removing important stuff if our variables have not been previously
+  # established.
+  if [ -z "$GENERATED_DIR" -o -z "$TEMPORARIES_DIR" ]; then
+    echo The build whacking script cannot run because either the GENERATED_DIR
+    echo variable or the TEMPORARIES_DIR variable have not been set.  This makes
+    echo it unsafe to remove anything in the build products.
+    exit 1
+  fi
 
-  # kerzap.  the few cleanups in production directory remove older locations of generated files.
+  # kerzap.  the cleanups in production directory remove older locations of generated files.
   rm -rf \
     "$FEISTY_MEOW_DIR/generatedJUnitFiles" \
-    "$CLEANING_TOP/binaries" \
-    "$CLEANING_TOP/install" \
-    "$CLEANING_TOP/logs" \
-    "$CLEANING_TOP/objects" \
     "$TEMPORARIES_DIR" \
     "$GENERATED_DIR" \
     "$CLEANING_TOP/__build_"*.h \
@@ -60,7 +58,7 @@ function whack_single_build_area()
   fi
 
   echo $(date): "cleaned [$choprepo]."
-  rm -rf "$NEW_TMP"
+  rm -rf "$CRUDFILE"
   return 0
 }
 

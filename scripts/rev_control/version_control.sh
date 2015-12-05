@@ -16,7 +16,7 @@ if [[ "$TMP" =~ .:.* ]]; then
   export TMP=/tmp/rev_control_$USER
 fi
 if [ ! -d "$TMP" ]; then
-  mkdir $TMP
+  mkdir -p $TMP
 fi
 if [ ! -d "$TMP" ]; then
   echo "Could not create the temporary directory TMP in: $TMP"

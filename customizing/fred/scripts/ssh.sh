@@ -2,7 +2,7 @@
 
 # wraps our calling the secure shell and lets us pick our credentials.
 
-source "$FEISTY_MEOW_GENERATED/custom/scripts/pick_credentials.sh"
+source "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/pick_credentials.sh"
 
 # save the former terminal title if we're running in X with xterm.
 prior_title=

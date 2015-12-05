@@ -22,15 +22,15 @@ export ERROR_OCCURRED=
   # there have been no errors to start with, at least.  we will set this
   # to non-empty if something bad happens.
 
-if [ -z "$FEISTY_MEOW_GENERATED" ]; then
-  # FEISTY_MEOW_GENERATED is where the generated files are located.
+if [ -z "$FEISTY_MEOW_LOADING_DOCK" ]; then
+  # FEISTY_MEOW_LOADING_DOCK is where the generated files are located.
   # this is our single entry point we can use without knowing any variables
   # yet in the initialization process.
-  export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
+  export FEISTY_MEOW_LOADING_DOCK="$HOME/.zz_feisty_loading"
 #hmmm: the above is kind of a constant.  that's not so great.
 
   # make sure our main variables are established.
-  GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/fmc_variables.sh"
+  GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
   if [ ! -f "$GENERATED_FEISTY_MEOW_VARIABLES" ]; then
     echo -e '\n\n'
     echo "Feisty meow scripts need initialization via the bootstrap process, e.g.:"
@@ -90,7 +90,7 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
     if [ ! -z "$SHELL_DEBUG" ]; then
       echo "the aliases were missing, now they are being added..."
     fi
-    source "$FEISTY_MEOW_GENERATED/fmc_core_and_custom_aliases.sh"
+    source "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh"
   fi
 
   # allow connections to our x server from the local host.

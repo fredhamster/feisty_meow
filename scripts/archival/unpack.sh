@@ -30,7 +30,7 @@ if [ -z "$unpack_dir" ]; then
 fi
 
 if [ ! -d "$unpack_dir" ]; then
-  mkdir "$unpack_dir"
+  mkdir -p "$unpack_dir"
   if [ $? -ne 0 ]; then
     echo "Could not create the unpacking directory: $unpack_dir"
     exit 1

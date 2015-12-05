@@ -19,7 +19,7 @@ LOG_FILE=$TMP/zz_transients.log
 
 word=Verified
 if [ ! -d "$TMP" ]; then
-  mkdir $TMP
+  mkdir -p $TMP
   word=Created
   chown $USER $TMP
   if [ $? -ne 0 ]; then

@@ -11,7 +11,7 @@ echo "$(date_stringer): starting cd mounter..."
 
 while true; do
   if [ ! -d $mountpoint ]; then
-    mkdir $mountpoint
+    mkdir -p $mountpoint
   fi
 
   found_device=$(mount|grep -i cddafs)

@@ -23,7 +23,7 @@
 
 require "filename_helper.pl";
 
-use Env qw(BINDIR BUILD_TOP FEISTY_MEOW_DIR FEISTY_MEOW_GENERATED FEISTY_MEOW_SCRIPTS SHELL_DEBUG );
+use Env qw(BINDIR BUILD_TOP FEISTY_MEOW_DIR FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS SHELL_DEBUG );
 
 # given a possible aliasable filename, this will decide whether to create a perl
 # or bash alias for it.  it needs the filename of the possible alias and the
@@ -74,7 +74,7 @@ sub load_file_names {
 # The "common.alias" file is used in the generated aliases file as a base
 # set of generally useful aliases.  We also add aliases for any script files
 # (perl, bash, python, etc) that we find in the feisty meow script hierarchy.
-# Any *.alias files found in the $FEISTY_MEOW_GENERATED/custom folder are
+# Any *.alias files found in the $FEISTY_MEOW_LOADING_DOCK/custom folder are
 # loaded also.
 sub rebuild_script_aliases {
 
@@ -83,10 +83,10 @@ sub rebuild_script_aliases {
   }
 
   # create our generated shells directory if it's not already.
-  if ( ! -d $FEISTY_MEOW_GENERATED ) {
-    mkdir $FEISTY_MEOW_GENERATED;
+  if ( ! -d $FEISTY_MEOW_LOADING_DOCK ) {
+    mkdir $FEISTY_MEOW_LOADING_DOCK;
     if (length($SHELL_DEBUG)) {
-      print "made FEISTY_MEOW_GENERATED at '$FEISTY_MEOW_GENERATED'\n";
+      print "made FEISTY_MEOW_LOADING_DOCK at '$FEISTY_MEOW_LOADING_DOCK'\n";
     }
   }
 
@@ -97,7 +97,7 @@ sub rebuild_script_aliases {
   @ALIAS_DEFINITION_FILES = ("$FEISTY_MEOW_SCRIPTS/core/common.alias");
 
   # if custom aliases files exist, add them to the list.
-  foreach $i (&glob_list("$FEISTY_MEOW_GENERATED/custom/*.alias")) {
+  foreach $i (&glob_list("$FEISTY_MEOW_LOADING_DOCK/custom/*.alias")) {
     if (-f $i) { push(@ALIAS_DEFINITION_FILES, $i); }
   }
   if (length($SHELL_DEBUG)) {
@@ -111,7 +111,7 @@ sub rebuild_script_aliases {
 
   # write the aliases for sh and bash scripts.
 
-  local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_GENERATED/fmc_core_and_custom_aliases.sh";
+  local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh";
   if (length($SHELL_DEBUG)) {
     print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";
   }
@@ -150,9 +150,9 @@ sub rebuild_script_aliases {
 ##############
 
 # make sure we know where to store the files we're creating.
-if ( ! length("$FEISTY_MEOW_GENERATED") ) {
+if ( ! length("$FEISTY_MEOW_LOADING_DOCK") ) {
   print "\
-The FEISTY_MEOW_GENERATED variable is not defined.  This must point to the location where\n\
+The FEISTY_MEOW_LOADING_DOCK variable is not defined.  This must point to the location where\n\
 the generated scripts are stored.  Perhaps you still need to run\n\
 bootstrap_shells.sh and set up some environment variables.  Please see\n\
 http://feistymeow.org for more details.\n";
@@ -160,13 +160,13 @@ http://feistymeow.org for more details.\n";
 #really need to use better exit codes.
 }
 
-$FEISTY_MEOW_GENERATED =~ s/\\/\//g;
+$FEISTY_MEOW_LOADING_DOCK =~ s/\\/\//g;
 $FEISTY_MEOW_SCRIPTS =~ s/\\/\//g;
 $FEISTY_MEOW_DIR =~ s/\\/\//g;
 
 # create our generated shells directory if it's not already there.
-if (! -d $FEISTY_MEOW_GENERATED) {
-  mkdir $FEISTY_MEOW_GENERATED;
+if (! -d $FEISTY_MEOW_LOADING_DOCK) {
+  mkdir $FEISTY_MEOW_LOADING_DOCK;
 }
 
 ##############
@@ -181,14 +181,14 @@ if (-d $BINDIR) {
 &rebuild_script_aliases;
 
 # trash the old versions.
-unlink("$FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
+unlink("$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 
 if (length($SHELL_DEBUG)) {
-  printf "writing $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh...\n";
+  printf "writing $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh...\n";
 }
 
 # open the alias files to be created.
-open(she, ">> $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
+open(she, ">> $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 
 # find the list of files in the scripts directory.
 #opendir(scripts, "$FEISTY_MEOW_SCRIPTS");
@@ -196,7 +196,7 @@ open(she, ">> $FEISTY_MEOW_GENERATED/fmc_aliases_for_scripts.sh");
 #print "scripts: @shell_files\n";
 
 @shell_files = (&load_file_names("$FEISTY_MEOW_SCRIPTS"),
-   &load_file_names("$FEISTY_MEOW_GENERATED/custom/scripts"));
+   &load_file_names("$FEISTY_MEOW_LOADING_DOCK/custom/scripts"));
 
 # construct aliases for items in the scripts directory.
 foreach $file (@shell_files) {
@@ -219,11 +219,11 @@ foreach $file (@shell_files) {
     foreach $subfile (@subdir_files) {
       push(@shell_files, "$file/$subfile");
     }
-  } elsif (-f "$FEISTY_MEOW_GENERATED/custom/scripts/$file") {
+  } elsif (-f "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/$file") {
     # if we see a file in the auto-generated area that comes from the
     # customized scripts folder, we add it as an alias.
-    make_alias($file, "$FEISTY_MEOW_GENERATED/custom/scripts/");
-    #print "added custom script file: $FEISTY_MEOW_GENERATED/custom/scripts/$file\n";
+    make_alias($file, "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/");
+    #print "added custom script file: $FEISTY_MEOW_LOADING_DOCK/custom/scripts/$file\n";
   } else {
     # if it's a regular file, we'll try to make an alias for it.  the function
     # will only fire if the ending is appropriate for the script languages we use.

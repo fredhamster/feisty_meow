@@ -35,7 +35,7 @@ DIE=". $CLAM_DIR/exit_make.sh"
 if [ "$TYPE" = "library" ]; then
 
   # make sure the required directories exist.
-  if [ ! -d $ROOT ]; then mkdir $ROOT; fi
+  if [ ! -d $ROOT ]; then mkdir -p $ROOT; fi
   if [ ! -d $LIB_DIR ]; then mkdir $LIB_DIR; fi
   if [ ! -d $DLL_DIR ]; then mkdir $DLL_DIR; fi
 

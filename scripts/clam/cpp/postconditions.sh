@@ -25,13 +25,13 @@ for i in *.resources; do rm -f "$i"; done
 # causes the shell to quit.
 DIE="source $CLAM_DIR/exit_make.sh"
 
-if [ ! -d $TARGETS_DIR ]; then mkdir $TARGETS_DIR; fi
+if [ ! -d $TARGETS_DIR ]; then mkdir -p $TARGETS_DIR; fi
 
 if [ "$TYPE" = "library" ]; then
 
   # make sure the required directories exist.
-  if [ ! -d $STATIC_LIBRARY_DIR ]; then mkdir $STATIC_LIBRARY_DIR; fi
-  if [ ! -d $DYNAMIC_LIBRARY_DIR ]; then mkdir $DYNAMIC_LIBRARY_DIR; fi
+  if [ ! -d $STATIC_LIBRARY_DIR ]; then mkdir -p $STATIC_LIBRARY_DIR; fi
+  if [ ! -d $DYNAMIC_LIBRARY_DIR ]; then mkdir -p $DYNAMIC_LIBRARY_DIR; fi
 
 elif [[ "$TYPE" == "application" || "$TYPE" == "test" ]]; then
 
@@ -39,7 +39,7 @@ elif [[ "$TYPE" == "application" || "$TYPE" == "test" ]]; then
   # this project's final directory.
 
   # first make sure the executable directory is around.
-  if [ ! -d $EXECUTABLE_DIR ]; then mkdir $EXECUTABLE_DIR; fi
+  if [ ! -d $EXECUTABLE_DIR ]; then mkdir -p $EXECUTABLE_DIR; fi
 
   if [ -z "$NO_COMPILE" ]; then
     # we ensure that none of the normal products are copied for a non-compiling

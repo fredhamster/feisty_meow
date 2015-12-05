@@ -373,7 +373,7 @@ if [ -z "$skip_all" ]; then
     # interesting note perhaps: found that the NETHACKOPTIONS variable was
     # not being unset correctly when preceded by an alias.  split them up
     # like they are now due to that bug.
-    unset -v CORE_ALIASES_LOADED FEISTY_MEOW_GENERATED NECHUNG NETHACKOPTIONS 
+    unset -v CORE_ALIASES_LOADED FEISTY_MEOW_LOADING_DOCK NECHUNG NETHACKOPTIONS 
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
     source $FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh
@@ -422,8 +422,8 @@ if [ -z "$skip_all" ]; then
       return 1
     fi
     regenerate >/dev/null
-    pushd "$FEISTY_MEOW_GENERATED/custom" &>/dev/null
-    local incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_GENERATED/custom")"
+    pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
+    local incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
     if [ ${#incongruous_files} -ge 1 ]; then
       echo "cleaning unknown older overrides..."
       perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
@@ -431,11 +431,11 @@ if [ -z "$skip_all" ]; then
     fi
     popd &>/dev/null
     echo "copying custom overrides for $user"
-    mkdir "$FEISTY_MEOW_GENERATED/custom" 2>/dev/null
-    perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_GENERATED/custom"
+    mkdir -p "$FEISTY_MEOW_LOADING_DOCK/custom" 2>/dev/null
+    perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_LOADING_DOCK/custom"
     if [ -d "$FEISTY_MEOW_DIR/customizing/$user/scripts" ]; then
       echo "copying custom scripts for $user"
-      \cp -R "$FEISTY_MEOW_DIR/customizing/$user/scripts" "$FEISTY_MEOW_GENERATED/custom/"
+      \cp -R "$FEISTY_MEOW_DIR/customizing/$user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/"
     fi
     echo
     regenerate

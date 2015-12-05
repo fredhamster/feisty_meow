@@ -36,22 +36,22 @@ popd &>/dev/null
 
 export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_DIR/scripts"
 
-# FEISTY_MEOW_GENERATED is where the generated files feisty_meow uses are located.
-export FEISTY_MEOW_GENERATED="$HOME/.zz_auto_gen"
-if [ ! -d "$FEISTY_MEOW_GENERATED" ]; then
-  mkdir "$FEISTY_MEOW_GENERATED"
+# FEISTY_MEOW_LOADING_DOCK is where the generated files feisty_meow uses are located.
+export FEISTY_MEOW_LOADING_DOCK="$HOME/.zz_feisty_loading"
+if [ ! -d "$FEISTY_MEOW_LOADING_DOCK" ]; then
+  mkdir -p "$FEISTY_MEOW_LOADING_DOCK"
 fi
 # make toast out of generated files right away, but leave any custom scripts.
-find "$FEISTY_MEOW_GENERATED" -maxdepth 1 -type f -exec rm -f "{}" ';' &>/dev/null
-if [ ! -d "$FEISTY_MEOW_GENERATED/custom" ]; then
-  mkdir "$FEISTY_MEOW_GENERATED/custom"
+find "$FEISTY_MEOW_LOADING_DOCK" -maxdepth 1 -type f -exec rm -f "{}" ';' &>/dev/null
+if [ ! -d "$FEISTY_MEOW_LOADING_DOCK/custom" ]; then
+  mkdir "$FEISTY_MEOW_LOADING_DOCK/custom"
 fi
 
 # just a variable we use in here to refer to the generated variables file.
-GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_GENERATED/fmc_variables.sh"
+GENERATED_FEISTY_MEOW_VARIABLES="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
 # create the alias file as totally blank.
 echo -n >"$GENERATED_FEISTY_MEOW_VARIABLES"
-for i in FEISTY_MEOW_DIR FEISTY_MEOW_SCRIPTS FEISTY_MEOW_GENERATED; do
+for i in FEISTY_MEOW_DIR FEISTY_MEOW_SCRIPTS FEISTY_MEOW_LOADING_DOCK; do
   echo "export $i=${!i}" >>"$GENERATED_FEISTY_MEOW_VARIABLES"
 done
 

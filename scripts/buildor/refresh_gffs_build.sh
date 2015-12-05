@@ -12,7 +12,7 @@ echo cleaning out the logs directory...
 
 echo making a simple starting log file for container...
 if [ ! -d "$GFFS_LOGS" ]; then
-  mkdir "$GFFS_LOGS"
+  mkdir -p "$GFFS_LOGS"
   check_result Making GFFS logs directory.
 fi
 

@@ -43,7 +43,7 @@ find . -maxdepth 1 -mindepth 1 -type d  >"$tempfile"
 while read found; do
   # make a corresponding directory if there isn't one yet.
   if [ ! -d "$target/$found" ]; then
-    mkdir "$target/$found"
+    mkdir -p "$target/$found"
   fi
   # move all the files out of the source and into the target.
   mv "$found"/* "$target/$found/"

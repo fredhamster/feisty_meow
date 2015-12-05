@@ -101,16 +101,16 @@ export BUILD_TOP="$FEISTY_MEOW_DIR"
 # code needed to produce the executables for feisty meow.
 export PRODUCTION_DIR="$BUILD_TOP/production"
 
-# set up the top-level for all build creations and logs and such.
-export GENERATED_DIR="$TMP/generated-feisty_meow"
-if [ ! -d "$GENERATED_DIR" ]; then
-  mkdir -p "$GENERATED_DIR"
-fi
-# set up our effluent outsourcing valves.
-export TEMPORARIES_DIR="$GENERATED_DIR/temporaries"
-if [ ! -d "$TEMPORARIES_DIR" ]; then
-  mkdir -p "$TEMPORARIES_DIR"
-fi
+## set up the top-level for all build creations and logs and such.
+#export GENERATED_DIR="$TMP/generated-feisty_meow"
+#if [ ! -d "$GENERATED_DIR" ]; then
+#  mkdir -p "$GENERATED_DIR"
+#fi
+## set up our effluent outsourcing valves.
+#export TEMPORARIES_DIR="$GENERATED_DIR/temporaries"
+#if [ ! -d "$TEMPORARIES_DIR" ]; then
+#  mkdir -p "$TEMPORARIES_DIR"
+#fi
 
 # this variable points at a folder where we store the generated products of
 # the build, such as the binaries and installer packages.

@@ -58,7 +58,7 @@ function prepare_binaries_dir()
   # we'll store binaries here from the bootstrap process.
   if [ ! -d "$CLAM_BINARY_DIR" ]; then
     echo "creating binary dir now in $CLAM_BINARY_DIR"
-    mkdir "$CLAM_BINARY_DIR"
+    mkdir -p "$CLAM_BINARY_DIR"
   fi
   if [ ! -f "$CLAM_BINARY_DIR/paths.ini" ]; then
     echo "copied paths.ini to binary dir."

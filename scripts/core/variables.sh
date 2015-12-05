@@ -94,14 +94,29 @@ if [ -z "$NECHUNG" ]; then
       define_yeti_variable FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
     fi
   fi
-  
+
+  # set up the top-level for all build creations and logs and such.
+  if [ -z "$GENERATED_DIR" ]; then
+    define_yeti_variable GENERATED_DIR="$TMP/generated-feisty_meow"
+  fi
+  if [ ! -d "$GENERATED_DIR" ]; then
+    mkdir -p "$GENERATED_DIR"
+  fi
+  # set up our effluent outsourcing valves.
+  if [ -z "$TEMPORARIES_DIR" ]; then
+    define_yeti_variable TEMPORARIES_DIR="$GENERATED_DIR/temporaries"
+  fi
+  if [ ! -d "$TEMPORARIES_DIR" ]; then
+    mkdir -p "$TEMPORARIES_DIR"
+  fi
+
   # similarly, make sure we have someplace to look for our generated files, if
   # we were not handed a value.
-  if [ -z "$FEISTY_MEOW_GENERATED" ]; then
+  if [ -z "$FEISTY_MEOW_LOADING_DOCK" ]; then
     # The generated scripts directory is where automatically generated files live.
     # It is separate from the main body of the shell scripts in order to keep things from
     # exploding.
-    define_yeti_variable FEISTY_MEOW_GENERATED=$HOME/.zz_auto_gen
+    define_yeti_variable FEISTY_MEOW_LOADING_DOCK=$HOME/.zz_feisty_loading
   fi
   
   ##############
@@ -207,7 +222,7 @@ if [ -z "$NECHUNG" ]; then
   
   # add to the PATH variables used for locating applications.  this step is taken after any
   # potential overrides from the user.
-  define_yeti_variable PATH="$(dos_to_unix_path $FEISTY_MEOW_GENERATED):$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
+  define_yeti_variable PATH="$(dos_to_unix_path $FEISTY_MEOW_LOADING_DOCK):$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
   
   ##############
 
@@ -226,7 +241,7 @@ fi
 # override individual variables and definitions.  we also don't guard this
 # to avoid running it again, because we don't know what mix of functions and
 # aliases they want to define in there.
-for i in $FEISTY_MEOW_GENERATED/custom/*.sh; do
+for i in $FEISTY_MEOW_LOADING_DOCK/custom/*.sh; do
   if [ ! -f "$i" ]; then
     # skip it if it's not real.
     continue;

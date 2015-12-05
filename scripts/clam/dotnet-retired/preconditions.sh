@@ -2,27 +2,27 @@
 # prepares the project for compilation by creating the appropriate directories.
 
 # make sure the top-level repository exists.
-if [ ! -d $FEISTY_MEOW_DIR ]; then mkdir $FEISTY_MEOW_DIR; fi
+if [ ! -d $FEISTY_MEOW_DIR ]; then mkdir -p $FEISTY_MEOW_DIR; fi
 # make sure our temp directory is there.
-if [ ! -d $CLAM_TMP ]; then mkdir $CLAM_TMP; fi
+if [ ! -d $CLAM_TMP ]; then mkdir -p $CLAM_TMP; fi
 # make sure the generated files have a home.
-if [ ! -d $TARGETS_DIR ]; then mkdir $TARGETS_DIR; fi
+if [ ! -d $TARGETS_DIR ]; then mkdir -p $TARGETS_DIR; fi
 # create the generated files storage area.
-if [ ! -d $OUTPUT_ROOT ]; then mkdir $OUTPUT_ROOT; fi
+if [ ! -d $OUTPUT_ROOT ]; then mkdir -p $OUTPUT_ROOT; fi
 # create the top level object directory if it doesn't exist.
-if [ ! -d $BASE_OUTPUT_PATH ]; then mkdir $BASE_OUTPUT_PATH; fi
+if [ ! -d $BASE_OUTPUT_PATH ]; then mkdir -p $BASE_OUTPUT_PATH; fi
 # create the project level object directory if it is non-existent.
-if [ ! -d $OUTPUT_PATH ]; then mkdir $OUTPUT_PATH; fi
+if [ ! -d $OUTPUT_PATH ]; then mkdir -p $OUTPUT_PATH; fi
 # create a directory to hold any debugging files, if necessary.
-if [ ! -d $PDB_DIR ]; then mkdir $PDB_DIR; fi
+if [ ! -d $PDB_DIR ]; then mkdir -p $PDB_DIR; fi
 #
-if [ ! -d $TESTS_DIR ]; then mkdir $TESTS_DIR; fi
+if [ ! -d $TESTS_DIR ]; then mkdir -p $TESTS_DIR; fi
 #
-if [ ! -d $EXECUTABLE_DIR ]; then mkdir $EXECUTABLE_DIR; fi
+if [ ! -d $EXECUTABLE_DIR ]; then mkdir -p $EXECUTABLE_DIR; fi
 #
-if [ ! -d $DYNAMIC_LIBRARY_DIR ]; then mkdir $DYNAMIC_LIBRARY_DIR; fi
+if [ ! -d $DYNAMIC_LIBRARY_DIR ]; then mkdir -p $DYNAMIC_LIBRARY_DIR; fi
 #
-if [ ! -d $STATIC_LIBRARY_DIR ]; then mkdir $STATIC_LIBRARY_DIR; fi
+if [ ! -d $STATIC_LIBRARY_DIR ]; then mkdir -p $STATIC_LIBRARY_DIR; fi
 
 # set versions on any extras that were specified in the makefile.
 if [ ! -z "$EXTRA_VERSIONS" ]; then
