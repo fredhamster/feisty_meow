@@ -424,7 +424,10 @@ if [ -z "$skip_all" ]; then
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
     local incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_DIR/customizing/$user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
-    if [ ${#incongruous_files} -ge 1 ]; then
+
+#echo "the incongruous files list is: $incongruous_files"
+    # disallow a single character result, since we get "*" as result when nothing exists yet.
+    if [ ${#incongruous_files} -ge 2 ]; then
       echo "cleaning unknown older overrides..."
       perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
       echo

@@ -91,6 +91,9 @@ sub safedel {
     if (substr($file, length($file) - 1, 1) eq ":") {
       die "removing the root directory of a drive is not permitted!";
     }
+
+#print "file to whack: '$file'\n";
+
     if ( ($file =~ /^.*\/\.$/) || ($file =~ /^.*\/\.\.$/) ) {
       print "ignoring attempt to remove current or parent directory.\n";
       next;
