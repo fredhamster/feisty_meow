@@ -73,7 +73,7 @@ function rebu_bootstrap()
   rebuild_gffs 
   if [ $? -ne 0 ]; then echo "failed to rebuild gffs code"; return 1; fi
 
-  quickstarter="$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
+  quickstarter="$GENII_INSTALL_DIR/toolkit/library/bootstrap_quick_start.sh"
   if [ ! -f "$quickstarter" ]; then
     quickstarter="$XSEDE_TEST_ROOT/library/bootstrap_quick_start.sh"
   fi
@@ -95,7 +95,7 @@ function bu_bootstrap()
   build_gffs 
   if [ $? -ne 0 ]; then echo "failed to rebuild gffs code"; return 1; fi
 
-  quickstarter="$GENII_INSTALL_DIR/xsede_tools/library/bootstrap_quick_start.sh"
+  quickstarter="$GENII_INSTALL_DIR/toolkit/library/bootstrap_quick_start.sh"
   if [ ! -f "$quickstarter" ]; then
     quickstarter="$XSEDE_TEST_ROOT/library/bootstrap_quick_start.sh"
   fi
