@@ -3,7 +3,7 @@
 source $FEISTY_MEOW_SCRIPTS/buildor/gffs_builders.sh
 
 echo stopping any running genesis processes...
-bash $XSEDE_TEST_ROOT/library/zap_genesis_javas.sh 
+bash $GFFS_TOOLKIT_ROOT/library/zap_genesis_javas.sh 
 
 export GFFS_LOGS="$HOME/.GenesisII"
 
@@ -21,7 +21,7 @@ build_gffs
 check_result Building GFFS source code.
 
 echo starting container now and spooling its log file...
-(bash $XSEDE_TEST_ROOT/library/maybe_restart_container.sh &>$TMP/container_restarty.log & )
+(bash $GFFS_TOOLKIT_ROOT/library/maybe_restart_container.sh &>$TMP/container_restarty.log & )
 # snooze a bit so the container gets a chance to write something.
 sleep 4
 tail -f ~/.GenesisII/container.log 

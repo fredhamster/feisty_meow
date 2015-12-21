@@ -7,12 +7,12 @@ define_yeti_alias BAIL_ON_FAIL='if [ $? -ne 0 ]; then echo "A problem occurred. 
 
 function zapem()
 {
-  bash $XSEDE_TEST_ROOT/library/zap_genesis_javas.sh 
+  bash $GFFS_TOOLKIT_ROOT/library/zap_genesis_javas.sh 
 }
 
 # a macro for testing the configuration.
 export GFFS_CHECK_VARS='
-  if [ -z "$GENII_INSTALL_DIR" -o -z "$XSEDE_TEST_ROOT" ]; then
+  if [ -z "$GENII_INSTALL_DIR" -o -z "$GFFS_TOOLKIT_ROOT" ]; then
     echo "GENII_INSTALL_DIR is not set.";
     return 1;
   fi '
@@ -20,7 +20,7 @@ export GFFS_CHECK_VARS='
 function build_gffs()
 {
   eval $GFFS_CHECK_VARS
-#  if [ -z "$GENII_INSTALL_DIR" -o -z "$XSEDE_TEST_ROOT" ]; then
+#  if [ -z "$GENII_INSTALL_DIR" -o -z "$GFFS_TOOLKIT_ROOT" ]; then
 #    echo GENII_INSTALL_DIR is not set.
 #    return 1
 #  fi
@@ -50,7 +50,7 @@ function build_gffs()
 function rebuild_gffs()
 {
   eval $GFFS_CHECK_VARS
-#  if [ -z "$GENII_INSTALL_DIR" -o -z "$XSEDE_TEST_ROOT" ]; then
+#  if [ -z "$GENII_INSTALL_DIR" -o -z "$GFFS_TOOLKIT_ROOT" ]; then
 #    echo GENII_INSTALL_DIR is not set.
 #    return 1
 #  fi
@@ -75,7 +75,7 @@ function rebu_bootstrap()
 
   quickstarter="$GENII_INSTALL_DIR/toolkit/library/bootstrap_quick_start.sh"
   if [ ! -f "$quickstarter" ]; then
-    quickstarter="$XSEDE_TEST_ROOT/library/bootstrap_quick_start.sh"
+    quickstarter="$GFFS_TOOLKIT_ROOT/library/bootstrap_quick_start.sh"
   fi
 
   bash "$quickstarter"
@@ -97,7 +97,7 @@ function bu_bootstrap()
 
   quickstarter="$GENII_INSTALL_DIR/toolkit/library/bootstrap_quick_start.sh"
   if [ ! -f "$quickstarter" ]; then
-    quickstarter="$XSEDE_TEST_ROOT/library/bootstrap_quick_start.sh"
+    quickstarter="$GFFS_TOOLKIT_ROOT/library/bootstrap_quick_start.sh"
   fi
 
   bash "$quickstarter"
@@ -114,7 +114,7 @@ function bu_bootstrap()
 function fast_install_build()
 {
   eval $GFFS_CHECK_VARS
-  bash "$XSEDE_TEST_ROOT/tools/installer/fast_installer_build.sh" $*
+  bash "$GFFS_TOOLKIT_ROOT/tools/installer/fast_installer_build.sh" $*
   if [ $? -ne 0 ]; then
     echo "failed to create the installer."
     error_sound
