@@ -473,7 +473,7 @@ if [ -z "$skip_all" ]; then
   {
     local dir="$1"; shift
     pushd "$dir" &>/dev/null
-    rm $* &>/dev/null
+    rm -rf $* &>/dev/null
     popd &>/dev/null
   }
 
