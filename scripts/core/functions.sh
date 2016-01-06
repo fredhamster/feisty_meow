@@ -467,6 +467,16 @@ if [ -z "$skip_all" ]; then
     sed -i -e "s%$pattern%$replacement%g" "$file"
   }
 
+  # goes to a particular directory passed as parameter 1, and then removes all
+  # the parameters after that from that directory.
+  function push_whack_pop()
+  {
+    local dir="$1"; shift
+    pushd "$dir" &>/dev/null
+    rm $* &>/dev/null
+    popd &>/dev/null
+  }
+
   function spacem()
   {
     while [ $# -gt 0 ]; do
