@@ -78,6 +78,17 @@ if [ -z "$skip_all" ]; then
     IFS="$HOLDIFS"
   }
 
+  # sets the variable in parameter 1 to the value in parameter 2, but only if
+  # that variable was undefined.
+  function set_var_if_undefined()
+  {
+    local var_name="$1"; shift
+    local var_value="$1"; shift
+    if [ -z "${!var_name}" ]; then
+      eval export $var_name="$var_value"
+    fi
+  }
+
   function success_sound()
   {
     if [ ! -z "$CLAM_FINISH_SOUND" ]; then
@@ -567,6 +578,27 @@ return 0
   function function_sentinel() { return 0; }
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo "feisty meow function definitions done."; fi
-  
+
+  ##############
+
+  # test code for set_var_if_undefined.
+  run_test=0
+  if [ $run_test != 0 ]; then
+    echo running tests on set_var_if_undefined.
+    flagrant=petunia
+    set_var_if_undefined flagrant forknordle
+    check_result "testing if defined variable would be whacked"
+    if [ $flagrant != petunia ]; then
+      echo set_var_if_undefined failed to leave the test variable alone
+      exit 1
+    fi
+    unset bobblehead_stomper
+    set_var_if_undefined bobblehead_stomper endurance
+    if [ $bobblehead_stomper != endurance ]; then
+      echo set_var_if_undefined failed to set a variable that was not defined yet
+      exit 1
+    fi
+  fi
+
 fi
 
