@@ -13,7 +13,7 @@ function zapem()
 # a macro for testing the configuration.
 export GFFS_CHECK_VARS='
   if [ -z "$GENII_INSTALL_DIR" -o -z "$GFFS_TOOLKIT_ROOT" ]; then
-    echo "GENII_INSTALL_DIR is not set.";
+    echo "GENII_INSTALL_DIR or GFFS_TOOLKIT_ROOT is not set.";
     return 1;
   fi '
 
