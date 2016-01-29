@@ -20,13 +20,10 @@ export GFFS_CHECK_VARS='
 function build_gffs()
 {
   eval $GFFS_CHECK_VARS
-#  if [ -z "$GENII_INSTALL_DIR" -o -z "$GFFS_TOOLKIT_ROOT" ]; then
-#    echo GENII_INSTALL_DIR is not set.
-#    return 1
-#  fi
   #zapem
   pushd "$GENII_INSTALL_DIR"
   if [ $? -ne 0 ]; then
+    popd
     error_sound
     return 1
   fi
@@ -38,6 +35,7 @@ function build_gffs()
   # build the trunk.
   ant -Dbuild.targetArch=64 build
   if [ $? -ne 0 ]; then
+    popd
     error_sound
     return 1
   fi
@@ -50,19 +48,14 @@ function build_gffs()
 function rebuild_gffs()
 {
   eval $GFFS_CHECK_VARS
-#  if [ -z "$GENII_INSTALL_DIR" -o -z "$GFFS_TOOLKIT_ROOT" ]; then
-#    echo GENII_INSTALL_DIR is not set.
-#    return 1
-#  fi
   #zapem
   pushd "$GENII_INSTALL_DIR"
   ant clean
-
+  popd
   if [ $? -ne 0 ]; then
     error_sound
     return 1
   fi
-  popd
   build_gffs
 }
 
