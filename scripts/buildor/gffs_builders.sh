@@ -107,7 +107,7 @@ function bu_bootstrap()
 function fast_install_build()
 {
   eval $GFFS_CHECK_VARS
-  bash "$GFFS_TOOLKIT_ROOT/tools/installer/fast_installer_build.sh" $*
+  bash "$GFFS_TOOLKIT_ROOT/tools/installer/build_installer.sh" $* fast
   if [ $? -ne 0 ]; then
     echo "failed to create the installer."
     error_sound
