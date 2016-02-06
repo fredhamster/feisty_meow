@@ -154,7 +154,7 @@ if ( ! length("$FEISTY_MEOW_LOADING_DOCK") ) {
   print "\
 The FEISTY_MEOW_LOADING_DOCK variable is not defined.  This must point to the location where\n\
 the generated scripts are stored.  Perhaps you still need to run\n\
-bootstrap_shells.sh and set up some environment variables.  Please see\n\
+reconfigure_feisty_meow.sh and set up some environment variables.  Please see\n\
 http://feistymeow.org for more details.\n";
   exit 1;
 #really need to use better exit codes.

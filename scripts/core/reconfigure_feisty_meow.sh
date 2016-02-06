@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# bootstrap_shells:
+# reconfigure_feisty_meow:
 #
 # This script creates the directory for auto-generated scripts and gets
 # the current user's account ready to use the feisty meow scripts.

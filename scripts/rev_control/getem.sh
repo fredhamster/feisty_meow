@@ -44,7 +44,7 @@ fi
 ##############
 
 # we now regenerate the scripts after getme, to ensure it's done automatically.
-bash "$FEISTY_MEOW_SCRIPTS/core/bootstrap_shells.sh"
+bash "$FEISTY_MEOW_SCRIPTS/core/reconfigure_feisty_meow.sh"
 perl "$FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl"
 echo
 nechung

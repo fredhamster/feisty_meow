@@ -34,7 +34,7 @@ if [ -z "$FEISTY_MEOW_LOADING_DOCK" ]; then
   if [ ! -f "$FEISTY_MEOW_VARIABLES_LOADING_FILE" ]; then
     echo -e '\n\n'
     echo "Feisty meow scripts need initialization via the bootstrap process, e.g.:"
-    echo "  bash $HOME/feisty_meow/scripts/core/bootstrap_shells.sh"
+    echo "  bash $HOME/feisty_meow/scripts/core/reconfigure_feisty_meow.sh"
     echo -e '\n\n'
     ERROR_OCCURRED=true
   fi

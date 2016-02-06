@@ -19,7 +19,7 @@ Quick Start for the Feisty Meow Codebase:
     Note that you may need to install some dependencies first (see below
     for installation instructions).
 
-    bash ~/feisty_meow/scripts/generator/bootstrap_build.sh
+    bash ~/feisty_meow/scripts/generator/produce_feisty_meow.sh
 
     All the applications can be found in $BINDIR
     after the build is complete.
@@ -36,7 +36,7 @@ Quick Start for the Feisty Meow Codebase:
     Set up the feisty_meow scripts the first time; this is only needed once,
     unless you want to regenerate the scripts from the latest version.
 
-    bash ~/feisty_meow/scripts/core/bootstrap_shells.sh
+    bash ~/feisty_meow/scripts/core/reconfigure_feisty_meow.sh
 
     Load the script environment into the current shell.
 

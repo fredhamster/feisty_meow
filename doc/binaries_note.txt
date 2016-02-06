@@ -4,7 +4,7 @@ in the production/win32_helper folder.  Feel free to not trust it.
 
 short_path.exe:
   This tool is built by the feisty meow application bootstrapping process
-  (that is, by scripts/generator/bootstrap_build.sh), but unfortunately it is
+  (that is, by scripts/generator/produce_feisty_meow.sh), but unfortunately it is
   needed *by* that process when your visual studio installation path has
   spaces in it.  To fix this chicken & egg problem, you can manually change
   your VC root variable (e.g. VS100COMNTOOLS) to the short path version (as

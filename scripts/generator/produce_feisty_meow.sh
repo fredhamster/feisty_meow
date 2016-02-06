@@ -37,7 +37,7 @@ BUILD_SCRIPTS_DIR="$(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' )"
 
 # load in feisty meow basic scripts, if not already loaded.
 if [ -z "$FEISTY_MEOW_SCRIPTS_LOADED" ]; then
-  bash "$BUILD_SCRIPTS_DIR/../core/bootstrap_shells.sh"
+  bash "$BUILD_SCRIPTS_DIR/../core/reconfigure_feisty_meow.sh"
   source "$BUILD_SCRIPTS_DIR/../core/launch_feisty_meow.sh"
 fi
 
