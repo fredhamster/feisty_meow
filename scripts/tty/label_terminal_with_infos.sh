@@ -3,6 +3,8 @@
 # this script makes a new title for the terminal window that matches the
 # hostname and some other details.
 
+source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+
 pruned_host=$(echo $HOSTNAME | sed -e 's/^\([^\.]*\)\..*$/\1/')
 date_string=$(date +"%Y %b %e @ %T")
 
