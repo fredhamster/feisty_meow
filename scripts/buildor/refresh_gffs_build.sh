@@ -21,7 +21,7 @@ build_gffs
 check_result Building GFFS source code.
 
 echo starting container now and spooling its log file...
-(bash $GFFS_TOOLKIT_ROOT/library/maybe_restart_container.sh &>$TMP/container_restarty.log & )
+(bash $GFFS_TOOLKIT_ROOT/library/maybe_restart_container.sh &>$TMP/main_container_restarting.log & )
 # snooze a bit so the container gets a chance to write something.
 sleep 4
 tail -f ~/.GenesisII/container.log 
