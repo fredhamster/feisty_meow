@@ -29,5 +29,6 @@ fi
 
 echo iso "$iso_name" dev "$device_name"
 
-growisofs -speed=2 -dvd-compat -Z ${device_name}=${iso_name}
+growisofs -dvd-compat -Z ${device_name}=${iso_name}
+#trying with letting it go default speed.  has been working for us recently. -speed=2 
 
