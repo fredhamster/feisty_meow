@@ -34,6 +34,10 @@ export JAVA_BIN_PIECE=bin
 
 if [ ! -d "$JAVA_HOME" ]; then
   # try a recent version.
+  export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+fi
+if [ ! -d "$JAVA_HOME" ]; then
+  # or an older version.
   export JAVA_HOME=/usr/lib/jvm/java-7-oracle
 fi
 if [ ! -d "$JAVA_HOME" ]; then
