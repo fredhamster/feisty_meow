@@ -21,9 +21,11 @@ export TERM=linux
 #      forcing one to hit ctrl-c.
 
 if [ ! -z "$keyfile" ]; then
-  \ssh -i "$keyfile" -X -C -c blowfish-cbc $*
+  \ssh -i "$keyfile" -X -C $*
+#-c blowfish-cbc 
 else
-  \ssh -X -C -c blowfish-cbc $*
+  \ssh -X -C $*
+#-c blowfish-cbc 
 fi
 
 if [ $? -eq 0 ]; then
