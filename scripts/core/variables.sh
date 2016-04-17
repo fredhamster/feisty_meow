@@ -152,6 +152,7 @@ if [ -z "$NECHUNG" ]; then
   # variables for perl.
   
   define_yeti_variable PERLLIB+="/usr/lib/perl5"
+  define_yeti_variable PERL5LIB+="/usr/lib/perl5"
   if [ "$OS" == "Windows_NT" ]; then
     define_yeti_variable PERLIO=:perlio
       # choose perl's IO over the ms-windows version so we can handle file
@@ -166,6 +167,7 @@ if [ -z "$NECHUNG" ]; then
       ls $i/*.pl &>/dev/null
       if [ $? -eq 0 ]; then
         PERLLIB+=":$(dos_to_unix_path $i)"
+        PERL5LIB+=":$(dos_to_unix_path $i)"
       fi
     fi
   done
