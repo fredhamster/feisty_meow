@@ -138,46 +138,63 @@ if [ -z "$skip_all" ]; then
 
     local PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
     local -a PIDS_SOUGHT
+
     if [ "$OS" == "Windows_NT" ]; then
+      # gets cygwin's (god awful) ps to show windoze processes also.
+      local EXTRA_DOZER_FLAGS="-W"
+      # pattern to use for peeling off the process numbers.
+      local pid_finder_pattern='s/ *\([0-9][0-9]*\) *.*$/\1/p'
 
-#hmmm: windows isn't implementing the user flag yet!
-#try collapsing back to the ps implementation from cygwin?
-# that would simplify things a lot, if we can get it to print the right output.
-
-      # windows case has some odd gyrations to get the user list.
-      if [ ! -d c:/tmp ]; then
-        mkdir c:/tmp
-      fi
-      # windows7 magical mystery tour lets us create a file c:\\tmp_pids.txt, but then it's not
-      # really there in the root of drive c: when we look for it later.  hoping to fix that
-      # problem by using a subdir, which also might be magical thinking from windows perspective.
-      tmppid=c:\\tmp\\pids.txt
-      # we have abandoned all hope of relying on ps on windows.  instead we use wmic to get full
-      # command lines for processes.
-      wmic /locale:ms_409 PROCESS get processid,commandline </dev/null >"$tmppid"
-      local flag='/c'
-      if [ ! -z "$(uname -a | grep "^MING" )" ]; then
-        flag='//c'
-      fi
-      # we 'type' the file to get rid of the unicode result from wmic.
-      # needs to be a windows format filename for 'type' to work.
-      cmd $flag type "$tmppid" >$PID_DUMP
-      \rm "$tmppid"
-      local pid_finder_pattern='s/^.*[[:space:]][[:space:]]*\([0-9][0-9]*\) *\$/\1/p'
-      local i
-      for i in "${patterns[@]}"; do
-        PIDS_SOUGHT+=($(cat $PID_DUMP \
-          | grep -i "$i" \
-          | sed -n -e "$pid_finder_pattern"))
-      done
     else
-      /bin/ps $user_flag -o pid,args >$PID_DUMP
+      # flags which clean up the output on unixes, which apparently cygwin
+      # doesn't count as.  their crappy specialized ps doesn't support this.
+      local EXTRA_UNIX_FLAGS="-o pid,args"
+      # pattern to use for peeling off the process numbers.
+      local pid_finder_pattern='s/^[[:space:]]*\([0-9][0-9]*\).*$/\1/p'
+    fi
+
+
+#    if [ "$OS" == "Windows_NT" ]; then
+#
+##hmmm: windows isn't implementing the user flag yet!
+##try collapsing back to the ps implementation from cygwin?
+## that would simplify things a lot, if we can get it to print the right output.
+#
+#      # windows case has some odd gyrations to get the user list.
+#      if [ ! -d c:/tmp ]; then
+#        mkdir c:/tmp
+#      fi
+#      # windows7 magical mystery tour lets us create a file c:\\tmp_pids.txt, but then it's not
+#      # really there in the root of drive c: when we look for it later.  hoping to fix that
+#      # problem by using a subdir, which also might be magical thinking from windows perspective.
+#      tmppid=c:\\tmp\\pids.txt
+#      # we have abandoned all hope of relying on ps on windows.  instead we use wmic to get full
+#      # command lines for processes.
+#      wmic /locale:ms_409 PROCESS get processid,commandline </dev/null >"$tmppid"
+#      local flag='/c'
+#      if [ ! -z "$(uname -a | grep "^MING" )" ]; then
+#        flag='//c'
+#      fi
+#      # we 'type' the file to get rid of the unicode result from wmic.
+#      # needs to be a windows format filename for 'type' to work.
+#      cmd $flag type "$tmppid" >$PID_DUMP
+#      \rm "$tmppid"
+#      local pid_finder_pattern='s/^.*[[:space:]][[:space:]]*\([0-9][0-9]*\) *\$/\1/p'
+#      local i
+#      for i in "${patterns[@]}"; do
+#        PIDS_SOUGHT+=($(cat $PID_DUMP \
+#          | grep -i "$i" \
+#          | sed -n -e "$pid_finder_pattern"))
+#      done
+#    else
+
+
+      /bin/ps $EXTRA_DOZER_FLAGS $EXTRA_UNIX_FLAGS $user_flag | tail -n +2 >$PID_DUMP
 #echo ====
 #echo got all this stuff in the pid dump file:
 #cat $PID_DUMP
 #echo ====
-      # pattern to use for peeling off the process numbers.
-      local pid_finder_pattern='s/^[[:space:]]*\([0-9][0-9]*\).*$/\1/p'
+
       # remove the first line of the file, search for the pattern the
       # user wants to find, and just pluck the process ids out of the
       # results.
@@ -187,7 +204,6 @@ if [ -z "$skip_all" ]; then
 #echo phase 1: $(cat $PID_DUMP | sed -e '1d' )
 #echo phase 2: $(cat $PID_DUMP | sed -e '1d' | grep -i "$i" )
         PIDS_SOUGHT+=($(cat $PID_DUMP \
-          | sed -e '1d' \
           | grep -i "$i" \
           | sed -n -e "$pid_finder_pattern"))
       done
@@ -195,7 +211,8 @@ if [ -z "$skip_all" ]; then
 #echo pids sought list became:
 #echo "${PIDS_SOUGHT[@]}"
 #echo ====
-    fi
+#####    fi
+
     if [ ${#PIDS_SOUGHT[*]} -ne 0 ]; then
       local PIDS_SOUGHT2=$(printf -- '%s\n' ${PIDS_SOUGHT[@]} | sort | uniq)
       PIDS_SOUGHT=()
@@ -244,7 +261,7 @@ if [ -z "$skip_all" ]; then
         # special case for windows.
         ps | head -1
         for curr in $p; do
-          ps -W | grep "$curr" 
+          ps -p $curr | tail -n +2
         done
       else
         # normal OSes can handle a nice simple query.
