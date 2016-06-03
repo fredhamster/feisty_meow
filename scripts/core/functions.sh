@@ -261,7 +261,7 @@ if [ -z "$skip_all" ]; then
         # special case for windows.
         ps | head -1
         for curr in $p; do
-          ps -p $curr | tail -n +2
+          ps -W -p $curr | tail -n +2
         done
       else
         # normal OSes can handle a nice simple query.
