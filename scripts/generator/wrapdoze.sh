@@ -8,6 +8,11 @@ function dossify_environment_variable()
 {
   local var="$1"; shift
 
+#cygpath doesn't handle multiple path variables properly and otherwise operates only on one path element.
+##  new_value="$(cygpath -p -d ${!var})"
+##  eval "export $var=\"$new_value\""
+##echo "hey now the var is '${!var}'"
+
   old_value="${!var}"
   if [[ ! "$old_value" =~ \/cygdrive\/ ]]; then
 #echo didnt have a cygdrive in it: $old_value
@@ -21,8 +26,8 @@ function dossify_environment_variable()
   # remove any quote characters in the value.
   new_value="${new_value//\"/}"
 
-#  echo "new value: $var  =  $new_value"
   eval "export $var=\"$new_value\""
+  echo "new value established: $var='${!var}'"
 }
 
 # for a windows build, this will replace any forward slashes
