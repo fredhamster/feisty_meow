@@ -11,26 +11,42 @@ function line()
   echo "======="
 }
 
+# copies the files for a particular game out to a spooling folder.
+function copyem()
+{
+  game_name="$1"; shift
+  source_dir="$1"; shift
+  out_dir="$1"; shift
+
+  if [ -d "$source_dir" ]; then
+    echo $game_name
+    cp -v -n "$source_dir"/* "$out_dir"/
+    line
+  fi
+}
+
 # make the output folders if they don't exist.
-for i in oblivion fallout_new_vegas fallout_3 skyrim ; do
+for i in skyrim fallout_new_vegas fallout_3 oblivion fallout4 ; do
   if [ ! -d "$SPOOLING_OUTPUT_DIR/$i" ]; then
     mkdir -p "$SPOOLING_OUTPUT_DIR/$i"
   fi
 done
 
-# now run through and copy our save files from the potentially weird
-# locations they reside in.
+# now run through and copy our save files from the potentially weird locations
+# they reside in.
+
+#hmmm: at least make a function out of those repetitive steps.  sheesh.
+
 line
-echo skyrim
-cp -v -n "$WINE_SOURCE_DIR/Skyrim/Saves"/* "$SPOOLING_OUTPUT_DIR/skyrim/"
-line
-echo fallout new vegas
-cp -v -n "$WINE_SOURCE_DIR/FalloutNV/Saves"/* "$SPOOLING_OUTPUT_DIR/fallout_new_vegas/"
-line
-echo fallout 3
-cp -v -n "$WINE_SOURCE_DIR/Fallout3/Saves/Player1"/* "$SPOOLING_OUTPUT_DIR/fallout_3/"
-line
-echo oblivion
-cp -v -n "$WINE_SOURCE_DIR/Oblivion/Saves"/* "$SPOOLING_OUTPUT_DIR/oblivion/"
-line
+
+copyem "skyrim" "$WINE_SOURCE_DIR/Skyrim/Saves" "$SPOOLING_OUTPUT_DIR/skyrim"
+
+copyem "fallout new vegas" "$WINE_SOURCE_DIR/FalloutNV/Saves" "$SPOOLING_OUTPUT_DIR/fallout_new_vegas"
+
+copyem "fallout 3" "$WINE_SOURCE_DIR/Fallout3/Saves/Player1" "$SPOOLING_OUTPUT_DIR/fallout_3"
+
+copyem "oblivion" "$WINE_SOURCE_DIR/Oblivion/Saves" "$SPOOLING_OUTPUT_DIR/oblivion/"
+
+copyem "fallout 4" "$WINE_SOURCE_DIR/Fallout4/Saves" "$SPOOLING_OUTPUT_DIR/fallout4"
+
 
