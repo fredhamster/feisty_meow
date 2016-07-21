@@ -1,18 +1,17 @@
 #ifndef STOPWATCH_CLASS
 #define STOPWATCH_CLASS
 
-/***
-*
-*  Name   : stopwatch
-*  Author : Chris Koeritz
-*******************************************************************************
-* Copyright (c) 1991-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
-\*****************************************************************************/
+/*
+ *  Name   : stopwatch
+ *  Author : Chris Koeritz
+ *
+ * Copyright (c) 1991-$now By Author.  This program is free software; you can
+ * redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 2 of
+ * the License or (at your option) any later version.  This is online at:
+ *     http://www.fsf.org/copyleft/gpl.html
+ * Please send any updates to: fred@gruntose.com
+ */
 
 #include "time_stamp.h"
 
