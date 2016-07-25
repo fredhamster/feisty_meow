@@ -183,6 +183,7 @@ fi
 chmod 755 "$CLAM_DIR"/*.sh
 chmod 755 "$CLAM_DIR"/cpp/*.sh
 #chmod 755 "$CLAM_DIR"/csharp/*.sh
+chmod 755 "$FEISTY_MEOW_SCRIPTS/generator/wrapdoze.sh"
 
 # rebuild the dependency tool.  needed by everything, pretty much, but
 # since it's from the xfree project, it doesn't need any of our libraries.
