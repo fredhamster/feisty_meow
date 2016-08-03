@@ -3,7 +3,7 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
-# special for equanimity; get zooty informed of our IP so we can make
+# special for firewall host; get zooty informed of our IP so we can make
 # the back-connection and get home.
-14,28,42,56 * * * * (bash /home/fred/feisty_meow/scripts/security/tell_zooty_our_ip.sh serene.feistymeow.org fred fred ) &>>/tmp/zooty_tell_report.txt
+0,14,28,42,56 * * * * (bash /home/fred/feisty_meow/scripts/security/tell_zooty_our_ip.sh serene.feistymeow.org fred fred ) &>>/tmp/zooty_tell_report.txt
 
