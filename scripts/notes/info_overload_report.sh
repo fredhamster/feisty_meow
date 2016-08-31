@@ -123,7 +123,7 @@ analyze_by_dir_patterns "trivial items" ~/cloud/trivia*
 
 # some source code that needs to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.  but they have, so we track them.
-analyze_hierarchy_and_report ~/cloud/scavenge_source "source scavenging"
+analyze_hierarchy_and_report ~/cloud/scavenging_source "source scavenging"
 
 # and then count up the things that we think will be cleaned soon, but one thing we have learned
 # unsorted files haven't been categorized yet.
