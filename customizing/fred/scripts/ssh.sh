@@ -6,8 +6,11 @@ source "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/pick_credentials.sh"
 
 # save the former terminal title if we're running in X with xterm.
 prior_title=
-if [ "$TERM" == "xterm" ]; then
-  prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+which xprop &>/dev/null
+if [ $? -eq 0 ]; then
+  if [ "$TERM" == "xterm" ]; then
+    prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+  fi
 fi
 
 # force the TERM variable to a more generic version for other side.
