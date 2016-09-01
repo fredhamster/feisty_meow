@@ -28,8 +28,6 @@ function get_source()
 
 liney
 
-liney
-
 ls /media/fred/soapboxdrive
 if [ $? -ne 0 ]; then
   echo The soapbox drive is not mounted currently, so cannot be updated.
