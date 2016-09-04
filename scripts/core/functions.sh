@@ -551,6 +551,29 @@ return 0
 
   ##############
 
+  # just shows a separator line for an 80 column console, or uses the first
+  # parameter as the number of columns to expect.
+  function separator()
+  {
+    count=$1; shift
+    if [ -z "$count" ]; then
+      count=79
+    fi
+    echo
+    for ((i=0; i < $count - 1; i++)); do
+      echo -n "="
+    done
+    echo
+    echo
+  }
+  # alias for separator.
+  function sep()
+  {
+    separator $*
+  }
+
+  ##############
+
   function function_sentinel() { return 0; }
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo "feisty meow function definitions done."; fi

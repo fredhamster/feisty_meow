@@ -9,18 +9,3 @@ define_yeti_alias unmoo='sudo umount /z/stuffing ; sudo umount /z/walrus ; sudo 
 # load in the gffs build scripts.
 source "$FEISTY_MEOW_SCRIPTS/buildor/gffs_builders.sh"
 
-# just shows a separator line for an 80 column console, or uses the first
-# parameter as the number of columns to expect.
-function line()
-{
-  count=$1; shift
-  if [ -z "$count" ]; then
-    count=80
-  fi
-  echo
-  for ((i=0; i < $count - 1; i++)); do
-    echo -n "="
-  done
-  echo
-  echo
-}
