@@ -80,6 +80,15 @@ shopt -s checkwinsize
 
 ##############
 
+# make history writes immediate to avoid losing history if bash is zapped.
+echo $PROMPT_COMMAND | grep -q history
+if [ $? -ne 0 ]; then
+  # we only change the prompt command if we think it hasn't already been done.
+  export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+fi
+
+##############
+
 if [ -z "$LIGHTWEIGHT_INIT" ]; then
   # perform the bulkier parts of the initialization process.
 
