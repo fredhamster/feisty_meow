@@ -67,6 +67,9 @@ unlink $infofile;
 # now get the entire /etc hierarchy...
 &backup_hierarchy($snarf_file_base, $number, "/", "etc");
 
+# suck in the current state for the resolver.
+&backup_hierarchy($snarf_file_base, $number, "/", "run/resolvconf");
+
 # clean out extra files.
 &remove_from_backup($snarf_file_base, $number, "etc/cups/ppds.dat*");
 &remove_from_backup($snarf_file_base, $number, "etc/httpd/conf/ssl.crt/ca-bundle.crt");
