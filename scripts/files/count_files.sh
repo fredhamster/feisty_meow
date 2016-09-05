@@ -25,6 +25,6 @@ done |
   # eat the zeroes but keep the tabular look (i.e. replace each leading zero 
   # with a space).  had to do it as cases, since this seems like context-
   # sensitive matching, which sed will not do, i think).
-  sed -e 's/^000000/      /' -e 's/^00000/     /' -e 's/^0000/    /' \
+  sed -e 's/^000000/     0/' -e 's/^00000/     /' -e 's/^0000/    /' \
       -e 's/^000/   /' -e 's/^00/  /' -e 's/^0/ /'
 
