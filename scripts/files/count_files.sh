@@ -19,10 +19,12 @@ for i in "${@}" ; do
   # redigested as spaces before showing the list.
   printf "%06d -- %s\n" $(find "$i" -type f | wc -l) "$i"
 done |
-# provide sorted output based on how many files exist
-# in each directory.
+  # provide sorted output based on how many files exist
+  # in each directory.
   sort -r |
-# eat the zeroes but keep the tabular look.  this simple
-# sed code will eat zeroes in names also.  oops.
-  sed -e 's/0/ /g'
+  # eat the zeroes but keep the tabular look (i.e. replace each leading zero 
+  # with a space).  had to do it as cases, since this seems like context-
+  # sensitive matching, which sed will not do, i think).
+  sed -e 's/^000000/      /' -e 's/^00000/     /' -e 's/^0000/    /' \
+      -e 's/^000/   /' -e 's/^00/  /' -e 's/^0/ /'
 
