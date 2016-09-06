@@ -1,0 +1,15 @@
+
+
+# add a new remote target for the repository.  this assumes you're in the
+# feisty meow folder to start with.
+git remote add github https://github.com/fredhamster/feisty_meow.git
+
+# check that the new repo is listed as a remote, plus the original origins are
+# still listed.
+git remote -v
+
+# stuff the repository contents up to the target.
+git push github master
+
+
+
