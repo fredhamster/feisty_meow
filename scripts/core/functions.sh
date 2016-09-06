@@ -560,6 +560,7 @@ return 0
       count=79
     fi
     echo
+    local i
     for ((i=0; i < $count - 1; i++)); do
       echo -n "="
     done
