@@ -9,6 +9,18 @@
 #
 # rats: how did i set up that archive?
 #       we need to have those steps someplace.
+# the remote config is like this so far:
+#
+#fred@serene $ git remote -v
+#origin	ssh://fred_t_hamster@git.code.sf.net/p/feistymeow/trunk (fetch)
+#origin	ssh://fred_t_hamster@git.code.sf.net/p/feistymeow/trunk (push)
+#upstream	git@feistymeow.org:feisty_meow (fetch)
+#upstream	git@feistymeow.org:feisty_meow (push)
+#
+# so, we've got it hooked together with a named remote called "upstream" that is
+# actually our source location, and the target is actually the "origin" remote for
+# the repository.
+
 
 dir="$1"; shift
 if [ -z "$dir" ]; then
