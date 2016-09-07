@@ -31,3 +31,5 @@ popd &>/dev/null
 
 diff "$out1".sort "$out2".sort
 
+rm "$out1" "$out1".sort "$out2" "$out2".sort
+
