@@ -3,13 +3,10 @@
 # a helpful script that scrapes any active game saves from wine's storage
 # area into a spooling saves folder for archiving.
 
+source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+
 WINE_SOURCE_DIR="$HOME/wine_goods/My Games"
 SPOOLING_OUTPUT_DIR="$HOME/spooling_saves"
-
-function line()
-{
-  echo "======="
-}
 
 # copies the files for a particular game out to a spooling folder.
 function copyem()
@@ -21,7 +18,7 @@ function copyem()
   if [ -d "$source_dir" ]; then
     echo $game_name
     cp -v -n "$source_dir"/* "$out_dir"/
-    line
+    sep 28
   fi
 }
 
@@ -37,7 +34,7 @@ done
 
 #hmmm: at least make a function out of those repetitive steps.  sheesh.
 
-line
+sep 28
 
 copyem "skyrim" "$WINE_SOURCE_DIR/Skyrim/Saves" "$SPOOLING_OUTPUT_DIR/skyrim"
 
