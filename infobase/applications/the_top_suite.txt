@@ -1,0 +1,10 @@
+
+
+top: shows processor and memory usage by processes.
+
+iftop: shows network interface usage by internet address.
+
+iotop: shows input/output activity by processes.
+
+
+
