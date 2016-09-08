@@ -2,13 +2,6 @@
 
 # updates my little 1 TB "soapbox" style usb drive with items that it should contain.
 
-function liney()
-{
-  echo
-  echo ==============
-  echo
-}
-
 function get_source()
 {
   folder="$1"; shift
@@ -26,7 +19,7 @@ function get_source()
   popd
 }
 
-liney
+sep
 
 ls /media/fred/soapboxdrive
 if [ $? -ne 0 ]; then
@@ -34,7 +27,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-liney
+sep
 
 echo synching walrus...
 rsync -av /z/walrus/* /media/fred/soapboxdrive/walrus/
@@ -43,7 +36,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-liney
+sep
 
 echo synching musix...
 rsync -av /z/musix/* /media/fred/soapboxdrive/musix/
@@ -52,19 +45,19 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-liney
+sep
 
 echo getting latest fred codes...
 pushd /media/fred/soapboxdrive
 get_source extra_brain
 
-liney
+sep
 
 echo getting latest gffs codes...
 get_source gffs
 popd
 
-liney
+sep
 
 echo Updated all portions of the soapbox drive successfully.
 

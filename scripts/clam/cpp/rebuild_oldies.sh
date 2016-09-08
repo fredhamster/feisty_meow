@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ -f "$BUILD_LIST_FILE" ]; then
-  echo Compiling [$(cat $BUILD_LIST_FILE | while read line; do echo $(basename $line); done )]
+  echo Compiling [$(cat $BUILD_LIST_FILE | while read input_text; do echo $(basename $input_text); done )]
   rm -f $(cat $BUILD_WHACK_FILE)
 #echo got line to run: $*
   eval "${@}"

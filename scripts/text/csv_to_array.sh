@@ -40,10 +40,10 @@ function parse_csv_line()
 
 for i in $*; do
   echo reading $i
-  while read line; do
-#    echo line is $line
+  while read input_text; do
+#    echo input_text is $input_text
     csv_split=()
-    parse_csv_line "$line"
+    parse_csv_line "$input_text"
 
     if [ ${#csv_split[*]} -lt 1 ]; then
       echo did not see any fields in the split array.

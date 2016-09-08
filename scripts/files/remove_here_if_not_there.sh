@@ -44,9 +44,9 @@ whack_list="$(mktemp "$TMP/remover_list.XXXXXX")"
 
 comm -23 "$here_temp_file" "$there_temp_file" >"$whack_list"
 
-while read line; do
-  if [ -z "$line" ]; then break; fi
-  herename="$here/$line"
+while read input_text; do
+  if [ -z "$input_text" ]; then break; fi
+  herename="$here/$input_text"
   rm -v "$herename"
 done <"$whack_list"
 

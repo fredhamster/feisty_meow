@@ -15,7 +15,7 @@ if [ ! -z "$grunty" ]; then
   FILE_LIST=$(find $VOXDIR -type f)
 echo "file list is $FILE_LIST"
   LINES=$(find $VOXDIR -type f | wc -l)
-#echo "lines is $LINES"
+#echo "info found is: $LINES"
   LESS_CHANCE=$(expr $LINES \\* 4)
 #echo "less chance is $LESS_CHANCE"
   TO_PLAY=

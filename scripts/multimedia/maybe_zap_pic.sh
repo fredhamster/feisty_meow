@@ -14,9 +14,9 @@ for i in "$@"; do
   eog "$file"
   # now ask the big question: to whack or not to whack?
   echo "whack this file? (y/N)"
-  read line
+  read inputtext
   # a few things mean yes here.
-  if [ "$line" == "y" -o "$line" == "Y" -o "$line" == "yes" ]; then
+  if [ "$inputtext" == "y" -o "$inputtext" == "Y" -o "$inputtext" == "yes" ]; then
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     echo "$(date): deleting $file."
     perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl "$file"

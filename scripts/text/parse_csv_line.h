@@ -1,3 +1,4 @@
+#!/bin/bash
 ############################################################################
 # This function parses a line from a CSV file (you pass the line as the 
 # argument) into elements in an array.  The CSV elements must be enclosed

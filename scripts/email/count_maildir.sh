@@ -9,7 +9,7 @@ folderlist=$TMP/zz_folder_list.txt
 
 find . -name "cur" >$folderlist
 
-while read line; do echo -n "$line  -- " ; find "$line" -type f | wc -l ; done < $folderlist
+while read input_text; do echo -n "$input_text  -- " ; find "$input_text" -type f | wc -l ; done < $folderlist
 
 popd &>/dev/null
 

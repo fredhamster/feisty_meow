@@ -31,9 +31,9 @@ while true; do
 #cat $NAME_LIST_TEMP_FILE
 #echo ====================================================
 
-  while read line; do
-#echo line is $line
-    count=$(grep -h -v -c "^[ ]*$" $line)
+  while read input_text; do
+#echo input_text is $input_text
+    count=$(grep -h -v -c "^[ ]*$" $input_text)
     TOTALS=$(($TOTALS + $count))
 #echo total is $TOTALS now
   done < "$NAME_LIST_TEMP_FILE"

@@ -31,9 +31,9 @@ find "$dir" -iname "*.jar" -o -iname "*.zip" -o -iname "*.tar" \
   -o -iname "*.iar" -o -iname "*.oar" -o -iname "*.bz2" -o -iname "*.snarf" \
   >"$TMPFILE"
 
-while read line; do
-  bash $FEISTY_MEOW_SCRIPTS/archival/list_arch.sh "$line" 2>&1 | grep -i "$pattern" >/dev/null
-  if [ $? -eq 0 ]; then echo ==== Found pattern in $line ====; fi
+while read input_text; do
+  bash $FEISTY_MEOW_SCRIPTS/archival/list_arch.sh "$input_text" 2>&1 | grep -i "$pattern" >/dev/null
+  if [ $? -eq 0 ]; then echo ==== Found pattern in $input_text ====; fi
 done <"$TMPFILE"
 
 \rm -f "$TMPFILE"
