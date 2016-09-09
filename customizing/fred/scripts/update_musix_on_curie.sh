@@ -4,5 +4,6 @@
 rsync -av /media/fred/fredmusicprime/musix/* /z/musix/
 rsync -avz /z/musix/* surya:/z/musix/ 
 rsync -avz /z/musix/* wildmutt:/z/musix/ 
+rsync -avz /z/musix/* euphrosyne:/z/musix/ 
 
 
