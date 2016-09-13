@@ -195,7 +195,7 @@ LOG(diffs.text_form());
 LOG("reading tree to recreate");
     directory_tree dir(path, pattern.s());
     ASSERT_TRUE(dir.good(), "makedirs test directory reading");
-    filename tmpdir(environment::get("TMP") + "/zz_balfazzaral");
+    filename tmpdir(environment::get("GENERATED_DIR") + "/zz_balfazzaral");
     LOG(astring("will write to tmp in ") + tmpdir);
     basis::outcome result = dir.make_directories(tmpdir.raw());
     ASSERT_EQUAL(result.value(), common::OKAY, "makedirs should succeed");
