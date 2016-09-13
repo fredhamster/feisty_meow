@@ -17,6 +17,8 @@ while true; do
 
   dir="$1"; shift
   if [ -z "$dir" ]; then
+    rm $NAME_LIST_TEMP_FILE
+
     break;
   fi
 #echo dir is $dir
