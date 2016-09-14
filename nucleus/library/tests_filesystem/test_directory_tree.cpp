@@ -12,16 +12,17 @@
 * Please send any updates to: fred@gruntose.com                               *
 */
 
+#include <application/hoople_main.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
-#include <structures/string_array.h>
-#include <application/hoople_main.h>
-#include <loggers/critical_events.h>
-#include <loggers/program_wide_logger.h>
 #include <filesystem/directory_tree.h>
 #include <filesystem/filename.h>
 #include <filesystem/filename_list.h>
+#include <loggers/critical_events.h>
+#include <loggers/program_wide_logger.h>
+#include <processes/launch_process.h>
 #include <structures/static_memory_gremlin.h>
+#include <structures/string_array.h>
 #include <textual/string_manipulation.h>
 #include <unit_test/unit_base.h>
 
@@ -30,6 +31,7 @@ using namespace basis;
 using namespace mathematics;
 using namespace filesystem;
 using namespace loggers;
+using namespace processes;
 using namespace structures;
 using namespace textual;
 using namespace timely;
@@ -205,6 +207,17 @@ LOG("what happened with that?  did it work?");
 
 //hmmm: compare the directories with what we expect to be made;
 //      do a dirtree iterator on the path, and make sure each of those exists in the target place.
+
+
+    // clean up the output directory.
+//this won't do it; it's a directory!
+//    bool worked = tmpdir.recursive_unlink();    
+//    ASSERT_TRUE(worked, "removing temporary files after test");
+
+//hmmm: plug in real recursive delete here instead.
+basis::un_int kid;
+launch_process::run("rm", astring("-rf ") + tmpdir.raw(), launch_process::AWAIT_APP_EXIT, kid);
+ASSERT_FALSE(kid, "removing temporary files after test");
 
   }
 
