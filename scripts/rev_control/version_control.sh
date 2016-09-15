@@ -166,6 +166,10 @@ function do_report_new
   if [ -d ".svn" ]; then
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
+    retval=$?
+  elif [ -d ".git" ]; then
+    git status -u
+    retval=$?
   fi
 
   popd &>/dev/null
