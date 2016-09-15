@@ -152,10 +152,11 @@ sub rebuild_script_aliases {
 # make sure we know where to store the files we're creating.
 if ( ! length("$FEISTY_MEOW_LOADING_DOCK") ) {
   print "\
-The FEISTY_MEOW_LOADING_DOCK variable is not defined.  This must point to the location where\n\
-the generated scripts are stored.  Perhaps you still need to run\n\
-reconfigure_feisty_meow.sh and set up some environment variables.  Please see\n\
-http://feistymeow.org for more details.\n";
+The FEISTY_MEOW_LOADING_DOCK variable is not defined.  This must point to\
+the location where the generated scripts are stored.  You may still need to\
+configure the feisty meow script system with something like:\
+  bash ~/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\
+Please see http://feistymeow.org for more details.\n";
   exit 1;
 #really need to use better exit codes.
 }
