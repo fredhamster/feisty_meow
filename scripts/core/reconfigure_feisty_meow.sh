@@ -42,7 +42,8 @@ if [ ! -d "$FEISTY_MEOW_LOADING_DOCK" ]; then
   mkdir -p "$FEISTY_MEOW_LOADING_DOCK"
 fi
 # make toast out of generated files right away, but leave any custom scripts.
-find "$FEISTY_MEOW_LOADING_DOCK" -maxdepth 1 -type f -exec rm -f "{}" ';' &>/dev/null
+find "$FEISTY_MEOW_LOADING_DOCK" -maxdepth 1 -type f -exec perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" "{}" ';'
+# &>/dev/null
 if [ ! -d "$FEISTY_MEOW_LOADING_DOCK/custom" ]; then
   mkdir "$FEISTY_MEOW_LOADING_DOCK/custom"
 fi
