@@ -8,7 +8,7 @@ source "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/pick_credentials.sh"
 prior_title=
 which xprop &>/dev/null
 if [ $? -eq 0 ]; then
-  if [ "$TERM" == "xterm" ]; then
+  if [[ "$TERM" =~ .*"xterm".* ]]; then
     prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
   fi
 fi
@@ -37,8 +37,10 @@ if [ $? -eq 0 ]; then
     # re-run the terminal labeller after coming back from ssh.
     # we check the exit value because we don't want to update this for a failed connection.
     if [ -z "$prior_title" ]; then
+echo prior title nil new label
       bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
     else
+echo "using old prior title of '$prior_title'"
       bash $FEISTY_MEOW_SCRIPTS/tty/set_term_title.sh "$prior_title"
     fi
   fi
