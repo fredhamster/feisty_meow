@@ -37,10 +37,10 @@ if [ $? -eq 0 ]; then
     # re-run the terminal labeller after coming back from ssh.
     # we check the exit value because we don't want to update this for a failed connection.
     if [ -z "$prior_title" ]; then
-echo prior title nil new label
+#echo prior title nil new label
       bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
     else
-echo "using old prior title of '$prior_title'"
+#echo "using old prior title of '$prior_title'"
       bash $FEISTY_MEOW_SCRIPTS/tty/set_term_title.sh "$prior_title"
     fi
   fi
