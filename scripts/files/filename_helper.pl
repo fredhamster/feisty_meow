@@ -331,7 +331,7 @@ sub important_filename {
   # at the front, we will match only the whole string.  double slashes are
   # used before periods to ensure we match a real period character.
   local(@junk_files) = ("~", "^\\.#.*", "^\\._.*", "\\.aps", "\\.bak",
-      "^binaries",
+      "^binaries", "^bin.ant", "^bin.eclipse",
       "\\.clw", "^cpdiff_tmp\\.txt", "^\\.ds_store", "^diffs\\.txt",
       "^diff_tmp\\.txt", "\\.dsp", "\\.dsw", "\\.gid", "gmon\\.out", "\\.isr",
       "^isconfig\\.ini", "\\.log", "^manifest.txt", "^obj",

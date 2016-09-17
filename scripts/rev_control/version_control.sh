@@ -112,7 +112,7 @@ function do_checkin()
     return 1
   fi
   pushd "$directory" &>/dev/null
-  retval=0  # normally successful.
+  local retval=0  # normally successful.
   if [ -d "CVS" ]; then
     cvs ci .
     retval=$?
@@ -141,7 +141,7 @@ function do_diff
 {
   local directory="$1"; shift
   pushd "$directory" &>/dev/null
-  retval=0  # normally successful.
+  local retval=0  # normally successful.
 
   # only update if we see a repository living there.
   if [ -d ".svn" ]; then
@@ -160,7 +160,7 @@ function do_report_new
 {
   local directory="$1"; shift
   pushd "$directory" &>/dev/null
-  retval=0  # normally successful.
+  local retval=0  # normally successful.
 
   # only update if we see a repository living there.
   if [ -d ".svn" ]; then
@@ -215,8 +215,7 @@ function squash_first_few_crs()
 function do_update()
 {
   directory="$1"; shift
-  # plan on success for now.
-  retval=0
+  local retval=0  # plan on success for now.
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
     cvs update . | squash_first_few_crs

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# checks in all the folders present in the REPOSITORY_LIST variable.
+# checkin: checks in all the folders present in the REPOSITORY_LIST variable.
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
