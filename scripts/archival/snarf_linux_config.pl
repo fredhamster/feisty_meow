@@ -73,14 +73,14 @@ unlink $infofile;
 # clean out extra files.
 &remove_from_backup($snarf_file_base, $number, "etc/cups/ppds.dat*");
 &remove_from_backup($snarf_file_base, $number, "etc/httpd/conf/ssl.crt/ca-bundle.crt");
-&remove_from_backup($snarf_file_base, $number, "etc/locale/*");
-&remove_from_backup($snarf_file_base, $number, "etc/alternatives/*");
+&remove_from_backup($snarf_file_base, $number, "etc/locale");
+&remove_from_backup($snarf_file_base, $number, "etc/alternatives");
 &remove_from_backup($snarf_file_base, $number, "etc/opt/kde3/share/services/ksycoca");
-&remove_from_backup($snarf_file_base, $number, "etc/preload.d/*");
+&remove_from_backup($snarf_file_base, $number, "etc/preload.d");
 &remove_from_backup($snarf_file_base, $number, "etc/rmt");
 &remove_from_backup($snarf_file_base, $number, "etc/termcap");
 &remove_from_backup($snarf_file_base, $number, "etc/X11/X");
-&remove_from_backup($snarf_file_base, $number, "etc/X11/xkb/*");
+&remove_from_backup($snarf_file_base, $number, "etc/X11/xkb");
 &remove_from_backup($snarf_file_base, $number, "*.bak");
 &remove_from_backup($snarf_file_base, $number, "*.cache");
 &remove_from_backup($snarf_file_base, $number, "*.crt");
