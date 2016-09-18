@@ -70,7 +70,7 @@ $counts{$server.$doc}++;
 #
 seek(COUNTS, 0, 0);
 
-foreach $file (keys %counts) {
+foreach $file (sort {lc $a cmp lc $b} keys %counts) {
   print COUNTS $counts{$file}, ":", $file, "\n";
 }
 
