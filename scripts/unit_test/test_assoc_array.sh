@@ -7,7 +7,7 @@
 declare -A snuggles
   # make an associative array
 
-snuggles=([book]=petunia "[muffets]=glasgow robbery")
+snuggles=([book]=petunia [muffets]="glasgow robbery")
   # keys: book and muffets
   # values: (second part)
 
