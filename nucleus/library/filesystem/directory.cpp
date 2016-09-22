@@ -27,13 +27,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   #include <dirent.h>
   #include <fnmatch.h>
   #include <string.h>
   #include <unistd.h>
 #endif
-#ifdef __WIN32__
+#ifdef _MSC_VER
   #include <direct.h>
 #endif
 
@@ -101,7 +101,7 @@ astring directory::absolute_path(const astring &rel_path)
 {
   char abs_path[MAX_ABS_PATH + 1];
   abs_path[0] = '\0';
-#ifdef __WIN32__
+#ifdef _MSC_VER
   if (!_fullpath(abs_path, rel_path.s(), MAX_ABS_PATH)) return "";
   return abs_path;
 #else
@@ -113,7 +113,7 @@ astring directory::absolute_path(const astring &rel_path)
 astring directory::current()
 {
   astring to_return(".");  // failure result.
-#ifdef __WIN32__
+#ifdef _MSC_VER
   flexichar buffer[MAX_ABS_PATH + 1] = { '\0' };
   GetCurrentDirectory(MAX_ABS_PATH, buffer);
   to_return = from_unicode_temp(buffer);
@@ -151,7 +151,7 @@ bool directory::rescan()
   _folders->reset();
   astring cur_dir = ".";
   astring par_dir = "..";
-#ifdef __WIN32__
+#ifdef _MSC_VER
   // start reading the directory.
   WIN32_FIND_DATA wfd;
   astring real_path_spec = *_path + "/" + *_pattern;
@@ -194,8 +194,7 @@ bool directory::rescan()
 	}
   } while (FindNextFile(search_handle, &wfd));
   FindClose(search_handle);
-#endif
-#ifdef __UNIX__
+#else
   DIR *dir = opendir(_path->s());
 //hmmm: could check errno to determine what caused the problem.
   if (!dir) return false;
@@ -234,10 +233,9 @@ bool directory::rescan()
 
 bool directory::make_directory(const astring &path)
 {
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   int mk_ret = mkdir(path.s(), 0777);
-#endif
-#ifdef __WIN32__
+#else
   int mk_ret = mkdir(path.s());
 #endif
   return !mk_ret;
@@ -245,10 +243,9 @@ bool directory::make_directory(const astring &path)
 
 bool directory::remove_directory(const astring &path)
 {
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   int rm_ret = rmdir(path.s());
-#endif
-#ifdef __WIN32__
+#else
   int rm_ret = rmdir(path.s());
 #endif
   return !rm_ret;
@@ -283,3 +280,4 @@ bool directory::recursive_create(const astring &directory_name)
 }
 
 } // namespace.
+

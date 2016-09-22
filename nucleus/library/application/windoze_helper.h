@@ -23,8 +23,11 @@
 // gnarly headers that are needed for certain types of compilation...
 
 //unix headers not needed in here for new purpose of file.
-#ifdef __UNIX__
+#ifndef _MSC_VER
   #include <unistd.h>
+  #ifdef __GNU_WINDOWS__
+    #include <sys/unistd.h>
+  #endif
 #endif
 #ifndef NO_XWINDOWS
   #ifdef __XWINDOWS__
@@ -38,6 +41,11 @@
   #ifndef STRICT
     #define STRICT
   #endif
+  // winsock support...
+  #undef FD_SETSIZE
+  #define FD_SETSIZE 1000
+    // if you don't set this, you can only select on a default of 64 sockets.
+  #include <winsock2.h>
   // windows headers...
   #define _WINSOCKAPI_  // make windows.h happy about winsock.
   #ifndef _AFXDLL
@@ -48,11 +56,6 @@
     #include <afx.h>
     #include <afxwin.h>
   #endif
-  // winsock support...
-  #undef FD_SETSIZE
-  #define FD_SETSIZE 1000
-    // if you don't set this, you can only select on a default of 64 sockets.
-  #include <winsock2.h>
 #endif
 
 // forward.

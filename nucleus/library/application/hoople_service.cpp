@@ -113,10 +113,9 @@ bool hoople_service::close_application(const astring &app_name)
   // zap all of them using our signal.
   for (int i = 0; i < pids.length(); i++) {
 //would linux be better served with sigterm also?
-#ifdef __UNIX__
+#ifndef _MSC_VER
     kill(pids[i], SIGHUP);
-#endif
-#ifdef __WIN32__
+#else
 //lame--goes to whole program.
     raise(SIGTERM);
 #endif
@@ -151,13 +150,13 @@ bool hoople_service::setup(const astring &app_name, int timer_period)
 
   // setup signal handler for HUP signal.  this is the one used to tell us
   // to leave.
-#ifdef __UNIX__
+#ifndef _MSC_VER
   signal(SIGHUP, handle_OS_signal);
 #endif
 
   // setup a handler for interrupt (e.g. ctrl-C) also.
   signal(SIGINT, handle_OS_signal);
-#ifdef __WIN32__
+#ifdef _MSC_VER
   signal(SIGBREAK, handle_OS_signal);
 #endif
 

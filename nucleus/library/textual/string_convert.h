@@ -20,11 +20,16 @@
 
 #ifdef __WIN32__
   #ifndef _MANAGED
-    #ifndef __MINGW32__
       #define _WINSOCKAPI_  // the dance of the windows headers.
-      #include <windows.h>
-      #include <comdef.h>
-    #endif
+  // winsock support...
+  #undef FD_SETSIZE
+  #define FD_SETSIZE 1000
+    // if you don't set this, you can only select on a default of 64 sockets.
+  #include <winsock2.h>
+  #include <windows.h>
+  #ifndef __GNU_WINDOWS__
+    #include <comdef.h>
+  #endif
   #endif
 #endif
 
@@ -48,7 +53,7 @@ namespace string_convert
 
 #ifdef WIN32
  #ifndef _MANAGED
-   #ifndef __MINGW32__
+  #ifndef __GNU_WINDOWS__
     //! conversion from ATL's _bstr_t object to astring.
     inline basis::astring to_astring(const _bstr_t &original) {
        return basis::astring(basis::astring::UNTERMINATED, (const char *)original,
@@ -58,7 +63,7 @@ namespace string_convert
     //! conversion from astring to the ATL _bstr_t object.
     inline _bstr_t to_bstr_t(const basis::astring &original)
     { return _bstr_t(original.s()); }
-   #endif
+  #endif
  #endif
 #endif
 

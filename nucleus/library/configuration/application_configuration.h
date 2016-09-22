@@ -113,7 +113,7 @@ public:
     need a filename.  an empty string is returned on failure to create the
     directory. */
 
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   #ifdef __APPLE__
     static basis::astring get_cmdline_for_apple();
   #endif

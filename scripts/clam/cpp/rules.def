@@ -27,14 +27,12 @@ endif
 # implement special bits for gnu on unix.
 ifeq "$(COMPILER)" "GNU_LINUX"
   ifneq "$(USE_XWIN)" ""
-    ifneq "$(OP_SYSTEM)" "WIN32"
-      DEFINITIONS += __XWINDOWS__ __X__
-      LIBS_USED += Xm Xt X11 Xft Xp 
+    DEFINITIONS += __XWINDOWS__ __X__
+    LIBS_USED += Xm Xt X11 Xft Xp 
 #need to separate out with a USE_MOTIF kind of thing.
 LIBS_USED += Xmu
-      HEADER_SEARCH_PATH += /usr/include/X11 /usr/X11R6/include /usr/include/g++
-      LIBRARY_SEARCH_PATH += /usr/X11R6/lib 
-    endif
+    HEADER_SEARCH_PATH += /usr/include/X11 /usr/X11R6/include /usr/include/g++
+    LIBRARY_SEARCH_PATH += /usr/X11R6/lib 
   endif
 
   ifneq "$(USE_SSL)" ""
@@ -45,9 +43,40 @@ LIBS_USED += Xmu
     DEFINITIONS += __WXWIDGETS__ 
     use_unicode =
     ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
-#      ifeq "$(OP_SYSTEM)" "WIN32"
-        use_unicode = true
-#      endif
+      use_unicode = true
+    endif
+
+    # decide whether to turn on the unicode flag or not.
+    ifneq "$(use_unicode)" ""
+      DEFINITIONS += wxUSE_UNICODE
+      UNICODE_FLAG_ADD = --unicode=yes
+    else
+      UNICODE_FLAG_ADD = --unicode=no
+    endif
+    # could add for debugging: --debug=yes 
+    COMPILER_FLAGS += $(shell wx-config --cxxflags $(UNICODE_FLAG_ADD) )
+
+    LOAD_FLAG_PREFIX += $(shell wx-config --libs $(UNICODE_FLAG_ADD) )
+  endif
+
+  ifneq "$(USE_CURL)" ""
+    COMPILER_FLAGS += `curl-config --cflags`
+    LOAD_FLAG_SUFFIX += `curl-config --libs`
+  endif
+endif
+
+# some special code for gnu compiler on windows.
+ifeq "$(COMPILER)" "GNU_WINDOWS"
+
+  ifneq "$(USE_SSL)" ""
+    LIBS_USED += ssl crypto
+  endif
+  
+  ifneq "$(USE_WXWIDGETS)" ""
+    DEFINITIONS += __WXWIDGETS__ 
+    use_unicode =
+    ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
+      use_unicode = true
     endif
 
     # decide whether to turn on the unicode flag or not.
@@ -91,9 +120,7 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
     DEFINITIONS += __WXWIDGETS__ 
     use_unicode =
     ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
-#      ifeq "$(OP_SYSTEM)" "WIN32"
         use_unicode = true
-#      endif
     endif
 
     # decide whether to turn on the unicode flag or not.
@@ -137,6 +164,7 @@ endif
 
 # win32 compiler additions.
 ifeq "$(OP_SYSTEM)" "WIN32"
+#ifeq "$(COMPILER)" "VISUAL_CPP"
   # processes the def file for linkage, if one has been specified.
   ifneq "$(DEF_FILE)" ""
     LOAD_FLAG_PREFIX += -def:$(DEF_FILE)
@@ -328,12 +356,12 @@ ACTUAL_FIRST_TARGETS = check_requirements $(EXTRA_FIRST_TARGETS) $(VERSION_TARGE
 
 # Adds the primary targets to the list of products to create.
 ifeq "$(NO_COMPILE)" ""
-  ifeq "$(OP_SYSTEM)" "UNIX"
+  ifneq "$(COMPILER)" "VISUAL_CPP"
     ACTUAL_TARGETS1 = $(TARGETS:%.exe=$(EXECUTABLE_DIR)/%)
   else
     ACTUAL_TARGETS1 = $(TARGETS:%.exe=$(EXECUTABLE_DIR)/%.exe)
   endif
-  ifeq "$(OP_SYSTEM)" "UNIX"
+  ifneq "$(COMPILER)" "VISUAL_CPP"
     ACTUAL_TARGETS2 = $(ACTUAL_TARGETS1:%.dll=%.so)
     ACTUAL_TARGETS3 = $(ACTUAL_TARGETS2:%.so=$(DYNAMIC_LIBRARY_DIR)/%$(TRIPART_VERSION).so)
   else
@@ -532,7 +560,7 @@ endif #no_compile
 
 # creates "exe" executables using all of the appropriate objects.
 
-ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(COMPILER)" "VISUAL_CPP"
   ifneq "$(NO_COMPILE)" ""
 $(EXECUTABLE_DIR)/%.exe:
   endif
@@ -556,9 +584,9 @@ $(EXECUTABLE_DIR)/%.exe: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%)
 	$(HIDER)ReplaceVistaIcon "$@" "$(VCPP_VISTA_ICON)"
     endif
   endif #no_compile
-endif #win32
+endif #visual studio
 
-ifeq "$(OP_SYSTEM)" "UNIX"
+ifneq "$(COMPILER)" "VISUAL_CPP"
   ifneq "$(NO_COMPILE)" ""
 $(EXECUTABLE_DIR)/%:
   endif

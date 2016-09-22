@@ -17,12 +17,17 @@
 
 #include <stdlib.h>
 #include <sys/types.h>
-#ifdef __UNIX__
+#ifndef _MSC_VER
   #include <unistd.h>
   #include <sys/times.h>
 #endif
-#ifdef __WIN32__
+#ifdef _MSC_VER
   #define _WINSOCKAPI_  // make windows.h happy about winsock.
+  // winsock support...
+  #undef FD_SETSIZE
+  #define FD_SETSIZE 1000
+    // if you don't set this, you can only select on a default of 64 sockets.
+  #include <winsock2.h>
   #include <windows.h>
   #include <mmsystem.h>
 #endif
@@ -49,7 +54,7 @@ astring environment::TMP()
 
 astring environment::get(const astring &variable_name)
 {
-#ifdef __WIN32__
+#ifdef _MSC_VER
   char *value = getenv(variable_name.upper().observe());
     // dos & os/2 require upper case for the name, so we just do it that way.
 #else
@@ -65,7 +70,7 @@ astring environment::get(const astring &variable_name)
 bool environment::set(const astring &variable_name, const astring &value)
 {
   int ret = 0;
-#ifdef __WIN32__
+#ifdef _MSC_VER
   astring assignment = variable_name + "=" + value;
   ret = _putenv(assignment.s());
 #else
@@ -76,7 +81,7 @@ bool environment::set(const astring &variable_name, const astring &value)
 
 basis::un_int environment::system_uptime()
 {
-#ifdef __WIN32__
+#ifdef _MSC_VER
   return timeGetTime();
 #else
   static clock_t __ctps = sysconf(_SC_CLK_TCK);  // clock ticks per second.

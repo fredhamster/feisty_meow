@@ -16,7 +16,7 @@
 \*****************************************************************************/
 
 #include "configurator.h"
-#ifndef __WIN32__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   #include "ini_parser.h"
   #include <basis/utf_conversion.h>
 #endif
@@ -110,13 +110,13 @@ public:
 
 private:
   filesystem::filename *_ini_name;  //!< the file we're manipulating.
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   ini_parser *_parser;  //!< used for real storage and parsing.
 #endif
   file_location_default _where;  //!< where to find and store the file.
   bool _add_spaces;  //!< tracks whether we're adding spaces around equals.
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
   bool put_profile_string(const basis::astring &section, const basis::astring &entry,
           const basis::astring &to_store);
     //!< encapsulates windows' ini storage method.
@@ -124,8 +124,7 @@ private:
           const basis::astring &default_value, basis::flexichar *return_buffer,
           int buffer_size);
     //!< encapsulates windows' ini retrieval method.
-#endif
-#ifdef __UNIX__
+#else
   void read_ini_file();
     //!< reads the INI file's contents into memory.
   void write_ini_file();

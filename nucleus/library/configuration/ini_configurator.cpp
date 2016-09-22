@@ -51,7 +51,7 @@ ini_configurator::ini_configurator(const astring &ini_filename,
       treatment_of_defaults behavior, file_location_default where)
 : configurator(behavior),
   _ini_name(new filename),
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   _parser(new ini_parser("", behavior)),
 #endif
   _where(where),
@@ -63,7 +63,7 @@ ini_configurator::ini_configurator(const astring &ini_filename,
 ini_configurator::~ini_configurator()
 {
   WHACK(_ini_name);
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   WHACK(_parser);
 #endif
 }
@@ -72,7 +72,7 @@ astring ini_configurator::name() const { return _ini_name->raw(); }
 
 void ini_configurator::refresh()
 {
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   write_ini_file();
   WHACK(_parser);
   _parser = new ini_parser("", behavior());
@@ -88,7 +88,7 @@ void ini_configurator::name(const astring &name)
     // that don't include a directory name.
   if (_where == OS_DIRECTORY) use_appdir = false;
   if (_where == ALL_USERS_DIRECTORY) use_appdir = false;
-#ifndef __WIN32__
+#ifdef _MSC_VER
   use_appdir = true;
 #endif
   // we must create the filename if they specified no directory at all.
@@ -108,7 +108,7 @@ void ini_configurator::name(const astring &name)
           _ini_name->basename());
     }
   }
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   // read in the file's contents.
   read_ini_file();
 #endif
@@ -139,7 +139,7 @@ void ini_configurator::sections(string_array &list)
 //hmmm: refactor section_exists to use the sections call, if it's faser?
 bool ini_configurator::section_exists(const astring &section)
 {
-#ifdef __WIN32__
+#ifdef _MSC_VER
   string_table infos;
   // heavy-weight call here...
   return get_section(section, infos);
@@ -148,7 +148,7 @@ bool ini_configurator::section_exists(const astring &section)
 #endif
 }
 
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 void ini_configurator::read_ini_file()
 {
 #ifdef DEBUG_INI_CONFIGURATOR
@@ -200,7 +200,7 @@ void ini_configurator::write_ini_file()
 
 bool ini_configurator::delete_section(const astring &section)
 {
-#ifdef __WIN32__
+#ifdef _MSC_VER
   return put_profile_string(section, "", ""); 
 #else
   // zap the section.
@@ -213,7 +213,7 @@ bool ini_configurator::delete_section(const astring &section)
 
 bool ini_configurator::delete_entry(const astring &section, const astring &ent)
 {
-#ifdef __WIN32__
+#ifdef _MSC_VER
   return put_profile_string(section, ent, "");
 #else
   // zap the entry.
@@ -231,7 +231,7 @@ bool ini_configurator::put(const astring &section, const astring &entry,
   if (!to_store.length()) return delete_entry(section, entry);
   else if (!entry.length()) return delete_section(section);
   else if (!section.length()) return false;
-#ifdef __WIN32__
+#ifdef _MSC_VER
   return put_profile_string(section, entry, to_store);
 #else
   // write the entry.
@@ -245,7 +245,7 @@ bool ini_configurator::put(const astring &section, const astring &entry,
 bool ini_configurator::get(const astring &section, const astring &entry,
     astring &found)
 {
-#ifndef __WIN32__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   return _parser->get(section, entry, found);
 #else
   flexichar temp_buffer[MAXIMUM_LINE_INI_CONFIG];
@@ -260,7 +260,7 @@ bool ini_configurator::get(const astring &section, const astring &entry,
 bool ini_configurator::get_section(const astring &section, string_table &info)
 {
   FUNCDEF("get_section");
-#ifndef __WIN32__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   return _parser->get_section(section, info);
 #else
   info.reset();
@@ -302,7 +302,7 @@ bool ini_configurator::get_section(const astring &section, string_table &info)
 bool ini_configurator::put_section(const astring &section,
     const string_table &info)
 {
-#ifdef __WIN32__
+#ifdef _MSC_VER
   variable_tokenizer parser("\1", "=");
   parser.table() = info;
   astring flat = parser.text_form();
@@ -330,7 +330,7 @@ bool ini_configurator::put_section(const astring &section,
 #endif
 }
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 bool ini_configurator::put_profile_string(const astring &section,
     const astring &entry, const astring &to_store)
 {

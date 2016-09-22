@@ -41,7 +41,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef __UNIX__
+#ifndef _MSC_VER
   #include <unistd.h>
 #endif
 
@@ -54,15 +54,14 @@ using namespace structures;
 
 namespace processes {
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
   #include <tlhelp32.h>
   const astring NTVDM_NAME = "ntvdm.exe";
     // the umbrella process that hangs onto 16 bit tasks for NT.
-  #ifdef _MSCVER
-    #include <vdmdbg.h>
-  #endif
-#endif
-#ifdef __UNIX__
+//  #ifdef _MSCVER
+//    #include <vdmdbg.h>
+//  #endif
+#else
   #include <signal.h>
   #include <stdio.h>
 #endif
@@ -78,16 +77,16 @@ namespace processes {
 class process_implementation_hider
 {
 public:
-#ifdef __WIN32__
+#ifdef _MSC_VER
   // psapi members:
   application_instance psapi_dll;
   application_instance vdm_dll;
   BOOL (WINAPI *enumerate_processes)(basis::un_int *, basis::un_int cb, basis::un_int *);
   BOOL (WINAPI *enumerate_modules)(HANDLE, HMODULE *, basis::un_int, basis::un_int *);
   basis::un_int (WINAPI *get_module_name)(HANDLE, HMODULE, LPTSTR, basis::un_int);
-#ifdef _MSCVER
-  INT (WINAPI *tasker_16bit)(basis::un_int, TASKENUMPROCEX  fp, LPARAM);
-#endif
+//#ifdef _MSCVER
+//  INT (WINAPI *tasker_16bit)(basis::un_int, TASKENUMPROCEX  fp, LPARAM);
+//#endif
 
   // toolhelp members:
   application_instance kernel32_dll;
@@ -101,9 +100,9 @@ public:
   process_implementation_hider()
     : psapi_dll(NIL), vdm_dll(NIL), enumerate_processes(NIL),
       enumerate_modules(NIL), get_module_name(NIL),
-#ifdef _MSCVER
-      tasker_16bit(NIL),
-#endif
+//#ifdef _MSCVER
+//      tasker_16bit(NIL),
+//#endif
       kernel32_dll(NIL), create_snapshot(NIL), first_process(NIL),
       next_process(NIL) {}
 
@@ -136,10 +135,9 @@ public:
 
 process_control::process_control()
 : _ptrs(new process_implementation_hider),
-#ifdef __WIN32__
+#ifdef _MSC_VER
   _use_psapi(true),
-#endif
-#ifdef __UNIX__
+#else
   _rando(new chaos),
 #endif
   _healthy(false)
@@ -147,7 +145,7 @@ process_control::process_control()
   // Check to see if were running under Windows95 or Windows NT.
   version osver = application_configuration::get_OS_version();
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
   if (osver.v_revision() == VER_PLATFORM_WIN32_WINDOWS) {
     // we're on Windows 95, so use the toolhelp API for the processes.
     _use_psapi = false;
@@ -159,8 +157,7 @@ process_control::process_control()
     _healthy = initialize_psapi_support();
   else
     _healthy = initialize_toolhelp_support();
-#endif
-#ifdef __UNIX__
+#else
   _healthy = true;
 #endif
 }
@@ -168,7 +165,7 @@ process_control::process_control()
 process_control::~process_control()
 {
   WHACK(_ptrs);
-#ifdef __UNIX__
+#ifndef _MSC_VER
   WHACK(_rando);
 #endif
 }
@@ -198,7 +195,7 @@ void process_control::sort_by_pid(process_entry_array &v)
 bool process_control::query_processes(process_entry_array &to_fill)
 {
   if (!_healthy) return false;
-#ifdef __WIN32__
+#ifdef _MSC_VER
   if (!_use_psapi) {
     // we're on Windows 95 or something, so use the toolhelp API for the
     // processes.
@@ -207,13 +204,12 @@ bool process_control::query_processes(process_entry_array &to_fill)
     // we're on Windows NT and so on; use the process API (PSAPI) to get info.
     return get_processes_with_psapi(to_fill);
   }
-#endif
-#ifdef __UNIX__
+#else
   return get_processes_with_ps(to_fill);
 #endif
 }
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 bool process_control::initialize_psapi_support()
 {
   // create an instance of the PSAPI dll for querying 32-bit processes and
@@ -233,15 +229,15 @@ bool process_control::initialize_psapi_support()
   _ptrs->get_module_name
       = (basis::un_int (WINAPI *)(HANDLE, HMODULE, LPTSTR, basis::un_int))
         GetProcAddress(_ptrs->psapi_dll, "GetModuleFileNameExA");
-#ifdef _MSCVER
-  _ptrs->tasker_16bit = (INT(WINAPI *)(basis::un_int, TASKENUMPROCEX, LPARAM))
-        GetProcAddress(_ptrs->vdm_dll, "VDMEnumTaskWOWEx");
-#endif
+//#ifdef _MSCVER
+//  _ptrs->tasker_16bit = (INT(WINAPI *)(basis::un_int, TASKENUMPROCEX, LPARAM))
+//        GetProcAddress(_ptrs->vdm_dll, "VDMEnumTaskWOWEx");
+//#endif
   if (!_ptrs->enumerate_processes || !_ptrs->enumerate_modules
       || !_ptrs->get_module_name
-#ifdef _MSCVER
-      || !_ptrs->tasker_16bit
-#endif
+//#ifdef _MSCVER
+//      || !_ptrs->tasker_16bit
+//#endif
       ) return false;
 
   return true;
@@ -273,12 +269,11 @@ bool process_control::zap_process(basis::un_int to_zap)
   FUNCDEF("zap_process");
 #endif
   if (!_healthy) return false;
-#ifdef __UNIX__
+#ifndef _MSC_VER
   int ret = kill(to_zap, 9);
     // send the serious take-down signal to the process.
   return !ret;
-#endif
-#ifdef __WIN32__
+#else
   HANDLE h = OpenProcess(PROCESS_TERMINATE, false, to_zap);
   if (!h) {
 #ifdef DEBUG_PROCESS_CONTROL
@@ -310,10 +305,9 @@ process_entry process_control::query_process(basis::un_int to_query)
   }
 
 //hmmm: implement more specifically.
-#ifdef __UNIX__
+#ifndef _MSC_VER
 //put in the single process grabber deal.
-#endif
-#ifdef __WIN32__
+#else
 //grab the entry from the list.
 #endif
 
@@ -358,7 +352,7 @@ bool process_control::find_process_in_list(const process_entry_array &processes,
 
 //////////////
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 // this section is the PSAPI version of the query.
 
 // called back on each 16 bit task.
@@ -450,15 +444,15 @@ bool process_control::get_processes_with_psapi(process_entry_array &to_fill)
           (new_entry.path().end() - NTVDM_NAME.length() + 1,
           new_entry.path().end());
       temp.to_lower();
-#ifdef _MSCVER
-//hmmm: pull this back in for mingw when it seems to be supported, if ever.
-      if (temp == NTVDM_NAME) {
-        // set up a callback stampede on the 16 bit processes.
-        process_info_clump info(pid_list[i], to_fill);
-        _ptrs->tasker_16bit(pid_list[i], (TASKENUMPROCEX)process_16bit,
-             (LPARAM)&info);
-      }
-#endif
+//#ifdef _MSCVER
+////hmmm: pull this back in for mingw when it seems to be supported, if ever.
+//      if (temp == NTVDM_NAME) {
+//        // set up a callback stampede on the 16 bit processes.
+//        process_info_clump info(pid_list[i], to_fill);
+//        _ptrs->tasker_16bit(pid_list[i], (TASKENUMPROCEX)process_16bit,
+//             (LPARAM)&info);
+//      }
+//#endif
     }
   }
 
@@ -505,7 +499,7 @@ bool process_control::get_processes_with_toolhelp(process_entry_array &to_fill)
 }
 #endif  // __WIN32__
 
-#ifdef __UNIX__
+#ifndef _MSC_VER
 
 #define CLOSE_TEMPORARY_FILE { \
 /*  continuable_error("process_control", "get_processes_with_ps", error); */ \

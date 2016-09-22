@@ -81,11 +81,10 @@ public:
     function. */
 
 private:
-#ifdef __UNIX__
+#ifndef _MSC_VER
   static void exiting_child_signal_handler(int sig_num);
     //!< awaits the child processes rather than leaving process handles willy nilly.
-#endif
-#ifdef __WIN32__
+#else
   static bool event_poll(tagMSG &message);
     //!< tries to process one win32 event and retrieve the "message" from it.
     /*!< this is a very general poll and will retrieve any message that's

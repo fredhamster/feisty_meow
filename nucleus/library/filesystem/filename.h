@@ -27,6 +27,11 @@ class status_info;
 // define useful constant for filesystem path length.
 #ifndef MAX_ABS_PATH 
   #ifdef __WIN32__
+  // winsock support...
+  #undef FD_SETSIZE
+  #define FD_SETSIZE 1000
+    // if you don't set this, you can only select on a default of 64 sockets.
+  #include <winsock2.h>
     #include <windows.h>
     #define MAX_ABS_PATH MAX_PATH
   #else

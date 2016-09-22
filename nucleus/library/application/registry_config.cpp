@@ -23,7 +23,7 @@ using namespace basis;
 using namespace filesystem;
 using namespace structures;
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 
   // this implementation only works on windows currently.
 //hmmm: i suppose we could fake it with an ini file.
@@ -106,7 +106,7 @@ bool registry_configurator::put(const astring &section_in, const astring &entry,
   if (!to_store.length()) return delete_entry(section, entry);
   else if (!section.length()) return false;
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_WRITE, &key);
@@ -145,7 +145,7 @@ bool registry_configurator::get(const astring &section_in, const astring &entry,
   if (!section_in) return false;
   if (!entry) {}  // not a problem.
   astring section = fix_section(section_in);
-#ifdef __WIN32__
+#ifdef _MSC_VER
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_QUERY_VALUE, &key);
@@ -190,7 +190,7 @@ bool registry_configurator::get_section(const astring &section_in,
   info.reset();
   if (!section_in.length()) return false;
   astring section = fix_section(section_in);
-#ifdef __WIN32__
+#ifdef _MSC_VER
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_QUERY_VALUE, &key);
@@ -233,7 +233,7 @@ bool registry_configurator::section_exists(const astring &section_in)
   FUNCDEF("section_exists");
   if (!section_in.length()) return false;
   astring section = fix_section(section_in);
-#ifdef __WIN32__
+#ifdef _MSC_VER
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_QUERY_VALUE, &key);
@@ -254,7 +254,7 @@ bool registry_configurator::delete_section(const astring &section_in)
   if (!section_in.length()) return false;
   astring section = fix_section(section_in);
 //if the key doesn't exist, should that be a failure?
-#ifdef __WIN32__
+#ifdef _MSC_VER
   long ret = SHDeleteKey((HKEY)translate_hive(_hive),
       to_unicode_temp(section));
   if (ret != ERROR_SUCCESS) {
@@ -275,7 +275,7 @@ bool registry_configurator::delete_entry(const astring &section_in,
   astring section = fix_section(section_in);
   if (!entry) {}  // no problem.
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_SET_VALUE, &key);

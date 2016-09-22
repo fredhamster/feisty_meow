@@ -69,7 +69,7 @@ public:
 
   // internal methods.
 
-#ifdef __WIN32__
+#if defined(_MSC_VER)
   basis::un_int *real_timer_id();
     //!< provides the timer id for comparison on windows platforms.
 #endif
@@ -83,10 +83,9 @@ public:
 private:
   driven_objects_list *_timers;  //!< timer hooked objects.
   basis::mutex *_lock;  //!< protects list of timers.
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   signalling_thread *_prompter;  //!< drives our timers.
-#endif
-#ifdef __WIN32__
+#else
   basis::un_int *_real_timer_id;  //!< used for storing window timer handle.
 #endif
   bool _in_timer;  //!< true if we're handling the timer right now.

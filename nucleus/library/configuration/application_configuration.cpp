@@ -29,13 +29,11 @@
   #include <mach-o/dyld.h>
   #include <limits.h>
 #endif
-#ifdef __WIN32__
+#ifdef _MSC_VER
   #include <direct.h>
   #include <process.h>
 #else
   #include <dirent.h>
-#endif
-#ifdef __UNIX__
   #include <sys/utsname.h>
   #include <unistd.h>
 #endif
@@ -58,7 +56,7 @@ namespace configuration {
 const int MAXIMUM_COMMAND_LINE = 32 * KILOBYTE;
   // maximum command line that we'll deal with here.
 
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 astring application_configuration::get_cmdline_from_proc()
 {
   FUNCDEF("get_cmdline_from_proc");
@@ -205,9 +203,9 @@ astring application_configuration::application_name()
   uint32_t buffsize = MAX_ABS_PATH - 1;
   _NSGetExecutablePath(buffer, &buffsize);
   to_return = (char *)buffer;
-#elif __UNIX__
+#elif defined(__UNIX__) || defined(__GNU_WINDOWS__)
   to_return = get_cmdline_from_proc();
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   flexichar low_buff[MAX_ABS_PATH + 1];
   GetModuleFileName(NIL, low_buff, MAX_ABS_PATH - 1);
   astring buff = from_unicode_temp(low_buff);
@@ -220,7 +218,7 @@ astring application_configuration::application_name()
   return to_return;
 }
 
-#if defined(__UNIX__) || defined(__WIN32__)
+#if defined(__UNIX__) || defined(_MSC_VER) || defined(__GNU_WINDOWS__)
   basis::un_int application_configuration::process_id() { return getpid(); }
 #else
   #pragma error("hmmm: need process id implementation for this OS!")
@@ -234,7 +232,7 @@ astring application_configuration::current_directory()
   char buff[MAX_ABS_PATH];
   getcwd(buff, MAX_ABS_PATH - 1);
   to_return = buff;
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   flexichar low_buff[MAX_ABS_PATH + 1];
   GetCurrentDirectory(MAX_ABS_PATH, low_buff);
   to_return = from_unicode_temp(low_buff);
@@ -265,7 +263,7 @@ structures::version application_configuration::get_OS_version()
   utsname kernel_parms;
   uname(&kernel_parms);
   to_return = version(kernel_parms.release);
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   OSVERSIONINFO info;
   info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   ::GetVersionEx(&info);

@@ -56,7 +56,7 @@ namespace application {
 
 //////////////
 
-#elif defined(__UNIX__)
+#elif defined(__UNIX__) || defined(__GNU_WINDOWS__)
   //! options that should work for most unix and linux apps.
   #define HOOPLE_MAIN(obj_name, obj_args) \
     HOOPLE_STARTUP_CODE; \
@@ -69,7 +69,7 @@ namespace application {
 
 //////////////
 
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   // for win32 we need to support four different environments--console mode,
   // borland compilation, MFC programs and regular windows programs.
   #ifdef _CONSOLE

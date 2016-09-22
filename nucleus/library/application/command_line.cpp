@@ -74,7 +74,7 @@ command_parameter &command_parameter::operator =
 // the default is a dash (-), while for DOS most programs use forward-slash
 // (/).  Adding more characters is trivial; just add a character to the list
 // before the sentinel of '\0'.
-#if defined(_MSC_VER) || defined(__MINGW32__)
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__WIN32__)
   static char option_prefixes[] = { '-', '/', '\0' };
 #elif defined(__UNIX__)
   static char option_prefixes[] = { '-', '\0' };
@@ -244,7 +244,7 @@ string_array command_line::get_command_line()
   // the temporary string below can be given a flat formatting of the commands
   // and it will be popped out into a list of arguments.
   astring temporary;
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   if (!_global_argc || !_global_argv) {
     // our global parameters have not been set, so we must calculate them.
     temporary = application_configuration::get_cmdline_from_proc();
@@ -257,7 +257,7 @@ string_array command_line::get_command_line()
     // we don't need a long string to be parsed; the list is ready.
     return listo_cmds;
   }
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   // we have easy access to the original list of commands.
   for (int i = 0; i < _global_argc; i++) {
     // add a string entry for each argument.

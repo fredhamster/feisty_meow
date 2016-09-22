@@ -33,7 +33,7 @@
 #include <timely/time_stamp.h>
 #include <unit_test/unit_base.h>
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
   #include <comdef.h>
 #endif
 #include <stdio.h>
@@ -775,6 +775,7 @@ void test_string::run_test_23()
 void test_string::run_test_24()
 {
   FUNCDEF("run_test_24");
+#ifndef __GNU_WINDOWS__
 #ifdef __WIN32__
   // 24th test group tests _bstr_t conversions.
   _bstr_t beast("abcdefgh");
@@ -792,6 +793,7 @@ void test_string::run_test_24()
   astring jethro("i want a hog sandwich");
   _bstr_t pork = string_convert::to_bstr_t(jethro);
   ASSERT_FALSE(strcmp(pork.operator char *(), jethro.s()), "second test failed comparison");
+#endif
 #endif
 }
 

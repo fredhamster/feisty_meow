@@ -60,7 +60,7 @@ endif
 # code.  It is mainly used within CLAM itself for determining the proper
 # compiler flags.
 export COMPILER
-#COMPILER := GNU_LINUX | GNU_ARM_LINUX | GNU_DARWIN | GNU_WIN32 | VISUAL_CPP
+#COMPILER := GNU_LINUX | GNU_ARM_LINUX | GNU_DARWIN | GNU_WINDOWS | VISUAL_CPP
 
 # choose a default compiler if none was specified.
 ifeq "$(COMPILER)" ""
@@ -72,8 +72,8 @@ ifeq "$(COMPILER)" ""
     endif
   endif
   ifeq "$(OP_SYSTEM)" "WIN32"
-#    COMPILER := GNU_WIN32
-    COMPILER := VISUAL_CPP
+    COMPILER := GNU_WINDOWS
+#    COMPILER := VISUAL_CPP
   endif
   ifeq "$(COMPILER)" ""
     # if we get into this case, we have no idea how to set the default
@@ -421,8 +421,13 @@ ifeq "$(OP_SYSTEM)" "UNIX"
   DYNLIB_ENDING = .so
 endif
 ifeq "$(OP_SYSTEM)" "WIN32"
-  LIB_ENDING = .lib
-  DYNLIB_ENDING = .dll
+  ifeq "$(COMPILER)" "VISUAL_CPP"
+    LIB_ENDING = .lib
+    DYNLIB_ENDING = .dll
+  else
+    LIB_ENDING = .a
+    DYNLIB_ENDING = .so
+  endif
 endif
 
 ###############################################################################
@@ -577,11 +582,11 @@ ifeq "$(COMPILER)" "GNU_ARM_LINUX"
 
 endif
 
-ifeq "$(COMPILER)" "GNU_WIN32"
+ifeq "$(COMPILER)" "GNU_WINDOWS"
   # GNU compiler for MS Windoze...
   CC = g++
   ifeq "$(COMPILER_ROOT_DIR)" ""
-    COMPILER_ROOT_DIR = c:/system/mingw
+    COMPILER_ROOT_DIR = $(CYGROOT)
   endif
 
   export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_DIR)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
@@ -589,14 +594,17 @@ ifeq "$(COMPILER)" "GNU_WIN32"
   RC := $(COMPILER_ROOT_DIR)/bin/windres
   PLATFORM_ADD_IN = w32_
 
-  COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/include/c++/3.4.2 $(COMPILER_ROOT_DIR)/lib/gcc/mingw32/3.4.2/include 
+  COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/include/c++/3.4.2 
+#$(COMPILER_ROOT_DIR)/lib/gcc/mingw32/3.4.2/include 
 ###$(COMPILER_ROOT_DIR)/usr/include/mingw $(COMPILER_ROOT_DIR)/usr/include $(COMPILER_ROOT_DIR)/usr/include/w32api $(COMPILER_ROOT_DIR)/usr/include/extras
 
   COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib
-  DEFINITIONS += _Windows _WINDOWS WIN32 __WIN32__ __FLAT__ VC_EXTRALEAN WIN32_LEAN_AND_MEAN ATL_NO_LEAN_AND_MEAN _WIN32 __cplusplus 
+  DEFINITIONS += __GNU_WINDOWS__ _Windows _WINDOWS WIN32 __WIN32__ __FLAT__ VC_EXTRALEAN WIN32_LEAN_AND_MEAN ATL_NO_LEAN_AND_MEAN _WIN32 __cplusplus __USE_W32_SOCKETS
 #__USE_GNU 
 
   LIBRARY_TOOL = ar
+  LIBRARY_PATH_FLAG = -L 
+  LIB_PREFIX = lib
 #  LOAD_FLAG_PREFIX += -lpthread
   LOAD_FLAG_PREFIX += -mwindows
   CREATE_LIBRARY_FLAG += -r 

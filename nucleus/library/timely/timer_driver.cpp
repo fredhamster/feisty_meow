@@ -62,7 +62,7 @@ SAFE_STATIC(timer_driver, timer_driver::global_timer_driver, )
 
 //////////////
 
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 const int OUR_SIGNAL = SIGUSR2;
 
 class signalling_thread : public ethread
@@ -78,7 +78,7 @@ private:
 };
 #endif
 
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 void timer_driver_private_handler(int signal_seen)
 #elif defined(__WIN32__)
 void __stdcall timer_driver_private_handler(window_handle hwnd, basis::un_int msg,
@@ -92,7 +92,7 @@ void __stdcall timer_driver_private_handler(window_handle hwnd, basis::un_int ms
   #define static_class_name() "timer_driver"
   FUNCDEF("timer_driver_private_handler");
 #endif
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   int seen = signal_seen;
   if (seen != OUR_SIGNAL) {
 #elif defined(__WIN32__)
@@ -147,10 +147,9 @@ public:
 timer_driver::timer_driver()
 : _timers(new driven_objects_list),
   _lock(new mutex),
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   _prompter(new signalling_thread(INITIAL_TIMER_GRANULARITY)),
-#endif
-#ifdef __WIN32__
+#else
   _real_timer_id(NIL),
 #endif
   _in_timer(false)
@@ -215,7 +214,7 @@ timer_driver::~timer_driver()
 #endif
 }
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 basis::un_int *timer_driver::real_timer_id() { return _real_timer_id; }
 #endif
 
@@ -405,10 +404,10 @@ void timer_driver::hookup_OS_timer(int duration)
 #ifdef DEBUG_TIMER_DRIVER
   LOG(a_sprintf("hooking next OS timer in %d ms.", duration));
 #endif
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   // just make our thread hit after the duration specified.
   _prompter->reschedule(duration);
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   int max_tries_left = 100;
   while (max_tries_left-- >= 0) {
     _real_timer_id = (basis::un_int *)SetTimer(NIL, 0, duration,
@@ -429,10 +428,10 @@ void timer_driver::unhook_OS_timer()
 #ifdef DEBUG_TIMER_DRIVER
   FUNCDEF("unhook_OS_timer");
 #endif
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   // postpone the thread for quite a while so we can take care of business.
   _prompter->reschedule(LONG_TIME);
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   if (_real_timer_id) KillTimer(NIL, (UINT_PTR)_real_timer_id);
 #endif
 #ifdef DEBUG_TIMER_DRIVER

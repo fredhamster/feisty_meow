@@ -24,10 +24,9 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   #include <unistd.h>
-#endif
-#ifdef __WIN32__
+#else
   #include <io.h>
 #endif
 

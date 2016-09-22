@@ -20,12 +20,6 @@
 
 #include <signal.h>
 
-#ifndef __APPLE__
-#ifdef __UNIX__
-//  typedef long unsigned int pthread_t;
-#endif
-#endif
-
 namespace processes {
 
 //! Provides a platform-independent object for adding threads to a program.
@@ -154,9 +148,9 @@ private:
   bool _thread_active;  //!< is the thread currently performing?
   bool _stop_thread;  //!< true if the thread should stop now.
   void *_data;  //!< holds the thread's link back to whatever.
-#ifdef __UNIX__
+#ifndef _MSC_VER
   pthread_t *_handle;  //!< thread structure for our thread.
-#elif defined(__WIN32__)
+#else
   uintptr_t _handle;  //!< thread handle for the active thread, or zero.
 #endif
   int _sleep_time;  //!< threads perform at roughly this interval.
@@ -165,10 +159,10 @@ private:
   timed_thread_types _how;  //!< how is the period evaluated?
 
   // the OS level thread functions.
-#ifdef __UNIX__
+#ifndef _MSC_VER
   static void *periodic_thread_driver(void *hidden_pointer);
   static void *one_shot_thread_driver(void *hidden_pointer);
-#elif defined(__WIN32__)
+#else
   static void periodic_thread_driver(void *hidden_pointer);
   static void one_shot_thread_driver(void *hidden_pointer);
 #endif

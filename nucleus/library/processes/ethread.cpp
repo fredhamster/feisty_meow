@@ -23,9 +23,9 @@
 #include <structures/static_memory_gremlin.h>
 #include <timely/time_control.h>
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
   #include <process.h>
-#elif defined(__UNIX__)
+#elif defined(__UNIX__) || defined(__GNU_WINDOWS__)
   #include <pthread.h>
 #else
   #error unknown OS for thread support.
@@ -89,10 +89,10 @@ ethread::ethread()
   _thread_active(false),
   _stop_thread(false),
   _data(NIL),
-#ifdef __UNIX__
-  _handle(new pthread_t),
-#elif defined(__WIN32__)
+#ifdef _MSC_VER
   _handle(0),
+#else
+  _handle(new pthread_t),
 #endif
   _sleep_time(0),
   _periodic(false),
@@ -107,10 +107,10 @@ ethread::ethread(int sleep_timer, timed_thread_types how)
   _thread_active(false),
   _stop_thread(false),
   _data(NIL),
-#ifdef __UNIX__
-  _handle(new pthread_t),
-#elif defined(__WIN32__)
+#ifdef _MSC_VER
   _handle(0),
+#else
+  _handle(new pthread_t),
 #endif
   _sleep_time(sleep_timer),
   _periodic(true),
@@ -127,7 +127,7 @@ ethread::~ethread()
 {
   stop();
   WHACK(_next_activation);
-#ifdef __UNIX__
+#ifndef _MSC_VER
   WHACK(_handle);
 #endif
 }
@@ -155,7 +155,7 @@ bool ethread::start(void *thread_data)
   int error = 0;
   int attempts = 0;
   while (attempts++ < MAXIMUM_CREATE_ATTEMPTS) {
-#ifdef __UNIX__
+#ifndef _MSC_VER
     pthread_attr_t attribs;  // special flags for creation of thread.
     int aret = pthread_attr_init(&attribs);
     if (aret) LOG("failed to init attribs.");
@@ -170,7 +170,7 @@ bool ethread::start(void *thread_data)
           (void *)this);
     if (!ret) success = true;
     else error = ret;
-#elif defined(__WIN32__)
+#else
     if (_periodic)
       _handle = _beginthread(periodic_thread_driver, 0, (void *)this);
     else
@@ -197,7 +197,7 @@ void ethread::stop()
   cancel();  // tell thread to leave.
   if (!thread_started()) return;  // not running.
   while (!thread_finished()) {
-#ifdef __WIN32__
+#ifdef _MSC_VER
     int result = 0;
     if (!GetExitCodeThread((HANDLE)_handle, (LPDWORD)&result)
         || (result != STILL_ACTIVE)) {
@@ -213,14 +213,14 @@ void ethread::exempt_stop()
 {
   _thread_active = false;
   _thread_ready = false;
-#ifdef __WIN32__
+#ifdef _MSC_VER
   _handle = 0;
 #endif
 }
 
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 void *ethread::one_shot_thread_driver(void *hidden_pointer)
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
 void ethread::one_shot_thread_driver(void *hidden_pointer)
 #else
 #error unknown thread signature.
@@ -228,7 +228,7 @@ void ethread::one_shot_thread_driver(void *hidden_pointer)
 {
   FUNCDEF("one_shot_thread_driver");
   ethread *manager = (ethread *)hidden_pointer;
-#ifdef __UNIX__
+#ifndef _MSC_VER
   if (!manager) return NIL;
 #else
   if (!manager) return;
@@ -244,7 +244,7 @@ void ethread::one_shot_thread_driver(void *hidden_pointer)
 #ifdef COUNT_THREADS
   _current_threads().decrement();
 #endif
-#ifdef __UNIX__
+#ifndef _MSC_VER
   pthread_exit(NIL);
   return NIL;
 #else
@@ -252,9 +252,9 @@ void ethread::one_shot_thread_driver(void *hidden_pointer)
 #endif
 }
 
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 void *ethread::periodic_thread_driver(void *hidden_pointer)
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
 void ethread::periodic_thread_driver(void *hidden_pointer)
 #else
 #error unknown thread signature.
@@ -262,9 +262,9 @@ void ethread::periodic_thread_driver(void *hidden_pointer)
 {
   FUNCDEF("periodic_thread_driver");
   ethread *manager = (ethread *)hidden_pointer;
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   if (!manager) return NIL;
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   if (!manager) return;
 #endif
 #ifdef COUNT_THREADS
@@ -316,10 +316,10 @@ void ethread::periodic_thread_driver(void *hidden_pointer)
 #ifdef COUNT_THREADS
   _current_threads().decrement();
 #endif
-#ifdef __UNIX__
+#ifndef _MSC_VER
   pthread_exit(NIL);
   return NIL;
-#elif defined(__WIN32__)
+#else
   _endthread();
 #endif
 }

@@ -27,13 +27,12 @@
 #include <structures/static_memory_gremlin.h>
 #include <textual/byte_formatter.h>
 
-#ifdef __WIN32__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
+  #include <unistd.h>
+#else
   #include <io.h>
 #endif
 #include <stdio.h>
-#ifdef __UNIX__
-  #include <unistd.h>
-#endif
 
 using namespace basis;
 using namespace configuration;
