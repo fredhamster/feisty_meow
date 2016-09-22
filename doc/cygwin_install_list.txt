@@ -11,8 +11,8 @@ using apt-cyg (https://github.com/transcode-open/apt-cyg),
 this is the only command needed:
 
 apt-cyg install bc crypt emacs email expect gcc-g++ git gitk gvim inetutils \
-  libcurl-devel make mutt ncftp openssh perl python subversion time unzip \
-  util-linux vim xinit xterm zip
+  libcurl-devel libgnutls-devel make mutt ncftp openssh perl python \
+  subversion time unzip util-linux vim xinit xterm zip
 
 
 ===========
