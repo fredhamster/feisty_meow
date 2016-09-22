@@ -17,7 +17,7 @@ Quick Start for the Feisty Meow Codebase:
     Run the following command to build the Feisty Meow libraries and
     applications.
     Note that you may need to install some dependencies first (see below
-    for installation instructions).
+    for dependency installation instructions).
 
     bash ~/feisty_meow/scripts/generator/produce_feisty_meow.sh
 
@@ -26,8 +26,7 @@ Quick Start for the Feisty Meow Codebase:
 
   Cleaning the Codebase:
 
-    Once you've got a bootstrapped build, you can clean out all the generated
-    files with this command:
+    This command cleans out all the generated files:
 
     bash ~/feisty_meow/scripts/generator/whack_build.sh clean
 
@@ -45,6 +44,7 @@ Quick Start for the Feisty Meow Codebase:
     Loading the feisty meow script environment with the above command allows
     you to build specific projects in feisty meow by changing into the
     project's directory and running 'make'.
+
     Some example start-up files for loading feisty meow can be found in
     ~/feisty_meow/feisty_inits.
 
@@ -76,6 +76,9 @@ How to install the most frequently needed compiler and library dependencies:
 
   Centos / Redhat / Fedora:
     sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel
+
+  Cygwin + Windows:
+    This is documented in ~/feisty_meow/doc/cygwin_install_list.txt
 
 ====
 
