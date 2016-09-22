@@ -3,7 +3,7 @@
 filename="$1"; shift
 function_name="$1"; shift
 
-good_path="$(short_path $filename)"
+good_path="$(cygpath -w -s $filename)"
 
 #/exports 
 dumpbin /all $good_path | grep -q -i "$function_name"

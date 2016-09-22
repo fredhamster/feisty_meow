@@ -28,7 +28,7 @@ setup_src=t
 binaries=t
 clam_bin=t
 packages=t
-win32_helper=t
+#win32_helper=t
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -171,8 +171,8 @@ source=$RUNTIME_DIR/packages
 target=$TARGET/runtime/packages
 recurse=1
 
-[win32_helper]
-source=$PRODUCTION_DIR/win32_helper
-target=$TARGET/production/win32_helper
-recurse=1
+#[win32_helper]
+#source=$PRODUCTION_DIR/win32_helper
+#target=$TARGET/production/win32_helper
+#recurse=1
 

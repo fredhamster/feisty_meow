@@ -19,8 +19,8 @@ fi
 
 function setup_visual_studio_variables()
 {
-  chmod 755 $PRODUCTION_DIR/win32_helper/*.exe
-  export PATH="$(dos_to_unix_path $PRODUCTION_DIR)/win32_helper:$PATH"
+#  chmod 755 $PRODUCTION_DIR/win32_helper/*.exe
+#  export PATH="$(dos_to_unix_path $PRODUCTION_DIR)/win32_helper:$PATH"
 
   # we try to use the most recent compiler location, and work backwards as
   # needed for the supported range (10 = vs 2010, 9 = vs 2008, 8 = vs 2005).
@@ -35,14 +35,14 @@ function setup_visual_studio_variables()
   if [ -z "$VSxTOOLS" ]; then
     return 33
   fi
-  export VSxTOOLS="$(short_path "$VSxTOOLS" | tr "A-Z" "a-z" | sed -e 's/\\/\//g' )"
+  export VSxTOOLS="$(cygpath -w -s "$VSxTOOLS" | tr "A-Z" "a-z" | sed -e 's/\\/\//g' )"
 #| sed -e 's/^\(.\):/\/\1/' )"
   
   export VIS_STU_ROOT="$(echo $VSxTOOLS | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' )"
 #| sed -e 's/^\(.\):/\/\1/' )"
   export VSINSTALLDIR="$VIS_STU_ROOT"
   
-  export WINDIR="$(short_path "$WINDIR" | tr A-Z a-z | sed -e 's/\\/\//g' )"
+  export WINDIR="$(cygpath -w -s "$WINDIR" | tr A-Z a-z | sed -e 's/\\/\//g' )"
 #| sed -e 's/^\(.\):/\/\1/' )"
   
   export VCINSTALLDIR="$VSINSTALLDIR/VC"
@@ -57,7 +57,7 @@ function setup_visual_studio_variables()
   export PLATFORM_DIR="$VCINSTALLDIR/PlatformSDK"
   if [ ! -d "$PLATFORM_DIR" ]; then
 
-#on hold:    export PLATFORM_DIR="$(short_path "$PROGRAMFILES/Microsoft SDKs/Windows/v7.0A" | tr "A-Z" "a-z" | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' )"
+#on hold:    export PLATFORM_DIR="$(cygpath -w -s "$PROGRAMFILES/Microsoft SDKs/Windows/v7.0A" | tr "A-Z" "a-z" | sed -e 's/^\(.*\)\/[^\/]*\/[^\/]*[\/]$/\1/' )"
 ##| sed -e 's/^\(.\):/\/\1/' )"
 
     # guess at where we can find this damned directory in its short form.
