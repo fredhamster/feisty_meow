@@ -1,12 +1,23 @@
 
-
-*outdated: coming up with more complete list.
-
 recommended packages to install in cygwin's setup
 if you're going to use cygwin on windows:
 
 first, keep all the standard packages that cygwin will enable.
 second, add these packages to get the full recommended set...
+
+===========
+
+using apt-cyg (https://github.com/transcode-open/apt-cyg),
+this is the only command needed:
+
+apt-cyg install bc crypt emacs email expect gcc-g++ git gitk gvim inetutils \
+  libcurl-devel make mutt ncftp openssh perl python subversion time unzip \
+  util-linux vim xinit xterm zip
+
+
+===========
+
+list broken out by category:
 
 shells:
   python
@@ -37,6 +48,9 @@ general tools:
   zip
   crypt
   time
+
+libraries:
+  libcurl-devel
 
 build tools:
   gcc4
