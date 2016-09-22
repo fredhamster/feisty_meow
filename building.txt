@@ -21,7 +21,7 @@ Quick Start for the Feisty Meow Codebase:
 
     bash ~/feisty_meow/scripts/generator/produce_feisty_meow.sh
 
-    All the applications can be found in $BINDIR
+    All the applications can be found in $FEISTY_MEOW_BINARIES
     after the build is complete.
 
   Cleaning the Codebase:

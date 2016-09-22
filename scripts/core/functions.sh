@@ -441,6 +441,8 @@ if [ -z "$skip_all" ]; then
     done
   }
 
+  ############################
+
   # takes a file to modify, and then it will replace any occurrences of the
   # pattern provided as the second parameter with the text in the third
   # parameter.
@@ -456,6 +458,91 @@ if [ -z "$skip_all" ]; then
     fi
     sed -i -e "s%$pattern%$replacement%g" "$file"
   }
+
+  # similar to replace_pattern_in_file, but also will add the new value
+  # when the old one did not already exist in the file.
+  function replace_if_exists_or_add()
+  {
+    local file="$1"; shift
+    local phrase="$1"; shift
+    local replacement="$1"; shift
+    if [ -z "$file" -o ! -f "$file" -o -z "$phrase" -o -z "$replacement" ]; then
+      echo "replace_if_exists_or_add: needs a filename, a phrase to replace, and the"
+      echo "text to replace that phrase with."
+      return 1
+    fi
+    grep "$phrase" "$file" >/dev/null
+    # replace if the phrase is there, otherwise add it.
+    if [ $? -eq 0 ]; then
+      replace_pattern_in_file "$file" "$phrase" "$replacement"
+    else
+      # this had better be the complete line.
+      echo "$replacement" >>"$file"
+    fi
+  }
+
+  ############################
+
+  # finds a variable (first parameter) in a particular property file
+  # (second parameter).  the expected format for the file is:
+  # varX=valueX
+  function seek_variable()
+  {
+    local find_var="$1"; shift
+    local file="$1"; shift
+    if [ -z "$find_var" -o -z "$file" -o ! -f "$file" ]; then
+      echo -e "seek_variable: needs two parameters, firstly a variable name, and\nsecondly a file where the variable's value will be sought." 1>&2
+      return 1
+    fi
+  
+    while read line; do
+      if [ ${#line} -eq 0 ]; then continue; fi
+      # split the line into the variable name and value.
+      IFS='=' read -a assignment <<< "$line"
+      local var="${assignment[0]}"
+      local value="${assignment[1]}"
+      if [ "${value:0:1}" == '"' ]; then
+        # assume the entry was in quotes and remove them.
+        value="${value:1:$((${#value} - 2))}"
+      fi
+      if [ "$find_var" == "$var" ]; then
+        echo "$value"
+      fi
+    done < "$file"
+  }
+  
+  # finds a variable (first parameter) in a particular XML format file
+  # (second parameter).  the expected format for the file is:
+  # ... name="varX" value="valueX" ...
+  function seek_variable_in_xml()
+  {
+    local find_var="$1"; shift
+    local file="$1"; shift
+    if [ -z "$find_var" -o -z "$file" -o ! -f "$file" ]; then
+      echo "seek_variable_in_xml: needs two parameters, firstly a variable name, and"
+      echo "secondly an XML file where the variable's value will be sought."
+      return 1
+    fi
+  
+    while read line; do
+      if [ ${#line} -eq 0 ]; then continue; fi
+      # process the line to make it more conventional looking.
+      line="$(echo "$line" | sed -e 's/.*name="\([^"]*\)" value="\([^"]*\)"/\1=\2/')"
+      # split the line into the variable name and value.
+      IFS='=' read -a assignment <<< "$line"
+      local var="${assignment[0]}"
+      local value="${assignment[1]}"
+      if [ "${value:0:1}" == '"' ]; then
+        # assume the entry was in quotes and remove them.
+        value="${value:1:$((${#value} - 2))}"
+      fi
+      if [ "$find_var" == "$var" ]; then
+        echo "$value"
+      fi
+    done < "$file"
+  }
+  
+  ############################
 
   # goes to a particular directory passed as parameter 1, and then removes all
   # the parameters after that from that directory.

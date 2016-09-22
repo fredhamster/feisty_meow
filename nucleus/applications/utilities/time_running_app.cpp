@@ -57,7 +57,7 @@ int time_running_app::execute()
   int test_runs = 10000;
 
   time_stamp start;  // start of test.
-  astring bins = environment::get("$BINDIR");
+  astring bins = environment::get("$FEISTY_MEOW_BINARIES");
   astring app = bins + "/example_application";
   // save real stdout.
   int real_stdout = dup(1);

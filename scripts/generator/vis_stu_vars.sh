@@ -19,9 +19,6 @@ fi
 
 function setup_visual_studio_variables()
 {
-#  chmod 755 $PRODUCTION_DIR/win32_helper/*.exe
-#  export PATH="$(dos_to_unix_path $PRODUCTION_DIR)/win32_helper:$PATH"
-
   # we try to use the most recent compiler location, and work backwards as
   # needed for the supported range (10 = vs 2010, 9 = vs 2008, 8 = vs 2005).
   export VSxTOOLS="$VS100COMNTOOLS"

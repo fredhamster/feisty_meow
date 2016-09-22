@@ -3,6 +3,9 @@
 # this script needs to run as root.  it will copy all the important
 # assets for cgi into the right places.
 
+echo "antiquated approach, we now do this with links instead."
+exit 1
+
 cd ~/feisty_meow/scripts/cgi
 cp call_version_utils.sh cgi_cat.pl cgi_display.pl cgi_nechung.cgi cgi_show_file_date.sh \
     count.cgi nechung.cgi \
@@ -20,7 +23,7 @@ cd ~/feisty_meow/infobase
 cp fortunes.dat \
   /usr/lib/cgi-bin
 
-cp $BINDIR/*nechung* /usr/lib/cgi-bin
+cp $FEISTY_MEOW_BINARIES/*nechung* /usr/lib/cgi-bin
 
 chmod a+x /usr/lib/cgi-bin/*
 

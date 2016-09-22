@@ -204,11 +204,11 @@ if [ -z "$NECHUNG" ]; then
     # now augment the environment if we found our build variables.
     if [ $found_build_vars == 1 ]; then
       # the binary directory contains our collection of handy programs.
-      define_yeti_variable BINDIR=$TARGETS_DIR
+      define_yeti_variable FEISTY_MEOW_BINARIES=$TARGETS_DIR
       # add binaries created within build to the path.
-      define_yeti_variable PATH="$(dos_to_unix_path $BINDIR):$PATH"
+      define_yeti_variable PATH="$(dos_to_unix_path $FEISTY_MEOW_BINARIES):$PATH"
       # Shared libraries are located via this variable.
-      define_yeti_variable LD_LIBRARY_PATH="$(dos_to_unix_path $LD_LIBRARY_PATH):$(dos_to_unix_path $BINDIR)"
+      define_yeti_variable LD_LIBRARY_PATH="$(dos_to_unix_path $LD_LIBRARY_PATH):$(dos_to_unix_path $FEISTY_MEOW_BINARIES)"
     fi
   }
   

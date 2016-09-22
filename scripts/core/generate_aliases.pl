@@ -23,7 +23,7 @@
 
 require "filename_helper.pl";
 
-use Env qw(BINDIR BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS SHELL_DEBUG );
+use Env qw(FEISTY_MEOW_BINARIES BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS SHELL_DEBUG );
 
 # given a possible aliasable filename, this will decide whether to create a perl
 # or bash alias for it.  it needs the filename of the possible alias and the
@@ -173,8 +173,8 @@ if (! -d $FEISTY_MEOW_LOADING_DOCK) {
 ##############
 
 # set the executable bit for binaries for just this current user.
-if (-d $BINDIR) {
-  system("chmod -R u+x \"$BINDIR\"/*");
+if (-d $FEISTY_MEOW_BINARIES) {
+  system("chmod -R u+x \"$FEISTY_MEOW_BINARIES\"/*");
 }
 
 # generate the first set of alias files that are defined in the core

@@ -52,7 +52,7 @@ function nechung()
 {
   start_background_action \
       'echo "your nechung oracle pronouncement of the moment..."' \
-      '$BINDIR/nechung'
+      '$FEISTY_MEOW_BINARIES/nechung'
 }
 
 function sum_dir()

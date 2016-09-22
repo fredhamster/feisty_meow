@@ -29,7 +29,7 @@ open(FILE, ">" . $temp_filename) || die "couldn't open $temp_filename for writin
 print FILE "_______ chosen by the Nechung Oracle Program [ http://gruntose.com/ ] _______\n";
 print FILE "\n";
 close(FILE);
-local($bindir) = $ENV{'BINDIR'};
+local($bindir) = $ENV{'FEISTY_MEOW_BINARIES'};
 $bindir = &sanitize_name($bindir);
 system("$bindir/nechung >>$temp_filename");
 ###always hits this.  nechung gives an error? || die "couldn't run nechung.";

@@ -2,6 +2,6 @@
 echo "<br>"
 echo "<br>"
 echo "--<br>"
-$BINDIR/nechung
+$FEISTY_MEOW_BINARIES/nechung
 
 

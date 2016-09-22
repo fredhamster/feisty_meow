@@ -59,7 +59,6 @@ local($root) = &canonicalize("$HOME/feisty_meow");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/assign_bases");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/check_versions");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/setup_src");
-#old &backup_hierarchy($snarf_file_base, $number, "$root", "production/win32_helper");
 
 # now rename the file so only the unpacker can access it.
 &rename_archive($snarf_file);
