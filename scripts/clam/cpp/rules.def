@@ -179,12 +179,11 @@ ifeq "$(OP_SYSTEM)" "WIN32"
   endif
 
   ifneq "$(USE_CURL)" ""
+    # curl wants this win32 flag?
     DEFINITIONS += _WIN32
-    LOCAL_HEADERS += $(THIRD_PARTY_DIR)/curl/include
-    LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/curl/lib
-#    ifeq "$(findstring libcurl, $(LIBS_USED))" ""
-      LIBS_USED += libcurl.dll.a
-#    endif
+#    LOCAL_HEADERS += $(THIRD_PARTY_DIR)/curl/include
+#    LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/curl/lib
+#    LIBS_USED += libcurl.dll.a
   endif
 
   ifneq "$(VCPP_USE_GUI)" ""
