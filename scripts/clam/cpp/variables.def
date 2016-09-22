@@ -438,7 +438,7 @@ export COMPILER_HEADER_DIR
 
 # These flags may be useful across multiple compilers.
 #
-# SSL brings in the openSSL libraries.
+# SSL brings in the OpenSSL libraries.
 USE_SSL=
 
 # CURL provides access to the curl library.

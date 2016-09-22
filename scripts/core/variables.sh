@@ -79,6 +79,11 @@ if [ -z "$NECHUNG" ]; then
     # IS_MSYS will be non-empty if this is the msys toolset.  otherwise
     # we assume that it's cygwin.
     IS_MSYS=$(uname | grep -i ming)
+
+    # if not MSYS, then we'll assume cygwin and set the cygwin root var.
+    if [ -z "$IS_MSYS" ]; then
+      define_yeti_variable CYGROOT=$(cygpath -w -m /)
+    fi
   fi
 
   ##############
