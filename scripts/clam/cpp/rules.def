@@ -271,7 +271,11 @@ ifeq "$(OP_SYSTEM)" "WIN32"
   else
     TEMP_OBJ3a = $(TEMP_OBJ2)
   endif
-  TEMP_OBJ3 = $(TEMP_OBJ3a:%.rc=%.res)
+  ifeq "$(COMPILER)" "VISUAL_CPP"
+    TEMP_OBJ3 = $(TEMP_OBJ3a:%.rc=%.res)
+  else
+    TEMP_OBJ3 = $(TEMP_OBJ3a)
+  endif
 else
   # replace this when supporting resource files on unix.
   TEMP_OBJ3 = $(TEMP_OBJ2:%.rc=)

@@ -20,10 +20,10 @@
 namespace loggers {
 
 //! This macro wraps the notion of stopping in the debugger.
-#ifdef __UNIX__
+#ifndef _MSC_VER
   #define CAUSE_BREAKPOINT
 //hmmm: need a unix equivalent for this.  supporting gcc might be enough.
-#elif defined(__WIN32__)
+#else
   #ifdef __MINGW32__
     extern "C" {
 //      #include <ddk/winddi.h>

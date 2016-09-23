@@ -46,22 +46,26 @@ using namespace unit_test;
 
 #define DEBUG_SYMBOL_TREE
 
-class test_symbol_tree : public virtual unit_base, virtual public application_shell
+// how many nodes we add to the tree.
+const int MAX_NODES_TESTED = 40000;
+
+class test_symbol_tree : public unit_base, public application_shell
 {
 public:
-  test_symbol_tree() {}
+  test_symbol_tree() : unit_base() {}
   DEFINE_CLASS_NAME("test_symbol_tree");
   int execute();
 };
 
 int test_symbol_tree::execute()
 {
+  FUNCDEF("execute");
   LOG("please check memory usage and record it, then hit a key to start testing.");
 
   try {
     symbol_tree t("blork");
     symbol_tree *curr = &t;
-    for (int i = 0; i < 40000; i++) {
+    for (int i = 0; i < MAX_NODES_TESTED; i++) {
       // if the current node has any branches, we'll jump on one as the next
       // place.
       if (curr->branches()) {
@@ -77,6 +81,13 @@ int test_symbol_tree::execute()
     LOG("crashed during tree stuffing.");
     return 1;
   }
+
+LOG("got out of the loop");
+
+//one assertion to tickle final report.
+  bool farp = true;
+  ASSERT_TRUE(farp, "tickling reporting for assertions");
+//hmmm: above shouldn't be needed at all.
 
   LOG("check memory usage after the run.  then hit a key to end "
       "the program.");

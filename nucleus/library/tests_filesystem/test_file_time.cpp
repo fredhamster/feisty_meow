@@ -57,18 +57,26 @@ int test_file_time::execute()
   FUNCDEF("execute");
 
 #ifdef __UNIX__
+  // just open the root directory on unix; always works.
   astring toppy("/");
 #endif
 #ifdef __WIN32__
-  astring toppy("c:/ntldr");  // will work for any modern windows OS.
+  // windows cannot fopen a directory.  this blows.  so we pick a file
+  // that should work for most windowses.
+  astring toppy("c:/Windows/notepad.exe");
 #endif
 
   // test storing info via the constructor.
   file_time absurdity_time(toppy);
   FILE *topdir = fopen(toppy.s(), "r");
+  ASSERT_INEQUAL(topdir, NIL, "opening topdir for testing");
+  if (topdir == NIL) {
+    return 1;
+  }
   file_time nutty_time(topdir);
-  struct stat sbuffer;
+
   int filenum = fileno(topdir);
+  struct stat sbuffer;
   int stat_okay = fstat(filenum, &sbuffer);
   ASSERT_FALSE(stat_okay, "failure to read filetime");
   file_time goofy_time(sbuffer.st_mtime); 

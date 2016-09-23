@@ -22,8 +22,10 @@
 //#define DEBUG_SYMBOL_TREE
   // uncomment for totally noisy version.
 
+#include <loggers/program_wide_logger.h>
 #undef LOG
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+using namespace loggers;
 
 using namespace basis;
 using namespace structures;
@@ -36,6 +38,11 @@ class symbol_tree_associations : public symbol_table<symbol_tree *>
 public:
   symbol_tree_associations(int estimated_elements)
       :  symbol_table<symbol_tree *>(estimated_elements) {}
+  virtual ~symbol_tree_associations() {
+//    for (int i = 0; i < symbols(); i++) {
+//      WHACK(use(i));
+//    }
+  }
 };
 
 //////////////
@@ -49,8 +56,11 @@ symbol_tree::symbol_tree(const astring &node_name, int estimated_elements)
 
 symbol_tree::~symbol_tree()
 {
-  WHACK(_name);
+  FUNCDEF("destructor");
+LOG("prior to whacks");
   WHACK(_associations);
+  WHACK(_name);
+LOG("after whacks");
 }
 
 int symbol_tree::children() const { return _associations->symbols(); }

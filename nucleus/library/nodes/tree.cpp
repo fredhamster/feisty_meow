@@ -278,10 +278,61 @@ tree::~tree()
   // cousin.
   tree *my_parent = parent();
   if (my_parent) my_parent->prune(this);
+  my_parent = NIL;  // disavow since we are loose now.
+
+#if 0
+
+  //original version suffers from being too recursive on windoze,
+  //which blows out the stack.  linux never showed this problem.  so, i
+  //guess i'm glad i tested on windows.
+  //anyway, it's a general problem for a degenerate tree like the one
+  //i've constructed.  current version has ~40000 direct descendants of
+  //the root in a single line, so the stack has to support 40000 frames
+  //for the delete implementation below to work.
 
   // iterate over the child nodes and whack each individually.
   while (branches()) delete branch(0);
     // this relies on the child getting out of our branch list.
+#else
+
+  // newer version of delete doesn't recurse; it just iterates instead,
+  // which avoids the massive recursive depth of the original approach.
+  tree *curr_node = this;
+  while (curr_node != NIL) {
+    // make a breadcrumb for getting back to 'here' in the tree.
+    tree *way_back = curr_node;
+    // our main operation here is to go down a node without using any
+    // stack frames.  so we just pick the first kid; it's either valid
+    // or there are no kids at all.
+    curr_node = curr_node->branch(0);
+
+    if (curr_node = NIL) {
+      // wayback has no children, so we can take action.
+
+      // if wayback is the same as "this", then we exit from iterations since
+      // we've cleaned all the kids out.
+      if (way_back == this) {
+        break;
+      }
+
+      // we want to whack the wayback node at this point, since it's a parent
+      // with no kids, i.e. a leaf.  we've guaranteed we're not going beyond
+      // our remit, since wayback is not the same node as the top level one
+      // in the destructor (as long as there are no cycles in the tree...).
+      curr_node = way_back->parent();  // go up in tree on next iteration.
+      delete way_back;  // whack a node, finally.
+
+    } else {
+      // okay, there's a node below here.  we will spider down to it.
+      continue;
+    }
+
+
+  }
+
+#endif
+
+
 }
 
 tree *tree::parent() const { return (tree *)get_link(BACKWARDS_BRANCH); }

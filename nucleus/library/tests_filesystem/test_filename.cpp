@@ -224,7 +224,7 @@ int test_filename::execute()
   {
     // eighth test group is only for windows side.
 //hmmm: might be nice to get the build machine launching this on a windows vm.
-    astring GROUP = "eighth: cygwin and msys paths";
+    astring GROUP = "eighth: cygwin and msys paths ";
     filename test1("/cygdrive/q/marbles");
     ASSERT_EQUAL(test1, astring("q:\\marbles"), GROUP + "test 1 failed");
     filename test2("/cygdrive/r");
@@ -253,13 +253,13 @@ int test_filename::execute()
     filename test14("/r/");
     ASSERT_EQUAL(test14, astring("r:\\"), GROUP + "test 14 failed");
     filename test15("/r");
-    ASSERT_EQUAL(test15, astring("r:"), GROUP + "test 15 failed");
+    ASSERT_EQUAL(test15, astring("r:\\"), GROUP + "test 15 failed");
     filename test16("/");
     ASSERT_EQUAL(test16, astring("\\"), GROUP + "test 16 failed");
     filename test17("r/");
     ASSERT_EQUAL(test17, astring("r\\"), GROUP + "test 17 failed");
     filename test18("/kr/soop");
-    ASSERT_INEQUAL(test18, astring("\\kr\\soop"), GROUP + "test 18 failed");
+    ASSERT_EQUAL(test18, astring("\\kr\\soop"), GROUP + "test 18 failed");
   }
 #endif
 

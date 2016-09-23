@@ -23,7 +23,7 @@
 using namespace basis;
 using namespace structures;
 
-#define DEBUG_PACKABLE_TREE
+//#define DEBUG_PACKABLE_TREE
   // uncomment for noisy debugging.
 
 #undef LOG
@@ -82,12 +82,16 @@ packable_tree::packable_tree() : tree() {}
 
 void packable_tree::calcit(int &size_accumulator, const packable_tree *current_node)
 {
-LOG(a_sprintf("calcing node %x", current_node));
   FUNCDEF("calcit");
+#ifdef DEBUG_PACKABLE_TREE
+  LOG(a_sprintf("calcing node %x", current_node));
+#endif
   if (!current_node) throw_error(static_class_name(), func, "current node is nil");
   tree_command_unit temp;
   size_accumulator += current_node->packed_size() + temp.packed_size();
-LOG(a_sprintf("len A %d", size_accumulator));
+#ifdef DEBUG_PACKABLE_TREE
+  LOG(a_sprintf("len A %d", size_accumulator));
+#endif
 }
 
 void packable_tree::packit(byte_array &packed_form, const packable_tree *current_node)

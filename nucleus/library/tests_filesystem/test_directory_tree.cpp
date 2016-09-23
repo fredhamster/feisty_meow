@@ -216,7 +216,7 @@ LOG("what happened with that?  did it work?");
 
 //hmmm: plug in real recursive delete here instead.
 basis::un_int kid;
-launch_process::run("rm", astring("-rf ") + tmpdir.raw(), launch_process::AWAIT_APP_EXIT, kid);
+launch_process::run("/usr/bin/rm", astring("-rf ") + tmpdir.raw(), launch_process::AWAIT_APP_EXIT, kid);
 ASSERT_FALSE(kid, "removing temporary files after test");
 
   }

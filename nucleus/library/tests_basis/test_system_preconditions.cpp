@@ -147,16 +147,10 @@ int test_system_preconditions::execute()
 
 #ifdef __WIN32__
   known_operating_systems os = determine_OS();
-  if (os == WIN_95)
-    printf("This is windows 95.\n");
-  else if (os == WIN_NT)
-    printf("This is windows NT.\n");
-  else if (os == WIN_2K)
-    printf("This is windows 2000.\n");
-  else if (os == WIN_XP)
-    printf("This is windows XP.\n");
-  else 
-    printf("This OS is unknown.\n");
+  astring os_report = "This OS is: ";
+  os_report += opsystem_name(os);
+  os_report += "\n";
+  printf(os_report.s());
 #endif
 
   version os_ver = application_configuration::get_OS_version();

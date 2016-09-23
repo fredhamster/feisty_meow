@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
+#if defined(__UNIX__) 
   #include <unistd.h>
 #else
   #include <io.h>
@@ -190,13 +190,22 @@ void filename::canonicalize()
   // on windows, we want to translate away from any cygwin or msys format into a more palatable
   // version that the rest of windows understands.
   // first, cygwin...
-  const astring CYGDRIVE_PATH = astring(astring(DEFAULT_SEPARATOR, 1) + "cygdrive"
-      + astring(DEFAULT_SEPARATOR, 1));
+//hmmm: make these into statics!
+  const astring CYGDRIVE_SENTINEL = "cygdrive";
+  const astring CYGDRIVE_PATH = astring(astring(DEFAULT_SEPARATOR, 1)
+      + CYGDRIVE_SENTINEL + astring(DEFAULT_SEPARATOR, 1));
+
   // must be at least as long as the string we're looking for, plus a drive letter afterwards.
-  if ( (length() > CYGDRIVE_PATH.length() + 1) && begins(CYGDRIVE_PATH) ) {
+  if ( (length() >= CYGDRIVE_PATH.length() + 1)
+      && separator(get(0))
+      && separator(get(CYGDRIVE_PATH.length() - 1))
+      && compare(CYGDRIVE_SENTINEL, 1, 
+          0, CYGDRIVE_SENTINEL.length(), true) ) {
     zap(0, CYGDRIVE_PATH.length() - 1);  // whack the cygdrive portion plus two slashes.
     insert(1, ":");  // add a colon after the imputed drive letter.
-//LOG(astring("turned cygdrive string into: ") + *this);
+//LOG(astring("turned cygdrive path string into: ") + *this);
+  } else {
+//LOG(astring("path didn't match so left as: ") + *this);
   }
   // now we convert msys...
   if ( (length() >= 2) && (get(0) == DEFAULT_SEPARATOR)

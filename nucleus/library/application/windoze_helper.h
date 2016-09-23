@@ -216,7 +216,9 @@ namespace application {
     #define BROADCAST_HANDLE HWND_BROADCAST
 
     enum known_operating_systems {
-      WIN_95, WIN_NT, WIN_2K, WIN_XP, WIN_SRV2K3, WIN_VISTA, WIN_SRV2K8,
+      WIN_95, WIN_NT, WIN_2K, WIN_XP, WIN_SRV2K3, WIN_VISTA, 
+///WIN_SRV2K8,
+      WIN_7, WIN_8, WIN_10,
       UNKNOWN_OS
     };
     const char *opsystem_name(known_operating_systems which);

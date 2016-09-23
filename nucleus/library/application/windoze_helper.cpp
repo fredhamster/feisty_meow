@@ -13,15 +13,8 @@
 \*****************************************************************************/
 
 #include "windoze_helper.h"
-///#include "array.h"
-///#include "build_configuration.h"
-///#include "convert_utf.h"
-///#include "function.h"
-///#include "mutex.h"
-///#include "portable.h"
-///#include "set.h"
-///#include "version_record.h"
 #include <configuration/application_configuration.h>
+#include <loggers/program_wide_logger.h>
 
 ///#include <errno.h>
 ///#include <stdlib.h>
@@ -50,11 +43,14 @@
 */
 
 using namespace basis;
+using namespace loggers;
 using namespace structures;
 using namespace configuration;
 
 #undef static_class_name
 #define static_class_name() "windoze_helper"
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 /*
 //#define DEBUG_PORTABLE
@@ -836,13 +832,16 @@ const char *opsystem_name(known_operating_systems which)
     case WIN_XP: return "WIN_XP";
     case WIN_SRV2K3: return "WIN_SRV2K3";
     case WIN_VISTA: return "WIN_VISTA";
-    case WIN_SRV2K8: return "WIN_SRV2K8";
+    case WIN_7: return "WIN_7";
+    case WIN_8: return "WIN_8";
+    case WIN_10: return "WIN_10";
     default: return "UNKNOWN_OS";
   }
 }
 
 known_operating_systems determine_OS()
 {
+  FUNCDEF("determine_OS");
   version osver = application_configuration::get_OS_version();
   if ( (osver.v_major() == 4) && (osver.v_minor() == 0) ) {
     if (osver.v_revision() == VER_PLATFORM_WIN32_WINDOWS) return WIN_95;
@@ -855,9 +854,19 @@ known_operating_systems determine_OS()
     return WIN_SRV2K3;
   } else if ( (osver.v_major() == 6) && (osver.v_minor() == 0) ) {
     return WIN_VISTA;
+//  } else if ( (osver.v_major() == 6) && (osver.v_minor() == 1) ) {
+//    return WIN_SRV2K8;
   } else if ( (osver.v_major() == 6) && (osver.v_minor() == 1) ) {
-    return WIN_SRV2K8;
+    return WIN_7;
+  } else if ( (osver.v_major() == 6) && (osver.v_minor() == 2) ) {
+    return WIN_8;
+  } else if ( (osver.v_major() == 10) && (osver.v_minor() == 0) ) {
+    return WIN_10;
   }
+
+//temp
+LOG(a_sprintf("got a major OS of %d and minor OS of %d", osver.v_major(), osver.v_minor()));
+
   return UNKNOWN_OS;
 }
 

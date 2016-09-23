@@ -26,7 +26,7 @@
 #include <timely/time_stamp.h>
 
 #include <stdio.h>
-#ifdef __UNIX__
+#ifndef _MSC_VER
   #include <errno.h>
 #endif
 
@@ -54,9 +54,9 @@ SAFE_STATIC(mutex, __critical_event_dir_lock, )
 
 basis::un_int critical_events::system_error()
 {
-#if defined(__UNIX__)
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   return errno;
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   return GetLastError();
 #else
   #pragma error("hmmm: no code for error number for this operating system")
@@ -66,9 +66,9 @@ basis::un_int critical_events::system_error()
 
 astring critical_events::system_error_text(basis::un_int to_name)
 {
-#if defined(__UNIX__)
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   return strerror(to_name);
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   char error_text[1000];
   FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NIL, to_name,
       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)error_text,
