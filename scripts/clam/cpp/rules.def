@@ -430,7 +430,7 @@ endif
 $(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.cpp
 ifeq "$(NO_COMPILE)" ""
   ifneq "$(COMPILER)" "VISUAL_CPP"
-	@echo Compiling [$(notdir $@)]
+	@echo Compiling Object [$(notdir $@)]
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
   else
@@ -447,7 +447,7 @@ endif
 $(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.c
 ifeq "$(NO_COMPILE)" ""
   ifneq "$(COMPILER)" "VISUAL_CPP"
-	@echo Compiling [$(notdir $@)]
+	@echo Compiling Object [$(notdir $@)]
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
   else
