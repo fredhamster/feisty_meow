@@ -107,6 +107,9 @@ int test_rsa::execute()
     LOG(astring("cleaning debris."));
 #endif
     _threads.clean_debris();
+#ifdef DEBUG_RSA_CRYPTO
+    LOG(astring("after cleaning debris."));
+#endif
     time_control::sleep_ms(1000);
   }
 

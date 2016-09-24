@@ -63,6 +63,7 @@ int test_symbol_tree::execute()
   LOG("please check memory usage and record it, then hit a key to start testing.");
 
   try {
+    // creates a crazy tree with only one branch per node, but 40,000 deep.
     symbol_tree t("blork");
     symbol_tree *curr = &t;
     for (int i = 0; i < MAX_NODES_TESTED; i++) {
@@ -82,17 +83,10 @@ int test_symbol_tree::execute()
     return 1;
   }
 
-LOG("got out of the loop");
-
-//one assertion to tickle final report.
-  bool farp = true;
-  ASSERT_TRUE(farp, "tickling reporting for assertions");
-//hmmm: above shouldn't be needed at all.
-
   LOG("check memory usage after the run.  then hit a key to end "
       "the program.");
 
-//create a tree structure...
+//create a more balanced tree structure...
 //perform known operations and validate shape of tree.
 
   return final_report();

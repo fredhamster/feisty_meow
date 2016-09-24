@@ -91,10 +91,20 @@ private:
 int test_blowfish::execute()
 {
   FUNCDEF("execute");
+#ifdef DEBUG_BLOWFISH
+  LOG(astring("starting blowfish test..."));
+#endif
   int left = THREAD_COUNT;
   while (left--) {
+#ifdef DEBUG_BLOWFISH
+  LOG(a_sprintf("blowfish thread %d starting...", left));
+#endif
     _threads.add_thread(new blowfish_thread(*this), true, NIL);
   }
+
+#ifdef DEBUG_BLOWFISH
+  LOG(astring("started all threads..."));
+#endif
 
   while (_threads.threads()) {
 #ifdef DEBUG_BLOWFISH

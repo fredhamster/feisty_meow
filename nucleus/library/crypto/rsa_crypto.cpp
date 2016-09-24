@@ -74,10 +74,10 @@ rsa_crypto::rsa_crypto(const byte_array &key)
   LOG("after set key");
 }
 
-rsa_crypto::rsa_crypto(rsa_st *key)
+rsa_crypto::rsa_crypto(RSA *key)
 : _key(NIL)
 {
-  FUNCDEF("ctor(rsa_st)");
+  FUNCDEF("ctor(RSA)");
   static_ssl_initializer();
   LOG("prior to set key");
   set_key(key);
@@ -111,23 +111,23 @@ const rsa_crypto &rsa_crypto::operator = (const rsa_crypto &to_copy)
   return *this;
 }
 
-rsa_st *rsa_crypto::generate_key(int key_size)
+RSA *rsa_crypto::generate_key(int key_size)
 {
   FUNCDEF("generate_key");
   if (key_size < 4) key_size = 4;  // laughable lower default.
   static_ssl_initializer();
-  LOG("prior to generate key");
+  LOG("into generate key");
   auto_synchronizer mutt(__single_stepper());
-  rsa_st *to_return = RSA_generate_key(key_size, 65537, NIL, NIL);
+  RSA *to_return = RSA_generate_key(key_size, 65537, NIL, NIL);
   if (!to_return) {
     continuable_error(static_class_name(), func,
         a_sprintf("failed to generate a key of %d bits.", key_size));
   }
-  LOG("after generate key");
+  LOG("after key generated");
   return to_return;
 }
 
-bool rsa_crypto::check_key(rsa_st *key)
+bool rsa_crypto::check_key(RSA *key)
 {
   auto_synchronizer mutt(__single_stepper());
   return RSA_check_key(key) == 1;
@@ -146,39 +146,64 @@ bool rsa_crypto::set_key(byte_array &key)
   // get the public key bits first.
   byte_array n;
   if (!structures::detach(key, n)) return false;
-  _key->n = BN_bin2bn(n.access(), n.length(), NIL);
-  if (!_key->n) return false;
+  BIGNUM *the_n = BN_bin2bn(n.access(), n.length(), NIL);
+  if (!the_n) return false;
   byte_array e;
   if (!structures::detach(key, e)) return false;
-  _key->e = BN_bin2bn(e.access(), e.length(), NIL);
-  if (!_key->e) return false;
-  if (type == 'u') return true;  // done with public key.
+  BIGNUM *the_e = BN_bin2bn(e.access(), e.length(), NIL);
+  if (!the_e) return false;
+
+  if (type == 'u') {
+     // done with public key.
+#ifdef NEWER_OPENSSL
+     RSA_set0_key(_key, the_n, the_e, NIL);
+#else
+     _key->n = the_n; _key->e = the_e;
+#endif
+     return true;
+  }
 
   // the rest is for a private key.
   byte_array d;
   if (!structures::detach(key, d)) return false;
-  _key->d = BN_bin2bn(d.access(), d.length(), NIL);
-  if (!_key->d) return false;
+  BIGNUM *the_d = BN_bin2bn(d.access(), d.length(), NIL);
+  if (!the_d) return false;
+
   byte_array p;
   if (!structures::detach(key, p)) return false;
-  _key->p = BN_bin2bn(p.access(), p.length(), NIL);
-  if (!_key->p) return false;
+  BIGNUM *the_p = BN_bin2bn(p.access(), p.length(), NIL);
+  if (!the_p) return false;
   byte_array q;
   if (!structures::detach(key, q)) return false;
-  _key->q = BN_bin2bn(q.access(), q.length(), NIL);
-  if (!_key->q) return false;
+  BIGNUM *the_q = BN_bin2bn(q.access(), q.length(), NIL);
+  if (!the_q) return false;
   byte_array dmp1;
   if (!structures::detach(key, dmp1)) return false;
-  _key->dmp1 = BN_bin2bn(dmp1.access(), dmp1.length(), NIL);
-  if (!_key->dmp1) return false;
+  BIGNUM *the_dmp1 = BN_bin2bn(dmp1.access(), dmp1.length(), NIL);
+  if (!the_dmp1) return false;
   byte_array dmq1;
   if (!structures::detach(key, dmq1)) return false;
-  _key->dmq1 = BN_bin2bn(dmq1.access(), dmq1.length(), NIL);
-  if (!_key->dmq1) return false;
+  BIGNUM *the_dmq1 = BN_bin2bn(dmq1.access(), dmq1.length(), NIL);
+  if (!the_dmq1) return false;
   byte_array iqmp;
   if (!structures::detach(key, iqmp)) return false;
-  _key->iqmp = BN_bin2bn(iqmp.access(), iqmp.length(), NIL);
-  if (!_key->iqmp) return false;
+  BIGNUM *the_iqmp = BN_bin2bn(iqmp.access(), iqmp.length(), NIL);
+  if (!the_iqmp) return false;
+
+  // we can set the n, e and d now.
+#ifdef NEWER_OPENSSL
+  int ret = RSA_set0_key(_key, the_n, the_e, the_d);
+  if (ret != 1) return false;
+  ret = RSA_set0_factors(_key, the_p, the_q);
+  if (ret != 1) return false;
+  ret = RSA_set0_crt_params(_key, the_dmp1, the_dmq1, the_iqmp);
+  if (ret != 1) return false;
+#else
+  _key->n = the_n; _key->e = the_e; _key->d = the_d;
+  _key->p = the_p; _key->q = the_q;
+  _key->dmp1 = the_dmp1; _key->dmq1 = the_dmq1; _key->iqmp = the_iqmp;
+#endif
+
   int check = RSA_check_key(_key);
   if (check != 1) {
     continuable_error(static_class_name(), func, "failed to check the private "
@@ -189,9 +214,9 @@ bool rsa_crypto::set_key(byte_array &key)
   return true;
 }
 
-bool rsa_crypto::set_key(rsa_st *key)
+bool rsa_crypto::set_key(RSA *key)
 {
-  FUNCDEF("set_key [rsa_st]");
+  FUNCDEF("set_key [RSA]");
   if (!key) return NIL;
   // test the incoming key.
   auto_synchronizer mutt(__single_stepper());
@@ -214,13 +239,21 @@ bool rsa_crypto::public_key(byte_array &pubkey) const
   if (!_key) return false;
   structures::attach(pubkey, abyte('u'));  // signal a public key.
   // convert the two public portions into binary.
-  byte_array n(BN_num_bytes(_key->n));
-  int ret = BN_bn2bin(_key->n, n.access());
-  byte_array e(BN_num_bytes(_key->e));
-  ret = BN_bn2bin(_key->e, e.access());
+  BIGNUM **the_n = new BIGNUM *, **the_e = new BIGNUM *, **the_d = new BIGNUM *;
+#ifdef NEWER_OPENSSL
+  RSA_get0_key(_key, (const BIGNUM **)the_n, (const BIGNUM **)the_e, (const BIGNUM **)the_d);
+#else
+  *the_n = _key->n; *the_e = _key->e; *the_d = _key->d;
+#endif
+  byte_array n(BN_num_bytes(*the_n));
+  int ret = BN_bn2bin(*the_n, n.access());
+  byte_array e(BN_num_bytes(*the_e));
+  ret = BN_bn2bin(*the_e, e.access());
   // pack those two chunks.
   structures::attach(pubkey, n);
   structures::attach(pubkey, e);
+  WHACK(the_n); WHACK(the_e); WHACK(the_d);
+
   return true;
 }
 
@@ -233,18 +266,31 @@ bool rsa_crypto::private_key(byte_array &privkey) const
   if (!worked) return false;
   privkey[posn] = abyte('r');  // switch public key flag to private.
   // convert the multiple private portions into binary.
-  byte_array d(BN_num_bytes(_key->d));
-  int ret = BN_bn2bin(_key->d, d.access());
-  byte_array p(BN_num_bytes(_key->p));
-  ret = BN_bn2bin(_key->p, p.access());
-  byte_array q(BN_num_bytes(_key->q));
-  ret = BN_bn2bin(_key->q, q.access());
-  byte_array dmp1(BN_num_bytes(_key->dmp1));
-  ret = BN_bn2bin(_key->dmp1, dmp1.access());
-  byte_array dmq1(BN_num_bytes(_key->dmq1));
-  ret = BN_bn2bin(_key->dmq1, dmq1.access());
-  byte_array iqmp(BN_num_bytes(_key->iqmp));
-  ret = BN_bn2bin(_key->iqmp, iqmp.access());
+  //const BIGNUM **the_n = NIL, **the_e = NIL, **the_d = NIL;
+  BIGNUM **the_n = new BIGNUM *, **the_e = new BIGNUM *, **the_d = new BIGNUM *;
+  BIGNUM **the_p = new BIGNUM *, **the_q = new BIGNUM *;
+  BIGNUM **the_dmp1 = new BIGNUM *, **the_dmq1 = new BIGNUM *, **the_iqmp = new BIGNUM *;
+#ifdef NEWER_OPENSSL
+  RSA_get0_key(_key, (const BIGNUM **)the_n, (const BIGNUM **)the_e, (const BIGNUM **)the_d);
+  RSA_get0_factors(_key, (const BIGNUM **)the_p, (const BIGNUM **)the_q);
+  RSA_get0_crt_params(_key, (const BIGNUM **)the_dmp1, (const BIGNUM **)the_dmq1, (const BIGNUM **)the_iqmp);
+#else
+  *the_n = _key->n; *the_e = _key->e; *the_d = _key->d;
+  *the_p = _key->p; *the_q = _key->q;
+  *the_dmp1 = _key->dmp1; *the_dmq1 = _key->dmq1; *the_iqmp = _key->iqmp;
+#endif
+  byte_array d(BN_num_bytes(*the_d));
+  int ret = BN_bn2bin(*the_d, d.access());
+  byte_array p(BN_num_bytes(*the_p));
+  ret = BN_bn2bin(*the_p, p.access());
+  byte_array q(BN_num_bytes(*the_q));
+  ret = BN_bn2bin(*the_q, q.access());
+  byte_array dmp1(BN_num_bytes(*the_dmp1));
+  ret = BN_bn2bin(*the_dmp1, dmp1.access());
+  byte_array dmq1(BN_num_bytes(*the_dmq1));
+  ret = BN_bn2bin(*the_dmq1, dmq1.access());
+  byte_array iqmp(BN_num_bytes(*the_iqmp));
+  ret = BN_bn2bin(*the_iqmp, iqmp.access());
   // pack all those in now.
   structures::attach(privkey, d);
   structures::attach(privkey, p);

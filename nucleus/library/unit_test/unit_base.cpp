@@ -270,8 +270,7 @@ int unit_base::final_report()
 
   astring keyword = "FAILURE";  // but be pessimistic about overall result at first..?
 
-
-BASE_LOG(a_sprintf("total tests %d passed tests %d", c_total_tests, c_passed_tests));
+// BASE_LOG(a_sprintf("total tests %d passed tests %d", c_total_tests, c_passed_tests));
 
   // check whether we really did succeed or not.
   if (c_total_tests == c_passed_tests) keyword = "SUCCESS";  // success!

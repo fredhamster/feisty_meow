@@ -242,7 +242,8 @@ ifeq "$(OP_SYSTEM)" "WIN32"
   ifneq "$(USE_SSL)" ""
     LOCAL_HEADERS += $(THIRD_PARTY_DIR)/openssl/include
     LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/openssl/lib
-    LIBS_USED += libeay32.lib
+    LIBS_USED += libcrypto.lib libssl.lib
+#    LIBS_USED += libeay32.lib
     $(shell cp $(THIRD_PARTY_DIR)/openssl/lib/*dll $(EXECUTABLE_DIR) )
   endif
   
@@ -429,7 +430,7 @@ endif
 $(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.cpp
 ifeq "$(NO_COMPILE)" ""
   ifneq "$(COMPILER)" "VISUAL_CPP"
-	@echo Building [$(shell basename $@)]
+	@echo Compiling [$(notdir $@)]
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
   else
@@ -446,7 +447,7 @@ endif
 $(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.c
 ifeq "$(NO_COMPILE)" ""
   ifneq "$(COMPILER)" "VISUAL_CPP"
-	@echo Building [$@]
+	@echo Compiling [$(notdir $@)]
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
   else
@@ -492,7 +493,7 @@ endif
 
 ifeq "$(NO_COMPILE)" ""
 $(STATIC_LIBRARY_DIR)/%.library: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
-	$(HIDER)echo Static [$@]
+	$(HIDER)echo Building Static Library [$(notdir $@)]
 	@echo $@ >$(DIRTY_FILE)
   ifeq "$(COMPILER)" "VISUAL_CPP"
 	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
@@ -525,7 +526,7 @@ ifeq "$(NO_COMPILE)" ""
 $(DYNAMIC_LIBRARY_DIR)/%.dll: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(ACTUAL_RESX) $(PARAMETER_FILE) 
 #hmmm: use the res objects variable to rebuild res files as needed.
 ###$(RES_OBJECTS) 
-	$(HIDER)echo Dynamic [$@]
+	$(HIDER)echo Building Dynamic Library [$(notdir $@)]
 	@echo $@ >$(DIRTY_FILE)
   ifeq "$(COMPILER)" "VISUAL_CPP"
 	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
@@ -571,7 +572,7 @@ $(EXECUTABLE_DIR)/%.exe:
 
   ifeq "$(NO_COMPILE)" ""
 $(EXECUTABLE_DIR)/%.exe: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(ACTUAL_RESX) $(PARAMETER_FILE)
-	$(HIDER)echo Application [$@]
+	$(HIDER)echo Building Application [$(notdir $@)]
 	@echo $@ >$(DIRTY_FILE)
     ifeq "$(COMPILER)" "VISUAL_CPP"
 	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
@@ -597,7 +598,7 @@ $(EXECUTABLE_DIR)/%:
 
   ifeq "$(NO_COMPILE)" ""
 $(EXECUTABLE_DIR)/%: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
-	$(HIDER)echo Application [$@]
+	$(HIDER)echo Building Application [$(notdir $@)]
 	@echo $@ >$(DIRTY_FILE)
 	$(CATCHER)$(LINK_TOOL) $(EXE_FLAGS) $(LOAD_FLAG_PREFIX) $< $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)%) $(LOAD_FLAG_SUFFIX) $(LINKER_OUTPUT_FLAG)$@
 #hmmm: experimental item below.
@@ -615,7 +616,7 @@ endif
 
 ifeq "$(NO_COMPILE)" ""
 $(EXECUTABLE_DIR)/%.elf: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
-	$(HIDER)echo Application [$@]
+	$(HIDER)echo Building Application [$(notdir $@)]
 	@echo $@ >$(DIRTY_FILE)
 	$(CATCHER)$(LINK_TOOL) $(MAP) $(LOAD_FLAG_PREFIX) $< $(LINKER_COMMAND_FILE) $(STARTUP_OBJECT_FILE) $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)%) $(LOAD_FLAG_SUFFIX) $(LINKER_OUTPUT_FLAG)$@
 #$(^:force_rebuild=) 
@@ -715,7 +716,7 @@ else
         $(DEPS_FILE): $(VERSION_RC_ROOT)_version.rc
       endif
     endif
-	@echo Dependencies [$(shell basename $@)]
+	@echo Dependencies [$(notdir $@)]
 	-$(HIDESH)$(CLAM_DIR)/cpp/preconditions.sh
 	@touch $@
 #	@echo dep adds: $(DEPENDENCY_ADDITIONS)

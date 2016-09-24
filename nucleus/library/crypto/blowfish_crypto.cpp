@@ -38,7 +38,7 @@ const int FUDGE = 128;
   // the cipher block size, but we ensure there will definitely be no
   // problems.
 
-#undef set_key
+//#undef set_key
   // get rid of a macro we don't want.
 
 //#define DEBUG_BLOWFISH
@@ -203,18 +203,19 @@ bool blowfish_crypto::encrypt(const byte_array &source,
   bool to_return = true;
 
   // initialize an encoding session.
-  EVP_CIPHER_CTX session;
-  EVP_CIPHER_CTX_init(&session);
-  EVP_EncryptInit_ex(&session, EVP_bf_cbc(), NIL, _key->observe(),
+  EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
+
+  EVP_CIPHER_CTX_init(session);
+  EVP_EncryptInit_ex(session, EVP_bf_cbc(), NIL, _key->observe(),
       init_vector().observe());
-  EVP_CIPHER_CTX_set_key_length(&session, _key_size);
+  EVP_CIPHER_CTX_set_key_length(session, _key_size);
 
   // allocate temporary space for encrypted data.
   byte_array encoded(source.length() + FUDGE);
 
   // encrypt the entire source buffer.
   int encoded_len = 0;
-  int enc_ret = EVP_EncryptUpdate(&session, encoded.access(), &encoded_len,
+  int enc_ret = EVP_EncryptUpdate(session, encoded.access(), &encoded_len,
       source.observe(), source.length());
   if (enc_ret != 1) {
     continuable_error(class_name(), func, a_sprintf("encryption failed, "
@@ -232,7 +233,7 @@ bool blowfish_crypto::encrypt(const byte_array &source,
     // finalize the encryption.
     encoded.reset(FUDGE);  // reinflate for padding.
     int pad_len = 0;
-    enc_ret = EVP_EncryptFinal_ex(&session, encoded.access(), &pad_len);
+    enc_ret = EVP_EncryptFinal_ex(session, encoded.access(), &pad_len);
     if (enc_ret != 1) {
       continuable_error(class_name(), func, a_sprintf("finalizing encryption "
           "failed, result=%d.", enc_ret));
@@ -244,7 +245,8 @@ bool blowfish_crypto::encrypt(const byte_array &source,
     }
   }
 
-  EVP_CIPHER_CTX_cleanup(&session);
+  EVP_CIPHER_CTX_cleanup(session);
+  EVP_CIPHER_CTX_free(session);
   return to_return;
 }
 
@@ -255,18 +257,18 @@ bool blowfish_crypto::decrypt(const byte_array &source,
   target.reset();
   if (!_key->length() || !source.length()) return false;
   bool to_return = true;
-  EVP_CIPHER_CTX session;
-  EVP_CIPHER_CTX_init(&session);
+  EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
+  EVP_CIPHER_CTX_init(session);
   LOG(a_sprintf("key size %d bits.\n", BITS_PER_BYTE * _key->length()));
-  EVP_DecryptInit_ex(&session, EVP_bf_cbc(), NIL, _key->observe(),
+  EVP_DecryptInit_ex(session, EVP_bf_cbc(), NIL, _key->observe(),
       init_vector().observe());
-  EVP_CIPHER_CTX_set_key_length(&session, _key_size);
+  EVP_CIPHER_CTX_set_key_length(session, _key_size);
 
   // allocate enough space for decoded bytes.
   byte_array decoded(source.length() + FUDGE);
 
   int decoded_len = 0;
-  int dec_ret = EVP_DecryptUpdate(&session, decoded.access(), &decoded_len,
+  int dec_ret = EVP_DecryptUpdate(session, decoded.access(), &decoded_len,
       source.observe(), source.length());
   if (dec_ret != 1) {
     continuable_error(class_name(), func, "decryption failed.");
@@ -281,7 +283,7 @@ bool blowfish_crypto::decrypt(const byte_array &source,
   if (dec_ret == 1) {
     decoded.reset(FUDGE);  // reinflate for padding.
     int pad_len = 0;
-    dec_ret = EVP_DecryptFinal_ex(&session, decoded.access(), &pad_len);
+    dec_ret = EVP_DecryptFinal_ex(session, decoded.access(), &pad_len);
     LOG(a_sprintf("padding added %d bytes.\n", pad_len));
     if (dec_ret != 1) {
       continuable_error(class_name(), func, a_sprintf("finalizing decryption "
@@ -295,7 +297,8 @@ bool blowfish_crypto::decrypt(const byte_array &source,
     }
   }
 
-  EVP_CIPHER_CTX_cleanup(&session);
+  EVP_CIPHER_CTX_cleanup(session);
+  EVP_CIPHER_CTX_free(session);
   return to_return;
 }
 

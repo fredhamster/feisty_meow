@@ -18,8 +18,10 @@
 #include <basis/byte_array.h>
 #include <basis/contracts.h>
 
+#include <openssl/rsa.h>
+
 // forward.
-struct rsa_st;
+//struct RSA;
 
 namespace crypto {
 
@@ -43,7 +45,7 @@ public:
     is a public key, then only the public_encryption and public_decryption
     methods will be available. */
 
-  rsa_crypto(rsa_st *key);
+  rsa_crypto(RSA *key);
     //!< starts with a pre-existing "key" in the low-level form.
 
   rsa_crypto(const rsa_crypto &to_copy);
@@ -60,11 +62,11 @@ public:
     is destructively consumed during the set method; do not pass in your
     only copy. */
 
-  bool set_key(rsa_st *key);
+  bool set_key(RSA *key);
     //!< sets our new "key".
     /*!< this must be a valid key created via the RSA algorithms. */
 
-  bool check_key(rsa_st *key);
+  bool check_key(RSA *key);
     //!< checks the RSA "key" provided for validity.
 
   bool public_encrypt(const basis::byte_array &source, basis::byte_array &target) const;
@@ -89,11 +91,11 @@ public:
     //!< makes a copy of the private key held here.
     /*!< the private key should never be exposed to anyone else. */
 
-  static rsa_st *generate_key(int key_size);
+  static RSA *generate_key(int key_size);
     //!< creates a random RSA key using the lower-level openssl methods.
 
 private:
-  rsa_st *_key;  //!< our internal key.
+  RSA *_key;  //!< our internal key.
 };
 
 } //namespace.

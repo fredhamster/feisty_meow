@@ -1,4 +1,4 @@
 
+latest version from 2016-09-23
 
-this is version 0.9.8b of openssl compiled for ms-win32.
 

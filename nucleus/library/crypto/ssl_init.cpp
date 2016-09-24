@@ -72,9 +72,10 @@ ssl_init::~ssl_init()
   CRYPTO_cleanup_all_ex_data();
   LOG("prior to err remove state");
   ERR_remove_state(0);
-  LOG("prior to mem leaks fp");
-  CRYPTO_mem_leaks_fp(stderr);
-  LOG("after mem leaks fp");
+//THIS HAD TO be removed in most recent openssl; does it exist?
+//  LOG("prior to mem leaks fp");
+//  CRYPTO_mem_leaks_fp(stderr);
+//  LOG("after mem leaks fp");
 }
 
 const chaos &ssl_init::randomizer() const { return c_rando; }
