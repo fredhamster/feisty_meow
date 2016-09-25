@@ -28,8 +28,8 @@ class status_info;
 #ifndef MAX_ABS_PATH 
   #ifdef __WIN32__
   // winsock support...
-  #undef FD_SETSIZE
-  #define FD_SETSIZE 1000
+//  #undef FD_SETSIZE
+//  #define FD_SETSIZE 1000
     // if you don't set this, you can only select on a default of 64 sockets.
   #include <winsock2.h>
     #include <windows.h>

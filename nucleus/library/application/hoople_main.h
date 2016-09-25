@@ -77,8 +77,8 @@ namespace application {
     #define HOOPLE_MAIN(obj_name, obj_args) \
       HOOPLE_STARTUP_CODE; \
       int main(int argc, char *argv[]) { \
-        SETUP_COMBO_LOGGER; \
         SET_ARGC_ARGV(argc, argv); \
+        SETUP_COMBO_LOGGER; \
         obj_name to_run_obj obj_args; \
         return to_run_obj.execute_application(); \
       }

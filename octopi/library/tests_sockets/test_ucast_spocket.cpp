@@ -40,7 +40,7 @@ using namespace unit_test;
 
 #define LOG(to_print) EMERGENCY_LOG(program_wide_logger().get(), astring(to_print))
 
-const int INITIAL_DELAY = 1;  // number of seconds before starting sends.
+const int INITIAL_DELAY = 2;  // number of seconds before starting sends.
 
 typedef abyte ip_address_holder[4];
 

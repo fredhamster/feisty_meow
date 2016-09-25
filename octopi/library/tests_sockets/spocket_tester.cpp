@@ -30,16 +30,13 @@
 
 #include <errno.h>
 
-//using namespace application;
 using namespace basis;
-//using namespace filesystem;
 using namespace loggers;
 using namespace mathematics;
 using namespace sockets;
 using namespace structures;
 using namespace textual;
 using namespace timely;
-//using namespace unit_test;
 
 #define LOG(to_print) EMERGENCY_LOG(program_wide_logger().get(), astring(to_print))
 
@@ -55,7 +52,7 @@ static abyte receive_buffer[MAXIMUM_WINSOCK_MTU + 1];
 const int PAUSE_TIME = 200;
   // the snooze interval when we encounter socket underflow or overflow.
 
-//#define DEBUG_SPOCKET_TESTER
+#define DEBUG_SPOCKET_TESTER
   // uncomment for noisy version.
 
 spocket_tester::spocket_tester(const internet_address &where)
@@ -79,8 +76,10 @@ spocket_tester::~spocket_tester()
 bool spocket_tester::connect()
 {
   if (!_socket) {
+LOG("creating new client socket");
     _socket = new spocket(*_where);
   }
+LOG(astring("connect socket info: ") + _socket->text_form());
   outcome ret = spocket::NO_CONNECTION;
   while (true) {
     ret = _socket->connect();
@@ -94,20 +93,28 @@ bool spocket_tester::connect()
 bool spocket_tester::accept(bool wait)
 {
   if (!_root_server) {
+LOG("hey creating new root server socket");
     _root_server = new spocket(*_where);
+LOG("got past creating the root server socket");
+LOG(astring("accept root server socket info: ") + _root_server->text_form());
   }
   if (_socket) {
     LOG("already have a socket for accept!");
     return true;
   }
   outcome ret = spocket::NO_CONNECTION;
+LOG("int accepting loop on root server");
   while (true) {
     ret = _root_server->accept(_socket, false);
     if (ret == spocket::OKAY) break;
     if (ret != spocket::NO_CONNECTION) break;
-    if (!wait) return true;  // we accepted at least once.
-    time_control::sleep_ms(100);
+    if (!wait) return true;  // we tried to accept at least once.
+    time_control::sleep_ms(100);  // snooze to avoid slamming with accepts.
   }
+
+if (_socket != NIL) {
+LOG(astring("accepted! socket info: ") + _socket->text_form());
+}
   return ret == spocket::OKAY;
 }
 
@@ -172,11 +179,22 @@ bool spocket_tester::do_a_receive(int size_expected, testing_statistics &stats)
 #endif
 
   time_stamp when_to_leave(MAXIMUM_TRANSFER_WAIT);
+LOG("FARP 1");
   int full_length = 0;
   while ( (full_length < size_expected) && (time_stamp() < when_to_leave) ) {
+LOG("FARP 2");
     time_stamp start_of_receive;
     int len = MAXIMUM_WINSOCK_MTU;
+LOG("FARP 3");
+if (!_socket) {
+  LOG("WHAT?  SOCKET IS NULL!!!");
+}
+////time_control::sleep_ms(PAUSE_TIME);
+LOG("FARP 3.1");
+LOG(astring("socket info: ") + _socket->text_form());
+LOG("FARP 3.2");
     outcome ret = _socket->receive(receive_buffer, len);
+LOG("FARP 4");
     if (ret != spocket::OKAY) {
       if (ret == spocket::NONE_READY) {
 if (len != 0) LOG(a_sprintf("supposedly nothing was received (%d bytes)", len));

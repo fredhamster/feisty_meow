@@ -18,10 +18,9 @@
 #include <basis/byte_array.h>
 #include <basis/contracts.h>
 
-#include <openssl/rsa.h>
-
 // forward.
 //struct RSA;
+typedef struct rsa_st RSA;
 
 namespace crypto {
 

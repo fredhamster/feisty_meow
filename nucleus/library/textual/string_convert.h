@@ -22,8 +22,8 @@
   #ifndef _MANAGED
       #define _WINSOCKAPI_  // the dance of the windows headers.
   // winsock support...
-  #undef FD_SETSIZE
-  #define FD_SETSIZE 1000
+//  #undef FD_SETSIZE
+//  #define FD_SETSIZE 1000
     // if you don't set this, you can only select on a default of 64 sockets.
   #include <winsock2.h>
   #include <windows.h>

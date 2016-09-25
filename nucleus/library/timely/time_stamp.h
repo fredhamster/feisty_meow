@@ -37,6 +37,8 @@ namespace timely {
 class time_stamp : public virtual basis::orderable
 {
 public:
+  DEFINE_CLASS_NAME("time_stamp");
+
   typedef double time_representation;
     //!< the representation of time for this universe, measured in milliseconds.
 
@@ -90,7 +92,7 @@ public:
 
   // helper functions for using the OS's time support.
 
-  static timeval fill_timeval_ms(int milliseconds);
+  static void fill_timeval_ms(timeval &time_point, int milliseconds);
     //!< returns a timeval system object that represents the "milliseconds".
     /*!< if "milliseconds" is zero, then the returned timeval will
     represent zero time passing (rather than infinite duration as some

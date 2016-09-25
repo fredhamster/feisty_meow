@@ -27,8 +27,8 @@
 #ifdef __WIN32__
   #define _WINSOCKAPI_  // make windows.h happy about winsock.
   // winsock support...
-  #undef FD_SETSIZE
-  #define FD_SETSIZE 1000
+//  #undef FD_SETSIZE
+//  #define FD_SETSIZE 1000
     // if you don't set this, you can only select on a default of 64 sockets.
   #include <winsock2.h>
   #include <windows.h>

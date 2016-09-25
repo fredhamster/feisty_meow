@@ -17,12 +17,19 @@
 
 #include <basis/environment.h>
 #include <basis/mutex.h>
+#include <loggers/program_wide_logger.h>
 
 #include <stdlib.h>
 #ifdef __WIN32__
   #define _WINSOCKAPI_  // make windows.h happy about winsock.
-//  #include <windows.h>
   #include <winsock2.h>  // timeval.
+#endif
+
+//#define DEBUG_TIME_STAMP
+
+#ifdef DEBUG_TIME_STAMP
+  #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+  using namespace loggers;
 #endif
 
 using namespace basis;
@@ -130,15 +137,16 @@ double time_stamp::rolling_uptime()
   return double(__rollovers) * __rollover_point + double(ticks_up);
 }
 
-timeval time_stamp::fill_timeval_ms(int duration)
+void time_stamp::fill_timeval_ms(struct timeval &time_out, int duration)
 {
-  timeval time_out;  // timeval has tv_sec=seconds, tv_usec=microseconds.
+  FUNCDEF("fill_timeval_ms");
+  // timeval has tv_sec=seconds, tv_usec=microseconds.
   if (!duration) {
     // duration is immediate for the check; just a quick poll.
     time_out.tv_sec = 0;
     time_out.tv_usec = 0;
-#ifdef DEBUG_PORTABLE
-//    LOG("no duration specified");
+#ifdef DEBUG_TIME_STAMP
+    LOG("no duration specified");
 #endif
   } else {
     // a non-zero duration means we need to compute secs and usecs.
@@ -148,12 +156,11 @@ timeval time_stamp::fill_timeval_ms(int duration)
     // now take out the chunk we've already recorded as seconds.
     time_out.tv_usec = duration * 1000;
     // set the number of microseconds from the remaining milliseconds.
-#ifdef DEBUG_PORTABLE
-//    LOG(isprintf("duration of %d ms went to %d sec and %d usec.", duration,
-//        time_out.tv_sec, time_out.tv_usec));
+#ifdef DEBUG_TIME_STAMP
+    LOG(a_sprintf("duration of %d ms went to %d sec and %d usec.", duration,
+        time_out.tv_sec, time_out.tv_usec));
 #endif
   }
-  return time_out;
 }
 
 } //namespace.

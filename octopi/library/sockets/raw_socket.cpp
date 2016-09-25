@@ -210,28 +210,39 @@ int raw_socket::inner_select(basis::un_int socket, int mode, int timeout,
     fd_set_wrapper &read_list, fd_set_wrapper &write_list,
     fd_set_wrapper &exceptions) const
 {
-#ifdef DEBUG_RAW_SOCKET
   FUNCDEF("inner_select");
-#endif
   // setup the file descriptor sets for the select.  we check readability,
   // writability and exception status.
+LOG("select A");
   FD_ZERO(&read_list); FD_SET(socket, &read_list);
+LOG("select B");
   FD_ZERO(&write_list); FD_SET(socket, &write_list);
+LOG("select C");
   FD_ZERO(&exceptions); FD_SET(socket, &exceptions);
+LOG("select D");
+timeval *farkle = new timeval;
+LOG("select D.1");
+time_stamp *t = new time_stamp();
+LOG("select D.2");
 
-  timeval time_out = time_stamp::fill_timeval_ms(timeout);
+  timeval time_out;
+  time_stamp::fill_timeval_ms(time_out, timeout);
     // timeval has tv_sec=seconds, tv_usec=microseconds.
 
+LOG("select E");
   // select will tell us about the socket.
   int ret = ::select(socket + 1,
       (mode & SELECTING_JUST_WRITE)? NIL : &read_list,
       (mode & SELECTING_JUST_READ)? NIL : &write_list,
       &exceptions, &time_out);
+LOG("select F");
   int error = critical_events::system_error();
+LOG("select G");
 
   if (!ret) return 0;  // nothing to report.
 
   if (ret == SOCKET_ERROR) {
+LOG("select H");
     switch (error) {
       // all real errors fall out to the error handling stuff.
       case SOCK_EFAULT:  // intentional fall-through.
@@ -253,6 +264,7 @@ int raw_socket::inner_select(basis::un_int socket, int mode, int timeout,
 #endif
         return 0;  // not really an error.
     }
+LOG("select I");
 #ifdef DEBUG_RAW_SOCKET
     LOG(a_sprintf("socket %u had error %d in select: %s.",
         socket, error, _stack->tcpip_error_name(error).s()));
@@ -260,6 +272,7 @@ int raw_socket::inner_select(basis::un_int socket, int mode, int timeout,
     return SI_ERRONEOUS;
   }
 
+LOG("select J");
   // if we got to here, then there are some things to report...
   return SI_BASELINE;
 }
@@ -391,7 +404,8 @@ int raw_socket::select(int_array &read_sox, int_array &write_sox,
     FD_SET(sock, &write_list);
   }
 
-  timeval time_out = time_stamp::fill_timeval_ms(timeout);
+  timeval time_out;
+  time_stamp::fill_timeval_ms(time_out, timeout);
     // timeval has tv_sec=seconds, tv_usec=microseconds.
 
   // select will tell us about the socket.
