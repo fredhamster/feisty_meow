@@ -19,7 +19,6 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-////#include <basis/definitions.h>
 #include <sockets/internet_address.h>
 #include <sockets/spocket.h>
 #include <sockets/tcpip_stack.h>

@@ -47,7 +47,7 @@ using namespace timely;
 
 namespace sockets {
 
-#define DEBUG_SPOCKET
+//#define DEBUG_SPOCKET
   // uncomment for noisy version.
 
 #undef LOG
@@ -149,32 +149,20 @@ tcpip_stack &spocket::stack() const { return *_stack; }
 astring spocket::text_form()
 {
   FUNCDEF("text_form");
-LOG("INTO TEXT_FORM A");
   astring to_return = is_client()? "client" :
       (is_root_server()? "root-server" : "server");
-LOG("INTO TEXT_FORM B");
   to_return += " spocket: ";
-LOG("INTO TEXT_FORM C");
   if (connected()) {
-LOG("INTO TEXT_FORM C.1");
     to_return += "connected, ";
   } else {
-LOG("INTO TEXT_FORM C.2");
     if (was_connected()) to_return += "unconnected (was once), ";
     else to_return += "never-connected, ";
-LOG("INTO TEXT_FORM C.3");
   }
-LOG("INTO TEXT_FORM D");
   to_return += a_sprintf("socket=%u, ", _socket);
-LOG("INTO TEXT_FORM E");
   if (is_root_server()) {
-LOG("INTO TEXT_FORM F");
     to_return += a_sprintf("root-socket=%u, ", _server_socket);
-LOG("INTO TEXT_FORM G");
   }
-LOG("INTO TEXT_FORM H");
   to_return += _where->text_form().s();
-LOG("INTO TEXT_FORM X");
   return to_return;
 }
 
@@ -222,18 +210,12 @@ bool spocket::connected()
 
   if (!_socket) return false;
 
-LOG("conn check, _sock not null");
-
   // do examination on spocket.
   int sel_mode = 0;
   GRAB_LOCK;
-LOG(a_sprintf("lock was grabbed, socks is %x", _socks));
 
   try {
     int ret = _socks->select(_socket, sel_mode);
-
-LOG("after select");
-
     if (ret == 0) {
       return true;  // we are happy.
     }
@@ -243,7 +225,7 @@ LOG("after select");
     }
     return true;
   } catch (...) {
-LOG("caught exception thrown from select, returning false.");
+    LOG("caught exception thrown from select, returning false.");
     return false;
   }
 }
@@ -320,13 +302,10 @@ outcome spocket::connect(int communication_wait)
       LOG("Failed to open the client's connecting spocket.");
       return ACCESS_DENIED;
     }
-LOG(a_sprintf("hola, socket value received is: %d", _socket));
 
     // mark the spocket for _blocking_ I/O.  we want connect to sit there
     // until it's connected or returns with an error.
     _socks->set_non_blocking(_socket, false);
-
-LOG(a_sprintf("set nonblock false on : %d", _socket));
 
     if (_type == BROADCAST) {
       if (!_socks->set_broadcast(_socket)) return ACCESS_DENIED;
@@ -335,7 +314,6 @@ LOG(a_sprintf("set nonblock false on : %d", _socket));
 
     if (!_socks->set_reuse_address(_socket)) return ACCESS_DENIED;
       // mark the socket so we don't get bind errors on in-use conditions.
-LOG(a_sprintf("set reuse addr : %d", _socket));
   }
 
   if (_type == CONNECTED) {
@@ -553,12 +531,8 @@ outcome spocket::accept(spocket * &sock, bool wait)
     return ACCESS_DENIED;
   }
 
-LOG(a_sprintf("accepted socket number is %d", accepted)); 
-
   // mark the new spocket for non-blocking I/O.
   _socks->set_non_blocking(accepted, true);
-
-LOG("after set nonblockheading");
 
 //move to socks object!
   int sock_hop = 1;
@@ -579,16 +553,10 @@ LOG("after set nonblockheading");
 
   // create the spocket address that we will connect to.
   sock = new spocket(*_where);
-LOG("preview new spock A:"); LOG(sock->text_form());
   *sock->_remote = _stack->convert(new_sock);
-LOG("preview new spock B:"); LOG(sock->text_form());
   sock->_socket = accepted;
-LOG("preview new spock C:"); LOG(sock->text_form());
   sock->_server_socket = 0;  // reset to avoid whacking.
-LOG("preview new spock D:"); LOG(sock->text_form());
   sock->_was_connected = true;
-LOG("about to return this spocket as new spock:");
-LOG(sock->text_form());
   return OKAY;
 }
 
@@ -691,45 +659,32 @@ outcome spocket::receive(byte_array &buffer, int &size)
 outcome spocket::receive(abyte *buffer, int &size)
 {
   FUNCDEF("receive");
-LOG("RECV A");
   CHECK_BOGUS(NONE_READY);
-LOG("RECV B");
   if (_type != CONNECTED) return BAD_INPUT;
   ENSURE_HEALTH(NO_CONNECTION);
-LOG("RECV C");
   int expected = size;
   size = 0;
   if (expected <= 0) return BAD_INPUT;
-LOG("RECV D");
   GRAB_LOCK;
-LOG("RECV E");
   int len = recv(_socket, (char *)buffer, expected, 0);
-LOG("RECV F");
   if (!len) {
-LOG("RECV F.1");
     // check to make sure we're not disconnected.
     int ret = _socks->select(_socket, raw_socket::SELECTING_JUST_READ);
-LOG("RECV F.2");
     if (ret & SI_DISCONNECTED) {
       RECOGNIZE_DISCO; 
       return NO_CONNECTION;
     }
-LOG("RECV F.3");
     // seems like more normal absence of data.
     return NONE_READY;
   } else if (len < 0) {
-LOG("RECV F.4");
     if (critical_events::system_error() == SOCK_EWOULDBLOCK) return NONE_READY;
 #ifdef DEBUG_SPOCKET
     LOG(astring("The receive failed with an error ")
         + critical_events::system_error_text(critical_events::system_error()));
 #endif
-LOG("RECV F.5");
     if (!connected()) return NO_CONNECTION;
-LOG("RECV F.6");
     return ACCESS_DENIED;
   }
-LOG("RECV G");
   size = len;
   return OKAY;
 }

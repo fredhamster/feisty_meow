@@ -50,7 +50,7 @@ const int MAXIMUM_TRANSFER_WAIT = 40 * SECOND_ms;
 static abyte receive_buffer[MAXIMUM_WINSOCK_MTU + 1];
   // used for dumping received data into.
 
-#define DEBUG_SPOCKET_TESTER
+//#define DEBUG_SPOCKET_TESTER
   // uncomment for noisy version.
 
 broadcast_spocket_tester::broadcast_spocket_tester

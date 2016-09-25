@@ -868,6 +868,9 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
 
   # now, vary the flag configuration based on the flags that have been set.
 
+####override for windows since things are broken with WinMain
+###export CONSOLE_MODE = true
+
   ifneq "$(CONSOLE_MODE)" ""
     # console type of applications are built using the static flag so that
     # they are more redistributable.

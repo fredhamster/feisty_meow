@@ -100,7 +100,6 @@ bool test_spocket::parse_address(const astring &input, ip_address_holder &ip_add
 int test_spocket::execute()
 {
   FUNCDEF("execute");
-LOG("OY POINT A");
   ip_address_holder ip_address;  // accumulates the source address.
   int rcv_port = 0;
   bool is_client = false;
@@ -111,8 +110,6 @@ LOG("OY POINT A");
   const int DEFAULT_PORT = 12348;
   const int DEFAULT_SEND_SIZE = 1008;
   const int DEFAULT_SEND_COUNT = 10;
-
-LOG("OY POINT B");
 
   if (_global_argc < 6) {
     if (_global_argc > 1) {
@@ -137,19 +134,15 @@ expected during a cycle.");
     }
   }
 
-LOG("OY POINT C");
-
   // only parse the parameters if we got enough from the user; otherwise we accept our
   // defaults to do a simple test run.
   if (_global_argc >= 6) {
 
-LOG("OY POINT D");
     if (!parse_address(_global_argv[1], ip_address)) {
       LOG("failed to parse source address.");
       return 9283;
     }
 
-LOG("OY POINT E");
     LOG(a_sprintf("\tParsed a source of: \"%d.%d.%d.%d\".",
         (int)ip_address[0], (int)ip_address[1], (int)ip_address[2],
         (int)ip_address[3]));
@@ -188,8 +181,6 @@ LOG("OY POINT E");
     LOG(a_sprintf("\tGot a send count of %d.", send_count));
   }
 
-LOG("OY POINT Q");
-
   // package our parameters in a form the tester likes.
   internet_address to_pass(byte_array(4, ip_address), "", rcv_port);
 
@@ -199,10 +190,8 @@ LOG("OY POINT Q");
   // choose the appropriate action based on our role.
   bool outcome;
   if (is_client) {
-LOG("client side is connecting");
     outcome = tester->connect();
   } else {
-LOG("server side is accepting");
     outcome = tester->accept(_global_argc != 1);
   }
   if (!outcome) {
@@ -210,9 +199,6 @@ LOG("server side is accepting");
     LOG(astring("Failed to ") + action + " on the tester.");
     return 10;
   }
-LOG("success after conn/accept");
-
-LOG("OY POINT T");
 
   if (_global_argc == 1) {
     // launch a paired duplicate of our test so we can chat.
@@ -223,39 +209,29 @@ LOG("OY POINT T");
         + a_sprintf("%d", DEFAULT_SEND_SIZE) + " " + a_sprintf("%d", DEFAULT_SEND_COUNT),
         launch_process::RETURN_IMMEDIATELY, kidnum);
     ASSERT_EQUAL(result, 0, "launching paired process should start successfully");
-LOG("OY POINT U.1");
 
     // now we try again accepting from our client side.
     outcome = tester->accept();
 //hmmm: redundant below.
-LOG("OY POINT U.2");
     if (!outcome) {
       const char *action = is_client? "connect" : "accept";
-LOG("OY POINT U.3");
       LOG(astring("Failed to ") + action + " on the tester.");
       return 10;
     }
   }
 
-LOG("OY POINT V");
   // so, we're connected.  try sending the test packages out.
   testing_statistics stats;  // to be filled by the tester.
-LOG("OY POINT V.1");
   outcome = tester->perform_test(send_size, send_count * 2, stats);
     // multiply send_count since we count each side as one.
-LOG("OY POINT V.2");
   if (!outcome) {
     LOG("Failed out of send_data; maybe other side terminated.");
   }
-LOG("OY POINT V.3");
 
   stats.total_runs /= 2;  // cut down to the real number of tests.
 
-LOG("OY POINT V.4");
   if (!stats.total_runs)
     stats.total_runs = 1;
-
-LOG("OY POINT W");
 
   // now report on the stats that we get from the data sending.
   LOG(a_sprintf("Report for %d completed test cycles.", stats.total_runs));

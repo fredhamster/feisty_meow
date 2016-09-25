@@ -23,8 +23,19 @@ if [ ! -z "${RUN_TARGETS}" -a ! -z "${RUN_ALL_TESTS}" ]; then
     total_exitval=0;
     for program_name in ${RUN_TARGETS}; do
       base=$(basename $program_name);
-      "$program_name";
-      exitval=$?;
+      if [ "$OP_SYSTEM" == "WIN32" ]; then
+        # extra step to force win32 apps to stay held in our grip,
+        # since they will float off and appear to have stopped when
+        # run by cygwin.  but by grabbing the i/o stream, we know it's
+        # running until it's done.
+        "$program_name" 2>&1 | cat
+        # we care about the exit status of the first process in the pipe,
+        # which is the app being run.
+        exitval=${PIPESTATUS[0]}
+      else
+        "$program_name"
+        exitval=$?;
+      fi
       if [ $exitval -ne 0 ]; then
         echo "ERROR: $program_name exits with $exitval at $(date)";
         total_exitval=$(($total_exitval + 1));

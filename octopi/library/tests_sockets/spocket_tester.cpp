@@ -52,7 +52,7 @@ static abyte receive_buffer[MAXIMUM_WINSOCK_MTU + 1];
 const int PAUSE_TIME = 200;
   // the snooze interval when we encounter socket underflow or overflow.
 
-#define DEBUG_SPOCKET_TESTER
+//#define DEBUG_SPOCKET_TESTER
   // uncomment for noisy version.
 
 spocket_tester::spocket_tester(const internet_address &where)
@@ -76,10 +76,8 @@ spocket_tester::~spocket_tester()
 bool spocket_tester::connect()
 {
   if (!_socket) {
-LOG("creating new client socket");
     _socket = new spocket(*_where);
   }
-LOG(astring("connect socket info: ") + _socket->text_form());
   outcome ret = spocket::NO_CONNECTION;
   while (true) {
     ret = _socket->connect();
@@ -93,17 +91,13 @@ LOG(astring("connect socket info: ") + _socket->text_form());
 bool spocket_tester::accept(bool wait)
 {
   if (!_root_server) {
-LOG("hey creating new root server socket");
     _root_server = new spocket(*_where);
-LOG("got past creating the root server socket");
-LOG(astring("accept root server socket info: ") + _root_server->text_form());
   }
   if (_socket) {
     LOG("already have a socket for accept!");
     return true;
   }
   outcome ret = spocket::NO_CONNECTION;
-LOG("int accepting loop on root server");
   while (true) {
     ret = _root_server->accept(_socket, false);
     if (ret == spocket::OKAY) break;
@@ -112,9 +106,6 @@ LOG("int accepting loop on root server");
     time_control::sleep_ms(100);  // snooze to avoid slamming with accepts.
   }
 
-if (_socket != NIL) {
-LOG(astring("accepted! socket info: ") + _socket->text_form());
-}
   return ret == spocket::OKAY;
 }
 
@@ -179,26 +170,14 @@ bool spocket_tester::do_a_receive(int size_expected, testing_statistics &stats)
 #endif
 
   time_stamp when_to_leave(MAXIMUM_TRANSFER_WAIT);
-LOG("FARP 1");
   int full_length = 0;
   while ( (full_length < size_expected) && (time_stamp() < when_to_leave) ) {
-LOG("FARP 2");
     time_stamp start_of_receive;
     int len = MAXIMUM_WINSOCK_MTU;
-LOG("FARP 3");
-if (!_socket) {
-  LOG("WHAT?  SOCKET IS NULL!!!");
-}
-////time_control::sleep_ms(PAUSE_TIME);
-LOG("FARP 3.1");
-LOG(astring("socket info: ") + _socket->text_form());
-LOG("FARP 3.2");
     outcome ret = _socket->receive(receive_buffer, len);
-LOG("FARP 4");
     if (ret != spocket::OKAY) {
       if (ret == spocket::NONE_READY) {
 if (len != 0) LOG(a_sprintf("supposedly nothing was received (%d bytes)", len));
-///        time_control::sleep_ms(PAUSE_TIME);
         _socket->await_readable(PAUSE_TIME);
         continue;
       } else break;
@@ -238,10 +217,6 @@ if (len != 0) LOG(a_sprintf("supposedly nothing was received (%d bytes)", len));
 bool spocket_tester::perform_test(int size, int count,
     testing_statistics &stats)
 {
-#ifdef DEBUG_SPOCKET_TESTER
-  LOG("into perf test");
-#endif
-
   // the statics are used to generate our random buffer for sending.
   static abyte garbage_buffer[MAXIMUM_WINSOCK_MTU + 1];
   static bool garbage_initialized = false;
@@ -250,12 +225,10 @@ bool spocket_tester::perform_test(int size, int count,
   // if our static buffer full of random stuff was never initialized, we do
   // so now.  this supports efficiently re-using the tester if desired.
   if (!garbage_initialized) {
-    LOG("initializing random send buffer.");
     // note the less than or equal; we know we have one more byte to fill.
     for (int i = 0; i <= MAXIMUM_WINSOCK_MTU; i++)
       garbage_buffer[i] = randomizer.inclusive(0, 255);
     garbage_initialized = true;
-    LOG("random send buffer initialized.");
   }
 
   // reset the statistical package.

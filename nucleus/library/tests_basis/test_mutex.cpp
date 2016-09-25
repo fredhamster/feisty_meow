@@ -214,6 +214,10 @@ int test_mutex::execute()
 {
   FUNCDEF("execute");
 
+  // make sure the guard is initialized before the threads run.
+  guard().lock();
+  guard().unlock();
+
   {
     // we check how long a lock and unlock of a non-locked mutex will take.
     // this is important to know so that we aren't spending much of our time
@@ -234,10 +238,6 @@ int test_mutex::execute()
     ASSERT_TRUE(time_per_lock < 1.0, "mutex lock timing should be super fast");
   }
 
-  // make sure the guard is initialized before the threads run.
-  guard().lock();
-  guard().unlock();
-
   amorph<ethread> thread_list;
 
   for (int i = 0; i < DEFAULT_FISH; i++) {
@@ -248,7 +248,7 @@ int test_mutex::execute()
     ethread *q = thread_list[thread_list.elements() - 1];
     ASSERT_EQUAL(q, t, "amorph pointer equivalence is required");
     // start the thread we added.
-    thread_list[thread_list.elements() - 1]->start(NIL);
+    q->start(NIL);
   }
 
   time_stamp when_to_leave(DEFAULT_RUN_TIME);
