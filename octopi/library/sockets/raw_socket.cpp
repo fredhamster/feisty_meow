@@ -126,7 +126,11 @@ int raw_socket::ioctl(basis::un_int socket, int request, void *argp) const
   return ::ioctl(socket, request, argp);
 #endif
 #ifdef __WIN32__
-  return ioctlsocket(socket, request, (un_int *)argp);
+  #ifdef _MSC_VER
+    return ioctlsocket(socket, request, (un_long *)argp);
+  #else
+    return ioctlsocket(socket, request, (un_int *)argp);
+  #endif
 #endif
 }
 
