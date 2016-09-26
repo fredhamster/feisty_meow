@@ -10,7 +10,8 @@ ifeq "$(OMIT_VERSIONS)" ""
 endif
 DEFINITIONS += __BUILD_STATIC_APPLICATION__=t
 TARGETS = unpacker_stub.exe
-ifeq "$(OP_SYSTEM)" "WIN32"
+#ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(COMPILER)" "VISUAL_CPP"
   LIBS_USED += libcmt.lib shlwapi.lib zlib.lib
   LOAD_FLAG_PREFIX += -nodefaultlib:msvcrt.lib 
   COMPILER_FLAGS += -MT

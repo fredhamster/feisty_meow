@@ -92,6 +92,8 @@ ifeq "$(COMPILER)" "GNU_WINDOWS"
     LOAD_FLAG_PREFIX += $(shell wx-config --libs $(UNICODE_FLAG_ADD) )
   endif
 
+LOAD_FLAG_PREFIX += -lwsock32 -lmswsock -shared
+
   ifneq "$(USE_CURL)" ""
     COMPILER_FLAGS += `curl-config --cflags`
     LOAD_FLAG_SUFFIX += `curl-config --libs`
@@ -208,7 +210,7 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
 
   ifneq "$(USE_CURL)" ""
 #    # curl wants this win32 flag?
-#    DEFINITIONS += _WIN32
+    DEFINITIONS += WIN32
     LOCAL_HEADERS += $(THIRD_PARTY_DIR)/curl/include
     LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/curl/lib
 #    LIBS_USED += libcurl.dll.a

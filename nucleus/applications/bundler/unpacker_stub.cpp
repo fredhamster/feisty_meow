@@ -43,7 +43,7 @@
 #ifdef __UNIX__
   #include <utime.h>
 #endif
-#ifdef __WIN32__
+#ifdef _MSC_VER
   #include <direct.h>
   #include <io.h>
   #include <shlobj.h>

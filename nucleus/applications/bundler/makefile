@@ -11,12 +11,11 @@ endif
 DEFINITIONS += __BUILD_STATIC_APPLICATION__=t
 TARGETS = bundle_creator.exe
 LAST_TARGETS += make_stub
-ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(COMPILER)" "VISUAL_CPP"
   LOCAL_HEADERS += $(THIRD_PARTY_DIR)/zlib/include
   LOCAL_LIBRARIES += $(THIRD_PARTY_DIR)/zlib/lib
   LIBS_USED += zlib.lib
-endif
-ifeq "$(OP_SYSTEM)" "UNIX"
+else
   LIBS_USED += z
 endif
 

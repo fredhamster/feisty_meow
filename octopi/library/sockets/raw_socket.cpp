@@ -126,7 +126,7 @@ int raw_socket::ioctl(basis::un_int socket, int request, void *argp) const
   return ::ioctl(socket, request, argp);
 #endif
 #ifdef __WIN32__
-  return ioctlsocket(socket, request, (un_long *)argp);
+  return ioctlsocket(socket, request, (un_int *)argp);
 #endif
 }
 
@@ -217,15 +217,23 @@ int raw_socket::inner_select(basis::un_int socket, int mode, int timeout,
   FD_ZERO(&write_list); FD_SET(socket, &write_list);
   FD_ZERO(&exceptions); FD_SET(socket, &exceptions);
 
-  timeval time_out;
-  time_stamp::fill_timeval_ms(time_out, timeout);
+  timeval base_time_out;
+  time_stamp::fill_timeval_ms(base_time_out, timeout);
     // timeval has tv_sec=seconds, tv_usec=microseconds.
+#if !defined(__GNU_WINDOWS__)
+  timeval *time_out = &base_time_out;
+#elif defined(__GNU_WINDOWS__)
+  __ms_timeval win_time_out;
+  win_time_out.tv_sec = base_time_out.tv_sec;
+  win_time_out.tv_usec = base_time_out.tv_usec;
+  __ms_timeval *time_out = &win_time_out;
+#endif
 
   // select will tell us about the socket.
   int ret = ::select(socket + 1,
       (mode & SELECTING_JUST_WRITE)? NIL : &read_list,
       (mode & SELECTING_JUST_READ)? NIL : &write_list,
-      &exceptions, &time_out);
+      &exceptions, time_out);
   int error = critical_events::system_error();
   if (!ret) return 0;  // nothing to report.
 
@@ -389,15 +397,23 @@ int raw_socket::select(int_array &read_sox, int_array &write_sox,
     FD_SET(sock, &write_list);
   }
 
-  timeval time_out;
-  time_stamp::fill_timeval_ms(time_out, timeout);
+  timeval base_time_out;
+  time_stamp::fill_timeval_ms(base_time_out, timeout);
     // timeval has tv_sec=seconds, tv_usec=microseconds.
+#if !defined(__GNU_WINDOWS__)
+  timeval *time_out = &base_time_out;
+#elif defined(__GNU_WINDOWS__)
+  __ms_timeval win_time_out;
+  win_time_out.tv_sec = base_time_out.tv_sec;
+  win_time_out.tv_usec = base_time_out.tv_usec;
+  __ms_timeval *time_out = &win_time_out;
+#endif
 
   // select will tell us about the socket.
   int ret = ::select(highest + 1,
       (read_sox.length())? &read_list : NIL,
       (write_sox.length())? &write_list : NIL,
-      &exceptions, &time_out);
+      &exceptions, time_out);
   int error = critical_events::system_error();
 
   if (ret == SOCKET_ERROR) {

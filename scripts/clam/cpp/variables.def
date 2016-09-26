@@ -72,8 +72,8 @@ ifeq "$(COMPILER)" ""
     endif
   endif
   ifeq "$(OP_SYSTEM)" "WIN32"
-    COMPILER := GNU_WINDOWS
-#    COMPILER := VISUAL_CPP
+#    COMPILER := GNU_WINDOWS
+    COMPILER := VISUAL_CPP
   endif
   ifeq "$(COMPILER)" ""
     # if we get into this case, we have no idea how to set the default
