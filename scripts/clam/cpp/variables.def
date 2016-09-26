@@ -72,8 +72,8 @@ ifeq "$(COMPILER)" ""
     endif
   endif
   ifeq "$(OP_SYSTEM)" "WIN32"
-#    COMPILER := GNU_WINDOWS
-    COMPILER := VISUAL_CPP
+    COMPILER := GNU_WINDOWS
+#    COMPILER := VISUAL_CPP
   endif
   ifeq "$(COMPILER)" ""
     # if we get into this case, we have no idea how to set the default
@@ -456,6 +456,10 @@ ifneq "$(OMIT_VERSIONS)" ""
   DEFINITIONS += NO_VERSION
 endif
 
+############################################################################
+# compiler specific section below.
+############################################################################
+
 ifeq "$(COMPILER)" "GNU_LINUX"
   # Unix GNU compiler...
   CC = g++
@@ -538,6 +542,8 @@ ifeq "$(COMPILER)" "GNU_LINUX"
 
 endif
 
+############################################################################
+
 ifeq "$(COMPILER)" "GNU_ARM_LINUX"
   # ARM-linux GNU compiler...
   COMPILER_ROOT_DIR = /usr/local/arm-linux
@@ -582,6 +588,8 @@ ifeq "$(COMPILER)" "GNU_ARM_LINUX"
 
 endif
 
+############################################################################
+
 ifeq "$(COMPILER)" "GNU_WINDOWS"
   # GNU compiler for MS Windoze...
   CC = g++
@@ -606,6 +614,7 @@ ifeq "$(COMPILER)" "GNU_WINDOWS"
   LIBRARY_TOOL = ar
   LIBRARY_PATH_FLAG = -L 
   LIB_PREFIX = lib
+  LIB_ENDING = .a
 #  LOAD_FLAG_PREFIX += -lpthread
   LOAD_FLAG_PREFIX += -mwindows
   CREATE_LIBRARY_FLAG += -r 
@@ -618,6 +627,8 @@ ifeq "$(COMPILER)" "GNU_WINDOWS"
   DEPENDENCY_DEFINITIONS += __cplusplus __MINGW32__ _WIN32 _CHAR_UNSIGNED M_I86 _M_I86 _M_IX86=500 _WIN32_WINNT=0x501 __RPC_WIN32__ __RPCNDR_H_VERSION__ __RPCPROXY_H_VERSION__ TARGET_IS_NT40_OR_LATER PGM_SETCHILD _MFC_VER=0x0600
 
 endif
+
+############################################################################
 
 ifeq "$(COMPILER)" "VISUAL_CPP"
   # microsoft visual c++ 4.x, 5.x or 6.x.
@@ -897,6 +908,8 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
   endif
 
 endif
+
+############################################################################
 
 ifeq "$(COMPILER)" "GNU_DARWIN"
   # Darwin kernel GNU compiler...

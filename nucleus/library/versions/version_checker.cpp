@@ -44,7 +44,8 @@ using namespace structures;
   #include <winver.h>
 #endif
 
-#ifdef __WIN32__
+#if defined(_MSC_VER)
+//#ifdef __WIN32__
   // ensures that we handle the data properly regardless of unicode settings.
   #ifdef UNICODE
     #define render_ptr(ptr) from_unicode_temp( (UTF16 *) ptr)
@@ -97,7 +98,8 @@ bool version_checker::good_version() const
 
 bool version_checker::loaded(const astring &library_file_name)
 {
-#ifdef __WIN32__
+//#ifdef __WIN32__
+#if defined(_MSC_VER)
   return bool(get_handle(library_file_name) != 0); 
 #else
 //temp code. 
@@ -107,7 +109,8 @@ bool version_checker::loaded(const astring &library_file_name)
 
 void *version_checker::get_handle(const astring &library_file_name)
 {
-#ifdef __WIN32__
+//#ifdef __WIN32__
+#if defined(_MSC_VER)
   return GetModuleHandle(to_unicode_temp(library_file_name));
 #else
   if (library_file_name.t()) return NIL; else return NIL;
@@ -116,10 +119,11 @@ void *version_checker::get_handle(const astring &library_file_name)
 
 astring version_checker::module_name(const void *module_handle)
 {
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   if (module_handle) {}
   return application_configuration::application_name();
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
+//#elif defined(__WIN32__)
   flexichar low_buff[MAX_ABS_PATH + 1];
   GetModuleFileName((HMODULE)module_handle, low_buff, MAX_ABS_PATH - 1);
   astring buff = from_unicode_temp(low_buff);
@@ -141,7 +145,8 @@ bool version_checker::retrieve_version_info(const astring &filename,
 
   // determine the required size of the version info buffer.
   int required_size;
-#ifdef __WIN32__
+#if defined(_MSC_VER)
+//#ifdef __WIN32__
   un_long module_handle;  // filled with the dll or exe handle.
   required_size = GetFileVersionInfoSize(to_unicode_temp(filename), &module_handle);
 #else
@@ -152,7 +157,8 @@ bool version_checker::retrieve_version_info(const astring &filename,
   
   // read the version info into our buffer.
   bool success = false;
-#ifdef __WIN32__
+#if defined(_MSC_VER)
+//#ifdef __WIN32__
   success = GetFileVersionInfo(to_unicode_temp(filename), module_handle,
       required_size, to_fill.access());
 #else
@@ -166,7 +172,8 @@ bool version_checker::get_language(byte_array &version_chunk,
 {
   high = 0;
   low = 0;
-#ifdef __WIN32__
+#if defined(_MSC_VER)
+//#ifdef __WIN32__
   // determine the language that the version's written in.
   basis::un_int data_size;
   void *pointer_to_language_structure;
@@ -188,7 +195,8 @@ bool version_checker::get_language(byte_array &version_chunk,
 
 version version_checker::retrieve_version(const astring &filename)
 {
-#ifdef UNIX
+//#ifdef UNIX
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 
   // totally bogus stand-in; this just returns the version we were built with
   // rather than the version that's actually tagged on the file.
@@ -213,7 +221,7 @@ version version_checker::retrieve_version(const astring &filename)
   astring file_version_key(root_key + astring("\\FileVersion"));
 
   astring version_string;
-#ifdef __WIN32__
+#ifdef _MSC_VER
   abyte *file_version_pointer;
   basis::un_int data_size;
   if (!VerQueryValue(version_info_found.access(),
@@ -256,7 +264,8 @@ bool version_checker::get_record(const astring &filename,
 
   // the various version pieces are retrieved...
 
-#ifdef __WIN32__
+//#ifdef __WIN32__
+#ifdef _MSC_VER
   basis::un_int data_size;
   void *data_pointer;
 
@@ -348,9 +357,10 @@ void version_checker::complain_wrong_version(const astring &library_file_name,
 
   to_show += astring("].  ");
   to_show += *_version_complaint;
-#ifdef __UNIX__
+//#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   continuable_error("version checking", "failure", to_show.s());
-#elif defined(__WIN32__)
+#elif defined(_MSC_VER)
   MessageBox(0, to_unicode_temp(to_show),
       to_unicode_temp("version_checking::failure"), MB_OK);
 #endif

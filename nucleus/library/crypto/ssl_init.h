@@ -29,7 +29,7 @@ namespace crypto {
 */
 
 //we define NEWER_OPENSSL for those places where we're using openssl 1.1.1.
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
   #define NEWER_OPENSSL
 #else
 //  #define OLDER_OPENSSL

@@ -163,8 +163,8 @@ ifneq "$(OP_SYSTEM)" "WIN32"
 endif
 
 # win32 compiler additions.
-ifeq "$(OP_SYSTEM)" "WIN32"
-#ifeq "$(COMPILER)" "VISUAL_CPP"
+#ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(COMPILER)" "VISUAL_CPP"
   # processes the def file for linkage, if one has been specified.
   ifneq "$(DEF_FILE)" ""
     LOAD_FLAG_PREFIX += -def:$(DEF_FILE)
@@ -207,7 +207,7 @@ ifeq "$(OP_SYSTEM)" "WIN32"
   endif
 
   ifneq "$(USE_CURL)" ""
-    # curl wants this win32 flag?
+#    # curl wants this win32 flag?
 #    DEFINITIONS += _WIN32
     LOCAL_HEADERS += $(THIRD_PARTY_DIR)/curl/include
     LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/curl/lib
@@ -244,13 +244,13 @@ ifeq "$(OP_SYSTEM)" "WIN32"
     LOCAL_HEADERS += $(THIRD_PARTY_DIR)/openssl/include
     LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/openssl/lib
     LIBS_USED += libcrypto.lib libssl.lib
-#    LIBS_USED += libeay32.lib
     $(shell cp $(THIRD_PARTY_DIR)/openssl/lib/*dll $(EXECUTABLE_DIR) )
   endif
   
 endif
 
-ifeq "$(OP_SYSTEM)" "WIN32"
+#ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(COMPILER)" "VISUAL_CPP"
   # prep the actual source variable so that certain file names are translated.
   ACTUAL_RESX = $(RESX:%.resx=$(OBJECT_DIR)/%.resources)
   ACTUAL_RESX_FLAGS = $(ACTUAL_RESX:%=-ASSEMBLYLINKRESOURCE:%) 
@@ -266,7 +266,7 @@ ACTUAL_LOCAL_LIBS = $(TEMP_LOC1)
 # Create the list of objects from the list of source files.
 TEMP_OBJ1 = $(SOURCE:%.cpp=%.obj)
 TEMP_OBJ2 = $(TEMP_OBJ1:%.c=%.obj)
-ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(COMPILER)" "VISUAL_CPP"
   ifneq "$(OMIT_VERSIONS)" ""
     # remove version rc files if we're not dealing with versions.
     TEMP_OBJ3a = $(TEMP_OBJ2:%_version.rc=)
@@ -333,7 +333,8 @@ MULTI_BUILD_CMD = $(CC) $(COMPILER_FLAGS) -c `cat $(BUILD_LIST_FILE)` $(OBJECT_N
 # support for allocations; if regular new and DEBUG_NEW get mixed together,
 # crashes used to result.  supposedly these are gone now at least.
 ifneq "$(USE_MFC)" ""
-  ifeq "$(OP_SYSTEM)" "WIN32"
+#  ifeq "$(OP_SYSTEM)" "WIN32"
+  ifeq "$(COMPILER)" "VISUAL_CPP"
     # set the flag that says we are doing mfc extension dlls.
     DEFINITIONS += _AFXDLL
     DEPENDENCY_DEFINITIONS += _MT _DLL
@@ -462,7 +463,7 @@ endif
 
 # resource compiler for win32.
 
-ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(COMPILER)" "VISUAL_CPP"
 $(OBJECT_DIR)/%.res: %.rc $(PARAMETER_FILE)
   ifeq "$(NO_COMPILE)" ""
 	@echo Resource [$@]
@@ -476,7 +477,7 @@ $(OBJECT_DIR)/%.resources: %.resx $(PARAMETER_FILE)
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(VCS_ROOT)/../SDK/v1.1/bin/resgen $< $@
   endif
-else #non-win32
+else #non-visual studio
   # this platform probably does not use rc files.
 $(OBJECT_DIR)/%.res: %.rc
   ifeq "$(NO_COMPILE)" ""

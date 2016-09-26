@@ -34,9 +34,6 @@
 #include <timely/time_stamp.h>
 #include <unit_test/unit_base.h>
 
-#ifdef __WIN32__
-  #include <comdef.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#if defined(__UNIX__) 
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   #include <unistd.h>
 #else
   #include <io.h>

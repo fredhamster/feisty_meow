@@ -12,7 +12,7 @@ ifeq "$(OMIT_VERSIONS)" ""
 endif
 DEFINITIONS += __BUILD_STATIC_APPLICATION__
 UNDEFINITIONS += ENABLE_MEMORY_HOOK ENABLE_CALLSTACK_TRACKING
-ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(COMPILER)" "VISUAL_CPP"
   # static C runtime support...
 #hmmm: resurrect this as a particular build type, so makefiles don't need to know this...
   COMPILER_FLAGS += -MT

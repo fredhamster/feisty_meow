@@ -16,7 +16,7 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 
 #include "win32_security.h"
 

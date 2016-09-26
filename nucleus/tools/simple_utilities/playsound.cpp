@@ -26,7 +26,7 @@
 #include <loggers/console_logger.h>
 #include <structures/static_memory_gremlin.h>
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
   #include <mmsystem.h>
 #endif
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   }
   for (int i = 1; i < argc; i++) {
 //    out.log(astring(astring::SPRINTF, "soundfile %d: %s", i, argv[i]));
-#ifdef __WIN32__
+#ifdef _MSC_VER
     if (!PlaySound(to_unicode_temp(argv[i]), NIL, SND_FILENAME))
       out.log(astring("failed to play ") + argv[i], ALWAYS_PRINT);
 #else

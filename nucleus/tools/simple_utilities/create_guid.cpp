@@ -27,7 +27,7 @@
 #include <structures/static_memory_gremlin.h>
 #include <textual/string_manipulation.h>
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
   #include <comdef.h>
 #endif
 
@@ -59,7 +59,7 @@ int create_guid::execute()
 {
   FUNCDEF("execute");
   SETUP_CONSOLE_LOGGER;
-#ifdef __UNIX__
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 
 // this is completely bogus for the time being.  it just produces a random
 // number rather than a guid.
@@ -77,7 +77,7 @@ int create_guid::execute()
   for (int i = 0; i < 8; i++) add_random;
   faux_guid += "}";
   BASE_LOG(faux_guid.lower());
-#elif defined (__WIN32__)
+#elif defined (_MSC_VER)
   GUID guid;
   CoCreateGuid(&guid);
   const int BUFFER_SIZE = 1024;
