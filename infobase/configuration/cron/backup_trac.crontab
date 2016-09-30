@@ -1,0 +1,9 @@
+
+
+
+# backs up trac every week.
+28 7 * * 2 bash $HOME/feisty_meow/scripts/archival/backup_trac.sh /home/trac
+
+
+
+
