@@ -13,6 +13,6 @@ fi
 
 sep='_'
 
-tar -czf /z/stuffing/archives/trac_bkup_$(date +"%Y$sep%m$sep%d$sep%H%M$sep%S" | tr -d '/\n/').tar.gz "$trac_path" &>$TMP/zz_backup_trac.log
+tar -czf "${archive_path}/trac_bkup_$(date +"%Y$sep%m$sep%d$sep%H%M$sep%S" | tr -d '/\n/').tar.gz" "$trac_path" &>$TMP/zz_backup_trac.log
 
 
