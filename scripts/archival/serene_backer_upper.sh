@@ -51,11 +51,11 @@ function synch_to_backup()
 # main body of script...
 
 # just undo it first, to try to be sure we know we are mounted properly later.
-umount /z/backup &>/dev/null
+#NO LONGER USING MOUNT: umount /z/backup &>/dev/null
 
 # now saddle up the backup.
-mount /z/backup/
-exit_if_failed "mounting backup folder"
+#NO LONGER USING MOUNT: mount /z/backup/
+#NO LONGER USING MOUNT: exit_if_failed "mounting backup folder"
 
 # we should always be synching to an existing set in there.  make sure they exist.
 # for the first ever backup, this is not a good check...
@@ -79,7 +79,7 @@ synch_to_backup /var/lib/mysql /z/backup/var/lib/mysql
 
 ##############
 
-umount /z/backup/
-exit_if_failed "unmounting backup folder"
+#NO LONGER USING MOUNT: umount /z/backup/
+#NO LONGER USING MOUNT: exit_if_failed "unmounting backup folder"
 
 
