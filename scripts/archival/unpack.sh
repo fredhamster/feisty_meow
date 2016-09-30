@@ -82,7 +82,7 @@ elif [[ "$archive_file" =~ .*\.7z$ ]]; then
   7z x "$archive_file" &>/dev/null
   save_err=$?
 elif [[ "$archive_file" =~ .*\.rar$ ]]; then
-  rar x "$archive_file" &>/dev/null
+  unrar x "$archive_file" &>/dev/null
   save_err=$?
 fi
 
