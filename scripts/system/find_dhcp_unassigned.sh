@@ -8,5 +8,5 @@ if [ ! -s "$logfile" ]; then
   # a simple fail over that's not guaranteed to work.
   logfile="/var/log/syslog"
 fi
-tail -n 500 "$logfile" | grep -i "dhcp.*2[4-5][0-9]" | less
+tail -n 2000 "$logfile" | grep -i "dhcp.*2[4-5][0-9]" | less
 
