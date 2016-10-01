@@ -1,7 +1,7 @@
 
 # these are my personal overrides.  --fred.
 
-if [ -z "$NETHACKOPTIONS" ]; then
+if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   # if we don't see the nethack variable defined, this probably hasn't run yet.
 
   # The cloud directory is our new repository that's always available.  It serves as our
@@ -60,6 +60,8 @@ if [ -z "$NETHACKOPTIONS" ]; then
   # options for the lame mp3 encoder.
   export LAMEOPT="--alt-preset extreme"
 
+  # customization sentinel can be set now.
+  export USER_CUSTOMIZATIONS_LOADED=true
 fi
 
 

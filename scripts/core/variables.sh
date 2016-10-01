@@ -49,7 +49,7 @@ define_yeti_variable TERM
 ##############
   
 # we'll run this again only if we think it's needed.
-if [ -z "$NECHUNG" ]; then
+if [ -z "$CORE_VARIABLES_LOADED" ]; then
 
   if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization begins...; fi
   
@@ -242,6 +242,8 @@ if [ -z "$NECHUNG" ]; then
   define_yeti_variable SHUNIT_DIR="$FEISTY_MEOW_SCRIPTS/shunit"
   
   ##############
+
+  define_yeti_variable CORE_VARIABLES_LOADED=true
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization ends....; fi
 fi
@@ -263,4 +265,4 @@ for i in $FEISTY_MEOW_LOADING_DOCK/custom/*.sh; do
   fi
   source "$i"
 done
-  
+

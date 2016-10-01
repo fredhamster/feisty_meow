@@ -114,8 +114,8 @@ unalias fredme &>/dev/null
 
 ##############
 
-# set the sentinel variable that says this file was handled.
-export CORE_ALIASES_LOADED=true
+# set the sentinel alias that says this file was handled.
+alias CORE_ALIASES_LOADED=true
 
 ##############
 

@@ -4,7 +4,7 @@
 
 # test whether we've been here before or not.
 skip_all=
-function_sentinel &>/dev/null
+type function_sentinel &>/dev/null
 if [ $? -eq 0 ]; then
   # there was no error, so we can skip the inits.
   if [ ! -z "$SHELL_DEBUG" ]; then
@@ -357,12 +357,9 @@ if [ -z "$skip_all" ]; then
     echo "regenerating feisty meow script environment."
     bash $FEISTY_MEOW_SCRIPTS/core/reconfigure_feisty_meow.sh
     echo
-    # force a full reload by turning off sentinel variable and alias.
-    # the nethack one is used by fred's customizations.
-    # interesting note perhaps: found that the NETHACKOPTIONS variable was
-    # not being unset correctly when preceded by an alias.  split them up
-    # like they are now due to that bug.
-    unset -v CORE_ALIASES_LOADED FEISTY_MEOW_LOADING_DOCK NECHUNG NETHACKOPTIONS 
+    # force a full reload by turning off sentinel variables and methods.
+    unset -v CORE_VARIABLES_LOADED FEISTY_MEOW_LOADING_DOCK USER_CUSTOMIZATIONS_LOADED
+    unalias CORE_ALIASES_LOADED
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
     source $FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh
@@ -665,7 +662,10 @@ return 0
 
   ##############
 
-  function function_sentinel() { return 0; }
+  function function_sentinel()
+  {
+    return 0; 
+  }
   
   if [ ! -z "$SHELL_DEBUG" ]; then echo "feisty meow function definitions done."; fi
 

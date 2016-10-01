@@ -95,7 +95,8 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
   if [ ! -z "$SHELL_DEBUG" ]; then echo "heavyweight init begins..."; fi
 
   # set up the aliases for the shell, but only if they are not already set.
-  if [ -z "$CORE_ALIASES_LOADED" ]; then
+  type CORE_ALIASES_LOADED &>/dev/null
+  if [ $? -ne 0 ]; then
     if [ ! -z "$SHELL_DEBUG" ]; then
       echo "the aliases were missing, now they are being added..."
     fi
