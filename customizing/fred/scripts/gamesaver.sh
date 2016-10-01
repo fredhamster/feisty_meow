@@ -8,6 +8,14 @@ source $FEISTY_MEOW_SCRIPTS/core/functions.sh
 WINE_SOURCE_DIR="$HOME/wine_goods/My Games"
 SPOOLING_OUTPUT_DIR="$HOME/spooling_saves"
 
+if [ ! -d "$WINE_SOURCE_DIR" ]; then
+  WINE_SOURCE_DIR="c:/users/fred/My Documents/My Games"
+fi
+if [ ! -d "$WINE_SOURCE_DIR" ]; then
+  echo "Failing to find the game save directories."
+  exit 1
+fi
+
 # copies the files for a particular game out to a spooling folder.
 function copyem()
 {
@@ -44,6 +52,6 @@ copyem "fallout 3" "$WINE_SOURCE_DIR/Fallout3/Saves/Player1" "$SPOOLING_OUTPUT_D
 
 copyem "oblivion" "$WINE_SOURCE_DIR/Oblivion/Saves" "$SPOOLING_OUTPUT_DIR/oblivion/"
 
-copyem "fallout 4" "$WINE_SOURCE_DIR/Fallout4/Saves" "$SPOOLING_OUTPUT_DIR/fallout4"
+copyem "fallout 4" "$WINE_SOURCE_DIR/Fallout4/Saves" "$SPOOLING_OUTPUT_DIR/fallout4/Saves"
 
 
