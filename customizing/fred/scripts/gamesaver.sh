@@ -31,7 +31,7 @@ function copyem()
 }
 
 # make the output folders if they don't exist.
-for i in skyrim fallout_new_vegas fallout_3 oblivion fallout_4 ; do
+for i in skyrim fallout_new_vegas fallout_3 oblivion fallout_4/Saves ; do
   if [ ! -d "$SPOOLING_OUTPUT_DIR/$i" ]; then
     mkdir -p "$SPOOLING_OUTPUT_DIR/$i"
   fi
