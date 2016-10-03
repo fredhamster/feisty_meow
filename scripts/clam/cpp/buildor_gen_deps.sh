@@ -13,6 +13,11 @@
 #  of the License online.  Please send any updates to "fred@gruntose.com".    #
 ###############################################################################
 
+if [ ! -z "$CLEAN" ]; then
+  echo "in cleaning mode, will not build dependencies."
+  exit 0
+fi
+
 # this script finds all of the headers used by a cpp file and outputs a
 # list of other cpp files that are probably needed for building it.
 

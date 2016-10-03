@@ -2,20 +2,20 @@ CONSOLE_MODE = true
 
 include cpp/variables.def
 
-PROJECT = app_bundle_stub
+PROJECT = app_bundle
 TYPE = application
-SOURCE = common_bundle.cpp
+SOURCE = common_bundle.cpp 
 ifeq "$(OMIT_VERSIONS)" ""
   SOURCE += bundler_version.rc
 endif
 DEFINITIONS += __BUILD_STATIC_APPLICATION__=t
-TARGETS = unpacker_stub.exe
+TARGETS = bundle_creator.exe
+
+#hmmm: these should be done with a USE_ZLIB macro.
 ifeq "$(COMPILER)" "VISUAL_CPP"
-  LIBS_USED += libcmt.lib shlwapi.lib zlib.lib
-  LOAD_FLAG_PREFIX += -nodefaultlib:msvcrt.lib 
-  COMPILER_FLAGS += -MT
   LOCAL_HEADERS += $(THIRD_PARTY_DIR)/zlib/include
   LOCAL_LIBRARIES += $(THIRD_PARTY_DIR)/zlib/lib
+  LIBS_USED += zlib.lib
 else
   LIBS_USED += z
 endif

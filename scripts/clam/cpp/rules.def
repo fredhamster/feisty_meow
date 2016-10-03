@@ -360,6 +360,8 @@ ifeq "$(CLEAN)" ""
 ifneq "$(findstring __BUILD_STATIC_APPLICATION__, $(DEFINITIONS))" ""
   # generate static build dependencies for all targets in the makefile.
   GENERATED_DEPS_LIST = $(TARGETS:%.exe=%.gendeps)
+else
+  GENERATED_DEPS_LIST =
 endif
 
 endif
@@ -424,10 +426,12 @@ endif
 #	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$(TEMP)/$@
 #endif
 
+ifeq "$(CLEAN)" ""
 # recreate dependencies for static applications.
 %.gendeps: %.cpp
 	@echo "Generating Static Deps: $*.cpp"
 	$(CATCHER)$(CLAM_DIR)/cpp/buildor_gen_deps.sh "$*.cpp"
+endif
 
 ############################################################################
 
@@ -663,7 +667,7 @@ endif
 ifneq "$(CLEAN)" ""
   NO_DEPS = t
   # no dependencies get left when we are cleaning up.
-  $(shell rm -f $(DEPS_FILE))
+#  $(shell rm -f $(DEPS_FILE))
 endif
 ifneq "$(NO_COMPILE)" ""
   # non compiling projects do not need dependencies.
@@ -675,17 +679,10 @@ ifneq "$(REBUILD)" ""
   $(shell rm -f $(DEPS_FILE))
 endif
 
-# includes the auto-dependency information.  the dependency file is checked
-# for being up-to-date.  if not, it gets rebuilt and the make is restarted.
-ifeq "$(CLEAN)" ""
-  ifeq "$(NO_DEPS)" ""
-    include $(DEPS_FILE)
-  endif
-endif
-
 # preserves intermediate files from being deleted.
 ifeq "$(CLEAN)" ""
-.PRECIOUS: $(OBJECT_DIR)/%.obj $(OBJECT_DIR)/%.res $(OBJECT_DIR)/%.resources
+.PRECIOUS: $(OBJECT_DIR)/%.obj $(OBJECT_DIR)/%.res $(OBJECT_DIR)/%.resources $(OBJECT_DIR)/%.deps
+#hmmm: added above deps.  maybe not right.
 endif
 
 # zaps things when they could not be created correctly.
@@ -703,6 +700,7 @@ ifneq "$(NO_DEPS)" ""
     $(DEPS_FILE): $(PARAMETER_FILE)
 
 else
+  ifeq "$(CLEAN)" ""
   deps: $(DEPS_FILE)
 
   # this causes the dependency file to be regenerated if the sources or libs
@@ -734,6 +732,12 @@ else
 #	$(CATCHER)$(CLAM_BINARY_DIR)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
 	@echo $@ >$(SUBMAKE_FLAG)
   endif # non-compile.
+ else # cleaning.
+    # makes the dependencies a no-op for cleaning.
+    deps: $(PARAMETER_FILE)
+
+    $(DEPS_FILE): $(PARAMETER_FILE)
+ endif
 endif # no-deps.
 
 ############################################################################
@@ -743,6 +747,22 @@ check_requirements:
 	$(HIDESH) -c 'if [ -z "$(PROJECT)" ]; then echo the PROJECT variable is not defined!; . $(CLAM_DIR)/exit_make.sh; fi'
 	$(HIDESH) -c 'if [ -z "$(TYPE)" ]; then echo the TYPE variable is not defined!; . $(CLAM_DIR)/exit_make.sh; fi'
  
+############################################################################
+
+# includes the auto-dependency information.  the dependency file is checked
+# for being up-to-date.  if not, it gets rebuilt and the make is restarted.
+ifeq "$(CLEAN)" ""
+  ifeq "$(NO_DEPS)" ""
+
+    # thank the buddha for this bit of code, or at least thank this page:
+    # http://stackoverflow.com/questions/5553352/how-do-i-check-if-file-exists-in-makefile
+    ifneq ("$(wildcard $(DEPS_FILE))","")
+      include $(DEPS_FILE)
+    endif
+
+  endif
+endif
+
 ############################################################################
 
 # calls the script for preparing output directories and such.

@@ -1,29 +1,28 @@
-CONSOLE_MODE = true
+include variables.def
 
-include cpp/variables.def
+# had to move to this style for these two
+# since having a makefile call another was doing
+# really unpredictable things, where the makefile
+# passed to the -f of make was actually dragging
+# in bits from the main makefile.  this was
+# tested even by saying:
+#   make -f makefile.stub clean
+# which totally isolates it to the stub file, but
+# the main makefile was still being pulled in.
+# hopefully this approach of having a neutral outer
+# maker will get rid of that broken behavior.
 
-PROJECT = app_bundle
-TYPE = application
-SOURCE = common_bundle.cpp 
-ifeq "$(OMIT_VERSIONS)" ""
-  SOURCE += bundler_version.rc
-endif
-DEFINITIONS += __BUILD_STATIC_APPLICATION__=t
-TARGETS = bundle_creator.exe
-LAST_TARGETS += make_stub
-ifeq "$(COMPILER)" "VISUAL_CPP"
-  LOCAL_HEADERS += $(THIRD_PARTY_DIR)/zlib/include
-  LOCAL_LIBRARIES += $(THIRD_PARTY_DIR)/zlib/lib
-  LIBS_USED += zlib.lib
-else
-  LIBS_USED += z
-endif
-OTHER_CLEANS += clean_stub
+LAST_TARGETS = maker
+OTHER_CLEANS = breaker
 
-include cpp/rules.def
+include rules.def
 
-make_stub:
-	$(MAKE) -f makefile.stub
+maker:
+	$(MAKE) -f makefile.bundle_creator
+	$(MAKE) -f makefile.unpacker_stub
 
-clean_stub:
-	$(MAKE) -f makefile.stub NO_DEPS=t clean
+breaker:
+	$(MAKE) CLEAN=t -f makefile.bundle_creator clean
+	$(MAKE) CLEAN=t -f makefile.unpacker_stub clean
+
+
