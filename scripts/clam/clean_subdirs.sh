@@ -8,18 +8,13 @@ function clean_subdirectories()
   local smoot87
 
   # find all the subdirectories.
-  for smoot87 in $(find . -mindepth 1 -maxdepth 1 -type f); do
-echo name is $i
-
-#    # skip if not a directory.
-#    if [ ! -d "$smoot87" ]; then continue; fi
-#echo "inside first check of it being dir: $smoot87"
-
+  for smoot87 in $(find . -mindepth 1 -maxdepth 1 -type d); do
     # make sure there's a makefile there.
-    if [ -f "$smoot87/$MAKEFILE_NAME" ]; then
-echo "inside barriers, with filename=$smoot87 and all conditions met."
+    if [ -f "$smoot87/makefile" ]; then
+#echo "inside barriers, with filename=$smoot87 and all conditions met."
       pushd "$smoot87"
-      make --silent NOT_FIRST_MAKE=t -f $MAKEFILE_NAME clean
+      make --silent -I "$CLAM_DIR" NOT_FIRST_MAKE=t clean
+      popd
     else
       echo "Skipping makefile-less directory $smoot87..."
     fi

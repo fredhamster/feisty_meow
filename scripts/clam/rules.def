@@ -88,23 +88,10 @@ endif
 # runs the programs specified in the RUN_TARGETS variable.
 run_targets:
 	$(HIDESH)"$(CLAM_DIR)/target_runner.sh"
-#### "$(RUN_TARGETS)"
 
 # "make_subdirs" travels down each subdirectory and builds using make.
 make_subdirs:
-	$(HIDESH) -c '\
-for i in *; do \
-  if [ -d $$i ]; then \
-    if [ -f $$i/$(MAKEFILE_NAME) -a ! $$i -ef `pwd` ]; then \
-      echo; \
-      (cd $$i; $(MAKE) --silent NOT_FIRST_MAKE=t -f $(MAKEFILE_NAME) ); \
-    else \
-      echo Skipping makefile-less directory $$i...; \
-      echo; \
-    fi \
-  fi \
-done; \
-exit 0'
+	$(HIDESH)$(CLAM_DIR)/make_subdirs.sh
 
 # "clean" is a default target that removes object files, libs, executable
 # files and such that were created by the project.  it invokes the makefile
@@ -125,36 +112,22 @@ ready_to_clean:
 echo the other cleans were: $(OTHER_CLEANS); \
 echo the cleanup removal list is: $(CLEANUPS); \
 if [ ! -z "$(CLEANUPS)" ]; then \
-  for i in $(CLEANUPS) nonexistentishfileforlist; do \
-    rm -rf "$$i"; \
+  for spork19 in $(CLEANUPS) nonexistentishfileforlist; do \
+    rm -rf "$$spork19"; \
   done \
 fi'
 
 # "clean_subdirs" travels down each subdirectory and cleans using make.
 clean_subdirs:
-	$(HIDESH) -c '\
-for smoot87 in *; do \
-  if [ -d "$$smoot87" ]; then \
-echo "got inside first check of it being dir: $$smoot87"; \
-    if [ -f "$$smoot87/$(MAKEFILE_NAME)" -a ! "$$smoot87" -ef `pwd` ]; then \
-echo "got inside barriers, with filename=$$smoot87 and all conditions met."; \
-echo "the interesting one was: [$(test ! "$$smoot87" -ef `pwd` )]"; \
-      (cd "$$i"; $(MAKE) --silent NOT_FIRST_MAKE=t -f $(MAKEFILE_NAME) clean); \
-    else \
-      echo "Skipping makefile-less directory $$i..."; \
-    fi \
-  fi \
-done; \
-exit 0'
-###echo Cleaning "$$i" now...; 
+	$(HIDESH)$(CLAM_DIR)/clean_subdirs.sh
 
 # "rm_links" removes the files in the current directory that are links
 # to other files.  this is only useful in a unix environment.
 rm_links:
 	$(HIDESH) -c '\
-for i in *; do \
-  if [ -h "$$i" ]; then \
-    /bin/rm -f "$$i"; \
+for gujira26 in *; do \
+  if [ -h "$$gujira26" ]; then \
+    /bin/rm -f "$$gujira26"; \
   fi \
 done; \
 exit 0'
