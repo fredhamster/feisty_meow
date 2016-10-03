@@ -5,7 +5,7 @@
 
 # This file contains definitions and descriptions of the variables used
 # in the CLAM system (Coordinated Library Automagic Make).  This defaults
-# file should be included near the start of the user's makefile, and then the
+# file should be included near the start of the user makefile, and then the
 # rules file should be included after the user has modified the appropriate
 # variables and added the appropriate rules and targets.
 
@@ -46,8 +46,8 @@ ifeq "$(OP_SYSTEM)" ""
     ifneq "$(IS_DOS)" ""
       OP_SYSTEM := WIN32
     else
-      # we don't have other comparisons yet, so we'll assume unix.  fix this
-      # if it's not your default operating system.
+      # we do not have other comparisons yet, so we will assume unix.  fix this
+      # if it is not your default operating system.
       OP_SYSTEM := UNIX
     endif
   endif
@@ -112,7 +112,7 @@ export CURRENT_DIR := $(shell pwd)
 
 # "PROJECT" is the root name for the project being compiled.  It is used
 # in generated directory names and for other purposes of uniquification.
-# This is a variable that _must_ be supplied by the user's makefile.
+# This is a variable that _must_ be supplied by the user makefile.
 # Examples:
 #     PROJECT = basis
 #     PROJECT = test_parser
@@ -124,8 +124,8 @@ export PROJECT
 export TARGETS
 
 # "ACTUAL_TARGETS" is how the targets are expected to be passed to the rules
-# file; this allows a plug-in module's rules to manipulate the TARGETS to make
-# sure that important files don't get deleted by the automatic deletion done
+# file; this allows rules from a plug-in module to manipulate the TARGETS to make
+# sure that important files do not get deleted by the automatic deletion done
 # with "make clean."  If the real module used does not create a variable called
 # ACTUAL_TARGETS from the TARGETS, then the default specified here is used.
 export ACTUAL_TARGETS = $(TARGETS)
@@ -158,14 +158,14 @@ export RUN_ALL_TESTS
 
 # "MAKEFILE_NAME" works with BUILD_BEFORE and BUILD_AFTER.  This allows
 # the name of the makefile in the subdirectory to be changed to something other
-# than 'makefile'.
+# than simply "makefile".
 export MAKEFILE_NAME = makefile
 
 ############################################################################
 
 # "FIND" is a macro that points to the real find command, which is the unix
 # find command.  on dosdows, the find command is utter garbage and we need
-# to make sure we don't accidentally run that inferior one.
+# to make sure we do not accidentally run that inferior one.
 export FIND = find
 
 # "PARAMETER_FILE" is the location of our version stamps (if defined) and
@@ -201,7 +201,7 @@ ifeq "$(CLAM_TMP)" ""
   CLAM_TMP := $(GENERATED_DIR)/clam_tmp
 endif
 
-#turned off for the moment, since this seems like a bad idea; we define clam tmp in terms of tmp sometimes, don't we???
+#turned off for the moment, since this seems like a bad idea; we define clam tmp in terms of tmp sometimes, do not we???
 #ifeq "$(OP_SYSTEM)" "WIN32"
 #  # set these so that compilers and such will use them.
 #  export TMP := $(CLAM_TMP)

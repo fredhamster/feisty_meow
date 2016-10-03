@@ -3,9 +3,9 @@
 ###############################################################################
 
 #  This file contains composite macros and rules for creating objects.
-#  This file should be included in the user's makefile after the variables
+#  This file should be included in the user makefile after the variables
 #  have been initialized appropriately for the particular project being
-#  created.  The user's own targets should be placed after the include
+#  created.  The user targets should be placed after the include
 #  directive that specifies this file.
 
 ###############################################################################
@@ -19,7 +19,7 @@ ifneq "$(BUILD_AFTER)" ""
   LAST_TARGETS += $(BUILD_AFTER:%=%.make)
 endif
 
-# Make the default action be an error stop if we can't find an appropriate rule.
+# Make the default action be an error stop if we ca not find an appropriate rule.
 .DEFAULT:
 	$(HIDER)echo
 	$(HIDER)echo [$@] is missing files or has a makefile problem.
@@ -112,8 +112,8 @@ scratch_other_cleans:
 # is included.  we take a liberty here and also add non ".exe" versions in
 # case we are running on linux.
 add_to_cleanups_variable:
-	echo going to add to cleanup variable now.
-	$(eval CLEANUPS = $(CLEANUPS) $(ACTUAL_TARGETS) $(ACTUAL_TARGETS:%.exe=%) )
+	echo "going to add to cleanup variable now with the actual targets as $(ACTUAL_TARGETS)"
+	$(eval CLEANUPS = $(ACTUAL_TARGETS) $(ACTUAL_TARGETS:%.exe=%) $(CLEANUPS) )
 	echo "new CLEANUPS variable: $(CLEANUPS)"
 
 # guard the main cleaning task with our variable
