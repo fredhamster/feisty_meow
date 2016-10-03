@@ -18,7 +18,7 @@ include $(CLAM_DIR)/cpp/variables.def
 
 PROJECT = feisty_meow_nucleus
 TYPE = hierarchy
-FIRST_TARGETS = do_make
+FIRST_TARGETS += do_make
 BUILD_AFTER = library applications tools
 
 include $(CLAM_DIR)/cpp/rules.def

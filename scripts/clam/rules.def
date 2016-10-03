@@ -45,11 +45,12 @@ if [ -d $* ]; then \
   if [ -f "$*/$(MAKEFILE_NAME)" ]; then \
     $(MAKE) --silent -f "$(MAKEFILE_NAME)" NOT_FIRST_MAKE=t -C "$*"; \
   else \
-    echo Skipping makefile-less directory [$*]; \
+    echo "Asked to build directory [$*] but there was no makefile."; \
   fi \
 else \
   echo Skipping missing directory [$*]; \
 fi'
+#hmmm: maybe convert above to a script also.
 
 # always run the exes listed in RUN_TARGETS.
 .PHONY: run_targets
@@ -106,8 +107,12 @@ set_cleaner_variable:
 scratch_other_cleans:
 	$(eval OTHER_CLEANS := )
 
-ready_to_clean:
+ready_to_clean: $(OTHER_CLEANING_TASKS)
+	echo hey the other clean should have happened above.
 	@echo Whacking [$(CLEANUPS)]
+#	@echo could also be cleaning the first and last targets...
+#	@echo FIRST_TARGETS=$(FIRST_TARGETS)
+#	@echo LAST_TARGETS=$(LAST_TARGETS)
 	$(HIDESH) -c '\
 if [ ! -z "$(CLEANUPS)" ]; then \
   for spork19 in $(CLEANUPS) nonexistentishfileforlist; do \

@@ -188,18 +188,12 @@ include $(PARAMETER_FILE)
 ############################################################################
 
 # "CLEAN" is a powerful flag that affects what clam does.  if the flag is
-# non-empty, then nothing will be built and every generated file that is
-# known about will be deleted.  it is intended as exported, since then sub-
-# shells know that they are cleaning and we do not have to pass them a
-# target.
-#hmmm: (although we do?)
+# non-empty, then nothing new will be built.
 export CLEAN
 # "CLEANUPS" are things to be removed by the "make clean" command.
-undefine CLEANUPS
+#CLEANUPS =
 # OTHER_CLEANS are targets to execute before performing the main clean up.
-# we intentionally reset this here to avoid a polluted variable getting
-# to us from a previous make.
-undefine OTHER_CLEANS
+#OTHER_CLEANS =
 
 # sets the temporary directory.
 export CLAM_TMP

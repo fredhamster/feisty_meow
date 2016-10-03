@@ -1,7 +1,7 @@
 include cpp/variables.def
 
 PROJECT = Whole_Build_Pack
-FIRST_TARGETS = create_package
+FIRST_TARGETS += create_package
 CLEANUPS = $(RUNTIME_DIR)/install/whole_build*
 TYPE = hierarchy
 export TARGET=/tmp/zz_wholebuild_$(USER)

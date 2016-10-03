@@ -12,11 +12,11 @@ function clean_subdirectories()
     # make sure there's a makefile there.
     if [ -f "$smoot87/makefile" ]; then
 #echo "inside barriers, with filename=$smoot87 and all conditions met."
-      pushd "$smoot87"
+      pushd "$smoot87" &>/dev/null
       make --silent -I "$CLAM_DIR" NOT_FIRST_MAKE=t clean
-      popd
+      popd &>/dev/null
     else
-      echo "Skipping makefile-less directory $smoot87..."
+      echo "(skipping directory $smoot87)"
     fi
   done
 }

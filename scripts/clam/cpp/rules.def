@@ -398,6 +398,14 @@ ACTUAL_LAST_TARGETS = post_compilation $(LAST_TARGETS)
 
 ############################################################################
 
+# Add the obligatory junk to be cleaned up.
+set_cleanups_variable:
+	echo hey we are in the set cleanups variable and pwd is: $(shell pwd)
+	$(eval CLEANUPS += $(ACTUAL_TARGETS) $(ACTUAL_TARGETS:%.exe=%) )
+	echo "yoyo, cleanups variable is now: $(CLEANUPS)"
+
+############################################################################
+
 # This section defines the rules used to generate various objects from their
 # source files.
 
