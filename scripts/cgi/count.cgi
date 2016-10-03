@@ -39,18 +39,11 @@ if ($server =~ /^www\./) {
 
 # translate some domains into other domains to avoid maintaining multiple
 # hit count lists for the same sites that have different names.
-if ($server =~ /^gruntose\.org/) {
-  $server =~ s/^gruntose\.org/gruntose.com/;
-}
-if ($server =~ /^gruntose\.net/) {
-  $server =~ s/^gruntose\.net/gruntose.com/;
-}
-if ($server =~ /^cromp\.net/) {
-  $server =~ s/^cromp\.net/cromp.org/;
-}
-if ($server =~ /^hoople\.net/) {
-  $server =~ s/^hoople\.net/hoople.org/;
-}
+#if ($server =~ /^gruntose\.org/) {
+#  $server =~ s/^gruntose\.org/gruntose.com/;
+#}
+
+#hmmm: what about koeritz.com / koeritz.org?
 
 #
 # increment count of hit document, but not if I'm the
