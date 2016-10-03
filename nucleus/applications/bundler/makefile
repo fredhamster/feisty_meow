@@ -22,7 +22,7 @@ maker:
 	$(MAKE) -f makefile.unpacker_stub
 
 breaker:
-	$(MAKE) CLEAN=t -f makefile.bundle_creator clean
-	$(MAKE) CLEAN=t -f makefile.unpacker_stub clean
+	$(MAKE) -f makefile.bundle_creator clean
+	$(MAKE) -f makefile.unpacker_stub clean
 
 
