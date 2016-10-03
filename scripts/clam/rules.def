@@ -45,7 +45,7 @@ if [ -d $* ]; then \
   if [ -f "$*/$(MAKEFILE_NAME)" ]; then \
     $(MAKE) --silent -f "$(MAKEFILE_NAME)" NOT_FIRST_MAKE=t -C "$*"; \
   else \
-    echo "Asked to build directory [$*] but there was no makefile."; \
+    echo "($@ skipping directory $*)"; \
   fi \
 else \
   echo Skipping missing directory [$*]; \
@@ -98,27 +98,30 @@ make_subdirs:
 # files and such that were created by the project.  it invokes the makefile
 # again with the CLEAN variable defined so that this can be passed down into
 # all subsequent makes.
-clean: set_cleaner_variable $(OTHER_CLEANS) scratch_other_cleans clean_subdirs  ready_to_clean
+clean: establish_cleanup_variable $(OTHER_CLEANS) scratch_other_cleans clean_subdirs  ready_to_clean
 	@# no code here.
 
-set_cleaner_variable:
+establish_cleanup_variable:
 	$(eval CLEAN := true)
 
 scratch_other_cleans:
 	$(eval OTHER_CLEANS := )
 
+# guard the main cleaning task with our variable
+# so we do not pull in subtargets when we do not want to.
+ifneq "$(CLEAN)" ""
 ready_to_clean: $(OTHER_CLEANING_TASKS)
-	echo hey the other clean should have happened above.
 	@echo Whacking [$(CLEANUPS)]
-#	@echo could also be cleaning the first and last targets...
-#	@echo FIRST_TARGETS=$(FIRST_TARGETS)
-#	@echo LAST_TARGETS=$(LAST_TARGETS)
 	$(HIDESH) -c '\
 if [ ! -z "$(CLEANUPS)" ]; then \
   for spork19 in $(CLEANUPS) nonexistentishfileforlist; do \
     rm -rf "$$spork19"; \
   done \
 fi'
+else
+ready_to_clean: 
+	@# do nothing.
+endif
 
 # "clean_subdirs" travels down each subdirectory and cleans using make.
 clean_subdirs:

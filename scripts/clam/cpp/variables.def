@@ -119,7 +119,7 @@ endif
 
 # Add an early target to set the cleanups variable based on the variables
 # that have been filled in by the user makefile.
-FIRST_TARGETS += set_cleanups_variable
+###no FIRST_TARGETS += set_cleanups_variable
 
 # GLOBAL_PRODUCT_NAME is an important variable for tagging the entire code base
 # with some branding.  It is provided as a macro definition to all source
