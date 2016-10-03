@@ -117,10 +117,6 @@ endif
 # "UNDEFINITIONS" is a list of macros to undefine.
 #UNDEFINITIONS =
 
-# Add an early target to set the cleanups variable based on the variables
-# that have been filled in by the user makefile.
-###no FIRST_TARGETS += set_cleanups_variable
-
 # GLOBAL_PRODUCT_NAME is an important variable for tagging the entire code base
 # with some branding.  It is provided as a macro definition to all source
 # files.  The initial value for the macro should come from the build init
@@ -291,9 +287,6 @@ export DEPS_FILE = $(OUTPUT_PATH)/$(PROJECT).deps
 
 # add the cleanup values we already know.
 CLEANUPS += $(OUTPUT_PATH) $(DEPS_FILE)
-
-# schedule the cleanups to be updated when we know more info from the user.
-OTHER_CLEANING_TASKS = set_cleanups_variable
 
 # "GENDEPS" is a flag that causes dependencies to be generated into
 # statically built applications.

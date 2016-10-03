@@ -398,15 +398,6 @@ ACTUAL_LAST_TARGETS = post_compilation $(LAST_TARGETS)
 
 ############################################################################
 
-ifneq "$(CLEAN)" ""
-# Add the obligatory junk to be cleaned up.
-set_cleanups_variable:
-	$(eval CLEANUPS += $(ACTUAL_TARGETS) $(ACTUAL_TARGETS:%.exe=%) )
-#	echo "new CLEANUPS variable: $(CLEANUPS)"
-endif
-
-############################################################################
-
 # This section defines the rules used to generate various objects from their
 # source files.
 
@@ -441,6 +432,17 @@ ifeq "$(CLEAN)" ""
 	@echo "Generating Static Deps: $*.cpp"
 	$(CATCHER)$(CLAM_DIR)/cpp/buildor_gen_deps.sh "$*.cpp"
 endif
+
+############################################################################
+
+# trying to delay loading this as long as possible so the built in rule system for CLEANUPS can run with the right values.
+# so far not working right!
+#hmmm: fix this.
+
+# Adds the main CLAM system in to get some work done.  This should be placed
+# after the module's rules are defined and before the module's targets are
+# defined.
+include rules.def
 
 ############################################################################
 
@@ -662,11 +664,6 @@ endif
 ############################################################################
 
 # Now the active part of the make process...
-
-# Adds the main CLAM system in to get some work done.  This should be placed
-# after the module's rules are defined and before the module's targets are
-# defined.
-include rules.def
 
 # make sure we really want to include the dependencies file.
 ifeq "$(TYPE)" "hierarchy"
