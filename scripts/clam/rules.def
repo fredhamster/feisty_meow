@@ -110,11 +110,14 @@ exit 0'
 # files and such that were created by the project.  it invokes the makefile
 # again with the CLEAN variable defined so that this can be passed down into
 # all subsequent makes.
-clean: set_cleaner_variable clean_subdirs $(OTHER_CLEANS) ready_to_clean
+clean: set_cleaner_variable $(OTHER_CLEANS) scratch_other_cleans clean_subdirs  ready_to_clean
 	# no code here.
 
 set_cleaner_variable:
 	$(eval CLEAN := true)
+
+scratch_other_cleans:
+	$(eval OTHER_CLEANS := )
 
 ready_to_clean:
 	@echo Whacking [$(CLEANUPS)]

@@ -23,11 +23,11 @@
 
 // windows class tags for the data structures library:
 // define BUILD_SECURITY when you are creating the dll and
-// define USE_HOOPLE_DLLS when you are importing a class from the dll.
+// define USE_FEISTY_MEOW_DLLS when you are importing a class from the dll.
 #ifdef BUILD_SECURITY
   #define    HOOPLE_DLL_EXPORT_CLASS
   #define HOOPLE_DLL_EXPORT_FUNCTION
-#elif defined(USE_HOOPLE_DLLS)
+#elif defined(USE_FEISTY_MEOW_DLLS)
   #define    HOOPLE_DLL_IMPORT_CLASS
   #define HOOPLE_DLL_IMPORT_FUNCTION
 #else
