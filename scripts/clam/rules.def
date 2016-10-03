@@ -117,7 +117,7 @@ ready_to_clean: $(OTHER_CLEANS) clean_subdirs
 	@echo Whacking [$(CLEANUPS)]
 	$(HIDESH) -c '\
 echo the other cleans were: $(OTHER_CLEANS); \
-echo the clean list is: $(CLEANUPS); \
+echo the cleanup removal list is: $(CLEANUPS); \
 if [ ! -z "$(CLEANUPS)" ]; then \
   for i in $(CLEANUPS) nonexistentishfileforlist; do \
     rm -rf "$$i"; \

@@ -18,9 +18,12 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
 else
   LIBS_USED += z
 endif
+OTHER_CLEANS += clean_stub
 
 include cpp/rules.def
 
 make_stub:
 	$(MAKE) -f makefile.stub
 
+clean_stub:
+	$(MAKE) -f makefile.stub NO_DEPS=t clean

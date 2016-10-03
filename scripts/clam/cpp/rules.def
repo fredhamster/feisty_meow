@@ -350,14 +350,18 @@ ifeq "$(OMIT_VERSIONS)" ""
   endif
 endif
 
-ifneq "$(GENDEPS)" ""
-  EXTRA_FIRST_TARGETS += gendeps
-endif
+# if we are cleaning up, then do not generate dependency file.
+ifeq "$(CLEAN)" ""
+  ifneq "$(GENDEPS)" ""
+    EXTRA_FIRST_TARGETS += gendeps
+  endif
 
 # only do the deps generation for makefiles that are properly marked.
 ifneq "$(findstring __BUILD_STATIC_APPLICATION__, $(DEFINITIONS))" ""
   # generate static build dependencies for all targets in the makefile.
   GENERATED_DEPS_LIST = $(TARGETS:%.exe=%.gendeps)
+endif
+
 endif
 
 # Make sure that the directory for objects exists.
@@ -673,8 +677,10 @@ endif
 
 # includes the auto-dependency information.  the dependency file is checked
 # for being up-to-date.  if not, it gets rebuilt and the make is restarted.
-ifeq "$(NO_DEPS)" ""
-  include $(DEPS_FILE)
+ifeq "$(CLEAN)" ""
+  ifeq "$(NO_DEPS)" ""
+    include $(DEPS_FILE)
+  endif
 endif
 
 # preserves intermediate files from being deleted.
