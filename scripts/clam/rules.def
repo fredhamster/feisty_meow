@@ -98,7 +98,7 @@ make_subdirs:
 # again with the CLEAN variable defined so that this can be passed down into
 # all subsequent makes.
 clean: set_cleaner_variable $(OTHER_CLEANS) scratch_other_cleans clean_subdirs  ready_to_clean
-	# no code here.
+	@# no code here.
 
 set_cleaner_variable:
 	$(eval CLEAN := true)
@@ -109,8 +109,6 @@ scratch_other_cleans:
 ready_to_clean:
 	@echo Whacking [$(CLEANUPS)]
 	$(HIDESH) -c '\
-echo the other cleans were: $(OTHER_CLEANS); \
-echo the cleanup removal list is: $(CLEANUPS); \
 if [ ! -z "$(CLEANUPS)" ]; then \
   for spork19 in $(CLEANUPS) nonexistentishfileforlist; do \
     rm -rf "$$spork19"; \
