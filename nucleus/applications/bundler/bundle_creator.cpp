@@ -748,7 +748,7 @@ astring bundle_creator::determine_stub_file_and_validate()
 #ifdef __WIN32__
   astring stub_filename("unpacker_stub.exe");
 #endif
-  astring repo_dir = "$RUNTIME_DIR";
+  astring repo_dir = "$RUNTIME_PATH";
   astring stub_file = parser_bits::substitute_env_vars
       (repo_dir + "/binaries/" + stub_filename, false);
   if (!filename(stub_file).exists()) {

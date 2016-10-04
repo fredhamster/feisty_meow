@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DA_DIR="$RUNTIME_DIR/binaries"
+DA_DIR="$RUNTIME_PATH/binaries"
 
 rm -f $DA_DIR/AxInterop.*.dll \
   $DA_DIR/DevAge*dll \

@@ -12,7 +12,7 @@ if [ ! -z "$CLEAN" ]; then
 fi
 
 # make sure generated files have a home.
-if [ ! -d $TARGETS_DIR ]; then mkdir -p $TARGETS_DIR; fi
+if [ ! -d $TARGETS_STORE ]; then mkdir -p $TARGETS_STORE; fi
 # create the generated files storage area.
 if [ ! -d $OUTPUT_ROOT ]; then mkdir -p $OUTPUT_ROOT; fi
 # create the top level object directory if it doesn't exist.
@@ -33,7 +33,7 @@ if [ ! -d $STATIC_LIBRARY_DIR ]; then mkdir -p $STATIC_LIBRARY_DIR; fi
 # set versions on any extras that were specified in the makefile.
 if [ ! -z "$EXTRA_VERSIONS" ]; then
   for i in $EXTRA_VERSIONS; do
-    $CLAM_BINARY_DIR/version_stamper$EXE_END $i $PARAMETER_FILE
+    $CLAM_BINARIES/version_stamper$EXE_END $i $PARAMETER_FILE
   done
 fi
 

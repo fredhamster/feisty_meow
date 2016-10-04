@@ -236,10 +236,10 @@ echo "dependent on: $(basename "$dirtmp")/$basetmp"
 
   ##########################################################################
 
-  local current_includes="$(mktemp $TEMPORARIES_DIR/zz_buildor_deps4-$base.XXXXXX)"
+  local current_includes="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps4-$base.XXXXXX)"
   rm -f "$current_includes"
 
-  local partial_file="$(mktemp $TEMPORARIES_DIR/zz_buildor_deps5-$base.XXXXXX)"
+  local partial_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps5-$base.XXXXXX)"
   rm -f "$partial_file"
 
   # find all the includes in this file and save to the temp file.
@@ -404,7 +404,7 @@ function write_new_version {
 #echo "would write deps to: $code_file"
 #echo ${dependency_accumulator[*]}
 
-  local replacement_file="$(mktemp $TEMPORARIES_DIR/zz_buildor_deps3.XXXXXX)"
+  local replacement_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps3.XXXXXX)"
 
   # blanks is a list of blank lines that we save up in between actual content.
   # if we don't hold onto them, we can have the effect of "walking" the static
@@ -436,7 +436,7 @@ function write_new_version {
   echo -e "$opening_guard_line" >>"$replacement_file"
 
   # now accumulate just the dependencies for a bit.
-  local pending_deps="$(mktemp $TEMPORARIES_DIR/zz_buildor_deps2.XXXXXX)"
+  local pending_deps="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps2.XXXXXX)"
   rm -f "$pending_deps"
 
   # iterate across all the dependencies we found.
@@ -517,7 +517,7 @@ for curr_parm in $*; do
     # set the directory to that absolute path.
     curr_parm="$prohibited_directory"
 #echo "curr_parm: $curr_parm"
-    outfile="$(mktemp $TEMPORARIES_DIR/zz_buildor_deps1.XXXXXX)"
+    outfile="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps1.XXXXXX)"
     find "$curr_parm" -iname "*.cpp" >"$outfile"
     while read -r line_found; do
       if [ $? != 0 ]; then break; fi

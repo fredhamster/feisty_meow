@@ -45,7 +45,7 @@ keyword=sources
 ; this section is included in both types of package.
 
 [production_inis]
-source=$PRODUCTION_DIR/*.ini
+source=$PRODUCTION_STORE/*.ini
 target=$TARGET/production
 keyword=sources
 
@@ -60,7 +60,7 @@ target=$TARGET/makefile
 keyword=sources
 
 [production_makefile]
-source=$PRODUCTION_DIR/makefile
+source=$PRODUCTION_STORE/makefile
 target=$TARGET/production/makefile
 keyword=sources
 
@@ -131,19 +131,19 @@ recurse=1
 keyword=sources
 
 [assign_bases]
-source=$PRODUCTION_DIR/assign_bases
+source=$PRODUCTION_STORE/assign_bases
 target=$TARGET/production/assign_bases
 recurse=1
 keyword=sources
 
 [check_versions]
-source=$PRODUCTION_DIR/check_versions
+source=$PRODUCTION_STORE/check_versions
 target=$TARGET/production/check_versions
 recurse=1
 keyword=sources
 
 [setup_src]
-source=$PRODUCTION_DIR/setup_src
+source=$PRODUCTION_STORE/setup_src
 target=$TARGET/production/setup_src
 recurse=1
 keyword=sources
@@ -151,22 +151,22 @@ keyword=sources
 ; this section is only included in the full package (not in sources).
 
 [3rdparty]
-source=$PRODUCTION_DIR/3rdparty
+source=$PRODUCTION_STORE/3rdparty
 target=$TARGET/production/3rdparty
 recurse=1
 
 [binaries]
-source=$RUNTIME_DIR/binaries
+source=$RUNTIME_PATH/binaries
 target=$TARGET/runtime/binaries
 recurse=1
 
 [clam_bin]
-source=$RUNTIME_DIR/clam_bin
+source=$RUNTIME_PATH/clam_bin
 target=$TARGET/runtime/clam_bin
 recurse=1
 
 [packages]
-source=$RUNTIME_DIR/packages
+source=$RUNTIME_PATH/packages
 target=$TARGET/runtime/packages
 recurse=1
 

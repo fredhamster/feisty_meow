@@ -10,7 +10,7 @@ fi
 if [ -f $FAILURE_FILE ]; then
   echo Postconditions will not promote due to a failure:
   cat $FAILURE_FILE
-  . $CLAM_DIR/exit_make.sh
+  . $CLAM_SCRIPTS/exit_make.sh
 fi
 
 # make sure that we actually did something during the make.
@@ -23,9 +23,9 @@ fi
 for i in *.resources; do rm -f "$i"; done
 
 # causes the shell to quit.
-DIE="source $CLAM_DIR/exit_make.sh"
+DIE="source $CLAM_SCRIPTS/exit_make.sh"
 
-if [ ! -d $TARGETS_DIR ]; then mkdir -p $TARGETS_DIR; fi
+if [ ! -d $TARGETS_STORE ]; then mkdir -p $TARGETS_STORE; fi
 
 if [ "$TYPE" = "library" ]; then
 
@@ -61,6 +61,6 @@ elif [ "$TYPE" = "hierarchy" ]; then
 
 else
   echo "Unknown type for project [$TYPE]; cancelling postconditions!"
-  source $CLAM_DIR/exit_make.sh
+  source $CLAM_SCRIPTS/exit_make.sh
 fi
 

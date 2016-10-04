@@ -9,7 +9,7 @@ include variables.def
 
 ###############################################################################
 
-#CLAM_BINARY_DIR = $(CLAM_DIR)/../bin
+#CLAM_BINARIES = $(CLAM_SCRIPTS)/../bin
 
 ###############################################################################
 
@@ -115,7 +115,7 @@ endif
 
 # "OUTPUT_ROOT" is the root of all output directories for objects and other
 # products being built.
-export OUTPUT_ROOT = $(TARGETS_DIR)/obj
+export OUTPUT_ROOT = $(TARGETS_STORE)/obj
 
 # "PLATFORM_ADD_IN" is an option discriminator for the intended execution
 # platform.  it should end in an underscore if it is provided.
@@ -143,10 +143,10 @@ export OUTPUT_PATH = $(BASE_OUTPUT_PATH)/$(PROJECT)
 export OBJECT_DIR = $(OUTPUT_PATH)
 
 # These specify where files are to be created or located for our local build.
-export EXECUTABLE_DIR = $(TARGETS_DIR)/exe
-export DYNAMIC_LIBRARY_DIR = $(TARGETS_DIR)/dll
-export STATIC_LIBRARY_DIR = $(TARGETS_DIR)/lib
-export TESTS_DIR = $(TARGETS_DIR)/tests
+export EXECUTABLE_DIR = $(TARGETS_STORE)/exe
+export DYNAMIC_LIBRARY_DIR = $(TARGETS_STORE)/dll
+export STATIC_LIBRARY_DIR = $(TARGETS_STORE)/lib
+export TESTS_DIR = $(TARGETS_STORE)/tests
 
 # "HEADER_SEARCH_PATH" is where the class interface files are to be found.
 #HEADER_SEARCH_PATH =
@@ -312,7 +312,7 @@ LIBRARY_NAME_FLAG = -l
 
 # the root name of the version file.  This is currently irrelevant on
 # non-win32 platforms.
-VERSION_RC_ROOT = $(shell $(SHELL) $(CLAM_DIR)/cpp/rc_name.sh)
+VERSION_RC_ROOT = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/rc_name.sh)
   # we import the rc_name from our close ally, the c++ compiler definitions.
 
 ###############################################################################
@@ -384,7 +384,7 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
   TLBEXPORT = $(COMPILER_ROOT_DIR)/../SDK/v$(SHORT_FRAMEWORK_VERSION)/bin/tlbexp$(EXE_END)
 
   # calculate the visual studio root directory.
-  export VIS_STU_ROOT := $(shell $(SHELL) $(CLAM_DIR)/cpp/ms_root_dir.sh $(CLAM_BINARY_DIR) )
+  export VIS_STU_ROOT := $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/ms_root_dir.sh $(CLAM_BINARIES) )
   ifneq "$(VIS_STU_ROOT)" ""
     COMPILER_ROOT_DIR = $(VIS_STU_ROOT)/vc#
   endif
@@ -394,17 +394,17 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
     HOSEUP =
   endif
 
-  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_DIR)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
 
   # set a variable for the resource compiler for old-style resources.
   STANDARD_RC = $(VIS_STU_ROOT)/vc/bin/rc
 
   # set up a directory for debugging files to be stored.  these are not
   # moved with the postconditions--they are generated in place.
-  export PDB_DIR=$(TARGETS_DIR)/pdb
+  export PDB_DIR=$(TARGETS_STORE)/pdb
 
   # set these way up here so we can override them later.
-  CC                      = bash $(CLAM_DIR)/csharp/csharper.sh
+  CC                      = bash $(CLAM_SCRIPTS)/csharp/csharper.sh
 ##$(FRAMEWORK_DIR)/csc
 
 #  LINK_TOOL               = $(COMPILER_ROOT_DIR)/bin/link

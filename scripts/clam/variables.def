@@ -64,7 +64,7 @@ endif
 # "FEISTY_MEOW_APEX" is the root of the "build" for our compilation oriented
 # features.  All source code and build helper files are usually found there.
 # The build targets to be built are usually stored there also, although the
-# targets can be located elsewhere if desired.  see TARGETS_DIR below.
+# targets can be located elsewhere if desired.  see TARGETS_STORE below.
 export FEISTY_MEOW_APEX
 ifeq "$(FEISTY_MEOW_APEX)" ""
 #  FEISTY_MEOW_APEX = 
@@ -79,30 +79,30 @@ ifeq "$(FEISTY_MEOW_SCRIPTS)" ""
   export FEISTY_MEOW_SCRIPTS := $(FEISTY_MEOW_APEX)/scripts
 endif
 
-# "PRODUCTION_DIR" is where components required for building the code or
+# "PRODUCTION_STORE" is where components required for building the code or
 # installers can be found.
 #hmmm: is this redundant?
-export PRODUCTION_DIR
-ifeq "$(PRODUCTION_DIR)" ""
-  PRODUCTION_DIR=$(FEISTY_MEOW_APEX)/production
+export PRODUCTION_STORE
+ifeq "$(PRODUCTION_STORE)" ""
+  PRODUCTION_STORE=$(FEISTY_MEOW_APEX)/production
 endif
 
-# "CLAM_DIR" points at where the CLAM source files are located.  this is needed
+# "CLAM_SCRIPTS" points at where the CLAM source files are located.  this is needed
 # for finding shell scripts used during compilation.  if you are not using the
 # standard CLAM location, then modify this appropriately.
-export CLAM_DIR
-ifeq "$(CLAM_DIR)" ""
-  export CLAM_DIR := $(FEISTY_MEOW_SCRIPTS)/clam
+export CLAM_SCRIPTS
+ifeq "$(CLAM_SCRIPTS)" ""
+  export CLAM_SCRIPTS := $(FEISTY_MEOW_SCRIPTS)/clam
 endif
 
-# "TARGETS_DIR" is where all generated files will end up.  Usually the
+# "TARGETS_STORE" is where all generated files will end up.  Usually the
 # files are put in a subdirectory named after their file type, such as
-# "include".  These subdirectories will all live under the TARGETS_DIR.
-export TARGETS_DIR
-ifeq "$(TARGETS_DIR)" ""
+# "include".  These subdirectories will all live under the TARGETS_STORE.
+export TARGETS_STORE
+ifeq "$(TARGETS_STORE)" ""
   # the default is to generate files into subdirectories that are at the
   # top-level of the repository.
-  TARGETS_DIR = $(FEISTY_MEOW_APEX)
+  TARGETS_STORE = $(FEISTY_MEOW_APEX)
 endif
 
 # "CURRENT_DIR" is the directory where this make was started.
@@ -172,7 +172,7 @@ export FIND = find
 # also contains any extra flags passed to the compilation.
 ifeq "$(PARAMETER_FILE)" ""
   # the default assumes that clam lives under the main hoople branch.
-  export PARAMETER_FILE = $(CLAM_DIR)/clam_parms.ini
+  export PARAMETER_FILE = $(CLAM_SCRIPTS)/clam_parms.ini
 endif
 
 # ensure that our version variables are available to sub-shells.
@@ -198,7 +198,7 @@ export CLEAN
 # sets the temporary directory.
 export CLAM_TMP
 ifeq "$(CLAM_TMP)" ""
-  CLAM_TMP := $(GENERATED_DIR)/clam_tmp
+  CLAM_TMP := $(GENERATED_STORE)/clam_tmp
 endif
 
 #turned off for the moment, since this seems like a bad idea; we define clam tmp in terms of tmp sometimes, do not we???
@@ -259,7 +259,7 @@ HIDESH = $(HIDER) $(SH)
 
 # "CATCHER" is a hider that looks for errors in the command being run and
 # stops the make if any are seen.
-CATCHER = $(HIDESH) $(CLAM_DIR)/badness_catcher.sh 
+CATCHER = $(HIDESH) $(CLAM_SCRIPTS)/badness_catcher.sh 
 
 # "NOISY" causes the compilation to be verbose.  All commands issued are echoed
 # to the standard output.

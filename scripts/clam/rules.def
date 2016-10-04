@@ -24,13 +24,13 @@ endif
 	$(HIDER)echo
 	$(HIDER)echo [$@] is missing files or has a makefile problem.
 	$(HIDER)echo
-	$(HIDESH)$(CLAM_DIR)/exit_make.sh
+	$(HIDESH)$(CLAM_SCRIPTS)/exit_make.sh
 
 # This rule halts make for some supposedly devastating reason.  More
 # information should be printed out by the cause of the halt.
 %.halt:
 	@echo CLAM execution halted, the cause being: $@
-	$(HIDESH)$(CLAM_DIR)/exit_make.sh
+	$(HIDESH)$(CLAM_SCRIPTS)/exit_make.sh
 
 # Provides a time-stamp in the make log.
 show_date.%:
@@ -88,11 +88,11 @@ endif
 
 # runs the programs specified in the RUN_TARGETS variable.
 run_targets:
-	$(HIDESH)"$(CLAM_DIR)/target_runner.sh"
+	$(HIDESH)"$(CLAM_SCRIPTS)/target_runner.sh"
 
 # "make_subdirs" travels down each subdirectory and builds using make.
 make_subdirs:
-	$(HIDESH)$(CLAM_DIR)/make_subdirs.sh
+	$(HIDESH)$(CLAM_SCRIPTS)/make_subdirs.sh
 
 # "clean" is a default target that removes object files, libs, executable
 # files and such that were created by the project.  it invokes the makefile
@@ -132,7 +132,7 @@ fi'
 
 # "clean_subdirs" travels down each subdirectory and cleans using make.
 clean_subdirs:
-	$(HIDESH)$(CLAM_DIR)/clean_subdirs.sh
+	$(HIDESH)$(CLAM_SCRIPTS)/clean_subdirs.sh
 
 # "rm_links" removes the files in the current directory that are links
 # to other files.  this is only useful in a unix environment.

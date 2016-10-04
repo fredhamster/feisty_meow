@@ -6,7 +6,7 @@ if [ -f "$BUILD_LIST_FILE" ]; then
   eval "${@}"
   rm -f $BUILD_LIST_FILE $BUILD_WHACK_FILE
   if [ $? -ne 0 ]; then
-    . "$CLAM_DIR/exit_make.sh"
+    . "$CLAM_SCRIPTS/exit_make.sh"
   fi
 fi
 

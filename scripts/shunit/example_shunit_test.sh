@@ -36,5 +36,5 @@ oneTimeTearDown()
 }
 
 # load and run shUnit2
-source $SHUNIT_DIR/shunit2
+source $SHUNIT_PATH/shunit2
 

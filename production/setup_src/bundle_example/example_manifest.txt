@@ -114,7 +114,7 @@ target=$TARGET/bytedunker$EXE_END
 ; operating systems and is blank for others (so far).
 
 [using_vars]
-source=$CLAM_BINARY_DIR/value_tagger$EXE_END
+source=$CLAM_BINARIES/value_tagger$EXE_END
 target=$TMP/using_varsilator$EXE_END
 ; variables in the source get resolved at packing time.
 ; variables in the target get resolved during unbundling time.
@@ -192,7 +192,7 @@ error_okay = true
 ; an executable program from stopping the unbundling process.
 
 [no_replacement]
-source=$PRODUCTION_DIR/feisty_meow_config.ini
+source=$PRODUCTION_STORE/feisty_meow_config.ini
 target=$TARGET/buildonia.ini
 no_replace=true
 ; this shows how the "no_replace" macro will avoid overwriting a file if it
@@ -204,7 +204,7 @@ no_replace=true
 ; should be that your changes are kept.
 
 [install_but_backup]
-source=$PRODUCTION_DIR/feisty_meow_config.ini
+source=$PRODUCTION_STORE/feisty_meow_config.ini
 target=$TARGET/build_file_uhh
 make_backup=t
 ; this simple example shows the backing up of a file before the packed

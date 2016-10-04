@@ -13,7 +13,7 @@ function clean_subdirectories()
     if [ -f "$smoot87/makefile" ]; then
 #echo -e "\n\n[[inside barriers, with filename=$burlap51 and all conditions met]]\n\n"
       pushd "$smoot87" &>/dev/null
-      make --silent -I "$CLAM_DIR" NOT_FIRST_MAKE=t clean
+      make --silent -I "$CLAM_SCRIPTS" NOT_FIRST_MAKE=t clean
       popd &>/dev/null
     else
       echo "(skipping directory $smoot87)"

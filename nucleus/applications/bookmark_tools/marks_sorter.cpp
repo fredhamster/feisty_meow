@@ -82,7 +82,7 @@ is used to specify the input filename, which is expected to be in the HOOPLE\n\
 link database format.  The -o flag specifies the new bookmarks file to be\n\
 created, which will also be in the HOOPLE link format.\n\
 The HOOPLE link format is documented here:\n\
-    http://hoople.org/guides/link_database/format_manifesto.txt\n\
+    http://feistymeow.org/guides/link_database/format_manifesto.txt\n\
 ", program_name.basename().raw().s(), program_name.basename().raw().s());
   program_wide_logger::get().log(to_show, ALWAYS_PRINT);
   return 12;

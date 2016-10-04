@@ -19,6 +19,6 @@ echo "Error in project: \"$PROJECT\""
 echo "  command was: $*"
 echo
 echo "======================="
-source $CLAM_DIR/exit_make.sh
+source $CLAM_SCRIPTS/exit_make.sh
 exit $ERR
 

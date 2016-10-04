@@ -7,46 +7,46 @@ include variables.def
 ifeq "$(FEISTY_MEOW_APEX)" ""
   export FEISTY_MEOW_APEX := $(CURRENT_DIR)
 endif
-#ifeq "$(PRODUCTION_DIR)" ""
-#  export PRODUCTION_DIR = $(FEISTY_MEOW_APEX)/production
+#ifeq "$(PRODUCTION_STORE)" ""
+#  export PRODUCTION_STORE = $(FEISTY_MEOW_APEX)/production
 #endif
-ifeq "$(CLAM_DIR)" ""
-  export CLAM_DIR = $(FEISTY_MEOW_SCRIPTS)/clam
+ifeq "$(CLAM_SCRIPTS)" ""
+  export CLAM_SCRIPTS = $(FEISTY_MEOW_SCRIPTS)/clam
 endif
 
-include $(CLAM_DIR)/cpp/variables.def
+include $(CLAM_SCRIPTS)/cpp/variables.def
 
 PROJECT = feisty_meow_nucleus
 TYPE = hierarchy
 FIRST_TARGETS += do_make
 BUILD_AFTER = library applications tools
 
-include $(CLAM_DIR)/cpp/rules.def
+include $(CLAM_SCRIPTS)/cpp/rules.def
 
-do_make: start_make $(RUNTIME_DIR)/binaries/manifest.txt end_make
+do_make: start_make $(RUNTIME_PATH)/binaries/manifest.txt end_make
 
 start_make: show_date.start
 
 end_make: show_date.end
 
-$(RUNTIME_DIR)/binaries/manifest.txt: $(PARAMETER_FILE)
+$(RUNTIME_PATH)/binaries/manifest.txt: $(PARAMETER_FILE)
 	$(HIDESH) -c '\
 if [ ! -d "$(EXECUTABLE_DIR)" ]; then mkdir -p "$(EXECUTABLE_DIR)"; fi; \
 if [ $$? -ne 0 ]; then \
   echo build failure while creating executable directory.; \
   exit 1; \
 fi; \
-cp -f "$(PRODUCTION_DIR)/paths.ini" "$(EXECUTABLE_DIR)"; \
+cp -f "$(PRODUCTION_STORE)/paths.ini" "$(EXECUTABLE_DIR)"; \
 if [ $$? -ne 0 ]; then \
   echo build failure while copying paths initialization file.; \
   exit 1; \
 fi; \
-bash $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(CLAM_BINARY_DIR)/value_tagger$(EXE_END) $(PRODUCTION_DIR)/codescan.ini; \
+bash $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(CLAM_BINARIES)/value_tagger$(EXE_END) $(PRODUCTION_STORE)/codescan.ini; \
 if [ $$? -ne 0 ]; then \
   echo build failure during value tagging.; \
   exit 1; \
 fi; \
-bash $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(CLAM_BINARY_DIR)/write_build_config$(EXE_END); \
+bash $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(CLAM_BINARIES)/write_build_config$(EXE_END); \
 if [ $$? -ne 0 ]; then \
   echo build failure while writing config.; \
   exit 1; \

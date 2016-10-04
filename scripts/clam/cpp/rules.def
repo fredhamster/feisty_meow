@@ -415,13 +415,13 @@ ACTUAL_LAST_TARGETS = post_compilation $(LAST_TARGETS)
 # without hosing it up.
 %.nil:
 ifeq "$(NO_COMPILE)" ""
-	$(CATCHER)$(CC) -c $(CLAM_DIR)/cpp/blank_target.c -o $@
+	$(CATCHER)$(CC) -c $(CLAM_SCRIPTS)/cpp/blank_target.c -o $@
 endif
 
 %.bad:
 	@echo There is a problem with the makefile in the SOURCE variable.
 	@echo The offending item is: $@
-	$(HIDESH)$(CLAM_DIR)/exit_make.sh
+	$(HIDESH)$(CLAM_SCRIPTS)/exit_make.sh
 
 ## faked debug object.
 #%.obj: %.cpp
@@ -434,7 +434,7 @@ ifeq "$(CLEAN)" ""
 # recreate dependencies for static applications.
 %.gendeps: %.cpp
 	@echo "Generating Static Deps: $*.cpp"
-	$(CATCHER)$(CLAM_DIR)/cpp/buildor_gen_deps.sh "$*.cpp"
+	$(CATCHER)$(CLAM_SCRIPTS)/cpp/buildor_gen_deps.sh "$*.cpp"
 endif
 
 ############################################################################
@@ -540,7 +540,7 @@ $(STATIC_LIBRARY_DIR)/%.library: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LO
 	$(HIDER)echo Building Static Library [$(notdir $@)]
 	@echo $@ >$(DIRTY_FILE)
   ifeq "$(COMPILER)" "VISUAL_CPP"
-	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
+	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_SCRIPTS)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
   endif
 	$(CATCHER)$(LIBRARY_TOOL) $(LIBRARIAN_FLAGS) $(CREATE_LIBRARY_FLAG)$@ $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%)
   ifneq "$(OP_SYSTEM)" "UNIX"
@@ -573,17 +573,17 @@ $(DYNAMIC_LIBRARY_DIR)/%.dll: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL
 	$(HIDER)echo Building Dynamic Library [$(notdir $@)]
 	@echo $@ >$(DIRTY_FILE)
   ifeq "$(COMPILER)" "VISUAL_CPP"
-	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
+	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_SCRIPTS)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
   endif
 	$(HIDER)rm -f $(@:%.dll=%.lib)
 	echo about to run link tool.
 	$(CATCHER)$(LINK_TOOL) $(LINKER_OUTPUT_FLAG)$@ -dll $(LOAD_FLAG_PREFIX) $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_RESX_FLAGS) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)$(LIB_PREFIX)%$(LIB_ENDING)) $(LOAD_FLAG_SUFFIX)
 	echo ran link tool.
   ifeq "$(COMPILER_VERSION)" "8"
-	$(HIDESH)$(CLAM_DIR)/cpp/ms_manifest.sh "$@" "2"
+	$(HIDESH)$(CLAM_SCRIPTS)/cpp/ms_manifest.sh "$@" "2"
   endif
   ifeq "$(COMPILER_VERSION)" "10"
-	$(HIDESH)$(CLAM_DIR)/cpp/ms_manifest.sh "$@" "2"
+	$(HIDESH)$(CLAM_SCRIPTS)/cpp/ms_manifest.sh "$@" "2"
   endif
   ifneq "$(VCPP_VISTA_ICON)" ""
 	$(HIDER)ReplaceVistaIcon "$@" "$(VCPP_VISTA_ICON)"
@@ -619,15 +619,15 @@ $(EXECUTABLE_DIR)/%.exe: $(OBJECT_DIR)/%.obj $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%)
 	$(HIDER)echo Building Application [$(notdir $@)]
 	@echo $@ >$(DIRTY_FILE)
     ifeq "$(COMPILER)" "VISUAL_CPP"
-	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_DIR)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
+	$(HIDESH)-c 'if [ -f $(BUILD_LIST_FILE) ]; then $(SHELL) $(CLAM_SCRIPTS)/cpp/rebuild_oldies.sh $(MULTI_BUILD_CMD); fi'
     endif
 	$(CATCHER)$(LINK_TOOL) $(EXE_FLAGS) $(LOAD_FLAG_PREFIX) $< $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_RESX_FLAGS) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)$(LIB_PREFIX)%$(LIB_ENDING)) $(LOAD_FLAG_SUFFIX) $(LINKER_OUTPUT_FLAG)$@
 #$(^:force_rebuild=) 
     ifeq "$(COMPILER_VERSION)" "8"
-	$(HIDESH)$(CLAM_DIR)/cpp/ms_manifest.sh "$@" "1"
+	$(HIDESH)$(CLAM_SCRIPTS)/cpp/ms_manifest.sh "$@" "1"
     endif
     ifeq "$(COMPILER_VERSION)" "10"
-	$(HIDESH)$(CLAM_DIR)/cpp/ms_manifest.sh "$@" "1"
+	$(HIDESH)$(CLAM_SCRIPTS)/cpp/ms_manifest.sh "$@" "1"
     endif
     ifneq "$(VCPP_VISTA_ICON)" ""
 	$(HIDER)ReplaceVistaIcon "$@" "$(VCPP_VISTA_ICON)"
@@ -678,7 +678,7 @@ ifeq "$(OMIT_VERSIONS)" ""
   ifneq "$(VERSION_RC_ROOT)" ""
 # only redo the version resource if it or version.ini is out of date.
 %_version.rc: version.ini $(PARAMETER_FILE)
-	$(CATCHER)$(CLAM_BINARY_DIR)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
+	$(CATCHER)$(CLAM_BINARIES)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
   endif
 endif
 
@@ -752,11 +752,11 @@ else
       endif
     endif
 	@echo Dependencies [$(notdir $@)]
-	-$(HIDESH)$(CLAM_DIR)/cpp/preconditions.sh
+	-$(HIDESH)$(CLAM_SCRIPTS)/cpp/preconditions.sh
 	@touch $@
 #	@echo dep adds: $(DEPENDENCY_ADDITIONS)
-	@$(CLAM_BINARY_DIR)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
-#	$(CATCHER)$(CLAM_BINARY_DIR)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
+	@$(CLAM_BINARIES)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
+#	$(CATCHER)$(CLAM_BINARIES)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
 	@echo $@ >$(SUBMAKE_FLAG)
   endif # non-compile.
  else # cleaning.
@@ -771,8 +771,8 @@ endif # no-deps.
 
 # examines the required variables and complains if they're missing.
 check_requirements:
-	$(HIDESH) -c 'if [ -z "$(PROJECT)" ]; then echo the PROJECT variable is not defined!; . $(CLAM_DIR)/exit_make.sh; fi'
-	$(HIDESH) -c 'if [ -z "$(TYPE)" ]; then echo the TYPE variable is not defined!; . $(CLAM_DIR)/exit_make.sh; fi'
+	$(HIDESH) -c 'if [ -z "$(PROJECT)" ]; then echo the PROJECT variable is not defined!; . $(CLAM_SCRIPTS)/exit_make.sh; fi'
+	$(HIDESH) -c 'if [ -z "$(TYPE)" ]; then echo the TYPE variable is not defined!; . $(CLAM_SCRIPTS)/exit_make.sh; fi'
  
 ############################################################################
 
@@ -794,7 +794,7 @@ endif
 
 # calls the script for preparing output directories and such.
 pre_compilation:
-	$(HIDESH)$(CLAM_DIR)/cpp/preconditions.sh
+	$(HIDESH)$(CLAM_SCRIPTS)/cpp/preconditions.sh
 
 ############################################################################
 
@@ -802,7 +802,7 @@ pre_compilation:
 # we don't bother reporting errors from touch since there will sometimes
 # not be any objects in the final directory.
 post_compilation:
-	$(HIDESH)$(CLAM_DIR)/cpp/postconditions.sh
+	$(HIDESH)$(CLAM_SCRIPTS)/cpp/postconditions.sh
 
 ############################################################################
 

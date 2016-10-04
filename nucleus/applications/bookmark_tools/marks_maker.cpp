@@ -130,7 +130,7 @@ Note that an optional -s flag can specify a value of \"human\" readable\n\
 or \"mozilla\" bookmarks style to specify the style of the output file\n\
 generated.\n\
 The HOOPLE link format is documented here:\n\
-    http://hoople.org/guides/link_database/format_manifesto.txt\n\
+    http://feistymeow.org/guides/link_database/format_manifesto.txt\n\
 ", program_name.basename().raw().s(), program_name.basename().raw().s());
   program_wide_logger::get().log(to_show, ALWAYS_PRINT);
   return 12;

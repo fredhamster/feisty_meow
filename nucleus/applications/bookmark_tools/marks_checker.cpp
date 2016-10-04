@@ -209,7 +209,7 @@ The optional flag --threads with a parameter will set the maximum number of\n\
 threads that will simultaneously check on links.\n\
 The input file is expected to be in the HOOPLE link database format.\n\
 The HOOPLE link format is documented here:\n\
-    http://hoople.org/guides/link_database/format_manifesto.txt\n\
+    http://feistymeow.org/guides/link_database/format_manifesto.txt\n\
 ", program_name.basename().raw().s(), program_name.basename().raw().s());
   program_wide_logger::get().log(to_show, ALWAYS_PRINT);
   return 12;

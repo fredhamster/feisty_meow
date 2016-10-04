@@ -299,7 +299,7 @@ int unit_base::final_report()
 void unit_base::write_cppunit_xml()
 {
   auto_synchronizer synch(c_lock);
-  astring logs_dir = environment::get("LOGS_DIR");
+  astring logs_dir = environment::get("FEISTY_MEOW_LOGS");
   if (logs_dir == astring::empty_string()) logs_dir = "logs";  // uhhh.
   astring outfile = logs_dir + "/"
       + filename(application_configuration::application_name()).basename().raw()

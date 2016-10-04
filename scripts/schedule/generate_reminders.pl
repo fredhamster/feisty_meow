@@ -26,7 +26,7 @@
 # The day must be a number, followed by a space.  Anything after that
 # space is considered the description of the event.
 
-use Env qw(CLOUD_DIR TMP);
+use Env qw(CLOUD_BASE TMP);
 
 ##############
 
@@ -43,7 +43,7 @@ local($CAL_FILE);
 if (! $CAL_FILE) {
 #  print "the CAL_FILE variable is not set.\n";
 #  print "defaulting it to a value that probably does not suit you.\n";
-  $CAL_FILE = "$CLOUD_DIR/infobase/lists/calendar.dat";
+  $CAL_FILE = "$CLOUD_BASE/infobase/lists/calendar.dat";
 }
 
 #print "calfile is $CAL_FILE\n";

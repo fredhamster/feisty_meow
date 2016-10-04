@@ -103,7 +103,7 @@ by finding the phrase $INSERT_LINKS_HERE in it and replacing that with html\n\
 formatted link and categories from the input file.  Another tag of $TODAYS_DATE\n\
 will be replaced with the date when the output file is regenerated.\n\
 The HOOPLE link format is documented here:\n\
-    http://hoople.org/guides/link_database/format_manifesto.txt\n\
+    http://feistymeow.org/guides/link_database/format_manifesto.txt\n\
 ", program_name.basename().raw().s(), program_name.basename().raw().s());
   program_wide_logger::get().log(to_show, ALWAYS_PRINT);
   return 12;

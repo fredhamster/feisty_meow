@@ -56,20 +56,20 @@ if [ -z "$BUILD_VARS_LOADED" ]; then
 # perform some calculations to get the right paths from our parameters.
 if [ ! -z "$PARM_1" ]; then
   # use the first real parameter since this is probably the 'source' version.
-  export BUILD_SCRIPTS_DIR="$(dirname "$PARM_1")"
+  export BUILD_SCRIPTS_PATH="$(dirname "$PARM_1")"
   THIS_TOOL_NAME="$(basename "$PARM_1")"
 else
   # use the zeroth parameter, since we know nothing more about our name.
-  export BUILD_SCRIPTS_DIR="$(dirname "$PARM_0")"
+  export BUILD_SCRIPTS_PATH="$(dirname "$PARM_0")"
   THIS_TOOL_NAME="$(basename "$PARM_0")"
 fi
-BUILD_SCRIPTS_DIR="$(cd $(echo $BUILD_SCRIPTS_DIR | tr '\\\\' '/' ); \pwd)"
+BUILD_SCRIPTS_PATH="$(cd $(echo $BUILD_SCRIPTS_PATH | tr '\\\\' '/' ); \pwd)"
 
 # figure out the other paths based on where we found this script.
-export BUILDING_HIERARCHY="$(echo "$BUILD_SCRIPTS_DIR" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
-export CLAM_DIR="$(cd $BUILD_SCRIPTS_DIR/../clam ; \pwd)"
+export BUILDING_HIERARCHY="$(echo "$BUILD_SCRIPTS_PATH" | sed -e 's/\(.*\)\/[^\/]*/\1/')"
+export CLAM_SCRIPTS="$(cd $BUILD_SCRIPTS_PATH/../clam ; \pwd)"
 # synonym to make other builds happy.
-export BUILDER_DIR="$BUILDING_HIERARCHY"
+export BUILDER_PATH="$BUILDING_HIERARCHY"
 
 # set some clam parameters for compilation.  if the script can't guess the
 # right configuration, then you will need to set them in the last 'else'
@@ -99,30 +99,30 @@ export BUILD_TOP="$FEISTY_MEOW_APEX"
 
 # the production directory is the location for all the scripts and setup
 # code needed to produce the executables for feisty meow.
-export PRODUCTION_DIR="$BUILD_TOP/production"
+export PRODUCTION_STORE="$BUILD_TOP/production"
 
 ## set up the top-level for all build creations and logs and such.
-#export GENERATED_DIR="$TMP/generated-feisty_meow"
-#if [ ! -d "$GENERATED_DIR" ]; then
-#  mkdir -p "$GENERATED_DIR"
+#export GENERATED_STORE="$TMP/generated-feisty_meow"
+#if [ ! -d "$GENERATED_STORE" ]; then
+#  mkdir -p "$GENERATED_STORE"
 #fi
 ## set up our effluent outsourcing valves.
-#export TEMPORARIES_DIR="$GENERATED_DIR/temporaries"
-#if [ ! -d "$TEMPORARIES_DIR" ]; then
-#  mkdir -p "$TEMPORARIES_DIR"
+#export TEMPORARIES_PILE="$GENERATED_STORE/temporaries"
+#if [ ! -d "$TEMPORARIES_PILE" ]; then
+#  mkdir -p "$TEMPORARIES_PILE"
 #fi
 
 # this variable points at a folder where we store the generated products of
 # the build, such as the binaries and installer packages.
-export RUNTIME_DIR="$GENERATED_DIR/runtime"
-if [ ! -d "$RUNTIME_DIR" ]; then
-  mkdir -p "$RUNTIME_DIR"
+export RUNTIME_PATH="$GENERATED_STORE/runtime"
+if [ ! -d "$RUNTIME_PATH" ]; then
+  mkdir -p "$RUNTIME_PATH"
 fi
 
 # we define a log file storage area that can be relied on by the build.
-export LOGS_DIR="$GENERATED_DIR/logs"
-if [ ! -d "$LOGS_DIR" ]; then
-  mkdir -p "$LOGS_DIR"
+export FEISTY_MEOW_LOGS="$GENERATED_STORE/logs"
+if [ ! -d "$FEISTY_MEOW_LOGS" ]; then
+  mkdir -p "$FEISTY_MEOW_LOGS"
 fi
 
 ##############
@@ -130,11 +130,11 @@ fi
 # debugging area where we say what we think we know.
 
 if [ ! -z "$SHELL_DEBUG" ]; then
-  echo scripts: $BUILD_SCRIPTS_DIR
+  echo scripts: $BUILD_SCRIPTS_PATH
   echo build tools hier: $BUILDING_HIERARCHY
   echo this tool: $THIS_TOOL_NAME
   echo repository: $FEISTY_MEOW_APEX
-  echo clam: $CLAM_DIR
+  echo clam: $CLAM_SCRIPTS
 fi
 
 ##############
@@ -146,16 +146,16 @@ pushd / &>/dev/null # jump to the root so relative paths are caught.
 got_bad=
 
 # first the scripts directory; do we find this script there?
-if [ ! -f "$BUILD_SCRIPTS_DIR/$THIS_TOOL_NAME" ]; then
+if [ ! -f "$BUILD_SCRIPTS_PATH/$THIS_TOOL_NAME" ]; then
   echo "This script cannot locate the proper build folders.  The crucial path"
-  echo "variable seems to be '$BUILD_SCRIPTS_DIR', which"
+  echo "variable seems to be '$BUILD_SCRIPTS_PATH', which"
   echo "does not seem to contain '$THIS_TOOL_NAME' (this"
   echo "script's apparent name)."
   got_bad=1
 fi
 
 # next the clam directory; is the main variables file present there?
-if [ -z "$got_bad" -a ! -f "$CLAM_DIR/variables.def" ]; then
+if [ -z "$got_bad" -a ! -f "$CLAM_SCRIPTS/variables.def" ]; then
   echo "The clam directory could not be located under our build tools hierarchy."
   echo "Please examine the configuration and make sure that this script is in a"
   echo "directory that resides at the same height as the 'clam' directory."
@@ -178,17 +178,17 @@ fi
 if [ -z "$got_bad" ]; then
 
   # where we store the binaries used for building the rest of the code base.
-  export CLAM_BINARY_DIR="$RUNTIME_DIR/clam_bin"
+  export CLAM_BINARIES="$RUNTIME_PATH/clam_bin"
     # the final destination for the new binaries which provide the hoople
     # build with all the apps it needs to get going.
-  export TARGETS_DIR="$RUNTIME_DIR/binaries"
+  export TARGETS_STORE="$RUNTIME_PATH/binaries"
     # targets directory is meaningful to clam, which will use it for output.
-  export INTERMEDIATE_EXE_DIR="$TARGETS_DIR"
+  export INTERMEDIATE_STORE="$TARGETS_STORE"
     # where we are building the apps before they get promoted.
 
 #hmmm: could allow override on this if already set.
   # calculate which build ini file to use.
-  export BUILD_PARAMETER_FILE="$PRODUCTION_DIR/feisty_meow_config.ini"
+  export BUILD_PARAMETER_FILE="$PRODUCTION_STORE/feisty_meow_config.ini"
   if [ ! -f "$BUILD_PARAMETER_FILE" ]; then
     echo "Cannot find a useful build configuration file."
   fi
@@ -202,13 +202,13 @@ if [ -z "$got_bad" ]; then
   
   # we should have established our internal variables now, so let's try
   # using them.
-  export PATH=$(dos_to_unix_path $CLAM_BINARY_DIR):$PATH
+  export PATH=$(dos_to_unix_path $CLAM_BINARIES):$PATH
   
   # load up the helper variables for visual studio on winders.
   if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
-    source "$BUILD_SCRIPTS_DIR/vis_stu_vars.sh"
+    source "$BUILD_SCRIPTS_PATH/vis_stu_vars.sh"
   else
-    export LD_LIBRARY_PATH="$TARGETS_DIR"
+    export LD_LIBRARY_PATH="$TARGETS_STORE"
   fi
   
   popd &>/dev/null # checking is over, jump back to the starting point.
@@ -237,7 +237,7 @@ fi  # outer wrapper for already ran build vars check.
 # this always needs to be defined since functions aren't exported.
 function make()
 {
-  /usr/bin/make -I "$CLAM_DIR" $*
+  /usr/bin/make -I "$CLAM_SCRIPTS" $*
 }
 
 

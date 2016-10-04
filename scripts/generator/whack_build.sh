@@ -27,9 +27,9 @@ function whack_single_build_area()
 
   # avoid accidentally removing important stuff if our variables have not been previously
   # established.
-  if [ -z "$GENERATED_DIR" -o -z "$TEMPORARIES_DIR" ]; then
-    echo The build whacking script cannot run because either the GENERATED_DIR
-    echo variable or the TEMPORARIES_DIR variable have not been set.  This makes
+  if [ -z "$GENERATED_STORE" -o -z "$TEMPORARIES_PILE" ]; then
+    echo The build whacking script cannot run because either the GENERATED_STORE
+    echo variable or the TEMPORARIES_PILE variable have not been set.  This makes
     echo it unsafe to remove anything in the build products.
     exit 1
   fi
@@ -37,19 +37,19 @@ function whack_single_build_area()
   # kerzap.  the cleanups in production directory remove older locations of generated files.
   rm -rf \
     "$FEISTY_MEOW_APEX/generatedJUnitFiles" \
-    "$GENERATED_DIR/clam_tmp" \
-    "$GENERATED_DIR/logs" \
-    "$PRODUCTION_DIR/__build_"*.h \
-    "$PRODUCTION_DIR/manifest.txt" \
-    "$RUNTIME_DIR/binaries" \
-    "$RUNTIME_DIR/install" \
-    "$RUNTIME_DIR/waste" \
-    "$TEMPORARIES_DIR" \
-    "$PRODUCTION_DIR/clam_bin" \
-    "$PRODUCTION_DIR/binaries" \
-    "$PRODUCTION_DIR/install" \
-    "$PRODUCTION_DIR/logs" \
-    "$PRODUCTION_DIR/waste" 
+    "$GENERATED_STORE/clam_tmp" \
+    "$GENERATED_STORE/logs" \
+    "$PRODUCTION_STORE/__build_"*.h \
+    "$PRODUCTION_STORE/manifest.txt" \
+    "$RUNTIME_PATH/binaries" \
+    "$RUNTIME_PATH/install" \
+    "$RUNTIME_PATH/waste" \
+    "$TEMPORARIES_PILE" \
+    "$PRODUCTION_STORE/clam_bin" \
+    "$PRODUCTION_STORE/binaries" \
+    "$PRODUCTION_STORE/install" \
+    "$PRODUCTION_STORE/logs" \
+    "$PRODUCTION_STORE/waste" 
 # last few mentioning production dir are to clean older code.
 
 #  echo $(date): "  cleaning generated files in source hierarchy..."
@@ -58,7 +58,7 @@ function whack_single_build_area()
     echo $(date): "    ** aggressive cleaning activated..."
 
     # get rid of the build binaries.
-    rm -rf "$CLAM_BINARY_DIR"
+    rm -rf "$CLAM_BINARIES"
 
     perl "$FEISTY_MEOW_SCRIPTS/files/zapdirs.pl" "$FEISTY_MEOW_APEX" >>"$CRUDFILE"
   fi

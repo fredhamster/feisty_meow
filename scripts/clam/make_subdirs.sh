@@ -13,7 +13,7 @@ function make_subdirectories()
     if [ -f "$burlap51/makefile" ]; then
 #echo -e "\n\n[[inside barriers, with filename=$burlap51 and all conditions met]]\n\n"
       pushd "$burlap51" &>/dev/null
-      make --silent -I "$CLAM_DIR" NOT_FIRST_MAKE=t 
+      make --silent -I "$CLAM_SCRIPTS" NOT_FIRST_MAKE=t 
       popd &>/dev/null
     else
       echo "(skipping directory $burlap51)"

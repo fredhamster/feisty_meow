@@ -6,12 +6,12 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
 
   # The cloud directory is our new repository that's always available.  It serves as our
   # personal cloud for data.
-  export CLOUD_DIR=$HOME/cloud
+  export CLOUD_BASE=$HOME/cloud
 
   # The gruntose web site is expected to reside below, if it exists at all.
-  export WEB_DIR=$HOME/web
+  export WEBBED_SITES=$HOME/web
   if [ "$(hostname)" = "zooty.koeritz.com" ]; then
-    export WEB_DIR=/var/www
+    export WEBBED_SITES=/var/www
   fi
 
   # add a bunch of folders to the list for checkin & checkout.  these are

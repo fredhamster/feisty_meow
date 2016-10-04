@@ -11,7 +11,7 @@ ifneq "$(BUILD_PARAMETER_FILE)" ""
 endif
 ifeq "$(PARAMETER_FILE)" ""
   # last ditch attempt to get one that will work.
-  export PARAMETER_FILE = $(PRODUCTION_DIR)/feisty_meow_config.ini
+  export PARAMETER_FILE = $(PRODUCTION_STORE)/feisty_meow_config.ini
 endif
 
 ###############################################################################
@@ -31,7 +31,7 @@ include variables.def
 #  endif
 #endif
 
-#export CLAM_BINARY_DIR = $(CLAM_DIR)/../bin
+#export CLAM_BINARIES = $(CLAM_SCRIPTS)/../bin
 
 ###############################################################################
 
@@ -184,7 +184,7 @@ FLAG_FILES += $(BUILD_LIST_FILE) $(BUILD_WHACK_FILE)
 # "THIRD_PARTY_DIR" is the root of our support libraries.
 export THIRD_PARTY_DIR
 ifeq "$(THIRD_PARTY_DIR)" ""
-  export THIRD_PARTY_DIR := "$(PRODUCTION_DIR)/3rdparty"
+  export THIRD_PARTY_DIR := "$(PRODUCTION_STORE)/3rdparty"
 endif
 
 # "OUTPUT_ROOT" is the root of all output directories for objects and other
@@ -209,7 +209,7 @@ export BASE_OUTPUT_PATH = $(OUTPUT_ROOT)/$(CPU_BUILD_DIR)
 
 # special case when doing arm-linux builds
 ifeq "$(COMPILER)" "GNU_ARM_LINUX"
-  export TARGETS_DIR = $(FEISTY_MEOW_APEX)/$(CPU_BUILD_DIR)
+  export TARGETS_STORE = $(FEISTY_MEOW_APEX)/$(CPU_BUILD_DIR)
   # special output directory for firmware does not include CPU name because
   #  the repository already include the CPU name
   BASE_OUTPUT_PATH = $(OUTPUT_ROOT)
@@ -223,9 +223,9 @@ export OUTPUT_PATH = $(BASE_OUTPUT_PATH)/$(PROJECT)
 export OBJECT_DIR = $(OUTPUT_PATH)
 
 # These specify where files are to be created or located for our local build.
-export EXECUTABLE_DIR = $(TARGETS_DIR)
-export DYNAMIC_LIBRARY_DIR = $(TARGETS_DIR)
-export STATIC_LIBRARY_DIR = $(TARGETS_DIR)
+export EXECUTABLE_DIR = $(TARGETS_STORE)
+export DYNAMIC_LIBRARY_DIR = $(TARGETS_STORE)
+export STATIC_LIBRARY_DIR = $(TARGETS_STORE)
 
 # "HEADER_SEARCH_PATH" is where the class interface files are to be found.
 #HEADER_SEARCH_PATH =
@@ -404,7 +404,7 @@ LIBRARY_PATH_FLAG = -L
 
 # the root name of the version file.  This is currently irrelevant on
 # non-win32 platforms.
-VERSION_RC_ROOT = $(shell $(SHELL) $(CLAM_DIR)/cpp/rc_name.sh)
+VERSION_RC_ROOT = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/rc_name.sh)
 
 ifneq "$(CONSOLE_MODE)" ""
   # this definition can be used to signal different behavior when the app is
@@ -468,7 +468,7 @@ ifeq "$(COMPILER)" "GNU_LINUX"
   PLATFORM_ADD_IN = linux_
   ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
 
-  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_DIR)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
 
   DEFINITIONS += _FILE_OFFSET_BITS=64 
 
@@ -551,7 +551,7 @@ ifeq "$(COMPILER)" "GNU_ARM_LINUX"
   CC = $(COMPILER_ROOT_DIR)/bin/g++
   PLATFORM_ADD_IN = linux_
 
-  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_DIR)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
 
   SNAPGEAR_ROOT_DIR = $(HOME)/snapgear
 
@@ -598,7 +598,7 @@ ifeq "$(COMPILER)" "GNU_WINDOWS"
     COMPILER_ROOT_DIR = $(CYGROOT)
   endif
 
-  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_DIR)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
 
   RC := $(COMPILER_ROOT_DIR)/bin/windres
   PLATFORM_ADD_IN = w32_
@@ -674,7 +674,7 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
 
   # calculate the visual studio root directory.
   ifeq "$(VIS_STU_ROOT)" ""
-    export VIS_STU_ROOT := $(shell $(SHELL) $(CLAM_DIR)/cpp/ms_root_dir.sh )
+    export VIS_STU_ROOT := $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/ms_root_dir.sh )
   endif
   ifneq "$(VIS_STU_ROOT)" ""
     export COMPILER_ROOT_DIR = $(VIS_STU_ROOT)/VC
@@ -687,16 +687,16 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
   endif
 
   # redo the compiler version with our new info.
-  export COMPILER_VERSION := $(shell $(SHELL) $(CLAM_DIR)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+  export COMPILER_VERSION := $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
 
   # set up a directory for debugging files to be stored.  these are not
   # moved with the postconditions--they are generated in place.
-  export PDB_DIR = $(TARGETS_DIR)
+  export PDB_DIR = $(TARGETS_STORE)
 
   # set these way up here so we can override them later.
-  CC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/cl.exe
-  LINK_TOOL = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/link.exe
-  LIBRARY_TOOL = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/lib
+  CC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/cl.exe
+  LINK_TOOL = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/link.exe
+  LIBRARY_TOOL = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/lib
 
   # This is needed to protect against the use of 64-bit time_t structure
   # on windows.  We are casting to time_t from a 32-bit structure.
@@ -706,19 +706,19 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
   ifeq "$(COMPILER_VERSION)" "6"
     COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atl/include
     COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atl/lib
-    RC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/../common/msdev98/bin/rc
+    RC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/../common/msdev98/bin/rc
   endif
   ifeq "$(COMPILER_VERSION)" "7"
     COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atlmfc/include $(COMPILER_ROOT_DIR)/platformsdk/include $(FRAMEWORK_DIR)
     COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atlmfc/lib $(COMPILER_ROOT_DIR)/platformsdk/lib
-    RC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/rc
+    RC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/rc
     COMPILER_FLAGS += -Zc:forScope
       # turn on proper loop scoping.
   endif
   ifeq "$(COMPILER_VERSION)" "8"
     COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atlmfc/include $(COMPILER_ROOT_DIR)/platformsdk/include $(FRAMEWORK_DIR)
     COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atlmfc/lib $(COMPILER_ROOT_DIR)/platformsdk/lib
-    RC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/rc
+    RC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/rc
     COMPILER_FLAGS += -Zc:forScope
       # turn on proper loop scoping.
     DEFINITIONS += _WIN32_WINNT=0x501 
@@ -734,7 +734,7 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
     COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atlmfc/lib $(PLATYPUS)/lib
     DEFINITIONS += _WIN32_WINNT=0x501 
     DEPENDENCY_DEFINITIONS += _WIN32_WINNT=0x501 
-    RC = $(BUILD_SCRIPTS_DIR)/wrapdoze.sh $(PLATYPUS)/bin/rc
+    RC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(PLATYPUS)/bin/rc
     COMPILER_FLAGS += -Zc:forScope
       # turn on proper loop scoping.
   endif
@@ -920,7 +920,7 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
   ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
 #  COMPILER_FLAGS += -fgnu-runtime
 
-  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_DIR)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
 
   DEFINITIONS += _FILE_OFFSET_BITS=64 
 

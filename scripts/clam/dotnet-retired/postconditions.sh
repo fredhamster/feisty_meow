@@ -5,7 +5,7 @@
 if [ -f $FAILURE_FILE ]; then
   echo Postconditions will not promote due to a failure:
   cat $FAILURE_FILE
-  . $CLAM_DIR/exit_make.sh
+  . $CLAM_SCRIPTS/exit_make.sh
 fi
 
 # make sure that we actually did something during the make.
@@ -22,7 +22,7 @@ for i in *.resources; do rm -f "$i"; done
 
 # these variables define the locations for final products.  all of them
 # descend from the root of the repository.
-ROOT=$TARGETS_DIR
+ROOT=$TARGETS_STORE
 LIB_DIR=$ROOT/lib
 DLL_DIR=$ROOT/dll
 EXE_DIR=$ROOT/exe
@@ -30,7 +30,7 @@ TEST_ROOT=$ROOT/tests
 TEST_DIR=$TEST_ROOT/$PROJECT
 
 # causes the shell to quit.
-DIE=". $CLAM_DIR/exit_make.sh"
+DIE=". $CLAM_SCRIPTS/exit_make.sh"
 
 if [ "$TYPE" = "library" ]; then
 
@@ -102,6 +102,6 @@ elif [ "$TYPE" = "test" ]; then
 
 else
   echo "Unknown type for project [$TYPE]; cancelling postconditions!"
-  . $CLAM_DIR/exit_make.sh
+  . $CLAM_SCRIPTS/exit_make.sh
 fi
 

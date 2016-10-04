@@ -18,7 +18,7 @@
 # Modify the output directory for executable files if we're building a
 # test project.
 ifeq "$(TYPE)" "test"
-  EXECUTABLE_DIR = $(TARGETS_DIR)/tests/$(PROJECT)
+  EXECUTABLE_DIR = $(TARGETS_STORE)/tests/$(PROJECT)
   ifneq "$(CONSOLE_MODE)" ""
     COMPILER_FLAGS += -target:exe
   else
@@ -207,7 +207,7 @@ ifeq "$(OMIT_VERSIONS)" ""
   ifneq "$(VERSION_RC_ROOT)" ""
 # only redo the version resource if it or version.ini is out of date.
 %_version.rc: version.ini $(PARAMETER_FILE)
-	$(CATCHER)$(CLAM_BINARY_DIR)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
+	$(CATCHER)$(CLAM_BINARIES)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
   endif
 endif
 
@@ -230,14 +230,14 @@ include rules.def
 
 # examines the required variables and complains if they're missing.
 check_requirements:
-	$(HIDESH) -c 'if [ -z "$(PROJECT)" ]; then echo the PROJECT variable is not defined!; . $(CLAM_DIR)/exit_make.sh; fi'
-	$(HIDESH) -c 'if [ -z "$(TYPE)" ]; then echo the TYPE variable is not defined!; . $(CLAM_DIR)/exit_make.sh; fi'
+	$(HIDESH) -c 'if [ -z "$(PROJECT)" ]; then echo the PROJECT variable is not defined!; . $(CLAM_SCRIPTS)/exit_make.sh; fi'
+	$(HIDESH) -c 'if [ -z "$(TYPE)" ]; then echo the TYPE variable is not defined!; . $(CLAM_SCRIPTS)/exit_make.sh; fi'
  
 ############################################################################
 
 # calls the script for preparing output directories and such.
 pre_compilation:
-	$(HIDESH)$(CLAM_DIR)/csharp/preconditions.sh
+	$(HIDESH)$(CLAM_SCRIPTS)/csharp/preconditions.sh
 
 ############################################################################
 
@@ -245,7 +245,7 @@ pre_compilation:
 # we don't bother reporting errors from touch since there will sometimes
 # not be any objects in the final directory.
 post_compilation:
-	$(HIDESH)$(CLAM_DIR)/csharp/postconditions.sh
+	$(HIDESH)$(CLAM_SCRIPTS)/csharp/postconditions.sh
 
 ############################################################################
 

@@ -106,18 +106,18 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   fi
 
   # set up the top-level for all build creations and logs and such.
-  if [ -z "$GENERATED_DIR" ]; then
-    define_yeti_variable GENERATED_DIR="$TMP/generated-feisty_meow"
+  if [ -z "$GENERATED_STORE" ]; then
+    define_yeti_variable GENERATED_STORE="$TMP/generated-feisty_meow"
   fi
-  if [ ! -d "$GENERATED_DIR" ]; then
-    mkdir -p "$GENERATED_DIR"
+  if [ ! -d "$GENERATED_STORE" ]; then
+    mkdir -p "$GENERATED_STORE"
   fi
   # set up our effluent outsourcing valves.
-  if [ -z "$TEMPORARIES_DIR" ]; then
-    define_yeti_variable TEMPORARIES_DIR="$GENERATED_DIR/temporaries"
+  if [ -z "$TEMPORARIES_PILE" ]; then
+    define_yeti_variable TEMPORARIES_PILE="$GENERATED_STORE/temporaries"
   fi
-  if [ ! -d "$TEMPORARIES_DIR" ]; then
-    mkdir -p "$TEMPORARIES_DIR"
+  if [ ! -d "$TEMPORARIES_PILE" ]; then
+    mkdir -p "$TEMPORARIES_PILE"
   fi
 
   # similarly, make sure we have someplace to look for our generated files, if
@@ -212,7 +212,7 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
     # now augment the environment if we found our build variables.
     if [ $found_build_vars == 1 ]; then
       # the binary directory contains our collection of handy programs.
-      define_yeti_variable FEISTY_MEOW_BINARIES=$TARGETS_DIR
+      define_yeti_variable FEISTY_MEOW_BINARIES=$TARGETS_STORE
       # add binaries created within build to the path.
       define_yeti_variable PATH="$(dos_to_unix_path $FEISTY_MEOW_BINARIES):$PATH"
       # Shared libraries are located via this variable.
@@ -241,8 +241,8 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   
   ##############
 
-  # set the SHUNIT_DIR so our shunit tests can find the codebase.
-  define_yeti_variable SHUNIT_DIR="$FEISTY_MEOW_SCRIPTS/shunit"
+  # set the SHUNIT_PATH so our shunit tests can find the codebase.
+  define_yeti_variable SHUNIT_PATH="$FEISTY_MEOW_SCRIPTS/shunit"
   
   ##############
 

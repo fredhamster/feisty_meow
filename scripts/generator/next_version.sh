@@ -2,7 +2,7 @@
 
 # increments the build version number.
 
-mkdir -p "$TEMPORARIES_DIR"
+mkdir -p "$TEMPORARIES_PILE"
 
 export PARAMETER_FILE
 if [ ! -z "$BUILD_PARAMETER_FILE" ]; then
@@ -17,7 +17,7 @@ fi
 
 chmod u+w "$PARAMETER_FILE"
 
-new_buildini="$(mktemp "$TEMPORARIES_DIR/buildini.XXXXXX")"
+new_buildini="$(mktemp "$TEMPORARIES_PILE/buildini.XXXXXX")"
 # whack the file just in case.
 rm -f "$new_buildini"
 echo -n "" >"$new_buildini"
