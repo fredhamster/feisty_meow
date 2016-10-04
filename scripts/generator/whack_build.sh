@@ -50,11 +50,16 @@ function whack_single_build_area()
     "$PRODUCTION_DIR/install" \
     "$PRODUCTION_DIR/logs" \
     "$PRODUCTION_DIR/waste" 
+# last few mentioning production dir are to clean older code.
 
 #  echo $(date): "  cleaning generated files in source hierarchy..."
 
   if [ "$clean_src" == "clean" -o "$clean_src" == "CLEAN"  ]; then
     echo $(date): "    ** aggressive cleaning activated..."
+
+    # get rid of the build binaries.
+    rm -rf "$CLAM_BINARY_DIR"
+
     perl "$FEISTY_MEOW_SCRIPTS/files/zapdirs.pl" "$FEISTY_MEOW_APEX" >>"$CRUDFILE"
   fi
 

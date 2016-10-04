@@ -254,7 +254,8 @@ echo "The build binaries have been re-created (or were already present)."
 # we won't do the full build if they told us to just do the bootstrap.
 if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
   echo Cleaning up the temporary files that were built.
-  bash "$BUILD_SCRIPTS_DIR/whack_build.sh" clean
+  bash "$BUILD_SCRIPTS_DIR/whack_build.sh" 
+#wrong!  we don't want to whack it all. clean
 
   # recreate our useful junk directories...
   mkdir -p "$GENERATED_DIR"

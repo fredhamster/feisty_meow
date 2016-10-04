@@ -455,8 +455,10 @@ include rules.def
 
 cpp_add_to_cleanups_variable:
 #	echo here is actual targets before hand $(ACTUAL_TARGETS)
-	$(eval CLEANUPS = $(ACTUAL_TARGETS:$(STATIC_LIBRARY_DIR)/%.library=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%.a) $(CLEANUPS) )
+	$(eval CLEANUPS = $(ACTUAL_TARGETS:%.exe=%) $(ACTUAL_TARGETS:$(STATIC_LIBRARY_DIR)/%.library=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%.a) $(CLEANUPS) )
 #	echo "IN CPP, new CLEANUPS variable: $(CLEANUPS)"
+#fodder for anything missing a cleanup.
+#	$(eval CLEANUPS = $(ACTUAL_TARGETS) $(ACTUAL_TARGETS:%.dll=%.so) $(ACTUAL_TARGETS:%.so=%.dll) $(CLEANUPS) )
 
 #dynamic is taken care of in clam base still?
 #DYNAMIC_LIBRARY_DIR
