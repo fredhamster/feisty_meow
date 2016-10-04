@@ -246,7 +246,7 @@ ifeq "$(COMPILER)" "VISUAL_CPP"
     LOCAL_HEADERS += $(THIRD_PARTY_DIR)/openssl/include
     LIBRARY_SEARCH_PATH += $(THIRD_PARTY_DIR)/openssl/lib
     LIBS_USED += libcrypto.lib libssl.lib
-    $(shell cp $(THIRD_PARTY_DIR)/openssl/lib/*dll $(EXECUTABLE_DIR) )
+#no, yuck.    $(shell cp $(THIRD_PARTY_DIR)/openssl/lib/*dll $(EXECUTABLE_DIR) )
   endif
   
 endif

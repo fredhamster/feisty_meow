@@ -547,7 +547,9 @@ if [ -z "$skip_all" ]; then
   {
     local dir="$1"; shift
     pushd "$dir" &>/dev/null
+    if [ $? -ne 0 ]; then echo failed to enter dir--quitting.; fi
     rm -rf $* &>/dev/null
+    if [ $? -ne 0 ]; then echo received a failure code when removing.; fi
     popd &>/dev/null
   }
 
