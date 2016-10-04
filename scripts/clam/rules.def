@@ -108,13 +108,16 @@ scratch_other_cleans:
 	$(eval OTHER_CLEANS := )
 
 # add late breaking items to the cleanup list.  this is mainly the actual
-# targets to build , since those are not specified until the user makefile
-# is included.  we take a liberty here and also add non ".exe" versions in
-# case we are running on linux.
-add_to_cleanups_variable:
-	echo "going to add to cleanup variable now with the actual targets as $(ACTUAL_TARGETS)"
-	$(eval CLEANUPS = $(ACTUAL_TARGETS) $(ACTUAL_TARGETS:%.exe=%) $(CLEANUPS) )
-	echo "new CLEANUPS variable: $(CLEANUPS)"
+# targets to build, since those are not specified until the user makefile
+# is included.  we take a liberty here and also add different versions of
+# the file suffixes so we can clean all versions of the targets.
+add_to_cleanups_variable: $(SUPPLEMENTAL_CLEANUP_TARGETS)
+#	echo "going to add to cleanup variable now with the actual targets as $(ACTUAL_TARGETS)"
+	$(eval CLEANUPS = $(ACTUAL_TARGETS) $(ACTUAL_TARGETS:%.exe=%) $(ACTUAL_TARGETS:%.dll=%.so) $(ACTUAL_TARGETS:%.so=%.dll) $(CLEANUPS) )
+#	echo "new CLEANUPS variable: $(CLEANUPS)"
+#hmmm: above is very code knowledgeable.
+# we should have a working mechanism for doing a specialized
+# type of cleanups addition, so we should rely on that instead of doing it above.
 
 # guard the main cleaning task with our variable
 # so we do not pull in subtargets when we do not want to.

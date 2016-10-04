@@ -288,6 +288,8 @@ export DEPS_FILE = $(OUTPUT_PATH)/$(PROJECT).deps
 # add the cleanup values we already know.
 CLEANUPS += $(OUTPUT_PATH) $(DEPS_FILE)
 
+SUPPLEMENTAL_CLEANUP_TARGETS = cpp_add_to_cleanups_variable
+
 # "GENDEPS" is a flag that causes dependencies to be generated into
 # statically built applications.
 export GENDEPS

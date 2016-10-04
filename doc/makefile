@@ -7,7 +7,7 @@ include cpp/variables.def
 PROJECT = Source_Documentation
 TYPE = application
 FIRST_TARGETS += build_doxygen
-CLEANUPS = html
+CLEANUPS += html
 
 include cpp/rules.def
 

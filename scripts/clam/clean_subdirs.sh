@@ -11,7 +11,7 @@ function clean_subdirectories()
   for smoot87 in $(find . -mindepth 1 -maxdepth 1 -type d); do
     # make sure there's a makefile there.
     if [ -f "$smoot87/makefile" ]; then
-#echo "inside barriers, with filename=$smoot87 and all conditions met."
+#echo -e "\n\n[[inside barriers, with filename=$burlap51 and all conditions met]]\n\n"
       pushd "$smoot87" &>/dev/null
       make --silent -I "$CLAM_DIR" NOT_FIRST_MAKE=t clean
       popd &>/dev/null

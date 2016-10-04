@@ -450,6 +450,21 @@ include rules.def
 
 ############################################################################
 
+# this adds in a customization for the cleanup variables, since the base
+# clam code has no idea about a dynamic library directory.
+
+cpp_add_to_cleanups_variable:
+#	echo here is actual targets before hand $(ACTUAL_TARGETS)
+	$(eval CLEANUPS = $(ACTUAL_TARGETS:$(STATIC_LIBRARY_DIR)/%.library=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%.a) $(CLEANUPS) )
+#	echo "IN CPP, new CLEANUPS variable: $(CLEANUPS)"
+
+#dynamic is taken care of in clam base still?
+#DYNAMIC_LIBRARY_DIR
+#hmmm: still should change there in the base and do it
+# here instead.
+
+############################################################################
+
 # C++ source to object file translation.
 # if there is a special set of flags for this source file, we use them
 # instead of the default compiler flags.

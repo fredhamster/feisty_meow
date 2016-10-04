@@ -11,7 +11,7 @@ function make_subdirectories()
   for burlap51 in $(find . -mindepth 1 -maxdepth 1 -type d); do
     # make sure there's a makefile there.
     if [ -f "$burlap51/makefile" ]; then
-#echo "inside barriers, with filename=$burlap51 and all conditions met."
+#echo -e "\n\n[[inside barriers, with filename=$burlap51 and all conditions met]]\n\n"
       pushd "$burlap51" &>/dev/null
       make --silent -I "$CLAM_DIR" NOT_FIRST_MAKE=t 
       popd &>/dev/null
