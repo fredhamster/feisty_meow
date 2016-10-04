@@ -46,7 +46,6 @@ define_yeti_alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
 define_yeti_alias ls='ls -HhFC $color_add'
 define_yeti_alias lsd='ls -hl'
 define_yeti_alias md='mkdir'
-define_yeti_alias more='less'
 define_yeti_alias move='mv -i -v '
 define_yeti_alias mv='\mv -i -v '
 define_yeti_alias notepad='gedit'
@@ -59,6 +58,11 @@ define_yeti_alias s='echo "##############"'
 define_yeti_alias path='echo $PATH'
 define_yeti_alias whence=which
 
+define_yeti_alias less='lesser'
+define_yeti_alias mo='lesser'
+define_yeti_alias more='lesser'
+define_yeti_alias lesser='/bin/less -r'
+
 ##############
 
 # some aliases that are just generally nice to have.
@@ -68,7 +72,6 @@ define_yeti_alias cd..='\cd ..'
 define_yeti_alias cd...='\cd ../..'
 define_yeti_alias cd....='\cd ../../..'
 define_yeti_alias cd.....='\cd ../../../..'
-define_yeti_alias mo='less'
 define_yeti_alias np='gvim'
 define_yeti_alias up='cd ..'
 
