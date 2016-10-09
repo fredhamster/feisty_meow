@@ -27,14 +27,19 @@ function lesser()
     export LESSOPEN="| source-highlight -f esc -o STDOUT -i %s"
   fi
 
-#hmmm, will we need to iterate on the input array to get this right?
 
   # run the source highlighter first if needed.
   /bin/less -r "${@}" 
 
+#hmmm, will we need to iterate on the input array to get this right?
+
 #hmmm: do we need to protect above from space hosings?
-#hmmm: done, maybe.  if this still works for multiple parms...
+#  done, maybe.  if this still works for multiple parms...
 
 }
+
+# now that we have our function, just use it on all the input parameters.
+# this is done to avoid adding yet another function to the core.
+lesser "${@}" 
 
 
