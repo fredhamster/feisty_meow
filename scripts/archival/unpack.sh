@@ -65,6 +65,7 @@ if [[ "$archive_file" =~ .*\.tar$ \
     || "$archive_file" =~ .*\.iar$ \
     || "$archive_file" =~ .*\.oar$ \
     || "$archive_file" =~ .*\.tgz$ \
+    || "$archive_file" =~ .*\.txz$ \
     || "$archive_file" =~ .*\.ova$ \
     || "$archive_file" =~ .*\.snarf$ \
     ]]; then

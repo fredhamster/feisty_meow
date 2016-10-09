@@ -61,7 +61,7 @@ define_yeti_alias whence=which
 define_yeti_alias less='lesser'
 define_yeti_alias mo='lesser'
 define_yeti_alias more='lesser'
-define_yeti_alias lesser='/bin/less -r'
+define_yeti_alias lesser='bash $FEISTY_MEOW_SCRIPTS/files/lesser.sh'
 
 ##############
 

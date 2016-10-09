@@ -183,8 +183,8 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   # set this so nechung can find its data.
   define_yeti_variable NECHUNG=$FEISTY_MEOW_APEX/infobase/fortunes.dat
   
-  # establish a pipe for less to see our beloved syntax highlighting.
-  define_yeti_variable LESSOPEN="| source-highlight -f esc -o STDOUT -i %s"
+##  # establish a pipe for less to see our beloved syntax highlighting.
+##  define_yeti_variable LESSOPEN="| source-highlight -f esc -o STDOUT -i %s"
 
   # ensure we use the right kind of secure shell.
 #  define_yeti_variable CVS_RSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
