@@ -13,7 +13,7 @@ For information on building the source code, see the file "building.txt".
 
 Feisty Meow Concerns Ltd. is a small software shop that concentrates on
 building high quality, portable, open source projects in a variety of
-languages (primarily bash, perl, python, C++, and Java).  Here are some
+languages (primarily bash, perl, C++, Java, and python).  Here are some
 highlights of our main products:
 
   Bookmark Processing Tools - can take a mozilla bookmark file or arbitrary
