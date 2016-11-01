@@ -8,7 +8,7 @@ when meld does a comparison on our tree of java projects.  the list provided
 below may or may not be useful to you, but some variant might be.
 
 to add a new filter that will get meld to ignore any files in any folder named
-in our list, open meld's settings via the menu path "Edit | Preferences | File Filters".
+in our list, open meld's settings via the menu path "Meld | Preferences | File Filters".
 
 once you're in that tab of the dialog, create a new filter called something like:
   binary-code
