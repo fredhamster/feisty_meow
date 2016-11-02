@@ -31,7 +31,7 @@ function copyem()
 }
 
 # make the output folders if they don't exist.
-for i in skyrim fallout_new_vegas fallout_3 oblivion fallout_4/Saves ; do
+for i in skyrim fallout_new_vegas fallout_3/Saves oblivion fallout_4/Saves ; do
   if [ ! -d "$SPOOLING_OUTPUT_DIR/$i" ]; then
     mkdir -p "$SPOOLING_OUTPUT_DIR/$i"
   fi
@@ -40,15 +40,13 @@ done
 # now run through and copy our save files from the potentially weird locations
 # they reside in.
 
-#hmmm: at least make a function out of those repetitive steps.  sheesh.
-
 sep 28
 
 copyem "skyrim" "$WINE_SOURCE_DIR/Skyrim/Saves" "$SPOOLING_OUTPUT_DIR/skyrim"
 
 copyem "fallout new vegas" "$WINE_SOURCE_DIR/FalloutNV/Saves" "$SPOOLING_OUTPUT_DIR/fallout_new_vegas"
 
-copyem "fallout 3" "$WINE_SOURCE_DIR/Fallout3/Saves/Player1" "$SPOOLING_OUTPUT_DIR/fallout_3"
+copyem "fallout 3" "$WINE_SOURCE_DIR/Fallout3/Saves" "$SPOOLING_OUTPUT_DIR/fallout_3/Saves"
 
 copyem "oblivion" "$WINE_SOURCE_DIR/Oblivion/Saves" "$SPOOLING_OUTPUT_DIR/oblivion/"
 
