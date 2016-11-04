@@ -5,6 +5,7 @@ SHELL=/bin/bash
 
 USER=fred
 
+#[zooty archive packer]
 # this packs up our archives once a day.
 32 6 0 * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/archival/pack_yeti.sh ; bash $HOME/feisty_meow/scripts/archival/pack_hoople.sh ) &>>/tmp/zz_packing_cron_$USER.log 
 

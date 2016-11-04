@@ -5,5 +5,6 @@ SHELL=/bin/bash
 
 USER=fred
 
+#[nechung fortune]
 * * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $HOME/feisty_meow/scripts/text/new_sig.pl) &>>/tmp/zz_nechung_fortune_$USER.log
 

@@ -5,6 +5,8 @@ SHELL=/bin/bash
 
 USER=jurgis
 
+#[run grid container non-work-hours]
+
 # we need these for the GenesisII GFFS environment.
 GENII_INSTALL_DIR=/home/jurgis/gffs/code/GenesisII/trunk
 XSEDE_TESTS_FOLDER=$GENII_INSTALL_DIR/toolkit

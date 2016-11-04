@@ -3,6 +3,8 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
+#[time synch crontab]
+
 # standard to synch to local machine.
 0,4,8,12,16,20,24,28,32,36,40,44,48,52,56 * * * * /usr/sbin/sntp -P no -r greendragon
 or

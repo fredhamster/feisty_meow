@@ -3,5 +3,6 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
+#[acroread cleaner]
 * * * * * /bin/rm -f $HOME'/C:\nppdf32Log\debuglog.txt'
 

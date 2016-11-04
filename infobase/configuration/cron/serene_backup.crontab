@@ -3,10 +3,7 @@ SHELL=/bin/bash
 
 # m h dom mon dow command
 
-##############
-
+#[serene backup]
 # backs up config files and important parts of home directories to off-machine storage.
 14 2 * * */7 (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/archival/serene_backer_upper.sh) &>/tmp/offmachine_backup.log
-
-##############
 
