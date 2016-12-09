@@ -1,8 +1,9 @@
 
->>> goes into /etc/inputrc:
+# this fragment goes into /etc/inputrc before any conditional code:
 
+####
 # Completed names which are symbolic links to
 # directories have a slash appended.
 set mark-symlinked-directories On
-
+####
 
