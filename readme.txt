@@ -1,128 +1,91 @@
 
-This is the "feisty meow® concerns" codebase top folder.
+==============
+Quick Start Guide for the Feisty Meow Codebase
 
-This software is licensed *per* *file* using either the GNU General Public
-License (GNU GPL) version 3 *or* the Apache Software License version 2.0.
-If a file does not have a license statement attached and it is part of the
-feisty meow® codebase (rather than attributed to some other author), then the
-default license is the GNU GPL.
+(Commands that you should enter into your terminal are prefixed with "=>" and
+conditional portions are prefixed with a '|' character.)
 
-For information on building the source code, see the file "building.txt".
+==============
+How to get the feisty meow codebase
 
-####
+| On Microsoft Windows, install the Cygwin tools as documented here:
+| ~/feisty_meow/doc/cygwin_install_list.txt
 
-Feisty Meow Concerns Ltd. is a small software shop that concentrates on
-building high quality, portable, open source projects in a variety of
-languages (primarily bash, perl, C++, Java, and python).  Here are some
-highlights of our main products:
+Retrieve a clone of the feisty meow code:
+=> git clone git://feistymeow.org/feisty_meow
 
-  Bookmark Processing Tools - can take a mozilla bookmark file or arbitrary
-     web page and extract all the links out of it, building a csv database of
-     web links.  Using that database, a variety of output formats are
-     provided, including one that outputs a mozilla bookmark file again.
-     The most useful feature is probably the marks checker that operates on
-     our csv format and that locates all unreachable links in the file and
-     separates them out.
+The remainder of these notes assume that the code is stored in
+~/feisty_meow (aka $HOME/feisty_meow).
 
-  CROMP protocol - supports transmission of objects across the network and
-     provides a platform independent method for RPC and other types of
-     communication.
+==============
+How to load the feisty meow script environment
 
-  Octopus design pattern - the underpinning of the CROMP protocol.  An octopus
-     has an arbitrary number of tentacles (no, not just eight) which are each
-     responsible for consuming a different type of object (or datum).
+Set up the feisty_meow scripts; this is only needed once, when you first get
+the codebase.  It can also regenerate the scripts using the latest version.
+=> bash ~/feisty_meow/scripts/core/reconfigure_feisty_meow.sh
 
-  Fast Templates and Portable Abstractions - the class libraries of Feisty Meow
-     provide numerous different data structures and programming language
-     abstractions (like threads and state machines).  There are also some
-     fairly ancient templates (in use since late 80s) which in many cases
-     perform faster than their STL analogues.
+Load the script environment into the current shell.
+=> source ~/feisty_meow/scripts/core/launch_feisty_meow.sh
 
-  CLAM System - Feisty Meow is the home site of the CLAM makefile system.  The
-     CLAM system is a flexible and extensible method for building C++ and
-     C# files using makefiles.
+With the feisty meow script environment loaded, several aliases are now
+available for building the codebase and they are used in the sections below.
 
-####
+Closing the current shell will lose the feisty meow environment.  Loading the
+environment can be made automatic by adding the 'source' line above to the
+shell's startup file.  Example startup files are available in:
+~/feisty_meow/feisty_inits
 
-Historical note:
-Feisty Meow® Concerns codebase comprises some but probably not all of several projects that
-have come before.  These include the Twain.COM library scripts, the Yeti / YetiCode library
-scripts, the HOOPLE 1 and HOOPLE 2 C++ Codebases, the Fred Huffhines open source LSL scripts,
-the CLAM build system, and a variety of other efforts.
+==============
+How to install the feisty meow script dependencies
 
-####
+These perl modules are required by some of the scripts (e.g. the differ
+utility and the feisty meow customization system).
+=> cpan install Text::Diff File::Which
 
-Directories and files of interest here...
+==============
+How to install the build dependencies for feisty meow
 
-scripts/
-    Stores the script files that we use a lot.  These are usually written in interpreted
-    languages, such as bash and perl.  These were the core of the YetiCode scripts library.
+| Ubuntu / Debian:
+| => sudo apt-get install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
 
-nucleus/
-    Source for the basic modules of the Feisty Meow® codebase.  This includes generic
-    data structures, useful utilities, and the like.  This hierarchy, plus octopi and graphiq,
-    formed the major parts of hoople1 and hoople2.
+| Centos / Redhat / Fedora:
+| => sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel
 
-huffware/
-    The library of LSL scripts for osgrid and Second Life written by the avatar named Fred
-    Huffhines.  Fred Huffhines is a regular contributor and a well-loved member of our
-    development team.  He also happens to be a fictional sock-puppet for adventuring around
-    the grids, but a lot of code has been written in his name.  We are going to release the
-    full corpus of the Huffhines work over time.
+| Microsoft Windows:
+| Download and install the Cygwin environment first from cygwin.com, which is
+| documented in ~/feisty_meow/doc/cygwin_install_list.txt
 
-octopi/
-    Octopus design pattern and CROMP protocol reference implementations.  Assorted applications
-    based on these.
+==============
+How to build the feisty meow codebase
 
-database/
-    Some files considered critical to the operations of Feisty Meow Concerns Ltd.  This includes
-    the database of fortunes used by the Nechung Oracle Program.
+Run the following command to build the feisty meow libraries and applications.
+=> bash ~/feisty_meow/scripts/generator/produce_feisty_meow.sh
 
-doc/
-    Assorted documentation files for Feisty Meow and a code-scanning documentation generator
-    based on doxygen.
+After the build is complete, the feisty meow applications can be found in
+$FEISTY_MEOW_BINARIES (environment variable).
+=> ls $FEISTY_MEOW_BINARIES 
 
-examples/
-    Some files that show how to get work done with Feisty Meow or that show how to do certain
-    tasks in different scripting / programming languages.
+==============
+How to clean up the files generated by the build
 
-kona/
-    Our burgeoning Java libraries.  Not much to see here yet, but there is some code piling
-    up for these that we will try to release soon.
+This command cleans out all the generated files:
+=> bash ~/feisty_meow/scripts/generator/whack_build.sh clean
 
-osgi/
-    Some example bundles for Java OSGi.  These may eventually fill out with real material,
-    but currently they are just tracking the investigation we did into creating bundles and
-    running using them.
+==============
+What are the feisty meow dependencies?
 
-production/
-    Machinery for getting releases out the door, including the generated files such as binaries
-    and build system tools.
+The feisty meow scripts depend on these scripting languages and tools:
+  bash
+  perl (including Text::Diff and File::Which)
+  python
+  gnumake
 
-graphiq/
-    GUI tools and components, somewhat busted or just absent right now.
+The feisty meow libraries and applications depend on these tools:
+  Gnu C++
+  RTMP streams (?still?  not sure.)
+  Curl
+  Open SSL
 
-webby/
-    Source code specifically for web programming and building sites.  Mainly a few javascript
-    files we keep around.
-
-####
-
-Notable Prerequisites for Using the Feisty Meow® codebase:
-
-  Software required to compile under Linux:
-    Gnu C++
-    A few free source libraries (see "building.txt" for more information).
-
-  Software required to compiler under MS-windows:
-    The free Microsoft compiler should build the codebase but it is untested.
-    The full version of MS Visual Studio 2010 (version 10) is supported.
-      --but this has fallen into disrepair.
-    Gnu C++ should compile the codebase but it is also untested recently.
-
-####
-
+==============
 More information is available at the official site http://feistymeow.org
-
-####
 
