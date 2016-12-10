@@ -1,3 +1,6 @@
+"
+" this file is an example .vimrc for the vim editor.  it should be in your home directory.
+"
 
 " cranks up the register saved buffer size to 1000 lines, since otherwise the cut buffer will only
 " preserve the default 50 lines for a paste to another file.  this makes all registers go up to
