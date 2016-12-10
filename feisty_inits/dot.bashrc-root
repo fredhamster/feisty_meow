@@ -1,4 +1,26 @@
 
+# example ~/.bashrc: this code provides a macro to initialize the
+# feisty meow environment for the "root" user.
+
+##############
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+##############
+
+# drag in the default version of this file.  this may not be needed if your
+# .bashrc script already has substantial code or already does this.
+source /etc/bash.bashrc
+
+##############
+
+# change this to your name...
+export NAME='Frunkooleon Q. GrendervaspPleaseChangeThis'
+
 ##############
 
 # the "fredme" macro enables the feisty_meow environment.
