@@ -1,4 +1,10 @@
 
+when the feisty meow environment is loaded, these handy
+commands become available for ripping content from dvds
+and for burning content to dvds and blurays.
+
+===
+
 # rips the dvd off of the current dvd drive.  this produces the ripped copy
 # in a folder named after the dvd.
 dvd_rip 

@@ -9,3 +9,8 @@ script initialization (any files ending in .sh).
 when you have some custom scripts you want to use, copy them from your own
 folder to the $FEISTY_MEOW_LOADING_DOCK/custom directory.
 
+
+(needs to talk about the scripts directory which is handled specially.
+are there any keyword matched filenames with special functions?)
+
+
