@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # this script is meant to be run on curie with our super alpha prime source of music plugged in.
 
@@ -9,14 +10,27 @@ if [[ ! ( $(hostname) =~ .*curie.* ) ]]; then
   exit 1
 fi
 
-# hmmm: these look very similar for musix and basement.  function please!
-rsync -av /media/fred/fredmusicprime/musix/* /z/musix/
-rsync -av /media/fred/fredmusicprime/basement/* /z/basement/
-rsync -avz /z/musix/* surya:/z/musix/ 
-rsync -avz /z/basement/* surya:/z/basement/ 
-rsync -avz /z/musix/* wildmutt:/z/musix/ 
-rsync -avz /z/basement/* wildmutt:/z/basement/ 
-rsync -avz /z/musix/* euphrosyne:/z/musix/ 
-rsync -avz /z/basement/* euphrosyne:/z/basement/ 
+# synch our local copy on curie with the music drive, source of all goodness.
+function get_music_from_alpha_site()
+{
+  rsync -av /media/fred/fredmusicprime/musix/* /z/musix/
+  rsync -av /media/fred/fredmusicprime/basement/* /z/basement/
+}
+
+# updates the music on a remote host to our current local copy on curie.
+function update_musix_pile()
+{
+  local host="$1"; shift
+  rsync -avz /z/musix/* ${host}:/z/musix/ 
+  rsync -avz /z/basement/* ${host}:/z/basement/ 
+}
+
+# make sure the local machine, curie, is in good shape.
+get_music_from_alpha_site
+
+# run through the steps of updating all our machines.
+for i in surya banshee wildmutt euphrosyne; do
+  update_musix_pile $i
+done
 
 
