@@ -78,9 +78,9 @@ database/
     Some files considered critical to the operations of Feisty Meow Concerns Ltd.  This includes
     the database of fortunes used by the Nechung Oracle Program.
 
-doc/
-    Assorted documentation files for Feisty Meow and a code-scanning documentation generator
-    based on doxygen.
+documentation/
+    Helpful guides and information for Feisty Meow.  Also includes a code documentation generator
+    configuration for feisty meow that produces a nice set of web docs, using doxygen.
 
 examples/
     Some files that show how to get work done with Feisty Meow or that show how to do certain

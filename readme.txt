@@ -9,7 +9,7 @@ conditional portions are prefixed with a '|' character.)
 How to get the feisty meow codebase
 
 | On Microsoft Windows, install the Cygwin tools as documented here:
-| ~/feisty_meow/doc/cygwin_install_list.txt
+| ~/feisty_meow/documentation/cygwin_install_list.txt
 
 Retrieve a clone of the feisty meow code:
 => git clone git://feistymeow.org/feisty_meow
@@ -53,7 +53,7 @@ How to install the build dependencies for feisty meow
 
 | Microsoft Windows:
 | Download and install the Cygwin environment first from cygwin.com, which is
-| documented in ~/feisty_meow/doc/cygwin_install_list.txt
+| documented in ~/feisty_meow/documentation/cygwin_install_list.txt
 
 ==============
 How to build the feisty meow codebase

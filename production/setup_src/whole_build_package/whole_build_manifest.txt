@@ -8,7 +8,7 @@ production_inis=t
 docs=t
 top_makefile=t
 production_makefile=t
-customizing=t
+customize=t
 database=t
 examples=t
 scripts=t
@@ -64,9 +64,9 @@ source=$PRODUCTION_STORE/makefile
 target=$TARGET/production/makefile
 keyword=sources
 
-[customizing]
-source=$FEISTY_MEOW_APEX/customizing
-target=$TARGET/customizing
+[customize]
+source=$FEISTY_MEOW_APEX/customize
+target=$TARGET/customize
 recurse=1
 keyword=sources
 
@@ -77,8 +77,8 @@ recurse=1
 keyword=sources
 
 [docs]
-source=$FEISTY_MEOW_APEX/doc
-target=$TARGET/doc
+source=$FEISTY_MEOW_APEX/documentation
+target=$TARGET/documentation
 recurse=1
 keyword=sources
 
