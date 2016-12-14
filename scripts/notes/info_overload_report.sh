@@ -101,13 +101,13 @@ full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 analyze_hierarchy_and_report ~/cloud/urgent "high priority"
 
 # notes are individual files of tasks, usually, although some are combined.
-analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes"
+analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes (external facing things?)"
 
 # feisty notes are about feisty meow(r) concerns ltd codebase development.
-analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes"
+analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (code related)"
 
 # home notes are a new top-level category; used to be under the grunty.
-analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes"
+analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road, yo!)"
 
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active items" ~/cloud/active*
