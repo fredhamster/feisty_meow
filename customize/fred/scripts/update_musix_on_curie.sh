@@ -13,6 +13,7 @@ fi
 # synch our local copy on curie with the music drive, source of all goodness.
 function get_music_from_alpha_site()
 {
+  echo "getting musix and basement from fred music prime device"
   rsync -av /media/fred/fredmusicprime/musix/* /z/musix/
   rsync -av /media/fred/fredmusicprime/basement/* /z/basement/
 }
@@ -21,6 +22,7 @@ function get_music_from_alpha_site()
 function update_musix_pile()
 {
   local host="$1"; shift
+  echo "$host: synching musix and basement"
   rsync -avz /z/musix/* ${host}:/z/musix/ 
   rsync -avz /z/basement/* ${host}:/z/basement/ 
 }
