@@ -109,17 +109,8 @@ analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (code relat
 # home notes are a new top-level category; used to be under the grunty.
 analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road, yo!)"
 
-# scan all the items declared as active projects.
-analyze_by_dir_patterns "active items" ~/cloud/active*
-
-# scan across all appropriately named project or research folders that live in the "cloud".
-analyze_by_dir_patterns "project files" ~/cloud/project* ~/cloud/research*
-
-# snag any work related items for that category.
-analyze_by_dir_patterns "job and work tasks" ~/cloud/job* 
-
-# scan all the trivial project folders.
-analyze_by_dir_patterns "trivial items" ~/cloud/trivia*
+# games and fun stuff.  not sure why these count as backlog, but whatever.
+analyze_hierarchy_and_report ~/cloud/games_yo "games, yo!"
 
 # some source code that needs to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.  but they have, so we track them.
@@ -132,6 +123,18 @@ analyze_hierarchy_and_report ~/cloud/disordered "unsorted files"
 # we now consider the backlog of things to read to be a relevant fact.  this is going to hose
 # up our weight accounting considerably.
 analyze_hierarchy_and_report ~/cloud/reading "reading list"
+
+# scan all the items declared as active projects.
+analyze_by_dir_patterns "active items" ~/cloud/active*
+
+# scan across all appropriately named project or research folders that live in the "cloud".
+analyze_by_dir_patterns "project files" ~/cloud/project* ~/cloud/research*
+
+# snag any work related items for that category.
+analyze_by_dir_patterns "job and work tasks" ~/cloud/job* 
+
+# scan all the trivial project folders.
+analyze_by_dir_patterns "trivial items" ~/cloud/trivia*
 
 full_report+="================================================================\n\
 "
