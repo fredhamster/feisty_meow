@@ -17,7 +17,7 @@ octopi=t
 graphiq=t
 kona=t
 huffware=t
-webby=t
+hypermedia=t
 text_files=t
 check_versions=t
 assign_bases=t
@@ -124,9 +124,9 @@ target=$TARGET/kona
 recurse=1
 keyword=sources
 
-[webby]
-source=$FEISTY_MEOW_APEX/webby
-target=$TARGET/webby
+[hypermedia]
+source=$FEISTY_MEOW_APEX/hypermedia
+target=$TARGET/hypermedia
 recurse=1
 keyword=sources
 

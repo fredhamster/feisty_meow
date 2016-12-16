@@ -1,0 +1,8 @@
+
+doxygen: automatic documentation generation for java, c++, etc.
+http://www.stack.nl/~dimitri/doxygen/
+
+graphviz: needed to support doxygen for charting
+http://www.graphviz.org/
+
+

@@ -102,9 +102,9 @@ production/
 graphiq/
     GUI tools and components, somewhat busted or just absent right now.
 
-webby/
-    Source code specifically for web programming and building sites.  Mainly a few javascript
-    files we keep around.
+hypermedia/
+    Code that supports the hypertext and hypermedia ideas implemented on the web.  Mostly just
+    some javascript currently.
 
 ####
 

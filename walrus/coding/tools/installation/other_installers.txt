@@ -1,0 +1,11 @@
+
+nsis: a windows installer tool
+http://nsis.sourceforge.net/Main_Page
+
+wix: windows barebones xml install tool
+http://wixtoolset.org/
+
+installshield: windows installer (pain blech!)
+http://www.installshield.com/
+
+

@@ -1,0 +1,19 @@
+
+cpp unit lite: c++ unit testing framework
+http://wiki.c2.com/?CppUnitLite
+
+selenium: ide for web page testing
+http://www.seleniumhq.org/
+
+winPcap: packet capture tool
+https://www.winpcap.org/
+
+junit: java unit testing framework
+http://junit.org/junit4/
+
+shunit: bash unit testing framework
+http://shunit.sourceforge.net/
+
+xunit: dot net unit testing framework
+https://xunit.github.io/
+

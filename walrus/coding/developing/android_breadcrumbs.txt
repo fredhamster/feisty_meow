@@ -1,0 +1,16 @@
+
+i don't do android programming yet, but i've been gathering resources.
+here are a couple starting points.
+
+===
+
+book on android dev:
+
+http://my.safaribooksonline.com/book/programming/android/9781430234463/firstchapter#X2ludGVybmFsX0ZsYXNoUmVhZGVyP3htbGlkPTk3ODE0MzAyMzQ0NjMvMTQ=
+
+
+site for android sdk etc:
+
+http://developer.android.com/sdk/index.html
+
+

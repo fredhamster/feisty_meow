@@ -1,0 +1,19 @@
+
+
+some useful java packages we have relied on in the past and might also
+in the future:
+
+Java Developer Kit: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+
+Jetty: http://www.eclipse.org/jetty/
+
+Unlimited JCE jars for arbitrary key size in encryption / signing:
+  search for: unlimited jce encryption oracle java 
+
+Apache Wicket (web apps in java): http://wicket.apache.org/
+
+Eclipse IDE: https://eclipse.org/downloads/
+
+Java Service Wrapper: http://wrapper.tanukisoftware.com/doc/english/download.jsp
+
+

@@ -1,0 +1,6 @@
+
+
+tattletale: general analysis of an app's collection of jar files, looking for circular dependencies and other problems
+http://www.jboss.org/tattletale
+
+

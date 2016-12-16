@@ -1,0 +1,5 @@
+
+cygwin: unix emulation environment for windows; has a huge number of linux packages, which makes this important on windows.
+https://www.cygwin.com/
+
+

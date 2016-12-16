@@ -50,7 +50,7 @@ local($root) = &canonicalize("$HOME/feisty_meow");
 &backup_hierarchy($snarf_file_base, $number, $root, "nucleus");
 &backup_hierarchy($snarf_file_base, $number, $root, "octopi");
 &backup_hierarchy($snarf_file_base, $number, $root, "scripts");
-&backup_hierarchy($snarf_file_base, $number, $root, "webby");
+&backup_hierarchy($snarf_file_base, $number, $root, "hypermedia");
 
 # grab the production assets.
 &backup_files($snarf_file_base, $number, $root, "production", ("*.ini", "make*", ".gitignore"));

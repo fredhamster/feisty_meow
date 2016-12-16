@@ -1,0 +1,10 @@
+
+meld: compare tool that works great, and is available on most platforms
+http://meldmerge.org/
+
+vimdiff: visual differences for the console oriented
+http://vimdoc.sourceforge.net/htmldoc/diff.html
+
+winmerge: if stuck on windows, this works pretty well
+http://winmerge.org/?lang=en
+
