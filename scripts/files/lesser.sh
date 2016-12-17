@@ -11,7 +11,7 @@
 # things like simple lists or error output.
 function lesser()
 {
-  code_view_flag="$1"
+  local code_view_flag="$1"
   if [ "$code_view_flag" == "-c" ]; then
     # saw the 'code' flag, which means show the file with source highlighting.
     shift
