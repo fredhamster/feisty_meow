@@ -4,17 +4,17 @@
 
 ##############
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
-
-##############
-
 # drag in the default version of this file.  this may not be needed if your
 # .bashrc script already has substantial code or already does this.
 source /etc/bash.bashrc
+
+##############
+
+# set the history sizes to be much larger, and do this whether we load the
+# feisty meow environment or not.
+
+export HISTSIZE=1000000
+export HISTFILESIZE=8000000
 
 ##############
 
