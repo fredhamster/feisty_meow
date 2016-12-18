@@ -1,0 +1,29 @@
+
+vmware's ovftool can turn vmware virtual machines into OVF format, which
+with some massaging can be used to generate a virtualbox virtual machine.
+
+this package is available from the vmware website and is named something
+like:
+   VMware-ovftool-ver#-lin.x86_64.bundle
+for the amd64 style linux installer.
+
+----
+
+so far the technique for converting a vmware vm into a virtualbox vm using
+the ovftool seems to be:
+
+1) unpack the ovf file into a folder so we can edit the config for it.
+2) throw away any manifest, since we're about to change things that it used
+to know the signatures for (i.e., the ovf file).
+3) remove all sections in the blah.ovf file that mention required:false.
+these are not needed and will generally hose you up.
+4) try to import the file as an appliance in virtualbox.  if it complains
+about duplicate IDE devices, remove the cd drive.
+if it still complains for devices on ide controllers, try moving the device
+to the second ide controller.
+if you have more than 2 disk devices, try to get just one per controller to
+import, and then add the third and so forth devices after the fact.  go to
+the virtualbox settings for the vm, and add them in the storage menu as hard
+drives from existing vmdks or whatever.
+
+

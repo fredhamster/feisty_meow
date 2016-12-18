@@ -1,0 +1,7 @@
+
+
+we used to use kompozer, but it didn't keep up with the times and is
+missing in newer ubuntus.
+
+so now we use blue griffon, which is a comparable product and which
+seems to work pretty well.

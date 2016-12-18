@@ -1,0 +1,11 @@
+
+
+blender:
+the preeminent tool for 3d modelling, movie making, etc.
+
+wings3d:
+helped me create a new fup gun shape (opensim object) on linux.
+it was kind of tricky but workable.
+
+
+

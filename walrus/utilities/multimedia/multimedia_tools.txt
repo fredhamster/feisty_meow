@@ -1,0 +1,41 @@
+
+
+-----------
+audio tools
+-----------
+
++ k3b is good for ripping+converting cd audio to mp3 or other formats.
+
++ for lossless music compression, the flac and shorten (shn) formats are
+very nice.  there are some canonical tools for each platform for these.
+
++ for converting from ogg and such to mp3 and m4a and such, use the
+gnome tool called 'soundconverter'.
+
+
+-------------------------
+burner and player support
+-------------------------
+
++ k3b is a pretty great and versatile cd and dvd burner.
+
++ k3b is good for ripping+converting cd audio to mp3 or other formats.
+
++ for dvd processing, vobcopy is a must.
+
++ for dvd playing and ripping in general, decss is needed.
+it's available in the restricted packages on ubuntu.
+lots of articles describe how to set that up.
+
++ vlc is a good player for dvds.
+
+-------------------------------
+ripping music using a turntable 
+-------------------------------
+
+audacity is the go-to tool for ripping music from vinyl records
+and many other audio toaster processes:
+http://www.audacityteam.org/
+
+this article helps a lot to get the music off of vinyl records using a usb turntable:
+https://www.linux.com/news/using-usb-turntable-linux

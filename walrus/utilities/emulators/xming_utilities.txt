@@ -1,0 +1,17 @@
+
+xming is great.
+xming gives you the x windowing system on platforms that don't typically have x.
+it lets you run an x-server locally so that you can see the apps launched remotely by
+ssh sessions.
+
+the packages i usually install on windows are:
+
+Xming-ver#-setup.exe
+    gives you the basic xming package with an x-server.
+
+Xming-fonts-ver#-setup.exe
+    provides extra fonts that make the windows look nicer in x.
+
+Xming-portablePuTTY-ver#-setup.exe
+    a version of the putty software for ssh that understands xming.
+

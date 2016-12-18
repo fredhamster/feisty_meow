@@ -1,0 +1,8 @@
+
+
+portecle is a great app that allows one to open most any type of certificate
+file.
+
+it handles pfx, der format, etc.
+
+it's written in java, so you just download a jar file and run it from that.

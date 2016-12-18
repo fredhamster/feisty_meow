@@ -1,0 +1,6 @@
+
+
+virtual clone drive is a great product for mounting
+an ISO image and getting the files off of it or running an installer
+from it.
+

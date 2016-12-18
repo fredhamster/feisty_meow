@@ -1,0 +1,9 @@
+
+
+
+CurrPorts is a useful utility for windows that tells you the currently active ports.
+  http://www.nirsoft.net
+
+of course on linux, the iftop is the best thing out there for at least just
+seeing the level of activity on the ethernet adapter.
+

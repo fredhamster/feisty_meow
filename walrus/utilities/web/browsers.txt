@@ -1,0 +1,12 @@
+
+
+
+firefox:
+great open source browser.
+
+google chrome:
+upstart browser from google, pretty fast and powerful.
+
+
+
+

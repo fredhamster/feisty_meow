@@ -1,0 +1,8 @@
+
+
+the unlocker tool is really useful on windows.
+
+it will report who is keeping you from deleting a file,
+which is usually a process.
+
+you can also kill that process if you want.

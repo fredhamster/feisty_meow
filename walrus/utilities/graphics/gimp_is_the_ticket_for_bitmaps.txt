@@ -1,0 +1,4 @@
+
+
+gimp is great for bitmap editing.
+it's available in any linux repository.

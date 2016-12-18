@@ -1,0 +1,5 @@
+
+
+iotop is the "top" for input and output, and can show running stats for disk usage.
+
+

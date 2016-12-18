@@ -1,0 +1,12 @@
+
+used rsync to synchronize my music library, with full timestamp replication.
+awesomely useful, very efficient.
+
+examples:
+
+rsync -avz fred@skyborn:/home/archives/musix /home/archives/
+
+rsync -avz /z/musix/* surya:/z/musix/
+
+
+

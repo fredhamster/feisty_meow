@@ -1,0 +1,7 @@
+
+for snmp mib browsing, a good app for windows is called:
+
+    DwMibBrowser.tar.gz
+
+it is a nice java-based MIB browser for SNMP.
+

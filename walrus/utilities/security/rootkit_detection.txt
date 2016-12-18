@@ -1,0 +1,21 @@
+
+
+------------------
+rootkit/chkrootkit
+------------------
+
+http://www.chkrootkit.org/
+
+chkrootkit is a great app for detecting various rootkits.
+
+
+
+----------------------
+rootkit/rootkit hunter
+----------------------
+
+http://www.rootkit.nl/
+
+rkhunter is another great rootkit detection tool.
+
+

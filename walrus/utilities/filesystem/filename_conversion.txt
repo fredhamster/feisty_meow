@@ -1,0 +1,14 @@
+
+
+convmv is a great tool for changing filenames from 
+one encoding to another.  example commands:
+
+# recursive conversion from windows code page (or close to
+# it) into utf-8 encoding.  this just tests to see if all
+# the intended conversions would work.
+convmv -r -f iso8859-1 -t utf-8 *
+
+# convert from wacky utf-7 format into utf-8 format.
+# this assumes a prior test was done and actually does
+# the name conversions.
+convmv --notest -r -f utf-7 -t utf-8 *

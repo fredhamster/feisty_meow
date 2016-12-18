@@ -1,0 +1,12 @@
+
+
+vim, which is an improved version of vi, is our current day-to-day handy
+editor.  it's great and is available for every platform.  on linux, there
+is a nice gnome version called gvim.
+
+emacs is the powerhouse lisp editor that was the first IDE we used to use.
+it's really extensible and is currently the dark horse contender for best
+editor.
+
+a new combo of the above two can be found in the spacemacs toolset,
+which turns emacs into a user-friendly menued editor, sort of, supposedly.

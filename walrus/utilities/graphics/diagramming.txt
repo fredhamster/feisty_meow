@@ -1,0 +1,10 @@
+
+
+diagram tool solutions used in the past:
+
+dia
+  available on most linuxes.
+
+yEd
+  pretty good with arrows and keeping things connected.
+

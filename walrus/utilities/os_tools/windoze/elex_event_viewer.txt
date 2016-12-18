@@ -1,0 +1,8 @@
+
+
+used a tool called elex to be able to view windows system events better.
+
+the built in tools were deficient in some ways, even in modern OSes
+like windows 7, and the elex viewer was nicer.
+
+

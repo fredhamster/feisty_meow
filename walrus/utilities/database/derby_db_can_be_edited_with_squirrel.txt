@@ -1,0 +1,5 @@
+
+
+https://sourceforge.net/projects/squirrel-sql/?source=dlp
+
+may want to change the launcher script to be more useful.
