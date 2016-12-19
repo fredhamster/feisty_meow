@@ -54,11 +54,13 @@ unlink $infofile;
 &backup_files($snarf_file_base, $number, "/", "var/lib/dpkg", ("status*"));
 
 # backup the crucial hierarchies in /var...
-&backup_hierarchy($snarf_file_base, $number, "/", "var/named");
+#gone: &backup_hierarchy($snarf_file_base, $number, "/", "var/named");
+#gone: &backup_hierarchy($snarf_file_base, $number, "/", "var/lib/named/master");
+
 ###not good: &backup_hierarchy($snarf_file_base, $number, "/", "var/lib/mysql");
 ###the mysql snarf is not necessarily usable, since we really should be
 ###backing up the databases by another means than this.
-&backup_hierarchy($snarf_file_base, $number, "/", "var/lib/named/master");
+
 &backup_hierarchy($snarf_file_base, $number, "/", "var/lib/webalizer");
 
 # snag the grub bootloader files.
