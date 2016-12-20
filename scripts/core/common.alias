@@ -15,7 +15,6 @@
 define_yeti_alias cls='clear_colormap; clear'
 define_yeti_alias copy='\cp -i -v '
 define_yeti_alias cp='\cp -i -v '
-define_yeti_alias cvs='perl $FEISTY_MEOW_SCRIPTS/rev_control/cvs_fix.pl'
 define_yeti_alias del='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 define_yeti_alias deltree='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 define_yeti_alias df='\df -mh'

@@ -5,4 +5,6 @@
 
 filename="$1"; shift
 
-svn resolve  --accept=working "$filename"
+svn resolve --accept=working "$filename"
+
+

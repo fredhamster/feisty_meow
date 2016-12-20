@@ -7,6 +7,9 @@ fi
 pushd "$prune_dir"
 echo cleaning git in directory $(pwd)
 git fsck --full
+check_if_failed "git fsck"
 git gc --prune=today --aggressive
+check_if_failed "git gc"
 git repack
+check_if_failed "git repack"
 popd
