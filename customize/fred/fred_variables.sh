@@ -17,7 +17,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   # add a bunch of folders to the list for checkin & checkout.  these are
   # definitely personal, and some of them are fairly dated (the yeti and
   # hoople folders, for example).
-  REPOSITORY_LIST+="cloud ebooks web antique inova_codebase antique/inova_codebase yeti bigdata "
+  REPOSITORY_LIST+="cloud ebooks web antique antique/inova_codebase bigdata"
 
   # point to our local certificate for ssh usage.
   export SVN_SSH="ssh -i $HOME/.ssh/id_dsa_sourceforge"
