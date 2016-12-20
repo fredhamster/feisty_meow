@@ -3,6 +3,8 @@
 # these are helper functions for doing localized revision control.
 # this script should be sourced into other scripts that use it.
 
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
 # the maximum depth that the recursive functions will try to go below the starting directory.
 export MAX_DEPTH=5
 
