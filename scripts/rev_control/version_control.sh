@@ -116,7 +116,7 @@ function do_checkin()
   pushd "$directory" &>/dev/null
   local retval=0  # normally successful.
   if [ -f ".no-checkin" ]; then
-    echo "Not checking in because found .no-checkin sentinel file."
+    echo "Skipping check-in due to presence of .no-checkin sentinel file."
   elif [ -d "CVS" ]; then
     cvs ci .
     retval=$?
@@ -168,7 +168,7 @@ function do_report_new
 
   # only update if we see a repository living there.
   if [ -f ".no-checkin" ]; then
-    echo "Not reporting mods because found .no-checkin sentinel file."
+    echo "Skipping reporting due to presence of .no-checkin sentinel file."
   elif [ -d ".svn" ]; then
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
