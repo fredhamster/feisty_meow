@@ -193,6 +193,7 @@ function checkin_list()
       if [ ! -d "$j" ]; then continue; fi
       echo "checking in '$j'..."
       do_checkin $j
+      sep 7
     done
   done
 }
@@ -291,7 +292,7 @@ function perform_revctrl_action_on_file()
     pushd "$dirname" &>/dev/null
     echo "[$(pwd)]"
     $action .
-    echo "======="
+    sep 7
     popd &>/dev/null
   done 3<"$tempfile"
 
