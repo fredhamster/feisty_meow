@@ -3,7 +3,7 @@
 # cleans up the ownership for all my files.
 function refred()
 {
-  sudo chown -R fred:fred /home/fred /home/games /home/archives
+  sudo chown -R fred:fred /home/fred /home/games /home/archives /usr/local/fred
   sudo bash $FEISTY_MEOW_SCRIPTS/files/normal_perm.sh /var/log
 }
 
