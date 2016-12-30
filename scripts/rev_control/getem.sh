@@ -32,7 +32,7 @@ export TMPO_CHK=$TMP/zz_chk.log
 
 rm -f "$TMPO_CHK"
 
-echo "Getting repositories at: $(date)"
+echo "getting repositories at: $(date)"
 
 # perform the checkouts as appropriate per OS.
 if [ "$OS" != "Windows_NT" ]; then
@@ -43,11 +43,8 @@ fi
 
 ##############
 
-# we now regenerate the scripts after getme, to ensure it's done automatically.
-bash "$FEISTY_MEOW_SCRIPTS/core/reconfigure_feisty_meow.sh"
-perl "$FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl"
-echo
-nechung
+# regenerate the scripts after getting latest version of feisty meow.
+regenerate
 
 ##############
 

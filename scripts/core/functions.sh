@@ -359,7 +359,7 @@ if [ -z "$skip_all" ]; then
     echo
     # force a full reload by turning off sentinel variables and methods.
     unset -v CORE_VARIABLES_LOADED FEISTY_MEOW_LOADING_DOCK USER_CUSTOMIZATIONS_LOADED
-    unalias CORE_ALIASES_LOADED
+    unalias CORE_ALIASES_LOADED &>/dev/null
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
     source $FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh

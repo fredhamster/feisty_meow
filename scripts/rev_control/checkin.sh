@@ -5,6 +5,8 @@
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+##############
+
 echo "Committing repositories at: $(date)"
 
 if [ "$OS" != "Windows_NT" ]; then
@@ -13,4 +15,12 @@ if [ "$OS" != "Windows_NT" ]; then
 else
   checkin_list $HOME c:/ d:/ e:/ 
 fi
+
+##############
+
+# regenerate the scripts after checking in, since this could mean a modified version
+# of feisty meow is present.
+regenerate
+
+##############
 
