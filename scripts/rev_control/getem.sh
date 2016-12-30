@@ -13,7 +13,7 @@ source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 tmpdir="$(cd $TMP; \pwd)"
 if [ "$(\pwd)" != "$tmpdir" ]; then
   if [ ! -z "$SHELL_DEBUG" ]; then
-    echo "Moving to the TMP directory to avoid file access conflicts..."
+    echo "moving to the TMP directory to avoid file access conflicts..."
   fi
   new_name="$TMP/zz_$(basename $0)"
   cp -f "$0" "$new_name"

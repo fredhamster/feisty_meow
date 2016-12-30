@@ -21,8 +21,8 @@ if [ ! -d "$TMP" ]; then
   mkdir -p $TMP
 fi
 if [ ! -d "$TMP" ]; then
-  echo "Could not create the temporary directory TMP in: $TMP"
-  echo "This script will not work properly without an existing TMP directory."
+  echo "could not create the temporary directory TMP in: $TMP"
+  echo "this script will not work properly without an existing TMP directory."
 fi
 
 this_host=
@@ -110,13 +110,13 @@ function do_checkin()
   local directory="$1"; shift
   do_update "$directory"
   if [ $? -ne 0 ]; then
-    echo "Repository update failed; this should be fixed before check-in."
+    echo "repository update failed; this should be fixed before check-in."
     return 1
   fi
   pushd "$directory" &>/dev/null
   local retval=0  # normally successful.
   if [ -f ".no-checkin" ]; then
-    echo "Skipping check-in due to presence of .no-checkin sentinel file."
+    echo "skipping check-in due to presence of .no-checkin sentinel file."
   elif [ -d "CVS" ]; then
     cvs ci .
     retval=$?
@@ -168,7 +168,7 @@ function do_report_new
 
   # only update if we see a repository living there.
   if [ -f ".no-checkin" ]; then
-    echo "Skipping reporting due to presence of .no-checkin sentinel file."
+    echo "skipping reporting due to presence of .no-checkin sentinel file."
   elif [ -d ".svn" ]; then
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
@@ -252,7 +252,7 @@ function checkout_list {
       j="$i/$j"
       if [ ! -d $j ]; then
         if [ ! -z "$SHELL_DEBUG" ]; then
-          echo "No directory called $j exists."
+          echo "no directory called $j exists."
         fi
         continue
       fi

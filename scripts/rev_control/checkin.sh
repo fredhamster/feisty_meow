@@ -7,7 +7,7 @@ source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
 ##############
 
-echo "Committing repositories at: $(date)"
+echo "committing repositories at: $(date)"
 
 if [ "$OS" != "Windows_NT" ]; then
   # first get individual folders.
