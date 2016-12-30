@@ -25,7 +25,7 @@ use Env qw(HOME);
 local($number) = &retrieve_number("aa_backup");
 
 # variables used throughout here.
-local($snarf_file_base) = &snarf_prefix("archived_feisty_meow");
+local($snarf_file_base) = &snarf_prefix("packaged_feisty_meow");
 local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the archive number in the file for retrieval on the other side.
@@ -51,6 +51,7 @@ local($root) = &canonicalize("$HOME/feisty_meow");
 &backup_hierarchy($snarf_file_base, $number, $root, "octopi");
 &backup_hierarchy($snarf_file_base, $number, $root, "scripts");
 &backup_hierarchy($snarf_file_base, $number, $root, "hypermedia");
+&backup_hierarchy($snarf_file_base, $number, $root, "walrus");
 
 # grab the production assets.
 &backup_files($snarf_file_base, $number, $root, "production", ("*.ini", "make*", ".gitignore"));
