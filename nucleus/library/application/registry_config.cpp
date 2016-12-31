@@ -114,8 +114,8 @@ bool registry_configurator::put(const astring &section_in, const astring &entry,
     LOG("failed to open the key, trying to create it.");
     DWORD dispose;  // the disposition of the call (created or existing).
     ret = RegCreateKeyEx((HKEY)translate_hive(_hive),
-        to_unicode_temp(section), 0, NIL, REG_OPTION_NON_VOLATILE,
-        KEY_ALL_ACCESS, NIL, &key, &dispose);
+        to_unicode_temp(section), 0, NULL_POINTER, REG_OPTION_NON_VOLATILE,
+        KEY_ALL_ACCESS, NULL_POINTER, &key, &dispose);
     if (ret != ERROR_SUCCESS) {
       LOG("failed to create the key!!");
       return false;

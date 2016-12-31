@@ -57,7 +57,7 @@ bool list::iterator::operator ==(const iterator &to_compare) const
 
 const node *list::iterator::observe()
 {
-  if (!_manager || _manager->empty()) return NIL;
+  if (!_manager || _manager->empty()) return NULL_POINTER;
   if (*this == _manager->head()) next();
   if (*this == _manager->tail()) previous();
   return _cursor;
@@ -65,7 +65,7 @@ const node *list::iterator::observe()
 
 node *list::iterator::access()
 {
-  if (!_manager || _manager->empty()) return NIL;
+  if (!_manager || _manager->empty()) return NULL_POINTER;
   if (*this == _manager->head()) next();
   if (*this == _manager->tail()) previous();
   return _cursor;
@@ -98,7 +98,7 @@ void list::iterator::jump_tail()
 //////////////
 
 list::list()
-: _head(NIL), _tail(NIL)
+: _head(NULL_POINTER), _tail(NULL_POINTER)
 {
   _head = new node(2);
   _tail = new node(2);
@@ -195,7 +195,7 @@ int list::items_from_tail(const iterator &where) const
 /*
 node *list::get()
 {
-  if (empty()) return NIL;  // make sure the list isn't empty.
+  if (empty()) return NULL_POINTER;  // make sure the list isn't empty.
   if (_cursor == _head) return _head->get_link(NEXT);
     // check special case for pointing at the head.
   if (_cursor == _tail) return _tail->get_link(PREVIOUS);
@@ -206,8 +206,8 @@ node *list::get()
 
 node *list::remove(iterator &where)
 {
-  if (where._manager != this) return NIL;
-  if (empty()) return NIL;
+  if (where._manager != this) return NULL_POINTER;
+  if (empty()) return NULL_POINTER;
   if (where._cursor == _head)
     where._cursor = _head->get_link(NEXT);
   if (where._cursor == _tail)
@@ -215,8 +215,8 @@ node *list::remove(iterator &where)
   node *old_cursor = where._cursor;
   node *old_previous = old_cursor->get_link(PREVIOUS);
   node *old_next = old_cursor->get_link(NEXT);
-  old_cursor->set_link(PREVIOUS, NIL);
-  old_cursor->set_link(NEXT, NIL);
+  old_cursor->set_link(PREVIOUS, NULL_POINTER);
+  old_cursor->set_link(NEXT, NULL_POINTER);
   old_previous->set_link(NEXT, old_next);
   old_next->set_link(PREVIOUS, old_previous);
   where._cursor = old_next;
@@ -228,7 +228,7 @@ void list::zap(iterator &where) { delete remove(where); }
 void list::append(iterator &where, node *new_node)
 {
   if (where._manager != this) return;
-  while (new_node->links() < 2) new_node->insert_link(0, NIL);
+  while (new_node->links() < 2) new_node->insert_link(0, NULL_POINTER);
   if (empty()) where._cursor = _head;
   if (where._cursor == _tail)
     where._cursor = _tail->get_link(PREVIOUS);
@@ -244,7 +244,7 @@ void list::append(iterator &where, node *new_node)
 void list::insert(iterator &where, node *new_node)
 {
   if (where._manager != this) return;
-  while (new_node->links() < 2) new_node->insert_link(0, NIL);
+  while (new_node->links() < 2) new_node->insert_link(0, NULL_POINTER);
   if (empty()) where._cursor = _tail;
   if (where._cursor == _head)
     where._cursor = _head->get_link(NEXT);

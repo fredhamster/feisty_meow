@@ -58,8 +58,8 @@ const int PAUSE_TIME = 200;
 spocket_tester::spocket_tester(const internet_address &where)
 : _where(new internet_address(where)),
   _stack(new tcpip_stack),
-  _socket(NIL),
-  _root_server(NIL),
+  _socket(NULL_POINTER),
+  _root_server(NULL_POINTER),
   _raw(new raw_socket)
 {
 }

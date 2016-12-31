@@ -35,7 +35,7 @@ namespace basis {
 class byte_array : public array<abyte>, public virtual orderable
 {
 public:
-  byte_array(int number = 0, const abyte *initial_contents = NIL)
+  byte_array(int number = 0, const abyte *initial_contents = NULL_POINTER)
       : array<abyte>(number, initial_contents, SIMPLE_COPY | EXPONE) {}
     //!< constructs an array of "number" bytes from "initial_contents".
 

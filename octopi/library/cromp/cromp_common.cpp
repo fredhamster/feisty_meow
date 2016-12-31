@@ -128,16 +128,16 @@ double cromp_common::_bytes_received_total = 0.0;
   }
 
 cromp_common::cromp_common(const astring &host, int max_per_ent)
-: _commlink(NIL),
+: _commlink(NULL_POINTER),
   _octopus(new octopus(host, max_per_ent)),
-  _singleton(NIL),
+  _singleton(NULL_POINTER),
   _requests(new entity_data_bin(max_per_ent)),
   _accum_lock(new mutex),
   _last_data_seen(new time_stamp),
-  _accumulator(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NIL)),
-  _sendings(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NIL)),
-  _receive_buffer(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NIL)),
-  _still_flat(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NIL)),
+  _accumulator(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NULL_POINTER)),
+  _sendings(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NULL_POINTER)),
+  _receive_buffer(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NULL_POINTER)),
+  _still_flat(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NULL_POINTER)),
   _last_cleanup(new time_stamp)
 {
   FUNCDEF("constructor [host/max_per_ent]");
@@ -157,16 +157,16 @@ cromp_common::cromp_common(spocket *preexisting, octopus *singleton)
           : DEFAULT_MAX_ENTITY_QUEUE)),
   _accum_lock(new mutex),
   _last_data_seen(new time_stamp),
-  _accumulator(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NIL)),
-  _sendings(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NIL)),
-  _receive_buffer(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NIL)),
-  _still_flat(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NIL)),
+  _accumulator(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NULL_POINTER)),
+  _sendings(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NULL_POINTER)),
+  _receive_buffer(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NULL_POINTER)),
+  _still_flat(new byte_array(CROMP_BUFFER_CHUNK_SIZE, NULL_POINTER)),
   _last_cleanup(new time_stamp)
 {
   FUNCDEF("constructor [preexisting/singleton]");
   if (!_octopus) {
     // they passed us a bad singleton.  carry on as best we can.
-    LOG("singleton passed as NIL; constructing new octopus instead.");
+    LOG("singleton passed as NULL_POINTER; constructing new octopus instead.");
     internet_address local(internet_address::localhost(), "localhost", 0);
     _octopus = new octopus(chew_hostname(local), DEFAULT_MAX_ENTITY_QUEUE);
   }
@@ -182,8 +182,8 @@ cromp_common::~cromp_common()
   FUNCDEF("destructor");
   close_common();  // shuts down our socket and other stuff.
   if (_singleton) {
-    _singleton = NIL;  // reset the pointer we had.
-    _octopus = NIL;  // ditto.
+    _singleton = NULL_POINTER;  // reset the pointer we had.
+    _octopus = NULL_POINTER;  // ditto.
   } else {
     // this one was ours so we need to clean it up.
     WHACK(_octopus);
@@ -501,7 +501,7 @@ outcome cromp_common::retrieve_and_restore_root(bool get_anything,
     infoton * &item, octopus_request_id &req_id, int timeout)
 {
   FUNCDEF("retrieve_and_restore_root");
-  item = NIL;
+  item = NULL_POINTER;
   if (!_commlink) return BAD_INPUT;  // they haven't opened this yet.
   octopus_request_id tmp_id;
   time_stamp leaving_time(timeout);
@@ -628,7 +628,7 @@ void cromp_common::grab_anything(bool wait)
 void cromp_common::process_accumulator()
 {
   FUNCDEF("process_accumulator");
-  infoton *item = NIL;
+  infoton *item = NULL_POINTER;
   octopus_request_id req_id;
 
   string_array clas;
@@ -636,7 +636,7 @@ void cromp_common::process_accumulator()
   if (!_accumulator->length()) return;
 
   // a little gymnastics to get a large buffer on the first try.
-  byte_array temp_chow_buffer(CROMP_BUFFER_CHUNK_SIZE, NIL);
+  byte_array temp_chow_buffer(CROMP_BUFFER_CHUNK_SIZE, NULL_POINTER);
   temp_chow_buffer.reset();
 
   int cmds_found = 0;

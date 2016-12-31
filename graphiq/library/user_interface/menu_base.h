@@ -107,7 +107,7 @@ public:
 
   menu_common_base *evaluate_trigger(char trigger);
     //!< returns the item or menu associated with the "trigger" value.
-    /*!< use of dynamic cast enables one to tell what has been returned.  NIL
+    /*!< use of dynamic cast enables one to tell what has been returned.  NULL_POINTER
     is returned if there is nothing that answers to that trigger value.
     note that this does not invoke any activation functions. */
 
@@ -131,7 +131,7 @@ public:
   void add_item(menu_item *to_invoke);
     //!< adds a new menu_item onto this menu.
   menu_item *get_item(int index);
-    //!< gets the item at position "index".  NIL is returned if out of range.
+    //!< gets the item at position "index".  NULL_POINTER is returned if out of range.
   bool zap_item(int index);
     //!< removes the item at "index" if possible.
   bool enable_item(int index, bool enable = true);

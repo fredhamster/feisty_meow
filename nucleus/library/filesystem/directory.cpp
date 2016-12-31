@@ -15,7 +15,6 @@
 #include "directory.h"
 #include "filename.h"
 
-#include <algorithms/shell_sort.h>
 #include <application/windoze_helper.h>
 #include <basis/astring.h>
 #include <basis/contracts.h>
@@ -27,6 +26,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+
+#include "../algorithms/sorts.h"
 #if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   #include <dirent.h>
   #include <fnmatch.h>

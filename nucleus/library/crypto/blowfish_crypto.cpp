@@ -206,7 +206,7 @@ bool blowfish_crypto::encrypt(const byte_array &source,
   EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
 
   EVP_CIPHER_CTX_init(session);
-  EVP_EncryptInit_ex(session, EVP_bf_cbc(), NIL, _key->observe(),
+  EVP_EncryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, _key->observe(),
       init_vector().observe());
   EVP_CIPHER_CTX_set_key_length(session, _key_size);
 
@@ -260,7 +260,7 @@ bool blowfish_crypto::decrypt(const byte_array &source,
   EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
   EVP_CIPHER_CTX_init(session);
   LOG(a_sprintf("key size %d bits.\n", BITS_PER_BYTE * _key->length()));
-  EVP_DecryptInit_ex(session, EVP_bf_cbc(), NIL, _key->observe(),
+  EVP_DecryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, _key->observe(),
       init_vector().observe());
   EVP_CIPHER_CTX_set_key_length(session, _key_size);
 

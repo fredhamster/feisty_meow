@@ -49,7 +49,7 @@ public:
 
   virtual tree *branch(int branch_number) const;
     //!< Returns the specified branch of this tree.
-    /*!< NIL is returned if the "branch_number" refers to a branch that
+    /*!< NULL_POINTER is returned if the "branch_number" refers to a branch that
     does not exist. */
 
   virtual int which(tree *branch_to_find) const;
@@ -61,7 +61,7 @@ public:
 
   virtual tree *parent() const;
     //!< Returns the tree node that is the immediate ancestor of this one.
-    /*!< if this is the root node, then NIL is returned. */
+    /*!< if this is the root node, then NULL_POINTER is returned. */
 
   virtual tree *root() const;
     //!< Locates and returns the absolute root of the tree containing this tree.
@@ -124,7 +124,7 @@ public:
 
     tree *next();
       //!< Returns a pointer to the next tree in the direction of traversal.
-      /*!< If the traversal is finished, NIL is returned. */
+      /*!< If the traversal is finished, NULL_POINTER is returned. */
 
     void whack(tree *to_whack);
       //!< destroys the tree "to_whack".
@@ -140,10 +140,10 @@ public:
     bool next_node(tree *&to_return);
       //!< sets "to_return" to the next tree in the direction of tree traversal.
       /*!< if the next node could not be found in one invocation of next_node,
-      then "to_return" is set to NIL.  the function returns a boolean which
+      then "to_return" is set to NULL_POINTER.  the function returns a boolean which
       is true only if the iteration process can be continued by another call
       to next_node.  if the function returns false, the iteration is
-      complete and "to_return" will always be NIL. */
+      complete and "to_return" will always be NULL_POINTER. */
   };
   
   iterator start(traversal_directions direction) const;

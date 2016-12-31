@@ -43,7 +43,7 @@ void unhandled_request::text_form(basis::base_string &fill) const
       + a_sprintf(" reason=%d", _reason.value()));
 }
 
-const char *initter[] = { "__Unhandled__", NIL };
+const char *initter[] = { "__Unhandled__", NULL_POINTER };
 
 string_array unhandled_request::the_classifier()
 { return string_array(1, initter); }

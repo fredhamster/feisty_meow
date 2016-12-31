@@ -48,7 +48,7 @@ namespace application {
 
 shared_memory::shared_memory(int size, const char *identity)
 : _locking(new rendezvous(identity)),
-  _the_memory(NIL),
+  _the_memory(NULL_POINTER),
   _valid(false),
   _identity(new astring(identity)),
   _size(size)
@@ -132,7 +132,7 @@ shared_memory::~shared_memory()
   ::CloseHandle(_the_memory);
 #else
   //hmmm: fix.
-  _the_memory = NIL;
+  _the_memory = NULL_POINTER;
 #endif
   WHACK(_locking);
   WHACK(_identity);
@@ -181,10 +181,10 @@ void shared_memory::unlock(abyte * &to_unlock)
 abyte *shared_memory::locked_grab_memory()
 {
   FUNCDEF("locked_grab_memory")
-  abyte *to_return = NIL;
+  abyte *to_return = NULL_POINTER;
   if (!_the_memory) return to_return;
 #ifdef __UNIX__
-  to_return = (abyte *)mmap(NIL, _size, PROT_READ | PROT_WRITE,
+  to_return = (abyte *)mmap(NULL_POINTER, _size, PROT_READ | PROT_WRITE,
       MAP_SHARED, int(_the_memory), 0);
 #elif defined(__WIN32__)
   to_return = (abyte *)::MapViewOfFile((HANDLE)_the_memory, FILE_MAP_ALL_ACCESS,

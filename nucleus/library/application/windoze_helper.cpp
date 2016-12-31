@@ -308,7 +308,7 @@ bool event_poll(MSG &message)
   message.message = 0;
   message.wParam = 0;
   message.lParam = 0;
-  if (!PeekMessage(&message, NIL, 0, 0, PM_REMOVE))
+  if (!PeekMessage(&message, NULL_POINTER, 0, 0, PM_REMOVE))
     return false;
   TranslateMessage(&message);
   DispatchMessage(&message);
@@ -438,9 +438,9 @@ istring system_error_text(u_int to_name)
   return strerror(to_name);
 #elif defined(__WIN32__)
   char error_text[1000];
-  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NIL, to_name,
+  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL_POINTER, to_name,
       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)error_text,
-      sizeof(error_text) - 1, NIL);
+      sizeof(error_text) - 1, NULL_POINTER);
   istring to_return = error_text;
   // trim off the ridiculous carriage return they add.
   while ( (to_return[to_return.end()] == '\r')
@@ -569,7 +569,7 @@ basis::char_star_array break_line(istring &app, const istring &parameters)
         .stuff(to_return[to_return.last()], len);
   }
   // add the sentinel to the list of strings.
-  to_return += NIL;
+  to_return += NULL_POINTER;
 #ifdef DEBUG_PORTABLE
   for (int q = 0; to_return[q]; q++) {
     printf("%d: %s\n", q, to_return[q]);
@@ -740,8 +740,8 @@ u_int launch_process(const istring &app_name_in, const istring &command_line,
 //      }
     }
     istring parms = app_name + " " + command_line;
-    bool success = CreateProcess(NIL, to_unicode_temp(parms), NIL, NIL, false,
-        create_flag, NIL, NIL, &startup_info, &process_info);
+    bool success = CreateProcess(NULL_POINTER, to_unicode_temp(parms), NULL_POINTER, NULL_POINTER, false,
+        create_flag, NULL_POINTER, NULL_POINTER, &startup_info, &process_info);
     if (!success)
       return system_error();
     // success then, merge back into stream.

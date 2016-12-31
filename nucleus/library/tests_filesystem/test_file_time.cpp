@@ -69,8 +69,8 @@ int test_file_time::execute()
   // test storing info via the constructor.
   file_time absurdity_time(toppy);
   FILE *topdir = fopen(toppy.s(), "r");
-  ASSERT_INEQUAL(topdir, NIL, "opening topdir for testing");
-  if (topdir == NIL) {
+  ASSERT_INEQUAL(topdir, NULL_POINTER, "opening topdir for testing");
+  if (topdir == NULL_POINTER) {
     return 1;
   }
   file_time nutty_time(topdir);

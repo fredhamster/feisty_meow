@@ -107,7 +107,7 @@ private:
   ml_memory_state_meter *_individual_sizes;  //!< tracks memory per individual.
 
   ml_memory_record *find_individual(int individual) const;
-    //!< locates the record held for the "individual" specified or returns NIL.
+    //!< locates the record held for the "individual" specified or returns NULL_POINTER.
 };
 
 } //namespace.

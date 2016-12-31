@@ -48,7 +48,7 @@ outcome identity_tentacle::reconstitute(const string_array &classifier,
     return NO_HANDLER;
 
   return reconstituter(classifier, packed_form, reformed,
-      (identity_infoton *)NIL);
+      (identity_infoton *)NULL_POINTER);
 }
 
 outcome identity_tentacle::consume(infoton &to_chow,

@@ -174,7 +174,7 @@ public:
 
   static filename_list *access(dir_tree_iterator &scanning);
     //!< more dangerous operation that lets the actual list be manipulated.
-    /*!< NIL is returned if there was a problem accessing the tree
+    /*!< NULL_POINTER is returned if there was a problem accessing the tree
     at the iterator position. */
 
   static bool depth(dir_tree_iterator &scanning, int &depth);
@@ -201,7 +201,7 @@ private:
 
   static filename_tree *goto_current(dir_tree_iterator &scanning);
     //!< goes to the current node for "scanning" and returns the tree there.
-    /*!< if there are no nodes left, NIL is returned. */
+    /*!< if there are no nodes left, NULL_POINTER is returned. */
 
   void traverse(const basis::astring &path, const char *pattern,
           filename_tree &add_to);

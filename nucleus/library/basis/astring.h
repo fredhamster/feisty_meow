@@ -110,7 +110,7 @@ public:
   virtual const char *observe() const;
     //!< observes the underlying pointer to the zero-terminated string.
     /*!< this does not allow the contents to be modified.  this method should
-    never return NIL. */
+    never return NULL_POINTER. */
   const char *c_str() const { return observe(); }
     //!< synonym for observe.  mimics the STL method name.
   const char *s() const { return observe(); }
@@ -121,7 +121,7 @@ public:
 
   virtual char *access();
     //!< provides access to the actual string held.
-    /*!< this should never return NIL.  be very careful with the returned
+    /*!< this should never return NULL_POINTER.  be very careful with the returned
     pointer: don't destroy or corrupt its contents (e.g., do not mess with
     its zero termination). */
   char *c_str() { return access(); }

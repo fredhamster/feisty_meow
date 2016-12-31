@@ -81,7 +81,7 @@ public:
   : ethread(SOCKET_CHECK_INTERVAL, ethread::SLACK_INTERVAL),
     _parent(parent)
   {
-    start(NIL);
+    start(NULL_POINTER);
   }
 
   ~socket_minder_prompter() {
@@ -109,7 +109,7 @@ socket_minder::socket_minder(post_office &post, int parent_route,
   _pending_sox(new int_set),
   _prompter(new socket_minder_prompter(*this))
 {
-  _prompter->start(NIL);
+  _prompter->start(NULL_POINTER);
 }
 
 socket_minder::~socket_minder()
@@ -233,13 +233,13 @@ socket_data *socket_minder::lock_socket_data(int socket)
       return _socket_list->borrow(i);
   // this is a failure to get here; there was no suitable socket.
   _lock->unlock();
-  return NIL;
+  return NULL_POINTER;
 }
 
 void socket_minder::unlock_socket_data(socket_data *to_unlock)
 {
   if (!to_unlock) return;
-//can't affect it now.  to_unlock = NIL;
+//can't affect it now.  to_unlock = NULL_POINTER;
   _lock->unlock();
 }
 

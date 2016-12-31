@@ -88,7 +88,7 @@ LOG(a_sprintf("test type %d beginning...%c", q, c));
 
       if (! (i % 50) ) {
         printf("^");
-        fflush(NIL);
+        fflush(NULL_POINTER);
       }
     }
     program_wide_logger().get().eol(parser_bits::CRLF_AT_END);
@@ -107,7 +107,7 @@ LOG(a_sprintf("test type %d beginning...%c", q, c));
         items_seen++;
         if (! (items_seen % 50) ) {
           printf("v");
-          fflush(NIL);
+          fflush(NULL_POINTER);
         }
         bool saw_it = false;
         for (int q = 0; q < item_list.length(); q++) {
@@ -130,7 +130,7 @@ LOG(a_sprintf("test type %d beginning...%c", q, c));
         items_seen++;
         if (! (items_seen % 50) ) {
           printf("v");
-          fflush(NIL);
+          fflush(NULL_POINTER);
         }
         bool saw_it = false;
         for (int q = 0; q < item_list.length(); q++) {
@@ -152,7 +152,7 @@ LOG(a_sprintf("test type %d beginning...%c", q, c));
         items_seen++;
         if (! (items_seen % 50) ) {
           printf("v");
-          fflush(NIL);
+          fflush(NULL_POINTER);
         }
         item_list.zap(j, j);
         j--;  // skip back.

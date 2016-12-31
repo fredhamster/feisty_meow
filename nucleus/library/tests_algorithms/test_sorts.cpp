@@ -10,7 +10,6 @@
 * Please send any updates to: fred@gruntose.com                               *
 */
 
-#include <algorithms/shell_sort.h>
 #include <application/hoople_main.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
@@ -18,6 +17,7 @@
 #include <mathematics/chaos.h>
 #include <structures/static_memory_gremlin.h>
 #include <unit_test/unit_base.h>
+#include <algorithms/sorts.h>
 
 using namespace algorithms;
 using namespace application;
@@ -40,44 +40,77 @@ class test_sorts : virtual public unit_base, virtual public application_shell
 public:
   test_sorts() : application_shell() {}
   DEFINE_CLASS_NAME("test_sorts");
+
+  int *populate_random_c_array(int size);
+  basis::array<int> populate_random_array(int size);
+  int test_shell_sort(int *list, int size);
+
   virtual int execute();
 };
 
-int test_sorts::execute()
+int *test_sorts::populate_random_c_array(int size)
 {
-  FUNCDEF("execute");
+	int *list = new int[size];
+	for (int i = 0; i < size; i++)
+		list[i] = randomizer().inclusive(0, MAX_VALUE);
+	return list;
+}
 
-  int *list = new int[MAX_ELEMENTS];
-  for (int i = 0; i < MAX_ELEMENTS; i++)
-    list[i] = randomizer().inclusive(0, MAX_VALUE);
+basis::array<int> test_sorts::populate_random_array(int size)
+{
+	basis::array<int> to_return(size);
+	for (int i = 0; i < size; i++)
+		to_return[i] = randomizer().inclusive(0, MAX_VALUE);
+	return to_return;
+}
 
-//astring ret;
-//for (int i = 0; i < MAX_ELEMENTS; i++) ret += a_sprintf("%d ", list[i]);
-//LOG(ret);
-//LOG("-------------");
+int test_sorts::test_shell_sort(int *list, int size)
+{
+  FUNCDEF("test_shell_sort");
 
   // check a normal sort.
-  shell_sort(list, MAX_ELEMENTS);
+  shell_sort(list, size);
   int last = -1;
-  for (int j = 0; j < MAX_ELEMENTS; j++) {
+  for (int j = 0; j < size; j++) {
     ASSERT_FALSE(list[j] < last, "ordering check - list should be ordered at first check");
     last = list[j];
   }
 
   // re-randomize the list.
-  for (int i = 0; i < MAX_ELEMENTS; i++)
+  for (int i = 0; i < size; i++)
     list[i] = randomizer().inclusive(0, MAX_VALUE);
 
   // check a reversed sort.
-  shell_sort(list, MAX_ELEMENTS, true);
+  shell_sort(list, size, true);
   last = MAX_VALUE + 100;  // past the maximum we'll include in the list.
-  for (int j = 0; j < MAX_ELEMENTS; j++) {
+  for (int j = 0; j < size; j++) {
     ASSERT_FALSE(list[j] > last, "ordering check - list should be ordered at second check");
     last = list[j];
   }
 
   // clean up now.
   delete [] list;
+
+  //hmmm: wait, what if it fails above?
+  return true;
+}
+
+int test_sorts::execute()
+{
+  FUNCDEF("execute");
+
+  int size = MAX_ELEMENTS;
+
+//astring ret;
+//for (int i = 0; i < size; i++) ret += a_sprintf("%d ", list[i]);
+//LOG(ret);
+//LOG("-------------");
+
+  test_shell_sort(populate_random_c_array(size), size);
+
+//  test_quick_sort(populate_random_list(size), size);
+
+//  test_merge_sort(populate_random_array(size));
 
   return final_report();
 }

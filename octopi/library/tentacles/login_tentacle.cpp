@@ -48,7 +48,7 @@ outcome login_tentacle::reconstitute(const string_array &classifier,
     return NO_HANDLER;
 
   return reconstituter(classifier, packed_form, reformed,
-      (security_infoton *)NIL);
+      (security_infoton *)NULL_POINTER);
 }
 
 void login_tentacle::expunge(const octopus_entity &to_remove)

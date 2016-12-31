@@ -23,7 +23,7 @@
 using namespace basis;
 using namespace structures;
 
-bogon::bogon(abyte *to_copy) : my_held(NIL)
+bogon::bogon(abyte *to_copy) : my_held(NULL_POINTER)
 {
   if (to_copy) {
     astring t((char *)to_copy);
@@ -34,7 +34,7 @@ bogon::bogon(abyte *to_copy) : my_held(NIL)
   }
 }
 
-bogon::bogon(const bogon &to_copy) : my_held(NIL) { operator = (to_copy); }
+bogon::bogon(const bogon &to_copy) : my_held(NULL_POINTER) { operator = (to_copy); }
 
 bogon &bogon::operator = (const bogon &to_copy) {
   if (this == &to_copy) return *this;

@@ -50,7 +50,7 @@ bool tree::iterator::next_node(tree *&to_return)
 #ifdef DEBUG_TREE
   FUNCDEF("next_node");
 #endif
-  to_return = NIL;
+  to_return = NULL_POINTER;
 #ifdef DEBUG_TREE
   if ( (_order != to_branches)
       && (_order != reverse_branches) ) {
@@ -255,7 +255,7 @@ tree *tree::iterator::next()
 #ifdef DEBUG_TREE
   FUNCDEF("next");
 #endif
-  tree *to_return = NIL;
+  tree *to_return = NULL_POINTER;
   bool found_tree = false;
   while (!found_tree) {
     bool still_running = next_node(to_return);
@@ -270,7 +270,7 @@ tree *tree::iterator::next()
 
 tree::tree()
 : node(1)
-{ set_link(BACKWARDS_BRANCH, NIL); }
+{ set_link(BACKWARDS_BRANCH, NULL_POINTER); }
 
 tree::~tree()
 {
@@ -278,7 +278,7 @@ tree::~tree()
   // cousin.
   tree *my_parent = parent();
   if (my_parent) my_parent->prune(this);
-  my_parent = NIL;  // disavow since we are loose now.
+  my_parent = NULL_POINTER;  // disavow since we are loose now.
 
 #if 0
 
@@ -298,7 +298,7 @@ tree::~tree()
   // newer version of delete doesn't recurse; it just iterates instead,
   // which avoids the massive recursive depth of the original approach.
   tree *curr_node = this;
-  while (curr_node != NIL) {
+  while (curr_node != NULL_POINTER) {
     // make a breadcrumb for getting back to 'here' in the tree.
     tree *way_back = curr_node;
     // our main operation here is to go down a node without using any
@@ -306,7 +306,7 @@ tree::~tree()
     // or there are no kids at all.
     curr_node = curr_node->branch(0);
 
-    if (curr_node = NIL) {
+    if (curr_node = NULL_POINTER) {
       // wayback has no children, so we can take action.
 
       // if wayback is the same as "this", then we exit from iterations since
@@ -342,7 +342,7 @@ int tree::branches() const { return links() - 1; }
 tree *tree::branch(int branch_number) const
 {
   branch_number++;
-  bounds_return(branch_number, 1, branches(), NIL);
+  bounds_return(branch_number, 1, branches(), NULL_POINTER);
   return (tree *)get_link(branch_number);
 }
 
@@ -352,8 +352,8 @@ int tree::which(tree *branch_to_find) const
 tree *tree::root() const
 {
   const tree *traveler = this;
-  // keep looking at the backwards branch until it is a NIL.  the tree with
-  // a NIL BACKWARDS_BRANCH is the root.  return that tree.
+  // keep looking at the backwards branch until it is a NULL_POINTER.  the tree with
+  // a NULL_POINTER BACKWARDS_BRANCH is the root.  return that tree.
   while (traveler->get_link(BACKWARDS_BRANCH))
     traveler = (tree *)traveler->get_link(BACKWARDS_BRANCH);
   return const_cast<tree *>(traveler);
@@ -369,7 +369,7 @@ void tree::attach(tree *new_branch)
 void tree::insert(int branch_place, tree *new_branch)
 {
   branch_place++;
-  insert_link(links(), NIL);
+  insert_link(links(), NULL_POINTER);
   if (branch_place >= links())
     branch_place = links() - 1;
   for (int i = links() - 1; i > branch_place; i--)
@@ -390,7 +390,7 @@ outcome tree::prune_index(int branch_to_cut)
   branch_to_cut++;
   bounds_return(branch_to_cut, 1, branches(), basis::common::NOT_FOUND);
   tree *that_branch = (tree *)get_link(branch_to_cut);
-  that_branch->set_link(BACKWARDS_BRANCH, NIL);
+  that_branch->set_link(BACKWARDS_BRANCH, NULL_POINTER);
   zap_link(branch_to_cut);
   return basis::common::OKAY;
 }
@@ -415,7 +415,7 @@ if (to_follow.size()) {}
 /*
   tree *traveller = this;
   path to_accumulate(root());
-  while (traveller->parent() != NIL) {
+  while (traveller->parent() != NULL_POINTER) {
 //    int branch_number = traveller->parent()->which(traveller);
 //    if (branch_number == BRANCH_NOT_FOUND) non_continuable_error
 //      (class_name(), "generate_path", "branch not found during path construction");

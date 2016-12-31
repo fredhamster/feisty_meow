@@ -15,11 +15,11 @@
 #include "ini_configurator.h"
 #include "system_values.h"
 
-#include <algorithms/shell_sort.h>
 #include <structures/int_hash.h>
 #include <structures/string_table.h>
 #include <textual/list_parsing.h>
 #include <textual/parser_bits.h>
+#include "../algorithms/sorts.h"
 
 using namespace algorithms;
 using namespace basis;
@@ -73,7 +73,7 @@ public:
         return curr;
       }
     }
-    return NIL;
+    return NULL_POINTER;
   }
 };
 

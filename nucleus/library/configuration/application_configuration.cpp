@@ -207,7 +207,7 @@ astring application_configuration::application_name()
   to_return = get_cmdline_from_proc();
 #elif defined(_MSC_VER)
   flexichar low_buff[MAX_ABS_PATH + 1];
-  GetModuleFileName(NIL, low_buff, MAX_ABS_PATH - 1);
+  GetModuleFileName(NULL_POINTER, low_buff, MAX_ABS_PATH - 1);
   astring buff = from_unicode_temp(low_buff);
   buff.to_lower();  // we lower-case the name since windows seems to UC it.
   to_return = buff;

@@ -68,8 +68,8 @@ const int_set &memory_limiter::individuals_listed() const
 
 ml_memory_record *memory_limiter::find_individual(int individual) const
 {
-  ml_memory_record *to_return = NIL;
-  if (!_individual_sizes->find(individual, to_return)) return NIL;
+  ml_memory_record *to_return = NULL_POINTER;
+  if (!_individual_sizes->find(individual, to_return)) return NULL_POINTER;
     // no record for that guy.
   return to_return;
 }

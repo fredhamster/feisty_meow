@@ -207,7 +207,7 @@ int t_amorph::test_byte_array_amorph()
     LOG("before fred creation");
     chaos randomizer;
     amorph<byte_array> fred(MAX_LIMBS - 1);
-    fred.append(NIL);  // add one to make it max limbs big.
+    fred.append(NULL_POINTER);  // add one to make it max limbs big.
     LOG("after append nil");
     {
       for (int i = 0; i < fred.elements(); i++) {
@@ -265,11 +265,11 @@ int t_amorph::test_byte_array_amorph()
       LOG("done unpacking in test_amorph");
       ASSERT_TRUE(compare(fred, *new_fred), "first pack test, amorphs not the same");
       abyte *cont1
-        = (new_fred->get(14)? (*new_fred)[14]->access() : (abyte *)"NIL");
+        = (new_fred->get(14)? (*new_fred)[14]->access() : (abyte *)"NULL_POINTER");
       abyte *cont2
-        = (new_fred->get(20)? (*new_fred)[20]->access() : (abyte *)"NIL");
+        = (new_fred->get(20)? (*new_fred)[20]->access() : (abyte *)"NULL_POINTER");
       abyte *cont3
-        = (new_fred->get(36)? (*new_fred)[36]->access() : (abyte *)"NIL");
+        = (new_fred->get(36)? (*new_fred)[36]->access() : (abyte *)"NULL_POINTER");
 
       if (cont1) LOG(astring(astring::SPRINTF, "14: %s", cont1));
       if (cont2) LOG(astring(astring::SPRINTF, "20: %s", cont2));

@@ -55,7 +55,7 @@ SAFE_STATIC(mutex, __single_stepper, )
   // protects unsafe areas of rsa crypto from access by multiple threads at once.
 
 rsa_crypto::rsa_crypto(int key_size)
-: _key(NIL)
+: _key(NULL_POINTER)
 {
   FUNCDEF("ctor(int)");
   LOG("prior to generating key");
@@ -64,7 +64,7 @@ rsa_crypto::rsa_crypto(int key_size)
 }
 
 rsa_crypto::rsa_crypto(const byte_array &key)
-: _key(NIL)
+: _key(NULL_POINTER)
 {
   FUNCDEF("ctor(byte_array)");
   static_ssl_initializer();
@@ -75,7 +75,7 @@ rsa_crypto::rsa_crypto(const byte_array &key)
 }
 
 rsa_crypto::rsa_crypto(RSA *key)
-: _key(NIL)
+: _key(NULL_POINTER)
 {
   FUNCDEF("ctor(RSA)");
   static_ssl_initializer();
@@ -86,7 +86,7 @@ rsa_crypto::rsa_crypto(RSA *key)
 
 rsa_crypto::rsa_crypto(const rsa_crypto &to_copy)
 : root_object(),
-  _key(NIL)
+  _key(NULL_POINTER)
 {
   FUNCDEF("copy ctor");
   static_ssl_initializer();
@@ -118,7 +118,7 @@ RSA *rsa_crypto::generate_key(int key_size)
   static_ssl_initializer();
   LOG("into generate key");
   auto_synchronizer mutt(__single_stepper());
-  RSA *to_return = RSA_generate_key(key_size, 65537, NIL, NIL);
+  RSA *to_return = RSA_generate_key(key_size, 65537, NULL_POINTER, NULL_POINTER);
   if (!to_return) {
     continuable_error(static_class_name(), func,
         a_sprintf("failed to generate a key of %d bits.", key_size));
@@ -146,17 +146,17 @@ bool rsa_crypto::set_key(byte_array &key)
   // get the public key bits first.
   byte_array n;
   if (!structures::detach(key, n)) return false;
-  BIGNUM *the_n = BN_bin2bn(n.access(), n.length(), NIL);
+  BIGNUM *the_n = BN_bin2bn(n.access(), n.length(), NULL_POINTER);
   if (!the_n) return false;
   byte_array e;
   if (!structures::detach(key, e)) return false;
-  BIGNUM *the_e = BN_bin2bn(e.access(), e.length(), NIL);
+  BIGNUM *the_e = BN_bin2bn(e.access(), e.length(), NULL_POINTER);
   if (!the_e) return false;
 
   if (type == 'u') {
      // done with public key.
 #ifdef NEWER_OPENSSL
-     RSA_set0_key(_key, the_n, the_e, NIL);
+     RSA_set0_key(_key, the_n, the_e, NULL_POINTER);
 #else
      _key->n = the_n; _key->e = the_e;
 #endif
@@ -166,28 +166,28 @@ bool rsa_crypto::set_key(byte_array &key)
   // the rest is for a private key.
   byte_array d;
   if (!structures::detach(key, d)) return false;
-  BIGNUM *the_d = BN_bin2bn(d.access(), d.length(), NIL);
+  BIGNUM *the_d = BN_bin2bn(d.access(), d.length(), NULL_POINTER);
   if (!the_d) return false;
 
   byte_array p;
   if (!structures::detach(key, p)) return false;
-  BIGNUM *the_p = BN_bin2bn(p.access(), p.length(), NIL);
+  BIGNUM *the_p = BN_bin2bn(p.access(), p.length(), NULL_POINTER);
   if (!the_p) return false;
   byte_array q;
   if (!structures::detach(key, q)) return false;
-  BIGNUM *the_q = BN_bin2bn(q.access(), q.length(), NIL);
+  BIGNUM *the_q = BN_bin2bn(q.access(), q.length(), NULL_POINTER);
   if (!the_q) return false;
   byte_array dmp1;
   if (!structures::detach(key, dmp1)) return false;
-  BIGNUM *the_dmp1 = BN_bin2bn(dmp1.access(), dmp1.length(), NIL);
+  BIGNUM *the_dmp1 = BN_bin2bn(dmp1.access(), dmp1.length(), NULL_POINTER);
   if (!the_dmp1) return false;
   byte_array dmq1;
   if (!structures::detach(key, dmq1)) return false;
-  BIGNUM *the_dmq1 = BN_bin2bn(dmq1.access(), dmq1.length(), NIL);
+  BIGNUM *the_dmq1 = BN_bin2bn(dmq1.access(), dmq1.length(), NULL_POINTER);
   if (!the_dmq1) return false;
   byte_array iqmp;
   if (!structures::detach(key, iqmp)) return false;
-  BIGNUM *the_iqmp = BN_bin2bn(iqmp.access(), iqmp.length(), NIL);
+  BIGNUM *the_iqmp = BN_bin2bn(iqmp.access(), iqmp.length(), NULL_POINTER);
   if (!the_iqmp) return false;
 
   // we can set the n, e and d now.
@@ -217,7 +217,7 @@ bool rsa_crypto::set_key(byte_array &key)
 bool rsa_crypto::set_key(RSA *key)
 {
   FUNCDEF("set_key [RSA]");
-  if (!key) return NIL;
+  if (!key) return NULL_POINTER;
   // test the incoming key.
   auto_synchronizer mutt(__single_stepper());
   int check = RSA_check_key(key);
@@ -266,7 +266,7 @@ bool rsa_crypto::private_key(byte_array &privkey) const
   if (!worked) return false;
   privkey[posn] = abyte('r');  // switch public key flag to private.
   // convert the multiple private portions into binary.
-  //const BIGNUM **the_n = NIL, **the_e = NIL, **the_d = NIL;
+  //const BIGNUM **the_n = NULL_POINTER, **the_e = NULL_POINTER, **the_d = NULL_POINTER;
   BIGNUM **the_n = new BIGNUM *, **the_e = new BIGNUM *, **the_d = new BIGNUM *;
   BIGNUM **the_p = new BIGNUM *, **the_q = new BIGNUM *;
   BIGNUM **the_dmp1 = new BIGNUM *, **the_dmq1 = new BIGNUM *, **the_iqmp = new BIGNUM *;

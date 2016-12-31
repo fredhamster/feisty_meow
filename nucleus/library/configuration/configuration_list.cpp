@@ -57,7 +57,7 @@ const configlet *configuration_list::find(const configlet &to_find) const
       return &curr;
     }
   }
-  return NIL;
+  return NULL_POINTER;
 }
 
 bool configuration_list::zap(const configlet &dead_item)

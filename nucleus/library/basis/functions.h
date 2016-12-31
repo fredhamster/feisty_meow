@@ -114,11 +114,11 @@ template <class type> type sign(type a)
 
 //! deletion with clearing of the pointer.
 /*! this function simplifies the two step process of deleting a pointer and
-then clearing it to NIL.  this makes debugging a bit easier since an access
-of NIL should always cause a fault, rather than looking like a possibly
+then clearing it to NULL_POINTER.  this makes debugging a bit easier since an access
+of NULL_POINTER should always cause a fault, rather than looking like a possibly
 valid object. */
 template<class contents>
-void WHACK(contents * &ptr) { if (ptr) { delete ptr; ptr = NIL; } }
+void WHACK(contents * &ptr) { if (ptr) { delete ptr; ptr = NULL_POINTER; } }
 
 //! Returns an object that is defined statically.
 /*! Thus the returned object will never be recreated once this function

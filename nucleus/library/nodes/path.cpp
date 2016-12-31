@@ -71,7 +71,7 @@ node *path::pop()
 {
   node *to_return;
   if (_stack->acquire_pop(to_return) != common::OKAY)
-    return NIL;
+    return NULL_POINTER;
   return to_return;
 }
 

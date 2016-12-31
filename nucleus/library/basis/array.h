@@ -76,11 +76,11 @@ public:
     that's in use and we want NEW_AT_END, then the existing contents are
     jammed up into the front end of the array. */
 
-  array(int number = 0, const contents *init = NIL,
+  array(int number = 0, const contents *init = NULL_POINTER,
           int flags = EXPONENTIAL_GROWTH | FLUSH_INVISIBLE);
     //!< Constructs an array with room for "number" objects.
-    /*!< The initial contents are copied from "init" unless NIL is passed in
-    instead.  If "init" is not NIL, then it must point to an array of objects
+    /*!< The initial contents are copied from "init" unless NULL_POINTER is passed in
+    instead.  If "init" is not NULL_POINTER, then it must point to an array of objects
     that contains at least "number".  The "flags" are a value based on the
     special flags being added bit-wise.  If "flags" contains SIMPLE_COPY, then
     memmove() is used rather than using the C++ object's assignment operator.
@@ -99,10 +99,10 @@ public:
 
   virtual ~array();  //!< destroys the memory allocated for the objects.
 
-  void reset(int number = 0, const contents *initial_contents = NIL);
+  void reset(int number = 0, const contents *initial_contents = NULL_POINTER);
     //!< Resizes this array and sets the contents from an array of contents.
-    /*< If "initial_contents" is not NIL, then it must contain an array of
-    "contents" with at least "number" objects in it.  If it is NIL, then
+    /*< If "initial_contents" is not NULL_POINTER, then it must contain an array of
+    "contents" with at least "number" objects in it.  If it is NULL_POINTER, then
     the size of the array is changed but the contents are not.  note that
     any pre-existing elements that were previously out of range might still
     have their prior contents; the newly available elements are not necessarily
@@ -289,7 +289,7 @@ public:
 class double_array : public array<double>
 {
 public:
-  double_array(int len = 0, double *data = NIL)
+  double_array(int len = 0, double *data = NULL_POINTER)
       : root_object(),
         array<double>(len, data, SIMPLE_COPY | EXPONE) {}
   double_array(const array<double> &to_copy) : array<double>(to_copy) {}
@@ -313,7 +313,7 @@ public:
 
 template <class contents>
 array<contents>::array(int num, const contents *init, int flags)
-: root_object(), c_active_length(0), c_real_length(0), c_mem_block(NIL), c_offset(NIL), c_flags(flags)
+: root_object(), c_active_length(0), c_real_length(0), c_mem_block(NULL_POINTER), c_offset(NULL_POINTER), c_flags(flags)
 {
   if (c_flags > 7) {
 #ifdef DEBUG_ARRAY
@@ -329,7 +329,7 @@ array<contents>::array(int num, const contents *init, int flags)
 
 template <class contents>
 array<contents>::array(const array<contents> &cf)
-: root_object(), c_active_length(0), c_real_length(0), c_mem_block(NIL), c_offset(NIL), c_flags(cf.c_flags)
+: root_object(), c_active_length(0), c_real_length(0), c_mem_block(NULL_POINTER), c_offset(NULL_POINTER), c_flags(cf.c_flags)
 {
   allocator_reset(cf.c_active_length, 1);  // get some space.
   operator = (cf);  // assignment operator does the rest.
@@ -338,9 +338,9 @@ array<contents>::array(const array<contents> &cf)
 template <class contents>
 array<contents>::~array()
 {
-  c_offset = NIL;
+  c_offset = NULL_POINTER;
   if (c_mem_block) delete [] c_mem_block;
-  c_mem_block = NIL;
+  c_mem_block = NULL_POINTER;
   c_active_length = 0;
   c_real_length = 0;
 }
@@ -421,7 +421,7 @@ template <class contents>
 array<contents> array<contents>::concatenation(const array &s1) const
 {
   // tailor the return array to the new size needed.
-  array<contents> to_return(this->length() + s1.length(), NIL, s1.c_flags);
+  array<contents> to_return(this->length() + s1.length(), NULL_POINTER, s1.c_flags);
   to_return.overwrite(0, *this);  // put the first part into the new array.
   to_return.overwrite(this->length(), s1);  // add the second segment.
   return to_return;
@@ -430,7 +430,7 @@ array<contents> array<contents>::concatenation(const array &s1) const
 template <class contents>
 array<contents> array<contents>::concatenation(const contents &s1) const
 {
-  array<contents> to_return(this->length() + 1, NIL, c_flags);
+  array<contents> to_return(this->length() + 1, NULL_POINTER, c_flags);
   to_return.overwrite(0, *this);
   if (!this->simple())
     to_return.access()[to_return.last()] = s1;
@@ -442,9 +442,9 @@ array<contents> array<contents>::concatenation(const contents &s1) const
 template <class contents>
 array<contents> array<contents>::subarray(int start, int end) const
 {
-  bounds_return(start, 0, this->last(), array<contents>(0, NIL, c_flags));
-  bounds_return(end, 0, this->last(), array<contents>(0, NIL, c_flags));
-  if (start > end) return array<contents>(0, NIL, c_flags);
+  bounds_return(start, 0, this->last(), array<contents>(0, NULL_POINTER, c_flags));
+  bounds_return(end, 0, this->last(), array<contents>(0, NULL_POINTER, c_flags));
+  if (start > end) return array<contents>(0, NULL_POINTER, c_flags);
   return array<contents>(end - start + 1, &(this->observe()[start]), c_flags);
 }
 
@@ -522,8 +522,8 @@ outcome array<contents>::allocator_reset(int initial, int blocking)
   if (c_mem_block) {
     // remove old contents.
     delete [] c_mem_block;
-    c_mem_block = NIL;
-    c_offset = NIL;
+    c_mem_block = NULL_POINTER;
+    c_offset = NULL_POINTER;
   }
   c_active_length = initial;  // reset the length to the reporting size.
   c_real_length = initial + blocking;  // compute the real length.
@@ -611,7 +611,7 @@ outcome array<contents>::resize(int new_size, how_to_copy way)
     if (c_real_length < new_size) {
       // there's really not enough space overall, no fooling.  we now will
       // create a new block.
-      c_mem_block = NIL;  // zero out the pointer so reset doesn't delete it.
+      c_mem_block = NULL_POINTER;  // zero out the pointer so reset doesn't delete it.
       delete_old = true;
       int blocking = 1;
       if (exponential()) blocking = new_size + 1;
@@ -854,7 +854,7 @@ void array<contents>::snarf(array<contents> &new_contents)
 class char_star_array : public array<char *>
 {
 public:
-  char_star_array() : array<char *>(0, NIL, SIMPLE_COPY | EXPONE
+  char_star_array() : array<char *>(0, NULL_POINTER, SIMPLE_COPY | EXPONE
       | FLUSH_INVISIBLE) {}
   ~char_star_array() {
     // clean up all the memory we're holding.

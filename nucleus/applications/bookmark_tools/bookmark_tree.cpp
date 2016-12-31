@@ -279,7 +279,7 @@ inner_mark_tree *bookmark_tree::process_category(const string_array &items)
     }
     LOG(astring("category name \"") + category_name
         + "\" in conflict with existing: " + catnames);
-    inner_mark_tree *fake_it = NIL;
+    inner_mark_tree *fake_it = NULL_POINTER;
 
 //hmmm: neither of these are right; they need to use a comparator that
 //      uses our magic comparison function.
@@ -321,7 +321,7 @@ inner_mark_tree *bookmark_tree::process_category(const string_array &items)
     LOG("==> failure to find a match for either category!");
     deadly_error(class_name(), func, "collision resolution code failed; "
         "please fix category error");
-    return NIL;
+    return NULL_POINTER;
   }
   // now that we know these names are unique, we'll add them into the list
   // so future categories can't reuse these.

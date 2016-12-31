@@ -69,7 +69,7 @@ public:
 
   virtual outcome reconstitute(const string_array &classifier,
           byte_array &packed_form, infoton * &reformed) {
-    reformed = NIL;
+    reformed = NULL_POINTER;
     if (classifier != simp_classifier()) return NO_HANDLER;
     reformed = new simple_infoton;
     if (!reformed->unpack(packed_form)) {
@@ -109,7 +109,7 @@ int test_octopus_security::execute()
   octopus logos("local", 18 * MEGABYTE);
   simple_tentacle *tenty = new simple_tentacle;
   logos.add_tentacle(tenty);
-  tenty = NIL;  // octopus has charge of this now.
+  tenty = NULL_POINTER;  // octopus has charge of this now.
 
   // turn on security in logos.
   simple_entity_registry *guardian = new simple_entity_registry;

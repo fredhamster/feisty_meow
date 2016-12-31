@@ -46,9 +46,9 @@ public:
   const configlet *find(const configlet &to_find) const;
     //!< locates the actual configlet with the section and entry of "to_find".
     /*!< note that this might fail if no matching section and entry are found,
-    thus returning NIL.  the returned object is still kept in the list, so
+    thus returning NULL_POINTER.  the returned object is still kept in the list, so
     do not try to destroy it.  also note that the object passed in must be
-    the same type as the object to be found; otherwise, NIL will be
+    the same type as the object to be found; otherwise, NULL_POINTER will be
     returned. */
 
   bool zap(const configlet &dead_item);

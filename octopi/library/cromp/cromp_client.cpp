@@ -133,10 +133,10 @@ cromp_client::cromp_client(const internet_address &addr, int connection_wait,
   _identified(false),
   _authorized(false),
   _disallowed(false),
-  _asynch_connector(NIL),
+  _asynch_connector(NULL_POINTER),
   _channel_secured(false),
   _crypto(new blowfish_crypto(encryption_infoton::BLOWFISH_KEY_SIZE)),
-  _encrypt_arm(NIL),
+  _encrypt_arm(NULL_POINTER),
   _guardian(new blank_entity_registry),
   c_verification(new byte_array)
 {
@@ -251,7 +251,7 @@ SAFE_STATIC(tcpip_stack, _hidden_stack, )
 octopus_entity cromp_client::randomize_entity() const
 {
   astring host = cromp_common::chew_hostname(internet_address
-      (byte_array::empty_array(), _hidden_stack().hostname(), 0), NIL);
+      (byte_array::empty_array(), _hidden_stack().hostname(), 0), NULL_POINTER);
   chaos randomizer;
   return octopus_entity(host, application_configuration::process_id(),
       randomizer.inclusive(0, MAXINT32 / 3),
@@ -269,7 +269,7 @@ outcome cromp_client::synchronous_request(const infoton &to_send,
     int timeout)
 {
   FUNCDEF("synchronous_request");
-  received = NIL;
+  received = NULL_POINTER;
   outcome ret = submit(to_send, item_id);
   if (ret != OKAY) {
     LOG(astring("failed to submit request: ") + outcome_name(ret) + " on " + to_send.text_form());
@@ -424,7 +424,7 @@ outcome cromp_client::asynch_connect()
     _disallowed = true;
     _asynch_connector = new asynch_connection_thread(*this);
   }
-  _asynch_connector->start(NIL);
+  _asynch_connector->start(NULL_POINTER);
 //#ifdef DEBUG_CROMP_CLIENT
   LOG(instance_name() + " exit.");
 //#endif
@@ -645,7 +645,7 @@ void cromp_client::decrypt_package_as_needed(outcome &to_return,
       LOG("failed to fast_unpack the transformed data.");
       to_return = ENCRYPTION_MISMATCH;  // what else would we call that?
     } else {
-      infoton *new_req = NIL;
+      infoton *new_req = NULL_POINTER;
       outcome rest_ret = octo()->restore(classif, decro, new_req);
       if (rest_ret == tentacle::OKAY) {
         // we got a good transformed version.

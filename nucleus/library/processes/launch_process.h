@@ -28,7 +28,7 @@ namespace processes {
 class char_star_array : public basis::array<char *>
 {
 public:
-  char_star_array() : basis::array<char *>(0, NIL, SIMPLE_COPY | EXPONE | FLUSH_INVISIBLE) {}
+  char_star_array() : basis::array<char *>(0, NULL_POINTER, SIMPLE_COPY | EXPONE | FLUSH_INVISIBLE) {}
   ~char_star_array() {
     // clean up all the memory we're holding.
     for (int i = 0; i < length(); i++) {

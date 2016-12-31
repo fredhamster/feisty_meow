@@ -205,7 +205,7 @@ private:
 extern int _global_argc;
 extern char **_global_argv;
 //! this macro allocates space for the command-line storage areas.
-#define DEFINE_ARGC_AND_ARGV int _global_argc = 0; char **_global_argv = NIL
+#define DEFINE_ARGC_AND_ARGV int _global_argc = 0; char **_global_argv = NULL_POINTER
 
 //! this macro assigns our command-line parameters for this program.
 #define SET_ARGC_ARGV(argc, argv) { \

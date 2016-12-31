@@ -130,7 +130,7 @@ throw_error(current_node->class_name(), func, "failure calculating size");
 
 int packable_tree::recursive_packed_size() const
 {
-  packable_tree *curr = NIL;
+  packable_tree *curr = NULL_POINTER;
   int accum = 0;  // where we accumulate the length of the packed form.
   for (iterator zip2 = start(postfix); (curr = (packable_tree *)zip2.next()); )
     calcit(accum, curr);
@@ -141,7 +141,7 @@ int packable_tree::recursive_packed_size() const
 
 void packable_tree::recursive_pack(byte_array &packed_form) const
 {
-  packable_tree *curr = NIL;
+  packable_tree *curr = NULL_POINTER;
   for (iterator zip2 = start(postfix); (curr = (packable_tree *)zip2.next()); )
     packit(packed_form, curr);
 
@@ -161,10 +161,10 @@ packable_tree *packable_tree::recursive_unpack(byte_array &packed_form,
   // get the first command out of the package.
   if (!cmd.unpack(packed_form)) {
 //complain.
-    return NIL;
+    return NULL_POINTER;
   }
 
-  packable_tree *new_branch = NIL;
+  packable_tree *new_branch = NULL_POINTER;
   bool failure = false;  // set to true if errors occurred.
 
   // the packed tree is traversed by grabbing a command and then doing what

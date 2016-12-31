@@ -117,7 +117,7 @@ void menu_base::add_item(menu_item *to_invoke)
 
 menu_item *menu_base::get_item(int index)
 {
-  bounds_return(index, 0, _items->elements(), NIL);
+  bounds_return(index, 0, _items->elements(), NULL_POINTER);
   return dynamic_cast<menu_item *>(_items->borrow(index));
 }
 
@@ -145,7 +145,7 @@ void menu_base::add_submenu(menu_base *sub)
 
 menu_base *menu_base::get_submenu(int index)
 {
-  bounds_return(index, 0, _menus->elements(), NIL);
+  bounds_return(index, 0, _menus->elements(), NULL_POINTER);
   return dynamic_cast<menu_base *>(_menus->borrow(index));
 }
 
@@ -167,7 +167,7 @@ menu_common_base *menu_base::evaluate_trigger(char trigger)
 {
 //hmmm: implement this too....
 if (!trigger){}
-return NIL;
+return NULL_POINTER;
 }
 
 void menu_base::activate()

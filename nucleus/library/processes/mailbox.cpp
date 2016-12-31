@@ -188,7 +188,7 @@ int mailbox::waiting(const unique_int &id) const
 
 bool mailbox::pick_up(const unique_int &id, letter * &package)
 {
-  package = NIL;
+  package = NULL_POINTER;
   auto_synchronizer l(*_transaction_lock);
   return _packages->get(id, package);
 }

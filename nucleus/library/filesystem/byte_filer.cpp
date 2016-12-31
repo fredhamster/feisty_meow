@@ -44,7 +44,7 @@ class file_hider
 public:
   FILE *fp;  // the real file pointer.
 
-  file_hider() : fp(NIL) {}
+  file_hider() : fp(NULL_POINTER) {}
 };
 
 //////////////
@@ -88,8 +88,8 @@ bool byte_filer::open(const astring &fname, const astring &perms)
   close();
   _auto_close = true;  // reset since we know we're opening this.
   _filename->reset(fname);
-  _handle->fp = _filename->raw().t()? fopen(_filename->raw().s(), perms.s()) : NIL;
-  if (_handle->fp == NIL) return false;
+  _handle->fp = _filename->raw().t()? fopen(_filename->raw().s(), perms.s()) : NULL_POINTER;
+  if (_handle->fp == NULL_POINTER) return false;
   return good();
 }
 
@@ -97,7 +97,7 @@ void byte_filer::close()
 {
   _filename->reset("");
   if (_auto_close && _handle->fp) fclose(_handle->fp);
-  _handle->fp = NIL;
+  _handle->fp = NULL_POINTER;
 }
 
 bool byte_filer::good() { return !!_handle->fp; }

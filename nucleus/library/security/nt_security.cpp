@@ -31,7 +31,7 @@
 #endif
 
 nt_security::nt_security()
-: m_sDirServiceProvider(NIL)
+: m_sDirServiceProvider(NULL_POINTER)
 {
   // Eventually, construction of nt_security should determine if WinNT://
   // or LDAP://, etc is the service provider and set a private member variable  

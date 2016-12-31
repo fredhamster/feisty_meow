@@ -64,7 +64,7 @@ public:
   time_stamp _when_added;  // when the data became available.
 
   infoton_holder(const octopus_request_id &id = octopus_request_id(),
-      infoton *item = NIL)
+      infoton *item = NULL_POINTER)
   : _item(item), _id(id), _when_added() {}
 
   ~infoton_holder() { WHACK(_item); }
@@ -140,7 +140,7 @@ struct apply_struct
   int _decay_interval;  // how long are items allowed to live?
 
   apply_struct(int &items_held)
-      : _empty_baskets(NIL), _any_item(NIL), _items_held(items_held),
+      : _empty_baskets(NULL_POINTER), _any_item(NULL_POINTER), _items_held(items_held),
         _decay_interval(0) {}
 };
 
@@ -275,7 +275,7 @@ infoton *entity_data_bin::acquire_for_any(octopus_request_id &id)
   GRAB_LOCK;
   apply_struct apple(_items_held);
   _table->apply(any_item_applier, &apple);
-  if (!apple._any_item) return NIL;
+  if (!apple._any_item) return NULL_POINTER;
   DUMP_STATE;
   // retrieve the information from our basket that was provided.
   infoton_holder *found = apple._any_item->acquire(0);
@@ -287,10 +287,10 @@ infoton *entity_data_bin::acquire_for_any(octopus_request_id &id)
 #endif
     _table->zap(found->_id._entity);
   }
-  apple._any_item = NIL;
+  apple._any_item = NULL_POINTER;
   infoton *to_return = found->_item;
   id = found->_id;
-  found->_item = NIL;  // clear so it won't be whacked.
+  found->_item = NULL_POINTER;  // clear so it won't be whacked.
   WHACK(found);
   _items_held--;
 //#ifdef DEBUG_ENTITY_DATA_BIN
@@ -328,22 +328,22 @@ infoton *entity_data_bin::acquire_for_entity(const octopus_entity &requester,
   FUNCDEF("acquire_for_entity [single]");
   id = octopus_request_id();  // reset it.
   GRAB_LOCK;
-  infoton *to_return = NIL;
+  infoton *to_return = NULL_POINTER;
   entity_basket *bask = _table->find(requester);
   if (!bask) {
-    return NIL;
+    return NULL_POINTER;
   }
   if (!bask->elements()) {
 #ifdef DEBUG_ENTITY_DATA_BIN
     LOG(astring("tossing empty basket ") + requester.mangled_form());
 #endif
     _table->zap(requester);
-    return NIL;
+    return NULL_POINTER;
   }
   DUMP_STATE;
   id = bask->get(0)->_id;
   to_return = bask->borrow(0)->_item;
-  bask->borrow(0)->_item = NIL;
+  bask->borrow(0)->_item = NULL_POINTER;
   bask->zap(0, 0);
   if (!bask->elements()) {
 #ifdef DEBUG_ENTITY_DATA_BIN
@@ -362,21 +362,21 @@ infoton *entity_data_bin::acquire_for_entity(const octopus_entity &requester,
 infoton *entity_data_bin::acquire_for_identifier(const octopus_request_id &id)
 {
   FUNCDEF("acquire_for_identifier");
-  infoton *to_return = NIL;
+  infoton *to_return = NULL_POINTER;
   GRAB_LOCK;
   entity_basket *bask = _table->find(id._entity);
-  if (!bask) return NIL;
+  if (!bask) return NULL_POINTER;
   if (!bask->elements()) {
 #ifdef DEBUG_ENTITY_DATA_BIN
     LOG(astring("tossing empty basket ") + id._entity.mangled_form());
 #endif
     _table->zap(id._entity);
-    return NIL;
+    return NULL_POINTER;
   }
   for (int i = 0; i < bask->elements(); i++) {
     if (bask->get(i)->_id == id) {
       to_return = bask->borrow(i)->_item;  // snag the item.
-      bask->borrow(i)->_item = NIL;  // clear the list's version out.
+      bask->borrow(i)->_item = NULL_POINTER;  // clear the list's version out.
       bask->zap(i, i);  // whack the sanitized element.
       DUMP_STATE;
       if (!bask->elements()) {
@@ -393,7 +393,7 @@ infoton *entity_data_bin::acquire_for_identifier(const octopus_request_id &id)
       return to_return;
     }
   }
-  return NIL;
+  return NULL_POINTER;
 }
 
 bool cleaning_applier(const octopus_entity &key, entity_basket &bask,

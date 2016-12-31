@@ -59,7 +59,7 @@ static_memory_gremlin::static_memory_gremlin()
 : c_lock(),
   c_top_index(0),
   c_actual_size(0),
-  c_pointers(NIL),
+  c_pointers(NULL_POINTER),
   c_show_debugging(false)
 {
   ensure_space_exists();
@@ -82,7 +82,7 @@ static_memory_gremlin::~static_memory_gremlin()
     // could be added on the end of the list as a result of this destruction.
     int zapped_index = c_top_index - 1;
     gremlin_object_record *ptr = c_pointers[zapped_index];
-    c_pointers[zapped_index] = NIL;
+    c_pointers[zapped_index] = NULL_POINTER;
       // since we know the one we're zapping, we no longer need that index.
     c_top_index--;
       // this should allow us to keep chewing on items that are newly being
@@ -101,7 +101,7 @@ static_memory_gremlin::~static_memory_gremlin()
   }
 #endif
   delete [] c_pointers;
-  c_pointers = NIL;
+  c_pointers = NULL_POINTER;
 }
 
 bool static_memory_gremlin::__program_is_dying() { return __global_program_is_dying; }
@@ -125,7 +125,7 @@ root_object *static_memory_gremlin::get(const char *unique_name)
 {
   auto_synchronizer l(c_lock);
   int indy = locate(unique_name);
-  if (negative(indy)) return NIL;
+  if (negative(indy)) return NULL_POINTER;
   return c_pointers[indy]->c_object;
 }
 
@@ -136,7 +136,7 @@ const char *static_memory_gremlin::find(const root_object *ptr)
     if (ptr == c_pointers[i]->c_object)
       return c_pointers[i]->c_name;
   }
-  return NIL;
+  return NULL_POINTER;
 }
 
 bool static_memory_gremlin::put(const char *unique_name, root_object *to_put)
@@ -187,7 +187,7 @@ void static_memory_gremlin::ensure_space_exists()
     if (!new_ptr) {
       throw "error: static_memory_gremlin::ensure_space_exists: failed to allocate memory for pointer list";
     }
-    for (int i = 0; i < c_actual_size; i++) new_ptr[i] = NIL;
+    for (int i = 0; i < c_actual_size; i++) new_ptr[i] = NULL_POINTER;
     for (int j = 0; j < c_actual_size - SMG_CHUNKING_FACTOR; j++) 
       new_ptr[j] = c_pointers[j];
     if (c_pointers) delete [] c_pointers;
@@ -204,7 +204,7 @@ void static_memory_gremlin::ensure_space_exists()
 static_memory_gremlin &static_memory_gremlin::__hoople_globals()
 {
   static bool _initted = false;  // tells whether we've gone through yet.
-  static static_memory_gremlin *_internal_gremlin = NIL;
+  static static_memory_gremlin *_internal_gremlin = NULL_POINTER;
     // holds our list of shared pieces...
 
   if (!_initted) {

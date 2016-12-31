@@ -94,12 +94,12 @@ public:
     const node *observe();  //!< peek at the current element.
       /*!< Note: observe() and access() will return the first element if the
       list is positioned at the head (or the last if at the tail), and will
-      not return NIL for these two positions as long as the list has some
+      not return NULL_POINTER for these two positions as long as the list has some
       elements in it.  the cursor will also have been moved to point at the
       element that is returned.
       Another Note: it is extremely important that you do not mess with the
       links owned by the node (or at least the first two links).
-      A Third Note: these two functions can return NIL if the list is empty. */
+      A Third Note: these two functions can return NULL_POINTER if the list is empty. */
     node *access();  //!< obtain access to the current element.
 
   private:
@@ -139,7 +139,7 @@ public:
 
   node *remove(iterator &where);
     //!< extracts the current item from "where" and repairs the hole.
-    /*!< NIL is returned if the list was empty.  the current position is set
+    /*!< NULL_POINTER is returned if the list was empty.  the current position is set
     to the node that used to be after the node that has been removed.  after
     the call, the iterator points at the new node. */
 

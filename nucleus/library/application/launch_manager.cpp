@@ -140,7 +140,7 @@ launch_manager::launch_manager(configured_applications &config)
   FUNCDEF("constructor");
 
   // start the application checking thread.
-  _checker->start(NIL);
+  _checker->start(NULL_POINTER);
 
   _checker->reschedule(200);  // make it start pretty quickly.
 }

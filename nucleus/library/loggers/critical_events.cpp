@@ -70,9 +70,9 @@ astring critical_events::system_error_text(basis::un_int to_name)
   return strerror(to_name);
 #elif defined(_MSC_VER)
   char error_text[1000];
-  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NIL, to_name,
+  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL_POINTER, to_name,
       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)error_text,
-      sizeof(error_text) - 1, NIL);
+      sizeof(error_text) - 1, NULL_POINTER);
   astring to_return = error_text;
   // trim off the ridiculous carriage return they add.
   while ( (to_return[to_return.end()] == '\r')
@@ -141,7 +141,7 @@ void critical_events::alert_message(const char *info, const char *title)
 
   to_print += info;
   program_wide_logger::get().log(to_print, ALWAYS_PRINT);
-  fflush(NIL);  // flush all output streams.
+  fflush(NULL_POINTER);  // flush all output streams.
 }
 
 void critical_events::alert_message(const astring &info) { alert_message(info.s()); }

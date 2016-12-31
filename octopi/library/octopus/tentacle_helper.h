@@ -39,7 +39,7 @@ namespace octopi {
 //!< reconstituter should work for most infotons to restore flattened infotons.
 /*!< the infotons that can be used here just need valid default constructor
 and unpack methods.  the "junk" parameter is needed to allow the template to
-be disambiguated on some compilers--it is unused and should just be NIL. */
+be disambiguated on some compilers--it is unused and should just be NULL_POINTER. */
 template <class contents>
 basis::outcome reconstituter(const structures::string_array &classifier,
     basis::byte_array &packed_form,
@@ -78,7 +78,7 @@ public:
   virtual basis::outcome reconstitute(const structures::string_array &classifier,
       basis::byte_array &packed_form, infoton * &reformed) {
     return reconstituter(classifier, packed_form, reformed,
-        (contents *)NIL);
+        (contents *)NULL_POINTER);
   }
 
   //! consume is not really provided here.  remember to implement for servers!

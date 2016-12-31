@@ -90,7 +90,7 @@ outcome unwrapping_tentacle::reconstitute(const string_array &classifier,
     return NO_HANDLER;
 
   return reconstituter(classifier, packed_form, reformed,
-      (encryption_wrapper *)NIL);
+      (encryption_wrapper *)NULL_POINTER);
 }
 
 outcome unwrapping_tentacle::consume(infoton &formal(to_chow),

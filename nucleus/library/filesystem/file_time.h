@@ -35,7 +35,7 @@ public:
 
   file_time(FILE *the_FILE);
     //!< sets up the file_time information given a the file stream of interest.
-    /*!< If the stream is NIL, then the file_time is set up with an invalid
+    /*!< If the stream is NULL_POINTER, then the file_time is set up with an invalid
     time. */
 
   file_time(const basis::astring &filename);

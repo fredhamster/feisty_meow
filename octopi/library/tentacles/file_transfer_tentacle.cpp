@@ -75,8 +75,8 @@ public:
   astring _source_mapping;  // valid for a correspondence record.
   int _refresh_interval;  // the rate of refreshing the source tree.
 
-  file_transfer_record() : _diffs(NIL), _last_sent(file_time()),
-      _done(false), _local_dir(NIL)
+  file_transfer_record() : _diffs(NULL_POINTER), _last_sent(file_time()),
+      _done(false), _local_dir(NULL_POINTER)
   {}
 
   ~file_transfer_record() {
@@ -118,7 +118,7 @@ public:
         return borrow(i);
       }
     }
-    return NIL;
+    return NULL_POINTER;
   }
 
   virtual ~file_transfer_status() {}
@@ -132,7 +132,7 @@ public:
       if (rec && (rec->_source_mapping == source_mapping) )
         return borrow(i);
     }
-    return NIL;
+    return NULL_POINTER;
   }
 
   // turns a source mapping into the location that it corresponds to.
@@ -227,7 +227,7 @@ file_transfer_tentacle::file_transfer_tentacle(int maximum_transfer,
   _cleaner(new file_transfer_cleaner(*this)),
   _mode(mode_of_transfer)
 {
-  _cleaner->start(NIL);
+  _cleaner->start(NULL_POINTER);
 }
 
 file_transfer_tentacle::~file_transfer_tentacle()
@@ -376,7 +376,7 @@ directory_tree *file_transfer_tentacle::lock_directory(const astring &key)
   file_transfer_record *the_rec = _correspondences->find_mapping(key);
   if (!the_rec || !the_rec->_local_dir) {
     _lock->unlock();
-    return NIL;  // unknown transfer.
+    return NULL_POINTER;  // unknown transfer.
   }
   return the_rec->_local_dir;
 }
@@ -454,7 +454,7 @@ outcome file_transfer_tentacle::reconstitute(const string_array &classifier,
   if (classifier != file_transfer_infoton::file_transfer_classifier())
     return NO_HANDLER;
   return reconstituter(classifier, packed_form, reformed,
-      (file_transfer_infoton *)NIL);
+      (file_transfer_infoton *)NULL_POINTER);
 }
 
 // the "handle_" and "conclude_" methods are thread-safe because the mutex is locked before

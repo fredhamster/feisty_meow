@@ -84,9 +84,9 @@ private:
 stdio_redirecter::stdio_redirecter()
 :
 #ifdef __WIN32__
-  _child_in(NIL), _child_out(NIL), _child_err(NIL),
-  _parent_in(NIL), _parent_out(NIL), _parent_err(NIL),
-  _app_handle(NIL),
+  _child_in(NULL_POINTER), _child_out(NULL_POINTER), _child_err(NULL_POINTER),
+  _parent_in(NULL_POINTER), _parent_out(NULL_POINTER), _parent_err(NULL_POINTER),
+  _app_handle(NULL_POINTER),
 #endif
   _command(new astring),
   _parms(new astring),
@@ -105,9 +105,9 @@ stdio_redirecter::stdio_redirecter(const astring &command,
     const astring &parameters)
 :
 #ifdef __WIN32__
-  _child_in(NIL), _child_out(NIL), _child_err(NIL),
-  _parent_in(NIL), _parent_out(NIL), _parent_err(NIL),
-  _app_handle(NIL),
+  _child_in(NULL_POINTER), _child_out(NULL_POINTER), _child_err(NULL_POINTER),
+  _parent_in(NULL_POINTER), _parent_out(NULL_POINTER), _parent_err(NULL_POINTER),
+  _app_handle(NULL_POINTER),
 #endif
   _command(new astring(command)),
   _parms(new astring(parameters)),
@@ -181,10 +181,10 @@ outcome stdio_redirecter::create_pipes()
   SECURITY_ATTRIBUTES sa;
   ZeroMemory(&sa, sizeof(SECURITY_ATTRIBUTES));
   sa.nLength= sizeof(SECURITY_ATTRIBUTES);
-  sa.lpSecurityDescriptor = NIL;
+  sa.lpSecurityDescriptor = NULL_POINTER;
   sa.bInheritHandle = true;
 
-  HANDLE in_temp = NIL, out_temp = NIL, err_temp = NIL;
+  HANDLE in_temp = NULL_POINTER, out_temp = NULL_POINTER, err_temp = NULL_POINTER;
 
   // create pipes that we will hook up to the child process.  these are
   // currently inheritable based on the security attributes.
@@ -276,12 +276,12 @@ outcome stdio_redirecter::launch_program(int &new_process_id)
 
   // fork off the process.
   PROCESS_INFORMATION pi;
-  BOOL success = CreateProcess(NIL, to_unicode_temp(cmd), sec_attr, NIL,
-      true, CREATE_NEW_CONSOLE, NIL, NIL, &si, &pi);
+  BOOL success = CreateProcess(NULL_POINTER, to_unicode_temp(cmd), sec_attr, NULL_POINTER,
+      true, CREATE_NEW_CONSOLE, NULL_POINTER, NULL_POINTER, &si, &pi);
 
   // cleanup junk we allocated.
-  if (sec_attr != NIL) GlobalFree(sec_attr);
-  if (sec_desc != NIL) GlobalFree(sec_desc);
+  if (sec_attr != NULL_POINTER) GlobalFree(sec_attr);
+  if (sec_desc != NULL_POINTER) GlobalFree(sec_desc);
 
   if (success) {
     // toss out the thread handle since we don't use it.
@@ -301,8 +301,8 @@ outcome stdio_redirecter::launch_program(int &new_process_id)
   }
 #endif
 
-  _stdout_reader->start(NIL);
-  _stderr_reader->start(NIL);
+  _stdout_reader->start(NULL_POINTER);
+  _stderr_reader->start(NULL_POINTER);
 
   return OKAY;
 }
@@ -353,8 +353,8 @@ void stdio_redirecter::close_input()
 #ifdef __UNIX__
   close(_output_fds[1]);  // shut down input to the child program.
 #elif defined(__WIN32__)
-  if (_child_in) { CloseHandle(_child_in); _child_in = NIL; }
-  if (_parent_in) { CloseHandle(_parent_in); _parent_in = NIL; }
+  if (_child_in) { CloseHandle(_child_in); _child_in = NULL_POINTER; }
+  if (_parent_in) { CloseHandle(_parent_in); _parent_in = NULL_POINTER; }
 #endif
 }
 
@@ -383,11 +383,11 @@ void stdio_redirecter::zap_program()
 
   close_input();
 
-  if (_child_out) { CloseHandle(_child_out); _child_out = NIL; }
-  if (_parent_out) { CloseHandle(_parent_out); _parent_out = NIL; }
+  if (_child_out) { CloseHandle(_child_out); _child_out = NULL_POINTER; }
+  if (_parent_out) { CloseHandle(_parent_out); _parent_out = NULL_POINTER; }
 
-  if (_child_err) { CloseHandle(_child_err); _child_err = NIL; }
-  if (_parent_err) { CloseHandle(_parent_err); _parent_err = NIL; }
+  if (_child_err) { CloseHandle(_child_err); _child_err = NULL_POINTER; }
+  if (_parent_err) { CloseHandle(_parent_err); _parent_err = NULL_POINTER; }
 
   // shut down the child process if it's still there.
   if (_app_handle) {
@@ -410,7 +410,7 @@ void stdio_redirecter::zap_program()
       }
     }
     CloseHandle(_app_handle);
-    _app_handle = NIL;
+    _app_handle = NULL_POINTER;
   }
 #endif
 
@@ -449,7 +449,7 @@ outcome stdio_redirecter::write(const byte_array &to_write, int &written)
 #elif defined(__WIN32__)
   DWORD writ = 0;
   BOOL ret = WriteFile(_parent_in, to_write.observe(), to_write.length(),
-      &writ, NIL);
+      &writ, NULL_POINTER);
   written = writ;
   if (ret) return OKAY;
   else return ACCESS_DENIED;
@@ -490,7 +490,7 @@ void stdio_redirecter::std_thread_action(bool is_stdout)
   // read some data from the file.  the function will return when a write
   // operation completes or we get that much data.
   DWORD bytes_read = 0;
-  BOOL ret = ReadFile(where, buff.access(), BUFFER_SIZE, &bytes_read, NIL);
+  BOOL ret = ReadFile(where, buff.access(), BUFFER_SIZE, &bytes_read, NULL_POINTER);
 //hmmm:    if (ret && !bytes_read) {///set eof!!! }
 #endif
   if (ret && bytes_read) {

@@ -43,7 +43,7 @@ encryption_tentacle::encryption_tentacle()
     (encryption_infoton::encryption_classifier(), false),
   _server_side(true),
   _keys(new key_repository),
-  _rsa_private(NIL)
+  _rsa_private(NULL_POINTER)
 {
 }
 
@@ -83,7 +83,7 @@ outcome encryption_tentacle::reconstitute(const string_array &classifier,
     return NO_HANDLER;
 
   return reconstituter(classifier, packed_form, reformed,
-      (encryption_infoton *)NIL);
+      (encryption_infoton *)NULL_POINTER);
 }
 
 void encryption_tentacle::expunge(const octopus_entity &formal(to_remove))

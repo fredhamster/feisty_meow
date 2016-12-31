@@ -28,9 +28,9 @@ public:
   bit_vector();
     //!< creates a zero length bit_vector.
 
-  bit_vector(int size, const basis::abyte *initial = NIL);
+  bit_vector(int size, const basis::abyte *initial = NULL_POINTER);
     //!< creates a bit_vector able to store "size" bits.
-    /*!< if initial is NIL, the vector is initialized to zero.  otherwise, the
+    /*!< if initial is NULL_POINTER, the vector is initialized to zero.  otherwise, the
     bits are copied from "initial".  "initial" must be large enough for the
     copying to succeed. */
 

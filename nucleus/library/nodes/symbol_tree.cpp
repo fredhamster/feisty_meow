@@ -141,7 +141,7 @@ symbol_tree *symbol_tree::find(const astring &to_find, find_methods how,
 #ifdef DEBUG_SYMBOL_TREE
   FUNCDEF("find");
 #endif
-  if (comp == NIL) comp = astring_comparator;
+  if (comp == NULL_POINTER) comp = astring_comparator;
 #ifdef DEBUG_SYMBOL_TREE
   LOG(astring("finding node called ") + to_find);
 #endif
@@ -151,7 +151,7 @@ symbol_tree *symbol_tree::find(const astring &to_find, find_methods how,
   // perform the upward recursion first, since it's pretty simple.
   if (how == recurse_upward) {
     symbol_tree *our_parent = dynamic_cast<symbol_tree *>(parent());
-    if (!our_parent) return NIL;  // done recursing.
+    if (!our_parent) return NULL_POINTER;  // done recursing.
     return our_parent->find(to_find, how, comp);
   }
 
@@ -164,7 +164,7 @@ symbol_tree *symbol_tree::find(const astring &to_find, find_methods how,
   if (!found) {
     if (how == recurse_downward) {
       // see if we can't find that name in a sub-node.
-      symbol_tree *answer = NIL;
+      symbol_tree *answer = NULL_POINTER;
       for (int i = 0; i < branches(); i++) {
         // we will try each branch in turn and see if it has a child named
         // appropriately.
@@ -178,7 +178,7 @@ symbol_tree *symbol_tree::find(const astring &to_find, find_methods how,
           return answer;
       }
     }
-    return NIL;
+    return NULL_POINTER;
   }
   return *found;
 }

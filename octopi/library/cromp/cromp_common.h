@@ -46,7 +46,7 @@ public:
     // the "singleton" octopus is used instead of our base class for restoring
     // any data.  note that "singleton" is not dealt with in the destructor;
     // it is considered owned externally.  however, the "preexisting" spocket
-    // is considered to be owned by this class now.  also note that if a NIL
+    // is considered to be owned by this class now.  also note that if a NULL_POINTER
     // "preexisting" socket is passed, then socket creation occurs by the
     // normal process.
 
@@ -68,7 +68,7 @@ public:
   sockets::spocket *spock() const;
     // allows external access to our socket object.  do not abuse this.
     // also keep in mind that in some stages of construction, this can return
-    // NIL.  do not assume it is non-NIL.
+    // NULL_POINTER.  do not assume it is non-null.
 
   sockets::internet_address other_side() const;
     // returns the location that we're connected to, if any.
@@ -96,10 +96,10 @@ public:
   static const char *outcome_name(const basis::outcome &to_name);
 
   static basis::astring chew_hostname(const sockets::internet_address &addr,
-          sockets::internet_address *resolved = NIL);
+          sockets::internet_address *resolved = NULL_POINTER);
     // resolves the hostname in "addr" and returns the resolved hostname as
     // a machine_uid compact_form().  the "resolved" form of the address is
-    // also stored if the pointer is non-NIL.
+    // also stored if the pointer is non-null.
 
   basis::astring responses_text_form() const;
     // returns a textual form of the responses awaiting pickup.
@@ -195,7 +195,7 @@ public:
 protected:
   octopi::octopus *singleton() const { return _singleton; }
     // returns the singleton octopus passed to the constructor earlier.
-    // this will return NIL if it was not constructed that way.
+    // this will return NULL_POINTER if it was not constructed that way.
 
 private:
   sockets::spocket *_commlink;  // transceiver for data.

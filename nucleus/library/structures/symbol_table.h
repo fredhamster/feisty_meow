@@ -83,7 +83,7 @@ public:
     //!< named equivalent for the bracket operator.
 
   contents *find(const basis::astring &name) const;
-    //!< returns the contents held for "name" or NIL if it wasn't found.
+    //!< returns the contents held for "name" or NULL_POINTER if it wasn't found.
 
   contents *find(const basis::astring &name,
           basis::string_comparator_function *comparator) const;
@@ -119,7 +119,7 @@ private:
   internal_symbol_indexer<contents> *_tracker;  //!< indexed lookup support.
 
   internal_symbol_info<contents> *get_index(int index) const;
-    //!< returns the info item at "index" or NIL.
+    //!< returns the info item at "index" or NULL_POINTER.
 };
 
 //////////////
@@ -287,7 +287,7 @@ template <class contents>
 internal_symbol_info<contents> *symbol_table<contents>::
     get_index(int index) const
 {
-  bounds_return(index, 0, symbols() - 1, NIL);
+  bounds_return(index, 0, symbols() - 1, NULL_POINTER);
   return _tracker->find(_tracker->ids()[index])->_held;
 }
 
@@ -314,7 +314,7 @@ contents *symbol_table<contents>::find(const basis::astring &name) const
 { 
 //  FUNCDEF("find [name]");
   internal_symbol_info<contents> *found = _symbol_list->find(name);
-  if (!found) return NIL;
+  if (!found) return NULL_POINTER;
   return &found->_content;
 }
 
@@ -337,7 +337,7 @@ struct sym_tab_apply_data
   contents *_found;
   basis::astring _to_find;
 
-  sym_tab_apply_data() : _scf(NIL), _found(NIL) {}
+  sym_tab_apply_data() : _scf(NULL_POINTER), _found(NULL_POINTER) {}
 };
 
 template <class contents>

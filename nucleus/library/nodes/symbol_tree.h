@@ -81,8 +81,8 @@ public:
   symbol_tree *find(const basis::astring &to_find,
           find_methods how,
 ///= just_branches,
-          basis::string_comparator_function *comp = NIL);
-    //!< returns the node specified by "to_find" or NIL.
+          basis::string_comparator_function *comp = NULL_POINTER);
+    //!< returns the node specified by "to_find" or NULL_POINTER.
     /*!< this should be fairly quick due to the symbol table's hashing.
     the "how" method specifies the type of recursion to be used in searching
     if any.  if "how" is passed as "just_branches", then only the branches are
@@ -90,7 +90,7 @@ public:
     "recurse_downward", then all sub-trees under the branches are checked
     also.  if "how" is given as "recurse_upward", then "this" node and parent
     nodes are checked.  the "comp" parameter will be used for comparing the
-    strings if it's passed as non-NIL. */
+    strings if it's passed as non-null. */
 
   void sort();
     //!< sorts the sub-nodes of this symbol_tree.

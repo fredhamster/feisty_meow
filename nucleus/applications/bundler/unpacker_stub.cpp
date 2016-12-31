@@ -446,7 +446,7 @@ int unpacker_stub::execute()
         }
       }
 
-      byte_filer *targo = NIL;
+      byte_filer *targo = NULL_POINTER;
       if (keyword_good) targo = new byte_filer(curr._payload, "wb");
       byte_array uncompressed(256 * KILOBYTE);  // fluff it out to begin with.
       byte_array temp(256 * KILOBYTE);

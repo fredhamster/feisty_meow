@@ -77,7 +77,7 @@ public:
   infoton *acquire_for_identifier(const octopus_request_id &id);
     // locates an item for the specific "id".  this will generally be a
     // response to a previous request.  if no object can be found that matches
-    // the "id", then NIL is returned.
+    // the "id", then NULL_POINTER is returned.
 
   infoton *acquire_for_entity(const octopus_entity &requester,
           octopus_request_id &id);
@@ -85,7 +85,7 @@ public:
     // this function repeatedly to ensure that all available items have
     // been provided.  the "original_id" is a copy of the "item_id" that was
     // originally passed to evaluate_request().  the returned object must
-    // eventually be destroyed if non-NIL.
+    // eventually be destroyed if non-null.
 
   int acquire_for_entity(const octopus_entity &requester,
           infoton_list &items, int maximum_size);
@@ -94,7 +94,7 @@ public:
 
   infoton *acquire_for_any(octopus_request_id &id);
     // acquires an infoton for any random entity.  if no items are ready at
-    // all, then NIL is returned.
+    // all, then NULL_POINTER is returned.
 
   basis::astring text_form() const;
     // returns a textual list of what's held here.

@@ -338,7 +338,7 @@ outcome spocket::connect(int communication_wait)
 //moving to always re-resolving before a connect.  otherwise we have somewhat
 //hard to predict behavior about when the re-resolve will happen.
           ) {
-      // we know we need to resolve if the address is NIL or if the re-resolve
+      // we know we need to resolve if the address is NULL_POINTER or if the re-resolve
       // interval has elapsed.
       astring full_host;
       byte_array ip_addr = _stack->full_resolve(_where->hostname, full_host);
@@ -460,7 +460,7 @@ outcome spocket::accept(spocket * &sock, bool wait)
 
   // we don't lock in here; we should not be locking on the server socket.
 
-  sock = NIL;  // reset.
+  sock = NULL_POINTER;  // reset.
 
   if (_socket) {
 #ifdef DEBUG_SPOCKET

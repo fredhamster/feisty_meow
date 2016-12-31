@@ -60,7 +60,7 @@ public:
 
   socket_data *lock_socket_data(int socket);
     // locates the data for the "socket" specified.  the list is left locked
-    // unless NIL is returned.
+    // unless NULL_POINTER is returned.
 
   void unlock_socket_data(socket_data *to_unlock);
     // unlocks the list of socket data again and zeroes "to_unlock".

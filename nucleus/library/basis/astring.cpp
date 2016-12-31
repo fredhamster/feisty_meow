@@ -69,7 +69,11 @@ astring::astring(char initial, int repeat)
 {
   if (!initial) initial = ' ';  // for nulls, we use spaces.
   int new_size = c_character_manager.length() - 1;
-  memset(c_character_manager.access(), initial, new_size);
+
+  /*hmmm: eclipse was badgering me into adding types on this, but it's not really an error in my code seemingly.
+   * eclipse seems to want a ? type in the last parameter, not a size_t or int.  why?  doesn't it know size_t?
+   */
+  memset((void *)c_character_manager.access(), (int)initial, (size_t)new_size);
   c_character_manager.put(new_size, '\0');
   c_held_string = (char * const *)c_character_manager.internal_offset_mem();
 }
@@ -117,7 +121,7 @@ astring::astring(special_flag flag, const char *initial, ...)
   va_end(args);
 }
 
-astring::~astring() { c_held_string = NIL; }
+astring::~astring() { c_held_string = NULL_POINTER; }
 
 const astring &astring::empty_string() { return bogonic<astring>(); }
 
@@ -415,7 +419,7 @@ void astring::get_type_character(const char * &traverser, va_list &args,
   }
   // action time: the output string is given a tasty value.
   char temp[LONGEST_SPRINTF];
-  char *temp2 = NIL;  // for dynamic only.
+  char *temp2 = NULL_POINTER;  // for dynamic only.
   switch (next_argument) {
 //hmmm: this switch is where support would need to be added for having two
 //      arguments (for the '*' case).
@@ -431,7 +435,7 @@ void astring::get_type_character(const char * &traverser, va_list &args,
         if (!to_print) {
           // bogus string; put in a complaint.
           use_dynamic_sprintf = false;
-          ::sprintf(temp, "{error:parm=NIL}");
+          ::sprintf(temp, "{error:parm=NULL_POINTER}");
         } else if (strlen(to_print) < LONGEST_SPRINTF - 2) {
           // we're within our bounds, plus some safety room, so just do a
           // regular sprintf.
@@ -552,7 +556,7 @@ void astring::copy(char *array_to_stuff, int how_many) const
   if (!array_to_stuff) return;
   array_to_stuff[0] = '\0';
   if ( (how_many <= 0) || (length() <= 0) ) return;
-  strncpy(array_to_stuff, observe(), minimum(how_many, int(length())));
+  strncpy(array_to_stuff, observe(), (size_t)minimum(how_many, int(length())));
   array_to_stuff[minimum(how_many, int(length()))] = '\0';
 }
 

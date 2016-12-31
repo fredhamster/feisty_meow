@@ -170,14 +170,14 @@ public:
   outcome reconstitute(const string_array &classifier, byte_array &packed_form,
       infoton * &reformed)
   {
-    reformed = NIL;
+    reformed = NULL_POINTER;
     if (classifier.length() < 2) return BAD_INPUT;
     astring key = classifier[1];
     if (key == "float") {
       float_ton *to_return = new float_ton;
       if (!to_return->unpack(packed_form)) {
         WHACK(to_return);
-        return NIL;
+        return NULL_POINTER;
       }
       reformed = to_return;
       return OKAY;
@@ -185,7 +185,7 @@ public:
       int_set_ton *to_return = new int_set_ton;
       if (!to_return->unpack(packed_form)) {
         WHACK(to_return);
-        return NIL;
+        return NULL_POINTER;
       }
       reformed = to_return;
       return OKAY;
@@ -227,8 +227,8 @@ public:
   ~outer_arm() {
     // just reset the two tentacles, since the _unpackers octopus should
     // clean them up.
-    _numer = NIL;
-    _addron = NIL;
+    _numer = NULL_POINTER;
+    _addron = NULL_POINTER;
   }
 
   outcome reconstitute(const string_array &classifier, byte_array &packed_form,
@@ -360,7 +360,7 @@ void test_unpacker::test_unpacking()
   byte_array pacula;
   if (!infoton::fast_unpack(chunkmo, clarfiator, pacula))
     deadly_error(class_name(), "test fast_unpack", "chunkmo has errors");
-  infoton *scrung = NIL;
+  infoton *scrung = NULL_POINTER;
 //log(astring("classif is ") + clarfiator.text_form());
 
   outcome scrung_ret = unpacky.restore(clarfiator, pacula, scrung);

@@ -98,21 +98,21 @@ public:
 ///  HANDLE hSnapShot;
 
   process_implementation_hider()
-    : psapi_dll(NIL), vdm_dll(NIL), enumerate_processes(NIL),
-      enumerate_modules(NIL), get_module_name(NIL),
+    : psapi_dll(NULL_POINTER), vdm_dll(NULL_POINTER), enumerate_processes(NULL_POINTER),
+      enumerate_modules(NULL_POINTER), get_module_name(NULL_POINTER),
 //#ifdef _MSCVER
-//      tasker_16bit(NIL),
+//      tasker_16bit(NULL_POINTER),
 //#endif
-      kernel32_dll(NIL), create_snapshot(NIL), first_process(NIL),
-      next_process(NIL) {}
+      kernel32_dll(NULL_POINTER), create_snapshot(NULL_POINTER), first_process(NULL_POINTER),
+      next_process(NULL_POINTER) {}
 
   ~process_implementation_hider() {
     if (psapi_dll) FreeLibrary(psapi_dll);
     if (vdm_dll) FreeLibrary(vdm_dll);
     if (kernel32_dll) FreeLibrary(kernel32_dll);
-    psapi_dll = NIL;
-    vdm_dll = NIL;
-    kernel32_dll = NIL;
+    psapi_dll = NULL_POINTER;
+    vdm_dll = NULL_POINTER;
+    kernel32_dll = NULL_POINTER;
   }
 #endif
 };
@@ -377,7 +377,7 @@ bool process_control::get_processes_with_psapi(process_entry_array &to_fill)
   // loop over the process enumeration function until we are sure that we
   // have allocated a large enough space for all existing processes.
   bool got_all = false;
-  basis::un_int *pid_list = NIL;
+  basis::un_int *pid_list = NULL_POINTER;
   basis::un_int max_size = 428 * sizeof(basis::un_int);
   basis::un_int actual_size = 0;
   while (!got_all) {
@@ -518,7 +518,7 @@ bool process_control::get_processes_with_ps(process_entry_array &to_fill)
       _rando->inclusive(1, 400000));
   a_sprintf cmd("ps wax --format \"%%p %%a\" >%s", tmpfile.s());
 //hmmm: add more info as we expand the process entry.
-  FILE *output = NIL;  // initialize now to establish variable for our macro.
+  FILE *output = NULL_POINTER;  // initialize now to establish variable for our macro.
   int sysret = system(cmd.s());
   if (negative(sysret)) {
 LOG("got negative return from system()!");

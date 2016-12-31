@@ -140,9 +140,9 @@
 
 namespace application {
 
-//  istring module_name(const void *module_handle = NIL);
+//  istring module_name(const void *module_handle = NULL_POINTER);
     //!< returns the name of the module for the "module_handle" where supported.
-    /*!< if the handle is NIL, then the program name is returned. */
+    /*!< if the handle is NULL_POINTER, then the program name is returned. */
 
 
 //  u_int system_error();

@@ -285,7 +285,7 @@ int test_entity_data_bin_threaded::execute()
   amorph<ethread> thread_list;
 
   for (int i = 0; i < DEFAULT_THREADS; i++) {
-    ethread *t = NIL;
+    ethread *t = NULL_POINTER;
     if (i == DEFAULT_THREADS - 1) {
       // last item gets special treatment; we reserve this space for monk.
       t = new monk_the_detective;
@@ -301,7 +301,7 @@ int test_entity_data_bin_threaded::execute()
     if (q != t)
       deadly_error(class_name(), func, "amorph has incorrect pointer!");
     // start the thread we added.
-    thread_list[thread_list.elements() - 1]->start(NIL);
+    thread_list[thread_list.elements() - 1]->start(NULL_POINTER);
   }
 
   time_stamp when_to_leave(DEFAULT_RUN_TIME);

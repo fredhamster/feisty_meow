@@ -128,7 +128,7 @@ public:
     internet_address local_addr = internet_address
         (internet_address::localhost(), client->stack().hostname(), 0);
     open_common(local_addr);  // open the common support for biz.
-    _grabber.start(NIL);  // crank up our background data pump on the socket.
+    _grabber.start(NULL_POINTER);  // crank up our background data pump on the socket.
   }
 
   ~cromp_client_record() {
@@ -292,7 +292,7 @@ LOG("cleared out buffer clog.");
     bool saw_something = false;  // true if we got a packet.
     while (actions++ < MAXIMUM_ACTIONS_PER_CLIENT) {
       // pull in anything waiting.
-      infoton *item = NIL;
+      infoton *item = NULL_POINTER;
       octopus_request_id req_id;
       outcome ret = retrieve_and_restore_any(item, req_id,
           first_one? DATA_AWAIT_TIMEOUT : 0);
@@ -494,9 +494,9 @@ cromp_server::cromp_server(const internet_address &where,
   _accepting_threads(accepting_threads),
   _dropper(new client_dropping_thread(*this)),
   _enabled(false),
-  _encrypt_arm(NIL),
+  _encrypt_arm(NULL_POINTER),
   _default_security(new cromp_security),
-  _security_arm(NIL)
+  _security_arm(NULL_POINTER)
 {
   FUNCDEF("constructor");
 }
@@ -511,8 +511,8 @@ cromp_server::~cromp_server()
   WHACK(_where);
   WHACK(_default_security);
   WHACK(_list_lock);
-  _encrypt_arm = NIL;
-  _security_arm = NIL;
+  _encrypt_arm = NULL_POINTER;
+  _security_arm = NULL_POINTER;
 }
 
 internet_address cromp_server::location() const { return *_where; }
@@ -539,7 +539,7 @@ infoton *cromp_server::wrap_infoton(infoton * &request,
     const octopus_entity &ent)
 {
   FUNCDEF("wrap_infoton");
-  if (!_enabled) return NIL;
+  if (!_enabled) return NULL_POINTER;
   // identity is not wrapped with encryption; we need to establish and identity
   // to talk on a distinct channel with the server.  even if that identity were
   // compromised, the interloper should still not be able to listen in on the
@@ -547,7 +547,7 @@ infoton *cromp_server::wrap_infoton(infoton * &request,
   // itself is not encrypted and we don't want to re-encrypt the wrapper.
   if (dynamic_cast<identity_infoton *>(request)
       || dynamic_cast<encryption_infoton *>(request)
-      || dynamic_cast<encryption_wrapper *>(request)) return NIL;
+      || dynamic_cast<encryption_wrapper *>(request)) return NULL_POINTER;
 
 #ifdef DEBUG_CROMP_SERVER
   LOG(astring("encrypting ") + request->text_form());
@@ -557,7 +557,7 @@ infoton *cromp_server::wrap_infoton(infoton * &request,
     // lock here is released a bit down below.
   if (!key) {
     LOG(astring("failed to locate key for entity ") + ent.text_form());
-    return NIL;
+    return NULL_POINTER;
   }
   byte_array packed_request;
   infoton::fast_pack(packed_request, *request);
@@ -604,10 +604,10 @@ outcome cromp_server::enable_servers(bool encrypt, cromp_security *security)
 #endif
   for (int i = 0; i < _accepting_threads; i++) {
     // crank in a new thread and tell it yes on starting it.
-    _accepters->add_thread(new connection_management_thread(*this), true, NIL);
+    _accepters->add_thread(new connection_management_thread(*this), true, NULL_POINTER);
   }
 
-  _dropper->start(NIL);
+  _dropper->start(NULL_POINTER);
   return OKAY;
 }
 
@@ -680,7 +680,7 @@ outcome cromp_server::accept_one_client(bool wait)
   FUNCDEF("accept_one_client");
 #endif
   if (!_enabled) return common::INCOMPLETE;
-  spocket *accepted = NIL;
+  spocket *accepted = NULL_POINTER;
 //printf((timestamp(true, true) + "into accept\n").s());
   outcome ret = spock()->accept(accepted, wait);
 //printf((timestamp(true, true) + "out of accept\n").s());
