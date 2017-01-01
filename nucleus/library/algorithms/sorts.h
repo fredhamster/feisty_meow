@@ -2,7 +2,7 @@
 #define ASSORTED_SORTS_GROUP
 
 //////////////
-// Name   : shell_sort
+// Name   : sorts
 // Author : Chris Koeritz
 //////////////
 // Copyright (c) 1991-$now By Author.  This program is free software; you can
@@ -44,7 +44,7 @@ namespace algorithms {
 	/*!
 	 * Sorts a C array of the "type" with "n" elements.
 	 * Operates on the original array.
-	 * Performs in O(n log(n)) time.
+	 * Performs within O(n^2) time (depending on the gap size used).
 	 * Algorithm is based on Kernighan and Ritchie's "The C Programming Language".
 	 */
 	template<class type>
