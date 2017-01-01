@@ -1,30 +1,25 @@
+/*
+*
+*  Name   : doubly_linked_list
+*  Author : Chris Koeritz
+**
+* Copyright (c) 1998-$now By Author.  This program is free software; you can
+* redistribute it and/or modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either version 2 of
+* the License or (at your option) any later version.  This is online at:
+*     http://www.fsf.org/copyleft/gpl.html
+* Please send any updates to: fred@gruntose.com
+*/
 
+/*
+ * POLICIES:
+ *
+ * + the cursor should never be stored to or deleted; it is merely a scanner that runs through the list.
+ * + the cursor can point at the head or tail.  any storage action is taken to mean that it applies to the closest real object, if one exists.  any query action is taken similarly.
+ */
 
+#include "doubly_linked_list.h"
 
-/*****************************************************************************\
-*                                                                             *
-*  Name   : list                                                              *
-*  Author : Chris Koeritz                                                     *
-*                                                                             *
-*******************************************************************************
-* Copyright (c) 1998-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
-\*****************************************************************************/
-
-// POLICIES:
-//
-// the cursor should never be stored to or deleted; it is merely a scanner that
-// runs through the list.
-//
-// the cursor can point at the head or tail.  any storage action is taken to
-// mean that it applies to the closest real object, if one exists.  any query
-// action is taken similarly.
-
-#include "list.h"
 #include "node.h"
 
 #include <basis/functions.h>
@@ -40,22 +35,22 @@ const int NEXT = 1;
 
 // iterator functions:
 
-void list::iterator::operator ++()
+void doubly_linked_list::iterator::operator ++()
 {
   if (is_tail()) return;  // already at the end.
   _cursor = _cursor->get_link(NEXT);
 }
 
-void list::iterator::operator --()
+void doubly_linked_list::iterator::operator --()
 {
   if (is_head()) return;  // already at the front.
   _cursor = _cursor->get_link(PREVIOUS);
 }
 
-bool list::iterator::operator ==(const iterator &to_compare) const
+bool doubly_linked_list::iterator::operator ==(const iterator &to_compare) const
 { return _cursor == to_compare._cursor; }
 
-const node *list::iterator::observe()
+const node *doubly_linked_list::iterator::observe()
 {
   if (!_manager || _manager->empty()) return NULL_POINTER;
   if (*this == _manager->head()) next();
@@ -63,7 +58,7 @@ const node *list::iterator::observe()
   return _cursor;
 }
 
-node *list::iterator::access()
+node *doubly_linked_list::iterator::access()
 {
   if (!_manager || _manager->empty()) return NULL_POINTER;
   if (*this == _manager->head()) next();
@@ -71,25 +66,25 @@ node *list::iterator::access()
   return _cursor;
 }
 
-bool list::iterator::is_head() const
+bool doubly_linked_list::iterator::is_head() const
 {
   if (!_manager) return false;
   return _cursor == _manager->_head;
 }
 
-bool list::iterator::is_tail() const
+bool doubly_linked_list::iterator::is_tail() const
 { 
   if (!_manager) return false;
   return _cursor == _manager->_tail;
 }
 
-void list::iterator::jump_head()
+void doubly_linked_list::iterator::jump_head()
 {
   if (!_manager) return;
   _cursor = _manager->_head;
 }
 
-void list::iterator::jump_tail()
+void doubly_linked_list::iterator::jump_tail()
 {
   if (!_manager) return;
   _cursor = _manager->_tail;
@@ -97,7 +92,7 @@ void list::iterator::jump_tail()
 
 //////////////
 
-list::list()
+doubly_linked_list::doubly_linked_list()
 : _head(NULL_POINTER), _tail(NULL_POINTER)
 {
   _head = new node(2);
@@ -106,7 +101,7 @@ list::list()
   _tail->set_link(PREVIOUS, _head);
 }
 
-list::~list()
+doubly_linked_list::~doubly_linked_list()
 {
   iterator zapper = head();
   while (!empty())
@@ -115,13 +110,13 @@ list::~list()
   WHACK(_tail);
 }
 
-bool list::empty() const
+bool doubly_linked_list::empty() const
 {
   if (_head->get_link(NEXT) == _tail) return true;
   return false;
 }
 
-bool list::set_index(iterator &where, int new_index)
+bool doubly_linked_list::set_index(iterator &where, int new_index)
 {
   if (where._manager != this) return false;
   if (empty()) return false;
@@ -134,7 +129,7 @@ bool list::set_index(iterator &where, int new_index)
   return true;
 }
 
-bool list::forward(iterator &where, int count)
+bool doubly_linked_list::forward(iterator &where, int count)
 { 
   if (where._manager != this) return false;
   if (count <= 0) return true;
@@ -144,7 +139,7 @@ bool list::forward(iterator &where, int count)
   return true;
 }
 
-bool list::backward(iterator &where, int count)
+bool doubly_linked_list::backward(iterator &where, int count)
 {
   if (where._manager != this) return false;
   if (count <= 0) return true;
@@ -154,7 +149,7 @@ bool list::backward(iterator &where, int count)
   return true;
 }
 
-int list::elements() const
+int doubly_linked_list::elements() const
 {
   if (empty()) return 0;
   int to_return = 0;
@@ -166,7 +161,7 @@ int list::elements() const
   return to_return;
 }
 
-int list::items_from_head(const iterator &where) const
+int doubly_linked_list::items_from_head(const iterator &where) const
 {
   if (where._manager != this) return 0;
   if (where.is_head()) return 0;  // make sure it's not there already.
@@ -179,7 +174,7 @@ int list::items_from_head(const iterator &where) const
   return index;
 }
 
-int list::items_from_tail(const iterator &where) const
+int doubly_linked_list::items_from_tail(const iterator &where) const
 {
   if (where._manager != this) return 0;
   if (where.is_tail()) return 0;  // make sure it's not there already.
@@ -204,7 +199,7 @@ node *list::get()
 }
 */
 
-node *list::remove(iterator &where)
+node *doubly_linked_list::remove(iterator &where)
 {
   if (where._manager != this) return NULL_POINTER;
   if (empty()) return NULL_POINTER;
@@ -223,9 +218,9 @@ node *list::remove(iterator &where)
   return old_cursor;
 }
 
-void list::zap(iterator &where) { delete remove(where); }
+void doubly_linked_list::zap(iterator &where) { delete remove(where); }
 
-void list::append(iterator &where, node *new_node)
+void doubly_linked_list::append(iterator &where, node *new_node)
 {
   if (where._manager != this) return;
   while (new_node->links() < 2) new_node->insert_link(0, NULL_POINTER);
@@ -241,7 +236,7 @@ void list::append(iterator &where, node *new_node)
   where._cursor = new_node;
 }
 
-void list::insert(iterator &where, node *new_node)
+void doubly_linked_list::insert(iterator &where, node *new_node)
 {
   if (where._manager != this) return;
   while (new_node->links() < 2) new_node->insert_link(0, NULL_POINTER);
@@ -257,7 +252,7 @@ void list::insert(iterator &where, node *new_node)
   where._cursor = new_node;
 }
 
-void list::zap_all()
+void doubly_linked_list::zap_all()
 {
   iterator zapper = head();
   while (!empty()) zap(zapper);

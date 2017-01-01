@@ -1,21 +1,17 @@
-#ifndef LIST_CLASS
-#define LIST_CLASS
+#ifndef DOUBLY_LINKED_LIST_CLASS
+#define DOUBLY_LINKED_LIST_CLASS
 
-/*****************************************************************************\
-*                                                                             *
-*  Name   : list                                                              *
-*  Author : Chris Koeritz                                                     *
-*                                                                             *
-*******************************************************************************
-* Copyright (c) 1998-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
-\*****************************************************************************/
-
-
+/*
+*  Name   : doubly_linked_list
+*  Author : Chris Koeritz
+**
+* Copyright (c) 1998-$now By Author.  This program is free software; you can
+* redistribute it and/or modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either version 2 of
+* the License or (at your option) any later version.  This is online at:
+*     http://www.fsf.org/copyleft/gpl.html
+* Please send any updates to: fred@gruntose.com
+*/
 
 namespace nodes {
 
@@ -33,13 +29,21 @@ class node;  // forward.
   cursor is affected.  Note that this list is not thread safe.
 */
 
-class list
+
+//hmmm: is this class really for real?  it's doing all sorts of stuff with nodes, rather than with the list object itself.
+// consider dropping the current implementation and providing more standard list operations, on an object that is actually using itself in its definition, rather than a different class (node).
+// this would be easy to do if we just break down and define the dl list as a node itself.  then we have something to work with.
+
+//current iterator implementation here is bunk.
+
+
+class doubly_linked_list
 {
 public:
-  list();
+  doubly_linked_list();
     //!< constructs a blank list.
 
-  ~list();
+  ~doubly_linked_list();
     //!< invalidates all contents of the list and destroys all child nodes.
 
   int elements() const;
@@ -57,7 +61,7 @@ public:
 
   class iterator {
   public:
-    iterator(const list *mgr, node *start) : _cursor(start), _manager(mgr) {}
+    iterator(const doubly_linked_list *mgr, node *start) : _cursor(start), _manager(mgr) {}
       //!< opens up an iterator on a list.
       /*!< the preferred method to construct an iterator is to use the
       head/tail functions in list. */
@@ -104,8 +108,8 @@ public:
 
   private:
     node *_cursor;  //!< the current position.
-    friend class list;  //!< lists have full access to this object.
-    const list *_manager;  //!< our friendly manager.
+    friend class doubly_linked_list;  //!< lists have full access to this object.
+    const doubly_linked_list *_manager;  //!< our friendly manager.
   };
 
   iterator head() const { return iterator(this, _head); }
@@ -180,8 +184,8 @@ private:
     //!< zips the list to the position indicated by "count", if it can.
 
   // not permitted.
-  list(const list &);
-  list &operator =(const list &);
+  doubly_linked_list(const doubly_linked_list &);
+  doubly_linked_list &operator =(const doubly_linked_list &);
 };
 
 } // namespace.

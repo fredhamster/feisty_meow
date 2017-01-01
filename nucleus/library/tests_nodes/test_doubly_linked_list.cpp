@@ -1,16 +1,14 @@
-/*****************************************************************************\
-*                                                                             *
-*  Name   : test_list                                                         *
-*  Author : Chris Koeritz                                                     *
-*                                                                             *
-*******************************************************************************
-* Copyright (c) 1993-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
-\*****************************************************************************/
+/*
+*  Name   : test_doubly_linked_list
+*  Author : Chris Koeritz
+**
+* Copyright (c) 1993-$now By Author.  This program is free software; you can
+* redistribute it and/or modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either version 2 of
+* the License or (at your option) any later version.  This is online at:
+*     http://www.fsf.org/copyleft/gpl.html
+* Please send any updates to: fred@gruntose.com
+*/
 
 #include <application/hoople_main.h>
 #include <basis/astring.h>
@@ -18,10 +16,10 @@
 #include <configuration/application_configuration.h>
 #include <loggers/program_wide_logger.h>
 #include <mathematics/chaos.h>
-#include <nodes/list.h>
 #include <nodes/node.h>
 #include <structures/static_memory_gremlin.h>
 #include <unit_test/unit_base.h>
+#include <nodes/doubly_linked_list.h>
 
 using namespace application;
 using namespace basis;
@@ -48,23 +46,23 @@ typedef basket<int> t_node;
 
 //////////////
 
-class test_list : virtual public unit_base, virtual public application_shell
+class test_doubly_linked_list : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_list() : unit_base() {}
+  test_doubly_linked_list() : unit_base() {}
   DEFINE_CLASS_NAME("test_list");
   virtual int execute();
 };
 
-HOOPLE_MAIN(test_list, );
+HOOPLE_MAIN(test_doubly_linked_list, );
 
 //////////////
 
-int test_list::execute()
+int test_doubly_linked_list::execute()
 {
   FUNCDEF("execute");
 
-  list the_list;
+  doubly_linked_list the_list;
   chaos randomizer;
 
   int iterations_left = DEFAULT_ITERATIONS;
@@ -77,7 +75,7 @@ int test_list::execute()
       int to_add = randomizer.inclusive(0, 100000);
 
       // seek the correct insertion place to keep the list ordered.
-      list::iterator iter = the_list.head();
+      doubly_linked_list::iterator iter = the_list.head();
       while (!iter.is_tail() && iter.observe()
           && (CASTER(iter.observe())->stored() <= to_add) )
         iter++;
@@ -87,7 +85,7 @@ int test_list::execute()
     {
       // test the list invariant (which is that all elements should be sorted
       // in non-decreasing order).
-      list::iterator iter = the_list.tail();
+      doubly_linked_list::iterator iter = the_list.tail();
       // initialize our comparator.
       int bigger = CASTER(iter.observe())->stored();
       // loop backwards until we hit the head.
@@ -108,7 +106,7 @@ int test_list::execute()
         int to_whack = randomizer.inclusive(0, elem - 1);
         
         // start at the head of the list...
-        list::iterator iter = the_list.head();
+        doubly_linked_list::iterator iter = the_list.head();
         // and jump to the element we chose.
         the_list.forward(iter, to_whack);
         ASSERT_EQUAL(the_list.index(iter), to_whack,
@@ -122,7 +120,7 @@ int test_list::execute()
   }
 
 #ifdef DEBUG_LIST
-  list::iterator iter = the_list.head();
+  doubly_linked_list::iterator iter = the_list.head();
   log(astring(""));
   log(astring("list contents:"));
   int indy = 0;
