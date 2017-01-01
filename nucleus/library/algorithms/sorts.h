@@ -16,6 +16,8 @@
 // Please send updates for this code to: fred@gruntose.com -- Thanks, fred.
 //////////////
 
+#include <mathematics/chaos.h>
+
 namespace algorithms {
 
 	/*
@@ -345,10 +347,25 @@ namespace algorithms {
 	 * operates in O(n log(n)) time on average, worst case O(n^2).
 	 * sorts the original array.
 	 */
-	template<class type>
+	template <class type>
 	void quick_sort(type v[], int n, bool reverse = false)
 	{
 		inner_quick_sort(v, 0, n - 1, reverse);
+	}
+
+	//////////////
+
+	//! handy method for randomizing the order of a list.  not strictly a sorting function...
+	template <class type>
+	void randomize_list(type v[], int n)
+	{
+		mathematics::chaos randomizer;
+		for (int i = 0; i < n; i++) {
+			// we will swap with any element that is not prior to the current index; thus we allow
+			// swapping the element with itself and later, but not with anything earlier.
+			int swap_index = randomizer.inclusive(i, n - 1);
+			swap_values(v, i, swap_index);
+		}
 	}
 
 }  // namespace.

@@ -47,7 +47,7 @@ public:
 
 	int *populate_random_c_array(int size);
 	basis::array<int> populate_random_array(int size);
-	void rerandomize(int list[], int size);
+//	void rerandomize(int list[], int size);
 	bool verify_ascending(const int *list, int size);
 	bool verify_descending(const int *list, int size);
 
@@ -75,11 +75,11 @@ basis::array<int> test_sorts::populate_random_array(int size)
 	return to_return;
 }
 
-void test_sorts::rerandomize(int list[], int size)
-{
-	for (int i = 0; i < size; i++)
-		list[i] = randomizer().inclusive(0, MAX_VALUE);
-}
+//void test_sorts::rerandomize(int list[], int size)
+//{
+//	for (int i = 0; i < size; i++)
+//		list[i] = randomizer().inclusive(0, MAX_VALUE);
+//}
 
 bool test_sorts::verify_ascending(const int *list, int size)
 {
@@ -114,7 +114,7 @@ void test_sorts::test_shell_sort(int size)
 	ASSERT_TRUE(verify_ascending(list, size),
 	    "ordering check - list should be ordered at first check");
 
-	rerandomize(list, size);
+	randomize_list(list, size);
 
 	// check a reversed sort.
 	shell_sort(list, size, true);
@@ -136,7 +136,7 @@ void test_sorts::test_heap_sort(int size)
 	ASSERT_TRUE(verify_ascending(list, size),
 	    "ordering check - list should be ordered at first check");
 
-	rerandomize(list, size);
+	randomize_list(list, size);
 
 	// check a reversed sort.
 	heap_sort(list, size, true);
@@ -161,7 +161,7 @@ void test_sorts::test_merge_sort(int size)
 	ASSERT_TRUE(verify_ascending(ret.access(), size),
 	    "ordering check - list should be ordered at first check");
 
-	rerandomize(list.access(), size);
+	randomize_list(list.access(), size);
 
 	// check a reversed sort.
 	ret = merge_sort(list, true);
@@ -182,7 +182,7 @@ void test_sorts::test_quick_sort(int size)
 
 //	LOG(a_sprintf("after quick sort: %s", dump_list(list, size).s()));
 
-	rerandomize(list, size);
+	randomize_list(list, size);
 
 	// check a reversed sort.
 	quick_sort(list, size, true);

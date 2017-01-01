@@ -90,7 +90,7 @@ int test_singly_linked_list::execute()
   	b->set_next(c);
   	c->set_next(d);
   	d->set_next(e);
-//  	e->set_next(NULL_POINTER);  // not actually necessary, right?
+  	// it's not necessary to set e's next to null; this is the default.
 
   	ASSERT_FALSE(singly_linked_list::has_cycle(a), "list should be found to have zero cycles")
   }
