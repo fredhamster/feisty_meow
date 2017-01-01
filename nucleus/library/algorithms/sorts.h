@@ -16,9 +16,6 @@
 // Please send updates for this code to: fred@gruntose.com -- Thanks, fred.
 //////////////
 
-#include <stdio.h>
-//temp!
-
 namespace algorithms {
 
 	/*
@@ -95,8 +92,7 @@ namespace algorithms {
 	 * merges two sorted arrays into a single sorted array.
 	 */
 	template<class type>
-	basis::array<type> merge(basis::array<type> &first, basis::array<type> &second,
-	  bool reverse)
+	basis::array<type> merge(basis::array<type> &first, basis::array<type> &second, bool reverse)
 	{
 		basis::array<type> to_return;
 		// operate until we've consumed both of the arrays.
@@ -108,8 +104,7 @@ namespace algorithms {
 			} else if (second.length() <= 0) {
 				to_return += first[0];
 				first.zap(0, 0);
-			} else if ( (!reverse && (first[0] <= second[0]))
-					|| (reverse && (first[0] >= second[0]))) {
+			} else if ((!reverse && (first[0] <= second[0])) || (reverse && (first[0] >= second[0]))) {
 				// the first list has a better value to add next.
 				to_return += first[0];
 				first.zap(0, 0);
@@ -286,13 +281,8 @@ namespace algorithms {
 		// reverse the sense of "reverse", since our algorithm expects a normal heap (with largest on top).
 		heap<type> hap(v, n, !reverse);
 
-		//temp
-//		printf("hey after heaping: %s\n", dump_list(v, n).s());
-
 		int end = n - 1;
 		while (end > 0) {
-
-//printf("moving value %d\n", (int)v[0]);
 			// a[0] is the root and largest value for a normal heap. The swap moves it to the real end of the list and takes it out of consideration.
 			hap.swap_values(end, 0);
 			// reduce the heap size by 1.
@@ -304,23 +294,48 @@ namespace algorithms {
 
 //////////////
 
+	//! swaps the values in the array stored at positions a and b.
 	template<class type>
-	void partition(type v[], int start, int end)
+	void swap_values(type array[], int a, int b)
 	{
-
+		type temp = array[a];
+		array[a] = array[b];
+		array[b] = temp;
 	}
 
-//! the recursive version of quick sort that does the work for our convenience method.
+	// hoare's partition implementation.
 	template<class type>
-	void inner_quick_sort(type v[], int n, int start, int end, bool reverse = false)
+	int partition(type a[], int start, int end, bool reverse)
 	{
-		if (start >= end) {
-			// nothing to see here.
-		} else {
+//		printf("before partition: %s\n", dump_list(a + start, end - start + 1).s());
+		int pivot = a[start];
+		int i = start - 1;
+		int j = end + 1;
+		while (true) {
+			do {
+				i++;
+			} while ((!reverse && (a[i] < pivot)) || (reverse && (a[i] > pivot)));
+			do {
+				j--;
+			} while ((!reverse && (a[j] > pivot)) || (reverse && (a[j] < pivot)));
+
+			if (i >= j) {
+//				printf("after partition: %s\n", dump_list(a + start, end - start + 1).s());
+				return j;
+			}
+			swap_values(a, i, j);
+		}
+	}
+
+	//! the recursive version of quick sort that does the work for our convenience method.
+	template<class type>
+	void inner_quick_sort(type v[], int start, int end, bool reverse)
+	{
+		if (start < end) {
 			// figure out where to pivot, and sort both halves around the pivot index.
-			int pivot = partition(v, start, end);
-			quicksort(v, start, pivot - 1);
-			quicksort(v, pivot + 1, end);
+			int pivot = partition(v, start, end, reverse);
+			inner_quick_sort(v, start, pivot, reverse);
+			inner_quick_sort(v, pivot + 1, end, reverse);
 		}
 	}
 
@@ -333,7 +348,7 @@ namespace algorithms {
 	template<class type>
 	void quick_sort(type v[], int n, bool reverse = false)
 	{
-		inner_quick_sort(v, n, 0, n - 1, reverse);
+		inner_quick_sort(v, 0, n - 1, reverse);
 	}
 
 }  // namespace.
