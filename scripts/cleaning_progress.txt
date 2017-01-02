@@ -5,4 +5,5 @@ archival 2017-01-01
   okay with backup arb, fixed backup_trac, found pack_feisty used in www-data cron job (copied for new cron config script), listarch considered one of newer gen of good scripts (but still could probably use refactoring; it's just that it works well already),
   okay with search_arch, serene backer upper (filesynch / transporter kind of blow right now, but we have lots of notes for them), shared snarfer is a good lib used by many snarfers,
   okay with snarf_feisty_meow (retested good), snarf_linux_config which is used constantly, snarf_notes -- surprisingly useful as it grabbed the local note (*.txt) files i don't usually grab, but it also did grab the cloud, which is a backed up repository style asset; seems a little silly to keep it in notes still,
+  okay with snarf_opensim which is used regularly, went back and fixed snarf_notes to not include cloud, tried snarf_user and it seems too fat -- nah, it's okay actually since it's backing up dot files; this is actually a good idea,
   okay with 
