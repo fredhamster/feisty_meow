@@ -1,29 +1,65 @@
 
 #[aa cron defaults]
+#
 # cron default bits to add at top of crontab...
+# by fred t. hamster, GNU GPL v3 license.
 
-# these stanzas are assumed to be present in every one of the other cron examples.
-# unfortunately there is no way to include cron files in other cron files, so the functional parts here just need
-# to be plopped into the user's actual crontab.
+# these stanzas are assumed to be present in every one of the other cron
+# example files.  unfortunately there is no way to include cron files in other
+# cron files, so the functional parts here should just be pasted directly into
+# the user's crontab.
 
-# set the shell to bash.  this is not set by default for many crons.
+# set the shell to bash.  (not the default for some cron implementations.)
 SHELL=/bin/bash
 
-# a key to the crontab positional entries for times.
+# crontab miniature docs:
 #
-# m h dom mon dow command
+# below is the short form key to the crontab positional entries for times:
+#     m h dom mon dow command
 #
-# longer form spelling out the positions.  these are optionally plural because cron allows for multiple entries in different forms.
-# minute(s) hour(s) dayOfMonth(s) month(s) dayOfWeek(s) command
+# below is a longer form that spells out the meaning of each position:
+#     minute(s) hour(s) dayOfMonth(s) month(s) dayOfWeek(s) command
+#
+# each field is optionally plural because cron allows each of the positions to
+# indicate multiple values.  generally it is simpler and sufficient to have a
+# single value in the field, but there are also good reasons that some tasks
+# would have a more complicated formula (such as, "every couple of days" rather
+# than "every day").
+#
+# the wildcard '*' indicates that every valid value is okay for that field.
+# the wildcard form of a crontab line is this: "* * * * * command"
+# that "command" will execute every single minute.
 
-# set a user name for writing unique log files.  this is important because crontab doesn't have USER defined,
-# although we can count on HOME being defined, luckily.
+# set a user name for writing unique log files.  this is important because
+# cron doesn't have the variable USER defined.  cron does define HOME, which
+# is pretty lucky for us...
 # you may want to use a more appropriate user name than mine, which is "fred".
 USER=fred
 
-# the guts of the crontab would go here.  it would spell out some time or times for the command to be executed.
-# it's actually okay to have a really long command with multiple sub-commands; just put it inside parentheses to group
-# a bunch of commands together.  there are many examples of doing this in the other files.
-# also, it's often important to send the output someplace.  /dev/null works if you don't ever want to see it, but i
-# prefer to write log files in the /tmp directory which include the user name defined above.
+# the guts of the crontab would follow below.  this usually is a set of valid
+# crontab lines that spell the time or times for commands to be executed.  my
+# crontabs usually have from 3 to 8 entries because i tend to atomicize the
+# tasks, rather than writing big complicated multi-purpose scripts.  not saying
+# that's always better, it's just how i roll (my crontabs)...
+#
+# also, it is fine to have a really long command with multiple sub-commands;
+# just put it inside parentheses to group a bunch of commands together.  there
+# are many examples of doing this in the other crontab examples in this folder.
+#
+# further, it's often important to send the output from the cron job to an
+# output location.  doing this keeps cron from sending you a lot of emails
+# with cron job output on some systems.  you can use the normal output
+# redirection operators to do this (e.g. '>', '2>', '&>', '>>' and '&>>').
+# /dev/null works as an output target if you don't ever want to see the
+# results from your cron jobs.  i usually prefer to write log files in the /tmp
+# directory with the ${USER} variable in the file name.  here's an example of
+# a real command with output that will *append* both output and error streams
+# ('&>>') to an output file.  if your output can be huge, then you may want to
+# overwrite the output file instead ('&>').
+
+# runs every minute and recreates a fortune for thunderbird signature.
+# a lot of the detail below is to get the feisty meow environment loaded for
+# the command.
+* * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $HOME/feisty_meow/scripts/text/new_sig.pl) &>>/tmp/${USER}-cron-nechung_fortune.log
+
 
