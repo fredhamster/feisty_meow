@@ -28,8 +28,10 @@ if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
   source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
 
   # if not commented out, then feisty meow will run all the unit tests during builds.
-  #export RUN_ALL_TESTS=true
+  export RUN_ALL_TESTS=true
 
+  # turns on noisy debugging in feisty meow scripts if uncommented.
+  #export SHELL_DEBUG=true
 fi
 
 ##############
