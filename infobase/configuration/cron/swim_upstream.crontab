@@ -1,4 +1,5 @@
 
+
 SHELL=/bin/bash
 
 # m h dom mon dow command
@@ -9,6 +10,10 @@ USER=fred
 # this cron job updates the feisty meow repository on source forge based on
 # the real one at feistymeow.org.
 # update the source code to the latest, every day at 3am or so.
-14 */2 * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/rev_control/push_repo_upstream.sh $HOME/repos/sf-feistymeow-trunk ) &>>/tmp/zz_nechung_fortune_$USER.log
+
+# OUT OF DATE.  # we just need to do a make nowadays!
+#14 */2 * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/rev_control/push_repo_upstream.sh $HOME/repos/sf-feistymeow-trunk ) &>>/tmp/zz_nechung_fortune_$USER.log
+
+14 */2 * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; cd $HOME ; make ) &>>/tmp/cron-swim_upstream-$USER.log
 
 
