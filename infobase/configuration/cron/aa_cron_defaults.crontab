@@ -1,0 +1,29 @@
+
+#[aa cron defaults]
+# cron default bits to add at top of crontab...
+
+# these stanzas are assumed to be present in every one of the other cron examples.
+# unfortunately there is no way to include cron files in other cron files, so the functional parts here just need
+# to be plopped into the user's actual crontab.
+
+# set the shell to bash.  this is not set by default for many crons.
+SHELL=/bin/bash
+
+# a key to the crontab positional entries for times.
+#
+# m h dom mon dow command
+#
+# longer form spelling out the positions.  these are optionally plural because cron allows for multiple entries in different forms.
+# minute(s) hour(s) dayOfMonth(s) month(s) dayOfWeek(s) command
+
+# set a user name for writing unique log files.  this is important because crontab doesn't have USER defined,
+# although we can count on HOME being defined, luckily.
+# you may want to use a more appropriate user name than mine, which is "fred".
+USER=fred
+
+# the guts of the crontab would go here.  it would spell out some time or times for the command to be executed.
+# it's actually okay to have a really long command with multiple sub-commands; just put it inside parentheses to group
+# a bunch of commands together.  there are many examples of doing this in the other files.
+# also, it's often important to send the output someplace.  /dev/null works if you don't ever want to see it, but i
+# prefer to write log files in the /tmp directory which include the user name defined above.
+

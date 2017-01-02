@@ -1,8 +1,4 @@
 
-SHELL=/bin/bash
-
-# m h dom mon dow command
-
 #[letsencrypt renewal]
 # run the letsencrypt certificate renewal process every 4 hours.
 37 */4 * * * letsencrypt renew  &>>/tmp/letsencrypt_last_run.txt

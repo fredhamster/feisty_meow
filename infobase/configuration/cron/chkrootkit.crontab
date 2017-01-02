@@ -1,8 +1,4 @@
 
-SHELL=/bin/bash
-
-# m h dom mon dow command
-
 #[chkrootkit]
 # this runs chkrootkit to demonstrate a bug in the vm kernel currently
 # provided by...?  hmmm: who's the vendor?

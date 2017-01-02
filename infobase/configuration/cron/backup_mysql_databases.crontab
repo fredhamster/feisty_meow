@@ -1,13 +1,5 @@
 
-
-SHELL=/bin/bash
-
-# m h dom mon dow command
-
-USER=fred
-
-#[backup all mysql databases]
-# backs up our databases on a weekly basis.
+#[backup mysql databases]
+# backs up all of our mysql databases on a weekly basis.
 28 4 * * 2 (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; mysqldump -u root '-pPASSWORD' --all-databases | gzip > /z/stuffing/archives/database_backup_$(hostname)_$(date_stringer).sql.gz) &>/tmp/database_backup_${USER}.log
-
 

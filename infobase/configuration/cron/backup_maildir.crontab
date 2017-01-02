@@ -1,13 +1,5 @@
 
-
-SHELL=/bin/bash
-
-# m h dom mon dow command
-
-USER=fred
-
 #[backup maildir]
 # backs up the maildir folder for fred monthly
 * * 1 * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; tar -czf /z/stuffing/archives/maildir_backup_$(date_stringer).tar.gz $HOME/Maildir) &>/tmp/maildir_backup_${USER}.log
-
 

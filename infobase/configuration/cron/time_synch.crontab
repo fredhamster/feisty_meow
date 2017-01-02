@@ -1,8 +1,4 @@
 
-SHELL=/bin/bash
-
-# m h dom mon dow command
-
 #[time synch crontab]
 
 # standard to synch to local machine.
