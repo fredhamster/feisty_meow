@@ -1,18 +1,13 @@
 #!/bin/bash
 
-# backs up our trac repository.
+# backs up a trac repository into a tar.gz file.
+
+export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 
 trac_path="$1"; shift
 archive_path="$1"; shift
 
-if [ -z "$trac_path" -o -z "$archive_path" ]; then
-  echo This script needs the path to the trac database as the first parameter
-  echo and the path to the storage directory as the second parameter.
-  exit 1
-fi
-
-sep='_'
-
-tar -czf "${archive_path}/trac_bkup_$(date +"%Y$sep%m$sep%d$sep%H%M$sep%S" | tr -d '/\n/').tar.gz" "$trac_path" &>$TMP/zz_backup_trac.log
+# call our arbitrary backer upper, since this is a simple single directory case.
+bash $WORKDIR/backup_arbitrary.sh "$trac_path" "$archive_path" "trac_bkup"
 
 
