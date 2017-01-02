@@ -1,0 +1,8 @@
+
+#[synch and swim downstream]
+# updates local code repositories from master versions before uploading any changes to downstream
+# repositories, such as sourceforge or github.  the uploading process (which we think of as sending
+# those updated items swimming downstream to their dependent repositories) is done automatically in
+# our makefiles.  that's why the code below relies on the top-level makefile in home.
+14 */2 * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; cd $HOME ; rev_update ; make ) &>>/tmp/${USER}-cron-synch_and_swim_downstream.log
+
