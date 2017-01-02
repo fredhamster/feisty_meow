@@ -17,7 +17,7 @@ JAVA_HOME=/usr/lib/jvm/java-6-sun
 
 # variegated scheme: we run the container during non-working hours.
 
-# during non-weekday hours, make sure grid container is started if can't detect it as running.
+# during non-weekday hours, ensure grid container is started if can't detect it as running.
   # first is for weekdays, during non-working hours.
 #*/10 0-8,19-23 * * 1-5 export FOOP=/tmp/container_restarter_${USER}_$(hostname).log; bash $XSEDE_TESTS_FOLDER/library/maybe_restart_container.sh &>>$FOOP ; /bin/chmod g+w $FOOP
   # second is for weekends.

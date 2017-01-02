@@ -1,0 +1,11 @@
+
+SHELL=/bin/bash
+
+# m h dom mon dow command
+
+USER=fred
+
+#[crontab meta backup]
+# meta-operation to back up the crontab using cron itself.
+28 */8 * * * crontab -l >$HOME/$USER.crontab
+
