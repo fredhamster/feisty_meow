@@ -57,9 +57,10 @@ USER=fred
 # ('&>>') to an output file.  if your output can be huge, then you may want to
 # overwrite the output file instead ('&>').
 
+#[nechung fortune]
 # runs every minute and recreates a fortune for thunderbird signature.
 # a lot of the detail below is to get the feisty meow environment loaded for
-# the command.
+# the new_sig command.
 * * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $HOME/feisty_meow/scripts/text/new_sig.pl) &>>/tmp/${USER}-cron-nechung_fortune.log
 
 
