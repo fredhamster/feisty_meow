@@ -1,5 +1,5 @@
 
 #[snarf linux configuration]
 # do a backup of the linux configuration files once a week.
-28 7 * * 4 (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; cd /z/stuffing/archives; perl $HOME/feisty_meow/scripts/archival/snarf_linux_config.pl) &>>/tmp/zz_linux_config_snarf_$USER.log
+28 7 * * 4 (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; cd /z/stuffing/archives; perl $HOME/feisty_meow/scripts/archival/snarf_linux_config.pl) &>>/tmp/${USER}-cron-snarf_linux_configuration.log
 

@@ -1,5 +1,5 @@
 
 #[backup git account]
 # archives the whole ~git folder with all account databases into a compressed tar file.
-34 20 * * 5 tar -czf /z/stuffing/archives/git_archive_$(date +"\%Y_\%m_\%d_\%H\%M_\%S" | tr -d '/\n/').tar.gz /home/git >/home/git/archiving_log.txt 
+34 20 * * 5 tar -czf /z/stuffing/archives/git_archive_$(date +"\%Y_\%m_\%d_\%H\%M_\%S" | tr -d '/\n/').tar.gz /home/git &>>/tmp/${USER}-cron-backup_git_account.log
 
