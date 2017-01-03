@@ -38,8 +38,14 @@ shell's startup file.  Example startup files are available in:
 ==============
 How to install the feisty meow script dependencies
 
-These perl modules are required by some of the scripts (e.g. the differ
-utility and the feisty meow customization system).
+A couple of perl modules are required by some of the scripts (including the
+differ utility and the feisty meow customization system).  They can be
+installed with either apt-get or CPAN.
+
+Install using apt-get:
+=> apt-get install libfile-which-perl libtext-diff-perl
+
+or Install using perl's CPAN:
 => cpan install Text::Diff File::Which
 
 ==============
