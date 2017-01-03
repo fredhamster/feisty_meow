@@ -266,9 +266,9 @@ namespace algorithms {
 		}
 
 	private:
-		bool _reverse = false;  // is the sorting in reverse?
-		int _total = 0;
-		int *_heapspace = NULL_POINTER;
+		bool _reverse;  // is the sorting in reverse?
+		int _total;  // how many total elements are there?
+		int *_heapspace;  // track a pointer to the array.
 	};
 
 	/*!
