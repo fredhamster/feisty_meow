@@ -2,19 +2,23 @@
 
 # runs the less command but with some additional options.
 #
-# we always pass the raw flag (-r) so our special formatting is not lost.
-# this may not be the best choice for some text terminals.
-#
-# there is also a "code" option added (-c) that formats the incoming data as
-# if it were source code before showing the output.  this works great on files
-# that are actually recognized as source code, and not so great on other
-# things like simple lists or error output.
+# there is a "code" option (-c) that formats the incoming data as if it were source code before
+# displaying the output.  this works great on files that are actually recognized as source code,
+# and not so great on other things like simple lists or error output.
 function lesser()
 {
   local code_view_flag="$1"
+
+  EXTRA_OPTIONS=
+
   if [ "$code_view_flag" == "-c" ]; then
     # saw the 'code' flag, which means show the file with source highlighting.
     shift
+
+    # we always pass the raw flag (-r) when in code view mode so special formatting is not lost.
+    # this may not work for some text terminals.
+    EXTRA_OPTIONS=-r
+
   else
     # drop the value and emptiness will mean don't show code.
     unset code_view_flag
@@ -25,9 +29,8 @@ function lesser()
     export LESSOPEN="| source-highlight -f esc -o STDOUT -i %s"
   fi
 
-
   # run the source highlighter first if needed.
-  /bin/less -r "${@}" 
+  /bin/less $EXTRA_OPTIONS "${@}" 
 }
 
 ##############
