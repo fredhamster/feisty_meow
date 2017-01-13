@@ -316,8 +316,10 @@ if [ -z "$skip_all" ]; then
       /bin/su -l $*
     fi
   
-    # relabel the console after returning.
-    bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
+#NO!    # relabel the console after returning.
+#NO!    bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
+# fix this to set the old title back in place!
+
   }
   
   # sudo function wraps the normal sudo by ensuring we replace the terminal
