@@ -6,11 +6,14 @@ source "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/pick_credentials.sh"
 
 if [ -z "$PRIOR_TERMINAL_TITLE" ]; then
   # save the former terminal title if we're running in X with xterm.
-  PRIOR_TERMINAL_TITLE=
+#  PRIOR_TERMINAL_TITLE=
   which xprop &>/dev/null
   if [ $? -eq 0 ]; then
     if [[ "$TERM" =~ .*"xterm".* ]]; then
       PRIOR_TERMINAL_TITLE="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+
+echo "no prior title existed, so setting prior title to '$PRIOR_TERMINAL_TITLE'"
+
     fi
   fi
 fi
@@ -42,7 +45,7 @@ if [ $? -eq 0 ]; then
 echo prior title nil new label
       bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
     else
-echo "using old prior title of '$PRIOR_TERMINAL_TITLE'"
+echo "using prior title of '$PRIOR_TERMINAL_TITLE'"
       bash $FEISTY_MEOW_SCRIPTS/tty/set_term_title.sh "$PRIOR_TERMINAL_TITLE"
       # remove the value for this, since we did our job on it.
       unset PRIOR_TERMINAL_TITLE
