@@ -12,7 +12,7 @@ if [ -z "$PRIOR_TERMINAL_TITLE" ]; then
     if [[ "$TERM" =~ .*"xterm".* ]]; then
       PRIOR_TERMINAL_TITLE="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
 
-echo "no prior title existed, so setting prior title to '$PRIOR_TERMINAL_TITLE'"
+echo "no prior title record existed, so saving prior title as '$PRIOR_TERMINAL_TITLE'"
 
     fi
   fi
