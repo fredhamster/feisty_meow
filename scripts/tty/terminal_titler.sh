@@ -27,15 +27,17 @@ function ptt_stack_empty()
 # a little bit furious the restore is failing during regenerate right now.
 function show_terminal_titles()
 {
-  echo terminal title list now has:
+  sep 14
+  echo "[terminal title list now has...]"
   local i=${#PRIOR_TERMINAL_TITLES[@]}
   if ptt_stack_empty; then
-    echo the list is empty
+    echo the terminal title list is empty.
   else
     while ((i--)); do
       echo "ent #$i: '${PRIOR_TERMINAL_TITLES[$i]}'"
     done
   fi
+  sep 14
 }
 
 # adds an entry into the stack of terminal titles.
@@ -43,8 +45,8 @@ function push_ptt_stack()
 {
   PRIOR_TERMINAL_TITLES[$PTT_STACK_INDEX]="$*"
   ((PTT_STACK_INDEX++))
-echo stack index incremented and now at $PTT_STACK_INDEX
-show_terminal_titles
+#echo stack index incremented and now at $PTT_STACK_INDEX
+#show_terminal_titles
 }
 
 function pop_ptt_stack()
@@ -53,10 +55,10 @@ function pop_ptt_stack()
     echo nothing to pop from prior terminal titles stack.
   else
     ((PTT_STACK_INDEX--))
-echo stack index decremented and now at $PTT_STACK_INDEX
+#echo stack index decremented and now at $PTT_STACK_INDEX
     CURRENT_TERM_TITLE="${PRIOR_TERMINAL_TITLES[$PTT_STACK_INDEX]}"
-echo "got the last title as '$CURRENT_TERM_TITLE'"
-show_terminal_titles
+#echo "got the last title as '$CURRENT_TERM_TITLE'"
+#show_terminal_titles
   fi
 }
 
@@ -82,10 +84,10 @@ function save_terminal_title()
     if [[ "$TERM" =~ .*"xterm".* ]]; then
       local prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
       if [ ! -z "$prior_title" ]; then
-echo "saving prior terminal title as '$prior_title'"
+#echo "saving prior terminal title as '$prior_title'"
         push_ptt_stack "$prior_title"
-      else
-echo "not saving prior terminal title which was empty"
+#      else
+#echo "not saving prior terminal title which was empty"
       fi
     fi
   fi
@@ -99,11 +101,9 @@ function restore_terminal_title()
 #  if [ -z "$(echo $* | grep git)" ]; then
 
   # run the terminal labeller to restore the prior title, if there was one.
-  if ptt_stack_empty; then
-echo prior titles were empty, so doing nothing.
-  else
+  if ! ptt_stack_empty; then
     pop_ptt_stack
-echo "restoring prior terminal title of '$CURRENT_TERM_TITLE'"
+#echo "restoring prior terminal title of '$CURRENT_TERM_TITLE'"
     set_terminal_title "$CURRENT_TERM_TITLE"
   fi
 }
@@ -123,11 +123,10 @@ function label_terminal_with_info()
     new_title="-- $user@$pruned_host -- [$date_string]"
     set_terminal_title "$new_title"
   else
-    # restore the former title.
-#no    restore_terminal_title
-echo "showing prior terminal title since there was a prior title!"
+    # use the former title; paste it back up there just in case.
+#echo "showing prior terminal title since there was a prior title!"
     pop_ptt_stack
-echo "using prior terminal title of '$CURRENT_TERM_TITLE'"
+#echo "using prior terminal title of '$CURRENT_TERM_TITLE'"
     set_terminal_title "$CURRENT_TERM_TITLE"
     push_ptt_stack "$CURRENT_TERM_TITLE"
   fi
