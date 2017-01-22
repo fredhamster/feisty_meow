@@ -81,7 +81,8 @@ function save_terminal_title()
   # save the former terminal title if we're running in X with xterm.
   which xprop &>/dev/null
   if [ $? -eq 0 ]; then
-    if [[ "$TERM" =~ .*"xterm".* ]]; then
+    # make sure we're actually using xterm *and* that we have a window ID.
+    if [[ "$TERM" =~ .*"xterm".* && ! -z "$WINDOWID" ]]; then
       local prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
       if [ ! -z "$prior_title" ]; then
 #echo "saving prior terminal title as '$prior_title'"
