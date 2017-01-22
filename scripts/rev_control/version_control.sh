@@ -4,6 +4,7 @@
 # this script should be sourced into other scripts that use it.
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
 # the maximum depth that the recursive functions will try to go below the starting directory.
 export MAX_DEPTH=5
@@ -108,6 +109,9 @@ function compute_modifier()
 function do_checkin()
 {
   local directory="$1"; shift
+
+  save_terminal_title
+
   do_update "$directory"
   if [ $? -ne 0 ]; then
     echo "repository update failed; this should be fixed before check-in."
@@ -138,12 +142,18 @@ function do_checkin()
     retval=1
   fi
   popd &>/dev/null
+
+  restore_terminal_title
+
   return $retval
 }
 
 function do_diff
 {
   local directory="$1"; shift
+
+  save_terminal_title
+
   pushd "$directory" &>/dev/null
   local retval=0  # normally successful.
 
@@ -157,12 +167,18 @@ function do_diff
   fi
 
   popd &>/dev/null
+
+  restore_terminal_title
+
   return $retval
 }
 
 function do_report_new
 {
   local directory="$1"; shift
+
+  save_terminal_title
+
   pushd "$directory" &>/dev/null
   local retval=0  # normally successful.
 
@@ -179,6 +195,9 @@ function do_report_new
   fi
 
   popd &>/dev/null
+
+  restore_terminal_title
+
   return $retval
 }
 
@@ -186,6 +205,9 @@ function do_report_new
 function checkin_list()
 {
   local list=$*
+
+  save_terminal_title
+
   for i in $list; do
     # turn repo list back into an array.
     eval "repository_list=( ${REPOSITORY_LIST[*]} )"
@@ -198,6 +220,8 @@ function checkin_list()
       sep 7
     done
   done
+
+  restore_terminal_title
 }
 
 # takes out the first few carriage returns that are in the input.
@@ -222,6 +246,9 @@ function squash_first_few_crs()
 function do_update()
 {
   directory="$1"; shift
+
+  save_terminal_title
+
   local retval=0  # plan on success for now.
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
@@ -238,12 +265,18 @@ function do_update()
     echo no repository in $directory
   fi
   popd &>/dev/null
+
+  restore_terminal_title
+
   return $retval
 }
 
 # gets all the updates for a list of folders under revision control.
 function checkout_list {
   list=$*
+
+  save_terminal_title
+
   for i in $list; do
     # turn repo list back into an array.
     eval "repository_list=( ${REPOSITORY_LIST[*]} )"
@@ -261,6 +294,8 @@ function checkout_list {
       do_update $j
     done
   done
+
+  restore_terminal_title
 }
 
 # provides a list of absolute paths of revision control directories
@@ -286,8 +321,13 @@ function generate_rev_ctrl_filelist()
 # on each directory name, it performs the action (second parameter) provided.
 function perform_revctrl_action_on_file()
 {
+
+#hmmm: this doesn't capture any error returns!
+
   local tempfile="$1"; shift
   local action="$1"; shift
+
+  save_terminal_title
 
   while read -u 3 dirname; do
     if [ -z "$dirname" ]; then continue; fi
@@ -297,6 +337,8 @@ function perform_revctrl_action_on_file()
     sep 7
     popd &>/dev/null
   done 3<"$tempfile"
+
+  restore_terminal_title
 
   rm $tempfile
 }

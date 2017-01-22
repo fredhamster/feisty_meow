@@ -375,6 +375,9 @@ if [ -z "$skip_all" ]; then
       # use our default example user if there was no name provided.
       user=fred
     fi
+
+    save_terminal_title
+
     if [ ! -d "$FEISTY_MEOW_APEX/customize/$user" ]; then
       echo "The customization folder provided for $user should be:"
       echo "  '$FEISTY_MEOW_APEX/customize/$user'"
@@ -402,6 +405,8 @@ if [ -z "$skip_all" ]; then
     fi
     echo
     regenerate
+
+    restore_terminal_title
   }
 
   # generates a random password where the first parameter is the number of characters
