@@ -244,8 +244,15 @@ if [ -z "$skip_all" ]; then
     done
   }
   
-  function fix_alsa() {
-    sudo /etc/init.d/alsasound restart
+#  function fix_alsa() {
+#    sudo /etc/init.d/alsasound restart
+#  }
+
+  function screen() {
+    save_terminal_title
+#hmmm: ugly absolute path here.
+    /usr/bin/screen $*
+    restore_terminal_title
   }
   
   # switches from a /X/path form to an X:/ form.  this also processes cygwin paths.
