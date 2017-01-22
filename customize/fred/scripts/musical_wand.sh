@@ -14,7 +14,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 #hmmm: add the goodness around these actions like the "nice" updater so we catch all errors.
 
 # this host is where all the music is supposed to come from.
-MUSICAL_HOST=curie
+MUSICAL_HOST=banshee
 
 #hmmm: this script is currently limited to run ON the music host.  it could easily do the backwards thing instead, and copy FROM music host.
 
