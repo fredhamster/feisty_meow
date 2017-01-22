@@ -65,6 +65,9 @@ source $FEISTY_MEOW_SCRIPTS/core/variables.sh
 # having migrated from korn shell...).
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
   
+# load some helper methods for the terminal which we'll use below.
+source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
+
 ##############
   
 # check hash table before searching path.
@@ -103,18 +106,10 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
     source "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh"
   fi
 
-## disabled since we don't think is needed any more, and it's just an
-## attack surface if the other users on the host are not trusted.
-#  # allow connections to our x server from the local host.
-#  if [ ! -z "$DISPLAY" ]; then
-#    if [ ! -z "$(echo "$OS_TYPE" | grep -i darwin)" ]; then
-#      if [ ! -z "$SHELL_DEBUG" ]; then echo "Enabling localhost X connections..."; fi
-#      xhost + localhost >/dev/null 2>&1
-#    fi
-#  fi
-
-  # a minor tickle of the title of the terminal, in case there is one.
-  bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
+  # a minor tickle of the title of the terminal, unless we already have some history.
+  if ptt_stack_empty; then
+    label_terminal_with_info
+  fi
 
   if [ ! -z "$SHELL_DEBUG" ]; then echo "heavyweight init is done."; fi
 fi

@@ -315,22 +315,19 @@ if [ -z "$skip_all" ]; then
       # or at least suse doesn't, which is the other one we've tested on.
       /bin/su -l $*
     fi
-  
-#NO!    # relabel the console after returning.
-#NO!    bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
-# fix this to set the old title back in place!
-
   }
   
   # sudo function wraps the normal sudo by ensuring we replace the terminal
   # label if they're doing an su with the sudo.
   function sudo() {
-    local first_command="$1"
+#    local first_command="$1"
+    save_terminal_title
     /usr/bin/sudo "$@"
-    if [ "$first_command" == "su" ]; then
-      # yep, they were doing an su, but they're back now.
-      bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
-    fi
+    restore_terminal_title
+#    if [ "$first_command" == "su" ]; then
+#      # yep, they were doing an su, but they're back now.
+#      label_terminal_with_info
+#    fi
   }
   
   # trashes the .#blah files that cvs and svn leave behind when finding conflicts.

@@ -1,22 +1,15 @@
 #!/bin/bash
 
-# wraps our calling the secure shell and lets us pick our credentials.
+# wraps calling the secure shell to let us pick our appropriate credentials.
 
+source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
+
+#hmmm: is this still used???
+#  it seems redundant with the ssh config file that says which creds to use.
 source "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/pick_credentials.sh"
 
-if [ -z "$PRIOR_TERMINAL_TITLE" ]; then
-  # save the former terminal title if we're running in X with xterm.
-#  PRIOR_TERMINAL_TITLE=
-  which xprop &>/dev/null
-  if [ $? -eq 0 ]; then
-    if [[ "$TERM" =~ .*"xterm".* ]]; then
-      PRIOR_TERMINAL_TITLE="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
-
-echo "no prior title record existed, so saving prior title as '$PRIOR_TERMINAL_TITLE'"
-
-    fi
-  fi
-fi
+# remember the old title.
+save_terminal_title
 
 # force the TERM variable to a more generic version for other side.
 # we don't want the remote side still thinking it's running xterm.
@@ -30,27 +23,9 @@ export TERM=linux
 
 if [ ! -z "$keyfile" ]; then
   \ssh -i "$keyfile" -X -C $*
-#-c blowfish-cbc 
 else
   \ssh -X -C $*
-#-c blowfish-cbc 
 fi
 
-if [ $? -eq 0 ]; then
-  # we don't want to emit anything extra if this is being driven by git.
-  if [ -z "$(echo $* | grep git)" ]; then
-    # re-run the terminal labeller after coming back from ssh.
-    # we check the exit value because we don't want to update this for a failed connection.
-    if [ -z "$PRIOR_TERMINAL_TITLE" ]; then
-echo prior title nil new label
-      bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
-    else
-echo "using prior title of '$PRIOR_TERMINAL_TITLE'"
-      bash $FEISTY_MEOW_SCRIPTS/tty/set_term_title.sh "$PRIOR_TERMINAL_TITLE"
-      # remove the value for this, since we did our job on it.
-      unset PRIOR_TERMINAL_TITLE
-    fi
-  fi
-fi
-
+restore_terminal_title
 
