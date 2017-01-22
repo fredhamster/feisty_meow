@@ -353,6 +353,7 @@ if [ -z "$skip_all" ]; then
   # recreates all the generated files that the feisty meow scripts use.
   function regenerate() {
     # do the bootstrapping process again.
+    save_terminal_title
     echo "regenerating feisty meow script environment."
     bash $FEISTY_MEOW_SCRIPTS/core/reconfigure_feisty_meow.sh
     echo
@@ -364,6 +365,7 @@ if [ -z "$skip_all" ]; then
     source $FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh
     # run nechung oracle to give user a new fortune.
     nechung
+    restore_terminal_title
   }
 
   # copies a set of custom scripts into the proper location for feisty meow
