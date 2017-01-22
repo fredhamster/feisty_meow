@@ -106,10 +106,13 @@ if [ -z "$LIGHTWEIGHT_INIT" ]; then
     source "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh"
   fi
 
+echo before the new labelling, terminal titles have:
+show_terminal_titles
+
   # a minor tickle of the title of the terminal, unless we already have some history.
-  if ptt_stack_empty; then
+#  if ptt_stack_empty; then
     label_terminal_with_info
-  fi
+#  fi
 
   if [ ! -z "$SHELL_DEBUG" ]; then echo "heavyweight init is done."; fi
 fi
