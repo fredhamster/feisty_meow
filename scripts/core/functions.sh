@@ -379,23 +379,23 @@ if [ -z "$skip_all" ]; then
   # to merge their functions and aliases with the standard set.
   function recustomize()
   {
-    local user="$1"; shift
-    if [ -z "$user" ]; then
+    local custom_user="$1"; shift
+    if [ -z "$custom_user" ]; then
       # use our default example user if there was no name provided.
-      user=fred
+      custom_user=fred
     fi
 
     save_terminal_title
 
-    if [ ! -d "$FEISTY_MEOW_SCRIPTS/customize/$user" ]; then
-      echo "The customization folder provided for $user should be:"
-      echo "  '$FEISTY_MEOW_SCRIPTS/customize/$user'"
+    if [ ! -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" ]; then
+      echo "The customization folder provided for $custom_user should be:"
+      echo "  '$FEISTY_MEOW_SCRIPTS/customize/$custom_user'"
       echo "but that folder does not exist.  Skipping customization."
       return 1
     fi
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
-    incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
+    incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
     
     #echo "the incongruous files list is: $incongruous_files"
     # disallow a single character result, since we get "*" as result when nothing exists yet.
@@ -405,12 +405,12 @@ if [ -z "$skip_all" ]; then
       echo
     fi
     popd &>/dev/null
-    echo "copying custom overrides for $user"
+    echo "copying custom overrides for $custom_user"
     mkdir -p "$FEISTY_MEOW_LOADING_DOCK/custom" 2>/dev/null
-    perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_SCRIPTS/customize/$user" "$FEISTY_MEOW_LOADING_DOCK/custom"
-    if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$user/scripts" ]; then
-      echo "copying custom scripts for $user"
-      \cp -R "$FEISTY_MEOW_SCRIPTS/customize/$user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/"
+    perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom"
+    if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
+      echo "copying custom scripts for $custom_user"
+      \cp -R "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/"
     fi
     echo
     regenerate
