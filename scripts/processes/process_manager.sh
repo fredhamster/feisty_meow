@@ -80,10 +80,16 @@ function wait_on_backgrounders()
   echo "done waiting, background process count is down to $bg_count."
 }
 
+#hmmm: the demo app here raises some concerns--how do we know the bg count is right?
+#      what if something died and we didn't check it?
+#      will the thing that looks at bg count adjust it if there are actually no waiting processes?
+
 # happily launches off different actions as background processes.
 launcher_demonstrator()
 {
-  while true; do
+  # run a limited number of loops, since we don't want to do this forever.
+  local loops=50
+  while ((loops-- > 0)); do
     # pick a thing to do.
     which=$(($RANDOM % 3))
 #hmmm: not asynch yet!  make it so!
