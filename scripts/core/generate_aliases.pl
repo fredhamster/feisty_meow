@@ -219,7 +219,7 @@ foreach $file (@shell_files) {
     # if we see a subdirectory in the scripts folder, we add all the
     # scripts in it as aliases.  we recurse only one level.  we also don't use
     # our customize directory as aliases, since those are processed way differently.
-print "adding script dir in: $file\n";
+#print "adding script dir in: $file\n";
     opendir(subdir, "$FEISTY_MEOW_SCRIPTS/$file");
     @subdir_files = sort(readdir(subdir));
     foreach $subfile (@subdir_files) {
@@ -229,7 +229,7 @@ print "adding script dir in: $file\n";
     # if we see a file in the auto-generated area that comes from the
     # customized scripts folder, we add it as an alias.
     make_alias($file, "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/");
-print "added custom script file: $FEISTY_MEOW_LOADING_DOCK/custom/scripts/$file\n";
+#print "added custom script file: $FEISTY_MEOW_LOADING_DOCK/custom/scripts/$file\n";
   } else {
     # last ditch effort to make sense of the file; just go ahead and make an alias unless
     # the file is part of our customization scheme.
@@ -239,7 +239,7 @@ print "added custom script file: $FEISTY_MEOW_LOADING_DOCK/custom/scripts/$file\
       # will only fire if the ending is appropriate for the script languages we use.
       &make_alias($file, "$FEISTY_MEOW_SCRIPTS");
     } else {
-print "omitting file in: $file\n";
+#print "omitting file in: $file\n";
     }
   }
 }
