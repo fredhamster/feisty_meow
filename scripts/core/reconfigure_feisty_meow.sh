@@ -42,7 +42,7 @@ if [ ! -d "$FEISTY_MEOW_LOADING_DOCK" ]; then
   mkdir -p "$FEISTY_MEOW_LOADING_DOCK"
 fi
 # need to add some paths explicitly until we've bootstrapped ourselves.
-export PERLLIB=$PERLLIB:"$FEISTY_MEOW_SCRIPTS/files"
+export PERLLIB=$PERLLIB:"$FEISTY_MEOW_SCRIPTS/files":"$FEISTY_MEOW_SCRIPTS/generator"
 # make toast out of generated files right away, but leave any custom scripts.
 find "$FEISTY_MEOW_LOADING_DOCK" -maxdepth 1 -type f -exec perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" "{}" ';'
 # &>/dev/null
