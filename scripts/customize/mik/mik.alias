@@ -1,0 +1,13 @@
+
+
+define_yeti_alias lsd='ls -l'
+define_yeti_alias h='history'
+define_yeti_alias dw='du | grep Waves'
+define_yeti_alias rm='rm' 
+define_yeti_alias d1='du --max-depth=1'
+define_yeti_alias df='/bin/df'
+
+define_yeti_alias rebob='chowngrp -R bob /home/bob ; chowngrp -R bob /home/games ; chowngrp -R bob /home/archives ; chowngrp -R bob /Data ; chowngrp -R bob /fatty ; chowngrp -R bob /srv/ftp '
+
+define_yeti_alias ipod=gtkpod
+

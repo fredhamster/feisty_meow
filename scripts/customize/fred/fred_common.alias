@@ -1,0 +1,11 @@
+
+# some aliases that i don't expect very many people to ever want.  they are
+# based on some of the mount configurations available at home or abroad.
+
+# moo and unmoo mount the local folders i use most.
+define_yeti_alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky ; check_mount /z/fredgrid'
+define_yeti_alias unmoo='sudo umount /z/stuffing ; sudo umount /z/walrus ; sudo umount /z/chunky ; sudo umount /z/fredgrid'
+
+# load in the gffs build scripts.
+source "$FEISTY_MEOW_SCRIPTS/buildor/gffs_builders.sh"
+
