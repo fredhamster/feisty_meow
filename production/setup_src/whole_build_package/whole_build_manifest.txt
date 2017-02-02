@@ -8,7 +8,7 @@ production_inis=t
 docs=t
 top_makefile=t
 production_makefile=t
-customize=t
+##customize=t
 database=t
 examples=t
 scripts=t
@@ -64,11 +64,11 @@ source=$PRODUCTION_STORE/makefile
 target=$TARGET/production/makefile
 keyword=sources
 
-[customize]
-source=$FEISTY_MEOW_APEX/customize
-target=$TARGET/customize
-recurse=1
-keyword=sources
+#[customize]
+#source=$FEISTY_MEOW_APEX/customize
+#target=$TARGET/customize
+#recurse=1
+#keyword=sources
 
 [database]
 source=$FEISTY_MEOW_APEX/infobase
