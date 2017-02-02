@@ -379,7 +379,7 @@ if [ -z "$skip_all" ]; then
   # to merge their functions and aliases with the standard set.
   function recustomize()
   {
-    user="$1"; shift
+    local user="$1"; shift
     if [ -z "$user" ]; then
       # use our default example user if there was no name provided.
       user=fred
