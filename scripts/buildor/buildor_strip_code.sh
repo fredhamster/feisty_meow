@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$FEISTY_MEOW_SCRIPTS/build/seek_all_source.sh"
+source "$FEISTY_MEOW_SCRIPTS/buildor/seek_all_source.sh"
 
 function strip_file {
   file="$1"
