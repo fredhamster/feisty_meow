@@ -12,7 +12,7 @@ function refred()
 if [[ $0 =~ .*refred\.sh.* ]]; then
   THISDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"
   export LIGHTWEIGHT_INIT=true
-  source "$THISDIR/../../scripts/core/launch_feisty_meow.sh"
+  source "$THISDIR/../../core/launch_feisty_meow.sh"
   refred
 fi
 

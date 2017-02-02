@@ -6,7 +6,7 @@
 
 ############################
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 # this reports when we have totally failed to figure out where a folder
 # is actually located on the machine.
