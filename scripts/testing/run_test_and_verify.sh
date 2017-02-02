@@ -9,5 +9,5 @@ to_run="$1"; shift
 input_file="$1"; shift
 answer_file="$1"; shift
 
-eval "$to_run" < "$input_file" | bash "$FEISTY_MEOW_SCRIPTS/unit_test/verify_correct_input.sh" "$answer_file"
+eval "$to_run" < "$input_file" | bash "$FEISTY_MEOW_SCRIPTS/testing/verify_correct_input.sh" "$answer_file"
 
