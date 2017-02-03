@@ -110,11 +110,11 @@ analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (code relat
 analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road, yo!)"
 
 # games and fun stuff.  not sure why these count as backlog, but whatever.
-analyze_hierarchy_and_report ~/cloud/games_yo "games, yo!"
+analyze_hierarchy_and_report ~/cloud/gaming "games yo"
 
 # some source code that needs to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.  but they have, so we track them.
-analyze_hierarchy_and_report ~/cloud/scavenging_source "source scavenging"
+#analyze_hierarchy_and_report ~/cloud/scavenging_source "source scavenging"
 
 # and then count up the things that we think will be cleaned soon, but one thing we have learned
 # unsorted files haven't been categorized yet.
