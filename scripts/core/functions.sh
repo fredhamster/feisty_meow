@@ -653,6 +653,17 @@ return 0
 
   ##############
 
+#hmmm: this points to an extended functions file being needed; not all of these are core.
+
+  # displays documentation in "md" formatted files.
+  function show_md()
+  {
+    local file="$1"; shift
+    pandoc "$file" | lynx -stdin
+  }
+
+  ##############
+
   # just shows a separator line for an 80 column console, or uses the first
   # parameter as the number of columns to expect.
   function separator()
