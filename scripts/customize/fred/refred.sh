@@ -4,7 +4,7 @@
 function refred()
 {
   sudo chown -R fred:fred /home/fred /home/games /home/archives /usr/local/fred
-  sudo bash $FEISTY_MEOW_SCRIPTS/files/normal_perm.sh /var/log
+  sudo bash $FEISTY_MEOW_SCRIPTS/security/normal_perm.sh /var/log
 }
 
 # this block should execute when the script is actually run, rather
