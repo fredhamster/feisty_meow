@@ -163,7 +163,7 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
       # choose perl's IO over the ms-windows version so we can handle file
       # bytes properly.
   fi
-  
+
   # iterate across our sub-directories and find the perl scripts.
   # this currently only looks one level down.
   for i in $FEISTY_MEOW_SCRIPTS/*; do

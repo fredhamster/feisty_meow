@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 echo '=============='
 echo $(date_stringer | sed -e 's/_/ /g' | sed -e 's/\([0-9][0-9]\) \([0-9][0-9]\)$/:\1:\2/')

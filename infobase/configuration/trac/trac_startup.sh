@@ -7,7 +7,7 @@
 #
 # Author: Chris Koeritz
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 # we only try to do something if trac is missing.
 if [ "$(psfind tracd)" ]; then

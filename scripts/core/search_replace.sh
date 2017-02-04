@@ -3,7 +3,7 @@
 # a break out of the popular replace_pattern_in_file function that
 # can work with multiple files.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 pattern="$1"; shift
 replacement="$1"; shift

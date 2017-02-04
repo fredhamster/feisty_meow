@@ -2,7 +2,8 @@
 #
 # tests the array sifter methods.
 
-source $FEISTY_MEOW_SCRIPTS/core/array_sifter.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/array_sifter.sh"
 
 #demo 1 & 2 for test presence.
 declare -a my_array=(peanuts sauce fish basil)

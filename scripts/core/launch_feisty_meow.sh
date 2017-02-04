@@ -46,7 +46,7 @@ if [ -z "$FEISTY_MEOW_LOADING_DOCK" ]; then
   source "$FEISTY_MEOW_VARIABLES_LOADING_FILE"
 
   # Set up the temporary directory.
-  source $FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh
+  source "$FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh"
 
 fi
 
@@ -55,7 +55,7 @@ fi
 # load the larger body of standard feisty meow variables into the environment.
 # we actually want this to always run also; it will decide what variables need
 # to be set again.
-source $FEISTY_MEOW_SCRIPTS/core/variables.sh
+source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
 
 ##############
   

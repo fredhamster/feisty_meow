@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source $FEISTY_MEOW_SCRIPTS/buildor/gffs_builders.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+source "$FEISTY_MEOW_SCRIPTS/buildor/gffs_builders.sh"
 
 echo stopping any running genesis processes...
 bash $GFFS_TOOLKIT_ROOT/library/zap_genesis_javas.sh 

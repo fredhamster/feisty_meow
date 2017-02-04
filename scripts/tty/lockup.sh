@@ -2,7 +2,7 @@
 
 # Thanks to Kevin Wika for this shell.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 trap '' HUP
 trap '' INT

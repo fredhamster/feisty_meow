@@ -3,7 +3,7 @@
 # these are helper functions for doing localized revision control.
 # this script should be sourced into other scripts that use it.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
 # the maximum depth that the recursive functions will try to go below the starting directory.

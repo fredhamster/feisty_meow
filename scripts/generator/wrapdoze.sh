@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 #hmmm: make this support multiple vars as parameters.
 # replaces a specific environment variable with a dos approved equivalent.

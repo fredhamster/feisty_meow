@@ -7,7 +7,7 @@
 
 #hmmm: may want to revisit default behavior.
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 dirs=()
 

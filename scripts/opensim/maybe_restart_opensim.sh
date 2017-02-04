@@ -4,7 +4,8 @@
 
 #hmmm: this is really more for osgrid, since opensim has two servers.
 
-source $FEISTY_MEOW_SCRIPTS/opensim/opensim_utils.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+source "$FEISTY_MEOW_SCRIPTS/opensim/opensim_utils.sh"
 
 # see if the process is findable.
 # (this approach will not work if the process actually freezes up but

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 # just saying this is an array...
 #declare -a PRIOR_TERMINAL_TITLES

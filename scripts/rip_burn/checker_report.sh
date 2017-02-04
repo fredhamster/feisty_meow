@@ -4,7 +4,7 @@
 # in such a way that the file count can be very high without blowing its
 # mind, and without any extra headers in the report.
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 dirname="$1"; shift
 outfile="$1"; shift  # optional parm.

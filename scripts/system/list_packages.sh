@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 if debian_like; then
   dpkg -la | grep $*

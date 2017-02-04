@@ -2,7 +2,7 @@
 
 # checkin: checks in all the folders present in the REPOSITORY_LIST variable.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
 ##############

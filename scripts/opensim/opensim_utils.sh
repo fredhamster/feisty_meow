@@ -2,7 +2,7 @@
 # this is a collection of scripts that assist in managing an opensim server.
 # it uses the "screen" utility to manage opensimulator instances.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 # set up some parameters that we believe (or have been told) are beneficial.
 export MONO_THREADS_PER_CPU=1208

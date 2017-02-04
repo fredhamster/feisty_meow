@@ -46,7 +46,7 @@ PARM_1="$1"
 
 # helpful build function zone.
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 ##############
 

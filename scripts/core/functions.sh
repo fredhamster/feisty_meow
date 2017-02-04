@@ -307,7 +307,7 @@ if [ -z "$skip_all" ]; then
       # information for su.
   
       # get the x authority info for our current user.
-      source $FEISTY_MEOW_SCRIPTS/x_win/get_x_auth.sh
+      source "$FEISTY_MEOW_SCRIPTS/x_win/get_x_auth.sh"
   
       if [ -z "$X_auth_info" ]; then
         # if there's no authentication info to pass along, we just do a normal su.
@@ -369,7 +369,7 @@ if [ -z "$skip_all" ]; then
     unalias CORE_ALIASES_LOADED &>/dev/null
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
-    source $FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh
+    source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
     # run nechung oracle to give user a new fortune.
     nechung
     restore_terminal_title

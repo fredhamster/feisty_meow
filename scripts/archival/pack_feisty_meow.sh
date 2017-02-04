@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 TEMPO_FILE="$(mktemp "$TMP/zz_feistypack.XXXXXX")"
   # specify where we keep the file until we're ready to move it.

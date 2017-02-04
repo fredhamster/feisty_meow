@@ -3,7 +3,7 @@
 # keeps trying to mount the cd on a mac mini to overcome
 # a new bug in itunes seen as of osx leopard upgrade.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 mountpoint=/Volumes/mounty_cd
 

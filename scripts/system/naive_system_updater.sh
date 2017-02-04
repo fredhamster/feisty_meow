@@ -1,6 +1,5 @@
 
-# load feisty meow aliases.
-source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 sudo apt-get update -y
 check_result "problem while doing 'apt-get update'"

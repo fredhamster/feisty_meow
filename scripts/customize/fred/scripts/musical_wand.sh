@@ -9,7 +9,7 @@
 # is synched onto the other archive hosts.  in that sense, the musical host is itself a
 # musix archive, but it is treated "special".
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 #hmmm: add the goodness around these actions like the "nice" updater so we catch all errors.
 

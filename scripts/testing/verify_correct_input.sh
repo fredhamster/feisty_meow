@@ -5,7 +5,7 @@
 
 # the single parameter to the script is a file that contains the correct answer.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 answer_file="$1"; shift
 

@@ -3,7 +3,7 @@
 # a helpful script that scrapes any active game saves from wine's storage
 # area into a spooling saves folder for archiving.
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 WINE_SOURCE_DIR="$HOME/wine_goods/My Games"
 SPOOLING_OUTPUT_DIR="$HOME/spooling_saves"

@@ -2,7 +2,7 @@
 
 # updates my little 1 TB "soapbox" style usb drive with items that it should contain.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 function get_source()
 {

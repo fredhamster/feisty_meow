@@ -2,6 +2,7 @@
 
 # wraps calling the secure shell to let us pick our appropriate credentials.
 
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
 #hmmm: is this still used???
