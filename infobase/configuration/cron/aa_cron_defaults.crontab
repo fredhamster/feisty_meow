@@ -61,6 +61,6 @@ USER=fred
 # runs every minute and recreates a fortune for thunderbird signature.
 # a lot of the detail below is to get the feisty meow environment loaded for
 # the new_sig command.
-* * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $HOME/feisty_meow/scripts/text/new_sig.pl) &>>/tmp/${USER}-cron-nechung_fortune.log
+* * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $HOME/feisty_meow/scripts/text/new_sig.pl) &>>/tmp/${USER}-cron-nechung_fortune.log
 
 

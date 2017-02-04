@@ -26,9 +26,7 @@ if [ ! -d "$TMP" ]; then
     echo "failed to chown $TMP to user's ownership."
   fi
 fi
-if [ -z "$LIGHTWEIGHT_INIT" ]; then
-  echo "$word transient area \"$TMP\" for $USER on $(date_stringer)." >>$LOG_FILE
-fi
+echo "$word transient area \"$TMP\" for $USER on $(date_stringer)." >>$LOG_FILE
 
 # set other temporary variables to the same place as TMP.
 export TEMP=$TMP

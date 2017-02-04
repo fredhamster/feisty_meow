@@ -11,7 +11,6 @@ function refred()
 # than when it's just being sourced.
 if [[ $0 =~ .*refred\.sh.* ]]; then
   THISDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"
-  export LIGHTWEIGHT_INIT=true
   source "$THISDIR/../../core/launch_feisty_meow.sh"
   refred
 fi
