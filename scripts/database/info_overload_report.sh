@@ -98,16 +98,16 @@ full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 ================================================================\n\
 "
 
-analyze_hierarchy_and_report ~/cloud/urgent "high priority"
+analyze_hierarchy_and_report ~/cloud/urgent "high priority (aieeee!)"
 
 # notes are individual files of tasks, usually, although some are combined.
-analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes (external facing things?)"
+analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes (externalities)"
 
 # feisty notes are about feisty meow(r) concerns ltd codebase development.
-analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (code related)"
+analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (mondo coding)"
 
 # home notes are a new top-level category; used to be under the grunty.
-analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road, yo!)"
+analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road)"
 
 ##
 #yeah, games don't count as technical debt or backlog.  that's nonsense.
@@ -128,19 +128,19 @@ analyze_hierarchy_and_report ~/cloud/disordered "unsorted files"
 
 # we now consider the backlog of things to read to be a relevant fact.  this is going to hose
 # up our weight accounting considerably.
-analyze_hierarchy_and_report ~/cloud/reading "reading list"
+analyze_hierarchy_and_report ~/cloud/reading "reading list (for a quiet afternoon)"
 
 # scan all the items declared as active projects.
-analyze_by_dir_patterns "active items" ~/cloud/active*
+analyze_by_dir_patterns "active issues" ~/cloud/active*
 
 # scan across all appropriately named project or research folders that live in the "cloud".
-analyze_by_dir_patterns "project files" ~/cloud/project* ~/cloud/research*
+analyze_by_dir_patterns "running projects" ~/cloud/project* ~/cloud/research*
 
 # snag any work related items for that category.
-analyze_by_dir_patterns "job and work tasks" ~/cloud/job* 
+analyze_by_dir_patterns "jobby work tasks" ~/cloud/job* 
 
 # scan all the trivial project folders.
-analyze_by_dir_patterns "trivial items" ~/cloud/trivia*
+analyze_by_dir_patterns "trivialities" ~/cloud/trivia*
 
 full_report+="================================================================\n\
 "
