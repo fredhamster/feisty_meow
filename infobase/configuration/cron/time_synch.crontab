@@ -10,5 +10,5 @@
 # one machine on the network uses this version, to synch externally.
 #0 0,4,8,12,16,20 * * * /usr/sbin/sntp -P no -r time.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
 #or
-0 0,4,8,12,16,20 * * * /usr/bin/rdate -s time-c.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
+0 0,4,8,12,16,20 * * * /usr/bin/rdate -s time.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
 
