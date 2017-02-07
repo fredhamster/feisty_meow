@@ -1,0 +1,8 @@
+
+
+#[update apt based linux crontab]
+# does a daily update of an apt-based linux box at pi o'clock.
+#temp set to soon
+20 8 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/system/naive_system_updater.sh) &>>/tmp/${USER}-cron-update_aptbased_linux.log
+
+
