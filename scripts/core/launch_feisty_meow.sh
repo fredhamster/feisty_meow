@@ -18,6 +18,13 @@
 
 ##############
 
+# patch the user variable if we were launched by one of our cron jobs.
+if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
+  export USER="$CRONUSER"
+fi
+
+##############
+
 export ERROR_OCCURRED=
   # there have been no errors to start with, at least.  we will set this
   # to non-empty if something bad happens.
