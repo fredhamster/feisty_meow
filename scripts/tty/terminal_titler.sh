@@ -72,7 +72,15 @@ function set_terminal_title()
   if [ -z "${title}" ]; then
     title="$(hostname)"
   fi
-  echo -n -e "\033]0;${title}\007"
+  
+  if [ -z "$PS1" ]; then
+    # not running interactively, so just echo the title.
+    sep
+    echo ${title}
+    sep
+  else
+    echo -n -e "\033]0;${title}\007"
+  fi
 }
 
 # reads the current terminal title, if possible, and saves it to our stack of titles.
