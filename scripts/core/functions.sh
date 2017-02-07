@@ -148,8 +148,9 @@ if [ -z "$skip_all" ]; then
       local pid_finder_pattern='s/ *\([0-9][0-9]*\) *.*$/\1/p'
 
     else
-      # flags which clean up the output on unixes, which apparently cygwin
-      # doesn't count as.  their crappy specialized ps doesn't support this.
+      # flags which clean up the process listing output on unixes.
+      # apparently cygwin doesn't count as a type of unix, because their
+      # crummy specialized ps command doesn't support normal ps flags.
       local EXTRA_UNIX_FLAGS="-o pid,args"
       # pattern to use for peeling off the process numbers.
       local pid_finder_pattern='s/^[[:space:]]*\([0-9][0-9]*\).*$/\1/p'
