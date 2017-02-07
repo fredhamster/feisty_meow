@@ -1,4 +1,4 @@
 
 #[random sound]
-* * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/multimedia/randomly_play.sh) &>>/tmp/${USER}-cron-random_sound.log
+* * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/multimedia/randomly_play.sh) &>>/tmp/${CRONUSER}-cron-random_sound.log
 

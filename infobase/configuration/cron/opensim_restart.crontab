@@ -1,5 +1,5 @@
 
 #[opensim restart]
 # ensure opensim is started if we can't detect it as running.
-*/5 * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/opensim/maybe_restart_opensim.sh) &>>/tmp/${USER}-cron-opensim_restart.log 
+*/5 * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/opensim/maybe_restart_opensim.sh) &>>/tmp/${CRONUSER}-cron-opensim_restart.log 
 

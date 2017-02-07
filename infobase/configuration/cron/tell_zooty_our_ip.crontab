@@ -1,5 +1,5 @@
 
 #[tell zooty our ip]
 # firewall host only--inform serene/zooty of our home IP address to enable back-connections.
-0,14,28,42,56 * * * * (bash /home/fred/feisty_meow/scripts/security/tell_zooty_our_ip.sh serene.feistymeow.org fred fred ) &>>/tmp/${USER}-cron-tell_zooty_our_ip.log
+0,14,28,42,56 * * * * (bash /home/fred/feisty_meow/scripts/security/tell_zooty_our_ip.sh serene.feistymeow.org fred fred ) &>>/tmp/${CRONUSER}-cron-tell_zooty_our_ip.log
 

@@ -4,5 +4,5 @@
 # repositories, such as sourceforge or github.  the uploading process (which we think of as sending
 # those updated items swimming downstream to their dependent repositories) is done automatically in
 # our makefiles.  that's why the code below relies on the top-level makefile in home.
-14 3 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; cd $HOME ; rev_update ; make ) &>>/tmp/${USER}-cron-synch_and_swim_downstream.log
+14 3 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; cd $HOME ; rev_update ; make ) &>>/tmp/${CRONUSER}-cron-synch_and_swim_downstream.log
 

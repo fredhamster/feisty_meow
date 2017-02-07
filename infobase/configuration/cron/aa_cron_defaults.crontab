@@ -4,10 +4,17 @@
 # cron default bits to add at top of crontab...
 # by fred t. hamster, GNU GPL v3 license.
 
-# these stanzas are assumed to be present in every one of the other cron
-# example files.  unfortunately there is no way to include cron files in other
-# cron files, so the functional parts here should just be pasted directly into
-# the user's crontab.
+# every one of the crontab examples in feisty meow depends on the the stanzas
+# below.  (unfortunately there is no way to include cron files in other cron
+# files, so the functional parts here should just be pasted directly into the
+# user's crontab at the top.)
+
+# set a user name for writing unique log files.  this is important because
+# cron doesn't have the normal variable 'USER' defined.  cron does define
+# HOME, which is pretty lucky for us...
+# please change the name to the user running the cronjob, or to whatever
+# unique string you'd like to use:
+CRONUSER=fred
 
 # set the shell to bash.  (not the default for some cron implementations.)
 SHELL=/bin/bash
@@ -30,12 +37,6 @@ SHELL=/bin/bash
 # the wildcard form of a crontab line is this: "* * * * * command"
 # that "command" will execute every single minute.
 
-# set a user name for writing unique log files.  this is important because
-# cron doesn't have the variable USER defined.  cron does define HOME, which
-# is pretty lucky for us...
-# you may want to use a more appropriate user name than mine, which is "fred".
-USER=fred
-
 # the guts of the crontab would follow below.  this usually is a set of valid
 # crontab lines that spell the time or times for commands to be executed.  my
 # crontabs usually have from 3 to 8 entries because i tend to atomicize the
@@ -51,16 +52,15 @@ USER=fred
 # with cron job output on some systems.  you can use the normal output
 # redirection operators to do this (e.g. '>', '2>', '&>', '>>' and '&>>').
 # /dev/null works as an output target if you don't ever want to see the
-# results from your cron jobs.  i usually prefer to write log files in the /tmp
-# directory with the ${USER} variable in the file name.  here's an example of
-# a real command with output that will *append* both output and error streams
-# ('&>>') to an output file.  if your output can be huge, then you may want to
-# overwrite the output file instead ('&>').
+# results from your cron jobs.  i usually prefer to write log files in the
+# /tmp directory with the ${CRONUSER} variable added in the file name.
+# below is a live example which we almost always include, so it's embedded
+# here for convenience.
 
 #[nechung fortune]
 # runs every minute and recreates a fortune for thunderbird signature.
 # a lot of the detail below is to get the feisty meow environment loaded for
 # the new_sig command.
-* * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $HOME/feisty_meow/scripts/text/new_sig.pl) &>>/tmp/${USER}-cron-nechung_fortune.log
+* * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $HOME/feisty_meow/scripts/text/new_sig.pl) &>>/tmp/${CRONUSER}-cron-nechung_fortune.log
 
 
