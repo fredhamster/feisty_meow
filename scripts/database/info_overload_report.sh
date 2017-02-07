@@ -109,8 +109,14 @@ analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (code relat
 # home notes are a new top-level category; used to be under the grunty.
 analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road, yo!)"
 
-# games and fun stuff.  not sure why these count as backlog, but whatever.
-analyze_hierarchy_and_report ~/cloud/gaming "games yo"
+##
+#yeah, games don't count as technical debt or backlog.  that's nonsense.
+#  the whole point of playing games is as a way to let off steam or escape from current
+#  real world unpleasantness, so tying the game stuff into my huge lumbering backlog is
+#  like saying lets inject toxins in our brain.  screw that.
+##
+## games and fun stuff.  not sure why these count as backlog, but whatever.
+#analyze_hierarchy_and_report ~/cloud/gaming "games yo"
 
 # some source code that needs to be sucked into other places, other codebases.  they are not
 # supposed to pile up here.  but they have, so we track them.
