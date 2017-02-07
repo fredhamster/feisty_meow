@@ -74,13 +74,13 @@ function set_terminal_title()
     title="$(hostname)"
   fi
   
-  if [ -z "$PS1" ]; then
+  if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" -a ! -z "$PS1" ]; then
+    echo -n -e "\033]0;${title}\007"
+  else
     # not running interactively, so just echo the title.
     sep
     echo ${title}
     sep
-  else
-    echo -n -e "\033]0;${title}\007"
   fi
 }
 
