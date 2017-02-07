@@ -91,7 +91,7 @@ sub rebuild_script_aliases {
   }
 
   # test if we can use color in ls...
-  $test_color=` ls --help 2>&1 | grep -i color `;
+#  $test_color=` ls --help 2>&1 | grep -i color `;
 
   # this is an array of files from which to draw alias definitions.
   @ALIAS_DEFINITION_FILES = ("$FEISTY_MEOW_SCRIPTS/core/common.alias");
@@ -126,11 +126,11 @@ sub rebuild_script_aliases {
   print GENOUT "## please do not edit.\n";
   print GENOUT "##\n";
 
-  if (length($test_color)) {
-    print GENOUT "export color_add=--color=auto\n";
-  } else {
-    print GENOUT "export color_add=\n";
-  }
+#  if (length($test_color)) {
+#    print GENOUT "export color_add='--color=auto'\n";
+#  } else {
+#    print GENOUT "export color_add=\n";
+#  }
 
   # plow in the full set of aliases into the file.
   foreach $i (@ALIAS_DEFINITION_FILES) {

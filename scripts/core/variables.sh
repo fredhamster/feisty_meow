@@ -130,7 +130,20 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   fi
   
   ##############
+
+  # set up the color_add variable which is a flag that lets ls know colors work.
+
+  # test if we can use color in ls...
+  ls --help 2>&1 | grep -i -q color
+  if [ $? -eq 0 ]; then
+    export color_add='--color=auto'
+  else
+    export color_add=
+  fi
+  unset test_ls_colors
   
+  ##############
+
   # umask sets a permission mask for all file creations.
   # this mask disallows writes by "group" and "others".
   umask 022
