@@ -26,9 +26,10 @@ fi
 temp_file_list="$(mktemp /tmp/file_list_temporary.XXXXXX)"
 
 find "$dirname" -type f >"$temp_file_list"
-###-exec echo \"{}\" ';' 
 while read input_text; do
   checker -q -b "$input_text" 2>&1 >>"$outfile"
 done <"$temp_file_list"
+
+rm "$temp_file_list"
 
 
