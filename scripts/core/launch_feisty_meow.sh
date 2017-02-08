@@ -18,6 +18,11 @@
 
 ##############
 
+# some preconditions we want to establish before loading anything...
+
+# make sure that aliases can be used in non-interactive shells.
+shopt -s expand_aliases
+
 # patch the user variable if we were launched by one of our cron jobs.
 if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
   export USER="$CRONUSER"
@@ -68,8 +73,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
   
 # include helpful functions.  we do this every time rather than making it part
 # of variable initialization, because functions cannot be exported to
-# sub-shells in bash (much like aliases cannot, to our infinite chagrin after
-# having migrated from korn shell...).
+# sub-shells in bash.
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
   
 # load some helper methods for the terminal which we'll use below.
