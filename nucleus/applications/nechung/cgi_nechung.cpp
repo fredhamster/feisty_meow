@@ -79,8 +79,7 @@ int main(int argc, char *argv[])
 
   nechung_oracle some_fortunes(name, index);
   // send the header for html text.
-  printf("<!DOCTYPE html>\n");
-  printf("<html>\n");
+  printf("content-type: text/html\n\n");
   // send the preliminary gunk.
   printf("<body text=\"#00ee00\" bgcolor=\"#000000\" link=\"#66ff99\" "
       "vlink=\"#cc33cc\" alink=\"#ff9900\">\n");
