@@ -81,9 +81,9 @@ int main(int argc, char *argv[])
   // send the header for html text.
   printf("content-type: text/html\n\n");
   // send the preliminary gunk.
-  printf("<body text=\"#00ee00\" bgcolor=\"#000000\" link=\"#66ff99\" "
-      "vlink=\"#cc33cc\" alink=\"#ff9900\">\n");
-//old text color #33ccff
+  printf("<body>\n");
+//text=\"#00ee00\" bgcolor=\"#000000\" link=\"#66ff99\" "
+//      "vlink=\"#cc33cc\" alink=\"#ff9900\">\n");
   printf("<tt style=\"font-weight: bold;\">\n");
   printf("<font size=\"+1\">\n");
 
