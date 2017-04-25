@@ -30,5 +30,6 @@ fi
 echo iso "$iso_name" dev "$device_name"
 
 growisofs -dvd-compat -Z ${device_name}=${iso_name}
-#trying with letting it go default speed.  has been working for us recently. -speed=2 
+#used to be appended to above line: -speed=2 
+#trying with letting it go default speed.  has been working for us recently.
 
