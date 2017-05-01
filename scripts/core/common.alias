@@ -36,7 +36,7 @@ if [ "$OS" != "Windows_NT" ]; then
   fi
 else
   # windows gets routed to our helpful script instead.
-  define_yeti_alias exp="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
+  define_yeti_alias exp="bash $FEISTY_MEOW_SCRIPTS/files/exploder.sh"
 fi
 # re-use work we did on 'exp' macro for the longer windows command.
 define_yeti_alias explorer=exp
