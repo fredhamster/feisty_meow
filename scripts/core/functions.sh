@@ -308,7 +308,7 @@ if [ -z "$skip_all" ]; then
       # information for su.
   
       # get the x authority info for our current user.
-      source "$FEISTY_MEOW_SCRIPTS/x_win/get_x_auth.sh"
+      source "$FEISTY_MEOW_SCRIPTS/security/get_x_auth.sh"
   
       if [ -z "$X_auth_info" ]; then
         # if there's no authentication info to pass along, we just do a normal su.
