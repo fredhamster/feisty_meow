@@ -49,6 +49,25 @@ fi
 
 sep
 
+echo synching basement...
+rsync -av /z/basement/* /media/fred/soapboxdrive/basement/
+if [ $? -ne 0 ]; then
+  echo The basement sync failed.
+  exit 1
+fi
+
+sep
+
+echo synching imaginations...
+rsync -av /z/imaginations/* /media/fred/soapboxdrive/imaginations/
+if [ $? -ne 0 ]; then
+  echo The imaginations sync failed.
+  exit 1
+fi
+
+sep
+
+echo synching musix...
 echo getting latest fred codes...
 pushd /media/fred/soapboxdrive
 get_source extra_brain
