@@ -74,11 +74,5 @@ get_source extra_brain
 
 sep
 
-echo getting latest gffs codes...
-get_source gffs
-popd
-
-sep
-
 echo Updated all portions of the soapbox drive successfully.
 
