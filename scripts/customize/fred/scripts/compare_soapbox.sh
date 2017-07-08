@@ -4,6 +4,8 @@
 # left behind.  if it's got a less than in front, then it's only on the soapbox drive
 # now rather than the pc's hard drive.
 
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
 sep
 echo "comparing musix where 'less than' is on the soapbox..."
 compare_dirs /media/fred/soapboxdrive/musix /z/musix
