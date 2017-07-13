@@ -5,9 +5,13 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-rsync -av /z/pooling/archive_backups/* /media/fred/barkuptreedrive/archive_backups/
-check_result "synching archive backups"
-rsync -av /z/walrus/* /media/fred/barkuptreedrive/walrus/ 
+export BARKY=/media/fred/barkuptreedrive
+
+netcp /z/archons/* $BARKY/bkup_archons/
+check_result "synching archons"
+netcp /z/walrus/* $BARKY/walrus/ 
 check_result "synching walrus"
-rsync -av /z/musix/* /media/fred/barkuptreedrive/musix/
+netcp /z/musix/* $BARKY/musix/
 check_result "synching musix"
+
+
