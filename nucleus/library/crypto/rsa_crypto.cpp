@@ -31,6 +31,7 @@
 #include <structures/static_memory_gremlin.h>
 
 #include <openssl/bn.h>
+#include <openssl/err.h>
 #include <openssl/rsa.h>
 
 using namespace basis;
@@ -118,12 +119,20 @@ RSA *rsa_crypto::generate_key(int key_size)
   static_ssl_initializer();
   LOG("into generate key");
   auto_synchronizer mutt(__single_stepper());
-  RSA *to_return = RSA_generate_key(key_size, 65537, NULL_POINTER, NULL_POINTER);
-  if (!to_return) {
+  RSA *to_return = RSA_new();
+  BIGNUM *e = BN_new();
+  BN_set_word(e, 65537);
+//hmmm: only one value of e?
+  int ret = RSA_generate_key_ex(to_return, key_size, e, NULL_POINTER);
+  if (!ret) {
     continuable_error(static_class_name(), func,
-        a_sprintf("failed to generate a key of %d bits.", key_size));
+        a_sprintf("failed to generate a key of %d bits: error is %ld.", key_size, ERR_get_error()));
+    BN_free(e);
+    RSA_free(to_return);
+    return NULL;
   }
   LOG("after key generated");
+  BN_free(e);
   return to_return;
 }
 

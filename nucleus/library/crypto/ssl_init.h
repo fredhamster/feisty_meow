@@ -28,12 +28,13 @@ namespace crypto {
   very bottom and it will be managed globally for the entire program.
 */
 
-//we define NEWER_OPENSSL for those places where we're using openssl 1.1.1.
-#if defined(_MSC_VER)
+//// //we define NEWER_OPENSSL for those places where we're using openssl 1.1.1.
+//// #if defined(_MSC_VER)
   #define NEWER_OPENSSL
-#else
-//  #define OLDER_OPENSSL
-#endif
+//hmmm: to be cleaned up; should assume only new ssl from now on.
+//// #else
+//// //  #define OLDER_OPENSSL
+//// #endif
 
 class ssl_init : public virtual basis::nameable
 {
