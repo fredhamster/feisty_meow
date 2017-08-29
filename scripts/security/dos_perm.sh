@@ -1,5 +1,5 @@
 #!/bin/bash
-# dos_perm: whacks a directory with the most open set of permissions
+# dos_perm: gives a directory the most open set of permissions
 # available to the dos/windoze attrib command.
 
 folder="$1"; shift
