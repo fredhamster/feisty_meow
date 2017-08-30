@@ -31,12 +31,9 @@ namespace crypto {
 */
 
 // we define NEWER_OPENSSL for those places where we're using more recent versions.
+// this forces the code to choose newer methods over deprecated ones.
 #if OPENSSL_VERSION_NUMBER > 0x10100000L
   #define NEWER_OPENSSL
-//hmmm: to be cleaned up; should assume only new ssl from now on.
-#else
-//  #define OLDER_OPENSSL
-#error not here
 #endif
 
 class ssl_init : public virtual basis::nameable
