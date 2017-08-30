@@ -88,7 +88,7 @@ define_yeti_alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 # some really eccentric feisty meow aliases...
 
 # says goodbye when leaving a shell.
-define_yeti_alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
+define_yeti_alias bye='. $FEISTY_MEOW_SCRIPTS/processes/goodbye.sh'
 define_yeti_alias cputemp='acpi -t'
 # makes root user's home directory's permissions right.
 define_yeti_alias reroot='chown -R root:root /root'
