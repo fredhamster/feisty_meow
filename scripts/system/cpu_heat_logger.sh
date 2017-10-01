@@ -5,6 +5,13 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-(while true; do sleep 1m ; sensors; sep; done) | tee -a ${TMP}/cpu_temp.log 
+(
+  while true; do
+    sleep 1m 
+    date
+    sensors
+    sep
+  done
+) | tee -a ${TMP}/cpu_temp.log 
 
 
