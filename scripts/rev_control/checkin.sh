@@ -11,7 +11,7 @@ echo "committing repositories at: $(date)"
 
 if [ "$OS" != "Windows_NT" ]; then
   # first get individual folders.
-  checkin_list $HOME /usr/local
+  checkin_list $HOME $(dirname $FEISTY_MEOW_APEX)
 else
   checkin_list $HOME c:/ d:/ e:/ 
 fi
