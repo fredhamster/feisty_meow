@@ -35,11 +35,14 @@ rm -f "$TMPO_CHK"
 echo "getting repositories at: $(date)"
 
 # perform the checkouts as appropriate per OS.
-if [ "$OS" != "Windows_NT" ]; then
-  checkout_list $HOME /usr/local 2>&1 | tee -a "$TMPO_CHK"
-else
-  checkout_list $HOME c:/ d:/ e:/ 2>&1 | tee -a "$TMPO_CHK"
+FULL_LIST="$(dirname $FEISTY_MEOW_APEX) $HOME"
+#if [ "$OS" != "Windows_NT" ]; then
+#  checkout_list $HOME /usr/local 2>&1 | tee -a "$TMPO_CHK"
+#else
+if [ "$OS" == "Windows_NT" ]; then
+  FULL_LIST+="c:/ d:/ e:/"
 fi
+checkout_list $FULL_LIST 2>&1 | tee -a "$TMPO_CHK"
 
 ##############
 

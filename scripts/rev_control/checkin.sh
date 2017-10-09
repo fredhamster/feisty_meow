@@ -9,12 +9,16 @@ source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
 echo "committing repositories at: $(date)"
 
-if [ "$OS" != "Windows_NT" ]; then
-  # first get individual folders.
-  checkin_list $HOME $(dirname $FEISTY_MEOW_APEX)
-else
-  checkin_list $HOME c:/ d:/ e:/ 
+FULL_LIST="$(dirname $FEISTY_MEOW_APEX) $HOME"
+#if [ "$OS" != "Windows_NT" ]; then
+#  # first get individual folders.
+#  checkin_list $(dirname $FEISTY_MEOW_APEX) $HOME 
+#else (end old)
+if [ "$OS" == "Windows_NT" ]; then
+  FULL_LIST+=" c:/ d:/ e:/"
 fi
+
+checkin_list $FULL_LIST
 
 ##############
 
