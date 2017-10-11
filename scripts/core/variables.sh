@@ -207,7 +207,8 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   # names can be added in your customized scripts.  the space at the end of
   # this variable is important and allows users to extend the list like:
   #    define_yeti_variable REPOSITORY_DIR+="muppets configs"
-  define_yeti_variable REPOSITORY_LIST="$(basename $FEISTY_MEOW_APEX) "
+#old:  define_yeti_variable REPOSITORY_LIST="$(basename $FEISTY_MEOW_APEX) "
+  define_yeti_variable REPOSITORY_LIST=
   
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()
