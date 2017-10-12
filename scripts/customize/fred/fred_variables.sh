@@ -14,9 +14,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
     export WEBBED_SITES=/var/www
   fi
 
-  # add a bunch of folders to the list for checkin & checkout.  these are
-  # definitely personal, and some of them are fairly dated (the yeti and
-  # hoople folders, for example).
+  # add a bunch of personal folders to the list for checkin & checkout.
   REPOSITORY_LIST+="$(basename $FEISTY_MEOW_APEX) cloud ebooks web active/webwork"
 
   # point to our local certificate for ssh usage.
