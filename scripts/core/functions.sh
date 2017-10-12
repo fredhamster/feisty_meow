@@ -80,6 +80,18 @@ if [ -z "$skip_all" ]; then
     IFS="$HOLDIFS"
   }
 
+  # when passed a list of things, this will return the unique items from that list as an echo.
+  function uniquify()
+  {
+    # change the eol character so things are easier.
+    HOLDIFS="$IFS"
+    IFS=' '
+    # do the uniquification.
+    echo $* | uniq
+    # return the former eol characters to their place.
+    IFS="$HOLDIFS"
+  }
+
   # sets the variable in parameter 1 to the value in parameter 2, but only if
   # that variable was undefined.
   function set_var_if_undefined()

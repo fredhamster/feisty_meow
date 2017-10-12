@@ -204,18 +204,13 @@ function do_report_new
 # checks in all the folders in a specified list.
 function checkin_list()
 {
-echo list originally was: $*
-
   # make the list of directories unique.
-  HOLDIFS="$IFS"
-  IFS=' '
-  local list="$(echo $* | uniq)"
-  IFS="$HOLDIFS"
+echo list originally was: $*
+  local list="$(uniquify $*)"
 echo list became $list
 
 #hmmm: if above works, then it's needed in other places that
 #  are passed lists.
-#hmmm: in fact, shouldn't it be a handy function of some sort for uniquifying lists?
 
   save_terminal_title
 
