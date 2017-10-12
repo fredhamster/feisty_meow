@@ -205,12 +205,7 @@ function do_report_new
 function checkin_list()
 {
   # make the list of directories unique.
-echo list originally was: $*
   local list="$(uniquify $*)"
-echo list became $list
-
-#hmmm: if above works, then it's needed in other places that
-#  are passed lists.
 
   save_terminal_title
 
@@ -278,8 +273,9 @@ function do_update()
 }
 
 # gets all the updates for a list of folders under revision control.
-function checkout_list {
-  list=$*
+function checkout_list()
+{
+  local list="$(uniquify $*)"
 
   save_terminal_title
 
