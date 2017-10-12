@@ -2,8 +2,8 @@
 ==============
 Quick Start Guide for the Feisty Meow Codebase
 
-(Commands that you should enter into your terminal are prefixed with "=>" and
-conditional portions are prefixed with a '|' character.)
+Commands that you should enter into your terminal are prefixed with "=>" and
+conditional portions are prefixed with a '|' character.
 
 ==============
 How to get the feisty meow codebase
@@ -44,10 +44,10 @@ differ utility and the feisty meow customization system).  They can be
 installed with either apt-get or CPAN.
 
 Install using apt-get:
-=> apt-get install libfile-which-perl libtext-diff-perl
+=> sudo apt-get install libfile-which-perl libtext-diff-perl
 
 or Install using perl's CPAN:
-=> cpan install Text::Diff File::Which
+=> sudo cpan install Text::Diff File::Which
 
 ==============
 How to install the build dependencies for feisty meow
