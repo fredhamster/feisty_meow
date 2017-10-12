@@ -1,5 +1,5 @@
 
 #[pack feisty for web]
 # this packs up our source code distributions every 8 days.
-16 22 */8 * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/archival/pack_feisty_meow.sh) &>>/tmp/${CRONUSER}-cron-pack_feisty_for_web.log 
+16 22 */8 * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/archival/pack_feisty_meow.sh) &>>/tmp/${CRONUSER}-cron-pack_feisty_for_web.log 
 

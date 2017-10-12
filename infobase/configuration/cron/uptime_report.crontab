@@ -1,5 +1,5 @@
 
 #[uptime report]
 # the script writes the current time and current uptime to the log file.
-0 * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/system/write_uptime_report.sh) &>>/tmp/${CRONUSER}-cron-uptime_report.log
+0 * * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/system/write_uptime_report.sh) &>>/tmp/${CRONUSER}-cron-uptime_report.log
 

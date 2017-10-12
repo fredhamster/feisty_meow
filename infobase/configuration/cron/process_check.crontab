@@ -1,5 +1,5 @@
 
 #[process check]
 # a crontab for periodically dumping the process state.
-* * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/processes/show_hot_ones.sh) &>>/tmp/${CRONUSER}-cron-active_processes.log 
+* * * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/processes/show_hot_ones.sh) &>>/tmp/${CRONUSER}-cron-active_processes.log 
 

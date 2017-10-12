@@ -19,6 +19,12 @@ CRONUSER=FILL_CRONUSER_HERE
 # set the shell to bash.  (not the default for some cron implementations.)
 SHELL=/bin/bash
 
+# set the top-level folder for feisty meow here, since cron gets almost
+# nothing from the user's environment.  this folder needs to be updated for
+# your own particular install location.
+#FEISTY_MEOW_APEX=$HOME/feisty_meow
+FEISTY_MEOW_APEX=/usr/local/fred/feisty_meow
+
 # crontab miniature docs:
 #
 # below is the short form key to the crontab positional entries for times:
@@ -61,6 +67,6 @@ SHELL=/bin/bash
 # runs every minute and recreates a fortune for thunderbird signature.
 # a lot of the detail below is to get the feisty meow environment loaded for
 # the new_sig command.
-* * * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; perl $FEISTY_MEOW_SCRIPTS/text/new_sig.pl) &>>/tmp/${CRONUSER}-cron-nechung_fortune.log
+* * * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; perl $FEISTY_MEOW_SCRIPTS/text/new_sig.pl) &>>/tmp/${CRONUSER}-cron-nechung_fortune.log
 
 
