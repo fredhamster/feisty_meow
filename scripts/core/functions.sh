@@ -84,10 +84,13 @@ if [ -z "$skip_all" ]; then
   function uniquify()
   {
     # change the eol character so things are easier.
+echo "list before uniquify: $*" >~/uniquify.out
     HOLDIFS="$IFS"
     IFS=' '
     # do the uniquification.
-    echo $* | sort | uniq
+    local chewed="$(echo $* | sort | uniq)"
+    echo $chewed
+echo "list after uniquify: $chewed" >~/uniquify.out
     # return the former eol characters to their place.
     IFS="$HOLDIFS"
   }
