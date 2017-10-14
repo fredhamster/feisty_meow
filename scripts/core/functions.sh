@@ -87,7 +87,7 @@ if [ -z "$skip_all" ]; then
     HOLDIFS="$IFS"
     IFS=' '
     # do the uniquification.
-    echo $* | uniq
+    echo $* | sort | uniq
     # return the former eol characters to their place.
     IFS="$HOLDIFS"
   }
