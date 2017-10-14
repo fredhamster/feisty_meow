@@ -83,21 +83,10 @@ if [ -z "$skip_all" ]; then
   # when passed a list of things, this will return the unique items from that list as an echo.
   function uniquify()
   {
-##    # change the eol character so things are easier.
-
-sep >>~/uniquify.out
-echo "$(date): list before uniquify: $*" >>~/uniquify.out
-
-##    HOLDIFS="$IFS"
-##    IFS=' '
-
-    # do the uniquification.
-    local chewed="$(echo $* | tr ' ' '\n' | sort | uniq)"
-    echo $chewed
-echo "$(date): list after uniquify: $chewed" >>~/uniquify.out
-
-##    # return the former eol characters to their place.
-##    IFS="$HOLDIFS"
+    # do the uniquification: split the space separated items into separate lines, then
+    # sort the list, then run the uniq tool on the list.  results will be packed back onto
+    # one line when invoked like: local fredlist="$(uniquify a b c e d a e f a e d b)"
+    echo $* | tr ' ' '\n' | sort | uniq
   }
 
   # sets the variable in parameter 1 to the value in parameter 2, but only if
