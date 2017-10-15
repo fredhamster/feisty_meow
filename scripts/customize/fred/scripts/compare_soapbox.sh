@@ -6,16 +6,10 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-sep
-echo "comparing musix where 'less than' is on the soapbox..."
-compare_dirs /media/fred/soapboxdrive/musix /z/musix
-
-sep
-echo "comparing imaginations where 'less than' is on the soapbox..."
-compare_dirs /media/fred/soapboxdrive/imaginations /z/imaginations
-
-sep
-echo "comparing walrus where 'less than' is on the soapbox..."
-compare_dirs /media/fred/soapboxdrive/walrus /z/walrus
+for currdir in basement imaginations musix walrus; do
+  sep
+  echo "comparing $currdir where 'less than' is on the soapbox..."
+  compare_dirs /media/fred/soapboxdrive/$currdir /z/$currdir
+done
 
 sep

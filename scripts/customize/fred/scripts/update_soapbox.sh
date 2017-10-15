@@ -29,46 +29,19 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-sep
-
-echo synching walrus...
-rsync -av /z/walrus/* /media/fred/soapboxdrive/walrus/
-if [ $? -ne 0 ]; then
-  echo The walrus sync failed.
-  exit 1
-fi
-
-sep
-
-echo synching musix...
-rsync -av /z/musix/* /media/fred/soapboxdrive/musix/
-if [ $? -ne 0 ]; then
-  echo The musix sync failed.
-  exit 1
-fi
+for currdir in basement imaginations musix walrus; do
+  sep
+  echo "synching $currdir..."
+  netcp /z/$currdir/* /media/fred/soapboxdrive/$currdir/
+  if [ $? -ne 0 ]; then
+    echo "The $currdir sync failed."
+    exit 1
+  fi
+done
 
 sep
 
-echo synching basement...
-rsync -av /z/basement/* /media/fred/soapboxdrive/basement/
-if [ $? -ne 0 ]; then
-  echo The basement sync failed.
-  exit 1
-fi
-
-sep
-
-echo synching imaginations...
-rsync -av /z/imaginations/* /media/fred/soapboxdrive/imaginations/
-if [ $? -ne 0 ]; then
-  echo The imaginations sync failed.
-  exit 1
-fi
-
-sep
-
-echo synching musix...
-echo getting latest fred codes...
+echo getting latest fred repositories...
 pushd /media/fred/soapboxdrive
 get_source extra_brain
 
