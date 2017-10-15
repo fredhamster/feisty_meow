@@ -14,7 +14,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 #hmmm: add the goodness around these actions like the "nice" updater so we catch all errors.
 
 # this host is where all the music is supposed to come from.
-MUSICAL_HOST=banshee
+MUSICAL_HOST=curie
 
 #hmmm: this script is currently limited to run ON the music host.  it could easily do the backwards thing instead, and copy FROM music host.
 
@@ -22,7 +22,6 @@ MUSICAL_HOST=banshee
 #old list MUSIX_ARCHIVE_SITE_LIST=(surya banshee wildmutt euphrosyne)
 MUSIX_ARCHIVE_SITE_LIST=(euphrosyne)
 #hmmm: list was contracted a lot, since we don't want to step on the updates done by syncthing.  euphrosyne is still our reference copy for what the archive states "should" be.
-
 
 if [[ ! ( $(hostname) =~ .*${MUSICAL_HOST}.* ) ]]; then
   echo "This script is only designed to run on $MUSICAL_HOST with the"

@@ -207,8 +207,13 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   # names can be added in your customized scripts.  the space at the end of
   # this variable is important and allows users to extend the list like:
   #    define_yeti_variable REPOSITORY_DIR+="muppets configs"
+  # see the customize/fred folder for a live example.
   define_yeti_variable REPOSITORY_LIST=
   
+  # the archive collections list is a set of directories that are major
+  # repositories of data which can be synched to backup drives.
+  define_yeti_variable ARCHIVE_COLLECTIONS_LIST=
+
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()
   {

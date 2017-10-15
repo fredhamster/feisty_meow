@@ -17,6 +17,9 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   # add a bunch of personal folders to the list for checkin & checkout.
   REPOSITORY_LIST+="$(basename $FEISTY_MEOW_APEX) cloud ebooks web active/webwork"
 
+  # adds our locally relevant archive folders into the list to be synched.
+  ARCHIVE_COLLECTIONS_LIST+="/z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
+
   # point to our local certificate for ssh usage.
   export SVN_SSH="ssh -i $HOME/.ssh/id_dsa_sourceforge"
 
