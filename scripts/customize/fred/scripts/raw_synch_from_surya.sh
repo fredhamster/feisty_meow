@@ -1,8 +1,15 @@
 #!/bin/bash
 
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
 echo "Updating walrus and musix from surya: raw mode without syncthing!"
-rsync -avz surya:/z/basement/* /z/basement/
-rsync -avz surya:/z/imaginations/* /z/imaginations/
-rsync -avz surya:/z/musix/* /z/musix/
-rsync -avz surya:/z/walrus/* /z/walrus/
+echo
+
+for currdir in basement imaginations musix walrus; do
+  sep
+  echo "synching $currdir folder..."
+  rsync -avz surya:/z/$currdir/* /z/$currdir/
+done
+
+sep
 
