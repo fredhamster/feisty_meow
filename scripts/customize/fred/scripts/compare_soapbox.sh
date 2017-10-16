@@ -6,10 +6,18 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-for currdir in basement imaginations musix walrus; do
-  sep
-  echo "comparing $currdir where 'less than' is on the soapbox..."
-  compare_dirs /media/fred/soapboxdrive/$currdir /z/$currdir
-done
+function compare_archives_with_target()
+{
+  local target="$1"; shift
+
+  for currdir in $ARCHIVE_COLLECTION_LIST; do
+    sep
+    echo "comparing '$currdir' with target '$target', where 'less thans' are on the target..."
+    compare_dirs "$target/$(basename $currdir)" "$currdir"
+  done
+}
+
+compare_archives_with_target /media/fred/soapboxdrive
 
 sep
+
