@@ -52,13 +52,12 @@ function write_new_domain_file()
 	IN NS		${MAIN_NAME_SERVER}.
 	IN MX	10	${MAIL_SERVER}.
 
-${domain}.	IN A	${IP_ADDRESS}
+${domain_name}.	IN A	${IP_ADDRESS}
 	IN HINFO	\"linux server\" \"${DISTRO}\"
-"
-#fix
-# >"$domain_file"
+" >"$domain_file"
 }
 
+# hooks up a new config file into bind's list of zones.
 function add_zone_for_new_domain()
 {
   local domain_name="$1"; shift
@@ -68,18 +67,17 @@ function add_zone_for_new_domain()
   echo "adding a new domain configured by ${domain_file} into"
   echo "the named.conf.local configuration file."
 
-# need to write the reference to the new conf file in the zone list.
-
-echo "
+  # append the reference to the new conf file in the zone list.
+  echo "
 zone \"${domain_name}\" in {
 	file \"${domain_file}\";
 	type master;
 	allow-query { any; };
 };
-"
-#fix
-#>> /etc/bind9/named.conf.local
 
+////////////////////////////////////////////////////////////////////////////
+
+" >> /etc/bind/named.conf.local
 }
 
 # adds a new subdomain under a containing domain.
@@ -115,9 +113,7 @@ function add_new_subdomain()
   echo "
 ${subdomain}.${containing_domain}.    IN A    ${IP_ADDRESS}
         IN HINFO \"linux server\" \"${DISTRO}\"
-"
-#fix
-#>> /etc/bind/${containing_domain}.conf
+" >> /etc/bind/${containing_domain}.conf
 
 }
 
