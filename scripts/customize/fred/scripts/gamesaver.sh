@@ -11,7 +11,7 @@ WINE_SOURCE_DIR="$HOME/wine_goods/My Games"
 SPOOLING_OUTPUT_DIR="$HOME/spooling_saves"
 
 if [ ! -d "$WINE_SOURCE_DIR" ]; then
-  WINE_SOURCE_DIR="c:/users/fred/My Documents/My Games"
+  WINE_SOURCE_DIR="/cygdrive/c/users/fred/My Documents/My Games"
 fi
 if [ ! -d "$WINE_SOURCE_DIR" ]; then
   echo "Failing to find the game save directories."
