@@ -28,7 +28,8 @@ public:
   //hmmm: clean up all children?
   ~singly_linked_list() {}
 
-  const int NEXT_NODE = 0;  // symbol for the rest of the list linked here.
+  // symbol for the rest of the list linked here.
+  static const int NEXT_NODE = 0;
 
   int elements() const;
     //!< returns the number of items currently in the list, including this node.
