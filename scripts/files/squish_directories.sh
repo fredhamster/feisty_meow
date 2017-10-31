@@ -35,7 +35,7 @@ function flattenizer()
     done
     if [ ! -z "$dirname" -a -d "$dirname" ]; then
       echo "flattening '$dirname'..."
-      zip --symlinks -rm "${dirname}_squished_on_$(date_stringer).zip" "$dirname" &>/dev/null
+      zip --symlinks -rm "${dirname}_squished_on_$(hostname)_at_$(date_stringer).zip" "$dirname" &>/dev/null
     fi
   done
 }
