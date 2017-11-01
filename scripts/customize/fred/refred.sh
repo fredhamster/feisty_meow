@@ -1,9 +1,27 @@
 #!/bin/bash
 
-# cleans up the ownership for all my files.
+# cleans up the ownership for all my files and dirs.
 function refred()
 {
-  sudo chown -R fred:fred /home/fred /usr/local/fred /home/games /home/archives/stuffing /home/archives/games 
+  # first build a list of dirs based on their location in /home/archives.
+  local arch_builder="archons basement codebarn games imaginations musix pooling prewar_toaster stuffing toaster walrus"
+  local ARCHIVE_HOME=/home/archives
+  local dirname
+  local arch_addin
+  for dirname in $arch_builder; do
+    arch_addin+="$ARCHIVE_HOME/$dirname "
+  done
+#echo arch addin now is: $arch_addin
+
+  # iterate across the list of dirs we want fred to own and change their ownership.
+  for dirname in /home/fred /usr/local/fred /home/games $arch_addin; do
+    if [ -d "$dirname" ]; then
+      echo "refred on '$dirname'"
+      sudo chown -R fred:fred $dirname
+    fi
+  done
+
+  # make the logs readable by normal humans.
   sudo bash $FEISTY_MEOW_SCRIPTS/security/normal_perm.sh /var/log
 }
 
