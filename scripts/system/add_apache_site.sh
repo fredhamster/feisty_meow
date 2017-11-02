@@ -34,19 +34,45 @@ function write_apache_config()
   local full_path="${BASE_PATH}/${appname}${STORAGE_SUFFIX}"
 echo really full path is $full_path
 
-#no, bad!  the public folder will be a link.
-# will apache be happy if the site folder doesn't exist yet?
-#  # make the storage directory if it's not already present.
-#  if [ ! -d "$full_path" ]; then
-#    mkdir -p "$full_path"
-#    if [ $? -ne 0 ]; then
-#      echo "Failed to create the storage directory for $appname in"
-#      echo "the folder: $full_path"
-#      exit 1
-#    fi
-#  fi
+#hmmm: the code below is just getting bigger.  it would be nice to create the chunks of permission stuff
+# via iteration rather than hardcoding.
 
 echo "
+# we have to enable some directory access through the user's folders.
+# this is probably going to end up repeated in multiple apache files, but
+# hopefully that's not a problem.
+#hmmm: fix above note if it's not a problem.
+#
+# set permissions on the root folders.
+<Directory \"/\">
+  Options -ExecCGI +Indexes +FollowSymLinks +Includes
+  Order allow,deny
+  Allow from all
+</Directory>
+# set permissions on the root of the home folders.
+<Directory \"/home\">
+  Options -ExecCGI +Indexes +FollowSymLinks +Includes
+  Order allow,deny
+  Allow from all
+</Directory>
+# set permissions on the user's home folder.
+<Directory \"$HOME\">
+  Options -ExecCGI +Indexes +FollowSymLinks +Includes
+  Order allow,deny
+  Allow from all
+</Directory>
+# set permissions on the user's app storage folder.
+<Directory \"$BASE_PATH\">
+  Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
+  Order allow,deny
+  Allow from all
+</Directory>
+# set permissions on the actual app folder.
+<Directory \"$full_path\">
+  Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
+  Order allow,deny
+  Allow from all
+</Directory>
 <VirtualHost *:80>
     ServerName ${sitename}
 #    ServerAlias ${sitename} *.${sitename}
