@@ -32,7 +32,7 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 &backup_number("aa_backup", $snarf_file_base, $number);
 
 # the top directory where everything we're grabbing lives.
-local($root) = &canonicalize("$FEISTY_MEOW_APEX/feisty_meow");
+local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 
 # grab the top level stuff.
 &backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore"));
