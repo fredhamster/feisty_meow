@@ -37,18 +37,9 @@ function write_apache_config()
   local full_path="${BASE_PATH}/${appname}${STORAGE_SUFFIX}"
 #echo really full path is $full_path
 
-#hmmm: the code below is just getting bigger.  it would be nice to create the chunks of permission stuff
-# via iteration rather than hardcoding.
-
   echo "
-# we have to enable some directory access through the user's folders.
-# this is probably going to end up repeated in multiple apache files, but
-# hopefully that's not a problem.
-#hmmm: fix above note if it's not a problem.
-
-
 # set up the user's web folder as an apache user web directory.
-UserDir apps
+#UserDir apps
 #above didn't help either.
 
 #
