@@ -2,11 +2,15 @@
 
 # creates a new apache website for a specified domain.
 
+# auto-find the scripts, since we might want to run this as sudo.
+export WORKDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.
+echo WORKDIR is $WORKDIR
+source "$WORKDIR/../core/launch_feisty_meow.sh"
+
 # some convenient defaults for our current usage.
 
-BASEPATH="/var/www"
-SHADOWPATH="/srv/users/serverpilot/apps"
-STORAGESUFFIX="/public"
+BASE_PATH="$HOME/apps"
+STORAGE_SUFFIX="/public"
 
 # this function writes out the new configuration file for the site.
 function write_apache_config()
@@ -27,23 +31,26 @@ function write_apache_config()
   echo "Creating a new apache2 site for $sitename with config file:"
   echo "  $site_config"
 
-  local fullpath="${BASEPATH}/${appname}${STORAGESUFFIX}"
+  local full_path="${BASE_PATH}/${appname}${STORAGE_SUFFIX}"
+echo really full path is $full_path
 
-  # make the storage directory if it's not already present.
-  if [ ! -d "$fullpath" ]; then
-    mkdir -p "$fullpath"
-    if [ $? -ne 0 ]; then
-      echo "Failed to create the storage directory for $appname in"
-      echo "the folder: $fullpath"
-      exit 1
-    fi
-  fi
+#no, bad!  the public folder will be a link.
+# will apache be happy if the site folder doesn't exist yet?
+#  # make the storage directory if it's not already present.
+#  if [ ! -d "$full_path" ]; then
+#    mkdir -p "$full_path"
+#    if [ $? -ne 0 ]; then
+#      echo "Failed to create the storage directory for $appname in"
+#      echo "the folder: $full_path"
+#      exit 1
+#    fi
+#  fi
 
 echo "
 <VirtualHost *:80>
     ServerName ${sitename}
 #    ServerAlias ${sitename} *.${sitename}
-    DocumentRoot ${fullpath}
+    DocumentRoot ${full_path}
     ErrorLog \${APACHE_LOG_DIR}/${sitename}-error.log
     CustomLog \${APACHE_LOG_DIR}/${sitename}-access.log combined
     Include /etc/apache2/conf-library/basic-options.conf
@@ -83,34 +90,32 @@ function restart_apache()
   fi
 }
 
-# sets up a link to represent the serverpilot storage location, while
-# still storing the files under /var/www.
-function create_shadow_path()
-{
-  # make sure there is a symbolic link from the shadow path (that mimics the serverpilot
-  # storage set up) to the real storage directory.
-  if [ ! -L "$SHADOWPATH" ]; then
-    # create the path up to but not including the last component.
-    if [ ! -d $(dirname $SHADOWPATH) ]; then
-      mkdir -p $(dirname $SHADOWPATH)
-      if [ $? -ne 0 ]; then
-        echo "The parent of the shadow path could not be created."
-        echo "Path in question is: $(dirname $SHADOWPATH)"
-        exit 1
-      fi
-    fi
+# chown folder to group www-data.  can be done without setting a user, right?
 
-    ln -s "$BASEPATH" "$SHADOWPATH"
-#hmmm: should we be okay with it if it's a real dir, and assume people are happy?
-#      this wouldn't work too well if we go plunk down the new thing in /var/www,
-#      if they are expecting this tool to totally meld with serverpilot.
-    if [ $? -ne 0 ]; then
-      echo "The shadow path for mimicking serverpilot could not be created."
-      echo "Is there a real directory present for this already?"
-      echo "Path in question is: $SHADOWPATH"
-      exit 1
-    fi
+# sets up the serverpilot storage location for a user hosted web site.
+function maybe_create_site_storage()
+{
+  local our_app="$1"; shift
+  # make sure the base path for storage of all the apps for this user exists.
+  local full_path="$BASE_PATH/$our_app"
+echo full path is $full_path
+  if [ ! -d "$full_path" ]; then
+    mkdir -p $full_path
+    check_result "The app storage path could not be created.\n  Path in question is: $full_path"
   fi
+  # now give the web server some access to the folder.  this is crucial since the folders
+  # can be hosted in any user folder, and the group permissions will usually be only for the user.
+  chown -R $USER:www-data "$full_path"
+  check_result "Failed to set www-data as the owner on the path: $full_path"
+  # note that web serving will also hose up unless the path to the folder is writable.  so we walk backwards
+  # and make sure group access is available.
+  local chow_path="$full_path"
+  while [[ $chow_path != $BASE_PATH ]]; do
+echo chow path is now $chow_path
+    chmod -R g+rx "$chow_path"
+    check_result "Failed to add group permissions for www-data on the path: $full_path"
+    chow_path="$(dirname "$chow_path")"
+  done
 }
 
 # main body of script.
@@ -130,7 +135,7 @@ if [ -z "$appname" -o -z "$site" ]; then
   exit 1
 fi
 
-create_shadow_path
+maybe_create_site_storage "$appname"
 write_apache_config "$appname" "$site"
 enable_site "$site"
 restart_apache
