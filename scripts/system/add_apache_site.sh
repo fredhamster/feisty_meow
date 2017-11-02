@@ -105,15 +105,18 @@ echo full path is $full_path
   fi
   # now give the web server some access to the folder.  this is crucial since the folders
   # can be hosted in any user folder, and the group permissions will usually be only for the user.
-  chown -R $USER:www-data "$full_path"
+  chown -R $USER:www-data "$BASE_PATH"
   check_result "Failed to set www-data as the owner on the path: $full_path"
   # note that web serving will also hose up unless the path to the folder is writable.  so we walk backwards
   # and make sure group access is available.
   local chow_path="$full_path"
-  while [[ $chow_path != $BASE_PATH ]]; do
+  while [[ $chow_path != $HOME ]]; do
 echo chow path is now $chow_path
     chmod -R g+rx "$chow_path"
-    check_result "Failed to add group permissions for www-data on the path: $full_path"
+    check_result "Failed to add group permissions for www-data on the path: $chow_path"
+    # reassert the user's ownership of any directories we might have just created.
+    chown $USER "$chow_path"
+    check_result "changing ownership to user failed on the path: $chow_path"
     chow_path="$(dirname "$chow_path")"
   done
 }
