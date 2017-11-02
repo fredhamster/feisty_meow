@@ -4,7 +4,6 @@
 
 # auto-find the scripts, since we might want to run this as sudo.
 export WORKDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.
-echo WORKDIR is $WORKDIR
 source "$WORKDIR/../core/launch_feisty_meow.sh"
 
 # some convenient defaults for our current usage.
@@ -31,48 +30,68 @@ function write_apache_config()
   echo "Creating a new apache2 site for $sitename with config file:"
   echo "  $site_config"
 
+  # path where site gets checked out, in some arcane manner, and which happens to be
+  # above the path where we put webroot (in the storage suffix, if defined).
+  local path_above="${BASE_PATH}/${appname}"
+  # no slash between appname and suffix, in case suffix is empty.
   local full_path="${BASE_PATH}/${appname}${STORAGE_SUFFIX}"
-echo really full path is $full_path
+#echo really full path is $full_path
 
 #hmmm: the code below is just getting bigger.  it would be nice to create the chunks of permission stuff
 # via iteration rather than hardcoding.
 
-echo "
+  echo "
 # we have to enable some directory access through the user's folders.
 # this is probably going to end up repeated in multiple apache files, but
 # hopefully that's not a problem.
 #hmmm: fix above note if it's not a problem.
+
+
+# set up the user's web folder as an apache user web directory.
+UserDir apps
+#above didn't help either.
+
 #
+#all of below might be borked.  trying different approach above.
 # set permissions on the root folders.
-<Directory \"/\">
-  Options -ExecCGI +Indexes +FollowSymLinks +Includes
-  Order allow,deny
-  Allow from all
-</Directory>
-# set permissions on the root of the home folders.
-<Directory \"/home\">
-  Options -ExecCGI +Indexes +FollowSymLinks +Includes
-  Order allow,deny
-  Allow from all
-</Directory>
-# set permissions on the user's home folder.
-<Directory \"$HOME\">
-  Options -ExecCGI +Indexes +FollowSymLinks +Includes
-  Order allow,deny
-  Allow from all
-</Directory>
-# set permissions on the user's app storage folder.
-<Directory \"$BASE_PATH\">
-  Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
-  Order allow,deny
-  Allow from all
-</Directory>
+###<Directory \"/\">
+###  Options -ExecCGI +Indexes +FollowSymLinks +Includes
+###  Order allow,deny
+###  Allow from all
+###</Directory>
+#### set permissions on the root of the home folders.
+###<Directory \"/home\">
+###  Options -ExecCGI +Indexes +FollowSymLinks +Includes
+###  Order allow,deny
+###  Allow from all
+###</Directory>
+#### set permissions on the user's home folder.
+###<Directory \"$HOME\">
+###  Options -ExecCGI +Indexes +FollowSymLinks +Includes
+###  Order allow,deny
+###  Allow from all
+###</Directory>
+#### set permissions on the user's storage folder for all apps.
+###<Directory \"$BASE_PATH\">
+###  Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
+###  Order allow,deny
+###  Allow from all
+###</Directory>
+#### set permissions on the actual app folder.
+###<Directory \"$path_above\">
+###  Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
+###  Order allow,deny
+###  Allow from all
+###</Directory>
+
 # set permissions on the actual app folder.
 <Directory \"$full_path\">
   Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
-  Order allow,deny
-  Allow from all
+#  Order allow,deny
+#  Allow from all
+  Require all granted
 </Directory>
+
 <VirtualHost *:80>
     ServerName ${sitename}
 #    ServerAlias ${sitename} *.${sitename}
@@ -102,7 +121,7 @@ function enable_site()
     echo "Please consult the apache error logs for more details."
     exit 1
   fi
-  rm "$outfile"
+  \rm "$outfile"
 }
 
 # restarts the apache2 service.
@@ -124,11 +143,11 @@ function maybe_create_site_storage()
   local our_app="$1"; shift
   # make sure the base path for storage of all the apps for this user exists.
   local full_path="$BASE_PATH/$our_app"
-echo full path is $full_path
   if [ ! -d "$full_path" ]; then
     mkdir -p $full_path
     check_result "The app storage path could not be created.\n  Path in question is: $full_path"
   fi
+
   # now give the web server some access to the folder.  this is crucial since the folders
   # can be hosted in any user folder, and the group permissions will usually be only for the user.
   chown -R $(logname):www-data "$BASE_PATH"
@@ -137,13 +156,12 @@ echo full path is $full_path
   # and make sure group access is available.
   local chow_path="$full_path"
   while [[ $chow_path != $HOME ]]; do
-echo chow path is now $chow_path
+#echo chow path is now $chow_path
     chmod -R g+rx "$chow_path"
     check_result "Failed to add group permissions for www-data on the path: $chow_path"
     # reassert the user's ownership of any directories we might have just created.
     chown $(logname) "$chow_path"
     check_result "changing ownership to user failed on the path: $chow_path"
-echo just chowned $chow_path for user $(logname)
     chow_path="$(dirname "$chow_path")"
   done
 }
