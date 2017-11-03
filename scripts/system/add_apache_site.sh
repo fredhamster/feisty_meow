@@ -39,53 +39,15 @@ function write_apache_config()
 
   echo "
 # set up the user's web folder as an apache user web directory.
-#UserDir apps
-#above didn't help either.
-
-#
-#all of below might be borked.  trying different approach above.
-# set permissions on the root folders.
-###<Directory \"/\">
-###  Options -ExecCGI +Indexes +FollowSymLinks +Includes
-###  Order allow,deny
-###  Allow from all
-###</Directory>
-#### set permissions on the root of the home folders.
-###<Directory \"/home\">
-###  Options -ExecCGI +Indexes +FollowSymLinks +Includes
-###  Order allow,deny
-###  Allow from all
-###</Directory>
-#### set permissions on the user's home folder.
-###<Directory \"$HOME\">
-###  Options -ExecCGI +Indexes +FollowSymLinks +Includes
-###  Order allow,deny
-###  Allow from all
-###</Directory>
-#### set permissions on the user's storage folder for all apps.
-###<Directory \"$BASE_PATH\">
-###  Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
-###  Order allow,deny
-###  Allow from all
-###</Directory>
-#### set permissions on the actual app folder.
-###<Directory \"$path_above\">
-###  Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
-###  Order allow,deny
-###  Allow from all
-###</Directory>
 
 # set permissions on the actual app folder.
 <Directory \"$full_path\">
   Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
-#  Order allow,deny
-#  Allow from all
   Require all granted
 </Directory>
 
 <VirtualHost *:80>
     ServerName ${sitename}
-#    ServerAlias ${sitename} *.${sitename}
     DocumentRoot ${full_path}
     ErrorLog \${APACHE_LOG_DIR}/${sitename}-error.log
     CustomLog \${APACHE_LOG_DIR}/${sitename}-access.log combined
