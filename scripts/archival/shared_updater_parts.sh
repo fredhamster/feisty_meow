@@ -17,7 +17,7 @@ function update_source_folders()
     echo Changing to the folder $folder failed.
     exit 1
   fi
-  bash "$FEISTY_MEOW_SCRIPTS/rev_control/rev_checkin.sh"
+  bash "$FEISTY_MEOW_SCRIPTS/rev_control/rcheckin.sh"
   if [ $? -ne 0 ]; then
     echo Checking out the latest codes has failed somehow for $folder.
     exit 1

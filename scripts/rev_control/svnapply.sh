@@ -1,12 +1,15 @@
 #!/bin/bash
 #
-# Applies arbitrary commands to any svn status. e.g.
+# Applies arbitrary commands to any svn status.
 #
-# Delete all non-svn files (escape the ? from the shell):
-# svnapply \? rm
+# For example, this shows any files that are in the working folder but are not part of the svn repository:
+#    svnapply \? echo
+#
+# This deletes all files that are not checked into svn (escape the ? from the shell):
+#    svnapply \? rm
 #
 # List all conflicted files:
-# svnapply C ls -l
+#    svnapply C ls -l
 #
 # found on web at:
 # http://stackoverflow.com/questions/160104/how-do-you-add-all-untracked-files-in-svn-something-like-git-add-i

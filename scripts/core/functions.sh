@@ -347,7 +347,7 @@ if [ -z "$skip_all" ]; then
 #    fi
   }
   
-  # trashes the .#blah files that cvs and svn leave behind when finding conflicts.
+  # trashes the .#blah files that cvs and subversion leave behind when finding conflicts.
   # this kind of assumes you've already checked them for any salient facts.
   function clean_cvs_junk() {
     for i in $*; do

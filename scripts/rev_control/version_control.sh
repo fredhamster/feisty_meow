@@ -307,13 +307,13 @@ function generate_rev_ctrl_filelist()
   local dir="$1"; shift
   pushd "$dir" &>/dev/null
   local dirhere="$( \cd "$(\dirname "$dir")" && /bin/pwd )"
-  local tempfile=$(mktemp /tmp/zz_rev_checkin.XXXXXX)
+  local tempfile=$(mktemp /tmp/zz_checkins.XXXXXX)
   echo >$tempfile
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
-  local sortfile=$(mktemp /tmp/zz_rev_checkin_sort.XXXXXX)
+  local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
   \rm "$tempfile"
   echo "$sortfile"
