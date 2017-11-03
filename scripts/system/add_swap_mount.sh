@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+# auto-find the scripts, since we might want to run this as sudo.
+export WORKDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.
+source "$WORKDIR/../core/launch_feisty_meow.sh"
 
 #hmmm: should be able to add a new swap drive if desired.
 
