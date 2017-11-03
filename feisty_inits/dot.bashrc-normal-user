@@ -1,6 +1,5 @@
 
-# example ~/.bashrc: this code initializes the feisty meow environment
-# for "normal" users (not intended for the root user).
+# initializes the feisty meow environment for "normal" users (not intended for the root user).
 
 ##############
 
@@ -15,11 +14,6 @@ source /etc/bash.bashrc
 
 export HISTSIZE=1000000
 export HISTFILESIZE=8000000
-
-##############
-
-# change this to your name...
-export NAME='Frunkooleon Q. GrendervaspPleaseChangeThis'
 
 ##############
 
