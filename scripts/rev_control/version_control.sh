@@ -209,17 +209,29 @@ function checkin_list()
 
   save_terminal_title
 
-  for i in $list; do
-    # turn repo list back into an array.
-    eval "repository_list=( ${REPOSITORY_LIST[*]} )"
-    for j in "${repository_list[@]}"; do
-      # add in the directory component.
-      j="$i/$j"
-      if [ ! -d "$j" ]; then continue; fi
-      echo "checking in '$j'..."
-      do_checkin $j
+  # turn repo list back into an array.
+  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+
+  local outer inner
+
+  for outer in "${repository_list[@]}"; do
+    # check the repository first, since it might be an absolute path.
+    if [[ $outer =~ /.* ]]; then
+      # yep, this path is absolute.  just handle it directly.
+      if [ ! -d "$outer" ]; then continue; fi
+      echo "checking in '$outer'..."
+      do_checkin $outer
       sep 7
-    done
+    else
+      for inner in $list; do
+        # add in the directory component to see if we can find the folder.
+        local path="$inner/$outer"
+        if [ ! -d "$path" ]; then continue; fi
+        echo "checking in '$path'..."
+        do_checkin $path
+        sep 7
+      done
+    fi
   done
 
   restore_terminal_title
@@ -279,22 +291,29 @@ function checkout_list()
 
   save_terminal_title
 
-  for i in $list; do
-    # turn repo list back into an array.
-    eval "repository_list=( ${REPOSITORY_LIST[*]} )"
-    for j in "${repository_list[@]}"; do
-      # add in the directory for our purposes here.
-      j="$i/$j"
-      if [ ! -d $j ]; then
-        if [ ! -z "$SHELL_DEBUG" ]; then
-          echo "no directory called $j exists."
-        fi
-        continue
-      fi
+  # turn repo list back into an array.
+  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
 
-      echo -n "retrieving '$j'...  "
-      do_update $j
-    done
+  local outer inner
+
+  for outer in "${repository_list[@]}"; do
+    # check the repository first, since it might be an absolute path.
+    if [[ $outer =~ /.* ]]; then
+      # yep, this path is absolute.  just handle it directly.
+      if [ ! -d "$outer" ]; then continue; fi
+      echo "retrieving '$outer'..."
+      do_update $outer
+      sep 7
+    else
+      for inner in $list; do
+        # add in the directory component to see if we can find the folder.
+        local path="$inner/$outer"
+        if [ ! -d "$path" ]; then continue; fi
+        echo "retrieving '$path'..."
+        do_update $path
+        sep 7
+      done
+    fi
   done
 
   restore_terminal_title

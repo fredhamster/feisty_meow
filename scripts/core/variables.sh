@@ -199,16 +199,12 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
 ##  # establish a pipe for less to see our beloved syntax highlighting.
 ##  define_yeti_variable LESSOPEN="| source-highlight -f esc -o STDOUT -i %s"
 
-  # ensure we use the right kind of secure shell.
-#  define_yeti_variable CVS_RSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
-#  define_yeti_variable GIT_SSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
-  
   # the base checkout list is just to update feisty_meow.  additional folder
   # names can be added in your customized scripts.  the space at the end of
   # this variable is important and allows users to extend the list like:
   #    define_yeti_variable REPOSITORY_DIR+="muppets configs"
   # see the customize/fred folder for a live example.
-  define_yeti_variable REPOSITORY_LIST=
+  define_yeti_variable REPOSITORY_LIST="$FEISTY_MEOW_APEX "
   
   # the archive collections list is a set of directories that are major
   # repositories of data which can be synched to backup drives.
