@@ -362,13 +362,16 @@ function generate_rev_ctrl_filelist()
   local tempfile=$(mktemp /tmp/zz_checkins.XXXXXX)
   echo >$tempfile
   local additional_filter
-  if [ ! -z "NO_CHECKIN_VENDOR" ]; then
-    additional_filter='-a ! -iname "*\/vendor\/*" '
-  fi
-  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" $additional_filter -exec echo {}/.. ';' >>$tempfile 2>/dev/null
-  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" $additional_filter -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
+
+  # see if they've warned us not to try checking in within vendor hierarchies.
+  if [ ! -z "NO_CHECKIN_VENDOR" ]; then
+    sed -i -e '/.*\/vendor\/.*/d' "$tempfile"
+  fi
+
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
   \rm "$tempfile"
