@@ -24,7 +24,7 @@ require "filename_helper.pl";
 require "inc_num.pl";
 require "zap_the_dir.pl";
 
-use Env qw(TMP OS);
+use Env qw(TMP OS SHELL_DEBUG);
 
 #hmmm: need a usage statement.
 
@@ -132,7 +132,9 @@ sub safedel {
     }
   }
   if (@deleted) {
-    print "Trashed [@deleted].\n";
+    if ($SHELL_DEBUG != "") {
+      print "Trashed [@deleted].\n";
+    }
     open(REPORT, ">>$TMP/zz_safedel_report.txt");
 
     local($printable_date) = scalar(localtime());
