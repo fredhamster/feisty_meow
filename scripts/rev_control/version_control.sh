@@ -122,6 +122,9 @@ function do_checkin()
 
   save_terminal_title
 
+  # shorten the code below.
+  local blatt="echo checking in '$directory'..."
+
   do_update "$directory"
   if [ $? -ne 0 ]; then
     echo "repository update failed; this should be fixed before check-in."
@@ -133,16 +136,19 @@ function do_checkin()
     echo "skipping check-in due to presence of .no-checkin sentinel file."
   elif [ -d "CVS" ]; then
     if test_writeable "CVS"; then
+      $blatt
       cvs ci .
       retval=$?
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
+      $blatt
       svn ci .
       retval=$?
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
+      $blatt
       # snag all new files.  not to everyone's liking.
       git add --all .
       retval=$?
@@ -235,7 +241,6 @@ function checkin_list()
     if [[ $outer =~ /.* ]]; then
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
-      echo "checking in '$outer'..."
       do_checkin $outer
       sep 7
     else
@@ -243,7 +248,6 @@ function checkin_list()
         # add in the directory component to see if we can find the folder.
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
-        echo "checking in '$path'..."
         do_checkin $path
         sep 7
       done
@@ -278,20 +282,26 @@ function do_update()
 
   save_terminal_title
 
+  # shorten the code below.
+  local blatt="echo retrieving '$directory'..."
+
   local retval=0  # plan on success for now.
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
     if test_writeable "CVS"; then
+      $blatt
       cvs update . | squash_first_few_crs
       retval=${PIPESTATUS[0]}
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
+      $blatt
       svn update . | squash_first_few_crs
       retval=${PIPESTATUS[0]}
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
+      $blatt
       git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
       retval=${PIPESTATUS[0]}
     fi
@@ -323,7 +333,6 @@ function checkout_list()
     if [[ $outer =~ /.* ]]; then
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
-      echo "retrieving '$outer'..."
       do_update $outer
       sep 7
     else
@@ -331,7 +340,6 @@ function checkout_list()
         # add in the directory component to see if we can find the folder.
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
-        echo "retrieving '$path'..."
         do_update $path
         sep 7
       done
