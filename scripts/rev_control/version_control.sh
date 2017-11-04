@@ -54,12 +54,6 @@ function is_home_system()
   home_system=
   if [[ $this_host == *.gruntose.blurgh ]]; then
     home_system=true
-#temp code
-elif [[ $this_host == buildy ]]; then
-home_system=true
-elif [[ $this_host == simmy ]]; then
-home_system=true
-#temp code
   fi
 }
 
@@ -104,6 +98,7 @@ function compute_modifier()
   is_home_system
   # special override to pick local servers when at home.
   if [ "$home_system" == "true" ]; then
+#what was this section for again?
     if [ "$in_or_out" == "out" ]; then
       # need the right home machine for modifier when checking out.
 #huhhh?      modifier="svn://shaggy/"
@@ -366,8 +361,12 @@ function generate_rev_ctrl_filelist()
   local dirhere="$( \cd "$(\dirname "$dir")" && /bin/pwd )"
   local tempfile=$(mktemp /tmp/zz_checkins.XXXXXX)
   echo >$tempfile
-  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
-  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+  local additional_filter
+  if [ ! -z "NO_CHECKIN_VENDOR" ]; then
+    additional_filter='-a ! -iname "*\/vendor\/*" '
+  fi
+  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" $additional_filter -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" $additional_filter -exec echo {}/.. ';' >>$tempfile 2>/dev/null
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
