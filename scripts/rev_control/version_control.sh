@@ -122,8 +122,12 @@ function do_checkin()
 
   save_terminal_title
 
-  # shorten the code below.
-  local blatt="echo checking in '$directory'..."
+  # make a nice echoer since we want to use it inside conditions below.
+  local nicedir="$directory"
+  if [ $nicedir == "." ]; then
+    nicedir=$(\pwd)
+  fi
+  local blatt="echo checking in '$nicedir'..."
 
   do_update "$directory"
   if [ $? -ne 0 ]; then
@@ -282,8 +286,12 @@ function do_update()
 
   save_terminal_title
 
-  # shorten the code below.
-  local blatt="echo retrieving '$directory'..."
+  # make a nice echoer since we want to use it inside conditions below.
+  local nicedir="$directory"
+  if [ $nicedir == "." ]; then
+    nicedir=$(\pwd)
+  fi
+  local blatt="echo retrieving '$nicedir'..."
 
   local retval=0  # plan on success for now.
   pushd "$directory" &>/dev/null
