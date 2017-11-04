@@ -63,6 +63,16 @@ home_system=true
   fi
 }
 
+#hmmm: move to core.
+# makes sure that the "folder" is a directory and is writable.
+# remember that bash successful returns are zeroes...
+function test_writeable()
+{
+  local folder="$1"; shift
+  if [ ! -d "$folder" -o ! -w "$folder" ]; then return 1; fi
+  return 0
+}
+
 # we only want to totally personalize this script if the user is right.
 function check_user()
 {
@@ -122,21 +132,27 @@ function do_checkin()
   if [ -f ".no-checkin" ]; then
     echo "skipping check-in due to presence of .no-checkin sentinel file."
   elif [ -d "CVS" ]; then
-    cvs ci .
-    retval=$?
+    if test_writeable "CVS"; then
+      cvs ci .
+      retval=$?
+    fi
   elif [ -d ".svn" ]; then
-    svn ci .
-    retval=$?
+    if test_writeable ".svn"; then
+      svn ci .
+      retval=$?
+    fi
   elif [ -d ".git" ]; then
-    # snag all new files.  not to everyone's liking.
-    git add --all .
-    retval=$?
-    # tell git about all the files and get a check-in comment.
-    git commit .
-    retval+=$?
-    # upload the files to the server so others can see them.
-    git push 2>&1 | grep -v "X11 forwarding request failed"
-    retval+=$?
+    if test_writeable ".git"; then
+      # snag all new files.  not to everyone's liking.
+      git add --all .
+      retval=$?
+      # tell git about all the files and get a check-in comment.
+      git commit .
+      retval+=$?
+      # upload the files to the server so others can see them.
+      git push 2>&1 | grep -v "X11 forwarding request failed"
+      retval+=$?
+    fi
   else
     echo no repository in $directory
     retval=1
@@ -265,14 +281,20 @@ function do_update()
   local retval=0  # plan on success for now.
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
-    cvs update . | squash_first_few_crs
-    retval=${PIPESTATUS[0]}
+    if test_writeable "CVS"; then
+      cvs update . | squash_first_few_crs
+      retval=${PIPESTATUS[0]}
+    fi
   elif [ -d ".svn" ]; then
-    svn update . | squash_first_few_crs
-    retval=${PIPESTATUS[0]}
+    if test_writeable ".svn"; then
+      svn update . | squash_first_few_crs
+      retval=${PIPESTATUS[0]}
+    fi
   elif [ -d ".git" ]; then
-    git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-    retval=${PIPESTATUS[0]}
+    if test_writeable ".git"; then
+      git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+      retval=${PIPESTATUS[0]}
+    fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
     echo no repository in $directory
