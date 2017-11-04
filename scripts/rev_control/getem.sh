@@ -16,7 +16,7 @@ if [ "$(\pwd)" != "$tmpdir" ]; then
     echo "moving to the TMP directory to avoid file access conflicts..."
   fi
   new_name="$TMP/zz_$(basename $0)"
-  cp -f "$0" "$new_name"
+  \cp -f "$0" "$new_name"
   if [ $? -ne 0 ]; then
     echo "failed to copy this script up to the TMP directory.  exploit attempted?"
     exit 1
