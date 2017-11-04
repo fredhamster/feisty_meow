@@ -33,6 +33,7 @@ export TMPO_CHK=$TMP/zz_chk.log
 rm -f "$TMPO_CHK"
 
 echo "getting repositories at: $(date)"
+echo
 
 # perform the checkouts as appropriate per OS.
 FULL_LIST="$(dirname $FEISTY_MEOW_APEX) $HOME"
