@@ -2,6 +2,10 @@
 
 # This defines some general, useful functions.
 
+#hmmm: starting to get a bit beefy in here.  perhaps there is a good way to refactor the functions into more specific folders, if they aren't really totally general purpose?
+
+##############
+
 # test whether we've been here before or not.
 skip_all=
 type function_sentinel &>/dev/null
@@ -697,6 +701,41 @@ return 0
   }
 
   ##############
+
+  # count the number of sub-directories in a directory and echo the result.
+  function count_directories()
+  {
+    local appsdir="$1"; shift
+    numdirs="$(find "$appsdir" -mindepth 1 -maxdepth 1 -type d | wc -l)"
+    echo $numdirs
+  }
+
+  # takes a string and capitalizes just the first character.  any capital letters in the remainder of
+  # the string are made lower case.  the processed string is returned by an echo.
+  function capitalize_first_char()
+  {
+    local to_dromedary="$1"; shift
+    to_dromedary="$(tr '[:lower:]' '[:upper:]' <<< ${to_dromedary:0:1})$(tr '[:upper:]' '[:lower:]' <<< ${to_dromedary:1})"
+    echo "$to_dromedary"
+  }
+
+  # given a source path and a target path, this will make a symbolic link from
+  # the source to the destination, but only if the source actually exists.
+  function make_safe_link()
+  {
+    local src="$1"; shift
+    local target="$1"; shift
+  
+    if [ -d "$src" ]; then
+      ln -s "$src" "$target"
+      check_result "Creating symlink from '$src' to '$target'"
+    fi
+    echo "Created symlink from '$src' to '$target'."
+  }
+
+  ##############
+
+  # NOTE: no more function definitions are allowed after this point.
 
   function function_sentinel()
   {
