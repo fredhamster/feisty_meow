@@ -4,6 +4,9 @@
 # this includes some static libraries and all of the tests, as well as
 # the install bundles.
 
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
+sep
 echo "Cleaning up feisty meow generated files..."
 
 pushd $GENERATED_STORE
@@ -23,4 +26,5 @@ popd
 popd
 
 echo "Finished with feisty meow generated file cleaning."
+sep
 
