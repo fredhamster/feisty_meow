@@ -246,14 +246,14 @@ function checkin_list()
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
       do_checkin $outer
-      sep 7
+      sep 28
     else
       for inner in $list; do
         # add in the directory component to see if we can find the folder.
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
         do_checkin $path
-        sep 7
+        sep 28
       done
     fi
   done
@@ -342,14 +342,14 @@ function checkout_list()
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
       do_update $outer
-      sep 7
+      sep 28
     else
       for inner in $list; do
         # add in the directory component to see if we can find the folder.
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
         do_update $path
-        sep 7
+        sep 28
       done
     fi
   done
@@ -393,7 +393,7 @@ function perform_revctrl_action_on_file()
     pushd "$dirname" &>/dev/null
     echo "[$(pwd)]"
     $action .
-    sep 7
+    sep 28
     popd &>/dev/null
   done 3<"$tempfile"
 
