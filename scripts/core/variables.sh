@@ -17,16 +17,15 @@
   # this function always exports the variables it defines.
   function define_yeti_variable()
   {
-# if variable exists already, save old value for restore,
+    #hmmm: simple implem just sets it up and exports the variable.
+    #  i.e., this method always exports.
+    export "${@}" 
+
+#hmmm: eventual approach-- if variable exists already, save old value for restore,
 # otherwise save null value for restore,
 # have to handle unsetting if there was no prior value of one
 # we newly defined.
 # add variable name to a list of feisty defined variables.
-
-#hmmm: first implem just sets it up and exports the variable.
-#  i.e., this method always exports.
-export "${@}" 
-
 
 return 0
   }
