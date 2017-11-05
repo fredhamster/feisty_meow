@@ -25,7 +25,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
     # first, simple projects.
     REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 1 -mindepth 1 -type d)"
     # then, site avenger specific projects.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 1 -mindepth 1 -iname "avenger5" -type d)"
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d)"
   fi
 
   # adds our locally relevant archive folders into the list to be synched.
