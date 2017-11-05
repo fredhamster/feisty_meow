@@ -30,12 +30,32 @@ source "$WORKDIR/site_avenger.config"
 
 ############################
 
+function print_instructions()
+{
+  echo
+  echo "$(basename $0 .sh) [app dirname] [repository] [theme name]"
+  echo
+  echo "All parameters are optional, and intelligent guesses for them will be made."
+  echo
+  echo "app dirname: The folder where the app will be stored."
+  echo "repository: The name of the git repository (short version, no URL)."
+  echo "theme name: The name to use for the cakephp theme."
+  echo
+  exit 0
+}
+
+############################
+
 # main body of script.
 
 # check for parameters.
 app_dirname="$1"; shift
 repo_name="$1"; shift
 theme_name="$1"; shift
+
+if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
+  print_instructions
+fi
 
 sep
 
