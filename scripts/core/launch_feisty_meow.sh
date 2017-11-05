@@ -45,18 +45,14 @@ if [ -z "$FEISTY_MEOW_LOADING_DOCK" ]; then
   FEISTY_MEOW_VARIABLES_LOADING_FILE="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
   if [ ! -f "$FEISTY_MEOW_VARIABLES_LOADING_FILE" ]; then
     echo -e '\n\n'
+    example_dir="/usr/local/fred"
     echo -e "\
-The feisty meow scripts need initialization via the bootstrap process, which\n\
-can be accomplished if one knows where the scripts are stored.  For example,\n\
-if feisty_meow is in the home directory, then this command will bootstrap the\n\
-script configuration:\n\
+The feisty meow scripts need initialization via the bootstrap process.  For\n\
+example, if the feisty meow folder lives in '$example_dir', then this\n\
+command bootstraps feisty meow:\n\
 \n\
-  bash $HOME/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\n\
+  bash $example_dir/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\n\
 \n\
-Or, if the feisty_meow folder is installed system-wide in a location such as\n\
-/usr/local/feisty_meow, then this command would bootstrap the scripts:\n\
-\n\
-  bash /usr/local/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\n\
 \n"
     ERROR_OCCURRED=true
   fi
