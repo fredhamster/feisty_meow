@@ -22,7 +22,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   fi
   # add in any of my applications that are in the apps folder.
   if [ -d "$HOME/apps" ]; then
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 1 -mindepth 1 -type d)"
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 1 -mindepth 1 -iname "avenger5" -type d)"
   fi
 
   # adds our locally relevant archive folders into the list to be synched.
