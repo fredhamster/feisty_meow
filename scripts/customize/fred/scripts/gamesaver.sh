@@ -8,7 +8,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 #we are missing the netcp thing.  why????
 
 WINE_SOURCE_DIR="$HOME/wine_goods/My Games"
-SPOOLING_OUTPUT_DIR="$HOME/spooling_saves"
+SPOOLING_OUTPUT_DIR="$HOME/data/spooling_saves"
 
 if [ ! -d "$WINE_SOURCE_DIR" ]; then
   WINE_SOURCE_DIR="/cygdrive/c/users/fred/My Documents/My Games"
@@ -16,6 +16,11 @@ fi
 if [ ! -d "$WINE_SOURCE_DIR" ]; then
   echo "Failing to find the game save directories."
   exit 1
+fi
+
+if [ ! -d "$SPOOLING_OUTPUT_DIR" ]; then
+  mkdir -p "$SPOOLING_OUTPUT_DIR"
+  check_result Creating spooling output directory.
 fi
 
 # copies the files for a particular game out to a spooling folder.
