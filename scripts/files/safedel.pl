@@ -24,7 +24,7 @@ require "filename_helper.pl";
 require "inc_num.pl";
 require "zap_the_dir.pl";
 
-use Env qw(TMP OS SHELL_DEBUG);
+use Env qw(TMP OS DEBUG_FEISTY_MEOW);
 
 #hmmm: need a usage statement.
 
@@ -132,7 +132,7 @@ sub safedel {
     }
   }
   if (@deleted) {
-    if ($SHELL_DEBUG != "") {
+    if ($DEBUG_FEISTY_MEOW != "") {
       print "Trashed [@deleted].\n";
     }
     open(REPORT, ">>$TMP/zz_safedel_report.txt");

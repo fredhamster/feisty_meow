@@ -11,7 +11,7 @@ skip_all=
 type function_sentinel &>/dev/null
 if [ $? -eq 0 ]; then
   # there was no error, so we can skip the inits.
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo "skipping function definitions, because already defined."
   fi
   skip_all=yes
@@ -21,7 +21,7 @@ fi
 
 if [ -z "$skip_all" ]; then
 
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo "feisty meow function definitions beginning now..."
   fi
 
@@ -742,7 +742,7 @@ return 0
     return 0; 
   }
   
-  if [ ! -z "$SHELL_DEBUG" ]; then echo "feisty meow function definitions done."; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "feisty meow function definitions done."; fi
 
   ##############
 

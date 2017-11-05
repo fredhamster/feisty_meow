@@ -12,7 +12,7 @@ source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 # first so we can do an orange-to-orange compare.
 tmpdir="$(cd $TMP; \pwd)"
 if [ "$(\pwd)" != "$tmpdir" ]; then
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo "moving to the TMP directory to avoid file access conflicts..."
   fi
   new_name="$TMP/zz_$(basename $0)"

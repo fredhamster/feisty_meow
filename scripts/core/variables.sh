@@ -51,7 +51,7 @@ define_yeti_variable TERM
 # we'll run this again only if we think it's needed.
 if [ -z "$CORE_VARIABLES_LOADED" ]; then
 
-  if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization begins...; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo variables initialization begins...; fi
   
   ##############
   
@@ -106,15 +106,15 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   fi
 
   # set up the top-level for all build creations and logs and such.
-  if [ -z "$GENERATED_STORE" ]; then
-    define_yeti_variable GENERATED_STORE="$TMP/generated-feisty_meow"
+  if [ -z "$FEISTY_MEOW_GENERATED_STORE" ]; then
+    define_yeti_variable FEISTY_MEOW_GENERATED_STORE="$TMP/generated-feisty_meow"
   fi
-  if [ ! -d "$GENERATED_STORE" ]; then
-    mkdir -p "$GENERATED_STORE"
+  if [ ! -d "$FEISTY_MEOW_GENERATED_STORE" ]; then
+    mkdir -p "$FEISTY_MEOW_GENERATED_STORE"
   fi
   # set up our effluent outsourcing valves.
   if [ -z "$TEMPORARIES_PILE" ]; then
-    define_yeti_variable TEMPORARIES_PILE="$GENERATED_STORE/temporaries"
+    define_yeti_variable TEMPORARIES_PILE="$FEISTY_MEOW_GENERATED_STORE/temporaries"
   fi
   if [ ! -d "$TEMPORARIES_PILE" ]; then
     mkdir -p "$TEMPORARIES_PILE"
@@ -262,7 +262,7 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
 
   define_yeti_variable CORE_VARIABLES_LOADED=true
   
-  if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization ends....; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo variables initialization ends....; fi
 fi
 
 ##############
@@ -277,7 +277,7 @@ for i in $FEISTY_MEOW_LOADING_DOCK/custom/*.sh; do
     # skip it if it's not real.
     continue;
   fi
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo "loading customization: $(basename $(dirname $i))/$(basename $i)"
   fi
   source "$i"

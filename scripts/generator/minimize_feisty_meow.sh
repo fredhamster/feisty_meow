@@ -9,7 +9,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 sep
 echo "Cleaning up feisty meow generated files..."
 
-pushd $GENERATED_STORE
+pushd $FEISTY_MEOW_GENERATED_STORE
 
 \rm -rf logs clam_tmp temporaries/*
 

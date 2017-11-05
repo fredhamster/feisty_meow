@@ -75,7 +75,7 @@ function dossify_and_run_commands()
     real_commands+=($(echo $i | sed -e 's/\//\\/g'))
   done
 
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo commands are now:
     for i in "${real_commands[@]}"; do
       echo -n "$i "

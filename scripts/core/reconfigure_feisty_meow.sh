@@ -64,7 +64,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
 # create our common aliases.
 perl "$FEISTY_MEOW_SCRIPTS/core/generate_aliases.pl"
 
-if [ ! -z "$SHELL_DEBUG" ]; then
+if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
   echo established these variables for feisty_meow assets:
   echo ==============
   cat "$FEISTY_MEOW_VARIABLES_LOADING_FILE"

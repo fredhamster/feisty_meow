@@ -23,7 +23,7 @@
 
 require "filename_helper.pl";
 
-use Env qw(FEISTY_MEOW_BINARIES BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS SHELL_DEBUG );
+use Env qw(FEISTY_MEOW_BINARIES BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS DEBUG_FEISTY_MEOW );
 
 # given a possible aliasable filename, this will decide whether to create a perl
 # or bash alias for it.  it needs the filename of the possible alias and the
@@ -78,14 +78,14 @@ sub load_file_names {
 # loaded also.
 sub rebuild_script_aliases {
 
-  if (length($SHELL_DEBUG)) {
+  if (length($DEBUG_FEISTY_MEOW)) {
     print "rebuilding generated aliases file...\n";
   }
 
   # create our generated shells directory if it's not already.
   if ( ! -d $FEISTY_MEOW_LOADING_DOCK ) {
     mkdir $FEISTY_MEOW_LOADING_DOCK;
-    if (length($SHELL_DEBUG)) {
+    if (length($DEBUG_FEISTY_MEOW)) {
       print "made FEISTY_MEOW_LOADING_DOCK at '$FEISTY_MEOW_LOADING_DOCK'\n";
     }
   }
@@ -100,7 +100,7 @@ sub rebuild_script_aliases {
   foreach $i (&glob_list("$FEISTY_MEOW_LOADING_DOCK/custom/*.alias")) {
     if (-f $i) { push(@ALIAS_DEFINITION_FILES, $i); }
   }
-  if (length($SHELL_DEBUG)) {
+  if (length($DEBUG_FEISTY_MEOW)) {
     print "using these alias files:\n";
     foreach $i (@ALIAS_DEFINITION_FILES) {
       local $base_of_dir = &basename(&dirname($i));
@@ -112,7 +112,7 @@ sub rebuild_script_aliases {
   # write the aliases for sh and bash scripts.
 
   local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh";
-  if (length($SHELL_DEBUG)) {
+  if (length($DEBUG_FEISTY_MEOW)) {
     print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";
   }
 
@@ -142,7 +142,7 @@ sub rebuild_script_aliases {
 
   close GENOUT;
 
-  if (length($SHELL_DEBUG)) {
+  if (length($DEBUG_FEISTY_MEOW)) {
     print("done rebuilding generated aliases file.\n");
   }
 }
@@ -184,7 +184,7 @@ if (-d $FEISTY_MEOW_BINARIES) {
 # trash the old versions.
 unlink("$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 
-if (length($SHELL_DEBUG)) {
+if (length($DEBUG_FEISTY_MEOW)) {
   printf "writing $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh...\n";
 }
 

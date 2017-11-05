@@ -10,11 +10,11 @@
 
 ##############
 
-# SHELL_DEBUG: if this variable is non-empty, then it causes the feisty meow
+# DEBUG_FEISTY_MEOW: if this variable is non-empty, then it causes the feisty meow
 # scripts to print more diagnostic information when they run.  not all
 # scripts support this, but the core ones do.
 
-#export SHELL_DEBUG=true
+#export DEBUG_FEISTY_MEOW=true
 
 ##############
 
@@ -120,12 +120,12 @@ if [ -z "$ERROR_OCCURRED" ]; then
   
   # perform the bulkier parts of the initialization process.
   
-  if [ ! -z "$SHELL_DEBUG" ]; then echo "heavyweight init begins..."; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "heavyweight init begins..."; fi
   
   # set up the aliases for the shell, but only if they are not already set.
   type CORE_ALIASES_LOADED &>/dev/null
   if [ $? -ne 0 ]; then
-    if [ ! -z "$SHELL_DEBUG" ]; then
+    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
       echo "the aliases were missing, now they are being added..."
     fi
     source "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh"
@@ -137,7 +137,7 @@ if [ -z "$ERROR_OCCURRED" ]; then
   # a minor tickle of the title of the terminal, unless we already have some history.
   label_terminal_with_info
   
-  if [ ! -z "$SHELL_DEBUG" ]; then echo "heavyweight init is done."; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "heavyweight init is done."; fi
   
   if [ -z "$ERROR_OCCURRED" ]; then
     # set a sentinel variable to say we loaded the feisty meow environment.
