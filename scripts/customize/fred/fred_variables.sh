@@ -15,17 +15,17 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   fi
 
   # add a bunch of personal folders to the list for checkin & checkout.
-  REPOSITORY_LIST+="cloud ebooks web"
+  REPOSITORY_LIST+="cloud ebooks web "
   # add in any active projects.
   if [ -d "$HOME/active" ]; then
-    REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d)"
+    REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
   fi
   # add in any of my applications that are in the apps folder.
   if [ -d "$HOME/apps" ]; then
     # first, simple projects.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 1 -mindepth 1 -type d)"
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 1 -mindepth 1 -type d) "
     # then, site avenger specific projects.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d)"
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
 
   # adds our locally relevant archive folders into the list to be synched.
