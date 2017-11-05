@@ -20,6 +20,10 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   if [ -d "$HOME/active" ]; then
     REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d)"
   fi
+  # add in any of my applications that are in the apps folder.
+  if [ -d "$HOME/apps" ]; then
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 1 -mindepth 1 -type d)"
+  fi
 
   # adds our locally relevant archive folders into the list to be synched.
   ARCHIVE_COLLECTIONS_LIST+="/z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
