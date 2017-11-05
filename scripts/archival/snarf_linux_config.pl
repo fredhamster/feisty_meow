@@ -22,7 +22,7 @@ use Env qw(HOME);
 # make sure we are running as root.  otherwise we have no access to look at many things in /etc.
 if ($< != 0) {
   printf "This script must be run as root or sudo.  Try this:\n";
-  printf "  sudo -E PERLLIB=\$PERLLIB perl $0 @ARGV\n";
+  printf "  sudo -E PERLLIB=\$PERLLIB perl \$FEISTY_MEOW_SCRIPTS/archival/snarf_linux_config.pl @ARGV\n";
   exit 1;
 }
 
