@@ -88,8 +88,6 @@ function restart_apache()
   fi
 }
 
-# chown folder to group www-data.  can be done without setting a user, right?
-
 # sets up the serverpilot storage location for a user hosted web site.
 function maybe_create_site_storage()
 {
@@ -102,16 +100,15 @@ function maybe_create_site_storage()
   fi
 
   # now give the web server some access to the folder.  this is crucial since the folders
-  # can be hosted in any user folder, and the group permissions will usually be only for the user.
-  chown -R $(logname):www-data "$BASE_PATH"
-  check_result "Failed to set www-data as the owner on the path: $full_path"
-  # note that web serving will also hose up unless the path to the folder is writable.  so we walk backwards
-  # and make sure group access is available.
+  # can be hosted in any user folder, and the group permissions will not necessarily be correct already.
   local chow_path="$full_path"
+  # only the first chmod is recursive; the rest just apply to the specific folder of interest.
+  chmod -R g+rx "$chow_path"
+  # walk backwards up the path and fix perms.
   while [[ $chow_path != $HOME ]]; do
-#echo chow path is now $chow_path
-    chmod -R g+rx "$chow_path"
-    check_result "Failed to add group permissions for www-data on the path: $chow_path"
+echo chow path is now $chow_path
+    chmod g+rx "$chow_path"
+    check_result "Failed to add group permissions on the path: $chow_path"
     # reassert the user's ownership of any directories we might have just created.
     chown $(logname) "$chow_path"
     check_result "changing ownership to user failed on the path: $chow_path"

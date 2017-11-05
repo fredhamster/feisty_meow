@@ -61,33 +61,3 @@ sep
 
 echo "Finished checking in the site at ${app_dirname}."
 
-
-
-
-
-
-echo bailing before deprecated code is run.; exit 0
-
-
-# see if there are any unmerged files, if so, do not try to push files
-if [[ `git ls-files -u` ]]; then
-  echo "Git: local changes!"
-  echo "Aborting. Please resolve manually and re-run this script"
-else
-  # http://stackoverflow.com/questions/5143795/how-can-i-check-in-a-bash-script-if-my-local-git-repo-has-changes
-  # see if there are any new files that need pushing (status will show new files)
-  if [[ `git status --porcelain` ]]; then
-    # changes
-    git add . -A
-    git commit -m "SERVER. Adding user uploaded files. [via sitepush]"
-    git push origin master
-    echo "Git: changes pushed to [master]"
-  else
-    # no changes
-    echo "Git: nothing to push. [master] up to date."
-  fi
-fi
-
-####
-
-
