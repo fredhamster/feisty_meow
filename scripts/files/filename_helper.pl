@@ -444,11 +444,16 @@ sub find_directories {
 
 ############################################################################
 
-# given a directory, this returns an array of all the filenames found therein.
+# given a list of paths, this returns an array of all the filenames found therein.
 sub find_files {
   my @files_found = ();
   my $dir;
   foreach $dir (@_) {
+    if (-f $dir) {
+      # that's actually just a file, so add it.
+      push @files_found, $dir;
+      next;
+    }
     local *DIR;
     opendir DIR, $dir or die "opendir $dir: $!";
     while ($_ = readdir DIR) {

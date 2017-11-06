@@ -184,15 +184,11 @@ if (length($DEBUG_FEISTY_MEOW)) {
 open(she, ">> $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 
 # find the list of files in the scripts directory.
-#opendir(scripts, "$FEISTY_MEOW_SCRIPTS");
-#@shell_files = sort(readdir(scripts));
-#print "scripts: @shell_files\n";
+@shell_files = (find_files(recursive_find_directories("$FEISTY_MEOW_SCRIPTS")),
+    find_files(recursive_find_directories("$FEISTY_MEOW_LOADING_DOCK/custom/scripts")));
 
-@shell_files = (&find_files("$FEISTY_MEOW_SCRIPTS"),
-   &find_files("$FEISTY_MEOW_LOADING_DOCK/custom/scripts"),
-   &find_files(recursive_find_directories("$FEISTY_MEOW_LOADING_DOCK/custom/scripts")));
-
-#printf "found all these files: @shell_files\n";
+#printf "found all these files in main script dirs:\n";
+#printf "  @shell_files\n";
 
 # construct aliases for items in the scripts directory.
 foreach $file (@shell_files) {
@@ -205,51 +201,16 @@ foreach $file (@shell_files) {
       || $file =~ /\/\.\.$/
       || $file =~ /\/\.svn$/
       || $file =~ /\/\.git$/
-      || $file =~ /\/customize\//
+      || $file =~ /\/customize\/[a-zA-Z0-9_]+\/[a-zA-Z0-9_.]+$/
 #hmmm: would be nice to have this name in a symbol somewhere instead of having "customize" everywhere.
       ) {
-    # just skip this item; it's a special directory.
-#print "skipping name: $file\n";
-  } elsif (-d "$FEISTY_MEOW_SCRIPTS/$file") {
-    # if we see a subdirectory in the scripts folder, we add all the
-    # scripts in it as aliases.  we recurse only one level.  we also don't use
-    # our customize directory as aliases, since those are processed way differently.
-#print "adding script dir in: $file\n";
-    opendir(subdir, "$FEISTY_MEOW_SCRIPTS/$file");
-    @subdir_files = sort(readdir(subdir));
-    foreach $subfile (@subdir_files) {
-      push(@shell_files, "$file/$subfile");
-    }
-  } elsif (-f "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/$file") {
-    # if we see a file in the auto-generated area that comes from the
-    # customized scripts folder, we add it as an alias.
-    make_alias($file, "$FEISTY_MEOW_LOADING_DOCK/custom/scripts/");
-#print "added custom script file: $FEISTY_MEOW_LOADING_DOCK/custom/scripts/$file\n";
+    # just skip this item; it's a special directory or a file we don't want to include.
+#    print "skipping name: $file\n";
   } else {
-    # last ditch effort to make sense of the file; just go ahead and make an alias unless
-    # the file is part of our customization scheme.
-    if ( ! ($file =~ /customize/) ) {
-#print "adding regular file in: $file\n";
-      # if it's a regular file, we'll try to make an alias for it.  the function
-      # will only fire if the ending is appropriate for the script languages we use.
-      &make_alias($file, "$FEISTY_MEOW_SCRIPTS");
-    } else {
-#print "omitting file in: $file\n";
-    }
+     &make_alias($file, "");
   }
-}
-
-# open the source repository's script directory to find scripts in there.
-local($build_shell_path) = "$BUILD_TOP/scripts/generator";
-@build_shells = &find_files("$build_shell_path");
-#opendir(build_shells_dir, $build_shell_path);
-#@build_shell_files = sort(readdir(build_shells_dir));
-#if (scalar(@build_shell_files) > 0) {
-#  print "build shell folders: @build_shell_files\n";
-#}
-foreach $file (@build_shells) {
-  &make_alias($file, "$build_shell_path");
 }
 
 close(she);
 
+1;
