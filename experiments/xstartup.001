@@ -32,14 +32,18 @@ x-session-manager &
 #x-window-manager &
 #######
 
+# we don't see this running at home, but it sure seems needed on vmbuilder.
 gnome-panel &
+
 #gnome-settings-daemon &
 #gnome-shell &
 
+#######
 # one or the other of the window managers here.
 #hmmm: but mutter doesn't work at all.
 metacity &
 #mutter &
+#######
 
 nautilus &
 
