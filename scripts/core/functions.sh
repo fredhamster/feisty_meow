@@ -452,7 +452,8 @@ if [ -z "$skip_all" ]; then
 
     if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
       echo "copying custom scripts for $custom_user"
-      \cp -R "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/"
+      netcp "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
+#hmmm: could save output to show if an error occurs.
     fi
     echo
     regenerate
