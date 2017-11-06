@@ -190,10 +190,9 @@ open(she, ">> $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 
 @shell_files = (&find_files("$FEISTY_MEOW_SCRIPTS"),
    &find_files("$FEISTY_MEOW_LOADING_DOCK/custom/scripts"),
-   &find_files(find_directories("$FEISTY_MEOW_LOADING_DOCK/custom/scripts")));
-#really want the recursive one called here, but baby steps
+   &find_files(recursive_find_directories("$FEISTY_MEOW_LOADING_DOCK/custom/scripts")));
 
-printf "found all these files: @shell_files\n";
+#printf "found all these files: @shell_files\n";
 
 # construct aliases for items in the scripts directory.
 foreach $file (@shell_files) {

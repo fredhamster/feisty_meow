@@ -427,7 +427,6 @@ sub find_directories {
   my @dirs_found = ();
   my $dir;
   foreach $dir (@_) {
-printf "FD outer dir: $dir\n";
     local *DIR;
     opendir DIR, $dir or die "opendir $dir: $!";
     while ($_ = readdir DIR) {
@@ -436,7 +435,6 @@ printf "FD outer dir: $dir\n";
       my $path = "$dir/$_";
       # skip if this entry is not itself a directory.
       next if ! -d $path;
-printf "FD adding $path to our list.\n";
       push @dirs_found, $path;
     }
     closedir DIR;
@@ -451,7 +449,6 @@ sub find_files {
   my @files_found = ();
   my $dir;
   foreach $dir (@_) {
-#printf "LFN outer dir: $dir\n";
     local *DIR;
     opendir DIR, $dir or die "opendir $dir: $!";
     while ($_ = readdir DIR) {
@@ -460,7 +457,6 @@ sub find_files {
       my $path = "$dir/$_";
       # skip if this entry is not a file.
       next if ! -f $path;
-#printf "LFN adding $path to our list.\n";
       push @files_found, $path;
     }
     closedir DIR;
@@ -473,45 +469,19 @@ sub find_files {
 # finds all directories starting at a particular directory and returns them
 # in an array.  does not include the starting directory.
 sub recursive_find_directories {
+  # first find all the directories within the parameters.
+  my @toplevel = find_directories(@_);
 
-#fix this
-
-#flush not working!
-$|++;
-  my @dir_list = @_;
-printf "got into find dirs, args are: @dir_list\n";
-  my @to_return = ();
-  my $dir;
-  foreach $dir (@dir_list) {
-printf "outer dir: $dir\n";
-    local *DIR;
-    opendir DIR, $dir or die "opendir $dir: $!";
-    while ($_ = readdir DIR) {
-      # skip if it's current or parent dir.
-      next if /^\.{1,2}$/;
-      my $path = "$dir/$_";
-      # skip if this entry is not itself a directory.
-      next if ! -d $path;
-      # add to our list if it's a directory.
-printf "adding $path to our list.\n";
-      push @to_return, $path;
-#this isn't needed, right????
-      next;
-    }
-    closedir DIR;
-  }
-
-printf "list before recursion: @to_return\n";
+  my @to_return;
+  push(@to_return, @toplevel);
 
   # return the composition of the list we found here plus any directories under those.
-#hmmm: this is hideous!  it will just grow greater.  can't we do this efficiently?
-
-#hmmm: this causes things to totally fail.  what is going on???
-  my @subs_found ;
-@subs_found = recursive_find_directories(@to_return);
-
-  push(@to_return, @subs_found);
-
+  # we only recurse if there's something to chew on in our directory list.
+  # otherwise, we've hit the bottom of that tree.
+  if (scalar @toplevel > 0) {
+    my @subs_found = recursive_find_directories(@toplevel);
+    push(@to_return, @subs_found);
+  }
   return @to_return;
 }
 
