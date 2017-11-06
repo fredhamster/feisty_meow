@@ -44,7 +44,7 @@ sep
 
 # this should set the site_store_path variable if everything goes well.
 update_repo "$full_app_dir" "$CHECKOUT_DIR_NAME" "$DEFAULT_REPOSITORY_ROOT" "$repo_name"
-check_result "Updating the repository storage directory"
+test_or_fail "Updating the repository storage directory"
 
 sep
 

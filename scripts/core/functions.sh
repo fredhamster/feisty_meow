@@ -121,12 +121,21 @@ if [ -z "$skip_all" ]; then
   # checks the result of the last command that was run, and if that failed,
   # then this complains and exits from bash.  the function parameters are
   # used as the message to print as a complaint.
-  function check_result()
+  function test_or_fail()
   {
     if [ $? -ne 0 ]; then
-      echo -e "failed on: $*"
+      echo -e "\n\nfailed on: $*"
       error_sound
       exit 1
+    fi
+  }
+
+  # like test_or_fail, but will keep going after complaining.
+  function test_or_continue()
+  {
+    if [ $? -ne 0 ]; then
+      echo -e "\n\nfailed on: $*"
+      error_sound
     fi
   }
 
@@ -423,18 +432,24 @@ if [ -z "$skip_all" ]; then
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
     incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
+
+    local fail_message="\nare the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
+    $(grep "apt.*perl" $FEISTY_MEOW_APEX/readme.txt)\n"
     
     #echo "the incongruous files list is: $incongruous_files"
     # disallow a single character result, since we get "*" as result when nothing exists yet.
     if [ ${#incongruous_files} -ge 2 ]; then
       echo "cleaning unknown older overrides..."
       perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
+      test_or_continue "running safedel.  $fail_message" 
       echo
     fi
     popd &>/dev/null
     echo "copying custom overrides for $custom_user"
     mkdir -p "$FEISTY_MEOW_LOADING_DOCK/custom" 2>/dev/null
     perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom"
+    test_or_continue "running cpdiff.  $fail_message"
+
     if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
       echo "copying custom scripts for $custom_user"
       \cp -R "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/"
@@ -721,7 +736,7 @@ return 0
   
     if [ -d "$src" ]; then
       ln -s "$src" "$target"
-      check_result "Creating symlink from '$src' to '$target'"
+      test_or_fail "Creating symlink from '$src' to '$target'"
     fi
     echo "Created symlink from '$src' to '$target'."
   }
@@ -745,7 +760,7 @@ return 0
     echo running tests on set_var_if_undefined.
     flagrant=petunia
     set_var_if_undefined flagrant forknordle
-    check_result "testing if defined variable would be whacked"
+    test_or_fail "testing if defined variable would be whacked"
     if [ $flagrant != petunia ]; then
       echo set_var_if_undefined failed to leave the test variable alone
       exit 1
