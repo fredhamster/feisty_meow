@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# set up gnome desktop environment for vnc.
+
+# references:
+#   https://www.digitalocean.com/community/tutorials/how-to-setup-vnc-for-ubuntu-12
+#   https://www.digitalocean.com/community/questions/how-to-install-ubuntu-desktop-and-vnc
+#   https://www.centos.org/docs/5/html/5.2/Virtualization/sect-Virtualization-Tips_and_tricks-Configuring_a_VNC_Server.html
+#   https://ubuntuforums.org/showthread.php?t=1903220
+#   https://askubuntu.com/questions/800302/vncserver-grey-screen-ubuntu-16-04-lts
+
+[ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup
+[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+
+xsetroot -solid darkgreen
+vncconfig -iconic &
+
+#######
+gnome-session --session=ubuntu &
+#valid values for session that we've seen:
+# ubuntu
+# gnome
+# 2d-gnome (?)
+# unity
+#######
+
+x-terminal-emulator -geometry 100x32 -ls -title "$VNCDESKTOP Desktop" &
+
+#######
+# are these alternatives also?
+x-session-manager &
+#x-window-manager &
+#######
+
+gnome-panel &
+#gnome-settings-daemon &
+#gnome-shell &
+
+# one or the other of the window managers here.
+#hmmm: but mutter doesn't work at all.
+metacity &
+#mutter &
+
+nautilus &
+
