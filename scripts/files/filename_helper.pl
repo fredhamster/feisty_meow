@@ -408,7 +408,8 @@ return;
     }
 
     local *DIR;
-    opendir DIR, $dir or die "opendir $dir: $!";
+    # if we can't open the dir, just skip to the next one.
+    opendir DIR, $dir or next;
     while ($_ = readdir DIR) {
       next if /^\.{1,2}$/;
       my $path = "$dir/$_";
@@ -428,7 +429,8 @@ sub find_directories {
   my $dir;
   foreach $dir (@_) {
     local *DIR;
-    opendir DIR, $dir or die "opendir $dir: $!";
+    # if we can't open the dir, just skip to the next one.
+    opendir DIR, $dir or next;
     while ($_ = readdir DIR) {
       # skip if it's current or parent dir.
       next if /^\.{1,2}$/;
@@ -455,7 +457,8 @@ sub find_files {
       next;
     }
     local *DIR;
-    opendir DIR, $dir or die "opendir $dir: $!";
+    # if we can't open the dir, just skip to the next one.
+    opendir DIR, $dir or next;
     while ($_ = readdir DIR) {
       # skip if it's current or parent dir.
       next if /^\.{1,2}$/;
