@@ -130,6 +130,19 @@ if [ -z "$skip_all" ]; then
     fi
   }
 
+  # wraps secure shell with some parameters we like, most importantly to enable X forwarding.
+  function ssh()
+  {
+    local args=($*)
+    save_terminal_title
+    # we remember the old terminal title, then force the TERM variable to a more generic
+    # version for the other side (just 'linux'); we don't want the remote side still
+    # thinking it's running xterm.
+    export TERM=linux
+    /usr/bin/ssh -X -C "${args[@]}"
+    restore_terminal_title
+  }
+
   # locates a process given a search pattern to match in the process list.
   # supports a single command line flag style parameter of "-u USERNAME";
   # if the -u flag is found, a username is expected afterwards, and only the
