@@ -5,15 +5,15 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 sep
+echo stopping vncserver...
 sudo service vncserver stop
 sep
 echo after stopping vncserver
-echo
 psa vnc.*Xauth.*geom
 sep
+echo starting vncserver...
 sudo service vncserver start
 sep
 echo after starting vncserver
-echo
 psa vnc.*Xauth.*geom
 sep
