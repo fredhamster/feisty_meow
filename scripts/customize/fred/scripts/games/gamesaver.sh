@@ -20,7 +20,7 @@ fi
 
 if [ ! -d "$SPOOLING_OUTPUT_DIR" ]; then
   mkdir -p "$SPOOLING_OUTPUT_DIR"
-  check_result Creating spooling output directory.
+  test_or_fail Creating spooling output directory.
 fi
 
 # copies the files for a particular game out to a spooling folder.

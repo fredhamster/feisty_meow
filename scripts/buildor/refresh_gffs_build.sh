@@ -14,12 +14,12 @@ echo cleaning out the logs directory...
 echo making a simple starting log file for container...
 if [ ! -d "$GFFS_LOGS" ]; then
   mkdir -p "$GFFS_LOGS"
-  check_result Making GFFS logs directory.
+  test_or_fail Making GFFS logs directory.
 fi
 
 echo building the code freshly, although not with a clean first...
 build_gffs 
-check_result Building GFFS source code.
+test_or_fail Building GFFS source code.
 
 echo starting container now and spooling its log file...
 (bash $GFFS_TOOLKIT_ROOT/library/maybe_restart_container.sh &>$TMP/main_container_restarting.log & )
