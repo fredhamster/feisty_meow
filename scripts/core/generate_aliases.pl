@@ -61,14 +61,6 @@ sub make_perl_alias {
   print she "define_yeti_alias $aliasname=\"perl $source_dir/$full_alias.pl\"\n";
 }
 
-# given a directory, this returns an array of all the filenames found therein.
-sub load_file_names {
-  local($path) = shift(@_);
-  opendir(that_dir, $path);
-  local(@those_files) = sort(readdir(that_dir));
-  return @those_files;
-}
-
 ##############
 
 # The "common.alias" file is used in the generated aliases file as a base
@@ -196,8 +188,12 @@ open(she, ">> $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 #@shell_files = sort(readdir(scripts));
 #print "scripts: @shell_files\n";
 
-@shell_files = (&load_file_names("$FEISTY_MEOW_SCRIPTS"),
-   &load_file_names("$FEISTY_MEOW_LOADING_DOCK/custom/scripts"));
+@shell_files = (&find_files("$FEISTY_MEOW_SCRIPTS"),
+   &find_files("$FEISTY_MEOW_LOADING_DOCK/custom/scripts"),
+   &find_files(find_directories("$FEISTY_MEOW_LOADING_DOCK/custom/scripts")));
+#really want the recursive one called here, but baby steps
+
+printf "found all these files: @shell_files\n";
 
 # construct aliases for items in the scripts directory.
 foreach $file (@shell_files) {
@@ -246,7 +242,7 @@ foreach $file (@shell_files) {
 
 # open the source repository's script directory to find scripts in there.
 local($build_shell_path) = "$BUILD_TOP/scripts/generator";
-@build_shells = &load_file_names("$build_shell_path");
+@build_shells = &find_files("$build_shell_path");
 #opendir(build_shells_dir, $build_shell_path);
 #@build_shell_files = sort(readdir(build_shells_dir));
 #if (scalar(@build_shell_files) > 0) {
