@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
 # cleans up the ownership for all my files and dirs.
 function refred()
 {
@@ -20,6 +22,15 @@ function refred()
       sudo chown -R fred:fred $dirname
     fi
   done
+
+  # special case for archives directory.
+  if [ -d /z/stuffing -o -L /z/stuffing ]; then
+    chmod g+rx /z
+    chmod g+rwx /z/stuffing
+    pushd /z/stuffing &>/dev/null
+    if [ -d archives -o -L archives ]; then group_perm archives; fi
+    popd &>/dev/null
+  fi
 
   # make the logs readable by normal humans.
   sudo bash $FEISTY_MEOW_SCRIPTS/security/normal_perm.sh /var/log
