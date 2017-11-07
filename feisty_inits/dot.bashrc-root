@@ -1,7 +1,7 @@
 
-# provides a macro to initialize the feisty meow environment for the "root" user.
-
 ##############
+
+# provides a macro to initialize the feisty meow environment for the "root" user.
 
 # drag in the default version of this file.  this may not be needed if your
 # .bashrc script already has substantial code or already does this.
