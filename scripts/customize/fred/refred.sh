@@ -25,10 +25,13 @@ function refred()
 
   # special case for archives directory.
   if [ -d /z/stuffing -o -L /z/stuffing ]; then
-    chmod g+rx,o+rx /z
-    chmod g+rx,o-rwx /z/stuffing
+    sudo chown fred:fred /z; sudo chmod g+rx,o+rx /z
+    sudo chown fred:fred /z/stuffing; sudo chmod g+rx,o-rwx /z/stuffing
     pushd /z/stuffing &>/dev/null
-    if [ -d archives -o -L archives ]; then group_perm archives; fi
+    if [ -d archives -o -L archives ]; then
+      sudo chown fred:fred archives
+      sudo chmod -R g+rwx archives
+    fi
     popd &>/dev/null
   fi
 
