@@ -25,8 +25,8 @@ function refred()
 
   # special case for archives directory.
   if [ -d /z/stuffing -o -L /z/stuffing ]; then
-    chmod g+rx /z
-    chmod g+rwx /z/stuffing
+    chmod g+rx,o+rx /z
+    chmod g+rx,o-rwx /z/stuffing
     pushd /z/stuffing &>/dev/null
     if [ -d archives -o -L archives ]; then group_perm archives; fi
     popd &>/dev/null
