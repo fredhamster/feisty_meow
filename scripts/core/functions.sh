@@ -743,7 +743,7 @@ return 0
   }
 
   # pretty prints the json files provided as parameters.
-  function json_view()
+  function clean_json()
   {
     if [ -z "$*" ]; then return; fi
     local show_list=()
@@ -758,6 +758,16 @@ return 0
     done
     filedump "${show_list[@]}"
     rm "${show_list[@]}"
+  }
+
+  function json_text()
+  {
+    # only print our special headers or text fields.
+    local CR=$'\r'
+    local LF=$'\n'
+    clean_json $* |
+        grep -i "\"text\":\|^=.*" | 
+        sed -e "s/\\\\r/$CR/g" -e "s/\\\\n/\\$LF/g"
   }
 
   ##############
