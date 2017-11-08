@@ -49,17 +49,25 @@ function analyze_hierarchy_and_report()
 {
   local dir="$1"; shift
   local label="$1"; shift
-  local count=$(calculate_count "$dir")
-  total_overload=$(($count + $total_overload))
-  local weight=$(calculate_weight "$dir")
-  total_weight=$(($total_weight + $weight))
-  local complexity=$(calculate_complexity "$dir")
-  total_complexity=$(($total_complexity + $complexity))
+
+  # initial values are all zero.
+  local count=0
+  local weight=0
+  local complexity=0
+
+  if [ -d "$dir" ]; then
+    count=$(calculate_count "$dir")
+    total_overload=$(($count + $total_overload))
+    weight=$(calculate_weight "$dir")
+    total_weight=$(($total_weight + $weight))
+    complexity=$(calculate_complexity "$dir")
+    total_complexity=$(($total_complexity + $complexity))
+  fi
   full_report+=$(format_report_line "$count" "$weight" "$complexity" "$label")
 }
 
 # scans through items in the notes folder that begin with a pattern.
-# each of those is treated as an aggregable portion of the report.
+# each of those is treated as an aggregatable portion of the report.
 # first parameter is the title in the report, second and so on are
 # a list of directory patterns to scan and aggregate.
 function analyze_by_dir_patterns()
@@ -69,12 +77,14 @@ function analyze_by_dir_patterns()
   local hier_weight=0
   local hier_complexity=0
   for folder in $@; do
-    temp_count=$(calculate_count $folder)
-    hier_count=$(($hier_count + $temp_count))
-    temp_weight=$(calculate_weight $folder)
-    hier_weight=$(($hier_weight + $temp_weight))
-    temp_complexity=$(calculate_complexity $folder)
-    hier_complexity=$(($hier_complexity + $temp_complexity))
+    if [ -d "$folder" ]; then
+      temp_count=$(calculate_count $folder)
+      hier_count=$(($hier_count + $temp_count))
+      temp_weight=$(calculate_weight $folder)
+      hier_weight=$(($hier_weight + $temp_weight))
+      temp_complexity=$(calculate_complexity $folder)
+      hier_complexity=$(($hier_complexity + $temp_complexity))
+    fi
   done
   total_overload=$(($hier_count + $total_overload))
   total_weight=$(($total_weight + $hier_weight))
@@ -98,6 +108,9 @@ full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 ================================================================\n\
 "
 
+#hmmm: don't fail if the hierarchy doesn't exist.
+
+# high priority stuff would be called urgent.
 analyze_hierarchy_and_report ~/cloud/urgent "high priority (aieeee!)"
 
 # notes are individual files of tasks, usually, although some are combined.
@@ -108,19 +121,6 @@ analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (mondo codi
 
 # home notes are a new top-level category; used to be under the grunty.
 analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road)"
-
-##
-#yeah, games don't count as technical debt or backlog.  that's nonsense.
-#  the whole point of playing games is as a way to let off steam or escape from current
-#  real world unpleasantness, so tying the game stuff into my huge lumbering backlog is
-#  like saying lets inject toxins in our brain.  screw that.
-##
-## games and fun stuff.  not sure why these count as backlog, but whatever.
-#analyze_hierarchy_and_report ~/cloud/gaming "games yo"
-
-# some source code that needs to be sucked into other places, other codebases.  they are not
-# supposed to pile up here.  but they have, so we track them.
-#analyze_hierarchy_and_report ~/cloud/scavenging_source "source scavenging"
 
 # and then count up the things that we think will be cleaned soon, but one thing we have learned
 # unsorted files haven't been categorized yet.
@@ -135,6 +135,9 @@ analyze_by_dir_patterns "active issues" ~/cloud/active*
 
 # scan across all appropriately named project or research folders that live in the "cloud".
 analyze_by_dir_patterns "running projects" ~/cloud/project* ~/cloud/research*
+
+# look for our mad scientist style efforts.
+analyze_by_dir_patterns "lab experiments" ~/cloud/experiment*
 
 # snag any work related items for that category.
 analyze_by_dir_patterns "jobby work tasks" ~/cloud/job* 
