@@ -742,6 +742,24 @@ return 0
     echo "Created symlink from '$src' to '$target'."
   }
 
+  # pretty prints the json files provided as parameters.
+  function json_view()
+  {
+    if [ -z "$*" ]; then return; fi
+    local show_list=()
+    while true; do
+      local file="$1"; shift
+      if [ -z "$file" ]; then break; fi
+      if [ ! -f "$file" ]; then "echo File '$file' does not exist."; continue; fi
+      temp_out="$TMP/$file.view"
+      cat "$file" | python -m json.tool > "$temp_out"
+      show_list+=($temp_out)
+      test_or_continue "pretty printing '$file'"
+    done
+    filedump "${show_list[@]}"
+    rm "${show_list[@]}"
+  }
+
   ##############
 
   # NOTE: no more function definitions are allowed after this point.
