@@ -124,7 +124,7 @@ if [ -z "$skip_all" ]; then
   function test_or_fail()
   {
     if [ $? -ne 0 ]; then
-      echo -e "\n\nfailed on: $*"
+      echo -e "\n\naction failed: $*\n\nExiting script..."
       error_sound
       exit 1
     fi
@@ -134,7 +134,7 @@ if [ -z "$skip_all" ]; then
   function test_or_continue()
   {
     if [ $? -ne 0 ]; then
-      echo -e "\n\nfailed on: $*"
+      echo -e "\n\nerror occurred: $*\n\nContinuing script..."
       error_sound
     fi
   }
