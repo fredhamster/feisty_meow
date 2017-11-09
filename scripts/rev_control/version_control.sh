@@ -11,13 +11,11 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 # the maximum depth that the recursive functions will try to go below the starting directory.
 export MAX_DEPTH=5
 
-#hmmm: re-address this code, since it doesn't make a lot of sense to me right now...
 # one unpleasantry to take care of first; cygwin barfs aggressively if the TMP directory
 # is a DOS path, but we need it to be a DOS path for our GFFS testing, so that blows.
 # to get past this, TMP gets changed below to a hopefully generic and safe place.
-
 if [[ "$TMP" =~ .:.* ]]; then
-  echo making weirdo temporary directory for DOS path.
+  echo "making weirdo temporary directory for PCDOS-style path."
   export TMP=/tmp/rev_control_$USER
 fi
 if [ ! -d "$TMP" ]; then
@@ -27,78 +25,12 @@ if [ ! -d "$TMP" ]; then
   echo "could not create the temporary directory TMP in: $TMP"
   echo "this script will not work properly without an existing TMP directory."
 fi
+#hmmm: re-address the above code, since it doesn't make a lot of sense to me right now...
 
-this_host=
-# gets the machine's hostname and stores it in the variable "this_host".
-function get_our_hostname()
-{
-  if [ "$OS" == "Windows_NT" ]; then
-    this_host=$(hostname)
-  elif [ ! -z "$(echo $MACHTYPE | grep apple)" ]; then
-    this_host=$(hostname)
-  elif [ ! -z "$(echo $MACHTYPE | grep suse)" ]; then
-    this_host=$(hostname --long)
-  else
-    this_host=$(hostname)
-  fi
-  #echo "hostname is $this_host"
-}
-
-#hmmm: move to core.
-# makes sure that the "folder" is a directory and is writable.
-# remember that bash successful returns are zeroes...
-function test_writeable()
-{
-  local folder="$1"; shift
-  if [ ! -d "$folder" -o ! -w "$folder" ]; then return 1; fi
-  return 0
-}
-
-# we only want to totally personalize this script if the user is right.
-function check_user()
-{
-  if [ "$USER" == "fred" ]; then
-    export SVNUSER=fred_t_hamster@
-    export EXTRA_PROTOCOL=+ssh
-  else
-    export SVNUSER=
-    export EXTRA_PROTOCOL=
-  fi
-}
-
-# calculates the right modifier for hostnames / repositories.
-modifier=
-function compute_modifier()
-{
-  modifier=
-  directory="$1"; shift
-  in_or_out="$1"; shift
-  check_user
-  # some project specific overrides.
-  if [[ "$directory" == hoople* ]]; then
-    modifier="svn${EXTRA_PROTOCOL}://${SVNUSER}svn.code.sf.net/p/hoople2/svn/"
-  fi
-  if [[ "$directory" == yeti* ]]; then
-    modifier="svn${EXTRA_PROTOCOL}://${SVNUSER}svn.code.sf.net/p/yeti/svn/"
-  fi
-  # see if we're on one of fred's home machines.
-  is_home_system
-  # special override to pick local servers when at home.
-  if [ "$home_system" == "true" ]; then
-#hmmm: this "home system" feature seems to be unnecessary?
-    if [ "$in_or_out" == "out" ]; then
-      # need the right home machine for modifier when checking out.
-      modifier=
-    else 
-      # no modifier for checkin.
-      modifier=
-    fi
-  fi
-}
 
 ##############
 
-# selects the method for check-in based on where we are.
+# checks the directory provided into the revision control system repository it belongs to.
 function do_checkin()
 {
   local directory="$1"; shift
@@ -139,25 +71,21 @@ function do_checkin()
       # snag all new files.  not to everyone's liking.
       git add --all .
       retval=$?
-echo A: retval=$retval
 
       # see if there are any changes in the local repository.
       if ! git diff-index --quiet HEAD --; then
         # tell git about all the files and get a check-in comment.
         git commit .
         retval+=$?
-echo B.1: retval=$retval
       fi
       # catch if the diff-index failed somehow.
       retval+=$?
-echo B.2: retval=$retval
 
       # upload any changes to the upstream repo so others can see them.
       git push 2>&1 
 #| grep -v "X11 forwarding request failed"
 #have to do pipestatus if want to keep the above.
       retval+=$?
-echo C: retval=$retval
     fi
   else
     # nothing there.  it's not an error though.
@@ -171,6 +99,7 @@ echo C: retval=$retval
   return $retval
 }
 
+# shows the local changes in a repository.
 function do_diff
 {
   local directory="$1"; shift
@@ -199,6 +128,7 @@ function do_diff
   return $retval
 }
 
+# reports any files that are not already known to the upstream repository.
 function do_report_new
 {
   local directory="$1"; shift
@@ -281,7 +211,7 @@ function squash_first_few_crs()
   fi
 }
 
-# selects the checkout method based on where we are (the host the script runs on).
+# gets the latest versions of the assets from the upstream repository.
 function do_update()
 {
   directory="$1"; shift

@@ -791,6 +791,14 @@ return 0
     echo "$this_host"
   }
 
+  # makes sure that the provided "folder" is a directory and is writable.
+  function test_writeable()
+  {
+    local folder="$1"; shift
+    if [ ! -d "$folder" -o ! -w "$folder" ]; then return 1; fi
+    return 0
+  }
+
   ##############
 
   # NOTE: no more function definitions are allowed after this point.
