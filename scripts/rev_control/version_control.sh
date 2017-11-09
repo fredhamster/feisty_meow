@@ -175,8 +175,9 @@ echo B.2: retval=$retval
 echo C: retval=$retval
     fi
   else
+    # nothing there.  it's not an error though.
     echo no repository in $directory
-    retval=1
+    retval=0
   fi
   popd &>/dev/null
 
