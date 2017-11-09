@@ -74,7 +74,7 @@ octopi/
     Octopus design pattern and CROMP protocol reference implementations.  Assorted applications
     based on these.
 
-database/
+infabase/
     Some files considered critical to the operations of Feisty Meow Concerns Ltd.  This includes
     the database of fortunes used by the Nechung Oracle Program.
 
