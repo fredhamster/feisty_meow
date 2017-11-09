@@ -772,6 +772,27 @@ return 0
 
   ##############
 
+  # echoes the machine's hostname.  can be used like so:
+  #   local my_host=$(get_hostname)
+  function get_hostname()
+  {
+    # there used to be more variation in how to do this, but adopting mingw
+    # and cygwin tools really helped out.
+    local this_host=unknown
+    if [ "$OS" == "Windows_NT" ]; then
+      this_host=$(hostname)
+    elif [ ! -z "$(echo $MACHTYPE | grep apple)" ]; then
+      this_host=$(hostname)
+    elif [ ! -z "$(echo $MACHTYPE | grep suse)" ]; then
+      this_host=$(hostname --long)
+    elif [ -x "$(which hostname 2>/dev/null)" ]; then
+      this_host=$(hostname)
+    fi
+    echo "$this_host"
+  }
+
+  ##############
+
   # NOTE: no more function definitions are allowed after this point.
 
   function function_sentinel()

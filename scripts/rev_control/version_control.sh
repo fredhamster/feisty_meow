@@ -44,21 +44,6 @@ function get_our_hostname()
   #echo "hostname is $this_host"
 }
 
-# this function sets a variable called "home_system" to "true" if the
-# machine is considered one of fred's home machines.  if you are not
-# fred, you may want to change the machine choices.
-function is_home_system()
-{
-  # load up the name of the host.
-  get_our_hostname
-  # reset the variable that we'll be setting.
-  unset home_system
-  export home_system
-  if [[ $this_host == *.gruntose.blurgh ]]; then
-    home_system=true
-  fi
-}
-
 #hmmm: move to core.
 # makes sure that the "folder" is a directory and is writable.
 # remember that bash successful returns are zeroes...
