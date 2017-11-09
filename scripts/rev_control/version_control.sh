@@ -155,12 +155,22 @@ function do_checkin()
       git add --all .
       retval=$?
 echo A: retval=$retval
-      # tell git about all the files and get a check-in comment.
-      git commit .
+
+      # see if there are any changes in the local repository.
+      if ! git diff-index --quiet HEAD --; then
+        # tell git about all the files and get a check-in comment.
+        git commit .
+        retval+=$?
+echo B.1: retval=$retval
+      fi
+      # catch if the diff-index failed somehow.
       retval+=$?
-echo B: retval=$retval
-      # upload the files to the server so others can see them.
-      git push 2>&1 | grep -v "X11 forwarding request failed"
+echo B.2: retval=$retval
+
+      # upload any changes to the upstream repo so others can see them.
+      git push 2>&1 
+#| grep -v "X11 forwarding request failed"
+#have to do pipestatus if want to keep the above.
       retval+=$?
 echo C: retval=$retval
     fi
