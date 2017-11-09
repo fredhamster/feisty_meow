@@ -19,16 +19,21 @@ export HISTFILESIZE=8000000
 
 ##############
 
+# system-wide install:
+export FEISTY_MEOW_APEX="/usr/local/fred"
+# personal install:
+#export FEISTY_MEOW_APEX="$HOME/feisty_meow"
+
 # sets up the feisty_meow scripts if appropriate for the environment.
 if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
-  source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh
-
-  # if not commented out, then feisty meow will run all the unit tests during builds.
-  export RUN_ALL_TESTS=true
-
-  # turns on noisy debugging in feisty meow scripts if uncommented.
-  #export DEBUG_FEISTY_MEOW=true
+  source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 fi
+
+# if not commented out, then feisty meow will run all the unit tests during builds.
+#export RUN_ALL_TESTS=true
+
+# turns on noisy debugging in feisty meow scripts if uncommented.
+#export DEBUG_FEISTY_MEOW=true
 
 ##############
 
