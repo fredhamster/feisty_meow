@@ -7,11 +7,12 @@ source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
 ##############
 
-# trickery to ensure we can always update this file, even when the operating system has some
-# rude behavior with regard to file locking (ahem, windows...).
-# and even more rudeness is that the pwd and $TMP may not always be in the same form,
-# which causes endless confusion and badness.  that's why we get the pwd reading for TMP
-# first so we can do an orange-to-orange compare.
+# trickery to ensure we can always update feisty meow, including this specific
+# file, even when the operating system has some rude behavior with regard to
+# file locking (ahem, windoze).  and even more rudeness is that the pwd and
+# $TMP may not always be in the same form, which causes endless confusion and
+# badness.  that's why we get the pwd reading for TMP first so we can do an
+# oranges-to-oranges compare.
 tmpdir="$(cd $TMP; \pwd)"
 if [ "$(\pwd)" != "$tmpdir" ]; then
   if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
@@ -20,11 +21,13 @@ if [ "$(\pwd)" != "$tmpdir" ]; then
   new_name="$TMP/zz_$(basename $0)"
   \cp -f "$0" "$new_name"
   test_or_die "failed to copy this script up to the TMP directory.  exploit attempted?"
-  cd "$TMP"
+  pushd "$TMP" &>/dev/null
+  test_or_die "changing to TMP directory: $TMP"
   chmod a+x "$new_name"
   test_or_die "chmodding of file: $new_name"
   exec "$new_name"
   test_or_die "execing cloned getemscript"
+  popd &>/dev/null
 fi
 
 ##############

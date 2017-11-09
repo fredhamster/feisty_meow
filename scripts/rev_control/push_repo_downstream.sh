@@ -30,14 +30,18 @@
 #
 # push_repo_downstream ~/relay_repo_folder
 
-#hmmm: make this support multiple dirs?
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
+
+##############
 
 dir="$1"; shift
 if [ -z "$dir" ]; then
   dir=.
 fi
 
-pushd "$dir"
+pushd "$dir" &>/dev/null
+test_or_die "changing to directory: $dir"
 
 # get everything from the origin.
 git fetch origin
@@ -50,6 +54,5 @@ unset GIT_SSH
 git push downstream master
 test_or_die "running the git push downstream"
 
-popd
-
+popd &>/dev/null
 
