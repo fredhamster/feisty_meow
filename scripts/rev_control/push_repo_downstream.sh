@@ -41,15 +41,14 @@ pushd "$dir"
 
 # get everything from the origin.
 git fetch origin
-
-# get everything from the origin.
-#needed? git pull
+test_or_die "running git fetch origin"
 
 # turn off occasionally troublesome setting before checkin.
 unset GIT_SSH
 
 # send the little boat down the stream to the dependent repository.
 git push downstream master
+test_or_die "running the git push downstream"
 
 popd
 

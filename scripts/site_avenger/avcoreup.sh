@@ -36,7 +36,7 @@ full_app_dir="$APPLICATION_DIR/$app_dirname"
 # simplistic approach here; just go to the folder and pull the changes.
 
 pushd "$full_app_dir" &>/dev/null
-test_or_fail "Changing to app path '$full_app_dir'"
+test_or_die "Changing to app path '$full_app_dir'"
 
 dir="avenger5/vendor/siteavenger/avcore"
 if [ ! -d $dir ]; then
@@ -45,7 +45,7 @@ else
   pushd "$dir" &>/dev/null
 
   git pull
-  test_or_fail "Pulling git repo for avcore under '$full_app_dir'"
+  test_or_die "Pulling git repo for avcore under '$full_app_dir'"
 
   echo "Finished updating the avcore portion of site in ${app_dirname}."
 

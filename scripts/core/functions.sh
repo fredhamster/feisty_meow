@@ -121,7 +121,7 @@ if [ -z "$skip_all" ]; then
   # checks the result of the last command that was run, and if that failed,
   # then this complains and exits from bash.  the function parameters are
   # used as the message to print as a complaint.
-  function test_or_fail()
+  function test_or_die()
   {
     if [ $? -ne 0 ]; then
       echo -e "\n\naction failed: $*\n\nExiting script..."
@@ -130,7 +130,7 @@ if [ -z "$skip_all" ]; then
     fi
   }
 
-  # like test_or_fail, but will keep going after complaining.
+  # like test_or_die, but will keep going after complaining.
   function test_or_continue()
   {
     if [ $? -ne 0 ]; then
@@ -737,7 +737,7 @@ return 0
   
     if [ -d "$src" ]; then
       ln -s "$src" "$target"
-      test_or_fail "Creating symlink from '$src' to '$target'"
+      test_or_die "Creating symlink from '$src' to '$target'"
     fi
     echo "Created symlink from '$src' to '$target'."
   }
@@ -789,7 +789,7 @@ return 0
     echo running tests on set_var_if_undefined.
     flagrant=petunia
     set_var_if_undefined flagrant forknordle
-    test_or_fail "testing if defined variable would be whacked"
+    test_or_die "testing if defined variable would be whacked"
     if [ $flagrant != petunia ]; then
       echo set_var_if_undefined failed to leave the test variable alone
       exit 1

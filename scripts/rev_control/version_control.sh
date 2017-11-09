@@ -6,6 +6,8 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
+##############
+
 # the maximum depth that the recursive functions will try to go below the starting directory.
 export MAX_DEPTH=5
 
@@ -45,13 +47,13 @@ function get_our_hostname()
 # this function sets a variable called "home_system" to "true" if the
 # machine is considered one of fred's home machines.  if you are not
 # fred, you may want to change the machine choices.
-export home_system=
 function is_home_system()
 {
   # load up the name of the host.
   get_our_hostname
   # reset the variable that we'll be setting.
-  home_system=
+  unset home_system
+  export home_system
   if [[ $this_host == *.gruntose.blurgh ]]; then
     home_system=true
   fi
@@ -98,10 +100,9 @@ function compute_modifier()
   is_home_system
   # special override to pick local servers when at home.
   if [ "$home_system" == "true" ]; then
-#what was this section for again?
+#hmmm: this "home system" feature seems to be unnecessary?
     if [ "$in_or_out" == "out" ]; then
       # need the right home machine for modifier when checking out.
-#huhhh?      modifier="svn://shaggy/"
       modifier=
     else 
       # no modifier for checkin.
@@ -109,6 +110,8 @@ function compute_modifier()
     fi
   fi
 }
+
+##############
 
 # selects the method for check-in based on where we are.
 function do_checkin()
@@ -124,13 +127,13 @@ function do_checkin()
   fi
   local blatt="echo checking in '$nicedir'..."
 
-  do_update "$directory"
-  if [ $? -ne 0 ]; then
-    echo "repository update failed; this should be fixed before check-in."
-    return 1
-  fi
-  pushd "$directory" &>/dev/null
   local retval=0  # normally successful.
+
+  do_update "$directory"
+  retval=$?
+  test_or_die "repository update failed; this should be fixed before check-in."
+
+  pushd "$directory" &>/dev/null
   if [ -f ".no-checkin" ]; then
     echo "skipping check-in due to presence of .no-checkin sentinel file."
   elif [ -d "CVS" ]; then
@@ -181,10 +184,13 @@ function do_diff
   # only update if we see a repository living there.
   if [ -d ".svn" ]; then
     svn diff .
+    retval+=$?
   elif [ -d ".git" ]; then
     git diff 
+    retval+=$?
   elif [ -d "CVS" ]; then
     cvs diff .
+    retval+=$?
   fi
 
   popd &>/dev/null
@@ -241,6 +247,7 @@ function checkin_list()
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
       do_checkin $outer
+      test_or_die "running check-in on: $outer"
       sep 28
     else
       for inner in $list; do
@@ -248,6 +255,7 @@ function checkin_list()
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
         do_checkin $path
+        test_or_die "running check-in on: $path"
         sep 28
       done
     fi
@@ -337,6 +345,7 @@ function checkout_list()
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
       do_update $outer
+      test_or_die "running update on: $path"
       sep 28
     else
       for inner in $list; do
@@ -344,6 +353,7 @@ function checkout_list()
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
         do_update $path
+        test_or_die "running update on: $path"
         sep 28
       done
     fi
@@ -382,9 +392,6 @@ function generate_rev_ctrl_filelist()
 # on each directory name, it performs the action (second parameter) provided.
 function perform_revctrl_action_on_file()
 {
-
-#hmmm: this doesn't capture any error returns!
-
   local tempfile="$1"; shift
   local action="$1"; shift
 
@@ -395,6 +402,7 @@ function perform_revctrl_action_on_file()
     pushd "$dirname" &>/dev/null
     echo "[$(pwd)]"
     $action .
+    test_or_die "performing action $action on: $(pwd)"
     sep 28
     popd &>/dev/null
   done 3<"$tempfile"

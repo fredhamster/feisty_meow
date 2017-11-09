@@ -1,15 +1,17 @@
 #!/bin/bash
 
+# compresses the git archive in the folder specified.
+
 prune_dir="$1"
 if [ -z "$prune_dir" ]; then
   prune_dir="$(pwd)"
 fi
 pushd "$prune_dir"
-echo cleaning git in directory $(pwd)
+echo "cleaning git repo in directory $(pwd)"
 git fsck --full
-check_if_failed "git fsck"
+test_or_die "git fsck"
 git gc --prune=today --aggressive
-check_if_failed "git gc"
+test_or_die "git gc"
 git repack
-check_if_failed "git repack"
+test_or_die "git repack"
 popd

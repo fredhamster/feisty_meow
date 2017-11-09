@@ -6,5 +6,6 @@
 filename="$1"; shift
 
 svn resolve --accept=working "$filename"
+test_or_die "resolving tree conflict by accepting the working directory as the right one"
 
 
