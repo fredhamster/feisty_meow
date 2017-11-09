@@ -1,24 +1,10 @@
 #!/bin/bash
 
-# Author: Kevin Wentworth
 # Author: Chris Koeritz
 
-# This script "powers up" a cakephp site by running the database migrations,
-# cleaning out the ORM cache, and fixing file permissions.
-# This script is currently highly specific to site avenger.
-
-# General Info:
-#
-# The naming scheme here is a little complex, but it's basically this...
-# A git repository is expected to be provided, and we will get all the code
-# for the web site from there.  The repository is expected to have a single
-# application "name" and one or more "themes".  By convention, the name
-# and the theme are often the same.
-# For example, let's say our app name is "turtle" and our theme name is "box".
-# The repo is checked out to a folder called "~/apps/turtle".
-# This script will want to use "turtle" as the app name.
-# It will have to be told the theme name, but will assume it's 'Turtle' to
-# start with.  The concept of the theme comes from cakephp.
+# This is the full orchestrator for bringing up a web site using our site
+# management scripts.  So far, the scripts rely on at least php.  The support
+# is much more powerful if the site is based on cakephp and site avenger.
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 
@@ -29,14 +15,14 @@ source "$WORKDIR/shared_site_mgr.sh"
 function print_instructions()
 {
   echo
-  echo "$(basename $0 .sh) [app dirname] [repository] [theme name]"
+  echo "$(basename $0 .sh) {app name}"
   echo
-  echo "All parameters are optional, and intelligent guesses for them will be made."
-  echo
-  echo "app dirname: The folder where the app will be stored."
-  echo "repository: The name of the git repository (short version, no URL)."
-  echo "theme name: The name to use for the cakephp theme."
-  echo
+  echo "
+app name: The app name parameter is mandatory.  The configuration file for
+this script will be derived from the app name (e.g. if the app name is MyApp,
+then the config file will be 'MyApp.config').  The config files are by
+convention stored in the 'config' directory.  The configuration file can be
+overridden by setting the SITE_MANAGEMENT_CONFIG_FILE environment variable."
   exit 0
 }
 

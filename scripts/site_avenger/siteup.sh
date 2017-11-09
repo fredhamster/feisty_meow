@@ -6,6 +6,7 @@
 # updates a site avenger app.
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+
 source "$WORKDIR/shared_site_mgr.sh"
 
 ############################

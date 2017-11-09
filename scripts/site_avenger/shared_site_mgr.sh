@@ -14,7 +14,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 # get our configuration loaded.
 export SITE_MANAGEMENT_CONFIG_FILE
 if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
-  SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/config/default-site_avenger.config"
+  SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/config/default.app"
 fi
 source "$SITE_MANAGEMENT_CONFIG_FILE"
 test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
