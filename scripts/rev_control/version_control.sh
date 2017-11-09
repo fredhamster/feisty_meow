@@ -154,12 +154,15 @@ function do_checkin()
       # snag all new files.  not to everyone's liking.
       git add --all .
       retval=$?
+echo A: retval=$retval
       # tell git about all the files and get a check-in comment.
       git commit .
       retval+=$?
+echo B: retval=$retval
       # upload the files to the server so others can see them.
       git push 2>&1 | grep -v "X11 forwarding request failed"
       retval+=$?
+echo C: retval=$retval
     fi
   else
     echo no repository in $directory
