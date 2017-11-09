@@ -18,9 +18,9 @@ export HISTFILESIZE=8000000
 ##############
 
 # the "fredme" macro enables the feisty_meow environment.
-alias fredme='source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh'
+#alias fredme='source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh'
 # or if installed system wide, something like:
-#alias fredme='source /usr/local/fred/feisty_meow/scripts/core/launch_feisty_meow.sh'
+alias fredme='source /usr/local/fred/feisty_meow/scripts/core/launch_feisty_meow.sh'
 
 ##############
 
