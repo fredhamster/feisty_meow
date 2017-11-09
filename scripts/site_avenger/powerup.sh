@@ -22,8 +22,6 @@
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 
-source "$WORKDIR/shared_site_mgr.sh"
-
 ############################
 
 function print_instructions()
@@ -52,6 +50,8 @@ theme_name="$1"; shift
 if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
 fi
+
+source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 

@@ -7,8 +7,6 @@
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 
-source "$WORKDIR/shared_site_mgr.sh"
-
 ############################
 
 # main body of script.
@@ -16,6 +14,8 @@ source "$WORKDIR/shared_site_mgr.sh"
 # check for parameters.
 app_dirname="$1"; shift
 repo_name="$1"; shift
+
+source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
