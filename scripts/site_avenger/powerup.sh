@@ -25,9 +25,6 @@
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 source "$WORKDIR/shared_site_mgr.sh"
 
-# get our defaults.
-source "$WORKDIR/site_avenger.config"
-
 ############################
 
 function print_instructions()

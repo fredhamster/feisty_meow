@@ -5,7 +5,19 @@
 
 # This contains a bunch of reusable functions that help out in managing websites.
 
+# This script is sourced, and relies on the value of WORKDIR, which should
+# point at the directory where the site management scripts are stored,
+# especially this one.
+
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
+# get our configuration loaded.
+export SITE_MANAGEMENT_CONFIG_FILE
+if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
+  SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/configs/default-site_avenger.config"
+fi
+source "$SITE_MANAGEMENT_CONFIG_FILE"
+test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
 
 # configure feisty revision control to ignore vendor folders.
 export NO_CHECKIN_VENDOR=true
