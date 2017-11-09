@@ -209,6 +209,13 @@ function squash_first_few_crs()
   fi
 }
 
+# a helpful method that reports the git branch for the current directory's
+# git repository.
+function git_branch_name()
+{
+  echo "$(git branch | grep \* | cut -d ' ' -f2-)"
+}
+
 # gets the latest versions of the assets from the upstream repository.
 function do_update()
 {
@@ -240,8 +247,13 @@ function do_update()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
-      git pull origin master 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-      retval=${PIPESTATUS[0]}
+      retval=0
+
+      if [ "$(git_branch_name)" != "master" ]; then
+        git pull origin master 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+        retval+=${PIPESTATUS[0]}
+      fi
+
       git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
       retval+=${PIPESTATUS[0]}
     fi
