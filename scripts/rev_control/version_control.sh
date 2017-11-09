@@ -81,9 +81,16 @@ function do_checkin()
       # catch if the diff-index failed somehow.
       retval+=$?
 
-      # upload any changes to the upstream repo so others can see them.
+#push the changes to where?  locally?
       git push 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
       retval+=${PIPESTATUS[0]}
+
+      # upload any changes to the upstream repo so others can see them.
+      if [ "$(git_branch_name)" != "master" ]; then
+        git push origin "$(git_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+        retval+=${PIPESTATUS[0]}
+      fi
+
     fi
   else
     # nothing there.  it's not an error though.
