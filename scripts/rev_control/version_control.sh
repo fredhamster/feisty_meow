@@ -82,10 +82,8 @@ function do_checkin()
       retval+=$?
 
       # upload any changes to the upstream repo so others can see them.
-      git push 2>&1 
-#| grep -v "X11 forwarding request failed"
-#have to do pipestatus if want to keep the above.
-      retval+=$?
+      git push 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+      retval+=${PIPESTATUS[0]}
     fi
   else
     # nothing there.  it's not an error though.
@@ -242,8 +240,10 @@ function do_update()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
-      git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+      git pull origin master 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
       retval=${PIPESTATUS[0]}
+      git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+      retval+=${PIPESTATUS[0]}
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
