@@ -23,7 +23,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   # add in any of my applications that are in the apps folder.
   if [ -d "$HOME/apps" ]; then
     # first, simple projects.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 1 -mindepth 1 -type d) "
+    REPOSITORY_LIST+="$(find "$HOME/apps" -iname "avenger5" -type d) "
     # then, site avenger specific projects.
     REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
