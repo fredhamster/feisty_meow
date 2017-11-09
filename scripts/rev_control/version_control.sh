@@ -82,10 +82,8 @@ function do_checkin()
       retval+=$?
 
       # upload any changes to the upstream repo so others can see them.
-      git push 2>&1 
-#| grep -v "X11 forwarding request failed"
-#have to do pipestatus if want to keep the above.
-      retval+=$?
+      git push 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+      retval+=${PIPESTATUS[0]}
     fi
   else
     # nothing there.  it's not an error though.
@@ -211,6 +209,13 @@ function squash_first_few_crs()
   fi
 }
 
+# a helpful method that reports the git branch for the current directory's
+# git repository.
+function git_branch_name()
+{
+  echo "$(git branch | grep \* | cut -d ' ' -f2-)"
+}
+
 # gets the latest versions of the assets from the upstream repository.
 function do_update()
 {
@@ -242,8 +247,15 @@ function do_update()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
+      retval=0
+
+      if [ "$(git_branch_name)" != "master" ]; then
+        git pull origin master 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+        retval+=${PIPESTATUS[0]}
+      fi
+
       git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-      retval=${PIPESTATUS[0]}
+      retval+=${PIPESTATUS[0]}
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.

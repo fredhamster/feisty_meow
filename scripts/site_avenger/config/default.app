@@ -23,14 +23,22 @@ CHECKOUT_DIR_NAME="avenger5"
 
 # deployment information for the application / site.
 
-APPLICATION_NAME="$(basename "$SITE_MANAGEMENT_CONFIG_FILE" .app)"
+APPLICATION_NAME="${app_dirname}"
 
 echo app name was computed as $APPLICATION_NAME
 
 # change this if the site is on the "real" internet.
-DOMAIN_NAME="$(basename "$SITE_MANAGEMENT_CONFIG_FILE" .app).vm"
+DOMAIN_NAME="${app_dirname}.vm"
 
 echo domain name was computed as $DOMAIN_NAME
+
+REPO_NAME="${app_dirname}.git"
+
+echo repo name was computed as $REPO_NAME
+
+THEME_NAME="$(capitalize_first_char "${app_dirname}.git")"
+
+echo theme name was computed as $THEME_NAME
 
 ####
 

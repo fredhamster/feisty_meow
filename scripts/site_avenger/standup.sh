@@ -8,8 +8,6 @@
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 
-source "$WORKDIR/shared_site_mgr.sh"
-
 ############################
 
 function print_instructions()
@@ -32,8 +30,12 @@ overridden by setting the SITE_MANAGEMENT_CONFIG_FILE environment variable."
 
 # check for parameters.
 app_dirname="$1"; shift
-repo_name="$1"; shift
-theme_name="$1"; shift
+
+if [ -z "$app_dirname" ]; then
+  print_instructions
+fi
+
+source "$WORKDIR/shared_site_mgr.sh"
 
 if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
@@ -43,6 +45,47 @@ sep
 
 check_application_dir "$APPLICATION_DIR"
 
+add_domain "$DOMAIN_NAME"
+test_or_die "Setting up domain: $DOMAIN_NAME"
+
+add_apache_site "$APPLICATION_NAME" "$DOMAIN_NAME"
+test_or_die "Setting up apache site for: $APPLICATION_NAME"
+
+powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
+
+
+
+
+
+sep
+
+echo "
+Finished standing up the full domain and site in:
+${app_dirname}"
+
+#leave before old crud below
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#below is probably not needed.
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
   # no dir was passed, so guess it.
