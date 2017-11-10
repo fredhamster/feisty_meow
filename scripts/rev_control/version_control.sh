@@ -6,10 +6,19 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
+#hmmm: we need to dump all the outputs in this script into splitter
+
 ##############
 
 # the maximum depth that the recursive functions will try to go below the starting directory.
 export MAX_DEPTH=5
+
+# use our splitter tool for lengthy output if it's available.
+if [ ! -z "$(which splitter)" ]; then
+  TO_SPLITTER='| splitter'
+fi
+
+##############
 
 # one unpleasantry to take care of first; cygwin barfs aggressively if the TMP directory
 # is a DOS path, but we need it to be a DOS path for our GFFS testing, so that blows.
@@ -86,11 +95,11 @@ function do_checkin()
 
       # upload any changes to the upstream repo so others can see them.
       if [ "$myself" != "$parent" ]; then
-        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" $TO_SPLITTER
         retval+=${PIPESTATUS[0]}
       else
         # this branch is the same as the parent, so just push.
-        git push 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+        git push 2>&1 | grep -v "X11 forwarding request failed" $TO_SPLITTER
         retval+=${PIPESTATUS[0]}
       fi
 
@@ -264,18 +273,22 @@ function do_update()
     if test_writeable ".git"; then
       $blatt
       retval=0
-#      local myself="$(my_branch_name)"
-#      local parent="$(parent_branch_name)"
-#
-#      if [ "$myself" != "$parent" ]; then
-#        git pull origin "$parent" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-#        retval+=${PIPESTATUS[0]}
-#      else
 
-        git pull --all 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-        retval+=${PIPESTATUS[0]}
+      # from very helpful page:
+      # https://stackoverflow.com/questions/10312521/how-to-fetch-all-git-branches
+      git branch -r | grep -v '\->' |
+          while read remote; do
+            git branch --track "${remote#origin/}" "$remote"
+            # ensure we notice a failure when adding tracking.
+            retval+=$?
+          done
+      retval+=${PIPESTATUS[0]}$?
 
-#      fi
+      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" $TO_SPLITTER
+      retval+=${PIPESTATUS[0]}
+
+      git pull --all 2>&1 | grep -v "X11 forwarding request failed" $TO_SPLITTER
+      retval+=${PIPESTATUS[0]}
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
