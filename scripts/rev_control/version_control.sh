@@ -78,10 +78,7 @@ function do_checkin()
     if test_writeable ".git"; then
       $blatt
 
-# classic implementation, but only works with one master branch.
-# fixes will be forthcoming from development branch.
-
-      # snag all new files.  not to everyone's liking.
+      # put all changed and new files in the commit.  not to everyone's liking.
       git add --all .
       test_or_die "git add all new files"
 
@@ -97,26 +94,15 @@ function do_checkin()
 #      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
 #      test_or_die "git push"
 
-      # catch if the diff-index failed somehow.
-      test_or_die "git diff-index"
+      # a new set of steps we have to take to make sure the branch integrity is good.
+      careful_git_update 
 
       # we continue on to the push, even if there were no changes this time, because
       # there could already be committed changes that haven't been pushed yet.
 
-      local myself="$(my_branch_name)"
-#      local parent="$(parent_branch_name)"
-
       # upload any changes to the upstream repo so others can see them.
-
-#      if [ "$myself" != "$parent" ]; then
-#        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-#        test_or_die "git push to origin: $myself"
-#      else
-#        # this branch is the same as the parent, so just push.
-
-        git push 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-        test_or_die "git push"
-#      fi
+      git push 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      test_or_die "git push"
 
     fi
   else
@@ -297,7 +283,7 @@ function careful_git_update()
 {
 
 echo A
-  this_branch="$(my_branch_name)"
+  local this_branch="$(my_branch_name)"
 
 #we want my branch here, don't we?  not like parent or anything?
   check_branch_state "$this_branch"
@@ -305,6 +291,21 @@ echo A
   test_or_continue "branch state check"
   echo the branch state is $state
 #need to instead do something here if fails.
+# above is worse than useless code; in the situations i'm seeing fail, it reports no changes.  *&@#*&@#
+
+echo D
+  # the above are just not enough.  this code is now doing what i have to do when i repair the repo.
+  local branch_list=$(git branch |grep -v '^\*')
+  local bran
+  for bran in $branch_list; do
+    git checkout "$bran"
+    test_or_die "git checking out remote branch: $bran"
+    git pull --no-ff
+    test_or_die "git pull of remote branch: $bran"
+  done
+  # now switch back to our branch.
+  git checkout "$this_branch"
+  test_or_die "git checking out our current branch: $this_branch"
 
 echo B
 
@@ -317,11 +318,6 @@ echo C
   # with any changes from others.
   git pull --no-ff --all
   test_or_die "git pulling all upstream"
-
-echo D
-#the above are just not enough.  now doing what i have to do to repair things.
-branch_list=$(git branch |grep -v '^\*')
-
 
 echo E
 
@@ -387,12 +383,12 @@ function do_update()
 # classic implementation, but only works with one master branch.
 # fixes will be forthcoming from development branch.
 
-#      git pull 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-#      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
-#      test_or_die "git pull"
+      git pull 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
+      test_or_die "git pull"
 
 #any parms needed?
-      careful_git_update 
+##no!  can't be done here or commit fudges up      careful_git_update 
 
     fi
   else
