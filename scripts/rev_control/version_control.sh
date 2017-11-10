@@ -104,17 +104,19 @@ function do_checkin()
       # there could already be committed changes that haven't been pushed yet.
 
       local myself="$(my_branch_name)"
-      local parent="$(parent_branch_name)"
+#      local parent="$(parent_branch_name)"
 
       # upload any changes to the upstream repo so others can see them.
-      if [ "$myself" != "$parent" ]; then
-        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-        test_or_die "git push to origin: $myself"
-      else
-        # this branch is the same as the parent, so just push.
+
+#      if [ "$myself" != "$parent" ]; then
+#        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+#        test_or_die "git push to origin: $myself"
+#      else
+#        # this branch is the same as the parent, so just push.
+
         git push 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-        test_or_die "normal git push"
-      fi
+        test_or_die "git push"
+#      fi
 
     fi
   else
@@ -242,14 +244,15 @@ function squash_first_few_crs()
 # git repository.
 function my_branch_name()
 {
-  echo "$(git branch | grep \* | cut -d ' ' -f2)"
+  echo "$(git branch | grep '\*' | cut -d ' ' -f2)"
 }
 
+#this had a -> in it at one point for not matching, didn't it?
 # this reports the upstream branch for the current repo.
-function parent_branch_name()
-{
-  echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
-}
+##function parent_branch_name()
+##{
+  ##echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
+##}
 
 # this exits with 0 for success (normal bash behavior) when up to date.  if the branch is not up to date,
 # then these values are returned:
@@ -260,6 +263,8 @@ function check_branch_state()
   local branch="$1"; shift
 
   local to_return=120  # unknown issue.
+
+sep
 
   LOCAL=$(git rev-parse @)
   REMOTE=$(git rev-parse "$branch")
@@ -280,6 +285,8 @@ var branch LOCAL REMOTE BASE
     to_return=3
   fi
 
+sep
+
   return $to_return
 }
 
@@ -288,22 +295,35 @@ var branch LOCAL REMOTE BASE
 # do_checkin method.
 function careful_git_update()
 {
+
+echo A
+  this_branch="$(my_branch_name)"
+
+#we want my branch here, don't we?  not like parent or anything?
+  check_branch_state "$this_branch"
+  state=$?
+  test_or_continue "branch state check"
+  echo the branch state is $state
+#need to instead do something here if fails.
+
+echo B
+
   # first update all our remote branches to their current state from the repos.
   git remote update
   test_or_die "git remote update"
 
-#is parent branch the right thing to tell it?
-#or we want mybranch for real, don't we?
-#  check_branch_state $(parent_branch_name)
-  state=$(check_branch_state $(my_branch_name) )
-test_or_continue "branch state check"
-#need to instead do something here if fails.
-
+echo C
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
   git pull --no-ff --all
   test_or_die "git pulling all upstream"
 
+echo D
+#the above are just not enough.  now doing what i have to do to repair things.
+branch_list=$(git branch |grep -v '^\*')
+
+
+echo E
 
 echo The rest of pull is not being done yet.
 return 1
