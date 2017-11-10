@@ -84,13 +84,37 @@ function do_checkin()
       # snag all new files.  not to everyone's liking.
       git add --all .
       test_or_die "git add all new files"
-      # tell git about all the files and get a check-in comment.
-      git commit .
-      test_or_die "git commit"
-      # upload the files to the server so others can see them.
-      git push 2>&1 | grep -v "X11 forwarding request failed"
-      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
-      test_or_die "git push"
+
+      # see if there are any changes in the local repository.
+      if ! git diff-index --quiet HEAD --; then
+        # tell git about all the files and get a check-in comment.
+        git commit .
+        test_or_die "git commit"
+      fi
+#      # upload the files to the server so others can see them.
+#      git push 2>&1 | grep -v "X11 forwarding request failed"
+#      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
+#      test_or_die "git push"
+
+      # catch if the diff-index failed somehow.
+      test_or_die "git diff-index"
+
+      # we continue on to the push, even if there were no changes this time, because
+      # there could already be committed changes that haven't been pushed yet.
+
+      local myself="$(my_branch_name)"
+      local parent="$(parent_branch_name)"
+
+      # upload any changes to the upstream repo so others can see them.
+      if [ "$myself" != "$parent" ]; then
+        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+        test_or_die "git push to origin: $myself"
+      else
+        # this branch is the same as the parent, so just push.
+        git push 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+        test_or_die "normal git push"
+      fi
+
     fi
   else
     # nothing there.  it's not an error though.
@@ -260,10 +284,61 @@ function do_update()
 # classic implementation, but only works with one master branch.
 # fixes will be forthcoming from development branch.
 
-      git pull 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
-      test_or_die "git pull"
+#      git pull 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+#      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
+#      test_or_die "git pull"
 
+
+#let's start over clean here...
+
+      git remote update
+      test_or_die "git remote update"
+
+      git pull origin
+#--no-ff 
+      test_or_die "git fetch origin"
+
+# from: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
+UPSTREAM=$(parent_branch_name)
+#argh: original UPSTREAM='${1:-'\''@{u}'\''}'
+LOCAL=$(git rev-parse @)
+REMOTE=$(git rev-parse "$UPSTREAM")
+BASE=$(git merge-base @ "$UPSTREAM")
+var UPSTREAM LOCAL REMOTE BASE
+
+if [ "$LOCAL" == "$REMOTE" ]; then
+    echo "Up-to-date"
+elif [ "$LOCAL" == "$BASE" ]; then
+    echo "Need to pull"
+elif [ "$REMOTE" == "$BASE" ]; then
+    echo "Need to push"
+else
+    echo "Diverged"
+fi
+
+echo The rest of pull is not done yet.
+
+
+#      reslog=$(git log HEAD..origin/master --oneline)
+#      if [[ "${reslog}" != "" ]] ; then
+#        git merge origin/master
+
+
+
+#      # from very helpful page:
+#      # https://stackoverflow.com/questions/10312521/how-to-fetch-all-git-branches
+#      for remote in $( git branch -r | grep -v -- '->' ); do
+#        git branch --track ${remote#origin/} $remote 2>/dev/null
+##hmmm: ignoring errors from these, since they are continual.
+##hmmm: if we could find a way to not try to track with a local branch when there's already one present, that would be swell.  it's probably simple.
+#      done
+#
+##hmmm: well, one time it failed without the fetch.  i hope that's because the fetch is actually needed and not because the whole approach is fubar.
+#      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+#      test_or_die "git fetch"
+#
+#      git pull --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+#      test_or_die "git pull"
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
