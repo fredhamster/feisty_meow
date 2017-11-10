@@ -299,8 +299,12 @@ function do_careful_git_update()
   for bran in $branch_list; do
 #    echo "synchronizing remote branch: $bran"
     git checkout "$bran"
-    test_or_die "git checking out remote branch: $bran"
-    git pull --no-ff origin "$bran"
+    test_or_die "git switching checkout to remote branch: $bran"
+    remote_branch_info=$(git ls-remote --heads origin $bran 2>/dev/null)
+    if [ ! -z "$remote_branch_info" ]; then
+      # we are pretty sure the remote branch does exist.
+      git pull --no-ff origin "$bran"
+    fi
     test_or_die "git pull of remote branch: $bran"
   done
   # now switch back to our branch.
