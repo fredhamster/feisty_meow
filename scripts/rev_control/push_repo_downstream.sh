@@ -43,6 +43,10 @@ fi
 pushd "$dir" &>/dev/null
 test_or_die "changing to directory: $dir"
 
+#switch this to the perform revctrl with a do_git_careful_update
+
+
+
 # get everything from the origin.
 git fetch origin
 test_or_die "running git fetch origin"

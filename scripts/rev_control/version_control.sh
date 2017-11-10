@@ -88,7 +88,7 @@ function do_checkin()
       fi
 
       # a new set of steps we have to take to make sure the branch integrity is good.
-      careful_git_update 
+      do_careful_git_update 
 
       # we continue on to the push, even if there were no changes this time, because
       # there could already be committed changes that haven't been pushed yet.
@@ -219,11 +219,18 @@ function squash_first_few_crs()
   fi
 }
 
+#hmmm: the below are git specific and should be named that way.
+
+function all_branch_names()
+{
+  echo "$(git branch -vv | cut -d ' ' -f2)"
+}
+
 # a helpful method that reports the git branch for the current directory's
 # git repository.
 function my_branch_name()
 {
-  echo "$(git branch | grep '\*' | cut -d ' ' -f2)"
+  echo "$(git branch -vv | grep '\*' | cut -d ' ' -f2)"
 }
 
 #this had a -> in it at one point for not matching, didn't it?
@@ -272,9 +279,16 @@ sep
 # the git update process just gets more and more complex when you bring in
 # branches, so we've moved this here to avoid having a ton of code in the
 # other methods.
-function careful_git_update()
+function do_careful_git_update()
 {
   local this_branch="$(my_branch_name)"
+
+#proposition: this step didn't help before, and it seems redundant now.
+#...
+#hmmm, maybe it is needed.  and people did seem to want it first, so trying that.
+  # first update all our remote branches to their current state from the repos.
+  git remote update
+  test_or_die "git remote update"
 
 #appears to be useless; reports no changes when we need to know about remote changes that do exist:
 #  check_branch_state "$this_branch"
@@ -282,8 +296,8 @@ function careful_git_update()
 #  test_or_continue "branch state check"
 #  echo the branch state is $state
 
-  # the above are just not enough.  this code is now doing what i have to do when i repair the repo.
-  local branch_list=$(git branch |grep -v '^\*')
+  # this code is now doing what i have to do when i repair the repo.  and it seems to be good so far.
+  local branch_list=$(all_branch_names)
   local bran
   for bran in $branch_list; do
 #    echo "synchronizing remote branch: $bran"
@@ -295,10 +309,6 @@ function careful_git_update()
   # now switch back to our branch.
   git checkout "$this_branch"
   test_or_die "git checking out our current branch: $this_branch"
-
-  # first update all our remote branches to their current state from the repos.
-  git remote update
-  test_or_die "git remote update"
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
