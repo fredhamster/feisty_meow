@@ -281,17 +281,18 @@ function do_update()
       test_or_die "git remote update"
 
 # from: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
-UPSTREAM="${1:-'@{u}'}"
+UPSTREAM=$(parent_branch_name)
+#argh: original UPSTREAM='${1:-'\''@{u}'\''}'
 LOCAL=$(git rev-parse @)
 REMOTE=$(git rev-parse "$UPSTREAM")
 BASE=$(git merge-base @ "$UPSTREAM")
 var UPSTREAM LOCAL REMOTE BASE
 
-if [ $LOCAL = $REMOTE ]; then
+if [ "$LOCAL" == "$REMOTE" ]; then
     echo "Up-to-date"
-elif [ $LOCAL = $BASE ]; then
+elif [ "$LOCAL" == "$BASE" ]; then
     echo "Need to pull"
-elif [ $REMOTE = $BASE ]; then
+elif [ "$REMOTE" == "$BASE" ]; then
     echo "Need to push"
 else
     echo "Diverged"
