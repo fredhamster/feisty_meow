@@ -15,7 +15,7 @@ export MAX_DEPTH=5
 
 # use our splitter tool for lengthy output if it's available.
 if [ ! -z "$(which splitter)" ]; then
-  TO_SPLITTER='| splitter'
+  TO_SPLITTER="| \"$(which splitter)\""
 fi
 
 ##############
