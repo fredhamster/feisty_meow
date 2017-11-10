@@ -86,8 +86,8 @@ function do_checkin()
       retval+=${PIPESTATUS[0]}
 
       # upload any changes to the upstream repo so others can see them.
-      if [ "$(git_branch_name)" != "master" ]; then
-        git push origin "$(git_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+      if [ "$(my_branch_name)" != "master" ]; then
+        git push origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
         retval+=${PIPESTATUS[0]}
       fi
 
@@ -218,9 +218,15 @@ function squash_first_few_crs()
 
 # a helpful method that reports the git branch for the current directory's
 # git repository.
-function git_branch_name()
+function my_branch_name()
 {
-  echo "$(git branch | grep \* | cut -d ' ' -f2-)"
+  echo "$(git branch | grep \* | cut -d ' ' -f2)"
+}
+
+# this reports the upstream branch for the current repo.
+function parent_branch_name()
+{
+  echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
 }
 
 # gets the latest versions of the assets from the upstream repository.
@@ -256,12 +262,10 @@ function do_update()
       $blatt
       retval=0
 
-      if [ "$(git_branch_name)" != "master" ]; then
-        git pull origin master 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-        retval+=${PIPESTATUS[0]}
-      fi
+      git pull origin "$(parent_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+      retval+=${PIPESTATUS[0]}
 
-      git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+      git pull origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
       retval+=${PIPESTATUS[0]}
     fi
   else
