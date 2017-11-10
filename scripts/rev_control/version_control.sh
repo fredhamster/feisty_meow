@@ -94,7 +94,7 @@ function do_checkin()
       # there could already be committed changes that haven't been pushed yet.
 
       # upload any changes to the upstream repo so others can see them.
-      git push 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      git push origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       test_or_die "git push"
 
     fi
@@ -336,7 +336,7 @@ function do_update()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
-      git pull --no-ff origin 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      git pull --no-ff 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
       test_or_die "git pull of origin without fast forwards"
     fi
