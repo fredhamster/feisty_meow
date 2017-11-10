@@ -286,7 +286,7 @@ function careful_git_update()
   local branch_list=$(git branch |grep -v '^\*')
   local bran
   for bran in $branch_list; do
-    echo "synchronizing remote branch: $bran"
+#    echo "synchronizing remote branch: $bran"
     git checkout "$bran"
     test_or_die "git checking out remote branch: $bran"
     git pull --no-ff
