@@ -16,7 +16,7 @@ function refred()
 #echo arch addin now is: $arch_addin
 
   # iterate across the list of dirs we want fred to own and change their ownership.
-  for dirname in /home/fred /usr/local/fred /home/games $arch_addin; do
+  for dirname in /home/fred /opt/feistymeow.org /usr/local/fred /home/games $arch_addin; do
     if [ -d "$dirname" ]; then
       echo "refred on '$dirname'"
       sudo chown -R fred:fred $dirname
