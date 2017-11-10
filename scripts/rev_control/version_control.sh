@@ -277,8 +277,9 @@ function do_update()
 #hmmm: if we could find a way to not try to track with a local branch when there's already one present, that would be swell.  it's probably simple.
       done
 
-#      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-#      test_or_die "git fetch"
+#hmmm: well, one time it failed without the fetch.  i hope that's because the fetch is actually needed and not because the whole approach is fubar.
+      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      test_or_die "git fetch"
 
       git pull --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       test_or_die "git pull"
