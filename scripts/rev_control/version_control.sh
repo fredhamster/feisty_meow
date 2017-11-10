@@ -276,6 +276,12 @@ function careful_git_update()
 {
   local this_branch="$(my_branch_name)"
 
+#this step didn't help before, and it seems redundant now.
+#hmmm, maybe it is needed.  and people did seem to want it first, so trying that.
+  # first update all our remote branches to their current state from the repos.
+  git remote update
+  test_or_die "git remote update"
+
 #appears to be useless; reports no changes when we need to know about remote changes that do exist:
 #  check_branch_state "$this_branch"
 #  state=$?
@@ -295,11 +301,6 @@ function careful_git_update()
   # now switch back to our branch.
   git checkout "$this_branch"
   test_or_die "git checking out our current branch: $this_branch"
-
-#this step didn't help before, and it seems redundant now.
-#  # first update all our remote branches to their current state from the repos.
-#  git remote update
-#  test_or_die "git remote update"
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
