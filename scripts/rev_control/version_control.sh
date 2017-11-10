@@ -296,9 +296,10 @@ function careful_git_update()
   git checkout "$this_branch"
   test_or_die "git checking out our current branch: $this_branch"
 
-  # first update all our remote branches to their current state from the repos.
-  git remote update
-  test_or_die "git remote update"
+#this step didn't help before, and it seems redundant now.
+#  # first update all our remote branches to their current state from the repos.
+#  git remote update
+#  test_or_die "git remote update"
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
