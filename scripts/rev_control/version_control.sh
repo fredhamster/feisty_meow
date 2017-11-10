@@ -251,6 +251,38 @@ function parent_branch_name()
   echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
 }
 
+# this exits with 0 for success (normal bash behavior).  if the branch is not up to date,
+# then these values are returned:
+#DOCUMENT THE VALUES
+# reference: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
+function check_branch_state()
+{
+  local branch="$1"; shift
+
+  local to_return=120  # unknown issue.
+
+  LOCAL=$(git rev-parse @)
+  REMOTE=$(git rev-parse "$branch")
+  BASE=$(git merge-base @ "$branch")
+var branch LOCAL REMOTE BASE
+
+  if [ "$LOCAL" == "$REMOTE" ]; then
+    echo "Up-to-date"
+    to_return=0
+  elif [ "$LOCAL" == "$BASE" ]; then
+    echo "Need to pull"
+    to_return=1
+  elif [ "$REMOTE" == "$BASE" ]; then
+    echo "Need to push"
+    to_return=2
+  else
+    echo "Diverged"
+    to_return=3
+  fi
+
+  return $to_return
+}
+
 # the git update process just gets more and more complex when you bring in
 # branches, so we've moved this here to avoid having a ton of code in the
 # do_checkin method.
@@ -260,24 +292,12 @@ function careful_git_update()
   git remote update
   test_or_die "git remote update"
 
-#hmmm: this should be a function:
-# from: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
-UPSTREAM=$(parent_branch_name)
-#argh: original UPSTREAM='${1:-'\''@{u}'\''}'
-LOCAL=$(git rev-parse @)
-REMOTE=$(git rev-parse "$UPSTREAM")
-BASE=$(git merge-base @ "$UPSTREAM")
-var UPSTREAM LOCAL REMOTE BASE
-
-if [ "$LOCAL" == "$REMOTE" ]; then
-    echo "Up-to-date"
-elif [ "$LOCAL" == "$BASE" ]; then
-    echo "Need to pull"
-elif [ "$REMOTE" == "$BASE" ]; then
-    echo "Need to push"
-else
-    echo "Diverged"
-fi
+#is parent branch the right thing to tell it?
+#or we want mybranch for real, don't we?
+#  check_branch_state $(parent_branch_name)
+  state=$(check_branch_state $(my_branch_name) )
+test_or_continue "branch state check"
+#need to instead do something here if fails.
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
