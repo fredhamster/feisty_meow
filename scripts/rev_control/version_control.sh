@@ -77,35 +77,20 @@ function do_checkin()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
+
+# classic implementation, but only works with one master branch.
+# fixes will be forthcoming from development branch.
+
       # snag all new files.  not to everyone's liking.
       git add --all .
       test_or_die "git add all new files"
-
-      # see if there are any changes in the local repository.
-      if ! git diff-index --quiet HEAD --; then
-        # tell git about all the files and get a check-in comment.
-        git commit .
-        test_or_die "git commit"
-      fi
-      # catch if the diff-index failed somehow.
-      test_or_die "git diff-index"
-
-      # we continue on to the push, even if there were no changes this time, because
-      # there could already be committed changes that haven't been pushed yet.
-
-      local myself="$(my_branch_name)"
-      local parent="$(parent_branch_name)"
-
-      # upload any changes to the upstream repo so others can see them.
-      if [ "$myself" != "$parent" ]; then
-        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-        test_or_die "git push to origin: $myself"
-      else
-        # this branch is the same as the parent, so just push.
-        git push 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-        test_or_die "normal git push"
-      fi
-
+      # tell git about all the files and get a check-in comment.
+      git commit .
+      test_or_die "git commit"
+      # upload the files to the server so others can see them.
+      git push 2>&1 | grep -v "X11 forwarding request failed"
+      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
+      test_or_die "git push"
     fi
   else
     # nothing there.  it's not an error though.
@@ -275,15 +260,10 @@ function do_update()
 # classic implementation, but only works with one master branch.
 # fixes will be forthcoming from development branch.
 
-      # snag all new files.  not to everyone's liking.
-      git add --all .
-      retval=$?
-      # tell git about all the files and get a check-in comment.
-      git commit .
-      retval+=$?
-      # upload the files to the server so others can see them.
-      git push 2>&1 | grep -v "X11 forwarding request failed"
-      retval+=$?
+      git pull 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
+      test_or_die "git pull"
+
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
