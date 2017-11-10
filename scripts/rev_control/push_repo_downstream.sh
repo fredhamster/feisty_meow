@@ -47,6 +47,18 @@ test_or_die "changing to directory: $dir"
 git fetch origin
 test_or_die "running git fetch origin"
 
+
+#these are all shots in the dark.
+# use our careful updater!
+
+git remote update
+
+# get everything from the origin.
+git fetch --all
+
+# merge the changes in.
+git merge --no-ff --all
+
 # turn off occasionally troublesome setting before checkin.
 unset GIT_SSH
 
