@@ -43,6 +43,7 @@ local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 &backup_hierarchy($snarf_file_base, $number, $root, "infobase");
 &backup_hierarchy($snarf_file_base, $number, $root, "documentation");
 &backup_hierarchy($snarf_file_base, $number, $root, "examples");
+&backup_hierarchy($snarf_file_base, $number, $root, "experiments");
 &backup_hierarchy($snarf_file_base, $number, $root, "feisty_inits");
 &backup_hierarchy($snarf_file_base, $number, $root, "graphiq");
 &backup_hierarchy($snarf_file_base, $number, $root, "huffware");

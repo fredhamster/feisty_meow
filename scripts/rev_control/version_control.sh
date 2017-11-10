@@ -6,10 +6,21 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
+#hmmm: we need to dump all the outputs in this script into splitter
+
 ##############
 
 # the maximum depth that the recursive functions will try to go below the starting directory.
 export MAX_DEPTH=5
+
+# use our splitter tool for lengthy output if it's available.
+if [ ! -z "$(which splitter)" ]; then
+  TO_SPLITTER="$(which splitter)"
+else
+  TO_SPLITTER=cat
+fi
+
+##############
 
 # one unpleasantry to take care of first; cygwin barfs aggressively if the TMP directory
 # is a DOS path, but we need it to be a DOS path for our GFFS testing, so that blows.
@@ -25,8 +36,6 @@ if [ ! -d "$TMP" ]; then
   echo "could not create the temporary directory TMP in: $TMP"
   echo "this script will not work properly without an existing TMP directory."
 fi
-#hmmm: re-address the above code, since it doesn't make a lot of sense to me right now...
-
 
 ##############
 
@@ -44,11 +53,8 @@ function do_checkin()
   fi
   local blatt="echo checking in '$nicedir'..."
 
-  local retval=0  # normally successful.
-
   do_update "$directory"
-  retval=$?
-  test_or_die "repository update failed; this should be fixed before check-in."
+  test_or_die "repository update--this should be fixed before check-in."
 
   pushd "$directory" &>/dev/null
   if [ -f ".no-checkin" ]; then
@@ -57,44 +63,56 @@ function do_checkin()
     if test_writeable "CVS"; then
       $blatt
       cvs ci .
-      retval=$?
+      test_or_die "cvs checkin"
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
       $blatt
       svn ci .
-      retval=$?
+      test_or_die "svn checkin"
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
       # snag all new files.  not to everyone's liking.
       git add --all .
-      retval=$?
+      test_or_die "git add all new files"
 
       # see if there are any changes in the local repository.
       if ! git diff-index --quiet HEAD --; then
         # tell git about all the files and get a check-in comment.
         git commit .
-        retval+=$?
+        test_or_die "git commit"
       fi
       # catch if the diff-index failed somehow.
-      retval+=$?
+      test_or_die "git diff-index"
+
+      # we continue on to the push, even if there were no changes this time, because
+      # there could already be committed changes that haven't been pushed yet.
+
+      local myself="$(my_branch_name)"
+      local parent="$(parent_branch_name)"
 
       # upload any changes to the upstream repo so others can see them.
-      git push 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-      retval+=${PIPESTATUS[0]}
+      if [ "$myself" != "$parent" ]; then
+        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+        test_or_die "git push to origin: $myself"
+      else
+        # this branch is the same as the parent, so just push.
+        git push 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+        test_or_die "normal git push"
+      fi
+
     fi
   else
     # nothing there.  it's not an error though.
     echo no repository in $directory
-    retval=0
   fi
   popd &>/dev/null
 
   restore_terminal_title
 
-  return $retval
+  true;
 }
 
 # shows the local changes in a repository.
@@ -105,25 +123,24 @@ function do_diff
   save_terminal_title
 
   pushd "$directory" &>/dev/null
-  local retval=0  # normally successful.
 
   # only update if we see a repository living there.
   if [ -d ".svn" ]; then
     svn diff .
-    retval+=$?
+    test_or_die "subversion diff"
   elif [ -d ".git" ]; then
     git diff 
-    retval+=$?
+    test_or_die "git diff"
   elif [ -d "CVS" ]; then
     cvs diff .
-    retval+=$?
+    test_or_die "cvs diff"
   fi
 
   popd &>/dev/null
 
   restore_terminal_title
 
-  return $retval
+  true;
 }
 
 # reports any files that are not already known to the upstream repository.
@@ -134,7 +151,6 @@ function do_report_new
   save_terminal_title
 
   pushd "$directory" &>/dev/null
-  local retval=0  # normally successful.
 
   # only update if we see a repository living there.
   if [ -f ".no-checkin" ]; then
@@ -142,17 +158,17 @@ function do_report_new
   elif [ -d ".svn" ]; then
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
-    retval=$?
+    test_or_die "svn diff"
   elif [ -d ".git" ]; then
     git status -u
-    retval=$?
+    test_or_die "git status -u"
   fi
 
   popd &>/dev/null
 
   restore_terminal_title
 
-  return $retval
+  true
 }
 
 # checks in all the folders in a specified list.
@@ -174,7 +190,7 @@ function checkin_list()
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
       do_checkin $outer
-      test_or_die "running check-in on: $outer"
+      test_or_die "running check-in (absolute) on path: $outer"
       sep 28
     else
       for inner in $list; do
@@ -182,7 +198,7 @@ function checkin_list()
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
         do_checkin $path
-        test_or_die "running check-in on: $path"
+        test_or_die "running check-in (relative) on path: $path"
         sep 28
       done
     fi
@@ -211,9 +227,15 @@ function squash_first_few_crs()
 
 # a helpful method that reports the git branch for the current directory's
 # git repository.
-function git_branch_name()
+function my_branch_name()
 {
-  echo "$(git branch | grep \* | cut -d ' ' -f2-)"
+  echo "$(git branch | grep \* | cut -d ' ' -f2)"
+}
+
+# this reports the upstream branch for the current repo.
+function parent_branch_name()
+{
+  echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
 }
 
 # gets the latest versions of the assets from the upstream repository.
@@ -230,32 +252,37 @@ function do_update()
   fi
   local blatt="echo retrieving '$nicedir'..."
 
-  local retval=0  # plan on success for now.
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
     if test_writeable "CVS"; then
       $blatt
-      cvs update . | squash_first_few_crs
-      retval=${PIPESTATUS[0]}
+      cvs update . | $TO_SPLITTER
+      test_or_die "cvs update"
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
       $blatt
-      svn update . | squash_first_few_crs
-      retval=${PIPESTATUS[0]}
+      svn update . | $TO_SPLITTER
+      test_or_die "svn update"
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
-      retval=0
 
-      if [ "$(git_branch_name)" != "master" ]; then
-        git pull origin master 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-        retval+=${PIPESTATUS[0]}
-      fi
+      # from very helpful page:
+      # https://stackoverflow.com/questions/10312521/how-to-fetch-all-git-branches
+      for remote in $( git branch -r | grep -v -- '->' ); do
+        git branch --track ${remote#origin/} $remote 2>/dev/null
+#hmmm: ignoring errors from these, since they are continual.
+#hmmm: if we could find a way to not try to track with a local branch when there's already one present, that would be swell.  it's probably simple.
+      done
 
-      git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-      retval+=${PIPESTATUS[0]}
+#hmmm: well, one time it failed without the fetch.  i hope that's because the fetch is actually needed and not because the whole approach is fubar.
+      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      test_or_die "git fetch"
+
+      git pull --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      test_or_die "git pull"
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
@@ -265,7 +292,7 @@ function do_update()
 
   restore_terminal_title
 
-  return $retval
+  true
 }
 
 # gets all the updates for a list of folders under revision control.
@@ -352,5 +379,4 @@ function perform_revctrl_action_on_file()
 
   rm $tempfile
 }
-
 
