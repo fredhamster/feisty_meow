@@ -421,16 +421,14 @@ function perform_revctrl_action_on_file()
 
   save_terminal_title
 
-  local first_run=true
+  local did_anything=
 
   while read -u 3 dirname; do
     if [ -z "$dirname" ]; then
-      if [ ! -z "$first_run" ]; then
-        echo "There was nothing to do the action '$action' on."
-      fi
-      break
+      # we often have blank lines in the input file for some reason.
+      continue
     fi
-    unset first_run
+    did_anything=yes
     pushd "$dirname" &>/dev/null
     echo "[$(pwd)]"
     $action .
@@ -438,6 +436,10 @@ function perform_revctrl_action_on_file()
     sep 28
     popd &>/dev/null
   done 3<"$tempfile"
+
+  if [ -z "$did_anything" ]; then
+    echo "There was nothing to do the action '$action' on."
+  fi
 
   restore_terminal_title
 
