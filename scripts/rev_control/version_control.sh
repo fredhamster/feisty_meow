@@ -15,7 +15,9 @@ export MAX_DEPTH=5
 
 # use our splitter tool for lengthy output if it's available.
 if [ ! -z "$(which splitter)" ]; then
-  TO_SPLITTER="| \"$(which splitter)\""
+  TO_SPLITTER="$(which splitter)"
+else
+  TO_SPLITTER=cat
 fi
 
 ##############
@@ -95,11 +97,11 @@ function do_checkin()
 
       # upload any changes to the upstream repo so others can see them.
       if [ "$myself" != "$parent" ]; then
-        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" $TO_SPLITTER
+        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
         retval+=${PIPESTATUS[0]}
       else
         # this branch is the same as the parent, so just push.
-        git push 2>&1 | grep -v "X11 forwarding request failed" $TO_SPLITTER
+        git push 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
         retval+=${PIPESTATUS[0]}
       fi
 
@@ -284,10 +286,10 @@ function do_update()
           done
       retval+=${PIPESTATUS[0]}$?
 
-      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" $TO_SPLITTER
+      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       retval+=${PIPESTATUS[0]}
 
-      git pull --all 2>&1 | grep -v "X11 forwarding request failed" $TO_SPLITTER
+      git pull --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       retval+=${PIPESTATUS[0]}
     fi
   else
