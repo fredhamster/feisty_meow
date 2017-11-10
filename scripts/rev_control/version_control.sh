@@ -251,7 +251,7 @@ function parent_branch_name()
   echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
 }
 
-# this exits with 0 for success (normal bash behavior).  if the branch is not up to date,
+# this exits with 0 for success (normal bash behavior) when up to date.  if the branch is not up to date,
 # then these values are returned:
 #DOCUMENT THE VALUES
 # reference: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
