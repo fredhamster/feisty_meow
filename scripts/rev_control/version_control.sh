@@ -294,10 +294,6 @@ function do_update()
       git remote update
       test_or_die "git remote update"
 
-      git pull origin
-#--no-ff 
-      test_or_die "git fetch origin"
-
 # from: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
 UPSTREAM=$(parent_branch_name)
 #argh: original UPSTREAM='${1:-'\''@{u}'\''}'
@@ -316,7 +312,11 @@ else
     echo "Diverged"
 fi
 
-echo The rest of pull is not done yet.
+echo The rest of pull is not being done yet.
+return 1
+
+      git pull --no-ff origin
+      test_or_die "git fetch origin"
 
 
 #      reslog=$(git log HEAD..origin/master --oneline)
