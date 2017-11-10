@@ -81,13 +81,16 @@ function do_checkin()
       # catch if the diff-index failed somehow.
       retval+=$?
 
-#push the changes to where?  locally?
-      git push 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-      retval+=${PIPESTATUS[0]}
+      local myself="$(my_branch_name)"
+      local parent="$(parent_branch_name)"
 
       # upload any changes to the upstream repo so others can see them.
-      if [ "$(my_branch_name)" != "master" ]; then
-        git push origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+      if [ "$myself" != "$parent" ]; then
+        git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+        retval+=${PIPESTATUS[0]}
+      else
+        # this branch is the same as the parent, so just push.
+        git push 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
         retval+=${PIPESTATUS[0]}
       fi
 
@@ -261,12 +264,16 @@ function do_update()
     if test_writeable ".git"; then
       $blatt
       retval=0
+      local myself="$(my_branch_name)"
+      local parent="$(parent_branch_name)"
 
-      git pull origin "$(parent_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-      retval+=${PIPESTATUS[0]}
-
-      git pull origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-      retval+=${PIPESTATUS[0]}
+      if [ "$myself" != "$parent" ]; then
+        git pull origin "$parent" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+        retval+=${PIPESTATUS[0]}
+      else
+        git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+        retval+=${PIPESTATUS[0]}
+      fi
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
