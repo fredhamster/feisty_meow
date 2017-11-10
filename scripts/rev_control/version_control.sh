@@ -9,8 +9,6 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
-#hmmm: we need to dump all the outputs in this script into splitter
-
 ##############
 
 # the maximum depth that the recursive functions will try to go below the starting directory.
@@ -78,10 +76,7 @@ function do_checkin()
     if test_writeable ".git"; then
       $blatt
 
-# classic implementation, but only works with one master branch.
-# fixes will be forthcoming from development branch.
-
-      # snag all new files.  not to everyone's liking.
+      # put all changed and new files in the commit.  not to everyone's liking.
       git add --all .
       test_or_die "git add all new files"
 
@@ -91,10 +86,17 @@ function do_checkin()
         git commit .
         test_or_die "git commit"
       fi
-      # upload the files to the server so others can see them.
-      git push 2>&1 | grep -v "X11 forwarding request failed"
-      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
+
+      # a new set of steps we have to take to make sure the branch integrity is good.
+      careful_git_update 
+
+      # we continue on to the push, even if there were no changes this time, because
+      # there could already be committed changes that haven't been pushed yet.
+
+      # upload any changes to the upstream repo so others can see them.
+      git push origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       test_or_die "git push"
+
     fi
   else
     # nothing there.  it's not an error though.
@@ -104,7 +106,7 @@ function do_checkin()
 
   restore_terminal_title
 
-  true;
+  return 0
 }
 
 # shows the local changes in a repository.
@@ -132,7 +134,7 @@ function do_diff
 
   restore_terminal_title
 
-  true;
+  return 0
 }
 
 # reports any files that are not already known to the upstream repository.
@@ -160,7 +162,7 @@ function do_report_new
 
   restore_terminal_title
 
-  true
+  return 0
 }
 
 # checks in all the folders in a specified list.
@@ -221,13 +223,87 @@ function squash_first_few_crs()
 # git repository.
 function my_branch_name()
 {
-  echo "$(git branch | grep \* | cut -d ' ' -f2)"
+  echo "$(git branch | grep '\*' | cut -d ' ' -f2)"
 }
 
+#this had a -> in it at one point for not matching, didn't it?
 # this reports the upstream branch for the current repo.
-function parent_branch_name()
+##function parent_branch_name()
+##{
+  ##echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
+##}
+
+# this exits with 0 for success (normal bash behavior) when up to date.  if the branch is not up to date,
+# then these values are returned:
+#DOCUMENT THE VALUES
+# reference: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
+function check_branch_state()
 {
-  echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
+  local branch="$1"; shift
+
+  local to_return=120  # unknown issue.
+
+sep
+
+  LOCAL=$(git rev-parse @)
+  REMOTE=$(git rev-parse "$branch")
+  BASE=$(git merge-base @ "$branch")
+var branch LOCAL REMOTE BASE
+
+  if [ "$LOCAL" == "$REMOTE" ]; then
+    echo "Up-to-date"
+    to_return=0
+  elif [ "$LOCAL" == "$BASE" ]; then
+    echo "Need to pull"
+    to_return=1
+  elif [ "$REMOTE" == "$BASE" ]; then
+    echo "Need to push"
+    to_return=2
+  else
+    echo "Diverged"
+    to_return=3
+  fi
+
+sep
+
+  return $to_return
+}
+
+# the git update process just gets more and more complex when you bring in
+# branches, so we've moved this here to avoid having a ton of code in the
+# other methods.
+function careful_git_update()
+{
+  local this_branch="$(my_branch_name)"
+
+#appears to be useless; reports no changes when we need to know about remote changes that do exist:
+#  check_branch_state "$this_branch"
+#  state=$?
+#  test_or_continue "branch state check"
+#  echo the branch state is $state
+
+  # the above are just not enough.  this code is now doing what i have to do when i repair the repo.
+  local branch_list=$(git branch |grep -v '^\*')
+  local bran
+  for bran in $branch_list; do
+#    echo "synchronizing remote branch: $bran"
+    git checkout "$bran"
+    test_or_die "git checking out remote branch: $bran"
+    git pull --no-ff
+    test_or_die "git pull of remote branch: $bran"
+  done
+  # now switch back to our branch.
+  git checkout "$this_branch"
+  test_or_die "git checking out our current branch: $this_branch"
+
+  # first update all our remote branches to their current state from the repos.
+  git remote update
+  test_or_die "git remote update"
+
+  # now pull down any changes in our own origin in the repo, to stay in synch
+  # with any changes from others.
+  git pull --no-ff --all
+  test_or_die "git pulling all upstream"
 }
 
 # gets the latest versions of the assets from the upstream repository.
@@ -260,14 +336,9 @@ function do_update()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
-
-# classic implementation, but only works with one master branch.
-# fixes will be forthcoming from development branch.
-
-      git pull 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      git pull --no-ff 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
-      test_or_die "git pull"
-
+      test_or_die "git pull of origin without fast forwards"
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
@@ -277,7 +348,7 @@ function do_update()
 
   restore_terminal_title
 
-  true
+  return 0
 }
 
 # gets all the updates for a list of folders under revision control.
