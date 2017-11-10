@@ -282,7 +282,6 @@ sep
 function careful_git_update()
 {
 
-echo A
   local this_branch="$(my_branch_name)"
 
 #we want my branch here, don't we?  not like parent or anything?
@@ -293,11 +292,12 @@ echo A
 #need to instead do something here if fails.
 # above is worse than useless code; in the situations i'm seeing fail, it reports no changes.  *&@#*&@#
 
-echo D
+echo DOING BRANCH WALKER
   # the above are just not enough.  this code is now doing what i have to do when i repair the repo.
   local branch_list=$(git branch |grep -v '^\*')
   local bran
   for bran in $branch_list; do
+echo GETTING LATEST ON: $bran
     git checkout "$bran"
     test_or_die "git checking out remote branch: $bran"
     git pull --no-ff
@@ -307,24 +307,21 @@ echo D
   git checkout "$this_branch"
   test_or_die "git checking out our current branch: $this_branch"
 
-echo B
+echo NOW REMOTE UPDATE
 
   # first update all our remote branches to their current state from the repos.
   git remote update
   test_or_die "git remote update"
 
-echo C
+echo NOW THE FULL PULL
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
   git pull --no-ff --all
   test_or_die "git pulling all upstream"
 
-echo E
+echo DONE CAREFUL UPDATE
 
-echo The rest of pull is not being done yet.
-return 1
-
-
+  return 0
 
 # below has older shards of partial knowledge.
 
@@ -379,17 +376,9 @@ function do_update()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
-
-# classic implementation, but only works with one master branch.
-# fixes will be forthcoming from development branch.
-
-      git pull 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      git pull --no-ff origin 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
-      test_or_die "git pull"
-
-#any parms needed?
-##no!  can't be done here or commit fudges up      careful_git_update 
-
+      test_or_die "git pull of origin without fast forwards"
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
