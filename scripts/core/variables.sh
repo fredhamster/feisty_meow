@@ -56,6 +56,9 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   
   # start with some simpler things.
   
+#hmmm: this needs to come from some configuration item.  especially for installs.
+define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
+
   define_yeti_variable SCRIPT_SYSTEM=feisty_meow
   
   # OS variable records the operating system we think we found.
