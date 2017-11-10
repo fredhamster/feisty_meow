@@ -204,6 +204,18 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   #    define_yeti_variable REPOSITORY_DIR+="muppets configs"
   # see the customize/fred folder for a live example.
   define_yeti_variable REPOSITORY_LIST="$FEISTY_MEOW_APEX "
+
+  # add in any active projects to the repository list.
+  if [ -d "$HOME/active" ]; then
+    REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
+  fi
+  # add in any site avenger applications that are in the apps folder.
+  if [ -d "$HOME/apps" ]; then
+    # first, simple projects.
+    REPOSITORY_LIST+="$(find "$HOME/apps" -iname "avenger5" -type d) "
+    # then, site avenger specific projects.
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
+  fi
   
   # the archive collections list is a set of directories that are major
   # repositories of data which can be synched to backup drives.

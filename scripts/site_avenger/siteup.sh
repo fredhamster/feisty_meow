@@ -6,10 +6,6 @@
 # updates a site avenger app.
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-source "$WORKDIR/shared_site_mgr.sh"
-
-# get our defaults.
-source "$WORKDIR/site_avenger.config"
 
 ############################
 
@@ -18,6 +14,8 @@ source "$WORKDIR/site_avenger.config"
 # check for parameters.
 app_dirname="$1"; shift
 repo_name="$1"; shift
+
+source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
@@ -44,7 +42,7 @@ sep
 
 # this should set the site_store_path variable if everything goes well.
 update_repo "$full_app_dir" "$CHECKOUT_DIR_NAME" "$DEFAULT_REPOSITORY_ROOT" "$repo_name"
-test_or_fail "Updating the repository storage directory"
+test_or_die "Updating the repository storage directory"
 
 ####
 

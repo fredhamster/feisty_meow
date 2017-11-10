@@ -9,18 +9,18 @@ export BARKY=/media/fred/barkuptreedrive
 
 # copy up the archived bluray discs, and possibly future archived formats.
 netcp /z/archons/* $BARKY/bkup_archons/
-test_or_fail "synching archons"
+test_or_die "synching archons"
 
 # copy over our somewhat attenuated but still important walrus archives.
 netcp /z/walrus/* $BARKY/walrus/ 
-test_or_fail "synching walrus"
+test_or_die "synching walrus"
 
 # copy all the music files for future reference.
 netcp /z/musix/* $BARKY/musix/
-test_or_fail "synching musix"
+test_or_die "synching musix"
 
 # back up the photo archives.
 netcp /z/imaginations/* $BARKY/imaginations/
-test_or_fail "synching imaginations"
+test_or_die "synching imaginations"
 
 

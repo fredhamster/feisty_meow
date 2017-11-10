@@ -5,8 +5,6 @@
 
 # This script "powers up" a cakephp site by running the database migrations,
 # cleaning out the ORM cache, and fixing file permissions.
-# Note that the mysql database must already exist and allow permissions to
-# the configured username/password in config/app.php.
 # This script is currently highly specific to site avenger.
 
 # General Info:
@@ -23,10 +21,6 @@
 # start with.  The concept of the theme comes from cakephp.
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-source "$WORKDIR/shared_site_mgr.sh"
-
-# get our defaults.
-source "$WORKDIR/site_avenger.config"
 
 ############################
 
@@ -57,6 +51,8 @@ if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
 fi
 
+source "$WORKDIR/shared_site_mgr.sh"
+
 sep
 
 check_application_dir "$APPLICATION_DIR"
@@ -86,12 +82,12 @@ sep
 
 # this should set the site_store_path variable if everything goes well.
 update_repo "$full_app_dir" "$CHECKOUT_DIR_NAME" "$DEFAULT_REPOSITORY_ROOT" "$repo_name"
-test_or_fail "Updating the repository storage directory"
+test_or_die "Updating the repository storage directory"
 
 # update the site to load dependencies.
 sep
 composer_repuff "$site_store_path"
-test_or_fail "Installing site dependencies with composer"
+test_or_die "Installing site dependencies with composer"
 
 # set up the symbolic links needed to achieve siteliness.
 sep

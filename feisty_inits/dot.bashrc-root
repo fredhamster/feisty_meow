@@ -3,6 +3,8 @@
 
 # provides a macro to initialize the feisty meow environment for the "root" user.
 
+##############
+
 # drag in the default version of this file.  this may not be needed if your
 # .bashrc script already has substantial code or already does this.
 source /etc/bash.bashrc
@@ -17,10 +19,19 @@ export HISTFILESIZE=8000000
 
 ##############
 
+# system-wide install:
+export FEISTY_MEOW_APEX="/usr/local/fred/feisty_meow"
+# personal install:
+#export FEISTY_MEOW_APEX="$HOME/feisty_meow"
+
 # the "fredme" macro enables the feisty_meow environment.
-alias fredme='source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh'
-# or if installed system wide, something like:
-#alias fredme='source /usr/local/fred/feisty_meow/scripts/core/launch_feisty_meow.sh'
+alias fredme='source "$FEISTY_MEOW_APEX/feisty_meow/scripts/core/launch_feisty_meow.sh"'
+
+# if not commented out, then feisty meow will run all the unit tests during builds.
+#export RUN_ALL_TESTS=true
+
+# turns on noisy debugging in feisty meow scripts if uncommented.
+#export DEBUG_FEISTY_MEOW=true
 
 ##############
 

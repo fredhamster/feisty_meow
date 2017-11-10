@@ -40,6 +40,7 @@ else
 fi
 # re-use work we did on 'exp' macro for the longer windows command.
 define_yeti_alias explorer=exp
+define_yeti_alias fix_ssh_perms='chmod 700 $HOME/.ssh ; chmod 600 $HOME/.ssh/*'
 define_yeti_alias halt='sudo shutdown -h now'
 define_yeti_alias i=inventory
 define_yeti_alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'

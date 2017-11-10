@@ -4,16 +4,13 @@
 gridusername="$1"; shift
 databasename="$1"; shift
 
-if [ -z "$gridusername" ]; then
-  gridusername=griduser
+if [ -z "$gridusername" -o -z "$databasename" ]; then
+  echo "
+This script takes two parameters: (1) the user name for the opensim database
+and (2) the database name.  It will backup that database by logging into
+mysql as the user.  The user's password for mysql must be recorded in a local
+file called: \$HOME/.secrets/opensim_db_password.txt"
 fi
-if [ -z "$databasename" ]; then
-  databasename=opensim
-fi
-
-#hmmm: need to parameterize for the database name and secrets file and all that.
-#      would be nice to have a block of opensim variables, perhaps an associative
-#      array of config chunks.
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
@@ -21,8 +18,5 @@ host=$(echo $(hostname) | sed -e 's/\([^.]*\)\..*/\1/')
 
 bkupname="backup-opensim_${host}_$(date_stringer).mysql_bkup"
 mysqldump -u "$gridusername" -p$(cat $HOME/.secrets/opensim_db_password.txt) "$databasename" > "$bkupname"
-# note that the above assumes the database is called "opensim".  it might be
-# called opengrid instead, based on the setup procedure that was followed.
-# likewise the user might be someone other than "griduser".
 gzip "$bkupname"
 

@@ -96,7 +96,7 @@ function maybe_create_site_storage()
   local full_path="$BASE_PATH/$our_app"
   if [ ! -d "$full_path" ]; then
     mkdir -p $full_path
-    test_or_fail "The app storage path could not be created.\n  Path in question is: $full_path"
+    test_or_die "The app storage path could not be created.\n  Path in question is: $full_path"
   fi
 
   # now give the web server some access to the folder.  this is crucial since the folders
@@ -108,10 +108,10 @@ function maybe_create_site_storage()
   while [[ $chow_path != $HOME ]]; do
 echo chow path is now $chow_path
     chmod g+rx "$chow_path"
-    test_or_fail "Failed to add group permissions on the path: $chow_path"
+    test_or_die "Failed to add group permissions on the path: $chow_path"
     # reassert the user's ownership of any directories we might have just created.
     chown $(logname) "$chow_path"
-    test_or_fail "changing ownership to user failed on the path: $chow_path"
+    test_or_die "changing ownership to user failed on the path: $chow_path"
     chow_path="$(dirname "$chow_path")"
   done
 }

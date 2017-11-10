@@ -7,6 +7,6 @@ years).
 all of these scripts were formerly known as "the yeticode collection", and they even
 lived in their own domain yeticode.org.  this was before i stopped buying a new domain
 name on the merest whim.  consolidating them in with the codebase has worked a lot
-better anyhow.  we still love yetis.
+better anyhow.  but we still love yetis.
 
 
