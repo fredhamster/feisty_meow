@@ -278,13 +278,20 @@ function do_update()
 
       # from very helpful page:
       # https://stackoverflow.com/questions/10312521/how-to-fetch-all-git-branches
-      git branch -r | grep -v '\->' |
-          while read remote; do
-            git branch --track "${remote#origin/}" "$remote"
-            # ensure we notice a failure when adding tracking.
-            retval+=$?
-          done
-      retval+=${PIPESTATUS[0]}$?
+
+      for remote in $( git branch -r | grep -v -- '->' ); do
+        git branch --track ${remote#origin/} $remote
+        retval+=$?
+      done
+
+#tiny bit hosed
+#      git branch -r | grep -v -- '->' |
+#          while read remote; do
+#            git branch --track "${remote#origin/}" "$remote"
+#            # ensure we notice a failure when adding tracking.
+#            retval+=$?
+#          done
+#      retval+=${PIPESTATUS[0]}$?
 
       git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       retval+=${PIPESTATUS[0]}
