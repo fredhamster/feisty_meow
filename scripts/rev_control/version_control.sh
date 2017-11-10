@@ -279,13 +279,14 @@ else
     echo "Diverged"
 fi
 
-echo The rest of pull is not being done yet.
-return 1
-
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
-  git pull --no-ff origin
+  git pull --no-ff --all
   test_or_die "git fetch origin"
+
+
+echo The rest of pull is not being done yet.
+return 1
 
 
 
