@@ -283,9 +283,6 @@ function do_careful_git_update()
 {
   local this_branch="$(my_branch_name)"
 
-#proposition: this step didn't help before, and it seems redundant now.
-#...
-#hmmm, maybe it is needed.  and people did seem to want it first, so trying that.
   # first update all our remote branches to their current state from the repos.
   git remote update
   test_or_die "git remote update"
@@ -303,7 +300,7 @@ function do_careful_git_update()
 #    echo "synchronizing remote branch: $bran"
     git checkout "$bran"
     test_or_die "git checking out remote branch: $bran"
-    git pull --no-ff
+    git pull --no-ff origin "$bran"
     test_or_die "git pull of remote branch: $bran"
   done
   # now switch back to our branch.

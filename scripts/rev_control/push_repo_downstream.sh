@@ -33,6 +33,9 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+# turn off occasionally troublesome setting before checkin.
+unset GIT_SSH
+
 ##############
 
 dir="$1"; shift
@@ -42,31 +45,14 @@ fi
 
 pushd "$dir" &>/dev/null
 test_or_die "changing to directory: $dir"
+tempfile=$(generate_rev_ctrl_filelist)
+test_or_die "generating revision control file list"
+popd &>/dev/null
 
-#switch this to the perform revctrl with a do_git_careful_update
+perform_revctrl_action_on_file "$tempfile" do_careful_git_update
+test_or_die "doing a careful git update on: $tempfile"
 
-
-
-# get everything from the origin.
-git fetch origin
-test_or_die "running git fetch origin"
-
-
-#these are all shots in the dark.
-# use our careful updater!
-
-git remote update
-
-# get everything from the origin.
-git fetch --all
-
-# merge the changes in.
-git merge --no-ff --all
-
-# turn off occasionally troublesome setting before checkin.
-unset GIT_SSH
-
-# send the little boat down the stream to the dependent repository.
+# send our little boat down the stream to the dependent repository.
 git push downstream master
 test_or_die "running the git push downstream"
 
