@@ -113,7 +113,7 @@ function do_checkin()
 
   restore_terminal_title
 
-  true;
+  return 0
 }
 
 # shows the local changes in a repository.
@@ -141,7 +141,7 @@ function do_diff
 
   restore_terminal_title
 
-  true;
+  return 0
 }
 
 # reports any files that are not already known to the upstream repository.
@@ -169,7 +169,7 @@ function do_report_new
 
   restore_terminal_title
 
-  true
+  return 0
 }
 
 # checks in all the folders in a specified list.
@@ -321,29 +321,6 @@ echo NOW THE FULL PULL
 
 echo DONE CAREFUL UPDATE
 
-  return 0
-
-# below has older shards of partial knowledge.
-
-#      reslog=$(git log HEAD..origin/master --oneline)
-#      if [[ "${reslog}" != "" ]] ; then
-#        git merge origin/master
-
-#      # from very helpful page:
-#      # https://stackoverflow.com/questions/10312521/how-to-fetch-all-git-branches
-#      for remote in $( git branch -r | grep -v -- '->' ); do
-#        git branch --track ${remote#origin/} $remote 2>/dev/null
-##hmmm: ignoring errors from these, since they are continual.
-##hmmm: if we could find a way to not try to track with a local branch when there's already one present, that would be swell.  it's probably simple.
-#      done
-#
-##hmmm: well, one time it failed without the fetch.  i hope that's because the fetch is actually needed and not because the whole approach is fubar.
-#      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-#      test_or_die "git fetch"
-#
-#      git pull --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-#      test_or_die "git pull"
-
 }
 
 # gets the latest versions of the assets from the upstream repository.
@@ -388,7 +365,7 @@ function do_update()
 
   restore_terminal_title
 
-  true
+  return 0
 }
 
 # gets all the updates for a list of folders under revision control.
