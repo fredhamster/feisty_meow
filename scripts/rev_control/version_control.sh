@@ -91,6 +91,7 @@ function do_checkin()
         git commit .
         test_or_die "git commit"
       fi
+
 #      # upload the files to the server so others can see them.
 #      git push 2>&1 | grep -v "X11 forwarding request failed"
 #      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
