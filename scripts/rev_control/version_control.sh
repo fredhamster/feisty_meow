@@ -36,8 +36,6 @@ if [ ! -d "$TMP" ]; then
   echo "could not create the temporary directory TMP in: $TMP"
   echo "this script will not work properly without an existing TMP directory."
 fi
-#hmmm: re-address the above code, since it doesn't make a lot of sense to me right now...
-
 
 ##############
 
@@ -88,6 +86,9 @@ function do_checkin()
       fi
       # catch if the diff-index failed somehow.
       test_or_die "git diff-index"
+
+      # we continue on to the push, even if there were no changes this time, because
+      # there could already be committed changes that haven't been pushed yet.
 
       local myself="$(my_branch_name)"
       local parent="$(parent_branch_name)"
@@ -270,15 +271,14 @@ function do_update()
 
       # from very helpful page:
       # https://stackoverflow.com/questions/10312521/how-to-fetch-all-git-branches
-
       for remote in $( git branch -r | grep -v -- '->' ); do
         git branch --track ${remote#origin/} $remote 2>/dev/null
 #hmmm: ignoring errors from these, since they are continual.
 #hmmm: if we could find a way to not try to track with a local branch when there's already one present, that would be swell.  it's probably simple.
       done
 
-      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-      test_or_die "git fetch"
+#      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+#      test_or_die "git fetch"
 
       git pull --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       test_or_die "git pull"
