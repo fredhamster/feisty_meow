@@ -88,7 +88,7 @@ function do_checkin()
       fi
 
       # a new set of steps we have to take to make sure the branch integrity is good.
-      careful_git_update 
+      do_careful_git_update "$(\pwd)"
 
       # we continue on to the push, even if there were no changes this time, because
       # there could already be committed changes that haven't been pushed yet.
@@ -219,11 +219,18 @@ function squash_first_few_crs()
   fi
 }
 
+#hmmm: the below are git specific and should be named that way.
+
+function all_branch_names()
+{
+  echo "$(git branch -vv | cut -d ' ' -f2)"
+}
+
 # a helpful method that reports the git branch for the current directory's
 # git repository.
 function my_branch_name()
 {
-  echo "$(git branch | grep '\*' | cut -d ' ' -f2)"
+  echo "$(git branch -vv | grep '\*' | cut -d ' ' -f2)"
 }
 
 #this had a -> in it at one point for not matching, didn't it?
@@ -233,9 +240,11 @@ function my_branch_name()
   ##echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
 ##}
 
-# this exits with 0 for success (normal bash behavior) when up to date.  if the branch is not up to date,
-# then these values are returned:
-#DOCUMENT THE VALUES
+# reports the status of the branch by echoing one of these values:
+#   okay: up to date and everything is good.
+#   needs_pull: this branch needs to be pulled from origins.
+#   needs_push: there are unsaved changes on this branch to push to remote store.
+#   diverged: the branches diverged and are going to need a merge.
 # reference: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
 function check_branch_state()
 {
@@ -243,28 +252,19 @@ function check_branch_state()
 
   local to_return=120  # unknown issue.
 
-sep
+  local local_branch=$(git rev-parse @)
+  local remote_branch=$(git rev-parse "$branch")
+  local merge_base=$(git merge-base @ "$branch")
 
-  LOCAL=$(git rev-parse @)
-  REMOTE=$(git rev-parse "$branch")
-  BASE=$(git merge-base @ "$branch")
-var branch LOCAL REMOTE BASE
-
-  if [ "$LOCAL" == "$REMOTE" ]; then
-    echo "Up-to-date"
-    to_return=0
-  elif [ "$LOCAL" == "$BASE" ]; then
-    echo "Need to pull"
-    to_return=1
-  elif [ "$REMOTE" == "$BASE" ]; then
-    echo "Need to push"
-    to_return=2
+  if [ "$local_branch" == "$remote_branch" ]; then
+    echo "okay"
+  elif [ "$local_branch" == "$merge_base" ]; then
+    echo "needs_pull"
+  elif [ "$remote_branch" == "$merge_base" ]; then
+    echo "needs_push"
   else
-    echo "Diverged"
-    to_return=3
+    echo "diverged"
   fi
-
-sep
 
   return $to_return
 }
@@ -272,38 +272,56 @@ sep
 # the git update process just gets more and more complex when you bring in
 # branches, so we've moved this here to avoid having a ton of code in the
 # other methods.
-function careful_git_update()
+function do_careful_git_update()
 {
+  local directory="$1"; shift
+  pushd "$directory" &>/dev/null
+  test_or_die "changing to directory: $directory"
+
+  if [ ! -d ".git" ]; then
+    # we ignore if they're jumping into a non-useful folder, but also tell them.
+    echo "Directory is not a git repository: $directory"
+    return 0
+  fi
+
+  # first update all our remote branches to their current state from the repos.
+  git remote update
+  test_or_die "git remote update"
+
   local this_branch="$(my_branch_name)"
-
 #appears to be useless; reports no changes when we need to know about remote changes that do exist:
-#  check_branch_state "$this_branch"
-#  state=$?
-#  test_or_continue "branch state check"
-#  echo the branch state is $state
+#hmmm: trying it out again now that things are better elsewhere.  let's see what it says.
+  state=$(check_branch_state "$this_branch")
+  echo "=> branch '$this_branch' state is: $state"
 
-  # the above are just not enough.  this code is now doing what i have to do when i repair the repo.
-  local branch_list=$(git branch |grep -v '^\*')
+  # this code is now doing what i have to do when i repair the repo.  and it seems to be good so far.
+  local branch_list=$(all_branch_names)
   local bran
   for bran in $branch_list; do
 #    echo "synchronizing remote branch: $bran"
     git checkout "$bran"
-    test_or_die "git checking out remote branch: $bran"
-    git pull --no-ff
+    test_or_die "git switching checkout to remote branch: $bran"
+
+    state=$(check_branch_state "$bran")
+    echo "=> branch '$bran' state is: $state"
+
+    remote_branch_info=$(git ls-remote --heads origin $bran 2>/dev/null)
+    if [ ! -z "$remote_branch_info" ]; then
+      # we are pretty sure the remote branch does exist.
+      git pull --no-ff origin "$bran"
+    fi
     test_or_die "git pull of remote branch: $bran"
   done
   # now switch back to our branch.
   git checkout "$this_branch"
   test_or_die "git checking out our current branch: $this_branch"
 
-  # first update all our remote branches to their current state from the repos.
-  git remote update
-  test_or_die "git remote update"
-
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
   git pull --no-ff --all
   test_or_die "git pulling all upstream"
+
+  popd &>/dev/null
 }
 
 # gets the latest versions of the assets from the upstream repository.
@@ -421,15 +439,26 @@ function perform_revctrl_action_on_file()
 
   save_terminal_title
 
+  local did_anything=
+
   while read -u 3 dirname; do
-    if [ -z "$dirname" ]; then continue; fi
+    if [ -z "$dirname" ]; then
+      # we often have blank lines in the input file for some reason.
+      continue
+    fi
+    did_anything=yes
     pushd "$dirname" &>/dev/null
     echo "[$(pwd)]"
-    $action .
+    # pass the current directory plus the remaining parameters from function invocation.
+    $action . $*
     test_or_die "performing action $action on: $(pwd)"
     sep 28
     popd &>/dev/null
   done 3<"$tempfile"
+
+  if [ -z "$did_anything" ]; then
+    echo "There was nothing to do the action '$action' on."
+  fi
 
   restore_terminal_title
 
