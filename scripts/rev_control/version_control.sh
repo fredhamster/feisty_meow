@@ -84,9 +84,13 @@ function do_checkin()
       # snag all new files.  not to everyone's liking.
       git add --all .
       test_or_die "git add all new files"
-      # tell git about all the files and get a check-in comment.
-      git commit .
-      test_or_die "git commit"
+
+      # see if there are any changes in the local repository.
+      if ! git diff-index --quiet HEAD --; then
+        # tell git about all the files and get a check-in comment.
+        git commit .
+        test_or_die "git commit"
+      fi
       # upload the files to the server so others can see them.
       git push 2>&1 | grep -v "X11 forwarding request failed"
       if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
