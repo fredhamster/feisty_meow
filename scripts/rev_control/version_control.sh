@@ -250,6 +250,67 @@ function parent_branch_name()
   echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
 }
 
+# the git update process just gets more and more complex when you bring in
+# branches, so we've moved this here to avoid having a ton of code in the
+# do_checkin method.
+function careful_git_update()
+{
+  # first update all our remote branches to their current state from the repos.
+  git remote update
+  test_or_die "git remote update"
+
+#hmmm: this should be a function:
+# from: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
+UPSTREAM=$(parent_branch_name)
+#argh: original UPSTREAM='${1:-'\''@{u}'\''}'
+LOCAL=$(git rev-parse @)
+REMOTE=$(git rev-parse "$UPSTREAM")
+BASE=$(git merge-base @ "$UPSTREAM")
+var UPSTREAM LOCAL REMOTE BASE
+
+if [ "$LOCAL" == "$REMOTE" ]; then
+    echo "Up-to-date"
+elif [ "$LOCAL" == "$BASE" ]; then
+    echo "Need to pull"
+elif [ "$REMOTE" == "$BASE" ]; then
+    echo "Need to push"
+else
+    echo "Diverged"
+fi
+
+echo The rest of pull is not being done yet.
+return 1
+
+  # now pull down any changes in our own origin in the repo, to stay in synch
+  # with any changes from others.
+  git pull --no-ff origin
+  test_or_die "git fetch origin"
+
+
+
+# below has older shards of partial knowledge.
+
+#      reslog=$(git log HEAD..origin/master --oneline)
+#      if [[ "${reslog}" != "" ]] ; then
+#        git merge origin/master
+
+#      # from very helpful page:
+#      # https://stackoverflow.com/questions/10312521/how-to-fetch-all-git-branches
+#      for remote in $( git branch -r | grep -v -- '->' ); do
+#        git branch --track ${remote#origin/} $remote 2>/dev/null
+##hmmm: ignoring errors from these, since they are continual.
+##hmmm: if we could find a way to not try to track with a local branch when there's already one present, that would be swell.  it's probably simple.
+#      done
+#
+##hmmm: well, one time it failed without the fetch.  i hope that's because the fetch is actually needed and not because the whole approach is fubar.
+#      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+#      test_or_die "git fetch"
+#
+#      git pull --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+#      test_or_die "git pull"
+
+}
+
 # gets the latest versions of the assets from the upstream repository.
 function do_update()
 {
@@ -288,57 +349,9 @@ function do_update()
 #      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
 #      test_or_die "git pull"
 
+#any parms needed?
+      careful_git_update 
 
-#let's start over clean here...
-
-      git remote update
-      test_or_die "git remote update"
-
-# from: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
-UPSTREAM=$(parent_branch_name)
-#argh: original UPSTREAM='${1:-'\''@{u}'\''}'
-LOCAL=$(git rev-parse @)
-REMOTE=$(git rev-parse "$UPSTREAM")
-BASE=$(git merge-base @ "$UPSTREAM")
-var UPSTREAM LOCAL REMOTE BASE
-
-if [ "$LOCAL" == "$REMOTE" ]; then
-    echo "Up-to-date"
-elif [ "$LOCAL" == "$BASE" ]; then
-    echo "Need to pull"
-elif [ "$REMOTE" == "$BASE" ]; then
-    echo "Need to push"
-else
-    echo "Diverged"
-fi
-
-echo The rest of pull is not being done yet.
-return 1
-
-      git pull --no-ff origin
-      test_or_die "git fetch origin"
-
-
-#      reslog=$(git log HEAD..origin/master --oneline)
-#      if [[ "${reslog}" != "" ]] ; then
-#        git merge origin/master
-
-
-
-#      # from very helpful page:
-#      # https://stackoverflow.com/questions/10312521/how-to-fetch-all-git-branches
-#      for remote in $( git branch -r | grep -v -- '->' ); do
-#        git branch --track ${remote#origin/} $remote 2>/dev/null
-##hmmm: ignoring errors from these, since they are continual.
-##hmmm: if we could find a way to not try to track with a local branch when there's already one present, that would be swell.  it's probably simple.
-#      done
-#
-##hmmm: well, one time it failed without the fetch.  i hope that's because the fetch is actually needed and not because the whole approach is fubar.
-#      git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-#      test_or_die "git fetch"
-#
-#      git pull --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-#      test_or_die "git pull"
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
