@@ -421,8 +421,16 @@ function perform_revctrl_action_on_file()
 
   save_terminal_title
 
+  local first_run=true
+
   while read -u 3 dirname; do
-    if [ -z "$dirname" ]; then continue; fi
+    if [ -z "$dirname" ]; then
+      if [ ! -z "$first_run" ]; then
+        echo "There was nothing to do the action '$action' on."
+      fi
+      break
+    fi
+    unset first_run
     pushd "$dirname" &>/dev/null
     echo "[$(pwd)]"
     $action .
