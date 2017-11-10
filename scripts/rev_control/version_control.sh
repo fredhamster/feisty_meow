@@ -87,10 +87,10 @@ function do_checkin()
       if ! git diff-index --quiet HEAD --; then
         # tell git about all the files and get a check-in comment.
         git commit .
-        retval+=$?
+        let "retval = retval + $?"
       fi
       # catch if the diff-index failed somehow.
-      retval+=$?
+      let "retval = retval + $?"
 
       local myself="$(my_branch_name)"
       local parent="$(parent_branch_name)"
@@ -98,11 +98,11 @@ function do_checkin()
       # upload any changes to the upstream repo so others can see them.
       if [ "$myself" != "$parent" ]; then
         git push origin "$(myself)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-        retval+=${PIPESTATUS[0]}
+        let "retval = retval + ${PIPESTATUS[0]}"
       else
         # this branch is the same as the parent, so just push.
         git push 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-        retval+=${PIPESTATUS[0]}
+        let "retval = retval + ${PIPESTATUS[0]}"
       fi
 
     fi
@@ -131,13 +131,13 @@ function do_diff
   # only update if we see a repository living there.
   if [ -d ".svn" ]; then
     svn diff .
-    retval+=$?
+    let "retval = retval + $?"
   elif [ -d ".git" ]; then
     git diff 
-    retval+=$?
+    let "retval = retval + $?"
   elif [ -d "CVS" ]; then
     cvs diff .
-    retval+=$?
+    let "retval = retval + $?"
   fi
 
   popd &>/dev/null
@@ -281,7 +281,7 @@ function do_update()
 
       for remote in $( git branch -r | grep -v -- '->' ); do
         git branch --track ${remote#origin/} $remote
-        retval+=$?
+        let "retval = retval + $?"
       done
 
 #tiny bit hosed
@@ -289,15 +289,15 @@ function do_update()
 #          while read remote; do
 #            git branch --track "${remote#origin/}" "$remote"
 #            # ensure we notice a failure when adding tracking.
-#            retval+=$?
+#            let "retval = retval + $?"
 #          done
-#      retval+=${PIPESTATUS[0]}$?
+#      let "retval = retval + ${PIPESTATUS[0]}"
 
       git fetch --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-      retval+=${PIPESTATUS[0]}
+      let "retval = retval + ${PIPESTATUS[0]}"
 
       git pull --all 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-      retval+=${PIPESTATUS[0]}
+      let "retval = retval + ${PIPESTATUS[0]}"
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
