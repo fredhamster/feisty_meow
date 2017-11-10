@@ -302,7 +302,7 @@ test_or_continue "branch state check"
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
   git pull --no-ff --all
-  test_or_die "git fetch origin"
+  test_or_die "git pulling all upstream"
 
 
 echo The rest of pull is not being done yet.
