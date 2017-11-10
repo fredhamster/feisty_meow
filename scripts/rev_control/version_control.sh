@@ -264,16 +264,18 @@ function do_update()
     if test_writeable ".git"; then
       $blatt
       retval=0
-      local myself="$(my_branch_name)"
-      local parent="$(parent_branch_name)"
+#      local myself="$(my_branch_name)"
+#      local parent="$(parent_branch_name)"
+#
+#      if [ "$myself" != "$parent" ]; then
+#        git pull origin "$parent" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+#        retval+=${PIPESTATUS[0]}
+#      else
 
-      if [ "$myself" != "$parent" ]; then
-        git pull origin "$parent" 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
+        git pull --all 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
         retval+=${PIPESTATUS[0]}
-      else
-        git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-        retval+=${PIPESTATUS[0]}
-      fi
+
+#      fi
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
