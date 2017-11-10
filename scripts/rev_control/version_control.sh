@@ -395,4 +395,3 @@ function perform_revctrl_action_on_file()
   rm $tempfile
 }
 
-
