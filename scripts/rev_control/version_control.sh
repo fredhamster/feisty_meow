@@ -9,8 +9,6 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
-#hmmm: we need to dump all the outputs in this script into splitter
-
 ##############
 
 # the maximum depth that the recursive functions will try to go below the starting directory.
@@ -88,11 +86,6 @@ function do_checkin()
         git commit .
         test_or_die "git commit"
       fi
-
-#      # upload the files to the server so others can see them.
-#      git push 2>&1 | grep -v "X11 forwarding request failed"
-#      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
-#      test_or_die "git push"
 
       # a new set of steps we have to take to make sure the branch integrity is good.
       careful_git_update 
@@ -278,26 +271,22 @@ sep
 
 # the git update process just gets more and more complex when you bring in
 # branches, so we've moved this here to avoid having a ton of code in the
-# do_checkin method.
+# other methods.
 function careful_git_update()
 {
-
   local this_branch="$(my_branch_name)"
 
-#we want my branch here, don't we?  not like parent or anything?
-  check_branch_state "$this_branch"
-  state=$?
-  test_or_continue "branch state check"
-  echo the branch state is $state
-#need to instead do something here if fails.
-# above is worse than useless code; in the situations i'm seeing fail, it reports no changes.  *&@#*&@#
+#appears to be useless; reports no changes when we need to know about remote changes that do exist:
+#  check_branch_state "$this_branch"
+#  state=$?
+#  test_or_continue "branch state check"
+#  echo the branch state is $state
 
-echo DOING BRANCH WALKER
   # the above are just not enough.  this code is now doing what i have to do when i repair the repo.
   local branch_list=$(git branch |grep -v '^\*')
   local bran
   for bran in $branch_list; do
-echo GETTING LATEST ON: $bran
+    echo "synchronizing remote branch: $bran"
     git checkout "$bran"
     test_or_die "git checking out remote branch: $bran"
     git pull --no-ff
@@ -307,20 +296,14 @@ echo GETTING LATEST ON: $bran
   git checkout "$this_branch"
   test_or_die "git checking out our current branch: $this_branch"
 
-echo NOW REMOTE UPDATE
-
   # first update all our remote branches to their current state from the repos.
   git remote update
   test_or_die "git remote update"
 
-echo NOW THE FULL PULL
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
   git pull --no-ff --all
   test_or_die "git pulling all upstream"
-
-echo DONE CAREFUL UPDATE
-
 }
 
 # gets the latest versions of the assets from the upstream repository.
