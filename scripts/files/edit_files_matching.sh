@@ -10,8 +10,8 @@ function print_instructions()
 
   echo "for example:"
 
-  echo "  $(basename $0 .sh) ~/feisty_meow hoople.net hoople.org"
-  echo "the above will search the directory ~/feisty_meow for all matches to"
+  echo "  $(basename $0 .sh) $FEISTY_MEOW_APEX hoople.net hoople.org"
+  echo "the above will search the directory $FEISTY_MEOW_APEX for all matches to"
   echo "the two patterns 'hoople.org' and 'hoople.net'."
 
   exit 1
