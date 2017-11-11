@@ -18,8 +18,6 @@
 
 ##############
 
-echo "yodel; feisty apex=$FEISTY_MEOW_APEX; feisty scripts=$FEISTY_MEOW_SCRIPTS"
-
 # this script cannot handle figuring out where it lives, so approaches that
 # get the WORKDIR will fail.  this is a consequence of this always being used
 # in bash's 'source' directive, which does not pass the script name as
@@ -50,16 +48,17 @@ directory where it is stored, e.g.:
 
 and run this command (the whole unwieldy thing on multiple lines):
 
-echo pwd outside \$(pwd\) ;
+##############
   exec bash -i 3<<EOF 4<&0 <&3
-echo pwd inside is \$(pwd\);
+    echo -e '\n\n^^^ errors above here indicate potential problems in .bashrc ^^^'
     export FEISTY_MEOW_APEX=\"\$(pwd)\";
-    export FEISTY_MEOW_APEX=\$FEISTY_MEOW_APEX;
     export FEISTY_MEOW_SCRIPTS=\$FEISTY_MEOW_APEX/scripts;
-    /bin/bash \$FEISTY_MEOW_APEX/scripts/core/reconfigure_feisty_meow.sh;
-    source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh;
+    export FEISTY_MEOW_SHOW_LAUNCH_GREETING=yes
+    /bin/bash \$(pwd)/scripts/core/reconfigure_feisty_meow.sh;
+    source \$(pwd)/scripts/core/launch_feisty_meow.sh;
     exec 3>&- <&4
 EOF
+##############
 
 Note that this assumes that the .bashrc file could still need editing to fix
 an erroneous FEISTY_MEOW_APEX variable, so we skip it above when bash runs.
@@ -79,14 +78,11 @@ else
 fi
 
 #; /bin/bash -i --norc --noprofile\" > \$HOME/fm-fix 
-#; exec /bin/bash -i --norc --noprofile -c 'bash \$HOME/fm-fix ; echo hello ; read line; read line ;read line'
+#; exec /bin/bash -i --norc --noprofile -c 'bash \$HOME/fm-fix ; echo hello ; read line'
 #--norc --noprofile 
 #; source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh
 
 if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
-
-echo GOT TO NO REPAIRS PLACE
-read line
 
   # we believe it's safe to run through the rest of this script.
 
@@ -215,9 +211,15 @@ read line
 
   fi  # no error occurred.
 
-else
-echo SOME REPAIRS WERE NEEED
-read line
+  if [ ! -z "$FEISTY_MEOW_SHOW_LAUNCH_GREETING" ]; then
+    echo
+    echo
+    echo "welcome to the feisty meow zone of peace, one of many refuges in the uncountably"
+    echo "infinite multiverses that are hypothetically possible."
+    echo
+    echo
+    unset FEISTY_MEOW_SHOW_LAUNCH_GREETING
+  fi
 
 fi # "$NO_REPAIRS_NEEDED" was == "true" 
 
