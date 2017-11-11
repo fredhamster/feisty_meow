@@ -1,7 +1,7 @@
 
 ##############
 
-# initializes the feisty meow environment for "normal" users (not intended for the root user).
+# provides a macro to initialize the feisty meow environment for the "root" user.
 
 ##############
 
@@ -20,14 +20,12 @@ export HISTFILESIZE=8000000
 ##############
 
 # system-wide install:
-export FEISTY_MEOW_APEX="/usr/local/fred/feisty_meow"
+export FEISTY_MEOW_APEX="/opt/feistymeow.org/feisty_meow"
 # personal install:
 #export FEISTY_MEOW_APEX="$HOME/feisty_meow"
 
-# sets up the feisty_meow scripts if appropriate for the environment.
-if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
-  source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
-fi
+# the "fredme" macro enables the feisty_meow environment.
+alias fredme='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'
 
 # if not commented out, then feisty meow will run all the unit tests during builds.
 #export RUN_ALL_TESTS=true
