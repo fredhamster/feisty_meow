@@ -18,6 +18,15 @@
 
 ##############
 
+ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && /bin/pwd )"
+CORE_SCRIPTS_DIR="$(echo "$ORIGINATING_FOLDER" | tr '\\\\' '/' )"
+THIS_TOOL_NAME="$(basename "$0")"
+# repair some paths that we should always be able to auto-calculate.
+export FEISTY_MEOW_SCRIPTS="$( \cd "$CORE_SCRIPTS_DIR/.." && /bin/pwd )"
+export FEISTY_MEOW_APEX="$( \cd "$FEISTY_MEOW_SCRIPTS/.." && /bin/pwd )"
+
+##############
+
 # some preconditions we want to establish before loading anything...
 
 # make sure that aliases can be used in non-interactive shells.
