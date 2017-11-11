@@ -14,16 +14,16 @@
 # HOME, which is pretty lucky for us...
 # please change the name to the user running the cronjob, or to whatever
 # unique string you'd like to use:
-CRONUSER=FILL_CRONUSER_HERE
+CRONUSER=FILL-CRONUSER-HERE
 
 # set the shell to bash.  (not the default for some cron implementations.)
 SHELL=/bin/bash
 
-# set the top-level folder for feisty meow here, since cron gets almost
-# nothing from the user's environment.  this folder needs to be updated for
-# your own particular install location.
+# set the top-level folder for feisty meow here; important because cron gets
+# almost nothing from the user's environment.  this folder needs to be updated
+# for your own particular install location.
+FEISTY_MEOW_APEX=/opt/feistymeow.org/feisty_meow
 #FEISTY_MEOW_APEX=$HOME/feisty_meow
-FEISTY_MEOW_APEX=/usr/local/fred/feisty_meow
 
 # crontab miniature docs:
 #
