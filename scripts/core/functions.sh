@@ -388,6 +388,7 @@ if [ -z "$skip_all" ]; then
       echo "The nechung oracle program cannot be found.  You may want to consider"
       echo "rebuilding the feisty meow applications with this command:"
       echo "bash $FEISTY_MEOW_SCRIPTS/generator/produce_feisty_meow.sh"
+      echo
     else
       $wheres_nechung
     fi
