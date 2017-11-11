@@ -50,13 +50,11 @@ and run this command (the whole unwieldy thing on multiple lines):
 
 ##############
   exec bash -i 3<<EOF 4<&0 <&3
-    echo -e '\n\n^^^ errors above here indicate potential problems in .bashrc ^^^'
-    export FEISTY_MEOW_APEX=\"\$(pwd)\";
-    export FEISTY_MEOW_SCRIPTS=\$FEISTY_MEOW_APEX/scripts;
-    export FEISTY_MEOW_SHOW_LAUNCH_GREETING=yes
+    echo -e '\n\n^^^ errors above here indicate potential problems in .bashrc ^^^';
+    export FEISTY_MEOW_APEX=\"\$(pwd)\"; export FEISTY_MEOW_SCRIPTS=\$FEISTY_MEOW_APEX/scripts;
+    export FEISTY_MEOW_SHOW_LAUNCH_GREETING=yes;
     /bin/bash \$(pwd)/scripts/core/reconfigure_feisty_meow.sh;
-    source \$(pwd)/scripts/core/launch_feisty_meow.sh;
-    exec 3>&- <&4
+    source \$(pwd)/scripts/core/launch_feisty_meow.sh; exec 3>&- <&4
 EOF
 ##############
 
