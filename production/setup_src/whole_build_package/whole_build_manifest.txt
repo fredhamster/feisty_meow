@@ -8,9 +8,7 @@ production_inis=t
 docs=t
 top_makefile=t
 production_makefile=t
-##customize=t
-database=t
-examples=t
+infobase=t
 scripts=t
 nucleus=t
 octopi=t
@@ -70,7 +68,7 @@ keyword=sources
 #recurse=1
 #keyword=sources
 
-[database]
+[infobase]
 source=$FEISTY_MEOW_APEX/infobase
 target=$TARGET/infobase
 recurse=1
@@ -79,12 +77,6 @@ keyword=sources
 [docs]
 source=$FEISTY_MEOW_APEX/documentation
 target=$TARGET/documentation
-recurse=1
-keyword=sources
-
-[examples]
-source=$FEISTY_MEOW_APEX/examples
-target=$TARGET/examples
 recurse=1
 keyword=sources
 

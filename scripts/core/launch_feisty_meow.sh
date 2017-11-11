@@ -18,6 +18,27 @@
 
 ##############
 
+# this script cannot handle figuring out where it lives, so approaches that
+# get the WORKDIR will fail.  this is a consequence of this always being used
+# in bash's 'source' directive, which does not pass the script name as
+# argument 0.  instead, we just check for the bad condition of a malconfigured
+# script system and try to repair it.
+
+# check if any crucial folder is hosed.  we will torch the existing config
+# to the extent we can.
+if [ ! -d "$FEISTY_MEOW_SCRIPTS" -o ! -d "$FEISTY_MEOW_APEX" ]; then
+  # wipe out the offending variable(s).
+  unset FEISTY_MEOW_SCRIPTS FEISTY_MEOW_APEX
+  # clean out any unfortunate wrongness that may exist in our generated areas.
+  if [ -d "$"FEISTY_MEOW_LOADING_DOCK ]; then \rm -rf "$FEISTY_MEOW_LOADING_DOCK"; fi
+  if [ -d "$FEISTY_MEOW_GENERATED_STORE" ]; then \rm -rf "$FEISTY_MEOW_GENERATED_STORE"; fi
+  # also wipe any values from the variables pointing at generated stuff.
+  unset FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_GENERATED_STORE
+  exec "$*"
+fi
+
+##############
+
 # some preconditions we want to establish before loading anything...
 
 # make sure that aliases can be used in non-interactive shells.
