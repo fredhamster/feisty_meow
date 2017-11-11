@@ -47,9 +47,8 @@ pushd "$dir" &>/dev/null
 test_or_die "changing to directory: $dir"
 tempfile=$(generate_rev_ctrl_filelist)
 test_or_die "generating revision control file list"
-popd &>/dev/null
 
-perform_revctrl_action_on_file "$tempfile" do_careful_git_update "$(\pwd)"
+perform_revctrl_action_on_file "$tempfile" do_careful_git_update
 test_or_die "doing a careful git update on: $tempfile"
 
 # send our little boat down the stream to the dependent repository.
