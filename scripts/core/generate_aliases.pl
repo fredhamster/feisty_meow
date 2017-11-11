@@ -94,11 +94,13 @@ sub rebuild_script_aliases {
   }
   if (length($DEBUG_FEISTY_MEOW)) {
     print "using these alias files:\n";
+print "HEY IS THIS PROBLEM CHILD?\n";
     foreach $i (@ALIAS_DEFINITION_FILES) {
       local $base_of_dir = &basename(&dirname($i));
       local $basename = &basename($i);
       print "  $base_of_dir/$basename\n";
     }
+print "WAS PROBLEM CHILD ABOVE HERE?\n";
   }
 
   # write the aliases for sh and bash scripts.
@@ -147,7 +149,7 @@ if ( ! length("$FEISTY_MEOW_LOADING_DOCK") ) {
 The FEISTY_MEOW_LOADING_DOCK variable is not defined.  This must point to\
 the location where the generated scripts are stored.  You may still need to\
 configure the feisty meow script system with something like:\
-  bash ~/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\
+  bash /opt/feistymeow.org/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\
 Please see http://feistymeow.org for more details.\n";
   exit 1;
 #really need to use better exit codes.
