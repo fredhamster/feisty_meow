@@ -7,7 +7,7 @@
 #
 # Note: this does not yet ensure that the profile is executed on shell
 # startup.  that can be added manually by editing your .bashrc file.
-# read the examples/feisty_meow_startup/bashrc_user file for more details.
+# read the files infobase/feisty_inits for more details.
 
 ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && /bin/pwd )"
 CORE_SCRIPTS_DIR="$(echo "$ORIGINATING_FOLDER" | tr '\\\\' '/' )"

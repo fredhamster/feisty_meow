@@ -17,7 +17,7 @@ if [ -f "$HOME/.bashrc" ] && grep -q "launch_feisty_meow.sh" "$HOME/.bashrc"; th
 else
   # stuff the normal user init file into .bashrc.  not appropriate for root probably, but
   # this is the easy quick start script for normal folks.
-  cat $FEISTY_MEOW_APEX/feisty_inits/dot.bashrc-normal-user |
+  cat $FEISTY_MEOW_APEX/infobase/feisty_inits/dot.bashrc-normal-user |
     sed -e \
       "s?FEISTY_MEOW_APEX=\".*\"?FEISTY_MEOW_APEX=\"$FEISTY_MEOW_APEX\"?" \
       >> "$HOME/.bashrc"

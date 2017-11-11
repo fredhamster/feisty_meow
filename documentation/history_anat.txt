@@ -74,17 +74,21 @@ octopi/
     Octopus design pattern and CROMP protocol reference implementations.  Assorted applications
     based on these.
 
-infabase/
+infobase/
     Some files considered critical to the operations of Feisty Meow Concerns Ltd.  This includes
     the database of fortunes used by the Nechung Oracle Program.
+
+infobase/feisty_inits
+    Some example startup files for use with feisty meow.  These are deployed automatically by
+    the "connect_feisty_meow" command.
+
+infobase/examples/
+    Some files that show how to get work done with Feisty Meow or that show how to do certain
+    tasks in different scripting / programming languages.
 
 documentation/
     Helpful guides and information for Feisty Meow.  Also includes a code documentation generator
     configuration for feisty meow that produces a nice set of web docs, using doxygen.
-
-examples/
-    Some files that show how to get work done with Feisty Meow or that show how to do certain
-    tasks in different scripting / programming languages.
 
 kona/
     Our burgeoning Java libraries.  Not much to see here yet, but there is some code piling
