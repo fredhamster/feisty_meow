@@ -18,6 +18,8 @@
 
 ##############
 
+echo "yodel; feisty apex=$FEISTY_MEOW_APEX; feisty scripts=$FEISTY_MEOW_SCRIPTS"
+
 # this script cannot handle figuring out where it lives, so approaches that
 # get the WORKDIR will fail.  this is a consequence of this always being used
 # in bash's 'source' directive, which does not pass the script name as
@@ -44,22 +46,47 @@ if [ ! -d "$FEISTY_MEOW_APEX" ]; then
 The feisty meow configuration is damaged somehow.  Please change to the
 directory where it is stored, e.g.:
 
-    cd /opt/feistymeow.org/feisty_meow
+  cd /opt/feistymeow.org/feisty_meow
 
-and execute this command:
+and run this command (the whole unwieldy thing on multiple lines):
 
-    export FEISTY_MEOW_APEX=\$(pwd); echo \"export FEISTY_MEOW_APEX=\$FEISTY_MEOW_APEX\" \> \$HOME/\$USER.fm-fix ; exec /bin/bash -c 'source \$HOME/\$USER.fm-fix; /bin/bash \$FEISTY_MEOW_APEX/scripts/core/reconfigure_feisty_meow.sh ; source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh ; /bin/bash -i --norc --noprofile '
+echo pwd outside \$(pwd\) ;
+  exec bash -i 3<<EOF 4<&0 <&3
+echo pwd inside is \$(pwd\);
+    export FEISTY_MEOW_APEX=\"\$(pwd)\";
+    export FEISTY_MEOW_APEX=\$FEISTY_MEOW_APEX;
+    export FEISTY_MEOW_SCRIPTS=\$FEISTY_MEOW_APEX/scripts;
+    /bin/bash \$FEISTY_MEOW_APEX/scripts/core/reconfigure_feisty_meow.sh;
+    source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh;
+    exec 3>&- <&4
+EOF
 
 Note that this assumes that the .bashrc file could still need editing to fix
-an erroneous FEISTY_MEOW_APEX variable, so we skip it when bash runs.   Check
-\$HOME/.bashrc to see if a change there will fix the above error.
+an erroneous FEISTY_MEOW_APEX variable, so we skip it above when bash runs.
+Check \$HOME/.bashrc to see if a change there will fix the problem.
 
 "
+else
+  # apex is good, so let's make the scripts good too.
+  if [ ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
+    export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
+  fi
+  # check again to test our belief system...
+  if [ ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
+    unset NO_REPAIRS_NEEDED
+    echo -e "The feisty meow scripts cannot be found under the current top:\n  FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX"
+  fi
 fi
 
+#; /bin/bash -i --norc --noprofile\" > \$HOME/fm-fix 
+#; exec /bin/bash -i --norc --noprofile -c 'bash \$HOME/fm-fix ; echo hello ; read line; read line ;read line'
+#--norc --noprofile 
 #; source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh
 
 if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
+
+echo GOT TO NO REPAIRS PLACE
+read line
 
   # we believe it's safe to run through the rest of this script.
 
@@ -187,6 +214,10 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     fi
 
   fi  # no error occurred.
+
+else
+echo SOME REPAIRS WERE NEEED
+read line
 
 fi # "$NO_REPAIRS_NEEDED" was == "true" 
 
