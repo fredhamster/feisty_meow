@@ -75,7 +75,7 @@ PERLLIB=$PERLLIB PERL5LIB=$PERLLIB perl "$FEISTY_MEOW_SCRIPTS/core/generate_alia
 #echo after the generate aliases, perllib is $PERLLIB
 
 if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-  echo established these variables for feisty_meow assets:
+  echo this is the variable config file for feisty_meow assets:
   echo ==============
   cat "$FEISTY_MEOW_VARIABLES_LOADING_FILE"
   echo ==============
