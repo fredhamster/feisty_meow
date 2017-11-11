@@ -46,7 +46,8 @@ directory where it is stored, e.g.:
 
   cd /opt/feistymeow.org/feisty_meow
 
-and run this command (the whole unwieldy thing on multiple lines):
+and run this command (the whole unwieldy multiple line chunk inside the bars):
+
 
 ##############
   exec bash -i 3<<EOF 4<&0 <&3
@@ -58,9 +59,10 @@ and run this command (the whole unwieldy thing on multiple lines):
 EOF
 ##############
 
-Note that this assumes that the .bashrc file could still need editing to fix
-an erroneous FEISTY_MEOW_APEX variable, so we skip it above when bash runs.
-Check \$HOME/.bashrc to see if a change there will fix the problem.
+
+This code snippet assumes that the .bashrc file could still need editing to
+fix an erroneous FEISTY_MEOW_APEX variable, so we skip it above when bash
+runs.  Check \$HOME/.bashrc to see if a change there will fix the problem.
 
 "
 else
