@@ -20,7 +20,7 @@ export HISTFILESIZE=8000000
 ##############
 
 # system-wide install:
-export FEISTY_MEOW_APEX="/usr/local/fred/feisty_meow"
+export FEISTY_MEOW_APEX="/opt/feistymeow.org/feisty_meow"
 # personal install:
 #export FEISTY_MEOW_APEX="$HOME/feisty_meow"
 

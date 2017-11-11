@@ -147,7 +147,7 @@ if ( ! length("$FEISTY_MEOW_LOADING_DOCK") ) {
 The FEISTY_MEOW_LOADING_DOCK variable is not defined.  This must point to\
 the location where the generated scripts are stored.  You may still need to\
 configure the feisty meow script system with something like:\
-  bash ~/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\
+  bash /opt/feistymeow.org/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\
 Please see http://feistymeow.org for more details.\n";
   exit 1;
 #really need to use better exit codes.
