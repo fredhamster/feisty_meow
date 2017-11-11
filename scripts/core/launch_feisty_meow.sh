@@ -44,14 +44,43 @@ if [ ! -d "$FEISTY_MEOW_APEX" ]; then
 The feisty meow configuration is damaged somehow.  Please change to the
 directory where it is stored, e.g.:
 
-    cd /opt/feistymeow.org/feisty_meow
+  cd /opt/feistymeow.org/feisty_meow
 
-and execute this command:
+and run this command (the whole unwieldy multiple line chunk inside the bars):
 
-    export FEISTY_MEOW_APEX=\"\$(pwd)\"; export FEISTY_MEOW_SCRIPTS=\"\$(pwd)/scripts\"; bash scripts/core/reconfigure_feisty_meow.sh && exec bash -i -c \"source \$(pwd)/core/launch_feisty_meow.sh; bash\"
+
+##############
+  exec bash -i 3<<EOF 4<&0 <&3
+    echo -e '\n\n^^^ errors above here indicate potential problems in .bashrc ^^^';
+    export FEISTY_MEOW_APEX=\"\$(pwd)\"; export FEISTY_MEOW_SCRIPTS=\$FEISTY_MEOW_APEX/scripts;
+    export FEISTY_MEOW_SHOW_LAUNCH_GREETING=yes;
+    /bin/bash \$(pwd)/scripts/core/reconfigure_feisty_meow.sh;
+    source \$(pwd)/scripts/core/launch_feisty_meow.sh; exec 3>&- <&4
+EOF
+##############
+
+
+This code snippet assumes that the .bashrc file could still need editing to
+fix an erroneous FEISTY_MEOW_APEX variable, so we skip it above when bash
+runs.  Check \$HOME/.bashrc to see if a change there will fix the problem.
 
 "
+else
+  # apex is good, so let's make the scripts good too.
+  if [ ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
+    export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
+  fi
+  # check again to test our belief system...
+  if [ ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
+    unset NO_REPAIRS_NEEDED
+    echo -e "The feisty meow scripts cannot be found under the current top:\n  FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX"
+  fi
 fi
+
+#; /bin/bash -i --norc --noprofile\" > \$HOME/fm-fix 
+#; exec /bin/bash -i --norc --noprofile -c 'bash \$HOME/fm-fix ; echo hello ; read line'
+#--norc --noprofile 
+#; source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh
 
 if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
 
@@ -181,6 +210,16 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     fi
 
   fi  # no error occurred.
+
+  if [ ! -z "$FEISTY_MEOW_SHOW_LAUNCH_GREETING" ]; then
+    echo
+    echo
+    echo "welcome to the feisty meow zone of peace, one of many refuges in the uncountably"
+    echo "infinite multiverses that are hypothetically possible."
+    echo
+    echo
+    unset FEISTY_MEOW_SHOW_LAUNCH_GREETING
+  fi
 
 fi # "$NO_REPAIRS_NEEDED" was == "true" 
 
