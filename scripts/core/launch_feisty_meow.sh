@@ -24,141 +24,202 @@
 # argument 0.  instead, we just check for the bad condition of a malconfigured
 # script system and try to repair it.
 
+# we start out thinking things are good.
+NO_REPAIRS_NEEDED=true
+
 # check if any crucial folder is hosed.  we will torch the existing config
 # to the extent we can.
-if [ ! -d "$FEISTY_MEOW_SCRIPTS" -o ! -d "$FEISTY_MEOW_APEX" ]; then
+if [ ! -d "$FEISTY_MEOW_APEX" ]; then
+  # flag some problems.
+  unset NO_REPAIRS_NEEDED
   # wipe out the offending variable(s).
   unset FEISTY_MEOW_SCRIPTS FEISTY_MEOW_APEX
   # clean out any unfortunate wrongness that may exist in our generated areas.
-  if [ -d "$"FEISTY_MEOW_LOADING_DOCK ]; then \rm -rf "$FEISTY_MEOW_LOADING_DOCK"; fi
+  if [ -d "$FEISTY_MEOW_LOADING_DOCK" ]; then \rm -rf "$FEISTY_MEOW_LOADING_DOCK"; fi
   if [ -d "$FEISTY_MEOW_GENERATED_STORE" ]; then \rm -rf "$FEISTY_MEOW_GENERATED_STORE"; fi
   # also wipe any values from the variables pointing at generated stuff.
   unset FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_GENERATED_STORE
-  exec "$*"
-fi
+  echo "
+
+The feisty meow configuration is damaged somehow.  Please change to the
+directory where it is stored, e.g.:
+
+  cd /opt/feistymeow.org/feisty_meow
+
+and run this command (the whole unwieldy multiple line chunk inside the bars):
+
 
 ##############
-
-# some preconditions we want to establish before loading anything...
-
-# make sure that aliases can be used in non-interactive shells.
-shopt -s expand_aliases
-
-# patch the user variable if we were launched by one of our cron jobs.
-if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
-  export USER="$CRONUSER"
-fi
-
+  exec bash -i 3<<EOF 4<&0 <&3
+    echo -e '\n\n^^^ errors above here indicate potential problems in .bashrc ^^^';
+    export FEISTY_MEOW_APEX=\"\$(pwd)\"; export FEISTY_MEOW_SCRIPTS=\$FEISTY_MEOW_APEX/scripts;
+    export FEISTY_MEOW_SHOW_LAUNCH_GREETING=yes;
+    /bin/bash \$(pwd)/scripts/core/reconfigure_feisty_meow.sh;
+    source \$(pwd)/scripts/core/launch_feisty_meow.sh; exec 3>&- <&4
+EOF
 ##############
 
-export ERROR_OCCURRED=
-  # there have been no errors to start with, at least.  we will set this
-  # to non-empty if something bad happens.
 
-if [ -z "$FEISTY_MEOW_LOADING_DOCK" ]; then
-  # FEISTY_MEOW_LOADING_DOCK is where the generated files are located.
-  # this is our single entry point we can use without knowing any variables
-  # yet in the initialization process.
-  export FEISTY_MEOW_LOADING_DOCK="$HOME/.zz_feisty_loading"
-#hmmm: the above is kind of a constant.  that's not so great.
+This code snippet assumes that the .bashrc file could still need editing to
+fix an erroneous FEISTY_MEOW_APEX variable, so we skip it above when bash
+runs.  Check \$HOME/.bashrc to see if a change there will fix the problem.
 
-  # make sure our main variables are established.
-  FEISTY_MEOW_VARIABLES_LOADING_FILE="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
-  if [ ! -f "$FEISTY_MEOW_VARIABLES_LOADING_FILE" ]; then
-    echo -e "\
-
-The feisty meow scripts need initialization via the bootstrap process.  For\n\
-example, if the feisty meow folder lives in '$DEFAULT_FEISTYMEOW_ORG_DIR', then this\n\
-command bootstraps feisty meow:\n\
-\n\
-  bash $example_dir/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\n\
-\n\
-\n"
-    ERROR_OCCURRED=true
+"
+else
+  # apex is good, so let's make the scripts good too.
+  if [ ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
+    export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
   fi
-
-  ##############
-
-  if [ -z "$ERROR_OCCURRED" ]; then
-
-    # pull in our generated variables that are the minimal set we need to find
-    # the rest of our resources.
-    source "$FEISTY_MEOW_VARIABLES_LOADING_FILE"
-
-    # Set up the temporary directory.
-    source "$FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh"
+  # check again to test our belief system...
+  if [ ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
+    unset NO_REPAIRS_NEEDED
+    echo -e "The feisty meow scripts cannot be found under the current top:\n  FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX"
   fi
-
 fi
 
-##############
+#; /bin/bash -i --norc --noprofile\" > \$HOME/fm-fix 
+#; exec /bin/bash -i --norc --noprofile -c 'bash \$HOME/fm-fix ; echo hello ; read line'
+#--norc --noprofile 
+#; source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh
 
-if [ -z "$ERROR_OCCURRED" ]; then
+if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
 
-  # load the larger body of standard feisty meow variables into the environment.
-  # we actually want this to always run also; it will decide what variables need
-  # to be set again.
-  source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
-
-  ##############
-  
-  # include helpful functions.  we do this every time rather than making it part
-  # of variable initialization, because functions cannot be exported to
-  # sub-shells in bash.
-  source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
-  
-  # load some helper methods for the terminal which we'll use below.
-  source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
+  # we believe it's safe to run through the rest of this script.
 
   ##############
   
-  # check hash table before searching path.
-  shopt -s checkhash
-  # don't check path for sourced files.
-  shopt -u sourcepath
-  # ignore duplicate lines.
-  HISTCONTROL=ignoredups
-  # append to the history file.
-  shopt -s histappend
-  # automatically update window size if needed.
-  shopt -s checkwinsize
-
-  ##############
-
-  # make history writes immediate to avoid losing history if bash is zapped.
-  echo $PROMPT_COMMAND | grep -q history
-  if [ $? -ne 0 ]; then
-    # we only change the prompt command if we think it hasn't already been done.
-    export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+  # some preconditions we want to establish before loading anything...
+  
+  # make sure that aliases can be used in non-interactive shells.
+  shopt -s expand_aliases
+  
+  # patch the user variable if we were launched by one of our cron jobs.
+  if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
+    export USER="$CRONUSER"
   fi
   
   ##############
   
-  # perform the bulkier parts of the initialization process.
+  export ERROR_OCCURRED=
+    # there have been no errors to start with, at least.  we will set this
+    # to non-empty if something bad happens.
   
-  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "heavyweight init begins..."; fi
+  if [ -z "$FEISTY_MEOW_LOADING_DOCK" ]; then
+    # FEISTY_MEOW_LOADING_DOCK is where the generated files are located.
+    # this is our single entry point we can use without knowing any variables
+    # yet in the initialization process.
+    export FEISTY_MEOW_LOADING_DOCK="$HOME/.zz_feisty_loading"
+  #hmmm: the above is kind of a constant.  that's not so great.
   
-  # set up the aliases for the shell, but only if they are not already set.
-  type CORE_ALIASES_LOADED &>/dev/null
-  if [ $? -ne 0 ]; then
-    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-      echo "the aliases were missing, now they are being added..."
+    # make sure our main variables are established.
+    FEISTY_MEOW_VARIABLES_LOADING_FILE="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
+    if [ ! -f "$FEISTY_MEOW_VARIABLES_LOADING_FILE" ]; then
+      echo -e "\
+  
+  The feisty meow scripts need initialization via the bootstrap process.  For\n\
+  example, if the feisty meow folder lives in '$DEFAULT_FEISTYMEOW_ORG_DIR', then this\n\
+  command bootstraps feisty meow:\n\
+  \n\
+    bash $example_dir/feisty_meow/scripts/core/reconfigure_feisty_meow.sh\n\
+  \n\
+  \n"
+      ERROR_OCCURRED=true
     fi
-    source "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh"
-  fi
   
-  #echo before the new labelling, terminal titles have:
-  #show_terminal_titles
+    ##############
   
-  # a minor tickle of the title of the terminal, unless we already have some history.
-  label_terminal_with_info
+    if [ -z "$ERROR_OCCURRED" ]; then
   
-  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "heavyweight init is done."; fi
+      # pull in our generated variables that are the minimal set we need to find
+      # the rest of our resources.
+      source "$FEISTY_MEOW_VARIABLES_LOADING_FILE"
   
-  if [ -z "$ERROR_OCCURRED" ]; then
-    # set a sentinel variable to say we loaded the feisty meow environment.
-    export FEISTY_MEOW_SCRIPTS_LOADED=true
+      # Set up the temporary directory.
+      source "$FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh"
+    fi
+  
   fi
 
-fi  # no error occurred.
+  ##############
+
+  if [ -z "$ERROR_OCCURRED" ]; then
+
+    # load the larger body of standard feisty meow variables into the environment.
+    # we actually want this to always run also; it will decide what variables need
+    # to be set again.
+    source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
+
+    ##############
+
+    # include helpful functions.  we do this every time rather than making it part
+    # of variable initialization, because functions cannot be exported to
+    # sub-shells in bash.
+    source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+
+    # load some helper methods for the terminal which we'll use below.
+    source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
+
+    ##############
+
+    # check hash table before searching path.
+    shopt -s checkhash
+    # don't check path for sourced files.
+    shopt -u sourcepath
+    # ignore duplicate lines.
+    HISTCONTROL=ignoredups
+    # append to the history file.
+    shopt -s histappend
+    # automatically update window size if needed.
+    shopt -s checkwinsize
+
+    ##############
+
+    # make history writes immediate to avoid losing history if bash is zapped.
+    echo $PROMPT_COMMAND | grep -q history
+    if [ $? -ne 0 ]; then
+      # we only change the prompt command if we think it hasn't already been done.
+      export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+    fi
+
+    ##############
+
+    # perform the bulkier parts of the initialization process.
+
+    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "heavyweight init begins..."; fi
+
+    # set up the aliases for the shell, but only if they are not already set.
+    type CORE_ALIASES_LOADED &>/dev/null
+    if [ $? -ne 0 ]; then
+      if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+        echo "the aliases were missing, now they are being added..."
+      fi
+      source "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh"
+    fi
+
+    #echo before the new labelling, terminal titles have:
+    #show_terminal_titles
+
+    # a minor tickle of the title of the terminal, unless we already have some history.
+    label_terminal_with_info
+
+    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "heavyweight init is done."; fi
+
+    if [ -z "$ERROR_OCCURRED" ]; then
+      # set a sentinel variable to say we loaded the feisty meow environment.
+      export FEISTY_MEOW_SCRIPTS_LOADED=true
+    fi
+
+  fi  # no error occurred.
+
+  if [ ! -z "$FEISTY_MEOW_SHOW_LAUNCH_GREETING" ]; then
+    echo
+    echo
+    echo "welcome to the feisty meow zone of peace, one of many refuges in the uncountably"
+    echo "infinite multiverses that are hypothetically possible."
+    echo
+    echo
+    unset FEISTY_MEOW_SHOW_LAUNCH_GREETING
+  fi
+
+fi # "$NO_REPAIRS_NEEDED" was == "true" 
 
