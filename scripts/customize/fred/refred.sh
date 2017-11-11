@@ -18,7 +18,7 @@ function refred()
   # special case that makes our software hierarchy folder, if it doesn't exist.
   # everything else is only re-permed if it exists.
   if [ ! -d "$DEFAULT_FEISTYMEOW_ORG_DIR" ]; then
-    sudo mkdir 
+    sudo mkdir "$DEFAULT_FEISTYMEOW_ORG_DIR"
   fi
 
   # iterate across the list of dirs we want fred to own and change their ownership.
