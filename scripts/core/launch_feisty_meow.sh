@@ -48,10 +48,16 @@ directory where it is stored, e.g.:
 
 and execute this command:
 
-    export FEISTY_MEOW_APEX=\"\$(pwd)\"; export FEISTY_MEOW_SCRIPTS=\"\$(pwd)/scripts\"; bash scripts/core/reconfigure_feisty_meow.sh && exec bash -i -c \"source \$(pwd)/core/launch_feisty_meow.sh; bash\"
+    export FEISTY_MEOW_APEX=\$(pwd); echo \"export FEISTY_MEOW_APEX=\$FEISTY_MEOW_APEX\" \> \$HOME/\$USER.fm-fix ; exec /bin/bash -c 'source \$HOME/\$USER.fm-fix; /bin/bash \$FEISTY_MEOW_APEX/scripts/core/reconfigure_feisty_meow.sh ; source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh ; /bin/bash -i --norc --noprofile '
+
+Note that this assumes that the .bashrc file could still need editing to fix
+an erroneous FEISTY_MEOW_APEX variable, so we skip it when bash runs.   Check
+\$HOME/.bashrc to see if a change there will fix the above error.
 
 "
 fi
+
+#; source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh
 
 if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
 
