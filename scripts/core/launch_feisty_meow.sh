@@ -34,7 +34,7 @@ if [ ! -d "$FEISTY_MEOW_SCRIPTS" -o ! -d "$FEISTY_MEOW_APEX" ]; then
   if [ -d "$FEISTY_MEOW_GENERATED_STORE" ]; then \rm -rf "$FEISTY_MEOW_GENERATED_STORE"; fi
   # also wipe any values from the variables pointing at generated stuff.
   unset FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_GENERATED_STORE
-  exec "$*"
+  exec $*
 fi
 
 ##############
