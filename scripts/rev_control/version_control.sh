@@ -451,7 +451,6 @@ function perform_revctrl_action_on_file()
     echo "[$(pwd)]"
     # pass the current directory plus the remaining parameters from function invocation.
     $action . 
-#$*
     test_or_die "performing action $action on: $(pwd)"
     sep 28
     popd &>/dev/null
