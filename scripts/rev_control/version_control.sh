@@ -300,6 +300,9 @@ function do_careful_git_update()
     return 0
   fi
 
+  state=$(check_branch_state "$this_branch")
+  echo "=> branch '$this_branch' state prior to remote update is: $state"
+
   # first update all our remote branches to their current state from the repos.
   git remote update | $TO_SPLITTER
   promote_pipe_return 0
@@ -309,7 +312,7 @@ function do_careful_git_update()
 #appears to be useless; reports no changes when we need to know about remote changes that do exist:
 #hmmm: trying it out again now that things are better elsewhere.  let's see what it says.
   state=$(check_branch_state "$this_branch")
-  echo "=> branch '$this_branch' state is: $state"
+  echo "=> branch '$this_branch' state after remote update is: $state"
 
   # this code is now doing what i have to do when i repair the repo.  and it seems to be good so far.
   local branch_list=$(all_branch_names)
@@ -328,6 +331,8 @@ function do_careful_git_update()
       # we are pretty sure the remote branch does exist.
       git pull --no-ff origin "$bran" | $TO_SPLITTER
       promote_pipe_return 0
+
+      echo "=> branch '$bran' state after pull is: $state"
     fi
     test_or_die "git pull of remote branch: $bran"
   done
