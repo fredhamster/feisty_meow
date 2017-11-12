@@ -19,12 +19,12 @@ function update_source_folders()
   pushd "$folder"
   if [ $? -ne 0 ]; then
     echo Changing to the folder $folder failed.
-    exit 1
+    return 1
   fi
   bash "$FEISTY_MEOW_SCRIPTS/rev_control/rcheckin.sh"
   if [ $? -ne 0 ]; then
     echo Checking out the latest codes has failed somehow for $folder.
-    exit 1
+    return 1
   fi
   popd
 }
@@ -41,7 +41,7 @@ function synch_directory_to_target()
 
   if [ ! -d "$from" ]; then
     echo "skipping synch on missing source directory $from; this is not normal!"
-    exit 1
+    return 1
   fi
   if [ ! -d "$to" ]; then
     echo "skipping synch into non-existent directory $to"
@@ -52,7 +52,7 @@ function synch_directory_to_target()
   netcp "$from"/* "$to"/
   if [ $? -ne 0 ]; then
     echo "The synchronization of $from into $to has failed."
-    exit 1
+    return 1
   fi
 }
 
@@ -71,7 +71,7 @@ function update_archive_drive()
   ls "$target_folder"
   if [ $? -ne 0 ]; then
     echo "The target location '$target_folder' is not mounted currently, so cannot be updated."
-    exit 1
+    return 1
   fi
 
   # synch all our targets.
