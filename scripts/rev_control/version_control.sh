@@ -17,6 +17,11 @@ export MAX_DEPTH=5
 # use our splitter tool for lengthy output if it's available.
 if [ ! -z "$(which splitter)" ]; then
   TO_SPLITTER="$(which splitter)"
+
+#hmmm: another reusable chunk here, getting terminal size.
+  # calculate the number of columsn in the terminal.
+  cols=$(stty size | awk '{print $2}')
+  TO_SPLITTER+=" --maxcol $(($cols - 1))"
 else
   TO_SPLITTER=cat
 fi
@@ -444,8 +449,8 @@ function generate_rev_ctrl_filelist()
 
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
-  \rm "$tempfile"
   echo "$sortfile"
+  \rm "$tempfile"
 }
 
 # iterates across a list of directories contained in a file (first parameter).
@@ -480,6 +485,6 @@ function perform_revctrl_action_on_file()
 
   restore_terminal_title
 
-  rm $tempfile
+  rm "$tempfile"
 }
 

@@ -9,7 +9,21 @@
 # Feel free to send updates to: [ fred@gruntose.com ]
 ##############
 
-# a list of core aliases for feisty meow codebase.
+# this file provides a list of core aliases for feisty meow codebase.
+
+##############
+
+# call the generated aliases file, if it exists.
+# we do this first so that our core aliases get a chance to override the aliases
+# based on scripts.
+
+if [ -f "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh" ]; then 
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo loading script aliases...; fi
+  source "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh"
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo done loading script aliases.; fi
+fi
+
+##############
 
 # repurposes certain commands that feisty meow does a little differently.
 define_yeti_alias cls='clear_colormap; clear'
@@ -79,6 +93,21 @@ define_yeti_alias up='cd ..'
 
 ##############
 
+# some information about the feisty meow codebase itself.
+
+define_yeti_alias feisty_branch='pushd $FEISTY_MEOW_APEX ; git branch ; popd'
+
+##############
+
+# some important retreads on aliases that provide a sudo-ized version of other scripts.
+
+define_yeti_alias standup="sudo bash \"$FEISTY_MEOW_SCRIPTS/site_avenger/standup.sh\""
+
+#hmmm: some magma intrusions from the fred customizations...
+define_yeti_alias revamp_web_permissions="sudo bash \"$FEISTY_MEOW_SCRIPTS/customize/fred/scripts/cakelampvm/revamp_web_permissions.sh"
+
+##############
+
 # extended aliases for meta-operations.
 define_yeti_alias dvd_rip='vobcopy -m'
 define_yeti_alias blu_rip='echo "what would this command be?"'
@@ -100,15 +129,6 @@ define_yeti_alias whereami='echo whoa dude, try not to think about it...'
 define_yeti_alias why='echo We all wonder what the point of the universe is at times.  If you figure it all out, please write us.'
 
 # done with loading up regular aliases now...
-
-##############
-
-# call the generated aliases file, if it exists.
-if [ -f "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh" ]; then 
-  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo loading script aliases...; fi
-  source "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh"
-  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo done loading script aliases.; fi
-fi
 
 ##############
 
