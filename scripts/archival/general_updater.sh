@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# a script that handles synchronization of important assets from the ARCHIVE_COLLECTION_LIST
-# and the SOURCE_HIERARCHY_LIST onto a backup drive of some sort.  it will only copy folders
+# a script that handles synchronization of important assets from the MAJOR_ARCHIVE_SOURCES
+# and the SOURCECODE_HIERARCHY_LIST onto a backup drive of some sort.  it will only copy folders
 # if there is a target folder of the appropriate name already on the backup medium.
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
@@ -57,9 +57,9 @@ function synch_directory_to_target()
 }
 
 # the uber controller method that does the "hard" work of updating.
-# any items from the ARCHIVE_COLLECTION_LIST that are on the target will be
+# any items from the MAJOR_ARCHIVE_SOURCES that are on the target will be
 # updated.  any items found on the target matching the members of the
-# SOURCE_COLLECTION_LIST will be treated as code hierarchies and updated.
+# SOURCECODE_HIERARCHY_LIST will be treated as code hierarchies and updated.
 function update_archive_drive()
 {
   local target_folder="$1"; shift  # where we're backing up to.
@@ -75,7 +75,7 @@ function update_archive_drive()
   fi
 
   # synch all our targets.
-  for currdir in $ARCHIVE_COLLECTION_LIST; do
+  for currdir in $MAJOR_ARCHIVE_SOURCES; do
     synch_directory_to_target "$currdir" "$target_folder/$(basename $currdir)"/
   done
 
@@ -84,7 +84,7 @@ function update_archive_drive()
   # update source code if present.
   echo getting latest fred repositories...
   pushd "$target_folder"
-  for currdir in $SOURCE_HIERARCHY_LIST; do
+  for currdir in $SOURCECODE_HIERARCHY_LIST; do
     update_source_folders $currdir
   done
   

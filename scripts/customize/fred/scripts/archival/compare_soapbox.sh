@@ -10,7 +10,7 @@ function compare_archives_with_target()
 {
   local target="$1"; shift
 
-  for currdir in $ARCHIVE_COLLECTION_LIST; do
+  for currdir in $MAJOR_ARCHIVE_SOURCES; do
     sep
     echo "comparing '$currdir' with target '$target', where 'less thans' are on the target..."
     compare_dirs "$target/$(basename $currdir)" "$currdir"
