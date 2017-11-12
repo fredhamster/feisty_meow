@@ -5,7 +5,7 @@
 # This creates a temporary directory for transient files if such a directory
 # does not already exist.
 
-if [ ! -z "$SHELL_DEBUG" ]; then echo creating temporary directory...; fi
+if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo creating temporary directory...; fi
 
 if [ -z "$TMP" ]; then
   # main declaration of the transients area.
@@ -34,5 +34,5 @@ export TEMP=$TMP
 # Make sure no one else is playing around in the temporary directory.
 chmod 700 $TMP
 
-if [ ! -z "$SHELL_DEBUG" ]; then echo done creating temporary directory....; fi
+if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo done creating temporary directory....; fi
 

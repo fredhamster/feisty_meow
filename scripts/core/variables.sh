@@ -17,16 +17,15 @@
   # this function always exports the variables it defines.
   function define_yeti_variable()
   {
-# if variable exists already, save old value for restore,
+    #hmmm: simple implem just sets it up and exports the variable.
+    #  i.e., this method always exports.
+    export "${@}" 
+
+#hmmm: eventual approach-- if variable exists already, save old value for restore,
 # otherwise save null value for restore,
 # have to handle unsetting if there was no prior value of one
 # we newly defined.
 # add variable name to a list of feisty defined variables.
-
-#hmmm: first implem just sets it up and exports the variable.
-#  i.e., this method always exports.
-export "${@}" 
-
 
 return 0
   }
@@ -51,12 +50,15 @@ define_yeti_variable TERM
 # we'll run this again only if we think it's needed.
 if [ -z "$CORE_VARIABLES_LOADED" ]; then
 
-  if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization begins...; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo variables initialization begins...; fi
   
   ##############
   
   # start with some simpler things.
   
+#hmmm: this needs to come from some configuration item.  especially for installs.
+define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
+
   define_yeti_variable SCRIPT_SYSTEM=feisty_meow
   
   # OS variable records the operating system we think we found.
@@ -94,9 +96,12 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   # this is only used for extreme failure modes, when the values were not
   # pulled in from our auto-generated config.
   if [ -z "$FEISTY_MEOW_APEX" ]; then
-    if [ -d "$HOME/feisty_meow" ]; then
+    if [ -d "/opt/feistymeow.org/feisty_meow" ]; then
+      define_yeti_variable FEISTY_MEOW_APEX="/opt/feistymeow.org/feisty_meow"
+      define_yeti_variable FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
+    elif [ -d "$HOME/feisty_meow" ]; then
       define_yeti_variable FEISTY_MEOW_APEX="$HOME/feisty_meow"
-      define_yeti_variable FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
+      define_yeti_variable FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
     fi
   fi
 
@@ -106,15 +111,15 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   fi
 
   # set up the top-level for all build creations and logs and such.
-  if [ -z "$GENERATED_STORE" ]; then
-    define_yeti_variable GENERATED_STORE="$TMP/generated-feisty_meow"
+  if [ -z "$FEISTY_MEOW_GENERATED_STORE" ]; then
+    define_yeti_variable FEISTY_MEOW_GENERATED_STORE="$TMP/generated-feisty_meow"
   fi
-  if [ ! -d "$GENERATED_STORE" ]; then
-    mkdir -p "$GENERATED_STORE"
+  if [ ! -d "$FEISTY_MEOW_GENERATED_STORE" ]; then
+    mkdir -p "$FEISTY_MEOW_GENERATED_STORE"
   fi
   # set up our effluent outsourcing valves.
   if [ -z "$TEMPORARIES_PILE" ]; then
-    define_yeti_variable TEMPORARIES_PILE="$GENERATED_STORE/temporaries"
+    define_yeti_variable TEMPORARIES_PILE="$FEISTY_MEOW_GENERATED_STORE/temporaries"
   fi
   if [ ! -d "$TEMPORARIES_PILE" ]; then
     mkdir -p "$TEMPORARIES_PILE"
@@ -170,7 +175,6 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   # variables for perl.
   
   define_yeti_variable PERLLIB+="/usr/lib/perl5"
-  define_yeti_variable PERL5LIB+="/usr/lib/perl5"
   if [ "$OS" == "Windows_NT" ]; then
     define_yeti_variable PERLIO=:perlio
       # choose perl's IO over the ms-windows version so we can handle file
@@ -185,10 +189,10 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
       ls $i/*.pl &>/dev/null
       if [ $? -eq 0 ]; then
         PERLLIB+=":$(dos_to_unix_path $i)"
-        PERL5LIB+=":$(dos_to_unix_path $i)"
       fi
     fi
   done
+  define_yeti_variable PERL5LIB=$PERLLIB
   #echo PERLLIB is now $PERLLIB
   
   ##############
@@ -199,16 +203,24 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
 ##  # establish a pipe for less to see our beloved syntax highlighting.
 ##  define_yeti_variable LESSOPEN="| source-highlight -f esc -o STDOUT -i %s"
 
-  # ensure we use the right kind of secure shell.
-#  define_yeti_variable CVS_RSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
-#  define_yeti_variable GIT_SSH=$FEISTY_MEOW_SCRIPTS/security/ssh.sh
-  
   # the base checkout list is just to update feisty_meow.  additional folder
   # names can be added in your customized scripts.  the space at the end of
   # this variable is important and allows users to extend the list like:
   #    define_yeti_variable REPOSITORY_DIR+="muppets configs"
   # see the customize/fred folder for a live example.
-  define_yeti_variable REPOSITORY_LIST=
+  define_yeti_variable REPOSITORY_LIST="$FEISTY_MEOW_APEX "
+
+  # add in any active projects to the repository list.
+  if [ -d "$HOME/active" ]; then
+    REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
+  fi
+  # add in any site avenger applications that are in the apps folder.
+  if [ -d "$HOME/apps" ]; then
+    # first, simple projects.
+    REPOSITORY_LIST+="$(find "$HOME/apps" -iname "avenger5" -type d) "
+    # then, site avenger specific projects.
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
+  fi
   
   # the archive collections list is a set of directories that are major
   # repositories of data which can be synched to backup drives.
@@ -266,7 +278,7 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
 
   define_yeti_variable CORE_VARIABLES_LOADED=true
   
-  if [ ! -z "$SHELL_DEBUG" ]; then echo variables initialization ends....; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo variables initialization ends....; fi
 fi
 
 ##############
@@ -281,7 +293,7 @@ for i in $FEISTY_MEOW_LOADING_DOCK/custom/*.sh; do
     # skip it if it's not real.
     continue;
   fi
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo "loading customization: $(basename $(dirname $i))/$(basename $i)"
   fi
   source "$i"

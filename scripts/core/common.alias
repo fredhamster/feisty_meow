@@ -40,6 +40,7 @@ else
 fi
 # re-use work we did on 'exp' macro for the longer windows command.
 define_yeti_alias explorer=exp
+define_yeti_alias fix_ssh_perms='chmod 700 $HOME/.ssh ; chmod 600 $HOME/.ssh/*'
 define_yeti_alias halt='sudo shutdown -h now'
 define_yeti_alias i=inventory
 define_yeti_alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
@@ -104,9 +105,9 @@ define_yeti_alias why='echo We all wonder what the point of the universe is at t
 
 # call the generated aliases file, if it exists.
 if [ -f "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh" ]; then 
-  if [ ! -z "$SHELL_DEBUG" ]; then echo loading script aliases...; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo loading script aliases...; fi
   source "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh"
-  if [ ! -z "$SHELL_DEBUG" ]; then echo done loading script aliases.; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo done loading script aliases.; fi
 fi
 
 ##############

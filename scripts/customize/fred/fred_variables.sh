@@ -15,7 +15,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   fi
 
   # add a bunch of personal folders to the list for checkin & checkout.
-  REPOSITORY_LIST+="$(basename $FEISTY_MEOW_APEX) cloud ebooks web active/webwork"
+  REPOSITORY_LIST+=" cloud ebooks web "
 
   # adds our locally relevant archive folders into the list to be synched.
   ARCHIVE_COLLECTIONS_LIST+="/z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
@@ -38,15 +38,21 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
 #  export BROWSER=/usr/bin/firefox
 
   # editor and other mixed settings...
-  export EDITOR="$(which vim)"
+  export EDITOR="$(which gvim)"
+  if [ -z "$EDITOR" ]; then
+    export EDITOR="$(which vim)"
+  else
+    # special case for gvim; tell it not to fork or we can't wait for it.
+    EDITOR+=" --nofork"
+  fi
   if [ -z "$EDITOR" ]; then
     EDITOR="$(which vi)"
-    if [ -z "$EDITOR" ]; then
-      EDITOR="$(which emacs)"
-      if [ -z "$EDITOR" ]; then
-        echo "Cannot find a friendly editor."
-      fi
-    fi
+  fi
+  if [ -z "$EDITOR" ]; then
+    EDITOR="$(which emacs)"
+  fi
+  if [ -z "$EDITOR" ]; then
+    echo "Cannot find a friendly editor."
   fi
   export VISUAL="$EDITOR"
   # the editors for revision control must wait while document is edited,

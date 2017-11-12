@@ -258,7 +258,7 @@ if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
 #wrong!  we don't want to whack it all. clean
 
   # recreate our useful junk directories...
-  mkdir -p "$GENERATED_STORE"
+  mkdir -p "$FEISTY_MEOW_GENERATED_STORE"
   mkdir -p "$TEMPORARIES_PILE"
   mkdir -p "$FEISTY_MEOW_LOGS"
 

@@ -16,6 +16,8 @@ function write_apache_config()
 {
   local appname="$1"; shift
   local sitename="$1"; shift
+  local site_path="$1"; shift
+
   local site_config="/etc/apache2/sites-available/${sitename}.conf"
 
   # check if config file already exists and bail if so.
@@ -30,12 +32,19 @@ function write_apache_config()
   echo "Creating a new apache2 site for $sitename with config file:"
   echo "  $site_config"
 
-  # path where site gets checked out, in some arcane manner, and which happens to be
-  # above the path where we put webroot (in the storage suffix, if defined).
-  local path_above="${BASE_PATH}/${appname}"
-  # no slash between appname and suffix, in case suffix is empty.
-  local full_path="${BASE_PATH}/${appname}${STORAGE_SUFFIX}"
+  # if no path, then we default to our standard app storage location.  otherwise, we
+  # put the site where they told us to.
+  if [ -z "$site_path" ]; then
+    # path where site gets checked out, in some arcane manner, and which happens to be
+    # above the path where we put webroot (in the storage suffix, if defined).
+    local path_above="${BASE_PATH}/${appname}"
+    # no slash between appname and suffix, in case suffix is empty.
+    local full_path="${path_above}${STORAGE_SUFFIX}"
 #echo really full path is $full_path
+  else
+    # we'll go with their specification for the site storage.
+    local full_path="$site_path"
+  fi
 
   echo "
 # set up the user's web folder as an apache user web directory.
@@ -88,8 +97,6 @@ function restart_apache()
   fi
 }
 
-# chown folder to group www-data.  can be done without setting a user, right?
-
 # sets up the serverpilot storage location for a user hosted web site.
 function maybe_create_site_storage()
 {
@@ -98,23 +105,22 @@ function maybe_create_site_storage()
   local full_path="$BASE_PATH/$our_app"
   if [ ! -d "$full_path" ]; then
     mkdir -p $full_path
-    check_result "The app storage path could not be created.\n  Path in question is: $full_path"
+    test_or_die "The app storage path could not be created.\n  Path in question is: $full_path"
   fi
 
   # now give the web server some access to the folder.  this is crucial since the folders
-  # can be hosted in any user folder, and the group permissions will usually be only for the user.
-  chown -R $(logname):www-data "$BASE_PATH"
-  check_result "Failed to set www-data as the owner on the path: $full_path"
-  # note that web serving will also hose up unless the path to the folder is writable.  so we walk backwards
-  # and make sure group access is available.
+  # can be hosted in any user folder, and the group permissions will not necessarily be correct already.
   local chow_path="$full_path"
+  # only the first chmod is recursive; the rest just apply to the specific folder of interest.
+  chmod -R g+rx "$chow_path"
+  # walk backwards up the path and fix perms.
   while [[ $chow_path != $HOME ]]; do
-#echo chow path is now $chow_path
-    chmod -R g+rx "$chow_path"
-    check_result "Failed to add group permissions for www-data on the path: $chow_path"
+echo chow path is now $chow_path
+    chmod g+rx "$chow_path"
+    test_or_die "Failed to add group permissions on the path: $chow_path"
     # reassert the user's ownership of any directories we might have just created.
     chown $(logname) "$chow_path"
-    check_result "changing ownership to user failed on the path: $chow_path"
+    test_or_die "changing ownership to user failed on the path: $chow_path"
     chow_path="$(dirname "$chow_path")"
   done
 }
@@ -128,16 +134,24 @@ fi
 
 appname="$1"; shift
 site="$1"; shift
+site_path="$1"; shift
 
 if [ -z "$appname" -o -z "$site" ]; then
-  echo "This script needs to know (1) the appname (application name) for the new"
-  echo "site and (2) the DNS name for the apache virtual host."
-  echo "The appname should work as a file-system compatible folder name."
+#hmmm: move to a print_instructions function.
+  echo "
+$(basename $0): {app name} {dns name} [site path]
+
+This script needs to know (1) the application name for the new site and
+(2) the DNS name for the apache virtual host.  The appname should be an
+appropriate name for a file-system compatible folder name.  There is an
+optional third parameter (3) the path for site storage.  If the site path
+is not provided, we'll use this path:
+  $BASE_PATH/{app name}/$STORAGE_SUFFIX"
   exit 1
 fi
 
 maybe_create_site_storage "$appname"
-write_apache_config "$appname" "$site"
+write_apache_config "$appname" "$site" "$site_path"
 enable_site "$site"
 restart_apache
 

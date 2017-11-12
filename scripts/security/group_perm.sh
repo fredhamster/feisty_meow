@@ -12,9 +12,9 @@ fi
 for (( i=0; i < ${#args[*]}; i++ )); do
   current="${args[i]}"
 #  echo "curr is $current"
-  find "$current" -type d -exec chmod u+rwx,g+rwx {} ';'
+  find -L "$current" -type d -exec chmod u+rwx,g+rwx {} ';'
 ### >/dev/null 2>/dev/null
-  find "$current" -type f -exec chmod u+rw,g+rw {} ';'
+  find -L "$current" -type f -exec chmod u+rw,g+rw {} ';'
 ### >/dev/null 2>/dev/null
 done
 

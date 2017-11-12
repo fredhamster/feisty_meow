@@ -13,9 +13,9 @@ for (( i=0; i < ${#args[*]}; i++ )); do
   current="${args[i]}"
 #  echo "curr is $current"
 
-  find "$current" -type d -exec chmod 777 {} ';'
+  find -L "$current" -type d -exec chmod 777 {} ';'
 # >/dev/null 2>/dev/null
-  find "$current" -type f -exec chmod 666 {} ';'
+  find -L "$current" -type f -exec chmod 666 {} ';'
 # >/dev/null 2>/dev/null
 done
 

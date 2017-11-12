@@ -33,7 +33,8 @@ using namespace structures;
 
 #ifndef BOOT_STRAPPING
   // pull in the version specified for this build.
-///hmmm: on hold!  #include <__build_version.h>
+  #include <__build_version.h>
+//why was this include "on hold"?
 #else
   // plug in a fake version for our bootstrapping process.
   #define __build_FILE_VERSION "108.420.1024.10008"

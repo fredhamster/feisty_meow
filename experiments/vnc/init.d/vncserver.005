@@ -1,0 +1,30 @@
+#!/bin/bash
+PATH="$PATH:/usr/bin/"
+export USER="fredhuff"
+# fredhuff is a different user than my normal user who is logged in on
+# desktop zero.  this is important for display isolation.
+DISPLAY="1"
+DEPTH="16"
+GEOMETRY="1200x800"
+XAUTHORITY="/home/$USER/.Xauthority.vnc"
+OPTIONS="-depth ${DEPTH} -geometry ${GEOMETRY} :${DISPLAY}"
+. /lib/lsb/init-functions
+
+case "$1" in
+start)
+log_action_begin_msg "Starting vncserver for user '${USER}' on localhost:${DISPLAY}"
+su ${USER} -c "/usr/bin/vncserver ${OPTIONS}"
+;;
+
+stop)
+log_action_begin_msg "Stoping vncserver for user '${USER}' on localhost:${DISPLAY}"
+su ${USER} -c "/usr/bin/vncserver -kill :${DISPLAY}"
+;;
+
+restart)
+$0 stop
+$0 start
+;;
+esac
+exit 0
+

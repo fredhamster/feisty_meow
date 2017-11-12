@@ -27,8 +27,8 @@ function whack_single_build_area()
 
   # avoid accidentally removing important stuff if our variables have not been previously
   # established.
-  if [ -z "$GENERATED_STORE" -o -z "$TEMPORARIES_PILE" ]; then
-    echo The build whacking script cannot run because either the GENERATED_STORE
+  if [ -z "$FEISTY_MEOW_GENERATED_STORE" -o -z "$TEMPORARIES_PILE" ]; then
+    echo The build whacking script cannot run because either the FEISTY_MEOW_GENERATED_STORE
     echo variable or the TEMPORARIES_PILE variable have not been set.  This makes
     echo it unsafe to remove anything in the build products.
     exit 1
@@ -37,8 +37,8 @@ function whack_single_build_area()
   # kerzap.  the cleanups in production directory remove older locations of generated files.
   rm -rf \
     "$FEISTY_MEOW_APEX/generatedJUnitFiles" \
-    "$GENERATED_STORE/clam_tmp" \
-    "$GENERATED_STORE/logs" \
+    "$FEISTY_MEOW_GENERATED_STORE/clam_tmp" \
+    "$FEISTY_MEOW_GENERATED_STORE/logs" \
     "$PRODUCTION_STORE/__build_"*.h \
     "$PRODUCTION_STORE/manifest.txt" \
     "$RUNTIME_PATH/binaries" \

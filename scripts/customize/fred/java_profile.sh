@@ -13,7 +13,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 function intuition_failure()
 {
   missing="$1"; shift
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo "Could not intuit '$missing' variable."
   fi
   # remove the variable because its value is busted.

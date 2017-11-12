@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# burns a bluray disc image onto a physical medium.
+
 function show_usage()
 {
   echo "This script needs two parameters, (1) an ISO file that provides the"

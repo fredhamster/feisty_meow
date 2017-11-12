@@ -68,10 +68,14 @@ sub do_dump {
   $shorter_name =~ s/\.txt$//;
   $shorter_name =~ s/_/ /g;
 
-  $dashed_line = $shorter_name;
-  $dashed_line =~ s/./-/g;
+  # we're using the extra equals in front as an almost uniquifier for the
+  # header lines.  we then can treat any matching line as a header, although
+  # some input files could trick this heuristic.
+  $munged_name = "= $shorter_name";
+  $dashed_line = $munged_name;
+  $dashed_line =~ s/./=/g;
 
-  $header_copy =~ s/%1/$shorter_name/;
+  $header_copy =~ s/%1/$munged_name/;
   $header_copy =~ s/%2/$dashed_line/g;
 
 ##print $header_copy;
