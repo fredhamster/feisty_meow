@@ -79,6 +79,12 @@ define_yeti_alias up='cd ..'
 
 ##############
 
+# some information about the feisty meow codebase itself.
+
+define_yeti_alias feisty_branch='pushd $FEISTY_MEOW_APEX ; git branch ; popd'
+
+##############
+
 # extended aliases for meta-operations.
 define_yeti_alias dvd_rip='vobcopy -m'
 define_yeti_alias blu_rip='echo "what would this command be?"'
