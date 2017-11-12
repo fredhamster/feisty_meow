@@ -266,6 +266,11 @@ function check_branch_state()
 {
   local branch="$1"; shift
 
+  if [ -z "$branch" ]; then
+    echo "No branch was passed to check branch state."
+    return 1
+  fi
+
   local to_return=120  # unknown issue.
 
   local local_branch=$(git rev-parse @)
