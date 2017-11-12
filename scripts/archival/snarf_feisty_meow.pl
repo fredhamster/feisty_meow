@@ -35,7 +35,7 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 
 # grab the top level stuff.
-&backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore"));
+&backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore", "*.yml"));
 
 # snarf up all the important directories.
 # CAK: current as of 2012-05-05.

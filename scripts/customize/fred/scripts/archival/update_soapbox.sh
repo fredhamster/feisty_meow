@@ -6,7 +6,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/archival/shared_updater_parts.sh"
 
 # where we're backing up to.
-TARGET_FOLDER="/media/fred/fredmusicprime"
+TARGET_FOLDER="/media/fred/soapboxdrive"
 
 sep
 
@@ -18,7 +18,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # synch all our targets.
-for currdir in $ARCHIVE_COLLECTIONS_LIST; do
+for currdir in $MAJOR_ARCHIVE_SOURCES; do
   synch_directory_to_target "$currdir" "$TARGET_FOLDER/$(basename $currdir)"/
 done
 
@@ -27,8 +27,9 @@ sep
 # update source code if present.
 echo getting latest fred repositories...
 pushd "$TARGET_FOLDER"
-update_source_folders extra_brain
-
+for currdir in $SOURCECODE_HIERARCHY_LIST; do
+  update_source_folders "$curr_dir"
+done
 sep
 
 echo Updated all expected portions of the targets successfully.

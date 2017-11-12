@@ -186,6 +186,11 @@ open(she, ">> $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 @shell_files = (find_files(recursive_find_directories("$FEISTY_MEOW_SCRIPTS")),
     find_files(recursive_find_directories("$FEISTY_MEOW_LOADING_DOCK/custom/scripts")));
 
+# strip out the customization files, since they are added in on demand only.
+#print "before filtering list: @shell_files\n";
+@shell_files = grep ! /\/customize\//, @shell_files;
+#print "after filtering list: @shell_files\n";
+
 #printf "found all these files in main script dirs:\n";
 #printf "  @shell_files\n";
 
