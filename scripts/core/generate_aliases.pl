@@ -43,11 +43,10 @@ sub make_alias {
 sub make_bash_alias {
   local($aliasname) = shift(@_);
   local($full_alias) = $aliasname;
+#print "full alias is $full_alias\n";
   $aliasname =~ s/^.*\/([^\/]*)/\1/;
 #print "alias became $aliasname\n";
-  local($source_dir) = shift(@_);
-#print "bash alias is $aliasname, dir is $source_dir\n";
-  print she "define_yeti_alias $aliasname=\"bash $source_dir/$full_alias.sh\"\n";
+  print she "define_yeti_alias $aliasname=\"bash $full_alias.sh\"\n";
 }
 
 # makes an alias for a perl script given the alias name.
@@ -56,9 +55,7 @@ sub make_perl_alias {
   local($full_alias) = $aliasname;
   $aliasname =~ s/^.*\/([^\/]*)/\1/;
 #print "alias became $aliasname\n";
-  local($source_dir) = shift(@_);
-#print "perl alias is $aliasname, dir is $source_dir\n";
-  print she "define_yeti_alias $aliasname=\"perl $source_dir/$full_alias.pl\"\n";
+  print she "define_yeti_alias $aliasname=\"perl $full_alias.pl\"\n";
 }
 
 ##############
