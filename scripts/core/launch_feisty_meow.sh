@@ -122,9 +122,8 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     fi
   
     ##############
-  
+
     if [ -z "$ERROR_OCCURRED" ]; then
-  
       # pull in our generated variables that are the minimal set we need to find
       # the rest of our resources.
       source "$FEISTY_MEOW_VARIABLES_LOADING_FILE"
@@ -138,10 +137,9 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   ##############
 
   if [ -z "$ERROR_OCCURRED" ]; then
-
-    # load the larger body of standard feisty meow variables into the environment.
-    # we actually want this to always run also; it will decide what variables need
-    # to be set again.
+    # no error occurred in our tests above, so load the larger body of standard feisty
+    # meow variables into the environment.  we actually want this to always run also;
+    # it will decide what variables need to be set again.
     source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
 
     ##############
@@ -156,6 +154,7 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
 
     ##############
 
+#hmmm: abstract this to a twiddle shell options method.
     # check hash table before searching path.
     shopt -s checkhash
     # don't check path for sourced files.
@@ -188,9 +187,7 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
       if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
         echo "the aliases were missing, now they are being added..."
       fi
-echo HEEE HAHAHAHAHA
       source "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh"
-echo HOOOOEY
     fi
 
     #echo before the new labelling, terminal titles have:
@@ -217,6 +214,9 @@ echo HOOOOEY
     echo
     unset FEISTY_MEOW_SHOW_LAUNCH_GREETING
   fi
+
+  # load the last bits we do here.
+  source "$FEISTY_MEOW_LOADING_DOCK/fmc_ending_sentinel.sh"
 
 fi # "$NO_REPAIRS_NEEDED" was == "true" 
 

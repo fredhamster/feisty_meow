@@ -152,9 +152,13 @@ Please see http://feistymeow.org for more details.\n";
 #really need to use better exit codes.
 }
 
+##############
+
 $FEISTY_MEOW_LOADING_DOCK =~ s/\\/\//g;
 $FEISTY_MEOW_SCRIPTS =~ s/\\/\//g;
 $FEISTY_MEOW_APEX =~ s/\\/\//g;
+
+##############
 
 # create our generated shells directory if it's not already there.
 if (! -d $FEISTY_MEOW_LOADING_DOCK) {
@@ -168,9 +172,13 @@ if (-d $FEISTY_MEOW_BINARIES) {
   system("chmod -R u+x \"$FEISTY_MEOW_BINARIES\"/*");
 }
 
+##############
+
 # generate the first set of alias files that are defined in the core
 # and custom scripts directories.
 &rebuild_script_aliases;
+
+##############
 
 # trash the old versions.
 unlink("$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
@@ -178,6 +186,8 @@ unlink("$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 if (length($DEBUG_FEISTY_MEOW)) {
   printf "writing $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh...\n";
 }
+
+##############
 
 # open the alias files to be created.
 open(she, ">> $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
@@ -217,4 +227,18 @@ foreach $file (@shell_files) {
 
 close(she);
 
+##############
+
+# prepare a finalizer chunk that is the last thing to load.
+
+open(she, ">> $FEISTY_MEOW_LOADING_DOCK/fmc_ending_sentinel.sh");
+
+# write in our sentinel alias that says alias loading was handled.
+print she "define_yeti_alias CORE_ALIASES_LOADED=true\n";
+
+close(she);
+
+##############
+
 1;
+
