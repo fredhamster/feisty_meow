@@ -25,7 +25,7 @@ else
       sed -e \
         "s?FEISTY_MEOW_APEX=\".*\"?FEISTY_MEOW_APEX=\"$FEISTY_MEOW_APEX\"?" \
         >> "$HOME/.bashrc"
-    echo "Feisty Meow is now configured in '~/.bashrc'."
+    echo "Feisty Meow is now configured in '~/.bashrc' for standard users."
   else
     # stuff the root user init file into .bashrc.  this one doesn't automatically load
     # feisty meow.  instead, it provides a fredme macro to load the feisty meow scripts.
@@ -35,7 +35,7 @@ else
       sed -e \
         "s?FEISTY_MEOW_APEX=\".*\"?FEISTY_MEOW_APEX=\"$FEISTY_MEOW_APEX\"?" \
         >> "$HOME/.bashrc"
-    echo "Feisty Meow is now configured in '~/.bashrc'."
+    echo "Feisty Meow is now configured in '~/.bashrc' for the root user."
   fi
 fi
 
