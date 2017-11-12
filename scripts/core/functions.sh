@@ -363,14 +363,15 @@ if [ -z "$skip_all" ]; then
   # sudo function wraps the normal sudo by ensuring we replace the terminal
   # label if they're doing an su with the sudo.
   function sudo() {
-#    local first_command="$1"
     save_terminal_title
     /usr/bin/sudo "$@"
+    retval=$?
     restore_terminal_title
 #    if [ "$first_command" == "su" ]; then
 #      # yep, they were doing an su, but they're back now.
 #      label_terminal_with_info
 #    fi
+    return $retval
   }
   
   # trashes the .#blah files that cvs and subversion leave behind when finding conflicts.
