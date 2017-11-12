@@ -18,7 +18,9 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   REPOSITORY_LIST+=" cloud ebooks web "
 
   # adds our locally relevant archive folders into the list to be synched.
-  ARCHIVE_COLLECTIONS_LIST+="/z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
+  ARCHIVE_COLLECTION_LIST+="/z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
+  # our set of known source hierarchy folder names.
+  SOURCE_HIERARCHY_LIST="codebarn extra_brain interbrane"
 
   # point to our local certificate for ssh usage.
   export SVN_SSH="ssh -i $HOME/.ssh/id_dsa_sourceforge"

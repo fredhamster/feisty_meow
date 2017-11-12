@@ -228,7 +228,10 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   
   # the archive collections list is a set of directories that are major
   # repositories of data which can be synched to backup drives.
-  define_yeti_variable ARCHIVE_COLLECTIONS_LIST=
+  define_yeti_variable ARCHIVE_COLLECTION_LIST=
+  # the source collections list is a set of directories that indicate they
+  # harbor a lot of source code underneath.
+  define_yeti_variable SOURCE_HIERARCHY_LIST=
 
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()

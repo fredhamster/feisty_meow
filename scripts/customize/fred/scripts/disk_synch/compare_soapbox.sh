@@ -17,6 +17,8 @@ function compare_archives_with_target()
   done
 }
 
+#hmmm: generalize this one also.
+
 compare_archives_with_target /media/fred/soapboxdrive
 
 sep

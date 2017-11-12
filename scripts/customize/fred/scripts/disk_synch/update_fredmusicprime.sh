@@ -18,7 +18,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # synch all our targets.
-for currdir in $ARCHIVE_COLLECTIONS_LIST; do
+for currdir in $ARCHIVE_COLLECTION_LIST; do
   synch_directory_to_target "$currdir" "$TARGET_FOLDER/$(basename $currdir)"/
 done
 
@@ -27,7 +27,7 @@ sep
 # update source code if present.
 echo getting latest fred repositories...
 pushd "$TARGET_FOLDER"
-update_source_folders extra_brain
+update_source_folders $SOURCE_HIERARCHY_LIST
 
 sep
 
