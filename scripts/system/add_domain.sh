@@ -35,9 +35,9 @@ function write_new_domain_file()
   if [ -f $domain_file ]; then
     echo "The domain configuration file already exists at:"
     echo "  $domain_file"
-    echo "Please remove this file before proceeding, if it is junk.  For example:"
-    echo "  sudo rm $domain_file"
-    exit 1
+    echo "Since we don't want to tear that down if it has specialized configuration"
+    echo "data in it, we will just leave it in place and consider our job done.
+    exit 0
   fi
 
   echo "
