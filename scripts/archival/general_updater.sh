@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# a script that handles synchronization of important assets from the MAJOR_ARCHIVE_SOURCES
+# and the SOURCECODE_HIERARCHY_LIST onto a backup drive of some sort.  it will only copy folders
+# if there is a target folder of the appropriate name already on the backup medium.
+
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 # given a location in the filesystem, we will go to that location and attempt to
@@ -51,4 +55,43 @@ function synch_directory_to_target()
     exit 1
   fi
 }
+
+# the uber controller method that does the "hard" work of updating.
+# any items from the MAJOR_ARCHIVE_SOURCES that are on the target will be
+# updated.  any items found on the target matching the members of the
+# SOURCECODE_HIERARCHY_LIST will be treated as code hierarchies and updated.
+function update_archive_drive()
+{
+  local target_folder="$1"; shift  # where we're backing up to.
+  local currdir  # loop variable.
+
+  sep
+
+  echo Target drive currently has...
+  ls "$target_folder"
+  if [ $? -ne 0 ]; then
+    echo "The target location '$target_folder' is not mounted currently, so cannot be updated."
+    exit 1
+  fi
+
+  # synch all our targets.
+  for currdir in $MAJOR_ARCHIVE_SOURCES; do
+    synch_directory_to_target "$currdir" "$target_folder/$(basename $currdir)"/
+  done
+
+  sep
+
+  # update source code if present.
+  echo getting latest fred repositories...
+  pushd "$target_folder"
+  for currdir in $SOURCECODE_HIERARCHY_LIST; do
+    update_source_folders $currdir
+  done
+  
+  sep
+
+  echo successfully updated all expected portions of the target drive at:
+  echo "  $target_folder"
+}
+
 
