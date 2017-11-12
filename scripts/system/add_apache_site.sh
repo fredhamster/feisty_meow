@@ -24,9 +24,9 @@ function write_apache_config()
   if [ -f "$site_config" ]; then
     echo "The apache configuration file already exists at:"
     echo "  $site_config"
-    echo "Please remove this file before proceeding, if it is junk.  For example:"
-    echo "  sudo rm $site_config"
-    exit 1
+    echo "Since apache configuration files can get very complex, we do not want to"
+    echo "assume that this file is removable.  Calling the site addition done."
+    exit 0
   fi
 
   echo "Creating a new apache2 site for $sitename with config file:"

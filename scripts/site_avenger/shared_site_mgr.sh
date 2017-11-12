@@ -11,11 +11,14 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-# get our configuration loaded.
+# get our configuration loaded, if we know the config file.
+# if there is none, we will use our default version.
 export SITE_MANAGEMENT_CONFIG_FILE
 if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
   SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/config/default.app"
 fi
+
+# load in at least the default version to get us moving.
 source "$SITE_MANAGEMENT_CONFIG_FILE"
 test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
 
@@ -83,6 +86,25 @@ function find_app_folder()
   test_or_die "Testing application folder: $app_dirname"
 
   echo "Application folder is: $app_dirname"
+
+  local configfile="$WORKDIR/config/${app_dirname}.app"
+  if [ ! -f "$configfile" ]; then
+    # this is not a good config file.  we can't auto-guess the config.
+    echo -e "
+There is no specific site configuration file in:
+  $configfile
+We will continue onward using the default and hope that this project follows
+the standard pattern for cakephp projects."
+    # we'll pull in the default config file we set earlier; this will
+    # reinitialize some variables based on the app name.
+  else
+    # they gave us a valid config file.  let's try using it.
+    SITE_MANAGEMENT_CONFIG_FILE="$configfile"
+  fi
+
+  # try to load the config.
+  source "$SITE_MANAGEMENT_CONFIG_FILE"
+  test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
 }
 
 # ensures that the app directory name is valid.

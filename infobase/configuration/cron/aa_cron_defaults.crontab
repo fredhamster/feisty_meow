@@ -23,7 +23,6 @@ SHELL=/bin/bash
 # almost nothing from the user's environment.  this folder needs to be updated
 # for your own particular install location.
 FEISTY_MEOW_APEX=/opt/feistymeow.org/feisty_meow
-#FEISTY_MEOW_APEX=$HOME/feisty_meow
 
 # crontab miniature docs:
 #
