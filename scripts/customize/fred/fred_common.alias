@@ -2,11 +2,6 @@
 # some aliases that i don't expect very many people to ever want.
 # these are very specific to drives and such that i use but which other people wouldn't.
 
-echo "got to alias additions in fred_common.alias!!!"
-
-#### pull in any code dependencies.
-###source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"
-
 # updates the mounted barkuptree drive with stuff on wildmutt.
 define_yeti_alias update_barkuptree='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/barkuptreedrive"'
 
@@ -19,7 +14,6 @@ define_yeti_alias update_fredmusicprime='source "$FEISTY_MEOW_SCRIPTS/archival/g
 # updates my little 1 TB "soapbox" style usb drive with any appropriate archives and source.
 define_yeti_alias update_soapbox='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/soapboxdrive"'
 
-
 # moo and unmoo mount the local folders i use most.
 #no longer used.  we are doing mostly full directory stores without nfs mounts these days.
 #define_yeti_alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky ; check_mount /z/fredgrid'
@@ -28,4 +22,5 @@ define_yeti_alias update_soapbox='source "$FEISTY_MEOW_SCRIPTS/archival/general_
 # load in the gffs build scripts.
 # not currently used.  this probably was adding a bit of startup time.
 #source "$FEISTY_MEOW_SCRIPTS/buildor/gffs_builders.sh"
+
 
