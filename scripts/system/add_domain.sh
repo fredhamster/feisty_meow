@@ -33,10 +33,12 @@ function write_new_domain_file()
   echo "using the config file: $domain_file"
 
   if [ -f $domain_file ]; then
+    echo
     echo "The domain configuration file already exists at:"
     echo "  $domain_file"
     echo "Since we don't want to tear that down if it has specialized configuration"
     echo "data in it, we will just leave it in place and consider our job done."
+    echo
     exit 0
   fi
 
