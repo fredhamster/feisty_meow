@@ -27,6 +27,7 @@ sudo chown -R developer:developer /home/developer \
 
 
 sudo chown -R fred:fred	/home/fred \
+  /opt/feistymeow.org \
   /home/archives/stuffing \
 
 
