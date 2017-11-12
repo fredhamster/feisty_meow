@@ -132,7 +132,7 @@ function restart_bind()
 
 # main body of script.
 
-if (( $EUID != 0 )); then
+if [[ $EUID != 0 ]]; then
   echo "This script must be run as root or sudo."
   exit 1
 fi
