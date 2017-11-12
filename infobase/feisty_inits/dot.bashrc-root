@@ -19,10 +19,8 @@ export HISTFILESIZE=8000000
 
 ##############
 
-# system-wide install:
+# system-wide install (will be fixed by connect_feisty_meow script):
 export FEISTY_MEOW_APEX="/opt/feistymeow.org/feisty_meow"
-# personal install:
-#export FEISTY_MEOW_APEX="$HOME/feisty_meow"
 
 # the "fredme" macro enables the feisty_meow environment.
 alias fredme='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'

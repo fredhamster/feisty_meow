@@ -67,7 +67,7 @@ runs.  Check \$HOME/.bashrc to see if a change there will fix the problem.
 "
 else
   # apex is good, so let's make the scripts good too.
-  if [ ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
+  if [ -z "$FEISTY_MEOW_SCRIPTS" -o ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
     export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
   fi
   # check again to test our belief system...
@@ -76,11 +76,6 @@ else
     echo -e "The feisty meow scripts cannot be found under the current top:\n  FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX"
   fi
 fi
-
-#; /bin/bash -i --norc --noprofile\" > \$HOME/fm-fix 
-#; exec /bin/bash -i --norc --noprofile -c 'bash \$HOME/fm-fix ; echo hello ; read line'
-#--norc --noprofile 
-#; source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh
 
 if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
 
