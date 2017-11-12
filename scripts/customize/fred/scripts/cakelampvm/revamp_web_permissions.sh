@@ -27,6 +27,8 @@ group_perm /var/www
 # set up access on some important folders for the developer user.
 chown -R developer:developer /home/developer /opt/feistymeow.org /etc/apache2 /etc/bind 
 normal_perm /opt/feistymeow.org 
+# don't want others trying to check feisty meow in.
+harsh_perm /opt/feistymeow.org/feisty_meow/.git
 harsh_perm /home/developer/.ssh
 group_perm /etc/apache2 /etc/bind 
 
