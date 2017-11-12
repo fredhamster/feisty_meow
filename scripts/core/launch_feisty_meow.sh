@@ -188,7 +188,9 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
       if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
         echo "the aliases were missing, now they are being added..."
       fi
+echo HEEE HAHAHAHAHA
       source "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh"
+echo HOOOOEY
     fi
 
     #echo before the new labelling, terminal titles have:

@@ -205,7 +205,7 @@ foreach $file (@shell_files) {
       || $file =~ /\/\.\.$/
       || $file =~ /\/\.svn$/
       || $file =~ /\/\.git$/
-      || $file =~ /\/customize\/[a-zA-Z0-9_]+\/[a-zA-Z0-9_.]+$/
+      || $file =~ /\/custom\/[a-zA-Z0-9_]+\/[a-zA-Z0-9_.]+$/
 #hmmm: would be nice to have this name in a symbol somewhere instead of having "customize" everywhere.
       ) {
     # just skip this item; it's a special directory or a file we don't want to include.
