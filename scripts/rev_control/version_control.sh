@@ -305,6 +305,8 @@ function do_careful_git_update()
     return 0
   fi
 
+  local this_branch="$(my_branch_name)"
+
   state=$(check_branch_state "$this_branch")
   echo "=> branch '$this_branch' state prior to remote update is: $state"
 
@@ -313,9 +315,6 @@ function do_careful_git_update()
   promote_pipe_return 0
   test_or_die "git remote update"
 
-  local this_branch="$(my_branch_name)"
-#appears to be useless; reports no changes when we need to know about remote changes that do exist:
-#hmmm: trying it out again now that things are better elsewhere.  let's see what it says.
   state=$(check_branch_state "$this_branch")
   echo "=> branch '$this_branch' state after remote update is: $state"
 
