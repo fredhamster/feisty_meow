@@ -31,6 +31,11 @@ overridden by setting the SITE_MANAGEMENT_CONFIG_FILE environment variable."
 # check for parameters.
 app_dirname="$1"; shift
 
+if (( $EUID != 0 )); then
+  echo "This script must be run as root or sudo."
+  exit 1
+fi
+
 if [ -z "$app_dirname" ]; then
   print_instructions
 fi
