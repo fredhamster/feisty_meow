@@ -95,6 +95,7 @@ function update_archive_drive()
   echo successfully updated all expected portions of the target drive at:
   echo "  $target_folder"
   echo
+  popd
 }
 
 
