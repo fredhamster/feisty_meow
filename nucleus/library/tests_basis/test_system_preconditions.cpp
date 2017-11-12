@@ -136,7 +136,7 @@ int test_system_preconditions::execute()
   ASSERT_FALSE(chunko, "chunko whack test should succeed");
   ASSERT_FALSE(alias, "aliased lorkas whack test should succeed");
   ASSERT_TRUE(lorkas, "original lorkas should not have been cleared");
-  lorkas = NIL;
+  lorkas = NULL_POINTER;
 
   ASSERT_EQUAL((int)sizeof(testing_file_struct), (int)sizeof(FILE),
       "struct size test, sizeof testing_file_struct and sizeof FILE should not differ");

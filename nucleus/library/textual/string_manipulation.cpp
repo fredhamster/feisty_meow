@@ -323,7 +323,7 @@ abyte string_manipulation::char_to_hex(char to_convert)
 
 byte_array string_manipulation::string_to_hex(const astring &to_convert)
 {
-  byte_array to_return(0, NIL);
+  byte_array to_return(0, NULL_POINTER);
   for (int i = 0; i < to_convert.length() / 2; i++) {
     int str_index = i * 2;
     abyte first_byte = char_to_hex(to_convert.get(str_index));

@@ -44,7 +44,7 @@ public:
   static packable_tree *recursive_unpack(basis::byte_array &packed_form,
            packable_tree_factory &creator);
     //!< unpacks a tree stored in "packed_form" and returns it.
-    /*!< if NIL is returned, then the unpack failed.  the "creator" is needed
+    /*!< if NULL_POINTER is returned, then the unpack failed.  the "creator" is needed
     for making new derived packable_tree objects of the type stored. */
 
   // standard pack, unpack and packed_size methods must be implemented by the derived tree.

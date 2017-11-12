@@ -134,7 +134,7 @@ int marks_sorter::write_new_marks(const astring &output_filename)
 
   // traverse the tree in prefix order.
   tree::iterator itty = _categories.access_root().start(tree::prefix);
-  tree *curr = NIL;  // the current node.
+  tree *curr = NULL_POINTER;  // the current node.
 
   while ( (curr = itty.next()) ) {
     inner_mark_tree *nod = (inner_mark_tree *)curr;

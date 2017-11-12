@@ -54,7 +54,7 @@ public:
 
   octenc_key_record *lock(const octopus_entity &ent);
     //!< locates the key for "ent", if it's stored.
-    /*!< the returned object, unless it's NIL, must be unlocked. */
+    /*!< the returned object, unless it's NULL_POINTER, must be unlocked. */
 
   void unlock(octenc_key_record *to_unlock);
     //!< drops the lock on the key record in "to_unlock".

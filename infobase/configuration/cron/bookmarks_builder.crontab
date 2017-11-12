@@ -1,12 +1,5 @@
 
-SHELL=/bin/bash
-
-# m h dom mon dow command
-
-USER=fred
-
 #[bookmarks builder]
 # regenerate the bookmarks pages.
-24 10 * * * (source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/bookmarks/create_marks.sh ) &>>/tmp/zz_bookmarkingering_$USER.log 
-
+24 10 * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/bookmarks/create_marks.sh ) &>>/tmp/${CRONUSER}-cron-bookmarks_builder.log 
 

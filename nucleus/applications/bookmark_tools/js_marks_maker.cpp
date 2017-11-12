@@ -233,7 +233,7 @@ int marks_maker_javascript::write_marks_page(const astring &output_filename,
 
   // traverse the tree in prefix order.
   tree::iterator itty = _categories.access_root().start(tree::prefix);
-  tree *curr = NIL;
+  tree *curr = NULL_POINTER;
   while ( (curr = itty.next()) ) {
     inner_mark_tree *nod = (inner_mark_tree *)curr;
     // print out the category on this node.

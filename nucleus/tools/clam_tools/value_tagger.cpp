@@ -24,7 +24,6 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <algorithms/shell_sort.h>
 #include <application/application_shell.h>
 #include <application/command_line.h>
 #include <application/hoople_main.h>
@@ -46,6 +45,8 @@
 #include <textual/parser_bits.h>
 
 #include <sys/stat.h>
+
+#include "../../library/algorithms/sorts.h"
 #ifdef __WIN32__
   #include <io.h>
 #endif
@@ -100,7 +101,7 @@ class search_record
 {
 public:
   search_record(const astring &search = astring::empty_string(),
-      bool is_link = false, search_record *link = NIL)
+      bool is_link = false, search_record *link = NULL_POINTER)
   : _search(search), _no_modify(false), _is_link(is_link), _our_link(link),
     _current_value(0), _value_increment(1) {}
 
@@ -215,7 +216,7 @@ private:
 
 value_tagger::value_tagger()
 : application_shell(),
-  _ini(NIL),
+  _ini(NULL_POINTER),
   _dirs_seen(10)
 {
 }
@@ -411,7 +412,7 @@ variables before running a build.\r\n";
     {
       // check for whether this section is linked to another or not.
       astring linked = _ini->load(curr_name, "link", "");
-      search_record *our_link_found = NIL;
+      search_record *our_link_found = NULL_POINTER;
       if (linked.t()) {
         // we found that this should be linked to another item.
         our_link_found = _search_list.find(linked);

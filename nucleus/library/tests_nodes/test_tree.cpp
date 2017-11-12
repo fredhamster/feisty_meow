@@ -37,7 +37,7 @@ const int test_iterations = 20;
 class bogotre : public packable, public tree
 {
 public:
-  bogotre(const char *start = NIL) : who_cares(42), i_sure_dont('l'),
+  bogotre(const char *start = NULL_POINTER) : who_cares(42), i_sure_dont('l'),
         another_useless_int(23) {
     astring to_init(start);
     if (to_init.length() < 1) to_init += "ack";
@@ -152,7 +152,7 @@ larch *test_tree::next(larch *&move, larch *formal(hook), traveller &skip)
 void test_tree::apply(larch *apply_to, applier *to_apply,
     tree::traversal_directions order)
 {
-  larch *curr = NIL;
+  larch *curr = NULL_POINTER;
   for (traveller skippy = apply_to->start(order);
        next(curr, apply_to, skippy); ) to_apply(curr);
 }

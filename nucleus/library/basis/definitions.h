@@ -28,8 +28,11 @@ namespace basis {
 
 // Constants...
 
-//! The value representing a pointer to nothing, or nothing itself.
-#define NIL 0
+//! The value representing a pointer to nothing.
+#define NULL_POINTER 0
+
+////! A null pointer with a type of (void *).
+//#define NULL_VOID_POINTER (void *)NULL_POINTER
 
 //! A fundamental constant measuring the number of bits in a byte.
 #define BITS_PER_BYTE 8
@@ -46,21 +49,6 @@ namespace basis {
 
 //! A fairly important unit which is seldom defined...
 typedef unsigned char abyte;
-/* ridiculous!  all to shut microsoft up about ambiguous byte definitions,
-which seems like a bug. 
-struct byte {
-  byte(unsigned char b = 0) : c_data(b) {}
-//  byte(char b) : c_data(b) {}
-  operator unsigned char() const { return c_data; }
-  operator char() const { return c_data; }
-  operator int() const { return c_data; }
-  operator unsigned int() const { return c_data; }
-  operator bool() const { return (bool)c_data; }
-  byte operator &(byte and_with) { return c_data & and_with; }
-  byte operator |(byte or_with) { return c_data & or_with; }
-  unsigned char c_data;
-};
-*/
 
 #if defined(UNICODE) && defined(__WIN32__)
   //! the flexichar type is always appropriate to hold data for win32 calls.
@@ -183,6 +171,10 @@ public:
     //    the returned object junk in almost all cases.
     // 4996 turns off warnings about deprecated functions, which are mostly
     //    nonsense, since these are mainly the core posix functions.
+#else
+//hmmm: trying to fix complaints about size_t being '?'.
+//  typedef long long __int64;
+  //#define __SIZE_TYPE__ long unsigned int
 #endif  // ms visual c++.
 
 //////////////

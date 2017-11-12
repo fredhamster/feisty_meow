@@ -1,10 +1,5 @@
 
-SHELL=/bin/bash
-
-# m h dom mon dow command
-
-#[tell zooty our ip address]
-# special for firewall host; get zooty informed of our IP so we can make
-# the back-connection and get home.
-0,14,28,42,56 * * * * (bash /home/fred/feisty_meow/scripts/security/tell_zooty_our_ip.sh serene.feistymeow.org fred fred ) &>>/tmp/zooty_tell_report.txt
+#[tell zooty our ip]
+# firewall host only--inform serene/zooty of our home IP address to enable back-connections.
+0,14,28,42,56 * * * * (bash $FEISTY_MEOW_APEX/scripts/security/tell_zooty_our_ip.sh serene.feistymeow.org fred $CRONUSER ) &>>/tmp/${CRONUSER}-cron-tell_zooty_our_ip.log
 

@@ -62,8 +62,8 @@ public:
     // microseconds.
 
   synchronizable *clone_object(const structures::string_array &classifier);
-    // returns a clone of the object listed for "classifier" or NIL if there
-    // are none matching.  the returned object must be destroyed if non-NIL.
+    // returns a clone of the object listed for "classifier" or NULL_POINTER if there
+    // are none matching.  the returned object must be destroyed if non-null.
 
   bool zap(const structures::string_array &classifier);
     // returns true if we were able to find and remove the item held under

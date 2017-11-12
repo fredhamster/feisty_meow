@@ -259,7 +259,7 @@ bool test_hash_table::test_add()
 
 //////////////
 
-hash_table<int, data_shuttle> *_hang_on = NIL;
+hash_table<int, data_shuttle> *_hang_on = NULL_POINTER;
   // must be set before calling the apply method.
 
 #undef UNIT_BASE_THIS_OBJECT
@@ -424,9 +424,9 @@ bool test_hash_table::test_find()
   _hits[FIND - FIRST_TEST]++;
   int rand_indy = randomizer().inclusive(0, _keys_in_use.elements() - 1);
   int find_key = _keys_in_use[rand_indy];
-  data_shuttle *found = NIL;
+  data_shuttle *found = NULL_POINTER;
   ASSERT_TRUE(_the_table.find(find_key, found), "key should be there as expected");
-  ASSERT_NON_NULL(found, "contents should not be NIL");
+  ASSERT_NON_NULL(found, "contents should not be null");
   ASSERT_EQUAL(found->food_bar, find_key, "stored key should be same as real key");
   ASSERT_TRUE(found->snacky_string.length(), "stored string should have length");
   return true;
@@ -461,9 +461,9 @@ bool test_hash_table::test_find_zap_add()
   int rand_indy = randomizer().inclusive(0, _keys_in_use.elements() - 1);
   // this is another key list invariant function, if it works.
   int find_key = _keys_in_use[rand_indy];
-  data_shuttle *found = NIL;
+  data_shuttle *found = NULL_POINTER;
   ASSERT_TRUE(_the_table.find(find_key, found), "key should be locateable");
-  ASSERT_NON_NULL(found, "key should not have NIL contents");
+  ASSERT_NON_NULL(found, "key should not have null contents");
   ASSERT_EQUAL(found->food_bar, find_key, "stored key should be equal to real key");
   ASSERT_TRUE(found->snacky_string.length(), "stored string should not have zero length");
   // zap.

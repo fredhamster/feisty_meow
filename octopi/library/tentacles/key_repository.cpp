@@ -38,7 +38,7 @@ octenc_key_record *key_repository::lock(const octopus_entity &ent)
   FUNCDEF("lock");
   LOG(astring("entity sought=") + ent.text_form());
 #endif
-  octenc_key_record *to_return = NIL;
+  octenc_key_record *to_return = NULL_POINTER;
   _locker.lock();
   to_return = _keys.find(ent.mangled_form());
   if (!to_return) {

@@ -102,7 +102,7 @@ public:
   unique_int _thread_id;
   unique_int _id;
 
-  tagged_mail_stop(const unique_int &id = 0, mail_stop *route = NIL,
+  tagged_mail_stop(const unique_int &id = 0, mail_stop *route = NULL_POINTER,
           const unique_int &thread_id = 0)
       : _route(route), _thread_id(thread_id), _id(id) {}
 
@@ -128,7 +128,7 @@ public:
       tagged_mail_stop *curr = borrow(i);
       if (curr && (curr->_id == id)) return curr;
     }
-    return NIL;
+    return NULL_POINTER;
   }
 
   bool zap(const unique_int &id) {
@@ -363,13 +363,13 @@ bool post_office::register_route(const unique_int &id,
   if (found) return false;  // already exists.
 
   postal_carrier *po = new postal_carrier(*this, id);
-  unique_int thread_id = _threads->add_thread(po, false, NIL);
+  unique_int thread_id = _threads->add_thread(po, false, NULL_POINTER);
     // add the thread so we can record its id.
   tagged_mail_stop *new_stop = new tagged_mail_stop(id, &carrier_path,
       thread_id);
   _routes->append(new_stop);
     // add the mail stop to our listings.
-  po->start(NIL);
+  po->start(NULL_POINTER);
     // now start the thread so it can begin cranking.
   return true;
 }

@@ -5,7 +5,7 @@
 #      would be nice to have a block of opensim variables, perhaps an associative
 #      array of config chunks.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 host=$(echo $(hostname) | sed -e 's/\([^.]*\)\..*/\1/')
 

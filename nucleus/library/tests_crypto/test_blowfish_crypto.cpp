@@ -99,7 +99,7 @@ int test_blowfish::execute()
 #ifdef DEBUG_BLOWFISH
   LOG(a_sprintf("blowfish thread %d starting...", left));
 #endif
-    _threads.add_thread(new blowfish_thread(*this), true, NIL);
+    _threads.add_thread(new blowfish_thread(*this), true, NULL_POINTER);
   }
 
 #ifdef DEBUG_BLOWFISH

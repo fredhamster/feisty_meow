@@ -31,7 +31,7 @@ template <class contents>
 class matrix : protected basis::array<contents>
 {
 public:
-  matrix(int rows = 0, int cols = 0, contents *data = NIL);
+  matrix(int rows = 0, int cols = 0, contents *data = NULL_POINTER);
     //!< the "data" array must have at least "rows" * "cols" contents in it.
   matrix(const matrix &to_copy);
 
@@ -54,7 +54,7 @@ public:
     /*!< the result can be used as a pointer to the whole row of data, or it
     can be indexed into by column to find a row/column position.  this is
     dangerous if one is not careful about ensuring that the column used is
-    within bounds.  if the "row" parameter is out of bounds, then NIL is
+    within bounds.  if the "row" parameter is out of bounds, then NULL_POINTER is
     returned. */
   const contents *operator[] (int row) const;
     //!< dangerous: constant peek into data for "row" in underlying contents.
@@ -111,7 +111,7 @@ private:
 class int_matrix : public matrix<int>
 {
 public:
-  int_matrix(int rows = 0, int cols = 0, int *data = NIL)
+  int_matrix(int rows = 0, int cols = 0, int *data = NULL_POINTER)
       : matrix<int>(rows, cols, data) {}
   int_matrix(const matrix<int> &to_copy) : matrix<int>(to_copy) {}
 };
@@ -120,7 +120,7 @@ public:
 class string_matrix : public matrix<basis::astring>
 {
 public:
-  string_matrix(int rows = 0, int cols = 0, basis::astring *data = NIL)
+  string_matrix(int rows = 0, int cols = 0, basis::astring *data = NULL_POINTER)
       : matrix<basis::astring>(rows, cols, data) {}
   string_matrix(const matrix<basis::astring> &to_copy) : matrix<basis::astring>(to_copy) {}
 };
@@ -129,7 +129,7 @@ public:
 class double_matrix : public matrix<double>
 {
 public:
-  double_matrix(int rows = 0, int cols = 0, double *data = NIL)
+  double_matrix(int rows = 0, int cols = 0, double *data = NULL_POINTER)
       : matrix<double>(rows, cols, data) {}
   double_matrix(const matrix<double> &to_copy) : matrix<double>(to_copy) {}
 };

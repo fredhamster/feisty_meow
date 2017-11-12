@@ -11,6 +11,9 @@ class fix_project_references:
       this script automates the process for you.
       It requires an environment variable called BUILD_TOP that points at the top of all files
       included in a code base.  This is used to find the dependent projects.
+
+
+hmmm: this tool is NOT finished.
   """
   
 ##############

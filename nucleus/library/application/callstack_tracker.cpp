@@ -200,9 +200,9 @@ int callstack_tracker::full_trace_size() const
 frame_tracking_instance::frame_tracking_instance(const char *class_name,
     const char *func, const char *file, int line, bool add_frame)
 : _frame_involved(add_frame),
-  _class(class_name? strdup(class_name) : NIL),
-  _func(func? strdup(func) : NIL),
-  _file(file? strdup(file) : NIL),
+  _class(class_name? strdup(class_name) : NULL_POINTER),
+  _func(func? strdup(func) : NULL_POINTER),
+  _file(file? strdup(file) : NULL_POINTER),
   _line(line)
 {
   if (_frame_involved) {
@@ -215,9 +215,9 @@ frame_tracking_instance::frame_tracking_instance(const char *class_name,
 frame_tracking_instance::frame_tracking_instance
     (const frame_tracking_instance &to_copy)
 : _frame_involved(false),  // copies don't get a right to this.
-  _class(to_copy._class? strdup(to_copy._class) : NIL),
-  _func(to_copy._func? strdup(to_copy._func) : NIL),
-  _file(to_copy._file? strdup(to_copy._file) : NIL),
+  _class(to_copy._class? strdup(to_copy._class) : NULL_POINTER),
+  _func(to_copy._func? strdup(to_copy._func) : NULL_POINTER),
+  _file(to_copy._file? strdup(to_copy._file) : NULL_POINTER),
   _line(to_copy._line)
 {
 }
@@ -231,9 +231,9 @@ void frame_tracking_instance::clean()
     program_wide_stack_trace().pop_frame();
   }
   _frame_involved = false;
-  free(_class); _class = NIL;
-  free(_func); _func = NIL;
-  free(_file); _file = NIL;
+  free(_class); _class = NULL_POINTER;
+  free(_func); _func = NULL_POINTER;
+  free(_file); _file = NULL_POINTER;
   _line = 0;
 }
 
@@ -252,9 +252,9 @@ void frame_tracking_instance::assign(const char *class_name, const char *func,
 {
   clean();
   _frame_involved = false;  // copies don't get a right to this.
-  _class = class_name? strdup(class_name) : NIL;
-  _func = func? strdup(func) : NIL;
-  _file = file? strdup(file) : NIL;
+  _class = class_name? strdup(class_name) : NULL_POINTER;
+  _func = func? strdup(func) : NULL_POINTER;
+  _file = file? strdup(file) : NULL_POINTER;
   _line = line;
 }
 

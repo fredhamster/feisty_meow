@@ -235,8 +235,8 @@ int raw_socket::inner_select(basis::un_int socket, int mode, int timeout,
 
   // select will tell us about the socket.
   int ret = ::select(socket + 1,
-      (mode & SELECTING_JUST_WRITE)? NIL : &read_list,
-      (mode & SELECTING_JUST_READ)? NIL : &write_list,
+      (mode & SELECTING_JUST_WRITE)? NULL_POINTER : &read_list,
+      (mode & SELECTING_JUST_READ)? NULL_POINTER : &write_list,
       &exceptions, time_out);
   int error = critical_events::system_error();
   if (!ret) return 0;  // nothing to report.
@@ -415,8 +415,8 @@ int raw_socket::select(int_array &read_sox, int_array &write_sox,
 
   // select will tell us about the socket.
   int ret = ::select(highest + 1,
-      (read_sox.length())? &read_list : NIL,
-      (write_sox.length())? &write_list : NIL,
+      (read_sox.length())? &read_list : NULL_POINTER,
+      (write_sox.length())? &write_list : NULL_POINTER,
       &exceptions, time_out);
   int error = critical_events::system_error();
 

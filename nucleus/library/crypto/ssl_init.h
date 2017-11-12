@@ -18,6 +18,8 @@
 #include <basis/byte_array.h>
 #include <mathematics/chaos.h>
 
+#include <openssl/opensslv.h>
+
 namespace crypto {
 
 //! provides some initialization for the RSA and blowfish crypto.
@@ -28,11 +30,10 @@ namespace crypto {
   very bottom and it will be managed globally for the entire program.
 */
 
-//we define NEWER_OPENSSL for those places where we're using openssl 1.1.1.
-#if defined(_MSC_VER)
+// we define NEWER_OPENSSL for those places where we're using more recent versions.
+// this forces the code to choose newer methods over deprecated ones.
+#if OPENSSL_VERSION_NUMBER > 0x10100000L
   #define NEWER_OPENSSL
-#else
-//  #define OLDER_OPENSSL
 #endif
 
 class ssl_init : public virtual basis::nameable

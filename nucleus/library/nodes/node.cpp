@@ -26,8 +26,8 @@ namespace nodes {
 // the internal_link class anonymously hangs onto a pointer to the object.
 struct internal_link {
   node *_connection;
-  internal_link(node *destination = NIL) : _connection(destination) {}
-  virtual ~internal_link() { _connection = NIL; }
+  internal_link(node *destination = NULL_POINTER) : _connection(destination) {}
+  virtual ~internal_link() { _connection = NULL_POINTER; }
 };
 
 class node_link_amorph : public amorph<internal_link>
@@ -53,7 +53,7 @@ int node::links() const { return _links->elements(); }
 // set_empty: assumes used correctly by internal functions--no bounds return.
 void node::set_empty(int link_num)
 {
-  internal_link *blank_frank = new internal_link(NIL);
+  internal_link *blank_frank = new internal_link(NULL_POINTER);
   _links->put(link_num, blank_frank);
 }
 
@@ -84,7 +84,7 @@ void node::insert_link(int where, node *to_insert)
 
 node *node::get_link(int link_number) const
 {
-  bounds_return(link_number, 0, _links->elements()-1, NIL);
+  bounds_return(link_number, 0, _links->elements()-1, NULL_POINTER);
   return (*_links)[link_number]->_connection;
 }
 

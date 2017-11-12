@@ -62,6 +62,7 @@ save_err=1
 if [[ "$archive_file" =~ .*\.tar$ \
     || "$archive_file" =~ .*\.tar\.gz$ \
     || "$archive_file" =~ .*\.tar\.bz2$ \
+    || "$archive_file" =~ .*\.tar\.xz$ \
     || "$archive_file" =~ .*\.iar$ \
     || "$archive_file" =~ .*\.oar$ \
     || "$archive_file" =~ .*\.tgz$ \

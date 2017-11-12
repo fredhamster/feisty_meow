@@ -1,0 +1,6 @@
+
+#[backup_mailman_archives]
+# creates a monthly backup of all the mailman list server's archives.
+14 2 28 * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; tar -czf /z/stuffing/archives/mailman_backup_$(hostname)_$(date_stringer).tar.gz /var/lib/mailman ) &>/tmp/${CRONUSER}-cron-mailman_backup.log
+
+

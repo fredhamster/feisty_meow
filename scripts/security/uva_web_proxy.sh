@@ -10,8 +10,6 @@
 
 #hmmm:  none of the user info below will work for others: parameterize it.
 
-#source $HOME/yeti/scripts/launch_feisty_meow.sh
-
 #ssh_host=khandroma.cs.virginia.edu
 ssh_host=mason.cs.virginia.edu
 

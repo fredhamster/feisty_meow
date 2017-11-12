@@ -60,7 +60,7 @@ namespace application {
 
 // this is a placeholder implementation for other platforms.
 window_handle create_simplistic_window(const basis::astring &formal(window_title),
-    const basis::astring &formal(class_name)) { return NIL; }
+    const basis::astring &formal(class_name)) { return NULL_POINTER; }
 void whack_simplistic_window(window_handle formal(f_window)) {}
 
 #else
@@ -127,7 +127,7 @@ window_handle create_simplistic_window(const basis::astring &window_title,
   register_class(class_name);
   window_handle f_window = CreateWindow(basis::to_unicode_temp(class_name), 
       basis::to_unicode_temp(window_title), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
-      0, CW_USEDEFAULT, 0, NIL, NIL, GET_INSTANCE_HANDLE(), NIL);
+      0, CW_USEDEFAULT, 0, NULL_POINTER, NULL_POINTER, GET_INSTANCE_HANDLE(), NULL_POINTER);
   ShowWindow(f_window, SW_HIDE);
   UpdateWindow(f_window);
   return f_window;
@@ -135,7 +135,7 @@ window_handle create_simplistic_window(const basis::astring &window_title,
 
 void whack_simplistic_window(window_handle f_window)
 {
-  SendMessage(f_window, WM_CLOSE, NIL, NIL);
+  SendMessage(f_window, WM_CLOSE, NULL_POINTER, NULL_POINTER);
 //hmmm: is this enough?
 }
 

@@ -123,7 +123,7 @@ assertEquals()
   shunit_return=${SHUNIT_TRUE}
   if [ "${shunit_expected_}" = "${shunit_actual_}" ]; then
     if [ ! -z "$DEBUGGING" -a ! -z "$assertion_name" ]; then
-      echo "    OK: $assertion_name"
+      echo "    OKAY: $assertion_name"
     fi
     _shunit_assertPass
   else
@@ -166,7 +166,7 @@ assertNotEquals()
   shunit_return=${SHUNIT_TRUE}
   if [ "${shunit_expected_}" != "${shunit_actual_}" ]; then
     if [ ! -z "$DEBUGGING" -a ! -z "$assertion_name" ]; then
-      echo "    OK: $assertion_name"
+      echo "    OKAY: $assertion_name"
     fi
     _shunit_assertPass
   else
@@ -357,7 +357,7 @@ assertTrue()
   # record the test
   if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
     if [ ! -z "$DEBUGGING" -a ! -z "$assertion_name" ]; then
-      echo "    OK: $assertion_name"
+      echo "    OKAY: $assertion_name"
     fi
     _shunit_assertPass
   else
@@ -427,7 +427,7 @@ assertFalse()
   # record the test
   if [ ${shunit_return} -eq ${SHUNIT_TRUE} ]; then
     if [ ! -z "$DEBUGGING" -a ! -z "$assertion_name" ]; then
-      echo "    OK: $assertion_name"
+      echo "    OKAY: $assertion_name"
     fi
     _shunit_assertPass
   else
@@ -822,7 +822,7 @@ _shunit_execSuite()
   unset _shunit_test_
 }
 
-# Generates the user friendly report with appropriate OK/FAILED message.
+# Generates the user friendly report with appropriate OKAY/FAILED message.
 #
 # Args:
 #   None
@@ -852,11 +852,11 @@ _shunit_generateReport()
       && _shunit_skipped_="skipped=${__shunit_assertsSkipped}"
 
   if [ ${_shunit_ok_} -eq ${SHUNIT_TRUE} ]; then
-    _shunit_msg_='OK'
+    _shunit_msg_="$(basename $0) PASSED 100% OKAY"
     [ -n "${_shunit_skipped_}" ] \
         && _shunit_msg_="${_shunit_msg_} (${_shunit_skipped_})"
   else
-    _shunit_msg_="FAILED (${_shunit_failures_}"
+    _shunit_msg_="$(basename $0) FAILED (${_shunit_failures_}"
     [ -n "${_shunit_skipped_}" ] \
         && _shunit_msg_="${_shunit_msg_},${_shunit_skipped_}"
     _shunit_msg_="${_shunit_msg_})"

@@ -58,7 +58,7 @@ int &hoople_service::_timer_period() { static int _tim = 0; return _tim; }
 
 //////////////
 
-static hoople_service *_global_hoople_service = NIL;
+static hoople_service *_global_hoople_service = NULL_POINTER;
   // this static object is set by the setup() method.  it should only come
   // into existence once during a program's lifetime.
 
@@ -208,7 +208,7 @@ bool hoople_service::launch_event_loop(hoople_service &alert,
 
   MSG msg;
   msg.hwnd = 0; msg.message = 0; msg.wParam = 0; msg.lParam = 0;
-  while (!alert.is_defunct() && (GetMessage(&msg, NIL, 0, 0)) {
+  while (!alert.is_defunct() && (GetMessage(&msg, NULL_POINTER, 0, 0)) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }

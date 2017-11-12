@@ -702,7 +702,7 @@ namespace basis {
 	transcode_to_utf16::~transcode_to_utf16()
 	{
 		delete[] _converted;
-		_converted = NIL;
+		_converted = NULL_POINTER;
 	}
 
 	int transcode_to_utf16::length() const
@@ -755,7 +755,7 @@ namespace basis {
 	transcode_to_utf8::~transcode_to_utf8()
 	{
 		delete[] _converted;
-		_converted = NIL;
+		_converted = NULL_POINTER;
 	}
 
 	int transcode_to_utf8::length() const

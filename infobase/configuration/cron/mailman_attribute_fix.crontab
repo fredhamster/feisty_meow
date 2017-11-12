@@ -1,10 +1,5 @@
 
-# m h  dom mon dow   command
-
-SHELL=/bin/bash
-
 #[mailman attribute fix]
-# fix the mailman binaries.
+# fix the mailman log files so that an obnoxious bug doesn't happen on the mailman web site.
 23 5 * * * chmod -R 02775 /var/lib/mailman/logs &>/dev/null 
-
 

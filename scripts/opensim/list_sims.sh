@@ -12,14 +12,14 @@ numbers=(Port hold)
 locats=('Grid Coords' hold)
 
 # run through and get the data first...
-for region_ini in $HOME/opensim/bin/Regions/*; do
-  name="$(grep "\[.*\]" <"$region_ini" | tr -d \[\] | sed -e 's/[\r\n]//g' )"
+for region_ini in $HOME/opensim/bin/Regions/*.ini; do
+  name="$(grep "\[.*\]" <"$region_ini" | head -n 1 | tr -d \[\] | sed -e 's/[\r\n]//g' )"
   if [ ${#name} -gt $max_name ]; then max_name=${#name}; fi
   names[${#names[*]}]=$name
-  port="$(grep "InternalPort" <"$region_ini" | sed -e 's/InternalPort *= *//' -e 's/[\r\n]//g' )"
+  port="$(grep "InternalPort" <"$region_ini" | head -n 1 | sed -e 's/InternalPort *= *//' -e 's/[\r\n]//g' )"
   if [ ${#port} -gt $max_port ]; then max_port=${#port}; fi
   numbers[${#numbers[*]}]=$port
-  location="$(grep "Location" <"$region_ini" | sed -e 's/Location *= *//' -e 's/[\r\n]//g' )"
+  location="$(grep "Location" <"$region_ini" | head -n 1 | sed -e 's/Location *= *//' -e 's/[\r\n]//g' )"
   if [ ${#location} -gt $max_location ]; then max_location=${#location}; fi
   locats[${#locats[*]}]=$location
 done
@@ -40,7 +40,7 @@ locats[1]=$dash
 
 # now print the data in a pleasant fashion...
 indy=0
-for region_ini in header line $HOME/opensim/bin/Regions/*; do
+for region_ini in header line $HOME/opensim/bin/Regions/*.ini; do
   # indy is a zero-based array index.
   name=${names[$indy]}
   port=${numbers[$indy]}

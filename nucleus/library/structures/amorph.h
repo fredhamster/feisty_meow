@@ -29,7 +29,7 @@
 
   An amorph has a specified number of fields at any one time, but the number
   can be changed with "zap", "insert" and "adjust".  Fields in the amorph
-  are either full or empty, where an empty field in the amorph has NIL as
+  are either full or empty, where an empty field in the amorph has NULL_POINTER as
   its content.  "put" adds a new field to the amorph.  "get" retrieves the
   contents of a field as a constant.  "acquire" is used to check a field
   out of the amorph, meaning that the amorph no longer possesses that field.
@@ -67,7 +67,7 @@ public:
     //!< the maximum number of elements currently allowed in this amorph.
 
   int valid_fields() const { return _fields_used; }
-    //!< Returns the number of fields that have non-NIL contents.
+    //!< Returns the number of fields that have non-null contents.
     /*!< This might be different from the number of total elements. */
 
   void adjust(int new_max);
@@ -84,7 +84,7 @@ public:
 
   basis::outcome put(int field, const contents *data);
     //!< Enters an object into the field at index "field" in the amorph.
-    /*!< If "data" is NIL, then the field is cleared.  The amorph considers the
+    /*!< If "data" is NULL_POINTER, then the field is cleared.  The amorph considers the
     pointer "data" to be its own property after put is invoked; "data"
     should not be destructed since the amorph will automatically do so.
     This restriction does not hold if the object is checked back out of
@@ -99,11 +99,11 @@ public:
     //!< a synonym for append.
 
   //! Returns a constant pointer to the information at the index "field".
-  /*! If no information is stored or the field is out range, then NIL is
+  /*! If no information is stored or the field is out range, then NULL_POINTER is
   returned. */
   const contents *get(int field) const;
   //! Returns a pointer to the information at the index "field".
-  /*! Also returns NIL for invalid indexes.  DO NOT destroy the returned
+  /*! Also returns NULL_POINTER for invalid indexes.  DO NOT destroy the returned
   pointer; it is still owned by the amorph. */
   contents *borrow(int field);
 
@@ -153,7 +153,7 @@ public:
   const contents *next_valid(int &field) const;
     //!< Returns the contents of the next valid element at or after "field".
     /*!< "field" is set to the location where an entry was found, if one was
-    actually found.  If none exists at "field" or after it, then NIL is
+    actually found.  If none exists at "field" or after it, then NULL_POINTER is
     returned. */
 
   int find(const contents *to_locate, basis::outcome &o);
@@ -176,9 +176,9 @@ private:
     /*!< This is only used for the debugging version. */
 
   void set_nil(int start, int end);
-    // Puts NIL in the indices between start and end.
+    // Puts NULL_POINTER in the indices between start and end.
     /*!< Does not delete whatever used to reside there; it just sets the
-    pointers to NIL. */
+    pointers to NULL_POINTER. */
 
   // not to be used: amorphs should not be copied because it is intended that
   // they support storing heavyweight objects that either have no copy
@@ -245,7 +245,7 @@ int amorph_packed_size(const amorph<contents> &to_pack);
 
 template <class contents>
 amorph<contents>::amorph(int elements)
-: basis::array<contents *>(elements, NIL, basis::array<contents *>::SIMPLE_COPY
+: basis::array<contents *>(elements, NULL_POINTER, basis::array<contents *>::SIMPLE_COPY
       | basis::array<contents *>::EXPONE | basis::array<contents *>::FLUSH_INVISIBLE),
   _fields_used(0)
 {
@@ -266,7 +266,7 @@ template <class contents>
 void amorph<contents>::set_nil(int start, int end)
 {
   for (int i = start; i <= end; i++)
-    basis::array<contents *>::put(i, (contents *)NIL);
+    basis::array<contents *>::put(i, (contents *)NULL_POINTER);
 }
 
 template <class contents>
@@ -313,7 +313,7 @@ const contents *amorph<contents>::get(int field) const
 {
   FUNCDEF("get");
   CHECK_FIELDS;
-  bounds_return(field, 0, elements() - 1, NIL);
+  bounds_return(field, 0, elements() - 1, NULL_POINTER);
   return basis::array<contents *>::observe()[field];
 }
 
@@ -337,7 +337,7 @@ void amorph<contents>::adjust(int new_maximum)
 
   basis::array<contents *>::insert(old_max, new_fields);
   for (int i = old_max; i < new_maximum; i++) {
-    basis::array<contents *>::put(i, NIL);
+    basis::array<contents *>::put(i, NULL_POINTER);
   }
 }
 
@@ -398,13 +398,13 @@ const contents *amorph<contents>::next_valid(int &field) const
 {
   FUNCDEF("next_valid");
   CHECK_FIELDS;
-  bounds_return(field, 0, elements() - 1, NIL);
+  bounds_return(field, 0, elements() - 1, NULL_POINTER);
   for (int i = field; i < elements(); i++)
     if (basis::array<contents *>::get(i)) {
       field = i;
       return basis::array<contents *>::get(i);
     }
-  return NIL;
+  return NULL_POINTER;
 }
 
 template <class contents>
@@ -412,7 +412,7 @@ basis::outcome amorph<contents>::clear(int field)
 {
   FUNCDEF("clear");
   CHECK_FIELDS;
-  return this->put(field, NIL);
+  return this->put(field, NULL_POINTER);
 }
 
 template <class contents>
@@ -423,7 +423,7 @@ contents *amorph<contents>::acquire(int field)
   contents *to_return = borrow(field);
   if (to_return) {
     _fields_used--;
-    basis::array<contents *>::access()[field] = NIL;
+    basis::array<contents *>::access()[field] = NULL_POINTER;
   }
   return to_return;
 }
@@ -449,7 +449,7 @@ contents *amorph<contents>::borrow(int field)
 {
   FUNCDEF("borrow");
   CHECK_FIELDS;
-  bounds_return(field, 0, elements() - 1, NIL);
+  bounds_return(field, 0, elements() - 1, NULL_POINTER);
   return basis::array<contents *>::access()[field];
 }
 
@@ -511,7 +511,7 @@ void amorph_assign(amorph<contents> &to_assign,
   }
   for (int i = 0; i < to_assign.elements(); i++) {
     if (to_copy.get(i)) to_assign.put(i, new contents(*to_copy.get(i)));
-    else to_assign.put(i, (contents *)NIL);
+    else to_assign.put(i, (contents *)NULL_POINTER);
   }
 }
 

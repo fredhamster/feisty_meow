@@ -103,7 +103,7 @@ public:
   bundle_creator()
       : application_shell(),
         _app_name(filename(_global_argv[0]).basename()),
-        _bundle(NIL), _stub_size(0), _keyword() {}
+        _bundle(NULL_POINTER), _stub_size(0), _keyword() {}
 
   virtual ~bundle_creator() {
     WHACK(_bundle);

@@ -135,7 +135,7 @@ public:
     // server spocket but which does not allow any normal sending or receiving.
     // only root servers can have accept called on them.  the "sock" will be
     // a normal server spocket which can be used to send and receive if it
-    // got connected.  for "sock" to be valid, it must not be returned as NIL
+    // got connected.  for "sock" to be valid, it must return as NULL_POINTER
     // and the returned outcome must be OKAY.  if no new connections are
     // available, then NO_CONNECTION is returned.  if the "wait" flag is true,
     // then the accept on the root server will block until a connection is

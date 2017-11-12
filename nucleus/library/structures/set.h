@@ -38,7 +38,7 @@ public:
   //! Constructs a set with "num" elements, copying them from "init".
   /*! Be very careful to ensure that the array "init" has sufficient length
   for "num" elements to be copied from it. */
-  set(int num = 0, const contents *init = NIL,
+  set(int num = 0, const contents *init = NULL_POINTER,
       basis::un_short flags = basis::array<contents>::EXPONE)
   : basis::array<contents>(num, init, flags) {}
 
@@ -259,7 +259,7 @@ bool set<contents>::remove(const contents &to_remove)
 template <class contents>
 set<contents> set<contents>::intersection(const set &intersect_with) const
 {
-  set<contents> created(0, NIL, this->flags());
+  set<contents> created(0, NULL_POINTER, this->flags());
   const set *smaller = this;
   const set *larger = &intersect_with;
   if (elements() > intersect_with.elements()) {

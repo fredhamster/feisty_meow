@@ -76,11 +76,11 @@ public:
   bool enabled() const { return _enabled; }
     // reports whether this server has been cranked up or not yet.
 
-  basis::outcome enable_servers(bool encrypt, cromp_security *security = NIL);
+  basis::outcome enable_servers(bool encrypt, cromp_security *security = NULL_POINTER);
     // this must be called after construction to start up the object before it
     // will accept client requests.  if "encrypt" is on, then packets will
     // be encrypted and no unencrypted packets will be allowed.  if the
-    // "security" is passed as NIL, then a default security manager is created
+    // "security" is passed as NULL_POINTER, then a default security manager is created
     // and used.  otherwise, the specified "security" object is used and will
     //  _not_ be destroyed when this object goes away.
 
@@ -138,7 +138,7 @@ public:
 
   octopi::infoton *wrap_infoton(octopi::infoton * &request, const octopi::octopus_entity &ent);
     // when we're encrypting, this turns "request" into an encryption_wrapper.
-    // if NIL is returned, then nothing needed to happen to the "request".
+    // if NULL_POINTER is returned, then nothing needed to happen to the "request".
 
 private:
   cromp_client_list *_clients;  // the active set of clients.

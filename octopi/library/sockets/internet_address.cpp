@@ -440,7 +440,7 @@ bool internet_address::is_valid_internet_address(const astring &to_check,
     ip_form += (abyte)nTemp;
 
     // get the next part of the string
-    p = strtok(NIL, ".");
+    p = strtok(NULL_POINTER, ".");
   }
 
   // if p is non-null, there was extra stuff at the end, so return false.

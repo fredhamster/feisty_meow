@@ -136,7 +136,7 @@ public:
       // we grab the lock.
       auto_synchronizer locked(guard());
         // in this case, we make use of auto-synchronizer, handily testing it as well.
-      ASSERT_TRUE(&locked != NIL, "auto_synchronizer should grab the mutex object's lock");
+      ASSERT_TRUE(&locked != NULL_POINTER, "auto_synchronizer should grab the mutex object's lock");
         // this is not a real test, but indicates that we did actually increase the number of
         // unit tests by one, since we're using auto_synchronizer now.
       safe_add(grab_lock, 1);
@@ -241,14 +241,14 @@ int test_mutex::execute()
   amorph<ethread> thread_list;
 
   for (int i = 0; i < DEFAULT_FISH; i++) {
-    ethread *t = NIL;
+    ethread *t = NULL_POINTER;
     if (i % 2) t = new piranha(*this);
     else t = new barracuda(*this);
     thread_list.append(t);
     ethread *q = thread_list[thread_list.elements() - 1];
     ASSERT_EQUAL(q, t, "amorph pointer equivalence is required");
     // start the thread we added.
-    q->start(NIL);
+    q->start(NULL_POINTER);
   }
 
   time_stamp when_to_leave(DEFAULT_RUN_TIME);

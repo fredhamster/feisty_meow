@@ -130,7 +130,7 @@ synchronizable *list_manager::clone_object(const string_array &classifier)
 {
   GRAB_LOCK;
   int indy = locked_find(classifier);
-  if (negative(indy)) return NIL;
+  if (negative(indy)) return NULL_POINTER;
   return dynamic_cast<synchronizable *>(_entries->get(indy)->clone());
 }
 

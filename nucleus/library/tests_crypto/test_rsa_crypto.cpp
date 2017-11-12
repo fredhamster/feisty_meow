@@ -99,7 +99,7 @@ int test_rsa::execute()
   FUNCDEF("execute");
   int left = THREAD_COUNT;
   while (left--) {
-    _threads.add_thread(new rsa_thread(*this), true, NIL);
+    _threads.add_thread(new rsa_thread(*this), true, NULL_POINTER);
   }
 
   while (_threads.threads()) {

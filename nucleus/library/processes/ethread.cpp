@@ -88,7 +88,7 @@ ethread::ethread()
 : _thread_ready(false),
   _thread_active(false),
   _stop_thread(false),
-  _data(NIL),
+  _data(NULL_POINTER),
 #ifdef _MSC_VER
   _handle(0),
 #else
@@ -106,7 +106,7 @@ ethread::ethread(int sleep_timer, timed_thread_types how)
 : _thread_ready(false),
   _thread_active(false),
   _stop_thread(false),
-  _data(NIL),
+  _data(NULL_POINTER),
 #ifdef _MSC_VER
   _handle(0),
 #else
@@ -229,7 +229,7 @@ void ethread::one_shot_thread_driver(void *hidden_pointer)
   FUNCDEF("one_shot_thread_driver");
   ethread *manager = (ethread *)hidden_pointer;
 #ifndef _MSC_VER
-  if (!manager) return NIL;
+  if (!manager) return NULL_POINTER;
 #else
   if (!manager) return;
 #endif
@@ -245,8 +245,8 @@ void ethread::one_shot_thread_driver(void *hidden_pointer)
   _current_threads().decrement();
 #endif
 #ifndef _MSC_VER
-  pthread_exit(NIL);
-  return NIL;
+  pthread_exit(NULL_POINTER);
+  return NULL_POINTER;
 #else
   _endthread();
 #endif
@@ -263,7 +263,7 @@ void ethread::periodic_thread_driver(void *hidden_pointer)
   FUNCDEF("periodic_thread_driver");
   ethread *manager = (ethread *)hidden_pointer;
 #if defined(__UNIX__) || defined(__GNU_WINDOWS__)
-  if (!manager) return NIL;
+  if (!manager) return NULL_POINTER;
 #elif defined(_MSC_VER)
   if (!manager) return;
 #endif
@@ -317,8 +317,8 @@ void ethread::periodic_thread_driver(void *hidden_pointer)
   _current_threads().decrement();
 #endif
 #ifndef _MSC_VER
-  pthread_exit(NIL);
-  return NIL;
+  pthread_exit(NULL_POINTER);
+  return NULL_POINTER;
 #else
   _endthread();
 #endif

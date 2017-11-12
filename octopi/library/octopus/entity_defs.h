@@ -173,7 +173,7 @@ public:
 
   ~infoton_id_pair() {
     delete _data;
-    _data = NIL;
+    _data = NULL_POINTER;
   }
 };
 

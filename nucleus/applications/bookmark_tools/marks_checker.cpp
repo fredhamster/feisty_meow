@@ -19,7 +19,6 @@
 
 #include "bookmark_tree.h"
 
-#include <algorithms/shell_sort.h>
 #include <application/hoople_main.h>
 #include <application/command_line.h>
 #include <basis/astring.h>
@@ -40,6 +39,7 @@
 #include <curl/curl.h>
 #include <signal.h>
 #include <stdlib.h>
+#include "../../library/algorithms/sorts.h"
 
 using namespace algorithms;
 using namespace application;
@@ -301,7 +301,7 @@ int marks_checker::test_all_links()
   FUNCDEF("test_all_links");
   // traverse the tree in prefix order.
   tree::iterator itty = _categories.access_root().start(tree::prefix);
-  tree *curr = NIL;
+  tree *curr = NULL_POINTER;
   while ( (curr = itty.next()) ) {
     inner_mark_tree *nod = dynamic_cast<inner_mark_tree *>(curr);
     if (!nod)
@@ -318,7 +318,7 @@ int marks_checker::test_all_links()
       
       checking_thread *new_thread = new checking_thread(*lin, _bad_lines,
           *this);
-      unique_int id = _checkers.add_thread(new_thread, true, NIL);
+      unique_int id = _checkers.add_thread(new_thread, true, NULL_POINTER);
     }
   }
 
@@ -376,7 +376,7 @@ void marks_checker::write_new_files()
   badness_file.close();
 }
 
-marks_checker *main_program = NIL;
+marks_checker *main_program = NULL_POINTER;
 
 void marks_checker::handle_OS_signal(int formal(sig_id))
 {
@@ -384,7 +384,7 @@ void marks_checker::handle_OS_signal(int formal(sig_id))
   BASE_LOG("caught break signal...  now writing files.");
   if (main_program) main_program->write_new_files();
   BASE_LOG("exiting after handling break.");
-  main_program = NIL;
+  main_program = NULL_POINTER;
   exit(0);
 }
 
@@ -440,7 +440,7 @@ LOG("after reading input...");
   ret = test_all_links();
   
   write_new_files();
-  main_program = NIL;
+  main_program = NULL_POINTER;
 
   curl_global_cleanup();  // shut down cURL engine again.
 

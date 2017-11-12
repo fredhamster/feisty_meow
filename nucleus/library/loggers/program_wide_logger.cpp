@@ -26,7 +26,7 @@ standard_log_base &program_wide_logger::get() { return *c_the_wide_log; }
 
 standard_log_base *program_wide_logger::set(standard_log_base *new_log)
 {
-  if (!new_log) return NIL;  // can't fool me that easily.
+  if (!new_log) return NULL_POINTER;  // can't fool me that easily.
   standard_log_base *old_log = c_the_wide_log;
   c_the_wide_log = new_log;
   return old_log;

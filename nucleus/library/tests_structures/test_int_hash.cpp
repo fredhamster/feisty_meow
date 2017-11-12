@@ -278,7 +278,7 @@ bool test_int_hash::test_add()
 #undef UNIT_BASE_THIS_OBJECT
 #define UNIT_BASE_THIS_OBJECT (*dynamic_cast<unit_base *>(application_shell::single_instance()))
 
-int_hash<data_shuttle> *_hang_on = NIL;
+int_hash<data_shuttle> *_hang_on = NULL_POINTER;
   // must be set before calling the apply method.
 
 bool test_int_hash::equivalence_applier(const int &key, data_shuttle &item, void *dlink)
@@ -452,11 +452,11 @@ bool test_int_hash::test_find()
   _hits[FIND - FIRST_TEST]++;
   int rand_indy = randomizer().inclusive(0, _keys_in_use.elements() - 1);
   int find_key = _keys_in_use[rand_indy];
-  data_shuttle *found = NIL;
+  data_shuttle *found = NULL_POINTER;
   ASSERT_TRUE(_the_table.find(functional_return(find_key), found),
       "key should be there when we look");
   ASSERT_TRUE(_the_table.find(functional_return(find_key)), "find2: key be there when checked");
-  ASSERT_TRUE(found, "when key is found contents should not be NIL");
+  ASSERT_TRUE(found, "when key is found contents should not be null");
   ASSERT_EQUAL(found->food_bar, find_key, "stored key should be same as real key");
   ASSERT_TRUE(found->snacky_string.length(), "stored string should have some length");
   return true;
@@ -491,10 +491,10 @@ bool test_int_hash::test_find_zap_add()
   int rand_indy = randomizer().inclusive(0, _keys_in_use.elements() - 1);
   // this is another key list invariant function, if it works.
   int find_key = _keys_in_use[rand_indy];
-  data_shuttle *found = NIL;
+  data_shuttle *found = NULL_POINTER;
   ASSERT_TRUE(_the_table.find(find_key, found), "key should be there when sought");
   ASSERT_TRUE(_the_table.find(find_key), "find2: key should be there for us to find");
-  ASSERT_TRUE(found, "found key should have non-NIL contents");
+  ASSERT_TRUE(found, "found key should have non-null contents");
   ASSERT_EQUAL(found->food_bar, find_key, "stored key should have no differences from real key");
   ASSERT_TRUE(found->snacky_string.length(), "stored string should have non-zero length");
   // zap.

@@ -7,7 +7,7 @@
 
 #hmmm: may want to revisit default behavior.
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 dirs=()
 
@@ -35,7 +35,7 @@ function flattenizer()
     done
     if [ ! -z "$dirname" -a -d "$dirname" ]; then
       echo "flattening '$dirname'..."
-      zip --symlinks -rm "${dirname}_squished_on_$(date_stringer).zip" "$dirname" &>/dev/null
+      zip --symlinks -rm "${dirname}_squished_on_$(hostname)_at_$(date_stringer).zip" "$dirname" &>/dev/null
     fi
   done
 }

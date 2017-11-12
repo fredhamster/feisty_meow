@@ -64,14 +64,14 @@ public:
   // returns true if the "object" is listed as valid.
   bool listed(void *object) {
     auto_synchronizer l(_lock);
-    live_object_info *loi = NIL;
+    live_object_info *loi = NULL_POINTER;
     return _objects.find(object, loi);
   }
 
   // adds the "object" to the list, or if it's already there, ups the refcount.
   void add(void *object) {
     auto_synchronizer l(_lock);
-    live_object_info *loi = NIL;
+    live_object_info *loi = NULL_POINTER;
     if (!_objects.find(object, loi)) {
       // this is a new item.
       _objects.add(object, new live_object_info);
@@ -85,7 +85,7 @@ public:
   // references.
   void remove(void *object) {
     auto_synchronizer l(_lock);
-    live_object_info *loi = NIL;
+    live_object_info *loi = NULL_POINTER;
     if (!_objects.find(object, loi)) {
       // this item doesn't exist???  bad usage has occurred..
       return;

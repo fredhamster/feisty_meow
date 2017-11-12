@@ -93,8 +93,8 @@ private:
 transporter::transporter()
 : application_shell(),
   _saw_clients(false),
-  _server_side(NIL),
-  _client_side(NIL),
+  _server_side(NULL_POINTER),
+  _client_side(NULL_POINTER),
   _leave_when_no_clients(false),
   _encryption(false),
   _started_okay(false)
@@ -278,7 +278,7 @@ int transporter::push_client_download()
     non_continuable_error(class_name(), func, astring("failed to initiate "
         " the transfer: ") + cromp_client::outcome_name(start_ret));
 
-  infoton *start_reply_tmp = NIL;
+  infoton *start_reply_tmp = NULL_POINTER;
 //hmmm: set timeout appropriate to the speed of the connection!
   outcome first_receipt = _client_side->acquire(start_reply_tmp, cmd_id);
   if (first_receipt != cromp_client::OKAY)
@@ -320,7 +320,7 @@ LOG(a_sprintf("ongoing chunk %d", ++iter));
       non_continuable_error(class_name(), func, astring("failed to send ongoing "
           "chunk: ") + cromp_client::outcome_name(place_ret));
 
-    infoton *place_reply_tmp = NIL;
+    infoton *place_reply_tmp = NULL_POINTER;
 //hmmm: set timeout appropriate to the speed of the connection!
     outcome place_receipt = _client_side->acquire(place_reply_tmp, cmd_id);
     if (place_receipt != cromp_client::OKAY)

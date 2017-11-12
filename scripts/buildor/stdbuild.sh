@@ -5,7 +5,7 @@
 #
 # go to the main folder of the project you're building before you run this.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 echo "$(date_stringer)"
 echo "Building application from $(\pwd)"

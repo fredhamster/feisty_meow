@@ -2,12 +2,16 @@
 
 # This defines some general, useful functions.
 
+#hmmm: starting to get a bit beefy in here.  perhaps there is a good way to refactor the functions into more specific folders, if they aren't really totally general purpose?
+
+##############
+
 # test whether we've been here before or not.
 skip_all=
 type function_sentinel &>/dev/null
 if [ $? -eq 0 ]; then
   # there was no error, so we can skip the inits.
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo "skipping function definitions, because already defined."
   fi
   skip_all=yes
@@ -17,7 +21,7 @@ fi
 
 if [ -z "$skip_all" ]; then
 
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo "feisty meow function definitions beginning now..."
   fi
 
@@ -80,6 +84,15 @@ if [ -z "$skip_all" ]; then
     IFS="$HOLDIFS"
   }
 
+  # when passed a list of things, this will return the unique items from that list as an echo.
+  function uniquify()
+  {
+    # do the uniquification: split the space separated items into separate lines, then
+    # sort the list, then run the uniq tool on the list.  results will be packed back onto
+    # one line when invoked like: local fredlist="$(uniquify a b c e d a e f a e d b)"
+    echo $* | tr ' ' '\n' | sort | uniq
+  }
+
   # sets the variable in parameter 1 to the value in parameter 2, but only if
   # that variable was undefined.
   function set_var_if_undefined()
@@ -108,13 +121,35 @@ if [ -z "$skip_all" ]; then
   # checks the result of the last command that was run, and if that failed,
   # then this complains and exits from bash.  the function parameters are
   # used as the message to print as a complaint.
-  function check_result()
+  function test_or_die()
   {
     if [ $? -ne 0 ]; then
-      echo -e "failed on: $*"
+      echo -e "\n\naction failed: $*\n\nExiting script..."
       error_sound
       exit 1
     fi
+  }
+
+  # like test_or_die, but will keep going after complaining.
+  function test_or_continue()
+  {
+    if [ $? -ne 0 ]; then
+      echo -e "\n\nerror occurred: $*\n\nContinuing script..."
+      error_sound
+    fi
+  }
+
+  # wraps secure shell with some parameters we like, most importantly to enable X forwarding.
+  function ssh()
+  {
+    local args=($*)
+    save_terminal_title
+    # we remember the old terminal title, then force the TERM variable to a more generic
+    # version for the other side (just 'linux'); we don't want the remote side still
+    # thinking it's running xterm.
+    export TERM=linux
+    /usr/bin/ssh -X -C "${args[@]}"
+    restore_terminal_title
   }
 
   # locates a process given a search pattern to match in the process list.
@@ -148,8 +183,9 @@ if [ -z "$skip_all" ]; then
       local pid_finder_pattern='s/ *\([0-9][0-9]*\) *.*$/\1/p'
 
     else
-      # flags which clean up the output on unixes, which apparently cygwin
-      # doesn't count as.  their crappy specialized ps doesn't support this.
+      # flags which clean up the process listing output on unixes.
+      # apparently cygwin doesn't count as a type of unix, because their
+      # crummy specialized ps command doesn't support normal ps flags.
       local EXTRA_UNIX_FLAGS="-o pid,args"
       # pattern to use for peeling off the process numbers.
       local pid_finder_pattern='s/^[[:space:]]*\([0-9][0-9]*\).*$/\1/p'
@@ -244,8 +280,15 @@ if [ -z "$skip_all" ]; then
     done
   }
   
-  function fix_alsa() {
-    sudo /etc/init.d/alsasound restart
+#  function fix_alsa() {
+#    sudo /etc/init.d/alsasound restart
+#  }
+
+  function screen() {
+    save_terminal_title
+#hmmm: ugly absolute path here.
+    /usr/bin/screen $*
+    restore_terminal_title
   }
   
   # switches from a /X/path form to an X:/ form.  this also processes cygwin paths.
@@ -300,7 +343,7 @@ if [ -z "$skip_all" ]; then
       # information for su.
   
       # get the x authority info for our current user.
-      source $FEISTY_MEOW_SCRIPTS/x_win/get_x_auth.sh
+      source "$FEISTY_MEOW_SCRIPTS/security/get_x_auth.sh"
   
       if [ -z "$X_auth_info" ]; then
         # if there's no authentication info to pass along, we just do a normal su.
@@ -315,23 +358,22 @@ if [ -z "$skip_all" ]; then
       # or at least suse doesn't, which is the other one we've tested on.
       /bin/su -l $*
     fi
-  
-    # relabel the console after returning.
-    bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
   }
   
   # sudo function wraps the normal sudo by ensuring we replace the terminal
   # label if they're doing an su with the sudo.
   function sudo() {
-    local first_command="$1"
+#    local first_command="$1"
+    save_terminal_title
     /usr/bin/sudo "$@"
-    if [ "$first_command" == "su" ]; then
-      # yep, they were doing an su, but they're back now.
-      bash $FEISTY_MEOW_SCRIPTS/tty/label_terminal_with_infos.sh
-    fi
+    restore_terminal_title
+#    if [ "$first_command" == "su" ]; then
+#      # yep, they were doing an su, but they're back now.
+#      label_terminal_with_info
+#    fi
   }
   
-  # trashes the .#blah files that cvs and svn leave behind when finding conflicts.
+  # trashes the .#blah files that cvs and subversion leave behind when finding conflicts.
   # this kind of assumes you've already checked them for any salient facts.
   function clean_cvs_junk() {
     for i in $*; do
@@ -346,6 +388,7 @@ if [ -z "$skip_all" ]; then
       echo "The nechung oracle program cannot be found.  You may want to consider"
       echo "rebuilding the feisty meow applications with this command:"
       echo "bash $FEISTY_MEOW_SCRIPTS/generator/produce_feisty_meow.sh"
+      echo
     else
       $wheres_nechung
     fi
@@ -354,55 +397,69 @@ if [ -z "$skip_all" ]; then
   # recreates all the generated files that the feisty meow scripts use.
   function regenerate() {
     # do the bootstrapping process again.
+    save_terminal_title
     echo "regenerating feisty meow script environment."
     bash $FEISTY_MEOW_SCRIPTS/core/reconfigure_feisty_meow.sh
     echo
     # force a full reload by turning off sentinel variables and methods.
     unset -v CORE_VARIABLES_LOADED FEISTY_MEOW_LOADING_DOCK USER_CUSTOMIZATIONS_LOADED
-    unalias CORE_ALIASES_LOADED
+    unalias CORE_ALIASES_LOADED &>/dev/null
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
-    source $FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh
+    source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
     # run nechung oracle to give user a new fortune.
     nechung
+    restore_terminal_title
   }
 
   # copies a set of custom scripts into the proper location for feisty meow
   # to merge their functions and aliases with the standard set.
   function recustomize()
   {
-    user="$1"; shift
-    if [ -z "$user" ]; then
+    local custom_user="$1"; shift
+    if [ -z "$custom_user" ]; then
       # use our default example user if there was no name provided.
-      user=fred
+      custom_user=fred
     fi
-    if [ ! -d "$FEISTY_MEOW_APEX/customize/$user" ]; then
-      echo "The customization folder provided for $user should be:"
-      echo "  '$FEISTY_MEOW_APEX/customize/$user'"
+
+    save_terminal_title
+
+    if [ ! -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" ]; then
+      echo "The customization folder provided for $custom_user should be:"
+      echo "  '$FEISTY_MEOW_SCRIPTS/customize/$custom_user'"
       echo "but that folder does not exist.  Skipping customization."
       return 1
     fi
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
-    incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_APEX/customize/$user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
+    incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
+
+    local fail_message="\nare the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
+    $(grep "apt.*perl" $FEISTY_MEOW_APEX/readme.txt)\n"
     
     #echo "the incongruous files list is: $incongruous_files"
     # disallow a single character result, since we get "*" as result when nothing exists yet.
     if [ ${#incongruous_files} -ge 2 ]; then
       echo "cleaning unknown older overrides..."
       perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
+      test_or_continue "running safedel.  $fail_message" 
       echo
     fi
     popd &>/dev/null
-    echo "copying custom overrides for $user"
+    echo "copying custom overrides for $custom_user"
     mkdir -p "$FEISTY_MEOW_LOADING_DOCK/custom" 2>/dev/null
-    perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_APEX/customize/$user" "$FEISTY_MEOW_LOADING_DOCK/custom"
-    if [ -d "$FEISTY_MEOW_APEX/customize/$user/scripts" ]; then
-      echo "copying custom scripts for $user"
-      \cp -R "$FEISTY_MEOW_APEX/customize/$user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/"
+    perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom"
+    test_or_continue "running cpdiff.  $fail_message"
+
+    if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
+      echo "copying custom scripts for $custom_user"
+      netcp "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
+#hmmm: could save output to show if an error occurs.
     fi
     echo
     regenerate
+
+    restore_terminal_title
   }
 
   # generates a random password where the first parameter is the number of characters
@@ -618,25 +675,16 @@ alias "${@}"
 return 0
   }
 
-  # defines a variable within the feisty meow environment and remembers that
-  # this is a new or modified definition.  if the feisty meow codebase is
-  # unloaded, then so are all the variables that were defined.
-  # this function always exports the variables it defines.
-#  function define_yeti_variable()
-#  {
-## if variable exists already, save old value for restore,
-## otherwise save null value for restore,
-## have to handle unsetting if there was no prior value of one
-## we newly defined.
-## add variable name to a list of feisty defined variables.
-#
-##hmmm: first implem just sets it up and exports the variable.
-##  i.e., this method always exports.
-#export "${@}" 
-#
-#
-#return 0
-#  }
+  ##############
+
+#hmmm: this points to an extended functions file being needed; not all of these are core.
+
+  # displays documentation in "md" formatted files.
+  function show_md()
+  {
+    local file="$1"; shift
+    pandoc "$file" | lynx -stdin
+  }
 
   ##############
 
@@ -664,12 +712,104 @@ return 0
 
   ##############
 
+  # count the number of sub-directories in a directory and echo the result.
+  function count_directories()
+  {
+    local appsdir="$1"; shift
+    numdirs="$(find "$appsdir" -mindepth 1 -maxdepth 1 -type d | wc -l)"
+    echo $numdirs
+  }
+
+  # takes a string and capitalizes just the first character.  any capital letters in the remainder of
+  # the string are made lower case.  the processed string is returned by an echo.
+  function capitalize_first_char()
+  {
+    local to_dromedary="$1"; shift
+    to_dromedary="$(tr '[:lower:]' '[:upper:]' <<< ${to_dromedary:0:1})$(tr '[:upper:]' '[:lower:]' <<< ${to_dromedary:1})"
+    echo "$to_dromedary"
+  }
+
+  # given a source path and a target path, this will make a symbolic link from
+  # the source to the destination, but only if the source actually exists.
+  function make_safe_link()
+  {
+    local src="$1"; shift
+    local target="$1"; shift
+  
+    if [ -d "$src" ]; then
+      ln -s "$src" "$target"
+      test_or_die "Creating symlink from '$src' to '$target'"
+    fi
+    echo "Created symlink from '$src' to '$target'."
+  }
+
+  # pretty prints the json files provided as parameters.
+  function clean_json()
+  {
+    if [ -z "$*" ]; then return; fi
+    local show_list=()
+    while true; do
+      local file="$1"; shift
+      if [ -z "$file" ]; then break; fi
+      if [ ! -f "$file" ]; then "echo File '$file' does not exist."; continue; fi
+      temp_out="$TMP/$file.view"
+      cat "$file" | python -m json.tool > "$temp_out"
+      show_list+=($temp_out)
+      test_or_continue "pretty printing '$file'"
+    done
+    filedump "${show_list[@]}"
+    rm "${show_list[@]}"
+  }
+
+  function json_text()
+  {
+    # only print our special headers or text fields.
+    local CR=$'\r'
+    local LF=$'\n'
+    clean_json $* |
+        grep -i "\"text\":\|^=.*" | 
+        sed -e "s/\\\\r/$CR/g" -e "s/\\\\n/\\$LF/g"
+  }
+
+  ##############
+
+  # echoes the machine's hostname.  can be used like so:
+  #   local my_host=$(get_hostname)
+  function get_hostname()
+  {
+    # there used to be more variation in how to do this, but adopting mingw
+    # and cygwin tools really helped out.
+    local this_host=unknown
+    if [ "$OS" == "Windows_NT" ]; then
+      this_host=$(hostname)
+    elif [ ! -z "$(echo $MACHTYPE | grep apple)" ]; then
+      this_host=$(hostname)
+    elif [ ! -z "$(echo $MACHTYPE | grep suse)" ]; then
+      this_host=$(hostname --long)
+    elif [ -x "$(which hostname 2>/dev/null)" ]; then
+      this_host=$(hostname)
+    fi
+    echo "$this_host"
+  }
+
+  # makes sure that the provided "folder" is a directory and is writable.
+  function test_writeable()
+  {
+    local folder="$1"; shift
+    if [ ! -d "$folder" -o ! -w "$folder" ]; then return 1; fi
+    return 0
+  }
+
+  ##############
+
+  # NOTE: no more function definitions are allowed after this point.
+
   function function_sentinel()
   {
     return 0; 
   }
   
-  if [ ! -z "$SHELL_DEBUG" ]; then echo "feisty meow function definitions done."; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "feisty meow function definitions done."; fi
 
   ##############
 
@@ -679,7 +819,7 @@ return 0
     echo running tests on set_var_if_undefined.
     flagrant=petunia
     set_var_if_undefined flagrant forknordle
-    check_result "testing if defined variable would be whacked"
+    test_or_die "testing if defined variable would be whacked"
     if [ $flagrant != petunia ]; then
       echo set_var_if_undefined failed to leave the test variable alone
       exit 1

@@ -43,7 +43,7 @@ local($CAL_FILE);
 if (! $CAL_FILE) {
 #  print "the CAL_FILE variable is not set.\n";
 #  print "defaulting it to a value that probably does not suit you.\n";
-  $CAL_FILE = "$CLOUD_BASE/infobase/lists/calendar.dat";
+  $CAL_FILE = "$CLOUD_BASE/magic_cabinet/lists/calendar.dat";
 }
 
 #print "calfile is $CAL_FILE\n";

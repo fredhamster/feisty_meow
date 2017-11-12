@@ -98,7 +98,7 @@ void test_array::test_arrays_of_void_pointer()
 {
   FUNCDEF("void pointer test");
   const int MAX_VOID_ARRAY = 20;
-  array<void *> argh(MAX_VOID_ARRAY, NIL, byte_array::SIMPLE_COPY
+  array<void *> argh(MAX_VOID_ARRAY, NULL_POINTER, byte_array::SIMPLE_COPY
       | byte_array::EXPONE | byte_array::FLUSH_INVISIBLE);
   array<void *> argh2(argh);
   ASSERT_EQUAL(argh.length(), MAX_VOID_ARRAY, "check first array length");
@@ -175,7 +175,7 @@ public:
 
   test_content(abyte q = 3)
   : _q(q), _ted("bl"), _jed("orp"),
-    _ned(12, NIL)
+    _ned(12, NULL_POINTER)
 /*    _med(3, 2),
     _red(2, 4) */
   {
@@ -254,7 +254,7 @@ void test_array::array_tester(test_array &ta, const contents &formal(bogus), bas
   for (int c = 0; c < MAX_SIMULTANEOUS_OBJECTS; c++) {
     // set up the initial array guys.
     testers[c] = new array<contents>(a_randomizer.inclusive(MIN_OBJECT, MAX_OBJECT),
-        NIL, flags);
+        NULL_POINTER, flags);
     // copy the randomized junk space into the new object.
     for (int i = 0; i < testers[c]->length(); i++)
       testers[c]->put(i, junk_space[i]);
@@ -311,13 +311,13 @@ void test_array::array_tester(test_array &ta, const contents &formal(bogus), bas
           }
         }
         // now compute an equivalent form of what the state should be.
-        array<contents> equivalent(0, NIL, flags);
+        array<contents> equivalent(0, NULL_POINTER, flags);
         if (at_front) {
           if (smaller) {
             equivalent = old_version.subarray(difference,
                 old_version.length() - 1);
           } else {
-            array<contents> blank(difference, NIL, flags);
+            array<contents> blank(difference, NULL_POINTER, flags);
             for (int i = 0; i < blank.length(); i++)
               blank[i] = 'Q';
             equivalent = blank + old_version;
@@ -327,7 +327,7 @@ void test_array::array_tester(test_array &ta, const contents &formal(bogus), bas
             equivalent = old_version.subarray(0, old_version.length()
                 - difference - 1);
           } else {
-            array<contents> blank(difference, NIL, flags);
+            array<contents> blank(difference, NULL_POINTER, flags);
             for (int i = 0; i < blank.length(); i++)
               blank[i] = 'Q';
             equivalent = old_version + blank;
@@ -360,7 +360,7 @@ void test_array::array_tester(test_array &ta, const contents &formal(bogus), bas
         int start = a_randomizer.inclusive(0, testers[index]->length());
         int end = a_randomizer.inclusive(0, testers[index]->length());
         flip_increasing(start, end);
-        array<contents> accumulator(0, NIL, flags);
+        array<contents> accumulator(0, NULL_POINTER, flags);
         for (int i = start; i < end; i++) {
           contents c = contents(a_randomizer.inclusive(1, 255));
           testers[index]->access()[i] = c;
@@ -698,7 +698,7 @@ void test_array::array_tester(test_array &ta, const contents &formal(bogus), bas
         if (index == rand_index) continue;  // skip it; try again later.
         array<contents> nugwort = *testers[rand_index];
         // perform a swap between two of our arrays.
-        array<contents> temp_hold(0, NIL, flags);
+        array<contents> temp_hold(0, NULL_POINTER, flags);
         temp_hold.snarf(*testers[index]);
         testers[index]->snarf(*testers[rand_index]);
         testers[rand_index]->snarf(temp_hold);

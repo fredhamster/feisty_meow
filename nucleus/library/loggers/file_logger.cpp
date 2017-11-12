@@ -60,7 +60,7 @@ int static_chaos() {
 file_logger::file_logger()
 : _filename(new astring()),
   _file_limit(DEFAULT_LOG_FILE_SIZE),
-  _outfile(NIL),
+  _outfile(NULL_POINTER),
   _flock(new mutex)
 {
   name("");
@@ -69,7 +69,7 @@ file_logger::file_logger()
 file_logger::file_logger(const astring &initial_filename, int limit)
 : _filename(new astring()),
   _file_limit(limit),
-  _outfile(NIL),
+  _outfile(NULL_POINTER),
   _flock(new mutex)
 {
   name(initial_filename); 

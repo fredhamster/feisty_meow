@@ -54,7 +54,7 @@ DllMain(application_instance instance, DWORD reason, LPVOID reserved)
     // mainly for debugging purposes.  having the value for DLL_NAME actually
     // stored should allow us to know which dll is being debugged.
 
-  static CDynLinkLibrary *dll_link = NIL;
+  static CDynLinkLibrary *dll_link = NULL_POINTER;
 
   static int dll_entry_count = 0;
 

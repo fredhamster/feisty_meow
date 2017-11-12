@@ -68,7 +68,7 @@ astring unix_rendez_file(const astring &lock_name)
 #endif
 
 rendezvous::rendezvous(const astring &root_name)
-: _handle(NIL),
+: _handle(NULL_POINTER),
   _locked(false),
   _root_name(new astring(root_name))
 {
@@ -90,7 +90,7 @@ rendezvous::rendezvous(const astring &root_name)
   _handle = locking_file;
 #endif
 #ifdef __WIN32__
-  _handle = CreateMutex(NIL, false, to_unicode_temp(lock_name));
+  _handle = CreateMutex(NULL_POINTER, false, to_unicode_temp(lock_name));
   if (!_handle) return;
 #endif
 }
@@ -120,7 +120,7 @@ rendezvous::~rendezvous()
     }
 
     fclose((FILE *)_handle);
-    _handle = NIL;
+    _handle = NULL_POINTER;
   }
 #endif
 #ifdef __WIN32__

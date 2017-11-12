@@ -102,7 +102,7 @@ const file_info *filename_list::find(const filename &to_check) const
     if (to_check.raw() == get(i)->raw()) return get(i);
 #endif
   }
-  return NIL;
+  return NULL_POINTER;
 }
 
 int filename_list::locate(const filename &to_find) const

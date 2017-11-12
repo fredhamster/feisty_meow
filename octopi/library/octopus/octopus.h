@@ -136,12 +136,12 @@ public:
     call this function repeatedly to ensure that all responses have been
     provided.  the "original_id" is a copy of the "item_id" that was
     originally passed to evaluate_request().  the returned object must
-    eventually be destroyed if non-NIL. */
+    eventually be destroyed if non-null. */
 
   infoton *acquire_specific_result(const octopus_request_id &original_id);
     //!< supports seeking the result for a specific request.
     /*!< either the infoton that is a response to "original_id" will be
-    returned or NIL. */
+    returned or NULL_POINTER. */
 
   //////////////
 

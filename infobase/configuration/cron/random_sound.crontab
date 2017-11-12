@@ -1,10 +1,4 @@
 
-SHELL=/bin/bash
-
-# m h dom mon dow command
-
-USER=fred
-
 #[random sound]
-* * * * * (export LIGHTWEIGHT_INIT=true; source $HOME/feisty_meow/scripts/core/launch_feisty_meow.sh; bash $HOME/feisty_meow/scripts/multimedia/randomly_play.sh) &>>/tmp/zz_random_sound_$USER.log
+* * * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/multimedia/randomly_play.sh) &>>/tmp/${CRONUSER}-cron-random_sound.log
 

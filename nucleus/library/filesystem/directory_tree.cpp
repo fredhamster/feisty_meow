@@ -51,7 +51,7 @@ public:
 
   dir_tree_iterator(const filename_tree *initial,
       tree::traversal_directions dir)
-  : filename_tree::iterator(initial, dir), _current(NIL) {}
+  : filename_tree::iterator(initial, dir), _current(NULL_POINTER) {}
 };
 
 //////////////
@@ -71,7 +71,7 @@ directory_tree::directory_tree(const astring &path, const char *pattern,
 : _scanned_okay(false),
   _path(new astring(path)),
   _pattern(new astring(pattern)),
-  _real_tree(NIL),
+  _real_tree(NULL_POINTER),
   _ignore_files(ignore_files),
   _creator(new fname_tree_creator)
 {
@@ -181,7 +181,7 @@ void directory_tree::traverse(const astring &path, const char *pattern,
   // and recursively traverse that sub-node also.
   const string_array &dirs = curr.directories();
   for (int i = 0; i < dirs.length(); i++) {
-    filename_tree *new_branch = NIL;
+    filename_tree *new_branch = NULL_POINTER;
     astring new_path = path + filename::default_separator() + dirs[i];
 #ifdef DEBUG_DIRECTORY_TREE
     LOG(astring("seeking path: ") + new_path);
@@ -324,7 +324,7 @@ filename_tree *directory_tree::goto_current(dir_tree_iterator &scanning)
     scanning._current = (filename_tree *)scanning.next();
   }
   // now check that we're healthy.
-  if (!scanning._current) return NIL;  // all done.
+  if (!scanning._current) return NULL_POINTER;  // all done.
 
   // cast the tree to the right type.
   return dynamic_cast<filename_tree *>(scanning._current);
@@ -377,7 +377,7 @@ bool directory_tree::current(dir_tree_iterator &scanning,
 filename_list *directory_tree::access(dir_tree_iterator &scanning)
 {
   filename_tree *tof = goto_current(scanning);
-  if (!tof) return NIL;
+  if (!tof) return NULL_POINTER;
   return &tof->_files;
 }
 
@@ -440,7 +440,7 @@ filename_tree *directory_tree::seek(const astring &dir_name_in,
     bool found = false;
     // start looking at all the items in the list, even though we might have
     // to abandon the iteration if we find a match.
-    filename_tree *check = NIL;
+    filename_tree *check = NULL_POINTER;
     for (posn = 0; posn < examining.length(); posn++) {
       check = examining[posn];
       filename current(check->_dirname);
@@ -473,21 +473,21 @@ filename_tree *directory_tree::seek(const astring &dir_name_in,
         break;
       }
     }
-    if (!found) return NIL;  // we found nothing comparable.
+    if (!found) return NULL_POINTER;  // we found nothing comparable.
 
     // we found a partial match.  that means we should start looking at this
     // node's children for the exact match.
     if (!check) {
       // this is a serious logical error!
       LOG("serious logical error: tree was not located.");
-      return NIL;
+      return NULL_POINTER;
     }
     examining.reset();  // clear the existing nodes.
     for (int i = 0; i < check->branches(); i++)
       examining += (filename_tree *)check->branch(i);
   }
 
-  return NIL;  // we found nothing that looked like that node.
+  return NULL_POINTER;  // we found nothing that looked like that node.
 }
 
 bool directory_tree::calculate(bool just_size)
@@ -841,14 +841,14 @@ outcome directory_tree::add_path(const astring &new_item, bool just_size)
   // find the common root, break up the path into pieces, and tell us where
   // we matched.
   string_array pieces;
-  filename_tree *last_match = NIL;
+  filename_tree *last_match = NULL_POINTER;
   int comp_index;
   astring reassembled;  // this will hold the common root.
   outcome ret = find_common_root(new_item, true, last_match, reassembled,
       pieces, comp_index);
   if (!last_match) {
     LOG(astring("serious error finding common root for ") + new_item
-        + ", got NIL tree.");
+        + ", got null tree.");
     return common::FAILURE;  // something serious isn't right.
   }
 
@@ -929,7 +929,7 @@ outcome directory_tree::remove_path(const astring &zap_item)
   FUNCDEF("remove_path");
   // find the common root, if one exists.  if not, we're not going to do this.
   string_array pieces;
-  filename_tree *last_match = NIL;
+  filename_tree *last_match = NULL_POINTER;
   int comp_index;
   astring reassembled;
   outcome ret = find_common_root(zap_item, false, last_match, reassembled,

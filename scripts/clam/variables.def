@@ -198,7 +198,7 @@ export CLEAN
 # sets the temporary directory.
 export CLAM_TMP
 ifeq "$(CLAM_TMP)" ""
-  CLAM_TMP := $(GENERATED_STORE)/clam_tmp
+  CLAM_TMP := $(FEISTY_MEOW_GENERATED_STORE)/clam_tmp
 endif
 
 #turned off for the moment, since this seems like a bad idea; we define clam tmp in terms of tmp sometimes, do not we???

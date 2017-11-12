@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
   for (int i = 1; i < argc; i++) {
 //    out.log(astring(astring::SPRINTF, "soundfile %d: %s", i, argv[i]));
 #ifdef _MSC_VER
-    if (!PlaySound(to_unicode_temp(argv[i]), NIL, SND_FILENAME))
+    if (!PlaySound(to_unicode_temp(argv[i]), NULL_POINTER, SND_FILENAME))
       out.log(astring("failed to play ") + argv[i], ALWAYS_PRINT);
 #else
     out.log(astring("this program is a NO-OP, ignoring ") + argv[i], ALWAYS_PRINT);

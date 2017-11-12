@@ -31,7 +31,7 @@ class string_array
   public virtual basis::equalizable
 {
 public:
-  string_array(int number = 0, const basis::astring *initial_contents = NIL)
+  string_array(int number = 0, const basis::astring *initial_contents = NULL_POINTER)
           : basis::array<basis::astring>(number, initial_contents,
                 EXPONE | FLUSH_INVISIBLE) {}
     //!< Constructs an array of "number" strings.
@@ -43,7 +43,7 @@ public:
   /*! be very careful with the array to ensure that the right number of
   elements is provided. */
   string_array(int number, const char *initial_contents[])
-      : basis::array<basis::astring>(number, NIL, EXPONE | FLUSH_INVISIBLE) {
+      : basis::array<basis::astring>(number, NULL_POINTER, EXPONE | FLUSH_INVISIBLE) {
     for (int i = 0; i < number; i++) {
       put(i, basis::astring(initial_contents[i]));
     }

@@ -34,11 +34,11 @@ using namespace basis;
 namespace structures {
 
 bit_vector::bit_vector()
-: _implementation(new byte_array(0, NIL)), _number_of_bits(0)
+: _implementation(new byte_array(0, NULL_POINTER)), _number_of_bits(0)
 {}
 
 bit_vector::bit_vector(int number_of_bits, const abyte *initial)
-: _implementation(new byte_array(0, NIL)), _number_of_bits(0)
+: _implementation(new byte_array(0, NULL_POINTER)), _number_of_bits(0)
 {
   reset(number_of_bits);
   if (!initial) return;

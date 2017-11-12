@@ -33,7 +33,8 @@ using namespace structures;
 
 #ifndef BOOT_STRAPPING
   // pull in the version specified for this build.
-///hmmm: on hold!  #include <__build_version.h>
+  #include <__build_version.h>
+//why was this include "on hold"?
 #else
   // plug in a fake version for our bootstrapping process.
   #define __build_FILE_VERSION "108.420.1024.10008"
@@ -113,7 +114,7 @@ void *version_checker::get_handle(const astring &library_file_name)
 #if defined(_MSC_VER)
   return GetModuleHandle(to_unicode_temp(library_file_name));
 #else
-  if (library_file_name.t()) return NIL; else return NIL;
+  if (library_file_name.t()) return NULL_POINTER; else return NULL_POINTER;
 #endif
 }
 
@@ -207,7 +208,7 @@ version version_checker::retrieve_version(const astring &filename)
 
 #endif
 
-  byte_array version_info_found(0, NIL);
+  byte_array version_info_found(0, NULL_POINTER);
   if (!retrieve_version_info(filename, version_info_found))
     return version(0, 0, 0, 0);
 
@@ -248,7 +249,7 @@ bool version_checker::get_record(const astring &filename,
     version_record &to_fill)
 {
   to_fill = version_record();
-  byte_array version_info_found(0, NIL);
+  byte_array version_info_found(0, NULL_POINTER);
   if (!retrieve_version_info(filename, version_info_found))
     return false;
 

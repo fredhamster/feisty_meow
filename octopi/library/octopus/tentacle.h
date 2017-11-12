@@ -142,7 +142,7 @@ public:
     /*!< this function locates the next request for the tentacle when it is
     in its consume() method.  the returned infoton was previously passed
     to the enqueue() method and needs to be processed.  if there are no
-    requests ready, NIL is returned. */
+    requests ready, NULL_POINTER is returned. */
 
   bool store_product(infoton *product, const octopus_request_id &original_id);
     //!< used by tentacles to store the objects they produce from infotons.

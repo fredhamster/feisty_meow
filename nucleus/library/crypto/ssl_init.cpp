@@ -70,8 +70,12 @@ ssl_init::~ssl_init()
   FUNCDEF("dtor");
   LOG("prior to crypto cleanup");
   CRYPTO_cleanup_all_ex_data();
-  LOG("prior to err remove state");
-  ERR_remove_state(0);
+
+//hmmm: deprecated
+//  LOG("prior to err remove state");
+//  ERR_remove_thread_state(NULL);
+
+
 //THIS HAD TO be removed in most recent openssl; does it exist?
 //  LOG("prior to mem leaks fp");
 //  CRYPTO_mem_leaks_fp(stderr);

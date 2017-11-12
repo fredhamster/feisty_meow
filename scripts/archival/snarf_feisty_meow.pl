@@ -17,7 +17,7 @@
 
 require "shared_snarfer.pl";
 
-use Env qw(HOME);
+use Env qw(FEISTY_MEOW_APEX);
 
 &initialize_snarfer;  # let the snarfer hook us in.
 
@@ -25,25 +25,24 @@ use Env qw(HOME);
 local($number) = &retrieve_number("aa_backup");
 
 # variables used throughout here.
-local($snarf_file_base) = &snarf_prefix("archived_feisty_meow");
+local($snarf_file_base) = &snarf_prefix("packaged_feisty_meow");
 local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # store the archive number in the file for retrieval on the other side.
 &backup_number("aa_backup", $snarf_file_base, $number);
 
 # the top directory where everything we're grabbing lives.
-local($root) = &canonicalize("$HOME/feisty_meow");
+local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 
 # grab the top level stuff.
 &backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore"));
 
 # snarf up all the important directories.
 # CAK: current as of 2012-05-05.
-&backup_hierarchy($snarf_file_base, $number, $root, "customize");
+###moved &backup_hierarchy($snarf_file_base, $number, $root, "customize");
 &backup_hierarchy($snarf_file_base, $number, $root, "infobase");
 &backup_hierarchy($snarf_file_base, $number, $root, "documentation");
-&backup_hierarchy($snarf_file_base, $number, $root, "examples");
-&backup_hierarchy($snarf_file_base, $number, $root, "feisty_inits");
+&backup_hierarchy($snarf_file_base, $number, $root, "experiments");
 &backup_hierarchy($snarf_file_base, $number, $root, "graphiq");
 &backup_hierarchy($snarf_file_base, $number, $root, "huffware");
 &backup_hierarchy($snarf_file_base, $number, $root, "kona");
@@ -51,6 +50,7 @@ local($root) = &canonicalize("$HOME/feisty_meow");
 &backup_hierarchy($snarf_file_base, $number, $root, "octopi");
 &backup_hierarchy($snarf_file_base, $number, $root, "scripts");
 &backup_hierarchy($snarf_file_base, $number, $root, "hypermedia");
+&backup_hierarchy($snarf_file_base, $number, $root, "walrus");
 
 # grab the production assets.
 &backup_files($snarf_file_base, $number, $root, "production", ("*.ini", "make*", ".gitignore"));

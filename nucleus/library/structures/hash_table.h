@@ -123,14 +123,14 @@ public:
     destroy or otherwise damage the "item_found". */
 
   contents *find(const key_type &key) const
-          { contents *c = NIL; return find(key, c)? c : NIL; }
+          { contents *c = NULL_POINTER; return find(key, c)? c : NULL_POINTER; }
     //!< simplified form of above find() method.
 
   contents *acquire(const key_type &key);
     //!< retrieves the contents held for "key" out of the table.
     /*!< afterwards, the contents pointer is the caller's responsibility; it
     is no longer in the table and must be destroyed externally.  if no item
-    was found for the "key", then NIL is returned. */
+    was found for the "key", then NULL_POINTER is returned. */
 
   bool zap(const key_type &key);
     //!< removes the entry with the "key" specified.
@@ -215,7 +215,7 @@ public:
   key_type *_id;
   contents *_data;
 
-  hash_wrapper(key_type *id = NIL, contents *data = NIL)
+  hash_wrapper(key_type *id = NULL_POINTER, contents *data = NULL_POINTER)
       : _id(id), _data(data) {}
 };
 
@@ -227,7 +227,7 @@ class bucket
       public virtual basis::root_object
 {
 public:
-  bucket() : basis::array<hash_wrapper<key_type, contents> >(0, NIL,
+  bucket() : basis::array<hash_wrapper<key_type, contents> >(0, NULL_POINTER,
       basis::byte_array::SIMPLE_COPY | basis::byte_array::EXPONE
       | basis::byte_array::FLUSH_INVISIBLE) {}
 
@@ -464,7 +464,7 @@ bool hash_table<key_type, contents>::find(const key_type &key,
   FUNCDEF("find");
   if (!verify()) deadly_error(class_name(), func, "state did not verify.");
 #endif
-  item_found = NIL;
+  item_found = NULL_POINTER;
   // get a hash value.
   basis::un_int hashed = _hasher->hash((const void *)&key, sizeof(key));
   // make the value appropriate for our table.
@@ -492,9 +492,9 @@ contents *hash_table<key_type, contents>::acquire(const key_type &key)
   hashed = hashed % _table->elements();
   // see if the key exists in the bucket.
   bucket<key_type, contents> *buck = _table->borrow(hashed);
-  if (!buck) return NIL;
+  if (!buck) return NULL_POINTER;
   int indy = buck->find(key);
-  if (basis::negative(indy)) return NIL;  // nope, not there.
+  if (basis::negative(indy)) return NULL_POINTER;  // nope, not there.
   contents *to_return = (*buck)[indy]._data;
   basis::WHACK((*buck)[indy]._id);  // clean the id.
   buck->zap(indy, indy);  // toss the storage blob for the item.

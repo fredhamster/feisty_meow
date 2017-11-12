@@ -224,7 +224,7 @@ ethread *thread_cabinet::get_thread(int index)
   LOCKIT;
   thread_record *rec = _threads->borrow(index);
   if (rec) return rec->_thread;
-  return NIL;
+  return NULL_POINTER;
 }
 
 } //namespace.

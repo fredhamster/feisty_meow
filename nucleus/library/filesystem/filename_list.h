@@ -60,7 +60,7 @@ public:
   const file_info *find(const filename &to_check) const;
     //!< locates the record of information for the filename "to_check".
     /*!< do not modify the returned object.  it contains the current state
-    of the file in question.  if the file wasn't in the list, then NIL is
+    of the file in question.  if the file wasn't in the list, then NULL_POINTER is
     returned. */
 
   int locate(const filename &to_find) const;

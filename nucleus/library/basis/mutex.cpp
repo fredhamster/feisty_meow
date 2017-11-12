@@ -59,7 +59,7 @@ void mutex::construct()
   ret = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
 #endif
   if (ret != 0) {
-    printf("failed to initialize mutex attributes!\n"); fflush(NIL);
+    printf("failed to initialize mutex attributes!\n"); fflush(NULL_POINTER);
   }
   c_os_mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
   pthread_mutex_init((pthread_mutex_t *)c_os_mutex, &attr);

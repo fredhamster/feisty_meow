@@ -5,3 +5,6 @@
 # personal aliases or functions disrupting the results.
 ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && /bin/pwd )"
 
+# another slightly tighter version:
+export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+

@@ -309,7 +309,7 @@ public:
   null_transcoder(const astring &utf8_input, bool make_own_copy);
   ~null_transcoder() {
     if (_make_own_copy) delete [] _converted;
-    _converted = NIL;
+    _converted = NULL_POINTER;
   }
 
   int length() const;

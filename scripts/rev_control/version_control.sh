@@ -3,198 +3,202 @@
 # these are helper functions for doing localized revision control.
 # this script should be sourced into other scripts that use it.
 
+# Author: Chris Koeritz
+# Author: Kevin Wentworth
+
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
+
+##############
+
 # the maximum depth that the recursive functions will try to go below the starting directory.
 export MAX_DEPTH=5
 
-#hmmm: re-address this code, since it doesn't make a lot of sense to me right now...
+# use our splitter tool for lengthy output if it's available.
+if [ ! -z "$(which splitter)" ]; then
+  TO_SPLITTER="$(which splitter)"
+else
+  TO_SPLITTER=cat
+fi
+
+##############
+
 # one unpleasantry to take care of first; cygwin barfs aggressively if the TMP directory
 # is a DOS path, but we need it to be a DOS path for our GFFS testing, so that blows.
 # to get past this, TMP gets changed below to a hopefully generic and safe place.
-
 if [[ "$TMP" =~ .:.* ]]; then
-  echo making weirdo temporary directory for DOS path.
+  echo "making weirdo temporary directory for PCDOS-style path."
   export TMP=/tmp/rev_control_$USER
 fi
 if [ ! -d "$TMP" ]; then
   mkdir -p $TMP
 fi
 if [ ! -d "$TMP" ]; then
-  echo "Could not create the temporary directory TMP in: $TMP"
-  echo "This script will not work properly without an existing TMP directory."
+  echo "could not create the temporary directory TMP in: $TMP"
+  echo "this script will not work properly without an existing TMP directory."
 fi
 
-this_host=
-# gets the machine's hostname and stores it in the variable "this_host".
-function get_our_hostname()
-{
-  if [ "$OS" == "Windows_NT" ]; then
-    this_host=$(hostname)
-  elif [ ! -z "$(echo $MACHTYPE | grep apple)" ]; then
-    this_host=$(hostname)
-  elif [ ! -z "$(echo $MACHTYPE | grep suse)" ]; then
-    this_host=$(hostname --long)
-  else
-    this_host=$(hostname)
-  fi
-  #echo "hostname is $this_host"
-}
+##############
 
-# this function sets a variable called "home_system" to "true" if the
-# machine is considered one of fred's home machines.  if you are not
-# fred, you may want to change the machine choices.
-export home_system=
-function is_home_system()
-{
-  # load up the name of the host.
-  get_our_hostname
-  # reset the variable that we'll be setting.
-  home_system=
-  if [[ $this_host == *.gruntose.blurgh ]]; then
-    home_system=true
-#temp code
-elif [[ $this_host == buildy ]]; then
-home_system=true
-elif [[ $this_host == simmy ]]; then
-home_system=true
-#temp code
-  fi
-}
-
-# we only want to totally personalize this script if the user is right.
-function check_user()
-{
-  if [ "$USER" == "fred" ]; then
-    export SVNUSER=fred_t_hamster@
-    export EXTRA_PROTOCOL=+ssh
-  else
-    export SVNUSER=
-    export EXTRA_PROTOCOL=
-  fi
-}
-
-# calculates the right modifier for hostnames / repositories.
-modifier=
-function compute_modifier()
-{
-  modifier=
-  directory="$1"; shift
-  in_or_out="$1"; shift
-  check_user
-  # some project specific overrides.
-  if [[ "$directory" == hoople* ]]; then
-    modifier="svn${EXTRA_PROTOCOL}://${SVNUSER}svn.code.sf.net/p/hoople2/svn/"
-  fi
-  if [[ "$directory" == yeti* ]]; then
-    modifier="svn${EXTRA_PROTOCOL}://${SVNUSER}svn.code.sf.net/p/yeti/svn/"
-  fi
-  # see if we're on one of fred's home machines.
-  is_home_system
-  # special override to pick local servers when at home.
-  if [ "$home_system" == "true" ]; then
-    if [ "$in_or_out" == "out" ]; then
-      # need the right home machine for modifier when checking out.
-#huhhh?      modifier="svn://shaggy/"
-      modifier=
-    else 
-      # no modifier for checkin.
-      modifier=
-    fi
-  fi
-}
-
-# selects the method for check-in based on where we are.
+# checks the directory provided into the revision control system repository it belongs to.
 function do_checkin()
 {
   local directory="$1"; shift
-  do_update "$directory"
-  if [ $? -ne 0 ]; then
-    echo "Repository update failed; this should be fixed before check-in."
-    return 1
+
+  save_terminal_title
+
+  # make a nice echoer since we want to use it inside conditions below.
+  local nicedir="$directory"
+  if [ $nicedir == "." ]; then
+    nicedir=$(\pwd)
   fi
+  local blatt="echo checking in '$nicedir'..."
+
+  do_update "$directory"
+  test_or_die "repository update--this should be fixed before check-in."
+
   pushd "$directory" &>/dev/null
-  local retval=0  # normally successful.
   if [ -f ".no-checkin" ]; then
-    echo "Not checking in because found .no-checkin sentinel file."
+    echo "skipping check-in due to presence of .no-checkin sentinel file."
   elif [ -d "CVS" ]; then
-    cvs ci .
-    retval=$?
+    if test_writeable "CVS"; then
+      $blatt
+      cvs ci .
+      test_or_die "cvs checkin"
+    fi
   elif [ -d ".svn" ]; then
-    svn ci .
-    retval=$?
+    if test_writeable ".svn"; then
+      $blatt
+      svn ci .
+      test_or_die "svn checkin"
+    fi
   elif [ -d ".git" ]; then
-    # snag all new files.  not to everyone's liking.
-    git add --all .
-    retval=$?
-    # tell git about all the files and get a check-in comment.
-    git commit .
-    retval+=$?
-    # upload the files to the server so others can see them.
-    git push 2>&1 | grep -v "X11 forwarding request failed"
-    retval+=$?
+    if test_writeable ".git"; then
+      $blatt
+
+      # put all changed and new files in the commit.  not to everyone's liking.
+      git add --all .
+      test_or_die "git add all new files"
+
+      # see if there are any changes in the local repository.
+      if ! git diff-index --quiet HEAD --; then
+        # tell git about all the files and get a check-in comment.
+        git commit .
+        test_or_die "git commit"
+      fi
+
+      # a new set of steps we have to take to make sure the branch integrity is good.
+      do_careful_git_update "$(\pwd)"
+
+      # we continue on to the push, even if there were no changes this time, because
+      # there could already be committed changes that haven't been pushed yet.
+
+      # upload any changes to the upstream repo so others can see them.
+      git push origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      test_or_die "git push"
+
+    fi
   else
+    # nothing there.  it's not an error though.
     echo no repository in $directory
-    retval=1
   fi
   popd &>/dev/null
-  return $retval
+
+  restore_terminal_title
+
+  return 0
 }
 
+# shows the local changes in a repository.
 function do_diff
 {
   local directory="$1"; shift
+
+  save_terminal_title
+
   pushd "$directory" &>/dev/null
-  local retval=0  # normally successful.
 
   # only update if we see a repository living there.
   if [ -d ".svn" ]; then
     svn diff .
+    test_or_die "subversion diff"
   elif [ -d ".git" ]; then
     git diff 
+    test_or_die "git diff"
   elif [ -d "CVS" ]; then
     cvs diff .
+    test_or_die "cvs diff"
   fi
 
   popd &>/dev/null
-  return $retval
+
+  restore_terminal_title
+
+  return 0
 }
 
+# reports any files that are not already known to the upstream repository.
 function do_report_new
 {
   local directory="$1"; shift
+
+  save_terminal_title
+
   pushd "$directory" &>/dev/null
-  local retval=0  # normally successful.
 
   # only update if we see a repository living there.
   if [ -f ".no-checkin" ]; then
-    echo "Not reporting mods because found .no-checkin sentinel file."
+    echo "skipping reporting due to presence of .no-checkin sentinel file."
   elif [ -d ".svn" ]; then
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
-    retval=$?
+    test_or_die "svn diff"
   elif [ -d ".git" ]; then
     git status -u
-    retval=$?
+    test_or_die "git status -u"
   fi
 
   popd &>/dev/null
-  return $retval
+
+  restore_terminal_title
+
+  return 0
 }
 
 # checks in all the folders in a specified list.
 function checkin_list()
 {
-  local list=$*
-  for i in $list; do
-    # turn repo list back into an array.
-    eval "repository_list=( ${REPOSITORY_LIST[*]} )"
-    for j in "${repository_list[@]}"; do
-      # add in the directory component.
-      j="$i/$j"
-      if [ ! -d "$j" ]; then continue; fi
-      echo "checking in '$j'..."
-      do_checkin $j
-    done
+  # make the list of directories unique.
+  local list="$(uniquify $*)"
+
+  save_terminal_title
+
+  # turn repo list back into an array.
+  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+
+  local outer inner
+
+  for outer in "${repository_list[@]}"; do
+    # check the repository first, since it might be an absolute path.
+    if [[ $outer =~ /.* ]]; then
+      # yep, this path is absolute.  just handle it directly.
+      if [ ! -d "$outer" ]; then continue; fi
+      do_checkin $outer
+      test_or_die "running check-in (absolute) on path: $outer"
+      sep 28
+    else
+      for inner in $list; do
+        # add in the directory component to see if we can find the folder.
+        local path="$inner/$outer"
+        if [ ! -d "$path" ]; then continue; fi
+        do_checkin $path
+        test_or_die "running check-in (relative) on path: $path"
+        sep 28
+      done
+    fi
   done
+
+  restore_terminal_title
 }
 
 # takes out the first few carriage returns that are in the input.
@@ -215,49 +219,189 @@ function squash_first_few_crs()
   fi
 }
 
-# selects the checkout method based on where we are (the host the script runs on).
+#hmmm: the below are git specific and should be named that way.
+
+function all_branch_names()
+{
+  echo "$(git branch -vv | cut -d ' ' -f2)"
+}
+
+# a helpful method that reports the git branch for the current directory's
+# git repository.
+function my_branch_name()
+{
+  echo "$(git branch -vv | grep '\*' | cut -d ' ' -f2)"
+}
+
+#this had a -> in it at one point for not matching, didn't it?
+# this reports the upstream branch for the current repo.
+##function parent_branch_name()
+##{
+  ##echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
+##}
+
+# reports the status of the branch by echoing one of these values:
+#   okay: up to date and everything is good.
+#   needs_pull: this branch needs to be pulled from origins.
+#   needs_push: there are unsaved changes on this branch to push to remote store.
+#   diverged: the branches diverged and are going to need a merge.
+# reference: https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
+function check_branch_state()
+{
+  local branch="$1"; shift
+
+  local to_return=120  # unknown issue.
+
+  local local_branch=$(git rev-parse @)
+  local remote_branch=$(git rev-parse "$branch")
+  local merge_base=$(git merge-base @ "$branch")
+
+  if [ "$local_branch" == "$remote_branch" ]; then
+    echo "okay"
+  elif [ "$local_branch" == "$merge_base" ]; then
+    echo "needs_pull"
+  elif [ "$remote_branch" == "$merge_base" ]; then
+    echo "needs_push"
+  else
+    echo "diverged"
+  fi
+
+  return $to_return
+}
+
+# the git update process just gets more and more complex when you bring in
+# branches, so we've moved this here to avoid having a ton of code in the
+# other methods.
+function do_careful_git_update()
+{
+  local directory="$1"; shift
+  pushd "$directory" &>/dev/null
+  test_or_die "changing to directory: $directory"
+
+  if [ ! -d ".git" ]; then
+    # we ignore if they're jumping into a non-useful folder, but also tell them.
+    echo "Directory is not a git repository: $directory"
+    return 0
+  fi
+
+  # first update all our remote branches to their current state from the repos.
+  git remote update
+  test_or_die "git remote update"
+
+  local this_branch="$(my_branch_name)"
+#appears to be useless; reports no changes when we need to know about remote changes that do exist:
+#hmmm: trying it out again now that things are better elsewhere.  let's see what it says.
+  state=$(check_branch_state "$this_branch")
+  echo "=> branch '$this_branch' state is: $state"
+
+  # this code is now doing what i have to do when i repair the repo.  and it seems to be good so far.
+  local branch_list=$(all_branch_names)
+  local bran
+  for bran in $branch_list; do
+#    echo "synchronizing remote branch: $bran"
+    git checkout "$bran"
+    test_or_die "git switching checkout to remote branch: $bran"
+
+    state=$(check_branch_state "$bran")
+    echo "=> branch '$bran' state is: $state"
+
+    remote_branch_info=$(git ls-remote --heads origin $bran 2>/dev/null)
+    if [ ! -z "$remote_branch_info" ]; then
+      # we are pretty sure the remote branch does exist.
+      git pull --no-ff origin "$bran"
+    fi
+    test_or_die "git pull of remote branch: $bran"
+  done
+  # now switch back to our branch.
+  git checkout "$this_branch"
+  test_or_die "git checking out our current branch: $this_branch"
+
+  # now pull down any changes in our own origin in the repo, to stay in synch
+  # with any changes from others.
+  git pull --no-ff --all
+  test_or_die "git pulling all upstream"
+
+  popd &>/dev/null
+}
+
+# gets the latest versions of the assets from the upstream repository.
 function do_update()
 {
   directory="$1"; shift
-  local retval=0  # plan on success for now.
+
+  save_terminal_title
+
+  # make a nice echoer since we want to use it inside conditions below.
+  local nicedir="$directory"
+  if [ $nicedir == "." ]; then
+    nicedir=$(\pwd)
+  fi
+  local blatt="echo retrieving '$nicedir'..."
+
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
-    cvs update . | squash_first_few_crs
-    retval=${PIPESTATUS[0]}
+    if test_writeable "CVS"; then
+      $blatt
+      cvs update . | $TO_SPLITTER
+      test_or_die "cvs update"
+    fi
   elif [ -d ".svn" ]; then
-    svn update . | squash_first_few_crs
-    retval=${PIPESTATUS[0]}
+    if test_writeable ".svn"; then
+      $blatt
+      svn update . | $TO_SPLITTER
+      test_or_die "svn update"
+    fi
   elif [ -d ".git" ]; then
-    git pull 2>&1 | grep -v "X11 forwarding request failed" | squash_first_few_crs
-    retval=${PIPESTATUS[0]}
+    if test_writeable ".git"; then
+      $blatt
+      git pull --no-ff 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
+      test_or_die "git pull of origin without fast forwards"
+    fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
     echo no repository in $directory
   fi
   popd &>/dev/null
-  return $retval
+
+  restore_terminal_title
+
+  return 0
 }
 
 # gets all the updates for a list of folders under revision control.
-function checkout_list {
-  list=$*
-  for i in $list; do
-    # turn repo list back into an array.
-    eval "repository_list=( ${REPOSITORY_LIST[*]} )"
-    for j in "${repository_list[@]}"; do
-      # add in the directory for our purposes here.
-      j="$i/$j"
-      if [ ! -d $j ]; then
-        if [ ! -z "$SHELL_DEBUG" ]; then
-          echo "No directory called $j exists."
-        fi
-        continue
-      fi
+function checkout_list()
+{
+  local list="$(uniquify $*)"
 
-      echo -n "retrieving '$j'...  "
-      do_update $j
-    done
+  save_terminal_title
+
+  # turn repo list back into an array.
+  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+
+  local outer inner
+
+  for outer in "${repository_list[@]}"; do
+    # check the repository first, since it might be an absolute path.
+    if [[ $outer =~ /.* ]]; then
+      # yep, this path is absolute.  just handle it directly.
+      if [ ! -d "$outer" ]; then continue; fi
+      do_update $outer
+      test_or_die "running update on: $path"
+      sep 28
+    else
+      for inner in $list; do
+        # add in the directory component to see if we can find the folder.
+        local path="$inner/$outer"
+        if [ ! -d "$path" ]; then continue; fi
+        do_update $path
+        test_or_die "running update on: $path"
+        sep 28
+      done
+    fi
   done
+
+  restore_terminal_title
 }
 
 # provides a list of absolute paths of revision control directories
@@ -267,13 +411,20 @@ function generate_rev_ctrl_filelist()
   local dir="$1"; shift
   pushd "$dir" &>/dev/null
   local dirhere="$( \cd "$(\dirname "$dir")" && /bin/pwd )"
-  local tempfile=$(mktemp /tmp/zz_rev_checkin.XXXXXX)
+  local tempfile=$(mktemp /tmp/zz_checkins.XXXXXX)
   echo >$tempfile
+  local additional_filter
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
-  local sortfile=$(mktemp /tmp/zz_rev_checkin_sort.XXXXXX)
+
+  # see if they've warned us not to try checking in within vendor hierarchies.
+  if [ ! -z "NO_CHECKIN_VENDOR" ]; then
+    sed -i -e '/.*\/vendor\/.*/d' "$tempfile"
+  fi
+
+  local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
   \rm "$tempfile"
   echo "$sortfile"
@@ -286,16 +437,31 @@ function perform_revctrl_action_on_file()
   local tempfile="$1"; shift
   local action="$1"; shift
 
+  save_terminal_title
+
+  local did_anything=
+
   while read -u 3 dirname; do
-    if [ -z "$dirname" ]; then continue; fi
+    if [ -z "$dirname" ]; then
+      # we often have blank lines in the input file for some reason.
+      continue
+    fi
+    did_anything=yes
     pushd "$dirname" &>/dev/null
     echo "[$(pwd)]"
-    $action .
-    echo "======="
+    # pass the current directory plus the remaining parameters from function invocation.
+    $action . 
+    test_or_die "performing action $action on: $(pwd)"
+    sep 28
     popd &>/dev/null
   done 3<"$tempfile"
 
+  if [ -z "$did_anything" ]; then
+    echo "There was nothing to do the action '$action' on."
+  fi
+
+  restore_terminal_title
+
   rm $tempfile
 }
-
 

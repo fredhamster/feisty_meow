@@ -120,7 +120,7 @@ public:
 
   tentacle *find(const string_array &group) {
     int indy = find_index(group);
-    if (negative(indy)) return NIL;
+    if (negative(indy)) return NULL_POINTER;
     return borrow(indy)->_limb;
   }
 
@@ -193,7 +193,7 @@ infoton *octopus::acquire_result(const octopus_entity &requester,
 
 void octopus::unlock_tentacle(tentacle *to_unlock)
 {
-  to_unlock = NIL;
+  to_unlock = NULL_POINTER;
   _molock->unlock();
 }
 
@@ -244,7 +244,7 @@ void octopus::expunge(const octopus_entity &to_remove)
 
 outcome octopus::zap_tentacle(const string_array &tentacle_name)
 {
-  tentacle *found = NIL;
+  tentacle *found = NULL_POINTER;
   outcome ret = remove_tentacle(tentacle_name, found);
   WHACK(found);
   return ret;
@@ -263,7 +263,7 @@ outcome octopus::add_tentacle(tentacle *to_add, bool filter)
   }
   GRAB_LOCK;
   tentacle *found = _tentacles->find(to_add->group());
-  // if found is non-NIL, then that would be a serious logic error since
+  // if found is non-null, then that would be a serious logic error since
   // we just zapped it above.
   if (found) return tentacle::ALREADY_EXISTS;
   to_add->attach_storage(*_responses);
@@ -280,7 +280,7 @@ outcome octopus::remove_tentacle(const string_array &group_name,
     tentacle * &free_me)
 {
   FUNCDEF("remove_tentacle");
-  free_me = NIL;
+  free_me = NULL_POINTER;
   if (!group_name.length()) return tentacle::BAD_INPUT;
   while (true) {
     // repeatedly grab the lock and make sure we're allowed to remove.  if
@@ -310,7 +310,7 @@ outcome octopus::remove_tentacle(const string_array &group_name,
   free_me = freeing->_limb;
   _filters->remove(free_me);
   _molock->unlock();
-  freeing->_limb = NIL;
+  freeing->_limb = NULL_POINTER;
   WHACK(freeing);
   return tentacle::OKAY;
 }
@@ -323,7 +323,7 @@ outcome octopus::restore(const string_array &classifier,
 #endif
   periodic_cleaning();  // freshen up if it's that time.
 
-  reformed = NIL;
+  reformed = NULL_POINTER;
   if (!classifier.length()) return tentacle::BAD_INPUT;
   if (!packed_form.length()) return tentacle::BAD_INPUT;
   if (!classifier.length()) return tentacle::BAD_INPUT;
@@ -425,7 +425,7 @@ outcome octopus::evaluate(infoton *request, const octopus_request_id &id,
           if (!worked) {
             LOG("failed to fast_unpack the transformed data.");
           } else {
-            infoton *new_req = NIL;
+            infoton *new_req = NULL_POINTER;
             outcome rest_ret = restore(classif, decro, new_req);
             if (rest_ret == tentacle::OKAY) {
               // we got a good transformed version.
@@ -514,12 +514,12 @@ void octopus::periodic_cleaning()
 
 tentacle *octopus::lock_tentacle(const string_array &tentacle_name)
 {
-  if (!tentacle_name.length()) return NIL;
+  if (!tentacle_name.length()) return NULL_POINTER;
   _molock->lock();
   tentacle *found = _tentacles->find(tentacle_name);
   if (!found) {
     _molock->unlock();
-    return NIL;
+    return NULL_POINTER;
   }
   return found;
 }

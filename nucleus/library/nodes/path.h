@@ -57,7 +57,7 @@ public:
   node *current() const;
   node *follow() const;
     //!< Returns the node specified by this path.
-    /*!< if the path is not valid, NIL is returned. */
+    /*!< if the path is not valid, NULL_POINTER is returned. */
 
   node *pop();
     //!< returns the top node on the path stack.
@@ -81,7 +81,7 @@ public:
     "to_follow" is set to one of the possible paths. */
 
   node *operator [] (int index) const;
-    //!< returns the node stored at "index", or NIL if "index" is invalid.
+    //!< returns the node stored at "index", or NULL_POINTER if "index" is invalid.
 
 private:
   path_node_stack *_stack;  //!< implementation of our pathway.

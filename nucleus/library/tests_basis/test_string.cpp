@@ -184,8 +184,8 @@ void test_string::run_test_02()
   *fred3 += *fred2;
 
   // testing adding a null to a string.
-  *fred2 += (char *)NIL;
-  *fred3 += (char *)NIL;
+  *fred2 += (char *)NULL_POINTER;
+  *fred3 += (char *)NULL_POINTER;
 
 #ifdef DEBUG_STRING_TEST
   LOG(astring("[ ") + *fred1 + " & " + *fred2 + "] -> " + *fred3);

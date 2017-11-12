@@ -6,7 +6,7 @@
 # after the spam is all snagged, it is scanned for any untoward presence
 # of non-spam folks using the user's valid email list.
 
-source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 # the storage area that the spam catcher tool puts the suspected spam into.
 SPAM_SPOOL="/var/spool/sa-exim"

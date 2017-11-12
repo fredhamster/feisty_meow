@@ -73,12 +73,12 @@ public:
 
   node *get_link(int link_number) const;
     //!< Returns the node that is connected to the specified "link_number".
-    /*!< if the link is not set, then NIL is returned. */
+    /*!< if the link is not set, then NULL_POINTER is returned. */
 
   void zap_link(int link_number);
     //!< the specified link is removed from the node.
 
-  void insert_link(int where, node *to_add = NIL);
+  void insert_link(int where, node *to_add = NULL_POINTER);
     //!< adds a new link prior to the position specified in "where".
     /*!< thus a "where" value of less than or equal to zero will add a new
     link as the first element.  a "where" value greater than or equal to

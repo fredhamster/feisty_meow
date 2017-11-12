@@ -57,7 +57,7 @@ broadcast_spocket_tester::broadcast_spocket_tester
     (const internet_address &where, bool unicast)
 : _where(new internet_address(where)),
   _stack(new tcpip_stack),
-  _socket(NIL),
+  _socket(NULL_POINTER),
   _raw(new raw_socket),
   _ucast(unicast)
 {

@@ -88,7 +88,7 @@ public:
 #endif
 
   void construct(void *ptr, int size, char *where, int line) {
-    _next = NIL;
+    _next = NULL_POINTER;
     _chunk = ptr;
     _size = size;
     _where = strdup(where);  // uses malloc, not new, so we're safe.
@@ -104,13 +104,13 @@ public:
   }
 
   void destruct() {
-    free(_chunk); _chunk = NIL;
-    free(_where); _where = NIL; 
-    _next = NIL;
+    free(_chunk); _chunk = NULL_POINTER;
+    free(_where); _where = NULL_POINTER; 
+    _next = NULL_POINTER;
     _size = 0;
     _line = 0;
 #ifdef ENABLE_CALLSTACK_TRACKING
-    free(_stack); _stack = NIL;
+    free(_stack); _stack = NULL_POINTER;
 #endif
   }
 };
@@ -140,7 +140,7 @@ class memory_bin
 {
 public:
   void construct() {
-    _head = NIL;
+    _head = NULL_POINTER;
     _count = 0;
     _lock = (mutex_base *)malloc(sizeof(mutex_base));
     _lock->construct();
@@ -169,7 +169,7 @@ public:
     _lock->lock();
     // search the bin to locate the item specified.
     memlink *current = _head;  // current will scoot through the list.
-    memlink *previous = NIL;  // previous remembers the parent node, if any.
+    memlink *previous = NULL_POINTER;  // previous remembers the parent node, if any.
     while (current) {
       if (current->_chunk == to_release) {
 #ifdef MEMORY_CHECKER_STATISTICS
@@ -256,7 +256,7 @@ public:
       _bins[i].destruct();
     }
     free(_bins);
-    _bins = NIL;
+    _bins = NULL_POINTER;
   }
 
   int compute_slot(void *ptr) {
@@ -317,7 +317,7 @@ public:
 
   // this is fairly resource intensive, so don't dump the state out that often.
   char *text_form(bool show_outstanding) {
-    char *to_return = NIL;
+    char *to_return = NULL_POINTER;
     if (show_outstanding) {
       to_return = report_allocations();
     } else {
@@ -382,7 +382,7 @@ if (!_mems) printf("memory_checker::destruct being invoked twice!\n");
 
   _mems->destruct();
   free(_mems);
-  _mems = NIL;
+  _mems = NULL_POINTER;
 }
 
 void *memory_checker::provide_memory(size_t size, char *file, int line)

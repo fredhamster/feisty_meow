@@ -335,8 +335,8 @@ bool ini_configurator::put_profile_string(const astring &section,
     const astring &entry, const astring &to_store)
 {
   return bool(WritePrivateProfileString(to_unicode_temp(section),
-      entry.length() ? (flexichar *)to_unicode_temp(entry) : NIL,
-      to_store.length() ? (flexichar *)to_unicode_temp(to_store) : NIL,
+      entry.length() ? (flexichar *)to_unicode_temp(entry) : NULL_POINTER,
+      to_store.length() ? (flexichar *)to_unicode_temp(to_store) : NULL_POINTER,
       to_unicode_temp(name())));
 }
 
@@ -345,8 +345,8 @@ void ini_configurator::get_profile_string(const astring &section,
     flexichar *return_buffer, int buffer_size)
 {
   GetPrivateProfileString(section.length() ?
-      (flexichar *)to_unicode_temp(section) : NIL,
-      entry.length() ? (flexichar *)to_unicode_temp(entry) : NIL,
+      (flexichar *)to_unicode_temp(section) : NULL_POINTER,
+      entry.length() ? (flexichar *)to_unicode_temp(entry) : NULL_POINTER,
       to_unicode_temp(default_value),
       return_buffer, buffer_size, to_unicode_temp(name()));
 }

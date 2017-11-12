@@ -66,7 +66,7 @@ bool launch_process::event_poll(MSG &message)
   message.message = 0;
   message.wParam = 0;
   message.lParam = 0;
-  if (!PeekMessage(&message, NIL, 0, 0, PM_REMOVE))
+  if (!PeekMessage(&message, NULL_POINTER, 0, 0, PM_REMOVE))
     return false;
   TranslateMessage(&message);
   DispatchMessage(&message);
@@ -146,7 +146,7 @@ char_star_array launch_process::break_line(astring &app, const astring &paramete
         .stuff(to_return[to_return.last()], len);
   }
   // add the sentinel to the list of strings.
-  to_return += NIL;
+  to_return += NULL_POINTER;
 #ifdef DEBUG_LAUNCH_PROCESS
   for (int q = 0; to_return[q]; q++) {
     LOG(a_sprintf("%d: %s\n", q, to_return[q]));
@@ -293,8 +293,8 @@ basis::un_int launch_process::run(const astring &app_name_in, const astring &com
 //      }
     }
     astring parms = app_name + " " + command_line;
-    bool success = CreateProcess(NIL, to_unicode_temp(parms), NIL, NIL, false,
-        create_flag, NIL, NIL, &startup_info, &process_info);
+    bool success = CreateProcess(NULL_POINTER, to_unicode_temp(parms), NULL_POINTER, NULL_POINTER, false,
+        create_flag, NULL_POINTER, NULL_POINTER, &startup_info, &process_info);
     if (!success)
       return critical_events::system_error();
     // success then, merge back into stream.

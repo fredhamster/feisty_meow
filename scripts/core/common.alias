@@ -13,8 +13,8 @@
 
 # repurposes certain commands that feisty meow does a little differently.
 define_yeti_alias cls='clear_colormap; clear'
-define_yeti_alias copy='\cp -i -v '
-define_yeti_alias cp='\cp -i -v '
+define_yeti_alias copy='\cp -i -v'
+define_yeti_alias cp='\cp -i -v'
 define_yeti_alias del='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 define_yeti_alias deltree='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 define_yeti_alias df='\df -mh'
@@ -36,21 +36,24 @@ if [ "$OS" != "Windows_NT" ]; then
   fi
 else
   # windows gets routed to our helpful script instead.
-  define_yeti_alias exp="bash $FEISTY_MEOW_SCRIPTS/winders/exploder.sh"
+  define_yeti_alias exp="bash $FEISTY_MEOW_SCRIPTS/files/exploder.sh"
 fi
 # re-use work we did on 'exp' macro for the longer windows command.
 define_yeti_alias explorer=exp
+define_yeti_alias fix_ssh_perms='chmod 700 $HOME/.ssh ; chmod 600 $HOME/.ssh/*'
+define_yeti_alias halt='sudo shutdown -h now'
 define_yeti_alias i=inventory
 define_yeti_alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
 define_yeti_alias ls='ls -HhFC $color_add'
 define_yeti_alias lsd='ls -hl'
 define_yeti_alias md='mkdir'
-define_yeti_alias move='mv -i -v '
-define_yeti_alias mv='\mv -i -v '
+define_yeti_alias move='mv -i -v'
+define_yeti_alias mv='\mv -i -v'
+define_yeti_alias netcp='rsync -avz'
 define_yeti_alias notepad='gedit'
 define_yeti_alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
 define_yeti_alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
-define_yeti_alias ren='\mv -v -i '
+define_yeti_alias ren='\mv -v -i'
 define_yeti_alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 define_yeti_alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 define_yeti_alias s='echo "##############"'
@@ -87,7 +90,7 @@ define_yeti_alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 # some really eccentric feisty meow aliases...
 
 # says goodbye when leaving a shell.
-define_yeti_alias bye='. $FEISTY_MEOW_SCRIPTS/users/goodbye.sh'
+define_yeti_alias bye='. $FEISTY_MEOW_SCRIPTS/processes/goodbye.sh'
 define_yeti_alias cputemp='acpi -t'
 # makes root user's home directory's permissions right.
 define_yeti_alias reroot='chown -R root:root /root'
@@ -102,9 +105,9 @@ define_yeti_alias why='echo We all wonder what the point of the universe is at t
 
 # call the generated aliases file, if it exists.
 if [ -f "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh" ]; then 
-  if [ ! -z "$SHELL_DEBUG" ]; then echo loading script aliases...; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo loading script aliases...; fi
   source "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh"
-  if [ ! -z "$SHELL_DEBUG" ]; then echo done loading script aliases.; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo done loading script aliases.; fi
 fi
 
 ##############

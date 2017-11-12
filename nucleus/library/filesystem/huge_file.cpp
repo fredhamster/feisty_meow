@@ -289,14 +289,14 @@ basis::outcome huge_file::touch()
   if (filename(_real_file->name()).exists()) {
     // file exists, so just update time.
 #ifndef __WIN32__
-    int ret = utimes(_real_file->name().observe(), NIL);
+    int ret = utimes(_real_file->name().observe(), NULL_POINTER);
     if (ret != 0)
       return FAILURE;
 #else
     // open the file, although the function says create in its name...
     HANDLE f = CreateFile(_real_file->name().observe(),
         GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-        NIL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NIL);
+        NULL_POINTER, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL_POINTER);
     if (!f) {
       LOG(a_sprintf("failed to open file %s", _real_file->name().observe()));
       return FAILURE;
@@ -308,7 +308,7 @@ basis::outcome huge_file::touch()
     FILETIME *t = new FILETIME;
     SystemTimeToFileTime(st, t);
     // set the file's time.
-    SetFileTime(f, NIL, t, t);
+    SetFileTime(f, NULL_POINTER, t, t);
 #endif
   } else {
     // file doesn't exist yet.

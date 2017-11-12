@@ -9,12 +9,12 @@
 #  building the source code.  It can either be run as a bash script directly
 #  like so:
 #
-#      bash ~/feisty_meow/scripts/generator/build_variables.sh
+#      bash $FEISTY_MEOW_APEX/scripts/generator/build_variables.sh
 #
 #  which will establish a new shell containing all the variables, or you can
 #  'source' the script like so:
 #
-#      build_vars=~/feisty_meow/scripts/generator/build_variables.sh
+#      build_vars=$FEISTY_MEOW_APEX/scripts/generator/build_variables.sh
 #      source $build_vars $build_vars
 #
 #  to set all of the variables in your current shell.  The full path is
@@ -46,7 +46,7 @@ PARM_1="$1"
 
 # helpful build function zone.
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 ##############
 
@@ -80,11 +80,11 @@ else
   # the system is unknown, so we give up on guessing.
   export OPERATING_SYSTEM=unknown
 fi
-if [ ! -z "$SHELL_DEBUG" ]; then
+if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
   echo "[OS is \"$OPERATING_SYSTEM\"]"
 fi
 
-if [ ! -z "$SHELL_DEBUG" ]; then
+if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
   echo "[FEISTY_MEOW_APEX is $FEISTY_MEOW_APEX]"
 fi
 
@@ -102,25 +102,25 @@ export BUILD_TOP="$FEISTY_MEOW_APEX"
 export PRODUCTION_STORE="$BUILD_TOP/production"
 
 ## set up the top-level for all build creations and logs and such.
-#export GENERATED_STORE="$TMP/generated-feisty_meow"
-#if [ ! -d "$GENERATED_STORE" ]; then
-#  mkdir -p "$GENERATED_STORE"
+#export FEISTY_MEOW_GENERATED_STORE="$TMP/generated-feisty_meow"
+#if [ ! -d "$FEISTY_MEOW_GENERATED_STORE" ]; then
+#  mkdir -p "$FEISTY_MEOW_GENERATED_STORE"
 #fi
 ## set up our effluent outsourcing valves.
-#export TEMPORARIES_PILE="$GENERATED_STORE/temporaries"
+#export TEMPORARIES_PILE="$FEISTY_MEOW_GENERATED_STORE/temporaries"
 #if [ ! -d "$TEMPORARIES_PILE" ]; then
 #  mkdir -p "$TEMPORARIES_PILE"
 #fi
 
 # this variable points at a folder where we store the generated products of
 # the build, such as the binaries and installer packages.
-export RUNTIME_PATH="$GENERATED_STORE/runtime"
+export RUNTIME_PATH="$FEISTY_MEOW_GENERATED_STORE/runtime"
 if [ ! -d "$RUNTIME_PATH" ]; then
   mkdir -p "$RUNTIME_PATH"
 fi
 
 # we define a log file storage area that can be relied on by the build.
-export FEISTY_MEOW_LOGS="$GENERATED_STORE/logs"
+export FEISTY_MEOW_LOGS="$FEISTY_MEOW_GENERATED_STORE/logs"
 if [ ! -d "$FEISTY_MEOW_LOGS" ]; then
   mkdir -p "$FEISTY_MEOW_LOGS"
 fi
@@ -129,7 +129,7 @@ fi
 
 # debugging area where we say what we think we know.
 
-if [ ! -z "$SHELL_DEBUG" ]; then
+if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
   echo scripts: $BUILD_SCRIPTS_PATH
   echo build tools hier: $BUILDING_HIERARCHY
   echo this tool: $THIS_TOOL_NAME

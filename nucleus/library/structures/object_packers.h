@@ -123,7 +123,7 @@ bool unpack_array(basis::byte_array &packed_form, basis::array<contents> &to_unp
   to_unpack.reset();
   basis::un_int len;
   if (!obscure_detach(packed_form, len)) return false;
-  basis::array<contents> swappy_array(len, NIL, to_unpack.flags());
+  basis::array<contents> swappy_array(len, NULL_POINTER, to_unpack.flags());
     // we create an array of the specified length to see if it's tenable.
   if (!swappy_array.observe()) return false;  // failed to allocate.
   for (int i = 0; i < (int)len; i++) {
@@ -162,7 +162,7 @@ bool unpack_simple(basis::byte_array &packed_form, basis::array<contents> &to_un
   to_unpack.reset();
   basis::un_int len;
   if (!obscure_detach(packed_form, len)) return false;
-  basis::array<contents> swappy_array(len, NIL, to_unpack.flags());
+  basis::array<contents> swappy_array(len, NULL_POINTER, to_unpack.flags());
   if (!swappy_array.observe()) return false;  // failed to allocate.
   for (int i = 0; i < len; i++) {
     if (!detach(packed_form, swappy_array[i]))

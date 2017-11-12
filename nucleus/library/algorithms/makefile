@@ -2,7 +2,7 @@ include cpp/variables.def
 
 PROJECT = algorithms
 TYPE = library
-SOURCE = placeholder.cpp
+SOURCE = sorts.cpp
 TARGETS = algorithms.lib
 
 include cpp/rules.def

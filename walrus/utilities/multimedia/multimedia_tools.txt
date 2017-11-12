@@ -39,3 +39,19 @@ http://www.audacityteam.org/
 
 this article helps a lot to get the music off of vinyl records using a usb turntable:
 https://www.linux.com/news/using-usb-turntable-linux
+
+
+----------------
+movie processing
+----------------
+
+avidemux:
+if you need to manipulate a video, for example to rotate it or transcode it to a different
+format, then avidemux works great.
+
+openshot:
+if you need to jam a bunch of videos together, crossfade them, and that kind of stuff,
+then try openshot.  it also supports simple saving with different quality levels, which
+lets you drop a bunch of size at the expense of the picture.  sometimes needed.
+
+

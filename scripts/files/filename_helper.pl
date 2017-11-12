@@ -400,26 +400,97 @@ sub upper {
 # recursively deletes a directory that is passed as the single parameter.
 # from http://developer.novell.com/wiki/index.php/Recursive_Directory_Remove
 sub recursive_delete {
-
-#hmmm: this should iterate across all params.
-  my $dir = shift;
-
-  if ( -f "$dir" ) {
+  my $dir;
+  foreach $dir (@_) {
+    if ( -f "$dir" ) {
 print "this is not a dir: $dir\nshould whack it here?\n";
 return;
-  }
+    }
 
-  local *DIR;
-  opendir DIR, $dir or die "opendir $dir: $!";
-  my $found = 0;
-  while ($_ = readdir DIR) {
-    next if /^\.{1,2}$/;
-    my $path = "$dir/$_";
-    unlink $path if -f $path;
-    recursive_delete($path) if -d $path;
+    local *DIR;
+    # if we can't open the dir, just skip to the next one.
+    opendir DIR, $dir or next;
+    while ($_ = readdir DIR) {
+      next if /^\.{1,2}$/;
+      my $path = "$dir/$_";
+      unlink $path if -f $path;
+      recursive_delete($path) if -d $path;
+    }
+    closedir DIR;
+    rmdir $dir or print "error - $!";
   }
-  closedir DIR;
-  rmdir $dir or print "error - $!";
+}
+
+############################################################################
+
+# finds any directories under the arguments, which can be a list of directories.
+sub find_directories {
+  my @dirs_found = ();
+  my $dir;
+  foreach $dir (@_) {
+    local *DIR;
+    # if we can't open the dir, just skip to the next one.
+    opendir DIR, $dir or next;
+    while ($_ = readdir DIR) {
+      # skip if it's current or parent dir.
+      next if /^\.{1,2}$/;
+      my $path = "$dir/$_";
+      # skip if this entry is not itself a directory.
+      next if ! -d $path;
+      push @dirs_found, $path;
+    }
+    closedir DIR;
+  }
+  return @dirs_found;
+}
+
+############################################################################
+
+# given a list of paths, this returns an array of all the filenames found therein.
+sub find_files {
+  my @files_found = ();
+  my $dir;
+  foreach $dir (@_) {
+    if (-f $dir) {
+      # that's actually just a file, so add it.
+      push @files_found, $dir;
+      next;
+    }
+    local *DIR;
+    # if we can't open the dir, just skip to the next one.
+    opendir DIR, $dir or next;
+    while ($_ = readdir DIR) {
+      # skip if it's current or parent dir.
+      next if /^\.{1,2}$/;
+      my $path = "$dir/$_";
+      # skip if this entry is not a file.
+      next if ! -f $path;
+      push @files_found, $path;
+    }
+    closedir DIR;
+  }
+  return @files_found;
+}
+
+############################################################################
+
+# finds all directories starting at a particular directory and returns them
+# in an array.  does not include the starting directory.
+sub recursive_find_directories {
+  # first find all the directories within the parameters.
+  my @toplevel = find_directories(@_);
+
+  my @to_return;
+  push(@to_return, @toplevel);
+
+  # return the composition of the list we found here plus any directories under those.
+  # we only recurse if there's something to chew on in our directory list.
+  # otherwise, we've hit the bottom of that tree.
+  if (scalar @toplevel > 0) {
+    my @subs_found = recursive_find_directories(@toplevel);
+    push(@to_return, @subs_found);
+  }
+  return @to_return;
 }
 
 ############################################################################

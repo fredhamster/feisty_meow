@@ -1,0 +1,72 @@
+
+#[aa cron defaults]
+#
+# cron default bits to add at top of crontab...
+# by fred t. hamster, GNU GPL v3 license.
+
+# every one of the crontab examples in feisty meow depends on the the stanzas
+# below.  (unfortunately there is no way to include cron files in other cron
+# files, so the functional parts here should just be pasted directly into the
+# user's crontab at the top.)
+
+# set a user name for writing unique log files.  this is important because
+# cron doesn't have the normal variable 'USER' defined.  cron does define
+# HOME, which is pretty lucky for us...
+# please change the name to the user running the cronjob, or to whatever
+# unique string you'd like to use:
+CRONUSER=FILL-CRONUSER-HERE
+
+# set the shell to bash.  (not the default for some cron implementations.)
+SHELL=/bin/bash
+
+# set the top-level folder for feisty meow here; important because cron gets
+# almost nothing from the user's environment.  this folder needs to be updated
+# for your own particular install location.
+FEISTY_MEOW_APEX=/opt/feistymeow.org/feisty_meow
+#FEISTY_MEOW_APEX=$HOME/feisty_meow
+
+# crontab miniature docs:
+#
+# below is the short form key to the crontab positional entries for times:
+#     m h dom mon dow command
+#
+# below is a longer form that spells out the meaning of each position:
+#     minute(s) hour(s) dayOfMonth(s) month(s) dayOfWeek(s) command
+#
+# each field is optionally plural because cron allows each of the positions to
+# indicate multiple values.  generally it is simpler and sufficient to have a
+# single value in the field, but there are also good reasons that some tasks
+# would have a more complicated formula (such as, "every couple of days" rather
+# than "every day").
+#
+# the wildcard '*' indicates that every valid value is okay for that field.
+# the wildcard form of a crontab line is this: "* * * * * command"
+# that "command" will execute every single minute.
+
+# the guts of the crontab would follow below.  this usually is a set of valid
+# crontab lines that spell the time or times for commands to be executed.  my
+# crontabs usually have from 3 to 8 entries because i tend to atomicize the
+# tasks, rather than writing big complicated multi-purpose scripts.  not saying
+# that's always better, it's just how i roll (my crontabs)...
+#
+# also, it is fine to have a really long command with multiple sub-commands;
+# just put it inside parentheses to group a bunch of commands together.  there
+# are many examples of doing this in the other crontab examples in this folder.
+#
+# further, it's often important to send the output from the cron job to an
+# output location.  doing this keeps cron from sending you a lot of emails
+# with cron job output on some systems.  you can use the normal output
+# redirection operators to do this (e.g. '>', '2>', '&>', '>>' and '&>>').
+# /dev/null works as an output target if you don't ever want to see the
+# results from your cron jobs.  i usually prefer to write log files in the
+# /tmp directory with the ${CRONUSER} variable added in the file name.
+# below is a live example which we almost always include, so it's embedded
+# here for convenience.
+
+#[nechung fortune]
+# runs every minute and recreates a fortune for thunderbird signature.
+# a lot of the detail below is to get the feisty meow environment loaded for
+# the new_sig command.
+* * * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; perl $FEISTY_MEOW_SCRIPTS/text/new_sig.pl) &>>/tmp/${CRONUSER}-cron-nechung_fortune.log
+
+

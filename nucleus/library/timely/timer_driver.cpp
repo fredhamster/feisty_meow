@@ -150,7 +150,7 @@ timer_driver::timer_driver()
 #if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   _prompter(new signalling_thread(INITIAL_TIMER_GRANULARITY)),
 #else
-  _real_timer_id(NIL),
+  _real_timer_id(NULL_POINTER),
 #endif
   _in_timer(false)
 {
@@ -159,7 +159,7 @@ timer_driver::timer_driver()
 #ifdef __UNIX__
   // register for the our personal signal.
   signal(OUR_SIGNAL, &timer_driver_private_handler);
-  _prompter->start(NIL);
+  _prompter->start(NULL_POINTER);
 #endif
 }
 
@@ -173,13 +173,13 @@ timer_driver::~timer_driver()
 
   struct sigaction action;
   action.sa_handler = SIG_DFL;
-  action.sa_sigaction = NIL;
+  action.sa_sigaction = NULL_POINTER;
   sigemptyset(&action.sa_mask);
   action.sa_flags = 0;
 #ifndef __APPLE__
-  action.sa_restorer = NIL;
+  action.sa_restorer = NULL_POINTER;
 #endif
-  int ret = sigaction(OUR_SIGNAL, &action, NIL);
+  int ret = sigaction(OUR_SIGNAL, &action, NULL_POINTER);
   if (ret) {
 ///uhhh
   }
@@ -410,7 +410,7 @@ void timer_driver::hookup_OS_timer(int duration)
 #elif defined(_MSC_VER)
   int max_tries_left = 100;
   while (max_tries_left-- >= 0) {
-    _real_timer_id = (basis::un_int *)SetTimer(NIL, 0, duration,
+    _real_timer_id = (basis::un_int *)SetTimer(NULL_POINTER, 0, duration,
         timer_driver_private_handler);
     if (!_real_timer_id) {
       // failure to set the timer.
@@ -432,7 +432,7 @@ void timer_driver::unhook_OS_timer()
   // postpone the thread for quite a while so we can take care of business.
   _prompter->reschedule(LONG_TIME);
 #elif defined(_MSC_VER)
-  if (_real_timer_id) KillTimer(NIL, (UINT_PTR)_real_timer_id);
+  if (_real_timer_id) KillTimer(NULL_POINTER, (UINT_PTR)_real_timer_id);
 #endif
 #ifdef DEBUG_TIMER_DRIVER
   LOG("unhooked OS timer.");

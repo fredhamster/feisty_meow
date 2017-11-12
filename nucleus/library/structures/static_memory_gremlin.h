@@ -74,13 +74,13 @@ public:
 
   basis::root_object *get(const char *unique_name);
     //!< locates the pointer held for the "unique_name", if any.
-    /*!< if no pointer exists, then NIL is returned.  NOTE: the returned
+    /*!< if no pointer exists, then NULL_POINTER is returned.  NOTE: the returned
     pointer must not be destroyed, since the object could be used at any time
     during the program's lifetime. */
 
   const char *find(const basis::root_object *ptr);
     //!< locates the name for "ptr" in our objects.
-    /*!< if it does not exist, then NIL is returned. */
+    /*!< if it does not exist, then NULL_POINTER is returned. */
 
   void ensure_space_exists();
     /*!< makes sure that the list of objects is large enough to contain all of
@@ -162,7 +162,7 @@ recreate any objects that were already toast. */
       __FILE__, __LINE__, true); */ \
   UNIQUE_NAME_BASED_ON_SOURCE(__uid_name, linenum); \
 /*  program_wide_memories(); */ \
-  static basis::root_object *_hidden = NIL; \
+  static basis::root_object *_hidden = NULL_POINTER; \
   /* if haven't initialized yet, then definitely need to lock carefully. */ \
   if (structures::static_memory_gremlin::__program_is_dying() || !_hidden) { \
     basis::auto_synchronizer l(structures::static_memory_gremlin::__memory_gremlin_synchronizer()); \

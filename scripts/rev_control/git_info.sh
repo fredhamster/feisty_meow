@@ -32,9 +32,9 @@ echo "== Most Recent Commit"
 git --no-pager log --max-count=1
 echo
  
-echo "Type 'git log' for more commits, or 'git show' for full commit details."
+echo "type 'git log' for more commits, or 'git show' for full commit details."
 else
-echo "Not a git repository."
+echo "not a git repository."
 fi
  
 popd >/dev/null

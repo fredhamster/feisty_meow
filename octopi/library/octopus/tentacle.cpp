@@ -75,8 +75,8 @@ tentacle::tentacle(const string_array &group_name, bool backgrounded,
 : _group(new string_array(group_name)),
   _pending(new queueton),
   _input_guard(new mutex),
-  _action(NIL),
-  _products(NIL),
+  _action(NULL_POINTER),
+  _products(NULL_POINTER),
   _backgrounded(backgrounded)
 {
   // we only start the thread if they've said they'll support backgrounding.
@@ -106,13 +106,13 @@ entity_data_bin *tentacle::get_storage() { return _products; }
 void tentacle::attach_storage(entity_data_bin &storage)
 {
   _products = &storage;
-  if (_action) _action->start(NIL);
+  if (_action) _action->start(NULL_POINTER);
 }
 
 void tentacle::detach_storage()
 {
   if (_action) _action->stop();
-  _products = NIL;
+  _products = NULL_POINTER;
 }
 
 bool tentacle::store_product(infoton *product,
@@ -158,9 +158,9 @@ outcome tentacle::enqueue(infoton *to_chow, const octopus_request_id &item_id)
 infoton *tentacle::next_request(octopus_request_id &item_id)
 {
   GRAB_CONSUMER_LOCK;
-  if (!_pending->elements()) return NIL;  // nothing to return.
+  if (!_pending->elements()) return NULL_POINTER;  // nothing to return.
   infoton *to_return = (*_pending)[0]->_product;
-  (*_pending)[0]->_product = NIL;
+  (*_pending)[0]->_product = NULL_POINTER;
     // clean out so destructor doesn't delete the object.
   item_id = (*_pending)[0]->_id;
   _pending->zap(0, 0);
@@ -170,7 +170,7 @@ infoton *tentacle::next_request(octopus_request_id &item_id)
 void tentacle::propel_arm()
 {
   FUNCDEF("propel_arm");
-  infoton *next_item = NIL;
+  infoton *next_item = NULL_POINTER;
   do {
     octopus_request_id id;
     next_item = next_request(id);

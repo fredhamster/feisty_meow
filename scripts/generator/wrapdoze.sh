@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $FEISTY_MEOW_SCRIPTS/core/functions.sh
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 #hmmm: make this support multiple vars as parameters.
 # replaces a specific environment variable with a dos approved equivalent.
@@ -18,6 +18,7 @@ function dossify_environment_variable()
   if [[ ! "$old_value" =~ \/cygdrive\/ ]]; then
 #echo didnt have a cygdrive in it: $old_value
     return 0
+#hmmm: want this to continue in multi parm version.
   fi
 
   # replace single back-slashes with double ones.
@@ -26,8 +27,8 @@ function dossify_environment_variable()
   # remove any quote characters in the value.
   new_value="${new_value//\"/}"
 
-echo "new value: '$var' = '$new_value'"
   eval "export $var=\"$new_value\""
+  echo "new value established: $var='${!var}'"
 }
 
 # for a windows build, this will replace any forward slashes
@@ -74,7 +75,7 @@ function dossify_and_run_commands()
     real_commands+=($(echo $i | sed -e 's/\//\\/g'))
   done
 
-  if [ ! -z "$SHELL_DEBUG" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo commands are now:
     for i in "${real_commands[@]}"; do
       echo -n "$i "
@@ -96,8 +97,7 @@ function dossify_and_run_commands()
 #new approach that creates a cmd file.
   cmdfile="$(mktemp $CLAM_TMP/build_cmds.XXXXXX)"
   echo "${real_commands[@]}" >"$cmdfile"
-echo "** cmd file is: '$cmdfile')"
-#echo "** cmd file has: $(cat "$cmdfile")"
+#echo "**** cmd file is $cmdfile"
   cmd /c $(cat "$cmdfile")
   retval=$?
   # leave the file for inspection if there was an error.
