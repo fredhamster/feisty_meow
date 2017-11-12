@@ -445,7 +445,7 @@ function generate_rev_ctrl_filelist()
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
   echo "$sortfile"
-  \rm "$tempfile" "$sortfile"
+  \rm "$tempfile"
 }
 
 # iterates across a list of directories contained in a file (first parameter).
@@ -480,6 +480,6 @@ function perform_revctrl_action_on_file()
 
   restore_terminal_title
 
-  rm $tempfile
+  rm "$tempfile"
 }
 
