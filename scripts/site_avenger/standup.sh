@@ -56,8 +56,12 @@ check_application_dir "$APPLICATION_DIR"
 add_domain "$DOMAIN_NAME"
 test_or_die "Setting up domain: $DOMAIN_NAME"
 
+sep
+
 add_apache_site "$APPLICATION_NAME" "$DOMAIN_NAME"
 test_or_die "Setting up apache site for: $APPLICATION_NAME"
+
+sep
 
 powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 
