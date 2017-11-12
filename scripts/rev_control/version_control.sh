@@ -17,6 +17,11 @@ export MAX_DEPTH=5
 # use our splitter tool for lengthy output if it's available.
 if [ ! -z "$(which splitter)" ]; then
   TO_SPLITTER="$(which splitter)"
+
+#hmmm: another reusable chunk here, getting terminal size.
+  # calculate the number of columsn in the terminal.
+  cols=$(stty size | awk '{print $2}')
+  TO_SPLITTER+=" --maxcol $(($cols - 1))"
 else
   TO_SPLITTER=cat
 fi
