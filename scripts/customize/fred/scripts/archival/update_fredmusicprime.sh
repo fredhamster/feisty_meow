@@ -2,11 +2,14 @@
 
 # updates my little 1 TB "soapbox" style usb drive with items that it should contain.
 
-source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
-source "$FEISTY_MEOW_SCRIPTS/archival/shared_updater_parts.sh"
+source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"
 
-# where we're backing up to.
-TARGET_FOLDER="/media/fred/fredmusicprime"
+update_archive_drive "/media/fred/fredmusicprime"
+
+exit $?
+
+#####old#####old#####
+#gone below.
 
 sep
 
