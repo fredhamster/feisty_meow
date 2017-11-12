@@ -7,6 +7,9 @@
 # is much more powerful if the site is based on cakephp and site avenger.
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 ############################
 
