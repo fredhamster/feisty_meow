@@ -7,6 +7,9 @@
 # is much more powerful if the site is based on cakephp and site avenger.
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
 ############################
 
@@ -16,6 +19,13 @@ function print_instructions()
   echo "$(basename $0 .sh) {app name}"
   echo
   echo "
+$(basename $0 .sh) will completely set up a web site, including a domain
+name and an apache configuration file.  The site will be acquired from a
+git repository and configured.  At the end of this script, the result should 
+be an almost working website; you may need to fix the site configuration,
+create databases and so forth.
+
+This script must be run as sudo or root; it makes changes to system files.
 app name: The app name parameter is mandatory.  The configuration file for
 this script will be derived from the app name (e.g. if the app name is MyApp,
 then the config file will be 'MyApp.config').  The config files are by
@@ -31,30 +41,40 @@ overridden by setting the SITE_MANAGEMENT_CONFIG_FILE environment variable."
 # check for parameters.
 app_dirname="$1"; shift
 
+if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
+  print_instructions
+elif [ -z "$app_dirname" ]; then
+  print_instructions
+fi
+
 if (( $EUID != 0 )); then
   echo "This script must be run as root or sudo."
   exit 1
 fi
 
-if [ -z "$app_dirname" ]; then
-  print_instructions
-fi
-
 source "$WORKDIR/shared_site_mgr.sh"
-
-if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
-  print_instructions
-fi
 
 sep
 
 check_application_dir "$APPLICATION_DIR"
 
+# find proper webroot where the site will be initialized.
+if [ -z "$app_dirname" ]; then
+  # no dir was passed, so guess it.
+  find_app_folder "$APPLICATION_DIR"
+else
+  test_app_folder "$APPLICATION_DIR" "$app_dirname"
+fi
+
 add_domain "$DOMAIN_NAME"
 test_or_die "Setting up domain: $DOMAIN_NAME"
 
+sep
+
 add_apache_site "$APPLICATION_NAME" "$DOMAIN_NAME"
 test_or_die "Setting up apache site for: $APPLICATION_NAME"
+
+sep
 
 powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 
