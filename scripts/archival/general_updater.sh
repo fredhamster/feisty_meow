@@ -11,6 +11,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 function update_source_folders()
 {
   folder="$1"; shift
+  sep
   if [ ! -d "$folder" ]; then
     echo "The folder '$folder' does not exist, so skipping repository update there."
     return;
@@ -27,6 +28,7 @@ function update_source_folders()
     return 1
   fi
   popd
+  sep
 }
 
 # this attempts to copy all the contents in a folder called "from" into a folder
@@ -40,12 +42,12 @@ function synch_directory_to_target()
   sep
 
   if [ ! -d "$from" ]; then
-    echo "skipping synch on missing source directory $from; this is not normal!"
-    return 1
+    echo "skipping synch on missing source directory: ${from}"
+    return 0
   fi
   if [ ! -d "$to" ]; then
-    echo "skipping synch into non-existent directory $to"
-    return
+    echo "skipping synch into non-existent target directory $to"
+    return 0
   fi
 
   echo "synching from $from into $to"
@@ -92,6 +94,7 @@ function update_archive_drive()
 
   echo successfully updated all expected portions of the target drive at:
   echo "  $target_folder"
+  echo
 }
 
 

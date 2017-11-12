@@ -123,19 +123,13 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   
     ##############
 
-echo POINT A
-  
     if [ -z "$ERROR_OCCURRED" ]; then
-
-echo POINT B
       # pull in our generated variables that are the minimal set we need to find
       # the rest of our resources.
       source "$FEISTY_MEOW_VARIABLES_LOADING_FILE"
   
-echo POINT C
       # Set up the temporary directory.
       source "$FEISTY_MEOW_SCRIPTS/core/create_tempdir.sh"
-echo POINT D
     fi
   
   fi
@@ -143,15 +137,11 @@ echo POINT D
   ##############
 
   if [ -z "$ERROR_OCCURRED" ]; then
-
-echo POINT E
-
-    # load the larger body of standard feisty meow variables into the environment.
-    # we actually want this to always run also; it will decide what variables need
-    # to be set again.
+    # no error occurred in our tests above, so load the larger body of standard feisty
+    # meow variables into the environment.  we actually want this to always run also;
+    # it will decide what variables need to be set again.
     source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
 
-echo POINT F
     ##############
 
     # include helpful functions.  we do this every time rather than making it part
@@ -159,11 +149,9 @@ echo POINT F
     # sub-shells in bash.
     source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
-echo POINT G
     # load some helper methods for the terminal which we'll use below.
     source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
-echo POINT H
     ##############
 
 #hmmm: abstract this to a twiddle shell options method.
@@ -179,7 +167,6 @@ echo POINT H
     shopt -s checkwinsize
 
     ##############
-echo POINT I
 
     # make history writes immediate to avoid losing history if bash is zapped.
     echo $PROMPT_COMMAND | grep -q history
@@ -194,19 +181,15 @@ echo POINT I
 
     if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "heavyweight init begins..."; fi
 
-echo POINT J
     # set up the aliases for the shell, but only if they are not already set.
     type CORE_ALIASES_LOADED &>/dev/null
     if [ $? -ne 0 ]; then
       if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
         echo "the aliases were missing, now they are being added..."
       fi
-echo HEEE HAHAHAHAHA
       source "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh"
-echo HOOOOEY
     fi
 
-echo POINT K
     #echo before the new labelling, terminal titles have:
     #show_terminal_titles
 
