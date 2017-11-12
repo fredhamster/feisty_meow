@@ -5,6 +5,13 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 ##############
 
+if (( $EUID != 0 )); then
+  echo "This script must be run as root or sudo."
+  exit 1
+fi
+
+##############
+
 # make sure we have the appropriate access on a few key folders.
 normal_perm /var/www
 
