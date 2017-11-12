@@ -149,11 +149,15 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   
   ##############
 
-  # umask sets a permission mask for all file creations.
-  # this mask disallows writes by "group" and "others".
-  umask 022
-  # this mask disallows writes by the "group" and disallows "others" completely.
+  # umask sets a permission mask for all file creations.  we don't set this for the users any
+  # more; they should set it themselves.  this is just documentation.
+  # 
+  # this mask disallows writes by the "group" and disallows all permissions for "others".
   #umask 027
+  # this mask disallows writes by "group" and "others".
+  #umask 022
+  # this mask allows writes by "group" but not by "others".
+  #umask 002
 
   # ulimit sets user limits.  we set the maximum allowed core dump file size
   # to zero, because it is obnoxious to see the core dumps from crashed
