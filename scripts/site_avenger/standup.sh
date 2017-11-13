@@ -76,6 +76,9 @@ test_or_die "Setting up apache site for: $APPLICATION_NAME"
 
 sep
 
+echo about to do powerup with: app="$APPLICATION_NAME" repo="$REPO_NAME" theme="$THEME_NAME"
+echo default repo is "$DEFAULT_REPOSITORY_ROOT" 
+
 powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 
 sep

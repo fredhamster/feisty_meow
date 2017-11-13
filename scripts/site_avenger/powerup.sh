@@ -80,6 +80,9 @@ echo "Repository: $repo_name"
 echo "Theme name: $theme_name"
 sep
 
+echo in powerup before update repo with:
+var CHECKOUT_DIR_NAME DEFAULT_REPOSITORY_ROOT
+
 # this should set the site_store_path variable if everything goes well.
 update_repo "$full_app_dir" "$CHECKOUT_DIR_NAME" "$DEFAULT_REPOSITORY_ROOT" "$repo_name"
 test_or_die "Updating the repository storage directory"
