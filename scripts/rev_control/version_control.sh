@@ -17,9 +17,23 @@ export MAX_DEPTH=5
 # use our splitter tool for lengthy output if it's available.
 if [ ! -z "$(which splitter)" ]; then
   TO_SPLITTER="$(which splitter)"
+
+#hmmm: another reusable chunk here, getting terminal size.
+  # calculate the number of columsn in the terminal.
+  cols=$(stty size | awk '{print $2}')
+  TO_SPLITTER+=" --maxcol $(($cols - 1))"
 else
   TO_SPLITTER=cat
 fi
+
+##############
+
+#hmmm: move this to core
+# this makes the status of pipe N into the main return value.
+function promote_pipe_return()
+{
+  ( exit ${PIPESTATUS[$1]} )
+}
 
 ##############
 
@@ -77,7 +91,8 @@ function do_checkin()
       $blatt
 
       # put all changed and new files in the commit.  not to everyone's liking.
-      git add --all .
+      git add --all . | $TO_SPLITTER
+      promote_pipe_return 0
       test_or_die "git add all new files"
 
       # see if there are any changes in the local repository.
@@ -95,6 +110,7 @@ function do_checkin()
 
       # upload any changes to the upstream repo so others can see them.
       git push origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      promote_pipe_return 0
       test_or_die "git push"
 
     fi
@@ -250,6 +266,11 @@ function check_branch_state()
 {
   local branch="$1"; shift
 
+  if [ -z "$branch" ]; then
+    echo "No branch was passed to check branch state."
+    return 1
+  fi
+
   local to_return=120  # unknown issue.
 
   local local_branch=$(git rev-parse @)
@@ -284,22 +305,26 @@ function do_careful_git_update()
     return 0
   fi
 
+  local this_branch="$(my_branch_name)"
+
+  state=$(check_branch_state "$this_branch")
+  echo "=> branch '$this_branch' state prior to remote update is: $state"
+
   # first update all our remote branches to their current state from the repos.
-  git remote update
+  git remote update | $TO_SPLITTER
+  promote_pipe_return 0
   test_or_die "git remote update"
 
-  local this_branch="$(my_branch_name)"
-#appears to be useless; reports no changes when we need to know about remote changes that do exist:
-#hmmm: trying it out again now that things are better elsewhere.  let's see what it says.
   state=$(check_branch_state "$this_branch")
-  echo "=> branch '$this_branch' state is: $state"
+  echo "=> branch '$this_branch' state after remote update is: $state"
 
   # this code is now doing what i have to do when i repair the repo.  and it seems to be good so far.
   local branch_list=$(all_branch_names)
   local bran
   for bran in $branch_list; do
 #    echo "synchronizing remote branch: $bran"
-    git checkout "$bran"
+    git checkout "$bran" | $TO_SPLITTER
+    promote_pipe_return 0
     test_or_die "git switching checkout to remote branch: $bran"
 
     state=$(check_branch_state "$bran")
@@ -308,17 +333,22 @@ function do_careful_git_update()
     remote_branch_info=$(git ls-remote --heads origin $bran 2>/dev/null)
     if [ ! -z "$remote_branch_info" ]; then
       # we are pretty sure the remote branch does exist.
-      git pull --no-ff origin "$bran"
+      git pull --no-ff origin "$bran" | $TO_SPLITTER
+      promote_pipe_return 0
+
+      echo "=> branch '$bran' state after pull is: $state"
     fi
     test_or_die "git pull of remote branch: $bran"
   done
   # now switch back to our branch.
-  git checkout "$this_branch"
+  git checkout "$this_branch" | $TO_SPLITTER
+  promote_pipe_return 0
   test_or_die "git checking out our current branch: $this_branch"
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
-  git pull --no-ff --all
+  git pull --no-ff --all | $TO_SPLITTER
+  promote_pipe_return 0
   test_or_die "git pulling all upstream"
 
   popd &>/dev/null
@@ -343,19 +373,21 @@ function do_update()
     if test_writeable "CVS"; then
       $blatt
       cvs update . | $TO_SPLITTER
+      promote_pipe_return 0
       test_or_die "cvs update"
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
       $blatt
       svn update . | $TO_SPLITTER
+      promote_pipe_return 0
       test_or_die "svn update"
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
       git pull --no-ff 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
+      promote_pipe_return 0
       test_or_die "git pull of origin without fast forwards"
     fi
   else
@@ -426,8 +458,8 @@ function generate_rev_ctrl_filelist()
 
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
-  \rm "$tempfile"
   echo "$sortfile"
+  \rm "$tempfile"
 }
 
 # iterates across a list of directories contained in a file (first parameter).
@@ -462,6 +494,6 @@ function perform_revctrl_action_on_file()
 
   restore_terminal_title
 
-  rm $tempfile
+  rm "$tempfile"
 }
 
