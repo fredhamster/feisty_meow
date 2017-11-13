@@ -11,6 +11,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 function update_source_folders()
 {
   folder="$1"; shift
+  sep
   if [ ! -d "$folder" ]; then
     echo "The folder '$folder' does not exist, so skipping repository update there."
     return;
@@ -19,14 +20,15 @@ function update_source_folders()
   pushd "$folder"
   if [ $? -ne 0 ]; then
     echo Changing to the folder $folder failed.
-    exit 1
+    return 1
   fi
   bash "$FEISTY_MEOW_SCRIPTS/rev_control/rcheckin.sh"
   if [ $? -ne 0 ]; then
     echo Checking out the latest codes has failed somehow for $folder.
-    exit 1
+    return 1
   fi
   popd
+  sep
 }
 
 # this attempts to copy all the contents in a folder called "from" into a folder
@@ -40,19 +42,19 @@ function synch_directory_to_target()
   sep
 
   if [ ! -d "$from" ]; then
-    echo "skipping synch on missing source directory $from; this is not normal!"
-    exit 1
+    echo "skipping synch on missing source directory: ${from}"
+    return 0
   fi
   if [ ! -d "$to" ]; then
-    echo "skipping synch into non-existent directory $to"
-    return
+    echo "skipping synch into non-existent target directory $to"
+    return 0
   fi
 
   echo "synching from $from into $to"
   netcp "$from"/* "$to"/
   if [ $? -ne 0 ]; then
     echo "The synchronization of $from into $to has failed."
-    exit 1
+    return 1
   fi
 }
 
@@ -71,7 +73,7 @@ function update_archive_drive()
   ls "$target_folder"
   if [ $? -ne 0 ]; then
     echo "The target location '$target_folder' is not mounted currently, so cannot be updated."
-    exit 1
+    return 1
   fi
 
   # synch all our targets.
@@ -92,6 +94,8 @@ function update_archive_drive()
 
   echo successfully updated all expected portions of the target drive at:
   echo "  $target_folder"
+  echo
+  popd
 }
 
 

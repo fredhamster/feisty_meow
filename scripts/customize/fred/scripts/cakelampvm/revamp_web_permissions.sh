@@ -18,23 +18,25 @@ source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
 ##############
 
-# make sure we have the appropriate access on a few key folders.
-normal_perm /var/www
+# fix up the main web storage.
+chown -R www-data:www-data /var/www 
+group_perm /var/www 
 
 ##############
 
-# change the owner for the web roots to the apache user, www-data.
-chown -R www-data:www-data /var/www
+# set up access on some important folders for the developer user.
+chown -R developer:developer /home/developer
+harsh_perm /home/developer/.ssh
+chown -R developer:developer /opt/feistymeow.org 
+normal_perm /opt/feistymeow.org 
+chown -R developer:developer /etc/apache2 /etc/bind 
+group_perm /etc/apache2 /etc/bind 
 
-# put a couple specific ownerships into play so the appropriate user has full access.
-chown -R developer:developer /home/developer /opt/feistymeow.org /etc/apache2 /etc/bind
+##############
 
+# fix perms for fred user.
 chown -R fred:fred /home/fred /home/archives/stuffing 
-
-##############
-
-# these directories will be given group permissons that enable web server access.
-group_perm /var/www /etc/apache2 /etc/bind
+harsh_perm /home/fred/.ssh
 
 ##############
 
