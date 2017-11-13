@@ -47,10 +47,11 @@ elif [ -z "$app_dirname" ]; then
   print_instructions
 fi
 
-if [[ $EUID != 0 ]]; then
-  echo "This script must be run as root or sudo."
-  exit 1
-fi
+#we will require sudo later.
+#if [[ $EUID != 0 ]]; then
+#  echo "This script must be run as root or sudo."
+#  exit 1
+#fi
 
 source "$WORKDIR/shared_site_mgr.sh"
 
@@ -68,12 +69,12 @@ fi
 
 echo "!! domain being added is: $DOMAIN_NAME"
 
-add_domain "$DOMAIN_NAME"
+sudo bash "$FEISTY_MEOW_SCRIPTS/system/add_domain.sh" "$DOMAIN_NAME"
 test_or_die "Setting up domain: $DOMAIN_NAME"
 
 sep
 
-add_apache_site "$APPLICATION_NAME" "$DOMAIN_NAME"
+sudo bash "$FEISTY_MEOW_SCRIPTS/system/add_apache_site.sh" "$APPLICATION_NAME" "$DOMAIN_NAME"
 test_or_die "Setting up apache site for: $APPLICATION_NAME"
 
 sep
@@ -81,8 +82,8 @@ sep
 echo about to do powerup with: app="$APPLICATION_NAME" repo="$REPO_NAME" theme="$THEME_NAME"
 echo default repo is "$DEFAULT_REPOSITORY_ROOT" 
 
+powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 # pass the real user name who should own the files.
-sudo -u $(logname) bash "$WORKDIR/powerup.sh" "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 # "$(logname)"
 
 sep

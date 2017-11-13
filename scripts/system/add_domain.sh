@@ -8,6 +8,11 @@
 #
 # Author: Chris Koeritz
 
+export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
+
 # some defaults that are convenient for current purposes.
 
 # hmmm: !!! these would need to be parameterized somehow for this script to become really general.
