@@ -82,7 +82,6 @@ echo about to do powerup with: app="$APPLICATION_NAME" repo="$REPO_NAME" theme="
 echo default repo is "$DEFAULT_REPOSITORY_ROOT" 
 
 #hmmm: maybe can get rid of user name parm if this works?
-
 echo before redo login permissions
 sudo su -i -u $(logname)
 echo after redo login permissions
