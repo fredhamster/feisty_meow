@@ -49,8 +49,7 @@ repo_name="$1"; shift
 theme_name="$1"; shift
 user_name="$1"; shift
 
-echo stopping with user name is $user_name
-exit 1
+echo "*** user name is $user_name"
 
 if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
