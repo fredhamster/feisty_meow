@@ -8,13 +8,19 @@
 #
 # Author: Chris Koeritz
 
+export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
+
 # some defaults that are convenient for current purposes.
-# hmmm: these would need to be parameterized somehow for this script to become really general.
+
+# hmmm: !!! these would need to be parameterized somehow for this script to become really general.
 
 # in our scheme, the single IP address that all our domains map to.
 IP_ADDRESS="10.28.42.20"
 # the email address (where first dot is replaced by @) for the administrator of the domain.
-SERVER_ADMIN="fred.cakelampvm.com"
+SERVER_ADMIN="developer.cakelampvm.com"
 # the name of the name server for the new domains (should already be configured).
 MAIN_NAME_SERVER="ns.cakelampvm.com"
 # the name of the mail server for a new domain (should already be configured).

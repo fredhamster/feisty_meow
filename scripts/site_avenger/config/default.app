@@ -6,9 +6,9 @@
 
 # basic information that is constant for all site avenger sites.
 
-APPLICATION_DIR="$HOME/apps"
-DEFAULT_REPOSITORY_ROOT="git@github.com:kwentworth"
-CHECKOUT_DIR_NAME="avenger5"
+export APPLICATION_DIR="$HOME/apps"
+export DEFAULT_REPOSITORY_ROOT="git@github.com:kwentworth"
+export CHECKOUT_DIR_NAME="avenger5"
 
 ####
 
@@ -23,20 +23,20 @@ CHECKOUT_DIR_NAME="avenger5"
 
 # deployment information for the application / site.
 
-APPLICATION_NAME="${app_dirname}"
+export APPLICATION_NAME="${app_dirname}"
 
 echo app name was computed as $APPLICATION_NAME
 
 # change this if the site is on the "real" internet.
-DOMAIN_NAME="${app_dirname}.vm"
+export DOMAIN_NAME="${app_dirname}.vm"
 
 echo domain name was computed as $DOMAIN_NAME
 
-REPO_NAME="${app_dirname}.git"
+export REPO_NAME="${app_dirname}"
 
 echo repo name was computed as $REPO_NAME
 
-THEME_NAME="$(capitalize_first_char "${app_dirname}.git")"
+export THEME_NAME="$(capitalize_first_char "${app_dirname}")"
 
 echo theme name was computed as $THEME_NAME
 

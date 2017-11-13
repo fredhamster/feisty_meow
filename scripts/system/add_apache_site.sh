@@ -4,7 +4,9 @@
 
 # auto-find the scripts, since we might want to run this as sudo.
 export WORKDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.
-source "$WORKDIR/../core/launch_feisty_meow.sh"
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
 # some convenient defaults for our current usage.
 
