@@ -4,7 +4,9 @@
 
 # auto-find the scripts, since we might want to run this as sudo.
 export WORKDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.
-source "$WORKDIR/../core/launch_feisty_meow.sh"
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
 # some convenient defaults for our current usage.
 
@@ -64,6 +66,9 @@ function write_apache_config()
     Include /etc/apache2/conf-library/rewrite-enabling.conf
 </VirtualHost>
 " >"$site_config" 
+
+  chown "$(logname):$(logname)" "$site_config"
+  test_or_die "setting ownership on: $site_config"
 }
 
 # turns on the config file we create above for apache.
@@ -127,7 +132,7 @@ echo chow path is now $chow_path
 
 # main body of script.
 
-if (( $EUID != 0 )); then
+if [[ $EUID != 0 ]]; then
   echo "This script must be run as root or sudo."
   exit 1
 fi

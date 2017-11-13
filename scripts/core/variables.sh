@@ -226,9 +226,12 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
     REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
   
-  # the archive collections list is a set of directories that are major
-  # repositories of data which can be synched to backup drives.
-  define_yeti_variable ARCHIVE_COLLECTIONS_LIST=
+  # the archive list is a set of directories that are major repositories of
+  # data which can be synched to backup drives.
+  define_yeti_variable MAJOR_ARCHIVE_SOURCES=
+  # the source collections list is a set of directories that indicate they
+  # harbor a lot of source code underneath.
+  define_yeti_variable SOURCECODE_HIERARCHY_LIST=
 
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()
