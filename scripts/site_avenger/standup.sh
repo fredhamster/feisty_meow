@@ -82,7 +82,7 @@ echo about to do powerup with: app="$APPLICATION_NAME" repo="$REPO_NAME" theme="
 echo default repo is "$DEFAULT_REPOSITORY_ROOT" 
 
 # pass the real user name who should own the files.
-sudo su -u $(logname) bash "$WORKDIR/powerup.sh" "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
+sudo -u $(logname) bash "$WORKDIR/powerup.sh" "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 # "$(logname)"
 
 sep
