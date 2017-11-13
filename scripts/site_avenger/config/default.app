@@ -36,7 +36,7 @@ export REPO_NAME="${app_dirname}"
 
 echo repo name was computed as $REPO_NAME
 
-export THEME_NAME="$(capitalize_first_char "${app_dirname}.git")"
+export THEME_NAME="$(capitalize_first_char "${app_dirname}")"
 
 echo theme name was computed as $THEME_NAME
 
