@@ -66,6 +66,8 @@ else
   test_app_folder "$APPLICATION_DIR" "$app_dirname"
 fi
 
+echo "!! domain being added is: $DOMAIN_NAME"
+
 add_domain "$DOMAIN_NAME"
 test_or_die "Setting up domain: $DOMAIN_NAME"
 

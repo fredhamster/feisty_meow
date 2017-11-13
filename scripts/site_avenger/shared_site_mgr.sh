@@ -167,6 +167,9 @@ function update_repo()
   local repo_root="$1"; shift
   local repo_name="$1"; shift
 
+echo here are parms in update repo:
+var full_app_dir checkout_dirname repo_root repo_name
+
   # forget any prior value, since we are going to validate the path.
   unset site_store_path
 
@@ -175,10 +178,12 @@ function update_repo()
 
   local complete_path="$full_app_dir/$checkout_dirname"
 
+echo A
   # see if the checkout directory exits.  the repo_found variable is set to
   # non-empty if we find it and it's a valid git repo.
   repo_found=
   if [ -d "$checkout_dirname" ]; then
+echo B
     # checkout directory exists, so let's check it.
     pushd "$checkout_dirname" &>/dev/null
     test_or_die "Switching to our checkout directory: $checkout_dirname"
@@ -189,6 +194,7 @@ function update_repo()
       repo_found=yes
     fi
  
+echo C
     # we don't consider the state of having the dir exist but the repo be wrong as good.
     if [ -z "$repo_found" ]; then
       echo "There is a problem; this folder is not a valid repository:"
@@ -199,18 +205,22 @@ function update_repo()
     popd &>/dev/null
   fi
 
+echo D
   if [ ! -z "$repo_found" ]; then
     # a repository was found, so update the version here and leave.
+echo E
     echo "Repository $repo_name exists.  Updating it."
     rgetem
     test_or_die "Recursive checkout on: $complete_path"
   else
+echo F
     # clone the repo since it wasn't found.
     echo "Cloning repository $repo_name now."
     git clone "$repo_root/$repo_name.git" $checkout_dirname
     test_or_die "Git clone of repository: $repo_name"
   fi
 
+echo G
   fix_site_perms "$complete_path"
 
   # construct the full path to where the app will actually live.

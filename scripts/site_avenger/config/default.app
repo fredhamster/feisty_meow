@@ -32,7 +32,7 @@ export DOMAIN_NAME="${app_dirname}.vm"
 
 echo domain name was computed as $DOMAIN_NAME
 
-export REPO_NAME="${app_dirname}.git"
+export REPO_NAME="${app_dirname}"
 
 echo repo name was computed as $REPO_NAME
 

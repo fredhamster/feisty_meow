@@ -5,6 +5,6 @@
 
 source "$WORKDIR/config/default.app"
 
-DOMAIN_NAME="${APPLICATION_NAME}.cakelampvm.com"
+export DOMAIN_NAME="${APPLICATION_NAME}.cakelampvm.com"
 
 
