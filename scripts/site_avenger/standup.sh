@@ -67,7 +67,7 @@ else
   test_app_folder "$APPLICATION_DIR" "$app_dirname"
 fi
 
-echo "!! domain being added is: $DOMAIN_NAME"
+#echo "!! domain being added is: $DOMAIN_NAME"
 
 sudo bash "$FEISTY_MEOW_SCRIPTS/system/add_domain.sh" "$DOMAIN_NAME"
 test_or_die "Setting up domain: $DOMAIN_NAME"
@@ -79,8 +79,8 @@ test_or_die "Setting up apache site for: $APPLICATION_NAME"
 
 sep
 
-echo about to do powerup with: app="$APPLICATION_NAME" repo="$REPO_NAME" theme="$THEME_NAME"
-echo default repo is "$DEFAULT_REPOSITORY_ROOT" 
+#echo about to do powerup with: app="$APPLICATION_NAME" repo="$REPO_NAME" theme="$THEME_NAME"
+#echo default repo is "$DEFAULT_REPOSITORY_ROOT" 
 
 powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 # pass the real user name who should own the files.
@@ -89,6 +89,7 @@ powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 sep
 
 echo "
-Finished standing up the full domain and site in:
-${app_dirname}"
+Finished standing up the full domain and site for: ${app_dirname}
+The domain name is: $DOMAIN_NAME
+"
 

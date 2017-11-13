@@ -66,6 +66,9 @@ function write_apache_config()
     Include /etc/apache2/conf-library/rewrite-enabling.conf
 </VirtualHost>
 " >"$site_config" 
+
+  chown "$(logname):$(logname)" "$site_config"
+  test_or_die "setting ownership on: $site_config"
 }
 
 # turns on the config file we create above for apache.

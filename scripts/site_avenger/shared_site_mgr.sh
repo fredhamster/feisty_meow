@@ -16,6 +16,8 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 export SITE_MANAGEMENT_CONFIG_FILE
 if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
   SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/config/default.app"
+  echo "Site management config file was not set.  Using default:"
+  echo "  $SITE_MANAGEMENT_CONFIG_FILE"
 fi
 
 # load in at least the default version to get us moving.
@@ -34,6 +36,33 @@ function check_application_dir()
     mkdir "$appdir"
     test_or_die "Making apps directory when not already present"
   fi
+}
+
+# tries to find an appropriate config file for the application.
+function locate_config_file()
+{
+  local app_dirname="$1"; shift
+
+  local configfile="$WORKDIR/config/${app_dirname}.app"
+echo hoping config file would be: $configfile
+  if [ ! -f "$configfile" ]; then
+    # this is not a good config file.  we can't auto-guess the config.
+    echo -e "
+There is no specific site configuration file in:
+  $configfile
+We will continue onward using the default and hope that this project follows
+the standard pattern for cakephp projects."
+    # we'll pull in the default config file we set earlier; this will
+    # reinitialize some variables based on the app name.
+  else
+    # they gave us a valid config file.  let's try using it.
+    export SITE_MANAGEMENT_CONFIG_FILE="$configfile"
+  fi
+
+  # try to load the config.
+  source "$SITE_MANAGEMENT_CONFIG_FILE"
+  test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
+
 }
 
 # this function will seek out top-level directories in the target directory passed in.
@@ -86,25 +115,6 @@ function find_app_folder()
   test_or_die "Testing application folder: $app_dirname"
 
   echo "Application folder is: $app_dirname"
-
-  local configfile="$WORKDIR/config/${app_dirname}.app"
-  if [ ! -f "$configfile" ]; then
-    # this is not a good config file.  we can't auto-guess the config.
-    echo -e "
-There is no specific site configuration file in:
-  $configfile
-We will continue onward using the default and hope that this project follows
-the standard pattern for cakephp projects."
-    # we'll pull in the default config file we set earlier; this will
-    # reinitialize some variables based on the app name.
-  else
-    # they gave us a valid config file.  let's try using it.
-    SITE_MANAGEMENT_CONFIG_FILE="$configfile"
-  fi
-
-  # try to load the config.
-  source "$SITE_MANAGEMENT_CONFIG_FILE"
-  test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
 }
 
 # ensures that the app directory name is valid.
@@ -120,6 +130,8 @@ function test_app_folder()
     mkdir "$combo"
     test_or_die "Making application directory when not already present"
   fi
+
+  locate_config_file "$dir"
 }
 
 # eases some permissions to enable apache to write log files and do other shopkeeping.
@@ -178,12 +190,10 @@ var full_app_dir checkout_dirname repo_root repo_name
 
   local complete_path="$full_app_dir/$checkout_dirname"
 
-echo A
   # see if the checkout directory exits.  the repo_found variable is set to
   # non-empty if we find it and it's a valid git repo.
   repo_found=
   if [ -d "$checkout_dirname" ]; then
-echo B
     # checkout directory exists, so let's check it.
     pushd "$checkout_dirname" &>/dev/null
     test_or_die "Switching to our checkout directory: $checkout_dirname"
@@ -194,7 +204,6 @@ echo B
       repo_found=yes
     fi
  
-echo C
     # we don't consider the state of having the dir exist but the repo be wrong as good.
     if [ -z "$repo_found" ]; then
       echo "There is a problem; this folder is not a valid repository:"
@@ -205,22 +214,18 @@ echo C
     popd &>/dev/null
   fi
 
-echo D
   if [ ! -z "$repo_found" ]; then
     # a repository was found, so update the version here and leave.
-echo E
     echo "Repository $repo_name exists.  Updating it."
     rgetem
     test_or_die "Recursive checkout on: $complete_path"
   else
-echo F
     # clone the repo since it wasn't found.
     echo "Cloning repository $repo_name now."
     git clone "$repo_root/$repo_name.git" $checkout_dirname
     test_or_die "Git clone of repository: $repo_name"
   fi
 
-echo G
   fix_site_perms "$complete_path"
 
   # construct the full path to where the app will actually live.
