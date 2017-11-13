@@ -28,7 +28,7 @@ group_perm /var/www
 chown -R developer:developer /home/developer
 harsh_perm /home/developer/.ssh
 chown -R developer:developer /opt/feistymeow.org 
-normal_perm /opt/feistymeow.org 
+group_perm /opt/feistymeow.org 
 chown -R developer:developer /etc/apache2 /etc/bind 
 group_perm /etc/apache2 /etc/bind 
 
