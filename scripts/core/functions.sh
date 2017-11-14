@@ -307,12 +307,18 @@ if [ -z "$skip_all" ]; then
     done
   }
   
+#hmmm: not really doing anything yet; ubuntu seems to have changed from pulseaudio in 17.04?
   # restarts the sound driver.
   function fix_sound_driver() {
-#if something
+    # stop bash complaining about blank function body.
+    local nothing=
+#if alsa something
 #    sudo service alsasound restart
+#elif pulse something
+#    sudo pulseaudio -k
+#    sudo pulseaudio -D
 #else
-    sudo service pulseaudio restart
+#    something else...?
 #fi
 
   }
