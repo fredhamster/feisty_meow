@@ -15,21 +15,12 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   fi
 
   # add a bunch of personal folders to the list for checkin & checkout.
-  REPOSITORY_LIST+="cloud ebooks web "
-  # add in any active projects.
-  if [ -d "$HOME/active" ]; then
-    REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
-  fi
-  # add in any of my applications that are in the apps folder.
-  if [ -d "$HOME/apps" ]; then
-    # first, simple projects.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 1 -mindepth 1 -type d) "
-    # then, site avenger specific projects.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
-  fi
+  REPOSITORY_LIST+=" cloud ebooks web "
 
   # adds our locally relevant archive folders into the list to be synched.
-  ARCHIVE_COLLECTIONS_LIST+="/z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
+  MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
+  # our set of known source hierarchy folder names.
+  SOURCECODE_HIERARCHY_LIST="codebarn extra_brain interbrane"
 
   # point to our local certificate for ssh usage.
   export SVN_SSH="ssh -i $HOME/.ssh/id_dsa_sourceforge"
@@ -49,15 +40,21 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
 #  export BROWSER=/usr/bin/firefox
 
   # editor and other mixed settings...
-  export EDITOR="$(which vim)"
+  export EDITOR="$(which gvim)"
+  if [ -z "$EDITOR" ]; then
+    export EDITOR="$(which vim)"
+  else
+    # special case for gvim; tell it not to fork or we can't wait for it.
+    EDITOR+=" --nofork"
+  fi
   if [ -z "$EDITOR" ]; then
     EDITOR="$(which vi)"
-    if [ -z "$EDITOR" ]; then
-      EDITOR="$(which emacs)"
-      if [ -z "$EDITOR" ]; then
-        echo "Cannot find a friendly editor."
-      fi
-    fi
+  fi
+  if [ -z "$EDITOR" ]; then
+    EDITOR="$(which emacs)"
+  fi
+  if [ -z "$EDITOR" ]; then
+    echo "Cannot find a friendly editor."
   fi
   export VISUAL="$EDITOR"
   # the editors for revision control must wait while document is edited,

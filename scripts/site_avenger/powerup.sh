@@ -5,8 +5,6 @@
 
 # This script "powers up" a cakephp site by running the database migrations,
 # cleaning out the ORM cache, and fixing file permissions.
-# Note that the mysql database must already exist and allow permissions to
-# the configured username/password in config/app.php.
 # This script is currently highly specific to site avenger.
 
 # General Info:
@@ -23,23 +21,24 @@
 # start with.  The concept of the theme comes from cakephp.
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-source "$WORKDIR/shared_site_mgr.sh"
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
 
-# get our defaults.
-source "$WORKDIR/site_avenger.config"
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
 ############################
 
 function print_instructions()
 {
   echo
-  echo "$(basename $0 .sh) [app dirname] [repository] [theme name]"
+  echo "$(basename $0 .sh) [app dirname] [repository] [theme name] "
+#[user name]
   echo
   echo "All parameters are optional, and intelligent guesses for them will be made."
   echo
   echo "app dirname: The folder where the app will be stored."
   echo "repository: The name of the git repository (short version, no URL)."
   echo "theme name: The name to use for the cakephp theme."
+#  echo "user name: The name of the user to chown the checkout to."
   echo
   exit 0
 }
@@ -52,10 +51,15 @@ function print_instructions()
 app_dirname="$1"; shift
 repo_name="$1"; shift
 theme_name="$1"; shift
+#user_name="$1"; shift
+
+#echo "*** user name is $user_name"
 
 if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
 fi
+
+source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
@@ -84,14 +88,17 @@ echo "Repository: $repo_name"
 echo "Theme name: $theme_name"
 sep
 
+echo in powerup before update repo with:
+var CHECKOUT_DIR_NAME DEFAULT_REPOSITORY_ROOT
+
 # this should set the site_store_path variable if everything goes well.
 update_repo "$full_app_dir" "$CHECKOUT_DIR_NAME" "$DEFAULT_REPOSITORY_ROOT" "$repo_name"
-test_or_fail "Updating the repository storage directory"
+test_or_die "Updating the repository storage directory"
 
 # update the site to load dependencies.
 sep
 composer_repuff "$site_store_path"
-test_or_fail "Installing site dependencies with composer"
+test_or_die "Installing site dependencies with composer"
 
 # set up the symbolic links needed to achieve siteliness.
 sep
@@ -99,6 +106,16 @@ sep
 create_site_links "$site_store_path" "$theme_name"
 
 sep
+
+#if [ ! -z "$user_name" ]; then
+#  echo "Chowning the apps folder to be owned by: $user_name"
+##hmmm: have to hope for now for standard group named after user 
+#  chown -R "$user_name:$user_name" "$APPLICATION_DIR"
+#  test_or_die "Chowning $APPLICATION_DIR to be owned by $user_name"
+#fi
+
+sep
+
 
 echo "Finished powering up the site in '${app_dirname}'."
 

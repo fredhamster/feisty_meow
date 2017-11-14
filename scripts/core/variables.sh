@@ -56,6 +56,9 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   
   # start with some simpler things.
   
+#hmmm: this needs to come from some configuration item.  especially for installs.
+define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
+
   define_yeti_variable SCRIPT_SYSTEM=feisty_meow
   
   # OS variable records the operating system we think we found.
@@ -93,9 +96,12 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   # this is only used for extreme failure modes, when the values were not
   # pulled in from our auto-generated config.
   if [ -z "$FEISTY_MEOW_APEX" ]; then
-    if [ -d "$HOME/feisty_meow" ]; then
+    if [ -d "/opt/feistymeow.org/feisty_meow" ]; then
+      define_yeti_variable FEISTY_MEOW_APEX="/opt/feistymeow.org/feisty_meow"
+      define_yeti_variable FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
+    elif [ -d "$HOME/feisty_meow" ]; then
       define_yeti_variable FEISTY_MEOW_APEX="$HOME/feisty_meow"
-      define_yeti_variable FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_SCRIPTS"
+      define_yeti_variable FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
     fi
   fi
 
@@ -143,11 +149,15 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   
   ##############
 
-  # umask sets a permission mask for all file creations.
-  # this mask disallows writes by "group" and "others".
-  umask 022
-  # this mask disallows writes by the "group" and disallows "others" completely.
+  # umask sets a permission mask for all file creations.  we don't set this for the users any
+  # more; they should set it themselves.  this is just documentation.
+  # 
+  # this mask disallows writes by the "group" and disallows all permissions for "others".
   #umask 027
+  # this mask disallows writes by "group" and "others".
+  #umask 022
+  # this mask allows writes by "group" but not by "others".
+  #umask 002
 
   # ulimit sets user limits.  we set the maximum allowed core dump file size
   # to zero, because it is obnoxious to see the core dumps from crashed
@@ -169,7 +179,6 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   # variables for perl.
   
   define_yeti_variable PERLLIB+="/usr/lib/perl5"
-  define_yeti_variable PERL5LIB+="/usr/lib/perl5"
   if [ "$OS" == "Windows_NT" ]; then
     define_yeti_variable PERLIO=:perlio
       # choose perl's IO over the ms-windows version so we can handle file
@@ -184,10 +193,10 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
       ls $i/*.pl &>/dev/null
       if [ $? -eq 0 ]; then
         PERLLIB+=":$(dos_to_unix_path $i)"
-        PERL5LIB+=":$(dos_to_unix_path $i)"
       fi
     fi
   done
+  define_yeti_variable PERL5LIB=$PERLLIB
   #echo PERLLIB is now $PERLLIB
   
   ##############
@@ -204,10 +213,25 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   #    define_yeti_variable REPOSITORY_DIR+="muppets configs"
   # see the customize/fred folder for a live example.
   define_yeti_variable REPOSITORY_LIST="$FEISTY_MEOW_APEX "
+
+  # add in any active projects to the repository list.
+  if [ -d "$HOME/active" ]; then
+    REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
+  fi
+  # add in any site avenger applications that are in the apps folder.
+  if [ -d "$HOME/apps" ]; then
+    # first, simple projects.
+    REPOSITORY_LIST+="$(find "$HOME/apps" -iname "avenger5" -type d) "
+    # then, site avenger specific projects.
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
+  fi
   
-  # the archive collections list is a set of directories that are major
-  # repositories of data which can be synched to backup drives.
-  define_yeti_variable ARCHIVE_COLLECTIONS_LIST=
+  # the archive list is a set of directories that are major repositories of
+  # data which can be synched to backup drives.
+  define_yeti_variable MAJOR_ARCHIVE_SOURCES=
+  # the source collections list is a set of directories that indicate they
+  # harbor a lot of source code underneath.
+  define_yeti_variable SOURCECODE_HIERARCHY_LIST=
 
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()

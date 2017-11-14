@@ -4,7 +4,9 @@
 
 # auto-find the scripts, since we might want to run this as sudo.
 export WORKDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.
-source "$WORKDIR/../core/launch_feisty_meow.sh"
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
 # some convenient defaults for our current usage.
 
@@ -16,26 +18,35 @@ function write_apache_config()
 {
   local appname="$1"; shift
   local sitename="$1"; shift
+  local site_path="$1"; shift
+
   local site_config="/etc/apache2/sites-available/${sitename}.conf"
 
   # check if config file already exists and bail if so.
   if [ -f "$site_config" ]; then
     echo "The apache configuration file already exists at:"
     echo "  $site_config"
-    echo "Please remove this file before proceeding, if it is junk.  For example:"
-    echo "  sudo rm $site_config"
-    exit 1
+    echo "Since apache configuration files can get very complex, we do not want to"
+    echo "assume that this file is removable.  Calling the site addition done."
+    exit 0
   fi
 
   echo "Creating a new apache2 site for $sitename with config file:"
   echo "  $site_config"
 
-  # path where site gets checked out, in some arcane manner, and which happens to be
-  # above the path where we put webroot (in the storage suffix, if defined).
-  local path_above="${BASE_PATH}/${appname}"
-  # no slash between appname and suffix, in case suffix is empty.
-  local full_path="${BASE_PATH}/${appname}${STORAGE_SUFFIX}"
+  # if no path, then we default to our standard app storage location.  otherwise, we
+  # put the site where they told us to.
+  if [ -z "$site_path" ]; then
+    # path where site gets checked out, in some arcane manner, and which happens to be
+    # above the path where we put webroot (in the storage suffix, if defined).
+    local path_above="${BASE_PATH}/${appname}"
+    # no slash between appname and suffix, in case suffix is empty.
+    local full_path="${path_above}${STORAGE_SUFFIX}"
 #echo really full path is $full_path
+  else
+    # we'll go with their specification for the site storage.
+    local full_path="$site_path"
+  fi
 
   echo "
 # set up the user's web folder as an apache user web directory.
@@ -55,6 +66,9 @@ function write_apache_config()
     Include /etc/apache2/conf-library/rewrite-enabling.conf
 </VirtualHost>
 " >"$site_config" 
+
+  chown "$(logname):$(logname)" "$site_config"
+  test_or_die "setting ownership on: $site_config"
 }
 
 # turns on the config file we create above for apache.
@@ -96,7 +110,7 @@ function maybe_create_site_storage()
   local full_path="$BASE_PATH/$our_app"
   if [ ! -d "$full_path" ]; then
     mkdir -p $full_path
-    test_or_fail "The app storage path could not be created.\n  Path in question is: $full_path"
+    test_or_die "The app storage path could not be created.\n  Path in question is: $full_path"
   fi
 
   # now give the web server some access to the folder.  this is crucial since the folders
@@ -108,33 +122,41 @@ function maybe_create_site_storage()
   while [[ $chow_path != $HOME ]]; do
 echo chow path is now $chow_path
     chmod g+rx "$chow_path"
-    test_or_fail "Failed to add group permissions on the path: $chow_path"
+    test_or_die "Failed to add group permissions on the path: $chow_path"
     # reassert the user's ownership of any directories we might have just created.
     chown $(logname) "$chow_path"
-    test_or_fail "changing ownership to user failed on the path: $chow_path"
+    test_or_die "changing ownership to user failed on the path: $chow_path"
     chow_path="$(dirname "$chow_path")"
   done
 }
 
 # main body of script.
 
-if (( $EUID != 0 )); then
+if [[ $EUID != 0 ]]; then
   echo "This script must be run as root or sudo."
   exit 1
 fi
 
 appname="$1"; shift
 site="$1"; shift
+site_path="$1"; shift
 
 if [ -z "$appname" -o -z "$site" ]; then
-  echo "This script needs to know (1) the appname (application name) for the new"
-  echo "site and (2) the DNS name for the apache virtual host."
-  echo "The appname should work as a file-system compatible folder name."
+#hmmm: move to a print_instructions function.
+  echo "
+$(basename $0): {app name} {dns name} [site path]
+
+This script needs to know (1) the application name for the new site and
+(2) the DNS name for the apache virtual host.  The appname should be an
+appropriate name for a file-system compatible folder name.  There is an
+optional third parameter (3) the path for site storage.  If the site path
+is not provided, we'll use this path:
+  $BASE_PATH/{app name}/$STORAGE_SUFFIX"
   exit 1
 fi
 
 maybe_create_site_storage "$appname"
-write_apache_config "$appname" "$site"
+write_apache_config "$appname" "$site" "$site_path"
 enable_site "$site"
 restart_apache
 

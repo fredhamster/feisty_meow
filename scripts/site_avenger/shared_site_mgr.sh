@@ -5,7 +5,24 @@
 
 # This contains a bunch of reusable functions that help out in managing websites.
 
+# This script is sourced, and relies on the value of WORKDIR, which should
+# point at the directory where the site management scripts are stored,
+# especially this one.
+
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
+# get our configuration loaded, if we know the config file.
+# if there is none, we will use our default version.
+export SITE_MANAGEMENT_CONFIG_FILE
+if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
+  SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/config/default.app"
+  echo "Site management config file was not set.  Using default:"
+  echo "  $SITE_MANAGEMENT_CONFIG_FILE"
+fi
+
+# load in at least the default version to get us moving.
+source "$SITE_MANAGEMENT_CONFIG_FILE"
+test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
 
 # configure feisty revision control to ignore vendor folders.
 export NO_CHECKIN_VENDOR=true
@@ -17,8 +34,35 @@ function check_application_dir()
   if [ ! -d "$appdir" ]; then
     echo "Creating the apps directory: $appdir"
     mkdir "$appdir"
-    test_or_fail "Making apps directory when not already present"
+    test_or_die "Making apps directory when not already present"
   fi
+}
+
+# tries to find an appropriate config file for the application.
+function locate_config_file()
+{
+  local app_dirname="$1"; shift
+
+  local configfile="$WORKDIR/config/${app_dirname}.app"
+echo hoping config file would be: $configfile
+  if [ ! -f "$configfile" ]; then
+    # this is not a good config file.  we can't auto-guess the config.
+    echo -e "
+There is no specific site configuration file in:
+  $configfile
+We will continue onward using the default and hope that this project follows
+the standard pattern for cakephp projects."
+    # we'll pull in the default config file we set earlier; this will
+    # reinitialize some variables based on the app name.
+  else
+    # they gave us a valid config file.  let's try using it.
+    export SITE_MANAGEMENT_CONFIG_FILE="$configfile"
+  fi
+
+  # try to load the config.
+  source "$SITE_MANAGEMENT_CONFIG_FILE"
+  test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
+
 }
 
 # this function will seek out top-level directories in the target directory passed in.
@@ -47,7 +91,7 @@ function find_app_folder()
     exit 1
   elif [ $numdirs -eq 1 ]; then
     app_dirname="$(basename $(find "$appsdir" -mindepth 1 -maxdepth 1 -type d) )"
-    test_or_fail "Guessing application folder"
+    test_or_die "Guessing application folder"
   else
     # if more than one folder, force user to choose.
     # Reference: https://askubuntu.com/questions/1705/how-can-i-create-a-select-menu-in-a-shell-script
@@ -68,7 +112,7 @@ function find_app_folder()
     PS3="$holdps3"
   fi
   test_app_folder "$appsdir" "$app_dirname"
-  test_or_fail "Testing application folder: $app_dirname"
+  test_or_die "Testing application folder: $app_dirname"
 
   echo "Application folder is: $app_dirname"
 }
@@ -84,8 +128,10 @@ function test_app_folder()
   if [ ! -d "$combo" ]; then
     echo "Creating app directory: $combo"
     mkdir "$combo"
-    test_or_fail "Making application directory when not already present"
+    test_or_die "Making application directory when not already present"
   fi
+
+  locate_config_file "$dir"
 }
 
 # eases some permissions to enable apache to write log files and do other shopkeeping.
@@ -95,17 +141,17 @@ function fix_site_perms()
 
   if [ -f "$site_dir/bin/cake" ]; then
     chmod -R a+rx "$site_dir/bin/cake"
-    test_or_fail "Enabling execute bit on cake binary"
+    test_or_die "Enabling execute bit on cake binary"
   fi
 
   if [ -d "$site_dir/logs" ]; then
     chmod -R g+w "$site_dir/logs"
-    test_or_fail "Enabling group write on site's Logs directory"
+    test_or_die "Enabling group write on site's Logs directory"
   fi
 
   if [ -d "$site_dir/tmp" ]; then
     chmod -R g+w "$site_dir/tmp"
-    test_or_fail "Enabling group write on site's tmp directory"
+    test_or_die "Enabling group write on site's tmp directory"
   fi
 }
 
@@ -117,7 +163,7 @@ function clear_orm_cache()
   if [ -f "$site_dir/bin/cake" ]; then
     # flush any cached objects from db.
     "$site_dir/bin/cake" orm_cache clear
-    test_or_fail "Clearing ORM cache"
+    test_or_die "Clearing ORM cache"
   fi
 }
 
@@ -133,11 +179,14 @@ function update_repo()
   local repo_root="$1"; shift
   local repo_name="$1"; shift
 
+echo here are parms in update repo:
+var full_app_dir checkout_dirname repo_root repo_name
+
   # forget any prior value, since we are going to validate the path.
   unset site_store_path
 
   pushd "$full_app_dir" &>/dev/null
-  test_or_fail "Switching to our app dir '$full_app_dir'"
+  test_or_die "Switching to our app dir '$full_app_dir'"
 
   local complete_path="$full_app_dir/$checkout_dirname"
 
@@ -147,7 +196,7 @@ function update_repo()
   if [ -d "$checkout_dirname" ]; then
     # checkout directory exists, so let's check it.
     pushd "$checkout_dirname" &>/dev/null
-    test_or_fail "Switching to our checkout directory: $checkout_dirname"
+    test_or_die "Switching to our checkout directory: $checkout_dirname"
 
     # ask for repository name (without .git).
     if git rev-parse --git-dir > /dev/null 2>&1; then
@@ -169,12 +218,12 @@ function update_repo()
     # a repository was found, so update the version here and leave.
     echo "Repository $repo_name exists.  Updating it."
     rgetem
-    test_or_fail "Recursive checkout on: $complete_path"
+    test_or_die "Recursive checkout on: $complete_path"
   else
     # clone the repo since it wasn't found.
     echo "Cloning repository $repo_name now."
     git clone "$repo_root/$repo_name.git" $checkout_dirname
-    test_or_fail "Git clone of repository: $repo_name"
+    test_or_die "Git clone of repository: $repo_name"
   fi
 
   fix_site_perms "$complete_path"
@@ -193,12 +242,12 @@ function composer_repuff()
   local site_store_path="$1"; shift
 
   pushd "$site_store_path" &>/dev/null
-  test_or_fail "Switching to our app dir '$site_store_path'"
+  test_or_die "Switching to our app dir '$site_store_path'"
 
   echo "Updating site with composer..."
 
   composer -n install
-  test_or_fail "Composer installation step on '$site_store_path'."
+  test_or_die "Composer installation step on '$site_store_path'."
   echo "Site updated."
 
 #hmmm: argh global
@@ -232,13 +281,13 @@ function create_site_links()
 
   # jump into the site path so we can start making relative links.
   pushd "$site_store_path" &>/dev/null
-  test_or_fail "Switching to our app dir '$site_store_path'"
+  test_or_die "Switching to our app dir '$site_store_path'"
 
   pushd webroot &>/dev/null
 
   # remove all symlinks that might plague us.
   find . -maxdepth 1 -type l -exec rm -f {} ';'
-  test_or_fail "Cleaning out links in webroot"
+  test_or_die "Cleaning out links in webroot"
 
   # link in the avcore plugin.
   make_safe_link "../vendor/siteavenger/avcore/webroot" avcore
@@ -265,18 +314,18 @@ function create_site_links()
   if [ -L public ]; then
     # public is a symlink.
     \rm public
-    test_or_fail "Removing public directory symlink"
+    test_or_die "Removing public directory symlink"
   elif [ -d public ]; then
     # public is a folder with default files.
 #hmmm: is that safe?
     \rm -rf public
-    test_or_fail "Removing public directory and contents"
+    test_or_die "Removing public directory and contents"
   fi
 
   # create the main 'public' symlink
 #hmmm: argh global
   make_safe_link $CHECKOUT_DIR_NAME/webroot public
-  test_or_fail "Creating link to webroot called 'public'"
+  test_or_die "Creating link to webroot called 'public'"
 
 #hmmm: public/$themelower/im will be created automatically by system user with appropriate permissions
 
