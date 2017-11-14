@@ -8,13 +8,19 @@
 #
 # Author: Chris Koeritz
 
+export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
+
 # some defaults that are convenient for current purposes.
-# hmmm: these would need to be parameterized somehow for this script to become really general.
+
+# hmmm: !!! these would need to be parameterized somehow for this script to become really general.
 
 # in our scheme, the single IP address that all our domains map to.
 IP_ADDRESS="10.28.42.20"
 # the email address (where first dot is replaced by @) for the administrator of the domain.
-SERVER_ADMIN="fred.cakelampvm.com"
+SERVER_ADMIN="developer.cakelampvm.com"
 # the name of the name server for the new domains (should already be configured).
 MAIN_NAME_SERVER="ns.cakelampvm.com"
 # the name of the mail server for a new domain (should already be configured).
@@ -57,6 +63,10 @@ function write_new_domain_file()
 ${domain_name}.	IN A	${IP_ADDRESS}
 	IN HINFO	\"linux server\" \"${DISTRO}\"
 " >"$domain_file"
+
+  # our personalized configuration approach wants the real owner to own the file.
+  chown "$(logname):$(logname)" $domain_file
+  test_or_die "setting ownership on: $domain_file"
 }
 
 # hooks up a new config file into bind's list of zones.
@@ -80,6 +90,11 @@ zone \"${domain_name}\" in {
 ////////////////////////////////////////////////////////////////////////////
 
 " >> /etc/bind/named.conf.local
+
+  # keep ownership for the real user.
+  chown "$(logname):$(logname)" /etc/bind/named.conf.local
+  test_or_die "setting ownership on: /etc/bind/named.conf.local"
+
 }
 
 # adds a new subdomain under a containing domain.
@@ -117,6 +132,9 @@ ${subdomain}.${containing_domain}.    IN A    ${IP_ADDRESS}
         IN HINFO \"linux server\" \"${DISTRO}\"
 " >> /etc/bind/${containing_domain}.conf
 
+  # keep ownership for real user.
+  chown "$(logname):$(logname)" "/etc/bind/${containing_domain}.conf"
+  test_or_die "setting ownership on: /etc/bind/${containing_domain}.conf"
 }
 
 function restart_bind()
