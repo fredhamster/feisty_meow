@@ -17,10 +17,8 @@ export MAX_DEPTH=5
 # use our splitter tool for lengthy output if it's available.
 if [ ! -z "$(which splitter)" ]; then
   TO_SPLITTER="$(which splitter)"
-
-#hmmm: another reusable chunk here, getting terminal size.
   # calculate the number of columsn in the terminal.
-  cols=$(stty size | awk '{print $2}')
+  cols=$(get_maxcols)
   TO_SPLITTER+=" --maxcol $(($cols - 1))"
 else
   TO_SPLITTER=cat
@@ -290,6 +288,18 @@ function check_branch_state()
   return $to_return
 }
 
+# only shows the branch state if it's not okay.
+# note that this is not the same as a conditional branch (ha ha).
+function show_branch_conditionally()
+{
+  local this_branch="$1"; shift
+
+  state=$(check_branch_state "$this_branch")
+  if [ "$state" != "okay" ]; then
+    echo "=> branch '$this_branch' state is not clean: $state"
+  fi
+}
+
 # the git update process just gets more and more complex when you bring in
 # branches, so we've moved this here to avoid having a ton of code in the
 # other methods.
@@ -307,16 +317,14 @@ function do_careful_git_update()
 
   local this_branch="$(my_branch_name)"
 
-  state=$(check_branch_state "$this_branch")
-  echo "=> branch '$this_branch' state prior to remote update is: $state"
+  show_branch_conditionally "$this_branch"
 
   # first update all our remote branches to their current state from the repos.
   git remote update | $TO_SPLITTER
   promote_pipe_return 0
   test_or_die "git remote update"
 
-  state=$(check_branch_state "$this_branch")
-  echo "=> branch '$this_branch' state after remote update is: $state"
+  show_branch_conditionally "$this_branch"
 
   # this code is now doing what i have to do when i repair the repo.  and it seems to be good so far.
   local branch_list=$(all_branch_names)
@@ -327,8 +335,7 @@ function do_careful_git_update()
     promote_pipe_return 0
     test_or_die "git switching checkout to remote branch: $bran"
 
-    state=$(check_branch_state "$bran")
-    echo "=> branch '$bran' state is: $state"
+    show_branch_conditionally "$this_branch"
 
     remote_branch_info=$(git ls-remote --heads origin $bran 2>/dev/null)
     if [ ! -z "$remote_branch_info" ]; then
