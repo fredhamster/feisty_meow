@@ -49,6 +49,8 @@ if [ -z "$skip_all" ]; then
     return $?
   }
 
+  ##############
+
   # displays the value of a variable in bash friendly format.
   function var() {
     HOLDIFS="$IFS"
@@ -84,6 +86,8 @@ if [ -z "$skip_all" ]; then
     IFS="$HOLDIFS"
   }
 
+  ##############
+
   # when passed a list of things, this will return the unique items from that list as an echo.
   function uniquify()
   {
@@ -104,6 +108,8 @@ if [ -z "$skip_all" ]; then
     fi
   }
 
+  ##############
+
   function success_sound()
   {
     if [ ! -z "$CLAM_FINISH_SOUND" ]; then
@@ -117,6 +123,20 @@ if [ -z "$skip_all" ]; then
       bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh "$CLAM_ERROR_SOUND"
     fi
   }
+
+  ##############
+
+  # echoes the maximum number of columns that the terminal supports.  usually
+  # anything you print to the terminal with length less than (but not equal to)
+  # maxcols will never wrap.
+  function get_maxcols()
+  {
+    # calculate the number of columsn in the terminal.
+    local cols=$(stty size | awk '{print $2}')
+    echo $cols
+  }
+
+  ##############
 
   # checks the result of the last command that was run, and if that failed,
   # then this complains and exits from bash.  the function parameters are
@@ -139,6 +159,8 @@ if [ -z "$skip_all" ]; then
     fi
   }
 
+  ##############
+
   # wraps secure shell with some parameters we like, most importantly to enable X forwarding.
   function ssh()
   {
@@ -151,6 +173,8 @@ if [ -z "$skip_all" ]; then
     /usr/bin/ssh -X -C "${args[@]}"
     restore_terminal_title
   }
+
+  ##############
 
   # locates a process given a search pattern to match in the process list.
   # supports a single command line flag style parameter of "-u USERNAME";
@@ -267,6 +291,9 @@ if [ -z "$skip_all" ]; then
     fi
   }
   
+  ##############
+
+#hmmm: holy crowbars, this is an old one.  do we ever still have any need of it?
   # an unfortunately similarly named function to the above 'ps' as in process
   # methods, but this 'ps' stands for postscript.  this takes a postscript file
   # and converts it into pcl3 printer language and then ships it to the printer.
@@ -280,9 +307,15 @@ if [ -z "$skip_all" ]; then
     done
   }
   
-#  function fix_alsa() {
-#    sudo /etc/init.d/alsasound restart
-#  }
+  # restarts the sound driver.
+  function fix_sound_driver() {
+#if something
+#    sudo service alsasound restart
+#else
+    sudo service pulseaudio restart
+#fi
+
+  }
 
   function screen() {
     save_terminal_title
