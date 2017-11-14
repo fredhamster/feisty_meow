@@ -10,8 +10,12 @@ source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
 # some convenient defaults for our current usage.
 
-BASE_PATH="$HOME/apps"
-STORAGE_SUFFIX="/public"
+if [ -z "$BASE_APPLICATION_PATH" ]; then
+  BASE_APPLICATION_PATH="$HOME/apps"
+fi
+if [ -z "$STORAGE_SUFFIX" ]; then
+  STORAGE_SUFFIX="/public"
+fi
 
 # this function writes out the new configuration file for the site.
 function write_apache_config()
@@ -39,7 +43,7 @@ function write_apache_config()
   if [ -z "$site_path" ]; then
     # path where site gets checked out, in some arcane manner, and which happens to be
     # above the path where we put webroot (in the storage suffix, if defined).
-    local path_above="${BASE_PATH}/${appname}"
+    local path_above="${BASE_APPLICATION_PATH}/${appname}"
     # no slash between appname and suffix, in case suffix is empty.
     local full_path="${path_above}${STORAGE_SUFFIX}"
 #echo really full path is $full_path
@@ -106,8 +110,8 @@ function restart_apache()
 function maybe_create_site_storage()
 {
   local our_app="$1"; shift
-  # make sure the base path for storage of all the apps for this user exists.
-  local full_path="$BASE_PATH/$our_app"
+  # make sure the path for storage this app exists for the user.
+  local full_path="$BASE_APPLICATION_PATH/$our_app"
   if [ ! -d "$full_path" ]; then
     mkdir -p $full_path
     test_or_die "The app storage path could not be created.\n  Path in question is: $full_path"
@@ -151,7 +155,7 @@ This script needs to know (1) the application name for the new site and
 appropriate name for a file-system compatible folder name.  There is an
 optional third parameter (3) the path for site storage.  If the site path
 is not provided, we'll use this path:
-  $BASE_PATH/{app name}/$STORAGE_SUFFIX"
+  $BASE_APPLICATION_PATH/{app name}/$STORAGE_SUFFIX"
   exit 1
 fi
 
