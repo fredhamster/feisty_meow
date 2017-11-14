@@ -17,7 +17,8 @@ function apply_title_to_terminal()
     title="$(hostname)"
   fi
   
-  if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" -a ! -z "$PS1" ]; then
+  if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" -a \
+        ! -z "$PS1" -a "${TERM}" != "linux" ]; then
     echo -n -e "\033]0;${title}\007"
   else
     # not running interactively, so just echo the title.
@@ -31,15 +32,20 @@ function apply_title_to_terminal()
 function set_terminal_title()
 {
   apply_title_to_terminal $*
-  # we're enforcing a new title from here on.
-  unset PRIOR_TERMINAL_TITLE
+
+#tricky tries to get it to be available when we ask for it in get_terminal_title
+  sync
+#  echo -n
+
+#  # we're enforcing a new title from here on.
+#  unset PRIOR_TERMINAL_TITLE
   save_terminal_title
 }
 
 # echoes back the current title on the terminal window, if we can acquire it.
 function get_terminal_title()
 {
-  local term_title_found=""
+  local term_title_found
   # save the former terminal title if we're running in X with xterm.
   which xprop &>/dev/null
   if [ $? -eq 0 ]; then
