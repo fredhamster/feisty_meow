@@ -223,7 +223,7 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     if [ -f ~/hello.txt ]; then
       echo
       sep 28
-      filedump ~/hello.txt
+      perl $FEISTY_MEOW_SCRIPTS/*/filedump.pl ~/hello.txt
       sep 28
       echo
     fi
