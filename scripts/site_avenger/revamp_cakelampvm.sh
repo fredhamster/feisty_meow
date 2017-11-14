@@ -27,8 +27,6 @@ group_perm /var/www
 # set up access on some important folders for the developer user.
 chown -R developer:developer /home/developer
 harsh_perm /home/developer/.ssh
-chown -R developer:developer /opt/feistymeow.org 
-group_perm /opt/feistymeow.org 
 chown -R developer:developer /etc/apache2 /etc/bind 
 group_perm /etc/apache2 /etc/bind 
 
@@ -37,6 +35,13 @@ group_perm /etc/apache2 /etc/bind
 # fix perms for fred user.
 chown -R fred:fred /home/fred /home/archives/stuffing 
 harsh_perm /home/fred/.ssh
+chown -R fred:fred /opt/feistymeow.org 
+group_perm /opt/feistymeow.org 
 
 ##############
+
+#hmmm: todo
+# deploy the site updater here to fix the local cakelampvm.com site...
+
+
 
