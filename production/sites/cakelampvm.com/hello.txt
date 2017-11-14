@@ -1,0 +1,24 @@
+
+Welcome to the CakePHP LAMP VM.
+
+Please refer to the built-in documentation available at: http://cakelampvm.com
+
+Some first steps to make this vm your own:
+
+1) change your password for the developer account.
+(may eventually be automatically required)
+
+2) change your git configuration for user and email.  this is how we've
+configured it so far:
+
+  # git config --global user.email "developer@cakelampvm.com"
+  # git config --global user.name "Developer J. Cakemo"
+
+if you're developing on a real project, you probably don't want the bogus
+email and even more bogus name above attached to your commits.
+Just run the commands again but with proper values.
+
+3)
+
+
+

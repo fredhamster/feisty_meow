@@ -215,6 +215,20 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     unset FEISTY_MEOW_SHOW_LAUNCH_GREETING
   fi
 
+  # only run this hello file if the core aliases haven't been loaded already.  this
+  # hopefully guarantees we show the info at most once in one shell continuum.
+  type CORE_ALIASES_LOADED &>/dev/null
+  if [ $? -ne 0 ]; then
+    # print out a personalized hello file if we find one.
+    if [ -f ~/hello.txt ]; then
+      echo
+      sep 28
+      filedump ~/hello.txt
+      sep 28
+      echo
+    fi
+  fi
+
   # load the last bits we do here.
   source "$FEISTY_MEOW_LOADING_DOCK/fmc_ending_sentinel.sh"
 
