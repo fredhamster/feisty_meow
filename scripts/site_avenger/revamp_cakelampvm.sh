@@ -66,6 +66,14 @@ fi
 
 ##############
 
+# install a better editor app.
+
+apt-get install bluefish &> "/tmp/install_bluefish-$(logname).log"
+test_or_continue "failed to install bluefish editor.  not good."
+
+##############
+
+
 #hmmm: todo
 # deploy the site updater here to fix the local cakelampvm.com site...
 
