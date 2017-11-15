@@ -4,6 +4,10 @@
 #
 # Author: Chris Koeritz
 
+############################################################################
+
+# bind9 methods...
+
 # removes a full domain from the DNS.
 function remove_domain_file()
 {
@@ -179,4 +183,171 @@ function restart_bind()
   fi
   echo DNS server restarted.
 }
+
+############################################################################
+
+# apache2 methods...
+
+# removes a config file for apache given the app name and site name.
+function remove_apache_config()
+{
+  local appname="$1"; shift
+  local sitename="$1"; shift
+
+  local site_config="/etc/apache2/sites-available/${sitename}.conf"
+
+  if [ -f "$site_config" ]; then
+    # don't destroy, just shuffle.
+    \mv -f "$site_config" "/tmp/$(basename ${site_config})-old-${RANDOM}"
+    test_or_die "removing site config: $site_config"
+  else
+    echo "Did not see a site config to remove: $site_config"
+  fi
+}
+
+# this function writes out the new configuration file for the site.
+function write_apache_config()
+{
+  local appname="$1"; shift
+  local sitename="$1"; shift
+  local site_path="$1"; shift
+
+  local site_config="/etc/apache2/sites-available/${sitename}.conf"
+
+  # check if config file already exists and bail if so.
+  if [ -f "$site_config" ]; then
+    echo "The apache configuration file already exists at:"
+    echo "  $site_config"
+    echo "Since apache configuration files can get very complex, we do not want to"
+    echo "assume that this file is removable.  Calling the site addition done."
+    exit 0
+  fi
+
+  echo "Creating a new apache2 site for $sitename with config file:"
+  echo "  $site_config"
+
+  # if no path, then we default to our standard app storage location.  otherwise, we
+  # put the site where they told us to.
+  if [ -z "$site_path" ]; then
+    # path where site gets checked out, in some arcane manner, and which happens to be
+    # above the path where we put webroot (in the storage suffix, if defined).
+    local path_above="${BASE_APPLICATION_PATH}/${appname}"
+    # no slash between appname and suffix, in case suffix is empty.
+    local full_path="${path_above}${STORAGE_SUFFIX}"
+#echo really full path is $full_path
+  else
+    # we'll go with their specification for the site storage.
+    local full_path="$site_path"
+  fi
+
+  echo "
+# set up the user's web folder as an apache user web directory.
+
+# set permissions on the actual app folder.
+<Directory \"$full_path\">
+  Options +ExecCGI +Indexes +FollowSymLinks +Includes +MultiViews 
+  Require all granted
+</Directory>
+
+<VirtualHost *:80>
+    ServerName ${sitename}
+    DocumentRoot ${full_path}
+    ErrorLog \${APACHE_LOG_DIR}/${sitename}-error.log
+    CustomLog \${APACHE_LOG_DIR}/${sitename}-access.log combined
+    Include /etc/apache2/conf-library/basic-options.conf
+    Include /etc/apache2/conf-library/rewrite-enabling.conf
+</VirtualHost>
+" >"$site_config" 
+
+  chown "$(logname):$(logname)" "$site_config"
+  test_or_die "setting ownership on: $site_config"
+}
+
+# stops apache from serving up the site.
+function disable_site()
+{
+  local sitename="$1"; shift
+  local site_config="/etc/apache2/sites-available/${sitename}.conf"
+
+  if [ ! -f "$site_config" ]; then
+    echo "The site config did not exist and could not be disabled: $site_config"
+    return 0
+  fi
+
+#hmmm: repeated pattern of hidden output file, very useful.  abstract it...
+  local outfile="$TMP/apacheout.$RANDOM"
+  a2dissite "$(basename $site_config)" &>$outfile
+  if [ $? -ne 0 ]; then
+    # an error happened, so we show the command's output at least.
+    cat $outfile
+    echo
+    echo "There was a problem disabling the apache config file in:"
+    echo "  $site_config"
+    echo "Please consult the apache error logs for more details."
+    exit 1
+  fi
+  \rm "$outfile"
+}
+
+# turns on the config file we create above for apache.
+function enable_site()
+{
+  local sitename="$1"; shift
+  local site_config="/etc/apache2/sites-available/${sitename}.conf"
+
+  local outfile="$TMP/apacheout.$RANDOM"
+  a2ensite "$(basename $site_config)" &>$outfile
+  if [ $? -ne 0 ]; then
+    # an error happened, so we show the command's output at least.
+    cat $outfile
+    echo
+    echo "There was a problem enabling the apache config file in:"
+    echo "  $site_config"
+    echo "Please consult the apache error logs for more details."
+    exit 1
+  fi
+  \rm "$outfile"
+}
+
+# restarts the apache2 service.
+function restart_apache()
+{
+  service apache2 restart
+  if [ $? -ne 0 ]; then
+    echo "There was a problem restarting the apache2 service."
+    echo "Please consult the apache error logs for more details."
+    exit 1
+  fi
+}
+
+# sets up the serverpilot storage location for a user hosted web site.
+function maybe_create_site_storage()
+{
+  local our_app="$1"; shift
+  # make sure the path for storage this app exists for the user.
+  local full_path="$BASE_APPLICATION_PATH/$our_app"
+  if [ ! -d "$full_path" ]; then
+    mkdir -p $full_path
+    test_or_die "The app storage path could not be created.\n  Path in question is: $full_path"
+  fi
+
+  # now give the web server some access to the folder.  this is crucial since the folders
+  # can be hosted in any user folder, and the group permissions will not necessarily be correct already.
+  local chow_path="$full_path"
+  # only the first chmod is recursive; the rest just apply to the specific folder of interest.
+  chmod -R g+rx "$chow_path"
+  # walk backwards up the path and fix perms.
+  while [[ $chow_path != $HOME ]]; do
+echo chow path is now $chow_path
+    chmod g+rx "$chow_path"
+    test_or_die "Failed to add group permissions on the path: $chow_path"
+    # reassert the user's ownership of any directories we might have just created.
+    chown $(logname) "$chow_path"
+    test_or_die "changing ownership to user failed on the path: $chow_path"
+    chow_path="$(dirname "$chow_path")"
+  done
+}
+
+############################################################################
+
 
