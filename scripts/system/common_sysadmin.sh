@@ -191,7 +191,6 @@ function restart_bind()
 # removes a config file for apache given the app name and site name.
 function remove_apache_config()
 {
-  local appname="$1"; shift
   local sitename="$1"; shift
 
   local site_config="/etc/apache2/sites-available/${sitename}.conf"
