@@ -14,6 +14,8 @@ function remove_domain_file()
     # don't destroy, just shuffle.
     \mv -f "$domain_file" "/tmp/$(basename ${domain_file})-old-${RANDOM}"
     test_or_die "removing domain file: $domain_file"
+  else
+    echo "Did not see a domain file to remove: $domain_file"
   fi
 }
 

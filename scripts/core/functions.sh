@@ -864,8 +864,8 @@ return 0
     local seeker="$1"; shift
     local numlines=$1; shift
 
-echo into create_chomped_copy...
-var filename seeker numlines 
+#echo into create_chomped_copy...
+#var filename seeker numlines 
 
     # make a backup first, oy.
     \cp -f "$filename" "$filename.bkup-${RANDOM}" 
@@ -878,6 +878,7 @@ var filename seeker numlines
 
     local line
     local skip_count=0
+    local found_any=
     while read line; do
       # don't bother looking at the lines if we're already in skip mode.
       if [[ $skip_count == 0 ]]; then
@@ -888,12 +889,13 @@ var filename seeker numlines
         else
           # a match!  start skipping.  we will delete this line and the next N lines.
           ((skip_count++))
-echo first skip count is now $skip_count
+#echo first skip count is now $skip_count
+          found_any=yes
         fi
       else
         # we're already skipping.  let's keep going until we hit the limit.
         ((skip_count++))
-echo ongoing skip count is now $skip_count
+#echo ongoing skip count is now $skip_count
         if (( $skip_count > $numlines )); then
           echo "Done skipping, and back to writing output file."
           skip_count=0
@@ -901,12 +903,17 @@ echo ongoing skip count is now $skip_count
       fi
     done < "$filename"
 
-#put the file back into place.
-echo file we created looks like this:
-cat "$new_version"
+#echo file we created looks like this:
+#cat "$new_version"
 
-    \mv "$new_version" "$filename"
-    test_or_die "moving the new version into place in: $filename"
+    if [ ! -z "$found_any" ]; then
+      # put the file back into place under the original name.
+      \mv "$new_version" "$filename"
+      test_or_die "moving the new version into place in: $filename"
+    else
+      # cannot always be considered an error, but we can at least gripe.
+      echo "Did not find any matches for seeker '$seeker' in file: $filename"
+    fi
   }
 
   ##############
