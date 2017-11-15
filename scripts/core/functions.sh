@@ -169,13 +169,14 @@ if [ -z "$skip_all" ]; then
     # version for the other side (just 'linux'); we don't want the remote side still
     # thinking it's running xterm.
     save_terminal_title
-    # we save the value of TERM; we don't want to leave the user's terminal
-    # brain dead once we come back from this function.
-    local oldterm="$TERM"
-    export TERM=linux
+#hmmm: why were we doing this?  it scorches the user's logged in session, leaving it without proper terminal handling.
+#    # we save the value of TERM; we don't want to leave the user's terminal
+#    # brain dead once we come back from this function.
+#    local oldterm="$TERM"
+#    export TERM=linux
     /usr/bin/ssh -X -C "${args[@]}"
-    # restore the terminal variable also.
-    TERM="$oldterm"
+#    # restore the terminal variable also.
+#    TERM="$oldterm"
     restore_terminal_title
   }
 
@@ -475,6 +476,10 @@ if [ -z "$skip_all" ]; then
       echo "but that folder does not exist.  Skipping customization."
       return 1
     fi
+
+    # prevent permission foul-ups.
+    chown -R "$(logname):$(logname)" "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE"
+
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
     incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
@@ -503,6 +508,9 @@ if [ -z "$skip_all" ]; then
     fi
     echo
     regenerate
+
+    # prevent permission foul-ups, again.
+    chown -R "$(logname):$(logname)" "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE"
 
     restore_terminal_title
   }

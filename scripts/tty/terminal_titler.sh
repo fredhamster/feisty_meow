@@ -4,7 +4,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 source "$FEISTY_MEOW_SCRIPTS/core/common.alias"
 
 # uncomment this to get extra noisy debugging.
-export DEBUG_TERM_TITLE=true
+#export DEBUG_TERM_TITLE=true
 
 # puts a specific textual label on the terminal title bar.
 # this doesn't consider any previous titles; it just labels the terminal.
@@ -45,7 +45,8 @@ function set_terminal_title()
 # echoes back the current title on the terminal window, if we can acquire it.
 function get_terminal_title()
 {
-  local term_title_found
+  # this is an important value now; it is checked for in save_terminal_title.
+  local term_title_found="unknown"
   # save the former terminal title if we're running in X with xterm.
   which xprop &>/dev/null
   if [ $? -eq 0 ]; then
@@ -54,19 +55,19 @@ function get_terminal_title()
       term_title_found="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
     fi
   fi
-  echo "$term_title_found"
+  echo -n "$term_title_found"
 }
 
 # reads the current terminal title, if possible, and saves it to our record.
 function save_terminal_title()
 {
   local title="$(get_terminal_title)"
-  if [ ! -z "$title" ]; then
+  if [ "$title" != "unknown" ]; then
     # there was a title, so save it.
     if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-      echo "saving prior terminal title as '$prior_title'"
+      echo "saving prior terminal title as '$title'"
     fi
-    export PRIOR_TERMINAL_TITLE="$prior_title"
+    export PRIOR_TERMINAL_TITLE="$title"
   else
     # the terminal had no title, or we couldn't access it, or there's no terminal.
     if [ ! -z "$DEBUG_TERM_TITLE" ]; then
@@ -101,7 +102,7 @@ function label_terminal_with_info()
     fi
     pruned_host=$(echo $HOSTNAME | sed -e 's/^\([^\.]*\)\..*$/\1/')
     date_string=$(date +"%Y %b %e @ %T")
-    user=$USER
+    user=$(logname)
     if [ -z "$user" ]; then
       # try snagging the windoze name.
       user=$USERNAME
