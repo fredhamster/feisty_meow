@@ -70,7 +70,8 @@ fi
 
 echo "
 The script is about to install the bluefish editor and some dependencies.
-This takes about a minute on a not very fast internet connection...
+If the app is not already installed, then this process takes only about a
+minute on a slower home DSL internet connection...
 
 "
 
