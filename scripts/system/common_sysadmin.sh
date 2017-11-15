@@ -4,10 +4,17 @@
 #
 # Author: Chris Koeritz
 
-#export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-#export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+# removes a full domain from the DNS.
+function remove_domain_file()
+{
+  local domain_name="$1"; shift
 
-#source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
+  local domain_file="/etc/bind/${domain_name}.conf"
+  if [ -f "$domain_file" ]; then
+    \rm -f "$domain_file"
+    test_or_die "removing domain file: $domain_file"
+  fi
+}
 
 # creates a totally new domain config file for DNS.
 function write_new_domain_file()
@@ -48,6 +55,53 @@ ${domain_name}.	IN A	${IP_ADDRESS}
   # our personalized configuration approach wants the real owner to own the file.
   chown "$(logname):$(logname)" $domain_file
   test_or_die "setting ownership on: $domain_file"
+}
+
+# takes a zone back out of the local conf file for bind
+function remove_zone_for_domain()
+{
+  local domain_name="$1"; shift
+
+  local domain_file="/etc/bind/${domain_name}.conf"
+
+  \cp -f "$domain_file" "$domain_file.bkup-${RANDOM}" 
+  test_or_die "backing up domain file: $domain_file"
+
+  # temp file to write to before we move file into place in bind.
+  local new_version="/tmp/$domain_file.bkup-${RANDOM}" 
+  \rm -f "$new_version"
+  test_or_die "cleaning out new version of domain file from : $new_version"
+
+  local line
+  local skip_count=0
+  while read line; do
+    # don't bother looking at the lines if we're already in skip mode.
+    if [[ $skip_count == 0 ]]; then
+      # find the zone for the domain.
+      if [[ ! "$line" =~ *"zone \"${domain_name}\""* ]]; then
+        echo "$line" >> "$new_version"
+      else
+        # start skipping.  we will delete this line and the next 6 lines.
+        ((skip_count++))
+echo first skip count is now $skip_count
+      fi
+    else
+      # we're already skipping.  let's keep going until we hit the limit.
+      ((skip_count++))
+      if [[ $skip_count >= 6 ]]; then
+        echo "Done skipping, and back to writing output file."
+        skip_count=0
+      fi
+    fi
+  done < "$domain_file"
+
+#put the file back into place.
+echo file we created looks like this:
+filedump "$new_version"
+
+echo bailing
+exit 1
+
 }
 
 # hooks up a new config file into bind's list of zones.
