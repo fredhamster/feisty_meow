@@ -102,7 +102,7 @@ function label_terminal_with_info()
     fi
     pruned_host=$(echo $HOSTNAME | sed -e 's/^\([^\.]*\)\..*$/\1/')
     date_string=$(date +"%Y %b %e @ %T")
-    user=$USER
+    user=$(logname)
     if [ -z "$user" ]; then
       # try snagging the windoze name.
       user=$USERNAME
