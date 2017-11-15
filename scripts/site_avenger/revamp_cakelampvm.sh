@@ -71,7 +71,11 @@ test_or_continue "copying hello file for user"
 
 regenerate
 
-echo "Thanks for revamping your cakelampvm.  :-)"
+echo "
+
+
+Thanks for revamping your cakelampvm.  :-)
+"
 
 ##############
 
