@@ -215,9 +215,9 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     unset FEISTY_MEOW_SHOW_LAUNCH_GREETING
   fi
 
-  # only run this hello file if the core aliases haven't been loaded already.  this
+  # only run this hello file if the core feisty meow support haven't been loaded already.  this
   # hopefully guarantees we show the info at most once in one shell continuum.
-  type CORE_ALIASES_LOADED &>/dev/null
+  type CORE_VARIABLES_LOADED &>/dev/null
   if [ $? -ne 0 ]; then
     # print out a personalized hello file if we find one.
     if [ -f ~/hello.txt ]; then
