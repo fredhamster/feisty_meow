@@ -478,7 +478,7 @@ if [ -z "$skip_all" ]; then
     fi
 
     # prevent permission foul-ups.
-    chown -R "$(logname):$(logname)" "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE"
+    chown -R "$(logname):$(logname)" "$FEISTY_MEOW_LOADING_DOCK"/* "$FEISTY_MEOW_GENERATED_STORE"/*
 
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
