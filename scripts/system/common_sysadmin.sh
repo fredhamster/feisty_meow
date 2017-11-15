@@ -160,8 +160,7 @@ function add_new_subdomain()
   fi
 
   # append the new subdomain into the config file.
-  echo "
-${subdomain}.${containing_domain}.    IN A    ${IP_ADDRESS}
+  echo "${subdomain}.${containing_domain}.    IN A    ${IP_ADDRESS}
         IN HINFO \"linux server\" \"${DISTRO}\"
 " >> /etc/bind/${containing_domain}.conf
 
