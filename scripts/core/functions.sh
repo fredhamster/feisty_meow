@@ -476,6 +476,10 @@ if [ -z "$skip_all" ]; then
       echo "but that folder does not exist.  Skipping customization."
       return 1
     fi
+
+    # prevent permission foul-ups.
+    chown -R "$(logname):$(logname)" "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE"
+
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
     incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
@@ -504,6 +508,9 @@ if [ -z "$skip_all" ]; then
     fi
     echo
     regenerate
+
+    # prevent permission foul-ups, again.
+    chown -R "$(logname):$(logname)" "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE"
 
     restore_terminal_title
   }
