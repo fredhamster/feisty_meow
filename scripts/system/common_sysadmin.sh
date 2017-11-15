@@ -118,7 +118,7 @@ function remove_subdomain()
   fi
 
   # see if subdomain already present in config.
-  if [ ! $(grep -q "$old_domain" "$domain_file") ]; then
+  if ! grep -q "$old_domain" "$domain_file"; then
     echo "The subdomain $subdomain is already missing from the domain"
     echo "configuration file: $domain_file"
     echo "Our work is apparently done for removing it."
@@ -150,7 +150,7 @@ function add_new_subdomain()
   fi
 
   # see if subdomain already present in config.
-  if [ $(grep -q "$new_domain" "$domain_file") ]; then
+  if grep -q "$new_domain" "$domain_file"; then
     echo "The subdomain $subdomain already seems to exist in the domain"
     echo "configuration file: $domain_file"
     echo "Please edit the config file to remove the subdomain before trying"

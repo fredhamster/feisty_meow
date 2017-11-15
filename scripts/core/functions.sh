@@ -905,9 +905,6 @@ echo ongoing skip count is now $skip_count
 echo file we created looks like this:
 filedump "$new_version"
 
-echo bailing
-exit 1
-
     \mv "$new_version" "$filename"
     test_or_die "moving the new version into place in: $filename"
   }
