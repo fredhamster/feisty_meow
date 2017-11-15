@@ -68,7 +68,13 @@ fi
 
 # install a better editor app.
 
-apt-get install bluefish &> "/tmp/install_bluefish-$(logname).log"
+echo "
+The script is about to install the bluefish editor and some dependencies.
+This takes about a minute on a not very fast internet connection...
+
+"
+
+apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
 test_or_continue "failed to install bluefish editor.  not good."
 
 ##############
