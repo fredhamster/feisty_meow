@@ -87,19 +87,19 @@ var filename seeker numlines
     # don't bother looking at the lines if we're already in skip mode.
     if [[ $skip_count == 0 ]]; then
       # find the string they're seeking.
-      if [[ ! $line =~ *${seeker}* ]]; then
+      if [[ ! "$line" =~ .*${seeker}.* ]]; then
         # no match.
         echo "$line" >> "$new_version"
       else
         # a match!  start skipping.  we will delete this line and the next N lines.
-        $((skip_count++))
+        ((skip_count++))
 echo first skip count is now $skip_count
       fi
     else
       # we're already skipping.  let's keep going until we hit the limit.
-      $((skip_count++))
+      ((skip_count++))
 echo ongoing skip count is now $skip_count
-      if (( $skip_count >= $numlines )); then
+      if (( $skip_count > $numlines )); then
         echo "Done skipping, and back to writing output file."
         skip_count=0
       fi
@@ -127,7 +127,7 @@ function remove_zone_for_domain()
 
   # eat the zone file definition.  this will botch up badly if more text was added
   # or the zone info shrank.
-  create_chomped_copy_of_file "/etc/bind/named.conf.local" "zone*${domain_name}" 6
+  create_chomped_copy_of_file "/etc/bind/named.conf.local" "zone.*${domain_name}" 6
 
 #  \cp -f "$domain_file" "$domain_file.bkup-${RANDOM}" 
 #  test_or_die "backing up domain file: $domain_file"
@@ -229,7 +229,7 @@ function remove_subdomain()
   fi
 
   create_chomped_copy_of_file "$domain_file" \
-      "${subdomain}*${containing_domain}*IN*A*${IP_ADDRESS}" 1
+      "${subdomain}.*${containing_domain} *IN *A *${IP_ADDRESS}" 1
 }
 
 # adds a new subdomain under a containing domain.
