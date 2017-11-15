@@ -116,6 +116,9 @@ analyze_hierarchy_and_report ~/cloud/urgent "high priority (aieeee!)"
 # notes are individual files of tasks, usually, although some are combined.
 analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes (externalities)"
 
+# web site development tasks.
+analyze_hierarchy_and_report ~/cloud/webular "web design (ideas and tasks)"
+
 # feisty notes are about feisty meow(r) concerns ltd codebase development.
 analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (mondo coding)"
 
