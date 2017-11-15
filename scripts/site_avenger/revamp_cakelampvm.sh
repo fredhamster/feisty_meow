@@ -56,9 +56,13 @@ test_or_die "group perms on feisty meow"
 #
 ##############
 
-# copy the most recent hello file into place for the user.
-\cp -f "$FEISTY_MEOW_APEX/production/sites/cakelampvm.com/hello.txt" "$HOME"
-test_or_continue "copying hello file for user"
+# only update hello if they've still got the file there.  we don't want to
+# keep forcing our hellos at people.
+if [ -f "$HOME/hello.txt" ]; then
+  # copy the most recent hello file into place for the user.
+  \cp -f "$FEISTY_MEOW_APEX/production/sites/cakelampvm.com/hello.txt" "$HOME"
+  test_or_continue "copying hello file for user"
+fi
 
 ##############
 
