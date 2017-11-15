@@ -68,48 +68,6 @@ function remove_zone_for_domain()
   # eat the zone file definition.  this will botch up badly if more text was added
   # or the zone info shrank.
   create_chomped_copy_of_file "/etc/bind/named.conf.local" "zone.*${domain_name}" 6
-
-#  \cp -f "$domain_file" "$domain_file.bkup-${RANDOM}" 
-#  test_or_die "backing up domain file: $domain_file"
-#
-#  # temp file to write to before we move file into place in bind.
-#  local new_version="/tmp/$domain_file.bkup-${RANDOM}" 
-#  \rm -f "$new_version"
-#  test_or_die "cleaning out new version of domain file from: $new_version"
-#
-#  local line
-#  local skip_count=0
-#  while read line; do
-#    # don't bother looking at the lines if we're already in skip mode.
-#    if [[ $skip_count == 0 ]]; then
-#      # find the zone for the domain.
-#      if [[ ! "$line" =~ *"zone \"${domain_name}\""* ]]; then
-#        echo "$line" >> "$new_version"
-#      else
-#        # start skipping.  we will delete this line and the next 6 lines.
-#        ((skip_count++))
-#echo first skip count is now $skip_count
-#      fi
-#    else
-#      # we're already skipping.  let's keep going until we hit the limit.
-#      ((skip_count++))
-#      if [[ $skip_count >= 6 ]]; then
-#        echo "Done skipping, and back to writing output file."
-#        skip_count=0
-#      fi
-#    fi
-#  done < "$domain_file"
-#
-##put the file back into place.
-#echo file we created looks like this:
-#filedump "$new_version"
-#
-#echo bailing
-#exit 1
-#
-#  \mv "$new_version" "$domain_file"
-#  test_or_die "moving the new version into place in: $domain_file"
-
 }
 
 # hooks up a new config file into bind's list of zones.
@@ -149,7 +107,6 @@ function remove_subdomain()
   local containing_domain="${old_domain#*.}"
 
   echo "removing subdomain $subdomain from containing domain $containing_domain"
-#hmmm: other functions could use that level of clarity in their logging.
 
   local domain_file="/etc/bind/${containing_domain}.conf"
   # see if config file already exists; if not, complain.
