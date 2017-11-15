@@ -125,8 +125,7 @@ function remove_subdomain()
     return 0
   fi
 
-  create_chomped_copy_of_file "$domain_file" \
-      "${subdomain}.*${containing_domain} *IN *A *${IP_ADDRESS}" 1
+  create_chomped_copy_of_file "$domain_file" "${old_domain}" 2
 }
 
 # adds a new subdomain under a containing domain.
@@ -153,9 +152,9 @@ function add_new_subdomain()
   if grep -q "$new_domain" "$domain_file"; then
     echo "The subdomain $subdomain already seems to exist in the domain"
     echo "configuration file: $domain_file"
-    echo "Please edit the config file to remove the subdomain before trying"
-    echo "to re-add the subdomain."
-    exit 1
+    echo "We are considering our work done; if you want to modify the subdomain,"
+    echo "then please call remove_domain on it first."
+    return 0
   fi
 
   # append the new subdomain into the config file.

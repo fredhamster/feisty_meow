@@ -903,7 +903,7 @@ echo ongoing skip count is now $skip_count
 
 #put the file back into place.
 echo file we created looks like this:
-filedump "$new_version"
+cat "$new_version"
 
     \mv "$new_version" "$filename"
     test_or_die "moving the new version into place in: $filename"
