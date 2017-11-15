@@ -337,7 +337,7 @@ function maybe_create_site_storage()
   chmod -R g+rx "$chow_path"
   # walk backwards up the path and fix perms.
   while [[ $chow_path != $HOME ]]; do
-echo chow path is now $chow_path
+#echo chow path is now $chow_path
     chmod g+rx "$chow_path"
     test_or_die "Failed to add group permissions on the path: $chow_path"
     # reassert the user's ownership of any directories we might have just created.

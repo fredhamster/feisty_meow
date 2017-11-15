@@ -25,12 +25,12 @@ if [[ $EUID != 0 ]]; then
   exit 1
 fi
 
-appname="$1"; shift
+site="$1"; shift
 
-if [ -z "$appname" ]; then
+if [ -z "$site" ]; then
 #hmmm: move to a print_instructions function.
   echo "
-$(basename $0): {app name} 
+$(basename $0): {dns name} 
 
 This script needs to know (1) the DNS name for the apache virtual host.
 The script will uninstall that site's configuration files for apache2.
@@ -39,6 +39,6 @@ The script will uninstall that site's configuration files for apache2.
 fi
 
 disable_site "$site"
-remove_apache_config "$appname" "$site"
+remove_apache_config "$site"
 restart_apache
 
