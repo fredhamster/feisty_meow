@@ -311,8 +311,11 @@ done
 # a late breaking action is to set the editor, if we can.
 # we will fallback to whatever we can find on the host.
 export EDITOR
-if [ -z "$EDITOR" ]; then
-  EDITOR="$(which bluefish)"
+if [ ! -z "$DISPLAY" ]; then
+  # only try to add bluefish, a gui editor, if there is an X display for it.
+  if [ -z "$EDITOR" ]; then
+    EDITOR="$(which bluefish)"
+  fi
 fi
 if [ -z "$EDITOR" ]; then
   EDITOR="$(which gvim)"
