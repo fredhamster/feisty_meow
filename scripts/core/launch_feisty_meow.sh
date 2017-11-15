@@ -228,6 +228,8 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
       sep 28
       echo
     fi
+    # from now on there should be no extra helloing.
+    export NO_HELLO=true
   fi
 
   # load the last bits we do here.
