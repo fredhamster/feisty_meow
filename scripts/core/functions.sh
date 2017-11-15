@@ -478,7 +478,11 @@ if [ -z "$skip_all" ]; then
     fi
 
     # prevent permission foul-ups.
-    chown -R "$(logname):$(logname)" "$FEISTY_MEOW_LOADING_DOCK"/* "$FEISTY_MEOW_GENERATED_STORE"/*
+#hmmm: save error output here instead of muting it.
+#hmmm: better yet actually, just don't complain on freaking cygwin, since that's where this happens
+    chown -R "$(logname):$(logname)" \
+        "$FEISTY_MEOW_LOADING_DOCK"/* "$FEISTY_MEOW_GENERATED_STORE"/* 2>/dev/null
+    test_or_continue "chowning to $(logname) didn't happen."
 
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
@@ -510,7 +514,9 @@ if [ -z "$skip_all" ]; then
     regenerate
 
     # prevent permission foul-ups, again.
-    chown -R "$(logname):$(logname)" "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE"
+    chown -R "$(logname):$(logname)" \
+        "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE" 2>/dev/null
+    test_or_continue "chowning to $(logname) didn't happen."
 
     restore_terminal_title
   }
