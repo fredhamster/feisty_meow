@@ -133,11 +133,10 @@ define_yeti_alias why='echo We all wonder what the point of the universe is at t
 
 ##############
 
-# remove the fredization macro if it was defined, helping to avoid running
-# the shell scripts twice for users like root that don't always load this
-# stuff.
-unalias fredme &>/dev/null
-unalias feistyme &>/dev/null
+# remove the "fredization" or "feistymeowization" macros if they're defined,
+# which reduces the chance of loading the shell environment twice for users
+# like root that don't load feisty meow automatically.
+unalias fredme feistyme &>/dev/null
 
 ##############
 
