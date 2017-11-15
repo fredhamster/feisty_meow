@@ -868,7 +868,7 @@ return 0
 #var filename seeker numlines 
 
     # make a backup first, oy.
-    \cp -f "$filename" "$filename.bkup-${RANDOM}" 
+    \cp -f "$filename" "/tmp/$(basename ${filename}).bkup-${RANDOM}" 
     test_or_die "backing up file: $filename"
 
     # make a temp file to write to before we move file into place in bind.
