@@ -290,8 +290,8 @@ fi
 
 ##############
 
-# pull in the custom overrides for feisty_meow scripts.  this is done last,
-# because we want to set everything up as expected, then let the user
+# pull in the custom overrides for feisty_meow scripts.  this is done almost
+# last, because we want to set everything up as expected, then let the user
 # override individual variables and definitions.  we also don't guard this
 # to avoid running it again, because we don't know what mix of functions and
 # aliases they want to define in there.
@@ -305,4 +305,35 @@ for i in $FEISTY_MEOW_LOADING_DOCK/custom/*.sh; do
   fi
   source "$i"
 done
+
+##############
+
+# a late breaking action is to set the editor, if we can.
+# we will fallback to whatever we can find on the host.
+export EDITOR
+if [ -z "$EDITOR" ]; then
+  EDITOR="$(which bluefish)"
+fi
+if [ -z "$EDITOR" ]; then
+  EDITOR="$(which gvim)"
+  if [ ! -z "$EDITOR" ]; then
+    # if we found gvim, then add in the no forking flag.
+    EDITOR+=" --nofork"
+  fi
+fi
+if [ -z "$EDITOR" ]; then
+  EDITOR="$(which vim)"
+fi
+if [ -z "$EDITOR" ]; then
+  EDITOR="$(which vi)"
+fi
+##
+# out of ideas about editors at this point.
+##
+# set the VISUAL variable from EDITOR if we found an editor to use.
+if [ ! -z "$EDITOR" ]; then
+  VISUAL="$EDITOR"
+fi
+
+##############
 

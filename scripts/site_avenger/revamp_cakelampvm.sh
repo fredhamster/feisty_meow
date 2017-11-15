@@ -66,6 +66,21 @@ fi
 
 ##############
 
+# install a better editor app.
+
+echo "
+The script is about to install the bluefish editor and some dependencies.
+If the app is not already installed, then this process takes only about a
+minute on a slower home DSL internet connection...
+
+"
+
+apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
+test_or_continue "failed to install bluefish editor.  not good."
+
+##############
+
+
 #hmmm: todo
 # deploy the site updater here to fix the local cakelampvm.com site...
 
