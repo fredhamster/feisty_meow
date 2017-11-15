@@ -65,3 +65,14 @@ test_or_continue "copying hello file for user"
 # deploy the site updater here to fix the local cakelampvm.com site...
 
 
+##############
+
+# sequel--tell them they're great and show the hello again also.
+
+regenerate
+
+echo "Thanks for revamping your cakelampvm.  :-)"
+
+##############
+
+
