@@ -24,7 +24,7 @@ export FEISTY_MEOW_APEX="/opt/feistymeow.org/feisty_meow"
 
 # the "fredme" macro enables the feisty_meow environment.
 alias fredme='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'
-# synonym for fredme.
+# synonym for fredme which makes more sense to most people.
 alias feistyme='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'
 
 # if not commented out, then feisty meow will run all the unit tests during builds.

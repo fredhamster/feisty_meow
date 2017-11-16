@@ -27,10 +27,12 @@ else
         >> "$HOME/.bashrc"
     echo "Feisty Meow is now configured in '~/.bashrc' for standard users."
   else
-    # stuff the root user init file into .bashrc.  this one doesn't automatically load
-    # feisty meow.  instead, it provides a fredme macro to load the feisty meow scripts.
-    # fredme comes from the main author being fred t. hamster.  we have since added a
-    # feistyme macro too, to be less personalized...
+    # stuff the root user init file into .bashrc.  this one doesn't
+    # automatically load the feisty meow scripts.  instead, there is a macro
+    # (uhh, an alias) that loads the feisty meow scripts.  the 'fredme' macro
+    # comes from the main author of feisty meow, named fred t. hamster.  we
+    # have since added a 'feistyme' macro too, to be slightly less
+    # idiosyncratic, as if that were possible.
     cat $FEISTY_MEOW_APEX/infobase/feisty_inits/dot.bashrc-root |
       sed -e \
         "s?FEISTY_MEOW_APEX=\".*\"?FEISTY_MEOW_APEX=\"$FEISTY_MEOW_APEX\"?" \

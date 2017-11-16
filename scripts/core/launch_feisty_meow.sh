@@ -215,6 +215,23 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     unset FEISTY_MEOW_SHOW_LAUNCH_GREETING
   fi
 
+  # only run this hello file if the core feisty meow support haven't been loaded already.  this
+  # hopefully guarantees we show the info at most once in one shell continuum.
+  # this can also be disabled if the NO_HELLO variable has a non-empty value.
+  type CORE_VARIABLES_LOADED &>/dev/null
+  if [ $? -ne 0 -a -z "$NO_HELLO" ]; then
+    # print out a personalized hello file if we find one.
+    if [ -f ~/hello.txt ]; then
+      echo
+      sep 28
+      perl $FEISTY_MEOW_SCRIPTS/*/filedump.pl ~/hello.txt
+      sep 28
+      echo
+    fi
+    # from now on there should be no extra helloing.
+    export NO_HELLO=true
+  fi
+
   # load the last bits we do here.
   source "$FEISTY_MEOW_LOADING_DOCK/fmc_ending_sentinel.sh"
 

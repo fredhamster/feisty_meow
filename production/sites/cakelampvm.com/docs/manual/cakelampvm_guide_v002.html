@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=windows-1252" http-equiv="content-type">
+    <title>Cake LAMP VM Documentation</title>
+  </head>
+  <body>
+    <h1 style="text-align: center;">The cakelampvm VM:<br>
+      Configuration and Usage</h1>
+    <h2 style=" text-align: center;">By Chris Koeritz</h2>
+    <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
+      Updated: 2017-11-16</h3>
+    <p>The cakelampvm project provides a virtualbox VM that acts as an "internet
+      in a bottle".&nbsp; The virtual machine provides DNS services (<a title="dns server"
+        href="http://www.bind9.net/">bind9</a>), a Web server (<a title="patchy"
+        href="https://httpd.apache.org/">Apache2</a>), a full <a title="ubuntu means compassion and humanity"
+        href="https://www.ubuntu.com/">Ubuntu</a> <a title="it's pronounced leenoox"
+        href="https://www.linuxfoundation.org/">Linux</a> desktop environment,
+      the <a title="flux is change" href="http://fluxbox.org/">Fluxbox</a> <a
+        title="a better windows" href="https://www.x.org/">X window manager</a>,
+      and a suite of tools called the <a title="feisty meow® concerns ltd. website"
+        href="https://feistymeow.org/">Feisty Meow® codebase</a>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      .&nbsp; Together, these services provide you with a very flexible and
+      powerful testbed for web development, especially suited for <a title="it's cake"
+        href="https://cakephp.org/">CakePHP</a>.</p>
+    <p>todo: arrange gritty details to back.</p>
+    <p>TOC GOES HERE.</p>
+    <h6> </h6>
+    <h2><span style="text-decoration: underline;">G</span>uest VM Configuration</h2>
+    <ul>
+      <li>hostname: <a title="the vm's website, when configured properly" href="https://cakelampvm.com/">cakelampvm.com</a></li>
+      <li>local IP address: 10.28.42.20</li>
+      <li>services: DNS (bind9), apache2, fluxbox X windowing system, <a title="not just in the garden"
+          href="https://www.gnome.org/">gnome display manager</a></li>
+      <li>main user: developer (password distributed separately)</li>
+      <li>mysql root password: (password distributed separately)</li>
+    </ul>
+    <h2>Powering up with the Feisty Meow® scripts</h2>
+    <p>[First, let me drop the registered trademark symbol from here on
+      in.&nbsp; I hope its presence above has been sufficiently clear for legal
+      purposes, but now it will just get in the way.&nbsp; Also, capitalization
+      really bores me, and it's the feisty meow codebase anyhow, so that's how
+      it will be written henceforth.]</p>
+    <p>The feisty meow scripts are a cohesive bash scripting environment for
+      getting a variety of tasks done.&nbsp; The scripts recently incorporated
+      the 'avbash' collection from Saco Designs, which provides tools for
+      bringing up CakePHP web sites and managing the collection of repositories
+      for those sites.&nbsp; Each website is considered an "application", and
+      the application name itself (e.g. "winterportlibrary") can often provide
+      all the details for "powering up" the site.&nbsp; The feisty meow team has
+      added additional scripts for managing DNS domains and Apache websites that
+      provide the capability to "stand up" an entire website around an
+      application, with accompanying domain.</p>
+    <p>The scripts for now are documented separately within the Feisty Meow
+      codebase.&nbsp; The Feisty Meow readme file provides some valuable
+      information on configuring the codebase.&nbsp; If you have the cakelampvm,
+      then this has already been done for you on the vm in the developer account.&nbsp;
+      The script documentation is available in the UHHHHHH page of something..</p>
+    <h2>How to set up virtualbox for your host PC</h2>
+    <ol>
+      <li>Download and install virtualbox:
+        https://www.virtualbox.org/wiki/Downloads</li>
+      <li>Install the extension pack for virtualbox: This provides USB drivers
+        and other features.&nbsp; This is installed on virtualbox itself, not on
+        the guests.</li>
+      <ol>
+        <li>Download the extension pack at
+          https://www.virtualbox.org/wiki/Downloads</li>
+        <li>Stop any running virtualbox vms.</li>
+        <li>Close virtualbox control panel.</li>
+        <li>Double-click on the downloaded extensions package (in a file
+          explorer) and virtualbox should install it.</li>
+      </ol>
+      <li>Run the virtualbox control panel.</li>
+      <li>Download the cakelampvm guest vm package and unzip it.&nbsp; Store the
+        unzipped version in some appropriate place where you want the virtual
+        machine to reside on your host's hard drive.</li>
+      <li>Add the guest VM to your list of VMs.&nbsp; From the virtualbox menus,
+        choose the "Machine" menu and select "Add".&nbsp; Point the selector
+        dialog at the cakelampvm folder you created above and open the
+        cakelampvm.vbox file.</li>
+      <li>Now the cakelampvm should show up in the list of virtual
+        machines.&nbsp; Before starting it, perform the following network
+        configuration sections.</li>
+    </ol>
+    <h3>Configure the Host-Only network on virtualbox</h3>
+    <p>Configuring host-only networking for the VM makes the VM completely local
+      to your machine.&nbsp; The cakelampvm will not be accessible on the
+      internet or from the LAN, and can only be accessed by your host PC.</p>
+    <ol>
+      <li> Go to virtual box "Preferences" (global preferences, not for a
+        specific vm).</li>
+      <li> Click on the "Network" tab.</li>
+      <li> Choose the "Host-only Networks" tab from within "Network".</li>
+      <li> Click the plus icon to add a new host-only network, or if there is
+        already a Host-only network, then edit it.</li>
+      <li>Set the "Adapter" parameters:<br>
+        IPv4 Address: 10.28.42.1<br>
+        IPv4 Network Mask: 255.255.255.0<br>
+        IPv6 Address: (leave blank)<br>
+        IPv6 Prefix Length: 0<br>
+        Virtualbox will fill in the other details like so:<br>
+        <p><img alt="host only network adapter" src="images/host_only_network_adapter.png"></p>
+      </li>
+      <li>Set the "DHCP Server Settings" to disabled, e.g.<br>
+        <img alt="host only dhcp" src="images/host_only_adapter_dhcp_server.png"><br>
+        This is disabled because we will be using statically assigned addresses
+        for convenience and stability.</li>
+    </ol>
+    <p>Additional information on host-only (and other) network adapter types is
+      at: https://www.virtualbox.org/manual/ch06.html#network_nat_service<br>
+    </p>
+    <h3>Configure the Nat Network on virtualbox</h3>
+    <ol>
+      <li> Go to virtual box "Preferences" (global preferences, not for a
+        specific vm).</li>
+      <li> Click on the "Network" tab.</li>
+      <li> Choose the "Nat Networks" tab from within "Network".</li>
+      <li> Click the plus icon to add a new host-only network.</li>
+      <li>Set the "NAT Network Details" parameters:<br>
+        Network Name: NatNetwork<br>
+        Network CIDR: 10.0.2.0/24<br>
+        Supports DHCP: checked<br>
+        Supports IPv6: optionally checked<br>
+        These are my settings, with IPv6 left disabled:<br>
+        <img alt="nat net config" src="images/nat_network_config.png"></li>
+    </ol>
+    <h2>Start up the VM</h2>
+    <p>Using the virtualbox interface, you should now be able to start your
+      virtual machine.&nbsp; Virtualbox will complain if it detects any
+      remaining configuration problems in the VM, but it should start
+      normally.&nbsp; The Linux boot sequence will show many lines of text,
+      before bringing up a black console window with a login dialog.</p>
+    <p>You can log in directly on the VM console with the developer account, but
+      it is generally more useful to connect to the cakelampvm over ssh.&nbsp;
+      If the networking has been established properly, you should be able to do
+      this with:</p>
+    <pre>ssh developer@cakelampvm.com&nbsp; (or equivalent with your ssh client)</pre>
+    <p>And then provide the password to log in.</p>
+    <p>A feature called "X forwarding" is enabled, so if you start graphical
+      applications on the VM, you can display them from an appropriately
+      configured host.&nbsp; (If you're running Linux as the host for the VM,
+      you can definitely run remote windows.&nbsp; Windows may not support
+      that.)</p>
+    <p>#### check this!!!</p>
+    <h2>Using the guest VM's DNS services</h2>
+    <p>The cakelampvm has been set up to provide a DNS server which will answer
+      name requests for all of the sites that the VM hosts.</p>
+    <p>To use the cakelampvm DNS, modify your host operating system network
+      configuration by adding or changing the DNS server to use the guest VM's
+      DNS service.&nbsp; This is available at the local address
+      10.28.42.20.&nbsp; The DNS server can be tested with nslookup, dig and
+      other tools.</p>
+    <p>Note that the cakelampvm DNS should be listed first, if one intends to
+      override any DNS names that actually exist out on the internet.</p>
+    <p>If the DNS server is properly set up, then these ping commands should get
+      answering responses:</p>
+    <pre>ping cakelampvm.com</pre>
+    <pre>ping defaultcake.cakelampvm.com</pre>
+    <pre>ping mapsdemo.cakelampvm.com</pre>
+    <h3>Setting up DNS on Windows</h3>
+    <p>The ipconfig tool will provide helpful information about your current
+      networking and DNS configuration:</p>
+    <pre>ipconfig --all</pre>
+    <p>The DNS configuration on Windows is somewhat byzantine.&nbsp; The pipe
+      characters ('|') below are used to separate the menus or tabs or dialogs
+      to traverse.&nbsp; Follow this path to get to the DNS config:</p>
+    <pre>Control Panel | Network &amp; Sharing | click WiFI or Ethernet link near top right | click Adapter Settings on left | click on specific network device to modify | select Properties</pre>
+    <p><br>
+    </p>
+    <p><br>
+    </p>
+    <p><br>
+    </p>
+    <h2>Editing files on the guest VM from the host</h2>
+    <p>On the host computer, look for the guest vm as a networked computer
+      called cakelampvm.&nbsp; This should provide some network shares using
+      Microsoft SMB protocol, and they can be attached to using the "developer"
+      user and its password.</p>
+    <p>On windows, one may want to mount this network location as a drive letter
+      for easier access.</p>
+    <p>Currently, the root of all web servers is exposed as "www".&nbsp; Editing
+      the files in those folders requires ownership by the developer user.&nbsp;
+      Currently the defaultcake server is owned by developer.</p>
+    <p>One should be able to create a new directory in the www folder owned by
+      the developer user over the network also, which can be used for creating
+      new projects.&nbsp; However, there is a config issue in the current vm
+      (v001) about this; to fix, run this command on the guest vm as the
+      developer user:</p>
+    <pre>sudo chmod g+w /var/www</pre>
+    <p>Afterwards, the www folder should allow the developer user to create new
+      folders at will.</p>
+    <h2>Accessing files on the host PC from the guest VM</h2>
+    <p>If you want to share a folder from the host to the guest, perhaps for
+      driver updates or other conveniences, then make the share with these
+      steps:</p>
+    <ol>
+      <li>Create a folder on the host that is to be shared.</li>
+      <li>Right-click on the vm in virtualbox manager and choose "Settings".</li>
+      <li>In the "Shared Folders" tab of the settings, go to "Machine Folders".</li>
+      <li>Click the folder plus icon to create a new share.</li>
+      <li>Fill in the "Folder Path" on the host PC to the folder that will be
+        shared, and give it a name for the guest.&nbsp; We assume the folder
+        name will be "myshare".</li>
+      <li>On the guest vm, run the following commands to mount the share:<br>
+        <pre>mkdir ~/shared&nbsp;&nbsp;&nbsp; # for the guest's version of the shared folder</pre>
+        <pre>sudo mount -t vboxsf myshare ~/shared&nbsp;&nbsp;&nbsp; # mount the vm's share name onto the folder on the vm.</pre>
+      </li>
+    </ol>
+    <h2>Adding a new website and domain on the guest VM</h2>
+    <p>To add a new website, you will need to pick one of the DNS options below
+      (A or B) depending on how you want to name the site.&nbsp; After the DNS
+      is updated, then follow the section after for creating a new apache conf
+      file.</p>
+    <p>Assuming one has created a new folder in "www" called "greatsite", then
+      the new web site can be brought online on the vm with one of the following
+      options.</p>
+    <h3>DNS Option A: Using a sub-domain in the cakelampvm.com domain</h3>
+    Connect to the cakelampvm via ssh as the developer user, e.g.: ssh
+    developer@cakelampvm.com
+    <p>Execute the following command to edit the DNS file for the cakelampvm
+      domain:</p>
+    <pre>sudo vi /etc/bind/cakelampvm.com.conf</pre>
+    <p>Add a stanza for the new site at the end of this file:</p>
+    <pre>greatsite.cakelampvm.com&nbsp;&nbsp;&nbsp; IN A&nbsp;&nbsp;&nbsp; 10.28.42.20<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IN HINFO "linux server" "ubuntu"</pre>
+    <p>Restart the DNS server: sudo service bind9 restart</p>
+    <p>Afterwards, pinging greatsite.cakelampvm.com should work from either the
+      guest or the host.</p>
+    <h3>DNS Option B: Using an entirely new domain for the site</h3>
+    <p>Similar procedure to above, but we will create a new file for the new
+      domain and add it to the bind directory.&nbsp; For this example, we will
+      create a file called /etc/bind/greatsite.tv.conf for our new domain
+      greatsite.tv with these contents:</p>
+    <pre>$TTL 1W<br>@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN SOA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fred.cakelampvm.com. (<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2017100801&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; serial<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2H&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; refresh<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8M&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; retry<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 14D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; expiry<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6H )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; minimum<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN NS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ns.cakelampvm.com.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN MX&nbsp;&nbsp; 10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mail.cakelampvm.com.<br><br># main domain for machine.<br>greatsite.tv.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10.28.42.20<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN HINFO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "linux server" "ubuntu"</pre>
+    The gnarly prefix stuff above the "greatsite.tv." listing establishes
+    configuration info for the new domain.&nbsp; This file relies on the
+    existing cakelampvm.com infrastructure in DNS, such as the "ns" host, which
+    is the domain's name server.
+    <p>Now that the config file is in place, edit "named.conf.local" to add the
+      new file by adding this bit of configuration at the end:</p>
+    <pre>zone "greatsite.tv" in {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file "/etc/bind/greatsite.tv.conf";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type master;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; allow-query { any; };<br>};</pre>
+    <p>Restart the DNS server: sudo service bind9 restart</p>
+    <p>Afterwards, pinging greatsite.tv should work from either the guest or the
+      host.</p>
+    <h3>Create a new apache configuration file and load it</h3>
+    <p>Start with the following template file for the new website, and modify it
+      for the appropriate host name:</p>
+    <pre>&lt;VirtualHost *:80&gt;<br>&nbsp;&nbsp;&nbsp; ServerName greatsite.cakelampvm.com<br>&nbsp;&nbsp;&nbsp; ServerAlias greatsite.cakelampvm.com *.greatsite.cakelampvm.com<br>&nbsp;&nbsp;&nbsp; DocumentRoot /var/www/greatsite<br>&nbsp;&nbsp;&nbsp; ErrorLog ${APACHE_LOG_DIR}/greatsite.cakelampvm.com-error.log<br>&nbsp;&nbsp;&nbsp; CustomLog ${APACHE_LOG_DIR}/greatsite.cakelampvm.com-access.log combined<br>&nbsp;&nbsp;&nbsp; Alias /statistics "/var/www/webwork.repository/webwork/maps_demo/webroot/statistics"<br>&nbsp;&nbsp;&nbsp; Include /etc/apache2/conf-library/basic-options.conf<br>&nbsp;&nbsp;&nbsp; Include /etc/apache2/conf-library/rewrite-enabling.conf<br>&lt;/VirtualHost&gt;</pre>
+    <p>The above example is pre-modified for DNS Option A above, the
+      greatsite.cakelampvm.com name.&nbsp; Switching all of those to
+      "greatsite.tv" instead would support DNS option B.</p>
+    <p>Copy that file into /etc/apache/available-sites under an appropriate
+      name, which here we will call "greatsite.conf".</p>
+    <p>Tell apache to use the new file:</p>
+    <pre>a2ensite greatsite.conf</pre>
+    <p>Finally, restart apache to get it to begin serving the site:</p>
+    <pre>sudo service apache2 restart</pre>
+    <h3>Test the new web site</h3>
+    <p>Given the configuration above, your host PC should now be able to access
+      the new website.</p>
+    <p>To test this, first try pinging the hostname, e.g.: ping
+      greatsite.cakelampvm.com or ping greatsite.tv</p>
+    <p>Then, if there are responses to the ping, it means the DNS is
+      working.&nbsp; If there are no responses, check the instructions in the
+      above DNS option section.</p>
+    <p>Once the DNS is working, one can try browsing to the site at:
+      http://greatsite.cakelampvm.com or http://greatsite.tv (depending on the
+      DNS option chosen).</p>
+    <p>If the site is not showing up properly, try examining the apache logs for
+      error messages that can be corrected.&nbsp; The log files are stored in
+      /var/log/apache2 and are generally named after the website.</p>
+    <h2>Configuring the guest VM</h2>
+    <p>The guest VM should already be set up appropriately.&nbsp; These steps
+      are provided for reference and updates.</p>
+    <h3>Set up virtualbox guest additions for the VM</h3>
+    <p>** note for v001 of cakelampvm: the below steps are still needed on the
+      shipped image.</p>
+    <p>This procedure is needed if the guest provides an older or incompatible
+      version of the guest additions (which have already been installed on the
+      guest vm).&nbsp; It may also be necessary when a new version of the guest
+      additions becomes available.</p>
+    <ol>
+      <li>To install the guest additions, open the guest VM and have its window
+        in focus.</li>
+      <li>Choose the "Devices" menu and select "Insert Guest Additions CD
+        Image".&nbsp; This will mount the CD's ISO image on the VM.</li>
+      <li>On the guest VM, it may be necessary to mount the CD image that's now
+        available:<br>
+        sudo mount /dev/sr0 /media/cdrom</li>
+      <li>Since the VM currently has no windowing system installed, one must
+        start the Guest Additions install manually:<br>
+        cd /media/cdrom<br>
+        sudo sh VBoxLinuxAdditions.run</li>
+      <li>This should install the guest additions.</li>
+    </ol>
+    <h3>Set up network adapters on guest VM</h3>
+    <p>The network interfaces should already be configured on the guest within
+      the virtualbox configuration.&nbsp; This is available by clicking on the
+      VM in the virtualbox manager and selecting "Settings".&nbsp; These are the
+      configuration settings used:</p>
+    Adapter 1:<br>
+    &nbsp; Attached to: Host-only Adapter<br>
+    &nbsp; Name: vboxnet0&nbsp; <br>
+    <p>Adapter 2:<br>
+      &nbsp; Attached to: Nat Network<br>
+      &nbsp; Name: NatNetwork</p>
+    <p>On the guest VM itself, the network settings are specified in a file
+      called /etc/network/interfaces.&nbsp; Here are the current contents of
+      that file:</p>
+    <pre>source /etc/network/interfaces.d/*<br><br>auto lo<br>iface lo inet loopback<br><br>auto enp0s3<br>iface enp0s3 inet static<br>&nbsp; address 10.28.42.20<br>&nbsp; netmask 255.255.255.0<br>&nbsp; network 10.28.42.0<br>&nbsp; broadcast 10.28.42.255<br>&nbsp; dns-domain cakelampvm.com<br>&nbsp; dns-search cakelampvm.com<br>&nbsp; dns-nameservers 127.0.0.1 8.8.8.8</pre>
+    <pre>auto enp0s8</pre>
+    <pre>iface enp0s8 inet dhcp</pre>
+    <p> </p>
+    <h2>Handy Techniques</h2>
+    <h3>Get the network address on the guest vm</h3>
+    <p>Run this command: ifconfig</p>
+    <p>In the results, look for "inet addr".&nbsp; There may be more than one,
+      if there are multiple network interfaces.</p>
+    <h3>How to cleanly reboot or shut down the guest VM</h3>
+    <p>When you've got the DNS and everything integrated, these commands will
+      manage the vm's state:</p>
+    <p>First, log into the guest VM: ssh developer@cakelampvm.com</p>
+    <p>Then, reboot the guest VM: sudo reboot</p>
+    <p>Or, halt the guest VM: sudo shutdown -h now</p>
+    <p>Using these commands is better than just cycling the power from the
+      virtualbox control panel.</p>
+    <h2>Notes on building the Cake Lamp VM</h2>
+    <p>This is all work that should already have been done.&nbsp; It is
+      mentioned here just as breadcrumbs for a future vm builder.</p>
+    <ul>
+      <li>Downloaded and installed virtualbox for host computer (where the vm
+        image will be built).</li>
+      <li>Downloaded ubuntu server 16.04 iso.
+        (https://www.ubuntu.com/download/server)</li>
+      <li>Created a new vm in virtualbox, telling it to start from the ubuntu
+        server iso.</li>
+      <li>Installed LAMP stack on guest VM.&nbsp; Some help here:
+        http://howtoubuntu.org/how-to-install-lamp-on-ubuntu</li>
+      <li>Configured CAKE on the guest VM.&nbsp; Useful link:
+        https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04</li>
+      <li>Configured the two network adapters as needed (one for host-only
+        network and one for nat network).&nbsp; Here's some info about
+        virtualbox networking with two adapters similar to our setup:
+https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in<br>
+      </li>
+      <li>Installed and configured Samba service for the guest VM.&nbsp; The
+        main config file lives in "/etc/samba/smb.conf".&nbsp; Some pointers
+        here:
+https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21</li>
+    </ul>
+    <p><br>
+    </p>
+  </body>
+</html>
