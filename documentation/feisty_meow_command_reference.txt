@@ -25,7 +25,7 @@ generally useful commands
   take inventory.  prints out some time and relative dimension in space
   information and shows the current directory's contents.
 
-  dir / l:
+  dir or l (lower-case L):
   show the directory with a "summing" feature that calculates the full size
   consumed by all files in the listing, with somewhat esthetic output.
 
@@ -33,17 +33,17 @@ generally useful commands
   the standard ls command (not the summing directory), but with ls colors
   enabled.
 
-  del / rm:
+  del or rm:
   invoke "safedel" feature to remove the files specified.  this archives the
   deleted files in "$TMP/zz_safedel_keep" and writes a report of the deletion
   history in "$TMP/zz_safedel_report.txt".
 
-note: currently there is no "empty the trash" function aside from running a command such as:
-# \rm -rf $TMP/zz_safedel*
-the backslash forces bash to run the "rm" tool from the path rather than from
-the feisty meow alias.
-a trash flushing feature is planned for the somewhat near future.
-
+note: currently there is no "empty the trash" function aside from running a
+command such as:
+  # \rm -rf $TMP/zz_safedel*
+the backslash forces bash to run the "rm" tool from the path rather than
+using the feisty meow alias.  a trash flushing feature is planned for the
+somewhat near future.
 
 revision control commands
 =========================
@@ -181,7 +181,7 @@ note: satis-refresh is the one site avenger command that hasn't been "feisty meo
 lower level scripts used by site avenger scripts
 ------------------------------------------------
 
-  add_domain / remove_domain: (from system script collection)
+  add_domain and remove_domain: (from system script collection)
   adds (or removes) a DNS domain to the bind9 configuration.  the domain
   tools, are very sensitive to any edits within the chunks of code they have
   written.  when it comes time to remove the domain again, the script will eat
@@ -190,7 +190,7 @@ lower level scripts used by site avenger scripts
   config files, be sure to do it way above or way below the auto-generated
   domain chunks.
 
-  add_apache_site / remove_apache_site: (from system script collection)
+  add_apache_site and remove_apache_site: (from system script collection)
   creates (or removes) an apache compatible site definition.  this will rely
   on the site's domain previously having been added to the DNS.
 
