@@ -118,7 +118,7 @@ function do_checkin()
       # there could already be committed changes that haven't been pushed yet.
 
       # upload any changes to the upstream repo so others can see them.
-      git push origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      git push --tags origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       promote_pipe_return 0
       test_or_die "git push"
 
