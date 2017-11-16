@@ -4,8 +4,8 @@ Welcome, adventurous script user.
 These are the handiest commands available in the Feisty Meow scripts.
 Note that each script is expected to be self-documenting.  Try running it
 with a "--help" flag (or with no parameters in some cases) to print the
-built-in docs.  At worst, you may have to read the script (documentation
-fail--please let us know).
+built-in docs.  At worst, you may have to read the script (that is a
+"documentation fail" on our part; please let us know).
 
 setup and loading commands
 ==========================
@@ -145,14 +145,21 @@ is not ready yet.  that will go into powerup.)
   updates satis for a site(?).
 note: this is the one site avenger command that hasn't been "feisty meowicized" yet.
 
-lower level scripts used by site avenger scripts:
+lower level scripts used by site avenger scripts
+------------------------------------------------
 
   add_domain / remove_domain: (from system script collection)
-  adds a DNS domain to the bind9 configuration.
-  (the domain tools, for example, are
-    very sensitive to edits within the chunks of code they have written.  if you
-  need to edit bind config files, be sure to do it way above or way below the
-  auto-generated domains.)
+  adds (or removes) a DNS domain to the bind9 configuration.  the domain
+  tools, are very sensitive to any edits within the chunks of code they have
+  written.  when it comes time to remove the domain again, the script will eat
+  the number of lines it expects to find after the beginning of the domain
+  definition that it added.  to avoid any issues, if you need to edit the bind
+  config files, be sure to do it way above or way below the auto-generated
+  domain chunks.
 
-  add_apache_site / remove_apache_site:
+  add_apache_site / remove_apache_site: (from system script collection)
+  creates (or removes) an apache compatible site definition.  this will rely
+  on the site's domain previously having been added to the DNS.
+note: currently we only implement the http site, but we're planning to add https support via self-signed certificates soon.
+
 
