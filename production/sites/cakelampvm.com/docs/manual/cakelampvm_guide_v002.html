@@ -9,17 +9,54 @@
       Configuration and Usage</h1>
     <h2 style=" text-align: center;">By Chris Koeritz</h2>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
-      Updated: 2017-11-15</h3>
+      Updated: 2017-11-16</h3>
+    <p>The cakelampvm project provides a virtualbox VM that acts as an "internet
+      in a bottle".&nbsp; The virtual machine provides DNS services (<a title="dns server"
+        href="http://www.bind9.net/">bind9</a>), a Web server (<a title="patchy"
+        href="https://httpd.apache.org/">Apache2</a>), a full <a title="ubuntu means compassion and humanity"
+        href="https://www.ubuntu.com/">Ubuntu</a> <a title="it's pronounced leenoox"
+        href="https://www.linuxfoundation.org/">Linux</a> desktop environment,
+      the <a title="flux is change" href="http://fluxbox.org/">Fluxbox</a> <a
+        title="a better windows" href="https://www.x.org/">X window manager</a>,
+      and a suite of tools called the <a title="feisty meow® concerns ltd. website"
+        href="https://feistymeow.org/">Feisty Meow® codebase</a>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      .&nbsp; Together, these services provide you with a very flexible and
+      powerful testbed for web development, especially suited for <a title="it's cake"
+        href="https://cakephp.org/">CakePHP</a>.</p>
+    <p>todo: arrange gritty details to back.</p>
+    <p>TOC GOES HERE.</p>
     <h6> </h6>
-    <h2>Basic info for the guest VM</h2>
+    <h2><span style="text-decoration: underline;">G</span>uest VM Configuration</h2>
     <ul>
-      <li>hostname: cakelampvm.com</li>
+      <li>hostname: <a title="the vm's website, when configured properly" href="https://cakelampvm.com/">cakelampvm.com</a></li>
       <li>local IP address: 10.28.42.20</li>
-      <li>services: DNS (bind9), apache2, fluxbox X windowing system, gnome
-        display manager</li>
+      <li>services: DNS (bind9), apache2, fluxbox X windowing system, <a title="not just in the garden"
+          href="https://www.gnome.org/">gnome display manager</a></li>
       <li>main user: developer (password distributed separately)</li>
       <li>mysql root password: (password distributed separately)</li>
     </ul>
+    <h2>Powering up with the Feisty Meow® scripts</h2>
+    <p>[First, let me drop the registered trademark symbol from here on
+      in.&nbsp; I hope its presence above has been sufficiently clear for legal
+      purposes, but now it will just get in the way.&nbsp; Also, capitalization
+      really bores me, and it's the feisty meow codebase anyhow, so that's how
+      it will be written henceforth.]</p>
+    <p>The feisty meow scripts are a cohesive bash scripting environment for
+      getting a variety of tasks done.&nbsp; The scripts recently incorporated
+      the 'avbash' collection from Saco Designs, which provides tools for
+      bringing up CakePHP web sites and managing the collection of repositories
+      for those sites.&nbsp; Each website is considered an "application", and
+      the application name itself (e.g. "winterportlibrary") can often provide
+      all the details for "powering up" the site.&nbsp; The feisty meow team has
+      added additional scripts for managing DNS domains and Apache websites that
+      provide the capability to "stand up" an entire website around an
+      application, with accompanying domain.</p>
+    <p>The scripts for now are documented separately within the Feisty Meow
+      codebase.&nbsp; The Feisty Meow readme file provides some valuable
+      information on configuring the codebase.&nbsp; If you have the cakelampvm,
+      then this has already been done for you on the vm in the developer account.&nbsp;
+      The script documentation is available in the UHHHHHH page of something..</p>
     <h2>How to set up virtualbox for your host PC</h2>
     <ol>
       <li>Download and install virtualbox:
