@@ -10,7 +10,7 @@
     <h2 style=" text-align: center;">By Chris Koeritz</h2>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
       Updated: 2017-11-16</h3>
-    <p>The cakelampvm project provides a virtualbox VM that acts as an "internet
+    <p>The cakelampvm project provides a Virtualbox VM that acts as an "internet
       in a bottle".&nbsp; The virtual machine provides DNS services (<a title="dns server"
         href="http://www.bind9.net/">bind9</a>), a Web server (<a title="patchy"
         href="https://httpd.apache.org/">Apache2</a>), a full <a title="ubuntu means compassion and humanity"
@@ -22,10 +22,7 @@
         href="https://feistymeow.org/">Feisty Meow® codebase</a> .&nbsp;
       Together, these services provide you with a very flexible and powerful
       testbed for web development, especially suited for <a title="it's cake" href="https://cakephp.org/">CakePHP</a>.</p>
-    <p>todo: arrange gritty details to back.</p>
-    <p>todo: toc goes here.</p>
-    <h6> </h6>
-    <h2><span style="text-decoration: underline;">G</span>uest VM Configuration</h2>
+    <h2> Guest VM Configuration<a id="#config" name="#config"></a></h2>
     <ul>
       <li>hostname: <a title="the vm's website, when configured properly" href="https://cakelampvm.com/">cakelampvm.com</a></li>
       <li>local IP address: 10.28.42.20</li>
@@ -34,23 +31,18 @@
       <li>main user: developer (password distributed separately)</li>
       <li>mysql root password: (password distributed separately)</li>
     </ul>
-    <h2>Powering up with the Feisty Meow® scripts</h2>
-    <p>[First, let me drop the registered trademark symbol from here on
-      in.&nbsp; I hope its presence above has been sufficiently clear for legal
-      purposes, but now it will just get in the way.&nbsp; Also, capitalization
-      really bores me, and it's the feisty meow codebase anyhow, so that's how
-      it will be written henceforth.]</p>
-    <p>The feisty meow scripts are a cohesive bash scripting environment for
-      getting a variety of tasks done.&nbsp; The scripts recently incorporated
-      the 'avbash' collection from Saco Designs and added those scripts to the
-      "site_avenger" collection of scripts.&nbsp; These provide tools for
-      bringing up CakePHP web sites and managing the collection of repositories
-      for those sites.&nbsp; Each website is considered an "application", and
-      the application name itself (e.g. "winterportlibrary") can often provide
-      all the details for "powering up" the site.&nbsp; The feisty meow team has
-      added additional scripts for managing DNS domains and Apache websites that
-      provide the capability to "stand up" an entire website around an
-      application, with accompanying domain.</p>
+    <h2>Powering up with the Feisty Meow® scripts<a id="#powerup" name="#powerup"></a></h2>
+    The feisty meow scripts are a cohesive bash scripting environment for
+    getting a variety of tasks done.&nbsp; The scripts recently incorporated the
+    "avbash" collection from Saco Designs and added those scripts to the
+    "site_avenger" collection of scripts.&nbsp; These provide tools for bringing
+    up CakePHP web sites and managing the collection of repositories for those
+    sites.&nbsp; Each website is considered an "application", and the
+    application name itself (e.g. "winterportlibrary") can often provide all the
+    details for "powering up" the site.&nbsp; The feisty meow team has added
+    additional scripts for managing DNS domains and Apache websites that provide
+    the capability to "stand up" an entire website around an application, with
+    accompanying domain.
     <p>The site avenger scripts are documented separately within the feisty meow
       codebase.&nbsp; Consult the <span style="text-decoration: underline;">f</span><a
         title="quickstart" href="https://feistymeow.org/feisty_meow/readme.txt">eisty
@@ -61,7 +53,7 @@ meow
         meow command reference</a> file.</p>
     <p>(The feisty meow codebase is already configured for the developer account
       on the cakelampvm virtual machine.)</p>
-    <h2>How to set up virtualbox for your host PC</h2>
+    <h2>How to set up virtualbox for your host PC<a id="#virtualbox-setup" name="#virtualbox-setup"></a></h2>
     <ol>
       <li>Download and install virtualbox:
         https://www.virtualbox.org/wiki/Downloads</li>
@@ -88,7 +80,7 @@ meow
         machines.&nbsp; Before starting it, perform the following network
         configuration sections.</li>
     </ol>
-    <h3>Configure the Host-Only network on virtualbox</h3>
+    <h3>Configure the Host-Only network on virtualbox<a id="#host-only" name="#host-only"></a></h3>
     <p>Configuring host-only networking for the VM makes the VM completely local
       to your machine.&nbsp; The cakelampvm will not be accessible on the
       internet or from the LAN, and can only be accessed by your host PC.</p>
@@ -115,7 +107,7 @@ meow
     <p>Additional information on host-only (and other) network adapter types is
       at: https://www.virtualbox.org/manual/ch06.html#network_nat_service<br>
     </p>
-    <h3>Configure the Nat Network on virtualbox</h3>
+    <h3>Configure the Nat Network on virtualbox<a id="#nat-network" name="#nat-network"></a></h3>
     <ol>
       <li> Go to virtual box "Preferences" (global preferences, not for a
         specific vm).</li>
@@ -130,7 +122,7 @@ meow
         These are my settings, with IPv6 left disabled:<br>
         <img alt="nat net config" src="images/nat_network_config.png"></li>
     </ol>
-    <h2>Start up the VM</h2>
+    <h2>Start up the VM<a id="#start-vm" name="#start-vm"></a></h2>
     <p>Using the virtualbox interface, you should now be able to start your
       virtual machine.&nbsp; Virtualbox will complain if it detects any
       remaining configuration problems in the VM, but it should start
@@ -142,24 +134,34 @@ meow
       this with:</p>
     <pre>ssh developer@cakelampvm.com&nbsp; (or equivalent with your ssh client)</pre>
     <p>And then provide the password to log in.</p>
-    <p>A feature called "X forwarding" is enabled, so if you start graphical
-      applications on the VM, you can display them from an appropriately
-      configured host.&nbsp; (If you're running Linux as the host for the VM,
-      you can definitely run remote windows.&nbsp; Windows may not support
-      that.)</p>
-    <p>#### check this!!!</p>
-    <h2>Using the guest VM's DNS services</h2>
+    <p>If a feature called "X forwarding" is enabled in your ssh client, then
+      you can start graphical applications on the VM and display them on your
+      local machine.&nbsp; This works right away on most Linux hosts, but can
+      also work on PCs with X window system installed.&nbsp; The section below
+      describes how to set up Cygwin to run X server, which enable X forwarding
+      to your local display.</p>
+    <p>...{insert that info}...</p>
+    <h2>Using the guest VM's DNS services<a id="#dns-from-vm" name="#dns-from-vm"></a></h2>
     <p>The cakelampvm has been set up to provide a DNS server which will answer
-      name requests for all of the sites that the VM hosts.</p>
+      name lookup requests on any of the sites that the cakelampvm is hosting
+      for you.&nbsp; It will also serve as a general DNS server for any other
+      domains that need to be looked up.</p>
     <p>To use the cakelampvm DNS, modify your host operating system network
       configuration by adding or changing the DNS server to use the guest VM's
-      DNS service.&nbsp; This is available at the local address
-      10.28.42.20.&nbsp; The DNS server can be tested with nslookup, dig and
-      other tools.</p>
+      DNS service.&nbsp; The cakelampvm is available at the local IP address
+      10.28.42.20.&nbsp; (The DNS server can be tested with nslookup, dig and
+      other tools.)</p>
     <p>Note that the cakelampvm DNS should be listed first, if one intends to
-      override any DNS names that actually exist out on the internet.</p>
-    <p>If the DNS server is properly set up, then these ping commands should get
-      answering responses:</p>
+      override any DNS names that actually exist out on the internet.&nbsp; We
+      have also found it most effective to have only the cakelampvm as your DNS
+      server, because a secondary DNS server can "take over" providing the name
+      lookups, and thus foul up DNS requests that should succeed for your
+      VM-hosted sites.</p>
+    <p>It is important to remember to switch back to a normal DNS server
+      configuration when you shut off the cakelampvm, or your machine will not
+      know the names of any sites on the internet any more!</p>
+    <p>Once the DNS server is properly set up, these ping commands should get
+      answering responses (from 10.28.42.20):</p>
     <pre>ping cakelampvm.com</pre>
     <pre>ping defaultcake.cakelampvm.com</pre>
     <pre>ping mapsdemo.cakelampvm.com</pre>
@@ -317,6 +319,12 @@ meow
     <pre>iface enp0s8 inet dhcp</pre>
     <p> </p>
     <h2>Handy Techniques</h2>
+    <h3>Assorted Guides and Cheat-Sheets</h3>
+    <p>Cheat sheet for Vim: <a title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
+    <p>Git branching model that seems to work well: <a title="release and patch process"
+        href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
+    <p><br>
+    </p>
     <h3>Get the network address on the guest vm</h3>
     <p>Run this command: ifconfig</p>
     <p>In the results, look for "inet addr".&nbsp; There may be more than one,
@@ -353,7 +361,20 @@ https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-v
         here:
 https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21</li>
     </ul>
+    <p><span style="font-style: italic;"><br>
+      </span></p>
+    <p><span style="font-style: italic;"><br>
+      </span></p>
+    <p><span style="font-style: italic;"><br>
+      </span></p>
+    <p><span style="font-style: italic;">remaining work:</span></p>
+    <p>todo: arrange gritty details to back.</p>
+    <p>todo: toc goes after intro paragraph.</p>
     <p><br>
     </p>
+    <h6> </h6>
+    <h2><span style="text-decoration: underline;"><br>
+      </span></h2>
+    <p> </p>
   </body>
 </html>
