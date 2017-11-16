@@ -83,7 +83,7 @@ define_yeti_alias lesser='bash $FEISTY_MEOW_SCRIPTS/files/lesser.sh'
 
 # some aliases that are just generally nice to have.
 define_yeti_alias aliases=alias
-define_yeti_alias calc='kcalc'
+define_yeti_alias calc='galculator'
 define_yeti_alias cd..='\cd ..'
 define_yeti_alias cd...='\cd ../..'
 define_yeti_alias cd....='\cd ../../..'
