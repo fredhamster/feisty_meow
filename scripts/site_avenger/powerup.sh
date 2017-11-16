@@ -63,18 +63,18 @@ source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
-check_application_dir "$APPLICATION_DIR"
+check_application_dir "$BASE_APPLICATION_PATH"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
   # no dir was passed, so guess it.
-  find_app_folder "$APPLICATION_DIR"
+  find_app_folder "$BASE_APPLICATION_PATH"
 else
-  test_app_folder "$APPLICATION_DIR" "$app_dirname"
+  test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
 
 # where we expect to find our checkout folder underneath.
-full_app_dir="$APPLICATION_DIR/$app_dirname"
+full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 
 # use our default values for the repository and theme if they're not provided.
 if [ -z "$repo_name" ]; then
@@ -110,8 +110,8 @@ sep
 #if [ ! -z "$user_name" ]; then
 #  echo "Chowning the apps folder to be owned by: $user_name"
 ##hmmm: have to hope for now for standard group named after user 
-#  chown -R "$user_name:$user_name" "$APPLICATION_DIR"
-#  test_or_die "Chowning $APPLICATION_DIR to be owned by $user_name"
+#  chown -R "$user_name:$user_name" "$BASE_APPLICATION_PATH"
+#  test_or_die "Chowning $BASE_APPLICATION_PATH to be owned by $user_name"
 #fi
 
 sep

@@ -17,7 +17,8 @@ function apply_title_to_terminal()
     title="$(hostname)"
   fi
   
-  if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" -a ! -z "$PS1" ]; then
+  if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" -a \
+        ! -z "$PS1" -a "${TERM}" != "linux" ]; then
     echo -n -e "\033]0;${title}\007"
   else
     # not running interactively, so just echo the title.
@@ -31,28 +32,46 @@ function apply_title_to_terminal()
 function set_terminal_title()
 {
   apply_title_to_terminal $*
+
+#tricky tries to get it to be available when we ask for it in get_terminal_title
+  sync
+#  echo -n
+
+#  # we're enforcing a new title from here on.
+#  unset PRIOR_TERMINAL_TITLE
   save_terminal_title
 }
 
-# reads the current terminal title, if possible, and saves it to our record.
-function save_terminal_title()
+# echoes back the current title on the terminal window, if we can acquire it.
+function get_terminal_title()
 {
+  # this is an important value now; it is checked for in save_terminal_title.
+  local term_title_found="unknown"
   # save the former terminal title if we're running in X with xterm.
   which xprop &>/dev/null
   if [ $? -eq 0 ]; then
     # make sure we're actually using xterm *and* that we have a window ID.
     if [[ "$TERM" =~ .*"xterm".* && ! -z "$WINDOWID" ]]; then
-      local prior_title="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
-      if [ ! -z "$prior_title" ]; then
-        if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-          echo "saving prior terminal title as '$prior_title'"
-        fi
-        export PRIOR_TERMINAL_TITLE="$prior_title"
-      else
-        if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-          echo "not saving prior terminal title which was empty"
-        fi
-      fi
+      term_title_found="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+    fi
+  fi
+  echo -n "$term_title_found"
+}
+
+# reads the current terminal title, if possible, and saves it to our record.
+function save_terminal_title()
+{
+  local title="$(get_terminal_title)"
+  if [ "$title" != "unknown" ]; then
+    # there was a title, so save it.
+    if [ ! -z "$DEBUG_TERM_TITLE" ]; then
+      echo "saving prior terminal title as '$title'"
+    fi
+    export PRIOR_TERMINAL_TITLE="$title"
+  else
+    # the terminal had no title, or we couldn't access it, or there's no terminal.
+    if [ ! -z "$DEBUG_TERM_TITLE" ]; then
+      echo "not saving prior terminal title which was empty"
     fi
   fi
 }
@@ -83,7 +102,7 @@ function label_terminal_with_info()
     fi
     pruned_host=$(echo $HOSTNAME | sed -e 's/^\([^\.]*\)\..*$/\1/')
     date_string=$(date +"%Y %b %e @ %T")
-    user=$USER
+    user=$(logname)
     if [ -z "$user" ]; then
       # try snagging the windoze name.
       user=$USERNAME
