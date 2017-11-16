@@ -1,11 +1,18 @@
 
-
 The cygwin setup app is available at: http://cygwin.com
 
-The default packages selected by Cygwin are a good starting point for running Feisty Meow on windows.  If you supplement this set with a few additional packages, you can rely on the apt-cyg tool rather than having to run the Cygwin setup program (which can be a little fiddly).  Here is a step by step process to getting going with apt-cyg:
+The default packages selected by Cygwin are a good starting point for running
+Feisty Meow on windows.  If you supplement this set with a few additional
+packages, you can rely on the apt-cyg tool rather than having to run the
+Cygwin setup program (which can be a little fiddly).  Here is a step by step
+process to getting going with apt-cyg:
 
 1) Install Cygwin.
-Run the Cygwin setup exe from their website.  Keep all the default packages that the installer suggests, but add the following additional ones (the easiest way to add additional packages is to switch to the "Full" view for the package list and then search for the terms below):
+
+Run the Cygwin setup exe from their website.  Keep all the default packages
+that the installer suggests, but add the following additional ones (the
+easiest way to add additional packages is to switch to the "Full" view for the
+package list and then search for the terms below):
 
   + lynx
   + wget
@@ -13,30 +20,50 @@ Run the Cygwin setup exe from their website.  Keep all the default packages that
 
 2) Install apt-cyg.
 
-The apt-cyg program brings the convenience of the Debian and Ubuntu installer application (apt) to Cygwin.  This program does require a couple of additional setup steps.  This material is drawn from the apt-cyg home page: https://github.com/transcode-open/apt-cyg
+The apt-cyg program brings the convenience of the Debian and Ubuntu installer
+application (apt) to Cygwin.  This program does require a couple of additional
+setup steps.
 
-Start the cygwin bash prompt (there should be a desktop icon or start menu icon for it called something like cygwin terminal?) and run the following commands:
+This material is drawn from the apt-cyg home page:
+  https://github.com/transcode-open/apt-cyg
+
+Start the cygwin bash prompt (there should be a desktop icon or start menu
+icon for it called something like "cygwin64") and run the following
+commands (omitting the '#' in front):
 
   # lynx -source rawgit.com/transcode-open/apt-cyg/master/apt-cyg > apt-cyg
   # install apt-cyg /bin
 
-3) Install the minimum set of cygwin apps and libraries.
+3) Install the basic set of cygwin apps and libraries.
 
-These tools are not necessarily all needed by the Feisty Meow scripts, but they are all required to create a sane and useful Unix or Linux environment on MS-Windows.  You may find you need other packages installed in the future, and you can use this same approach.
+These tools are not necessarily needed by the Feisty Meow scripts, but they
+are all required to create a sane and useful Unix or Linux environment on
+MS-Windows.  You may find you will want additional packages installed in the
+future, and you can use this same approach.
 
 In the cygwin bash prompt, type this command:
 
-  # apt-cyg install bc crypt cygutils emacs email expect gcc-g++ git gitk \
-    gvim inetutils less lynx make mutt ncftp openssh perl procps python \
-    sharutils shutdown subversion time unzip util-linux vim wget xinit \
-    xterm zip
+# apt-cyg install bc crypt cygutils emacs email expect gcc-g++ git gitk \
+  gvim inetutils less lynx make mutt ncftp openssh perl procps python \
+  sharutils shutdown subversion time unzip util-linux vim wget xinit \
+  xterm zip
 
-You may have cleverly spotted that we repeated some package names that were already installed using the Cygwin setup program.  That is fine and should just fetch the latest versions.
+You may have cleverly spotted that we repeated some package names that were
+already installed using the Cygwin setup program in step 1.  That is fine and
+should just fetch the latest versions.
 
-Later, to update the apt-cyg package datebase to the latest available on the internet, you can run this command:
+Later, to update the apt-cyg package datebase to the latest available on the
+internet, you can run this command:
 
-  # apt-cyg update
+# apt-cyg update
 
-We don't currently know of an analog in apt-cyg of the "apt dist-upgrade" command, which fetches all updated versions of the installed packages.  We think the install command, if repeated from earlier will upgrade packages when it can.  Also, the cygwin setup tool (bless its heart) may automatically update the packages that it can if you run it again (you don't need to select anything again, but just run through the install process to get the latest).
-==> hmmm: verify above claims. 
+We don't currently know of an analog in apt-cyg of the "apt dist-upgrade"
+command, which fetches all updated versions of the installed packages.  We
+think the install command above will upgrade packages when there are new ones
+available.  Also, the cygwin setup tool (bless its heart) may automatically
+update packages if you run it again (you don't need to select anything again,
+but just run through the install process to get the latest).
+
+==> hmmm: verify above claims.
+
 
