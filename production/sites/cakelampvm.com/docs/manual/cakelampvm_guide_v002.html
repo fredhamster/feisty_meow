@@ -9,17 +9,55 @@
       Configuration and Usage</h1>
     <h2 style=" text-align: center;">By Chris Koeritz</h2>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
-      Updated: 2017-11-10</h3>
+      Updated: 2017-11-16</h3>
+    <p>The cakelampvm project provides a virtualbox VM that acts as an "internet
+      in a bottle".&nbsp; The virtual machine provides DNS services (<a title="dns server"
+        href="http://www.bind9.net/">bind9</a>), a Web server (<a title="patchy"
+        href="https://httpd.apache.org/">Apache2</a>), a full <a title="ubuntu means compassion and humanity"
+        href="https://www.ubuntu.com/">Ubuntu</a> <a title="it's pronounced leenoox"
+        href="https://www.linuxfoundation.org/">Linux</a> desktop environment,
+      the <a title="flux is change" href="http://fluxbox.org/">Fluxbox</a> <a
+        title="a better windows" href="https://www.x.org/">X window manager</a>,
+      and a suite of tools called the <a title="feisty meow® concerns ltd. website"
+        href="https://feistymeow.org/">Feisty Meow® codebase</a>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      .&nbsp; Together, these services provide you with a very flexible and
+      powerful testbed for web development, especially suited for <a title="it's cake"
+        href="https://cakephp.org/">CakePHP</a>.</p>
+    <p>todo: arrange gritty details to back.</p>
+    <p>TOC GOES HERE.</p>
     <h6> </h6>
-    <h2>Basic info for the guest VM</h2>
+    <h2><span style="text-decoration: underline;">G</span>uest VM Configuration</h2>
     <ul>
-      <li>hostname: cakelampvm.com</li>
+      <li>hostname: <a title="the vm's website, when configured properly" href="https://cakelampvm.com/">cakelampvm.com</a></li>
       <li>local IP address: 10.28.42.20</li>
-      <li>services: DNS (bind9), apache2, fluxbox X windowing system, gnome
-        display manager</li>
+      <li>services: DNS (bind9), apache2, fluxbox X windowing system, <a title="not just in the garden"
+          href="https://www.gnome.org/">gnome display manager</a></li>
       <li>main user: developer (password distributed separately)</li>
       <li>mysql root password: (password distributed separately)</li>
     </ul>
+    <h2>Powering up with the Feisty Meow® scripts</h2>
+    <p>[First, let me drop the registered trademark symbol from here on
+      in.&nbsp; I hope its presence above has been sufficiently clear for legal
+      purposes, but now it will just get in the way.&nbsp; Also, capitalization
+      really bores me, and it's the feisty meow codebase anyhow, so that's how
+      it will be written henceforth.]</p>
+    <p>The feisty meow scripts are a cohesive bash scripting environment for
+      getting a variety of tasks done.&nbsp; The scripts recently incorporated
+      the 'avbash' collection from Saco Designs, which provides tools for
+      bringing up CakePHP web sites and managing the collection of repositories
+      for those sites.&nbsp; Each website is considered an "application", and
+      the application name itself (e.g. "winterportlibrary") can often provide
+      all the details for "powering up" the site.&nbsp; The feisty meow team has
+      added additional scripts for managing DNS domains and Apache websites that
+      provide the capability to "stand up" an entire website around an
+      application, with accompanying domain.</p>
+    <p>The scripts for now are documented separately within the Feisty Meow
+      codebase.&nbsp; The <a title="quickstart" href="https://feistymeow.org/feisty_meow/readme.txt">Feisty
+        Meow readme</a> file provides some valuable information on configuring
+      the codebase.&nbsp; If you have the cakelampvm, then this has already been
+      done for you on the vm in the developer account.&nbsp; The script
+      documentation is available in the UHHHHHH page of something..</p>
     <h2>How to set up virtualbox for your host PC</h2>
     <ol>
       <li>Download and install virtualbox:
@@ -56,7 +94,8 @@
         specific vm).</li>
       <li> Click on the "Network" tab.</li>
       <li> Choose the "Host-only Networks" tab from within "Network".</li>
-      <li> Click the plus icon to add a new host-only network.</li>
+      <li> Click the plus icon to add a new host-only network, or if there is
+        already a Host-only network, then edit it.</li>
       <li>Set the "Adapter" parameters:<br>
         IPv4 Address: 10.28.42.1<br>
         IPv4 Network Mask: 255.255.255.0<br>
@@ -88,6 +127,24 @@
         These are my settings, with IPv6 left disabled:<br>
         <img alt="nat net config" src="images/nat_network_config.png"></li>
     </ol>
+    <h2>Start up the VM</h2>
+    <p>Using the virtualbox interface, you should now be able to start your
+      virtual machine.&nbsp; Virtualbox will complain if it detects any
+      remaining configuration problems in the VM, but it should start
+      normally.&nbsp; The Linux boot sequence will show many lines of text,
+      before bringing up a black console window with a login dialog.</p>
+    <p>You can log in directly on the VM console with the developer account, but
+      it is generally more useful to connect to the cakelampvm over ssh.&nbsp;
+      If the networking has been established properly, you should be able to do
+      this with:</p>
+    <pre>ssh developer@cakelampvm.com&nbsp; (or equivalent with your ssh client)</pre>
+    <p>And then provide the password to log in.</p>
+    <p>A feature called "X forwarding" is enabled, so if you start graphical
+      applications on the VM, you can display them from an appropriately
+      configured host.&nbsp; (If you're running Linux as the host for the VM,
+      you can definitely run remote windows.&nbsp; Windows may not support
+      that.)</p>
+    <p>#### check this!!!</p>
     <h2>Using the guest VM's DNS services</h2>
     <p>The cakelampvm has been set up to provide a DNS server which will answer
       name requests for all of the sites that the VM hosts.</p>
@@ -103,6 +160,20 @@
     <pre>ping cakelampvm.com</pre>
     <pre>ping defaultcake.cakelampvm.com</pre>
     <pre>ping mapsdemo.cakelampvm.com</pre>
+    <h3>Setting up DNS on Windows</h3>
+    <p>The ipconfig tool will provide helpful information about your current
+      networking and DNS configuration:</p>
+    <pre>ipconfig --all</pre>
+    <p>The DNS configuration on Windows is somewhat byzantine.&nbsp; The pipe
+      characters ('|') below are used to separate the menus or tabs or dialogs
+      to traverse.&nbsp; Follow this path to get to the DNS config:</p>
+    <pre>Control Panel | Network &amp; Sharing | click WiFI or Ethernet link near top right | click Adapter Settings on left | click on specific network device to modify | select Properties</pre>
+    <p><br>
+    </p>
+    <p><br>
+    </p>
+    <p><br>
+    </p>
     <h2>Editing files on the guest VM from the host</h2>
     <p>On the host computer, look for the guest vm as a networked computer
       called cakelampvm.&nbsp; This should provide some network shares using
