@@ -1,65 +1,42 @@
 
-recommended packages to install in cygwin's setup
-if you're going to use cygwin on windows:
 
-first, keep all the standard packages that cygwin will enable.
-second, add these packages to get the full recommended set...
+The cygwin setup app is available at: http://cygwin.com
 
-===========
+The default packages selected by Cygwin are a good starting point for running Feisty Meow on windows.  If you supplement this set with a few additional packages, you can rely on the apt-cyg tool rather than having to run the Cygwin setup program (which can be a little fiddly).  Here is a step by step process to getting going with apt-cyg:
 
-using apt-cyg (https://github.com/transcode-open/apt-cyg),
-this is the only command needed:
+1) Install Cygwin.
+Run the Cygwin setup exe from their website.  Keep all the default packages that the installer suggests, but add the following additional ones (the easiest way to add additional packages is to switch to the "Full" view for the package list and then search for the terms below):
 
-apt-cyg install bc crypt emacs email expect gcc-g++ git gitk gvim inetutils \
-  libcrypt-devel libcurl-devel libgnutls-devel make mutt ncftp openssh \
-  openssl-devel perl python subversion time unzip util-linux vim xinit \
-  xterm zip
+  + lynx
+  + wget
+  + subversion
 
+2) Install apt-cyg.
 
-===========
+The apt-cyg program brings the convenience of the Debian and Ubuntu installer application (apt) to Cygwin.  This program does require a couple of additional setup steps.  This material is drawn from the apt-cyg home page: https://github.com/transcode-open/apt-cyg
 
-list broken out by category:
+Start the cygwin bash prompt (there should be a desktop icon or start menu icon for it called something like cygwin terminal?) and run the following commands:
 
-shells:
-  python
-  perl
+  # lynx -source rawgit.com/transcode-open/apt-cyg/master/apt-cyg > apt-cyg
+  # install apt-cyg /bin
 
-network:
-  ncftp
-  openssh
+3) Install the minimum set of cygwin apps and libraries.
 
-editors:
-  vim
-  gvim
-  emacs
+These tools are not necessarily all needed by the Feisty Meow scripts, but they are all required to create a sane and useful Unix or Linux environment on MS-Windows.  You may find you need other packages installed in the future, and you can use this same approach.
 
-revision control:
-  git
-  gitk
-  subversion
+In the cygwin bash prompt, type this command:
 
-general tools:
-  bc
-  expect
-  util-linux
-  inetutils
-  email
-  mutt
-  unzip
-  zip
-  crypt
-  time
+  # apt-cyg install bc crypt cygutils emacs email expect gcc-g++ git gitk \
+    gvim inetutils less lynx make mutt ncftp openssh perl procps python \
+    sharutils shutdown subversion time unzip util-linux vim wget xinit \
+    xterm zip
 
-libraries:
-  libcurl-devel
-  libgnutls-devel 
-  openssl-devel
+You may have cleverly spotted that we repeated some package names that were already installed using the Cygwin setup program.  That is fine and should just fetch the latest versions.
 
-build tools:
-  gcc4
-  make
+Later, to update the apt-cyg package datebase to the latest available on the internet, you can run this command:
 
-x window support:
-  xterm
-  xinit
+  # apt-cyg update
+
+We don't currently know of an analog in apt-cyg of the "apt dist-upgrade" command, which fetches all updated versions of the installed packages.  We think the install command, if repeated from earlier will upgrade packages when it can.  Also, the cygwin setup tool (bless its heart) may automatically update the packages that it can if you run it again (you don't need to select anything again, but just run through the install process to get the latest).
+==> hmmm: verify above claims. 
 
