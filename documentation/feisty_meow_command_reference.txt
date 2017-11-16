@@ -13,6 +13,38 @@ setup and loading commands
 + read "readme.txt" in the top of the feisty meow codebase, or
 + read it online at: https://feistymeow.org/feisty_meow/readme.txt
 
+generally useful commands
+=========================
+
+  pwd:
+  reports similarly to the good old system "pwd", but translates the $HOME
+  variable into the '~' name.  e.g., if you're fred in /home/fred/turnips
+  and you run 'pwd', then it will print: ~/turnips
+
+  i:
+  take inventory.  prints out some time and relative dimension in space
+  information and shows the current directory's contents.
+
+  dir / l:
+  show the directory with a "summing" feature that calculates the full size
+  consumed by all files in the listing, with somewhat esthetic output.
+
+  ls:
+  the standard ls command (not the summing directory), but with ls colors
+  enabled.
+
+  del / rm:
+  invoke "safedel" feature to remove the files specified.  this archives the
+  deleted files in "$TMP/zz_safedel_keep" and writes a report of the deletion
+  history in "$TMP/zz_safedel_report.txt".
+
+note: currently there is no "empty the trash" function aside from running a command such as:
+# \rm -rf $TMP/zz_safedel*
+the backslash forces bash to run the "rm" tool from the path rather than from
+the feisty meow alias.
+a trash flushing feature is planned for the somewhat near future.
+
+
 revision control commands
 =========================
 
@@ -123,8 +155,9 @@ overriding the domain name for the mapsdemo application.
   powerup:
   similar to standup, but just gets the application source out and powers it
   up with composer.
-(note: automatic database configuration and inflation is in the pipeline but
-is not ready yet.  that will go into powerup.)
+
+(note: automatic database configuration and inflation is in the pipeline for
+the powerup command, but is not ready yet.)
   
   avcoreup:
   updates the avcore portion of a site avenger application.  this command can
@@ -140,10 +173,10 @@ is not ready yet.  that will go into powerup.)
   checks in the source code and other site assets for a site avenger app.
   supports passing an app name on the command line, or auto-picks the app.
 
-
   satis-refresh:
   updates satis for a site(?).
-note: this is the one site avenger command that hasn't been "feisty meowicized" yet.
+
+note: satis-refresh is the one site avenger command that hasn't been "feisty meowicized" yet.
 
 lower level scripts used by site avenger scripts
 ------------------------------------------------
@@ -160,6 +193,7 @@ lower level scripts used by site avenger scripts
   add_apache_site / remove_apache_site: (from system script collection)
   creates (or removes) an apache compatible site definition.  this will rely
   on the site's domain previously having been added to the DNS.
+
 note: currently we only implement the http site, but we're planning to add https support via self-signed certificates soon.
 
 
