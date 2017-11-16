@@ -1,0 +1,158 @@
+
+Welcome, adventurous script user.
+
+These are the handiest commands available in the Feisty Meow scripts.
+Note that each script is expected to be self-documenting.  Try running it
+with a "--help" flag (or with no parameters in some cases) to print the
+built-in docs.  At worst, you may have to read the script (documentation
+fail--please let us know).
+
+setup and loading commands
+==========================
+
++ read "readme.txt" in the top of the feisty meow codebase, or
++ read it online at: https://feistymeow.org/feisty_meow/readme.txt
+
+revision control commands
+=========================
+
+all revision control commands bring up the editor in the EDITOR environment
+variable when creating commit messages.  you need to actually save and quit
+from that editor when you're done writing your commit message.
+
+  here's a guide to writing good commit messages:
+  + https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message
+
+========
+the first suite of commands takes a list of directory names as parameters and
+then operates on those names.
+========
+
+  rgetem:
+  does a simple update (or pull) of the repository paths provided on the
+  command line.  this will only get things from the main origin that the
+  repository is hooked up with, so it is super quick compared to the next
+  couple commands.
+
+  rpuffer:
+  update the repositories provided on the command line by "puffing them out",
+  which means that the upstream repositories that feed the local one will be
+  synched up with it.  this is quite important to do when a git repository has
+  multiple branches, since unmerged changes upstream can really snarl up your
+  checkin.  this is basically a heavyweight version of rgetem.
+
+  rcheckin:
+  checks in the list of repositories passed on the command line.  in git
+  parlance, this adds all modified or untracked files, then commits all
+  changes in the repository, and finally pushes up the changes to the remote
+  online repository.  before doing the checkin, this will do a full "rpuffer"
+  update on the repository to ensure that there are no unmerged upstream
+  changes that could cause problems later.
+
+========
+the next suite of commands uses the REPOSITORY_LIST environment variable as
+the set of revision controlled folders to operate on.  the feisty meow scripts
+automatically add the feisty meow top-level (the apex) to this list to ensure
+that updates are received when available.
+========
+
+  getem:
+  update all repositories in the REPOSITORY_LIST from their upstream remote
+  counterparts.  fast.
+
+  puffer:
+  puffs out the REPOSITORY_LIST items to merge upstream changes.
+
+  checkin:
+  checks in all changes in the REPOSITORY_LIST to their remote repositories.
+
+========
+some assorted other revision control commands:
+========
+
+  feisty_branch:
+  shows the current branch that is checked out.
+
+  this command will move your feisty meow codebase to the development branch:
+  pushd $FEISTY_MEOW_APEX; git checkout dev; popd
+
+  and this command will get you back onto the mainline branch:
+  pushd $FEISTY_MEOW_APEX; git checkout master; popd
+
+=============================
+the site avenger script suite
+=============================
+
+the site avenger tools (inherited from the avbash project) are commands for
+managing web sites.  these scripts offer a lot of power to the developer, and
+of course that comes with great responsibility...
+
+the site avenger scripts are configured by "app" files stored in the "config"
+directory (in $FEISTY_MEOW_SCRIPTS/scripts/site_avenger/config).  the scripts
+seek out a config file named after the application, e.g. they look for
+"winterportlibrary.app" if the application name is "winterportlibrary".
+the basic config file "default.app" is used for any application that is unknown
+in the config directory.  any of the variable definitions provided in
+default.app can be overridden to change how the applications, and associated
+web site and domain, are configured.  see "mapsdemo.app" for an example of
+overriding the domain name for the mapsdemo application.
+
+  revamp_cakelampvm:
+  establishes permissions and ownership to make the virtual machine and its
+  services behave properly.  if something goes wonky, try running this script.
+  this script is also the main vehicle for delivering configuration changes
+  to the cakelampvm.  we are trying really hard to never release a version 2
+  of the vm, since we can patch it as needed using the revamp script.  let's
+  see how well that works out...
+
+  standup:
+  brings up an application or web site from scratch (potentially) by creating
+  an appropriate domain name, writing a basic apache site config file, pulling
+  the application from a git repository, and "powering up" the application via
+  composer.  this is most powerful and effective on php sites, but can also be
+  used for other types of websites.  note that this, and all of the scripts
+  here, are heavily biased for site avenger based development at saco designs.
+  to make these scripts truly your own, write configuration files (see above)
+  that define the proper folders and repository for your applications.
+
+  teardown:
+  takes down a site previously brought up by the standup command.  this just
+  eliminates the domain and the apache site though; the code is left in place
+  to prevent disaster.
+  
+  powerup:
+  similar to standup, but just gets the application source out and powers it
+  up with composer.
+(note: automatic database configuration and inflation is in the pipeline but
+is not ready yet.  that will go into powerup.)
+  
+  avcoreup:
+  updates the avcore portion of a site avenger application.  this command can
+  accept an application name within which to update, or it can auto-pick the
+  applicatin for you from the available checked out ones in ~/apps (the default
+  storage folder for all site avenger style sites).
+
+  siteup:
+  updates the entire checked out repository for a site avenger application.
+  supports app name on the command line, or auto-picks the app.
+
+  sitepush:
+  checks in the source code and other site assets for a site avenger app.
+  supports passing an app name on the command line, or auto-picks the app.
+
+
+  satis-refresh:
+  updates satis for a site(?).
+note: this is the one site avenger command that hasn't been "feisty meowicized" yet.
+
+lower level scripts used by site avenger scripts:
+
+  add_domain / remove_domain: (from system script collection)
+  adds a DNS domain to the bind9 configuration.
+  (the domain tools, for example, are
+    very sensitive to edits within the chunks of code they have written.  if you
+  need to edit bind config files, be sure to do it way above or way below the
+  auto-generated domains.)
+
+  add_apache_site / remove_apache_site:
+
