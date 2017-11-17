@@ -410,28 +410,57 @@ meow
     <pre># sudo service apache2 restart</pre>
     <h3>Test the new web site</h3>
     <p>Given the configuration above, your host PC should now be able to access
-      the new website.</p>
+      the new website on the domain "excalibur.tv".</p>
     <p>To test this, first try pinging the new DNS name:</p>
     <pre># ping excalibur.tv</pre>
-    <p>If there are responses to the ping, it means the DNS is working.&nbsp; If
-      there are no responses, check the instructions in the above DNS option
-      section.</p>
-    <p>Once the DNS is working, one can try browsing to the site at:
-      http://greatsite.cakelampvm.com or http://greatsite.tv (depending on the
-      DNS option chosen).</p>
-    <p>If the site is not showing up properly, try examining the apache logs for
-      error messages that can be corrected.&nbsp; The log files are stored in
-      /var/log/apache2 and are generally named after the website.</p>
+    <p>If there are responses to the ping *and* the answer is 10.28.42.20, then
+      it means the DNS is working.&nbsp; If there are no responses or it's some
+      other IP address talking back, check the instructions in the above DNS
+      sections.</p>
+    <p>Once the DNS is working, try browsing to the site at "http://excalibur.tv".&nbsp;
+      That should at least bring up the configured site storage path, even if
+      nothing is being served from that folder yet.</p>
+    <p>If the new site is not showing up properly, try examining the apache logs
+      for error messages that can be corrected.&nbsp; The log files are stored
+      in "/var/log/apache2" and are named after the website (if configured as
+      shown above).</p>
+    <h2>Handy Techniques</h2>
+    <h3>Assorted Guides and Cheat-Sheets</h3>
+    <p>Cheat sheet for Vim: <a title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
+    <p>Git branching model that seems to work well: <a title="release and patch process"
+        href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
+    <h3>Get the network address on the guest vm</h3>
+    <p>Run this command: ifconfig</p>
+    <p>In the results, look for "inet addr".&nbsp; There may be more than one,
+      if there are multiple network interfaces.</p>
+    <h3>How to cleanly reboot or shut down the guest VM</h3>
+    <p>When you've got the DNS and everything integrated, these commands will
+      manage the vm's state:</p>
+    <p>First, log into the guest VM: ssh developer@cakelampvm.com</p>
+    <p>Then, reboot the guest VM: sudo reboot</p>
+    <p>Or, halt the guest VM: sudo shutdown -h now</p>
+    <p>Using these commands is better than just cycling the power from the
+      virtualbox control panel.</p>
+    <p><br>
+    </p>
+    <p><br>
+    </p>
+    <p><br>
+    </p>
+    <h1>Gritty Details</h1>
+    <p>This is the lowest level of plumbing for your VM.&nbsp; Hopefully you
+      will not need to engage with this section.&nbsp; The most useful area here
+      is the one below about the "virtualbox guest additions", which you will
+      probably need at some future point.&nbsp; Oracle releases updates to the
+      guest additions fairly regularly.</p>
     <h2>Configuring the guest VM</h2>
     <p>The guest VM should already be set up appropriately.&nbsp; These steps
       are provided for reference and updates.</p>
     <h3>Set up virtualbox guest additions for the VM</h3>
-    <p>** note for v001 of cakelampvm: the below steps are still needed on the
-      shipped image.</p>
-    <p>This procedure is needed if the guest provides an older or incompatible
-      version of the guest additions (which have already been installed on the
-      guest vm).&nbsp; It may also be necessary when a new version of the guest
-      additions becomes available.</p>
+    This procedure is needed if the guest provides an older or incompatible
+    version of the guest additions (which have already been installed on the
+    guest vm).&nbsp; It may also be necessary when a new version of the guest
+    additions becomes available.
     <ol>
       <li>To install the guest additions, open the guest VM and have its window
         in focus.</li>
@@ -439,11 +468,12 @@ meow
         Image".&nbsp; This will mount the CD's ISO image on the VM.</li>
       <li>On the guest VM, it may be necessary to mount the CD image that's now
         available:<br>
-        sudo mount /dev/sr0 /media/cdrom</li>
+        <pre># sudo mount /dev/sr0 /media/cdrom</pre>
+      </li>
       <li>Since the VM currently has no windowing system installed, one must
         start the Guest Additions install manually:<br>
-        cd /media/cdrom<br>
-        sudo sh VBoxLinuxAdditions.run</li>
+        <pre># cd /media/cdrom<br># sudo sh VBoxLinuxAdditions.run</pre>
+      </li>
       <li>This should install the guest additions.</li>
     </ol>
     <h3>Set up network adapters on guest VM</h3>
@@ -464,25 +494,6 @@ meow
     <pre>auto enp0s8</pre>
     <pre>iface enp0s8 inet dhcp</pre>
     <p> </p>
-    <h2>Handy Techniques</h2>
-    <h3>Assorted Guides and Cheat-Sheets</h3>
-    <p>Cheat sheet for Vim: <a title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
-    <p>Git branching model that seems to work well: <a title="release and patch process"
-        href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
-    <p><br>
-    </p>
-    <h3>Get the network address on the guest vm</h3>
-    <p>Run this command: ifconfig</p>
-    <p>In the results, look for "inet addr".&nbsp; There may be more than one,
-      if there are multiple network interfaces.</p>
-    <h3>How to cleanly reboot or shut down the guest VM</h3>
-    <p>When you've got the DNS and everything integrated, these commands will
-      manage the vm's state:</p>
-    <p>First, log into the guest VM: ssh developer@cakelampvm.com</p>
-    <p>Then, reboot the guest VM: sudo reboot</p>
-    <p>Or, halt the guest VM: sudo shutdown -h now</p>
-    <p>Using these commands is better than just cycling the power from the
-      virtualbox control panel.</p>
     <h2>Notes on building the Cake Lamp VM</h2>
     <p>This is all work that should already have been done.&nbsp; It is
       mentioned here just as breadcrumbs for a future vm builder.</p>
@@ -507,20 +518,11 @@ https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-v
         here:
 https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21</li>
     </ul>
-    <p><span style="font-style: italic;"><br>
-      </span></p>
-    <p><span style="font-style: italic;"><br>
-      </span></p>
-    <p><span style="font-style: italic;"><br>
-      </span></p>
-    <p><span style="font-style: italic;">remaining work:</span></p>
-    <p>todo: arrange gritty details to back.</p>
-    <p>todo: toc goes after intro paragraph.</p>
     <p><br>
     </p>
+    <ul>
+    </ul>
     <h6> </h6>
-    <h2><span style="text-decoration: underline;"><br>
-      </span></h2>
     <p> </p>
   </body>
 </html>
