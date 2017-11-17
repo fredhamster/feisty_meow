@@ -16,6 +16,7 @@ export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
 
 export NO_HELLO=right
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
+source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 ##############
 
@@ -76,10 +77,36 @@ minute on a slower home DSL internet connection...
 "
 
 apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
-test_or_continue "failed to install bluefish editor.  not good."
+test_or_continue "installing bluefish editor"
 
 ##############
 
+# we want to upgrade the default apache site to the latest, since the new
+# version mirrors the one on the internet (but with green checks instead
+# of red X's) and since we also support https on the new default version.
+# we can do this again later if needed, by upping the numbers on the apache
+# site config files.
+if [ -l /etc/apache2/sites-enabled/000-default.conf ]; then
+  # the old site is in place still, so let's update that.
+  a2dissite 000-default
+  test_or_die "disabling old apache site"
+
+  rm -f /etc/apache2/sites-available/000-default.conf 
+  test_or_die "removing old apache site"
+
+  cp $FEISTY_MEOW_APEX/production/sites/cakelampvm/
+uhhh
+two files for new config
+  test_or_die "installing new apache default sites"
+
+  a2ensite
+thos two configs
+  test_or_die "enabling new apache default sites"
+
+  restart_apache
+
+
+fi
 
 #hmmm: todo
 # deploy the site updater here to fix the local cakelampvm.com site...
