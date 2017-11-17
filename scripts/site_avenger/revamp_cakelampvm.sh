@@ -81,11 +81,15 @@ test_or_continue "installing bluefish editor"
 
 ##############
 
+# deploy any site updates here to the VM's cakelampvm.com site.
+#
 # we want to upgrade the default apache site to the latest, since the new
 # version mirrors the one on the internet (but with green checks instead
 # of red X's) and since we also support https on the new default version.
 # we can do this again later if needed, by upping the numbers on the apache
-# site config files.
+# site config files.  our original site was 000 and the new version is 001,
+# which we've done as a prefix on the config for some reason.  makes the
+# code below easy at least.
 if [ -l /etc/apache2/sites-enabled/000-default.conf ]; then
   # the old site is in place still, so let's update that.
   a2dissite 000-default
@@ -94,23 +98,17 @@ if [ -l /etc/apache2/sites-enabled/000-default.conf ]; then
   rm -f /etc/apache2/sites-available/000-default.conf 
   test_or_die "removing old apache site"
 
-  cp $FEISTY_MEOW_APEX/production/sites/cakelampvm/
-uhhh
-two files for new config
+  # copy in our new 000 version (which  
+  cp $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
+      /etc/apache2/sites-available
   test_or_die "installing new apache default sites"
 
-  a2ensite
-thos two configs
+  # there should only be ours at this version level and with that prefix.
+  a2ensite 001-*
   test_or_die "enabling new apache default sites"
 
   restart_apache
-
-
 fi
-
-#hmmm: todo
-# deploy the site updater here to fix the local cakelampvm.com site...
-
 
 ##############
 
