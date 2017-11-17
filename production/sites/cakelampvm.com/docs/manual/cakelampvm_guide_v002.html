@@ -9,7 +9,7 @@
       Configuration and Usage</h1>
     <h2 style=" text-align: center;">By Chris Koeritz</h2>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
-      Updated: 2017-11-16 (rev D)</h3>
+      Updated: 2017-11-16 (rev E)</h3>
     <p>The cakelampvm project provides a Virtualbox VM that acts as an "internet
       in a bottle".&nbsp; The virtual machine provides DNS services (<a title="dns server"
         href="http://www.bind9.net/">bind9</a>), a Web server (<a title="patchy"
@@ -376,7 +376,7 @@ meow
     <pre># sudo service bind9 restart</pre>
     <p>Afterwards, pinging excalibur.tv should work from both the guest and the
       host.</p>
-    <h3>Creating a New Apache site</h3>
+    <h3>Creating a New Apache Site</h3>
     <p>First, connect to the cakelampvm via ssh as the developer user, e.g.: ssh
       developer@cakelampvm.com </p>
     <h4>Quick approach: Use the feisty meow "add_apache_site" command.</h4>
@@ -388,16 +388,17 @@ meow
     <h4>Manual approach: Edit an Apache config file</h4>
     <p>Note: the manual approach is not compatible with later use of feisty
       meow's "remove_apache_site".</p>
-    <p>For Apache, the choice of DNS Option A or B, subdomain or SLD does not
+    <p>For Apache, the choice of DNS Option A or B, subdomain or SLD, does not
       matter.&nbsp; The site configuration file just has to accurately specify
       the domain in question.</p>
     <p>Start with the following template file for the new website, and modify it
-      for the appropriate host name:</p>
+      for the appropriate host name and "DocumentRoot" path:</p>
     <pre>&lt;VirtualHost *:80&gt;<br>&nbsp;&nbsp;&nbsp; ServerName excalibur.tv
 &nbsp;&nbsp;&nbsp; DocumentRoot /home/apps/excalibur<br>&nbsp;&nbsp;&nbsp; ErrorLog ${APACHE_LOG_DIR}/excalibur.tv-error.log<br>&nbsp;&nbsp;&nbsp; CustomLog ${APACHE_LOG_DIR}/excalibur.tv-access.log combined<br>&nbsp;&nbsp;&nbsp; Include /etc/apache2/conf-library/basic-options.conf<br>&nbsp;&nbsp;&nbsp; Include /etc/apache2/conf-library/rewrite-enabling.conf<br>&lt;/VirtualHost&gt;</pre>
     <p>The above example is appropriate for our excalibur app in the
       excalibur.tv domain (using DNS Option B).&nbsp; Modifying the excalibur.tv
-      references in it is sufficient to retarget it for any domain you want.</p>
+      references in it (and the path in the DocumentRoot) is sufficient to
+      re-target it for any domain you want.</p>
     <p>Copy the new site config file into "/etc/apache2/sites-available" with an
       appropriate file name that includes the site's domain name.&nbsp; We will
       call our config file "excalibur.tv.conf".&nbsp; If you developed the file
@@ -421,38 +422,39 @@ meow
       That should at least bring up the configured site storage path, even if
       nothing is being served from that folder yet.</p>
     <p>If the new site is not showing up properly, try examining the apache logs
-      for error messages that can be corrected.&nbsp; The log files are stored
-      in "/var/log/apache2" and are named after the website (if configured as
-      shown above).</p>
-    <h2>Handy Techniques</h2>
+      for any error messages that can be corrected.&nbsp; The log files are
+      stored in "/var/log/apache2" and are named after the website (if
+      configured through the above process).</p>
+    <h2>Handy Techniques for Using cakelampvm</h2>
     <h3>Assorted Guides and Cheat-Sheets</h3>
-    <p>Cheat sheet for Vim: <a title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
-    <p>Git branching model that seems to work well: <a title="release and patch process"
+    <p>A Cheat sheet for the Vim editor (there are many of these available): <a
+        title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
+    <p>A git branching model that seems to work well: <a title="release and patch process"
         href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
     <h3>Get the network address on the guest vm</h3>
     <p>Run this command: ifconfig</p>
     <p>In the results, look for "inet addr".&nbsp; There may be more than one,
       if there are multiple network interfaces.</p>
+    <p>The standard IP address is 10.28.42.20 for the cakelampvm.</p>
     <h3>How to cleanly reboot or shut down the guest VM</h3>
     <p>When you've got the DNS and everything integrated, these commands will
       manage the vm's state:</p>
-    <p>First, log into the guest VM: ssh developer@cakelampvm.com</p>
-    <p>Then, reboot the guest VM: sudo reboot</p>
-    <p>Or, halt the guest VM: sudo shutdown -h now</p>
-    <p>Using these commands is better than just cycling the power from the
-      Virtualbox control panel.</p>
+    <p>First, log into the guest VM:</p>
+    <pre># ssh developer@cakelampvm.com</pre>
+    <p>Then, to reboot the guest VM:</p>
+    <pre># sudo reboot</pre>
+    <p>Or, to halt the guest VM:</p>
+    <pre># sudo shutdown -h now</pre>
+    <p>Using these commands is kinder to the VM than just cycling the power from
+      the Virtualbox control panel.</p>
     <p><br>
     </p>
-    <p><br>
-    </p>
-    <p><br>
-    </p>
-    <h1>Gritty Details</h1>
+    <h1>Gritty Details of the Nitty Variety<a id="#nitty-gritty" name="#nitty-gritty"></a></h1>
     <p>This is the lowest level of plumbing for your VM.&nbsp; Hopefully you
-      will not need to engage with this section.&nbsp; The most useful area here
-      is the one below about the "Virtualbox guest additions", which you will
-      probably need at some future point.&nbsp; Oracle releases updates to the
-      guest additions fairly regularly.</p>
+      will not need to engage with this section.&nbsp; The most useful doc
+      section here is the one below about the "Virtualbox guest additions",
+      which you will probably need at some future point.&nbsp; Oracle releases
+      updates to the guest additions fairly regularly.</p>
     <h2>Configuring the guest VM</h2>
     <p>The guest VM should already be set up appropriately.&nbsp; These steps
       are provided for reference and updates.</p>
