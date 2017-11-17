@@ -227,48 +227,76 @@ meow
       </li>
     </ol>
     <h2>Adding a new website and domain on the guest VM</h2>
+    <p>Note: these instructions, even the quick approaches below, pale in
+      comparison to the ease of use of the "standup" command in feisty meow's
+      site avenger scripts.&nbsp; The standup command is detailed in the&nbsp;<a
+        title="useful commands" href="https://feistymeow.org/feisty_meow/documentation/feisty_meow_command_reference.txt">feisty
+        meow command reference</a> document.&nbsp; These instructions are for
+      situations when the domain or site is idiosyncratic in some way that
+      standup doesn't support.</p>
     <p>To add a new website, you will first need to pick one of the DNS options
-      below (A or B) depending on how you want to name the site.</p>
+      below (A or B) depending on how you want to name the site.&nbsp; If the
+      DNS name of the site is contained within another existing domain (e.g.,
+      "A.B.C" has subdomain A contained in domain B.C), use Option A.&nbsp; If
+      the DNS name is a so-called "Second Level Domain" (SLD), then it stands on
+      its own (e.g., "B.C" is an SLD).</p>
+    <p>Once the DNS option has been picked and implemented, continue to the next
+      section of "Creating a New Apache Site".</p>
+    <h3>DNS Option A: Adding a sub-domain in an existing domain</h3>
     <p>Let us say a customer needs an application called "excalibur".&nbsp; It
       will be a new subdomain within an existing domain, such as the
       "cakelampvm.com" domain, meaning we want the VM to start answering
       requests for "excalibur.cakelampvm.com".</p>
-    <h3>DNS Option A: Adding a sub-domain in an existing domain</h3>
     Note that this option requires the containing domain "cakelampvm.com" to
     already exist before adding the subdomain; see DNS Option B below for
     details on how to add a containing domain for the first time.
-    <h4>Quick approach: Use the feisty meow add_domain command.</h4>
+    <h4>Quick approach: Use the feisty meow "add_domain" command.</h4>
+    <p> Connect to the cakelampvm via ssh as the developer user, e.g.: ssh
+      developer@cakelampvm.com </p>
     <p>Run this command in a bash shell on the VM:</p>
-    <pre>add_domain excalibur.cakelampvm.com</pre>
+    <pre># add_domain excalibur.cakelampvm.com</pre>
     <p>Done.</p>
     <h4>Manual approach: Edit the bind9 configuration.</h4>
+    <p>Note: the manual approach is not compatible with later use of feisty
+      meow's "remove_domain".</p>
     Connect to the cakelampvm via ssh as the developer user, e.g.: ssh
     developer@cakelampvm.com
     <p>Execute the following command to edit the DNS file for the cakelampvm
       domain:</p>
-    <pre>sudo vi /etc/bind/cakelampvm.com.conf</pre>
+    <pre># sudo vi /etc/bind/cakelampvm.com.conf</pre>
     <p>Add a stanza for the new site at the end of this file:</p>
-    <pre>greatsite.cakelampvm.com&nbsp;&nbsp;&nbsp; IN A&nbsp;&nbsp;&nbsp; 10.28.42.20<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IN HINFO "linux server" "ubuntu"</pre>
-    <p>Restart the DNS server: sudo service bind9 restart</p>
-    <p>Afterwards, pinging greatsite.cakelampvm.com should work from either the
-      guest or the host.</p>
+    <pre>excalibur.cakelampvm.com&nbsp;&nbsp;&nbsp; IN A&nbsp;&nbsp;&nbsp; 10.28.42.20<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IN HINFO "linux server" "ubuntu"</pre>
+    <p>Restart the DNS server:</p>
+    <pre># sudo service bind9 restart</pre>
+    <p>Afterwards, pinging excalibur.cakelampvm.com should work from both the
+      guest VM and the host PC.</p>
     <h3>DNS Option B: Using an entirely new domain for the site</h3>
-    <p>Similar procedure to above, but we will create a new file for the new
-      domain and add it to the bind directory.&nbsp; For this example, we will
-      create a file called /etc/bind/greatsite.tv.conf for our new domain
-      greatsite.tv with these contents:</p>
-    <pre>$TTL 1W<br>@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN SOA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fred.cakelampvm.com. (<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2017100801&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; serial<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2H&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; refresh<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8M&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; retry<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 14D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; expiry<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6H )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; minimum<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN NS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ns.cakelampvm.com.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN MX&nbsp;&nbsp; 10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mail.cakelampvm.com.<br><br># main domain for machine.<br>greatsite.tv.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10.28.42.20<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN HINFO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "linux server" "ubuntu"</pre>
-    The gnarly prefix stuff above the "greatsite.tv." listing establishes
+    <p>This is a similar procedure to Option A, but we will create a totally new
+      config file for the new domain and add it to the bind directory.&nbsp; For
+      this example, we need to add the site "excalibur.tv" into the DNS.</p>
+    <h4>Quick approach: Use the feisty meow "add_domain" command.</h4>
+    <p> Connect to the cakelampvm via ssh as the developer user, e.g.: ssh
+      developer@cakelampvm.com </p>
+    <p>Run this command in a bash shell on the VM:</p>
+    <pre># add_domain excalibur.tv</pre>
+    <p>Done.</p>
+    <h4>Manual approach: Edit a new DNS config file</h4>
+    <p>Create a file called /etc/bind/excalibur.tv.conf for our new domain
+      excalibur.tv with these contents:</p>
+    <pre>$TTL 1W<br>@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN SOA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fred.cakelampvm.com. (<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2017100801&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; serial<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2H&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; refresh<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8M&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; retry<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 14D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; expiry<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6H )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; minimum<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN NS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ns.cakelampvm.com.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN MX&nbsp;&nbsp; 10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mail.cakelampvm.com.<br><br># main domain for machine.<br>excalibur.tv.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10.28.42.20<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN HINFO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "linux server" "ubuntu"</pre>
+    The gnarly prefix stuff above the "excalibur.tv." listing establishes
     configuration info for the new domain.&nbsp; This file relies on the
     existing cakelampvm.com infrastructure in DNS, such as the "ns" host, which
-    is the domain's name server.
+    is the domain's name server.&nbsp; However, the new domain does <span style="text-decoration: underline;">not</span>
+    live inside the cakelampvm.com domain.<br>
     <p>Now that the config file is in place, edit "named.conf.local" to add the
       new file by adding this bit of configuration at the end:</p>
-    <pre>zone "greatsite.tv" in {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file "/etc/bind/greatsite.tv.conf";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type master;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; allow-query { any; };<br>};</pre>
-    <p>Restart the DNS server: sudo service bind9 restart</p>
-    <p>Afterwards, pinging greatsite.tv should work from either the guest or the
+    <pre>zone "excalibur.tv" in {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file "/etc/bind/excalibur.tv.conf";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type master;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; allow-query { any; };<br>};</pre>
+    <p>Restart the DNS server:</p>
+    <pre># sudo service bind9 restart</pre>
+    <p>Afterwards, pinging excalibur.tv should work from both the guest and the
       host.</p>
-    <h3>Create a new apache configuration file and load it</h3>
+    <h3>Creating a New Apache site</h3>
     <p>Start with the following template file for the new website, and modify it
       for the appropriate host name:</p>
     <pre>&lt;VirtualHost *:80&gt;<br>&nbsp;&nbsp;&nbsp; ServerName greatsite.cakelampvm.com<br>&nbsp;&nbsp;&nbsp; ServerAlias greatsite.cakelampvm.com *.greatsite.cakelampvm.com<br>&nbsp;&nbsp;&nbsp; DocumentRoot /var/www/greatsite<br>&nbsp;&nbsp;&nbsp; ErrorLog ${APACHE_LOG_DIR}/greatsite.cakelampvm.com-error.log<br>&nbsp;&nbsp;&nbsp; CustomLog ${APACHE_LOG_DIR}/greatsite.cakelampvm.com-access.log combined<br>&nbsp;&nbsp;&nbsp; Alias /statistics "/var/www/webwork.repository/webwork/maps_demo/webroot/statistics"<br>&nbsp;&nbsp;&nbsp; Include /etc/apache2/conf-library/basic-options.conf<br>&nbsp;&nbsp;&nbsp; Include /etc/apache2/conf-library/rewrite-enabling.conf<br>&lt;/VirtualHost&gt;</pre>
