@@ -165,12 +165,18 @@ if [ -z "$skip_all" ]; then
   function ssh()
   {
     local args=($*)
-    save_terminal_title
     # we remember the old terminal title, then force the TERM variable to a more generic
     # version for the other side (just 'linux'); we don't want the remote side still
     # thinking it's running xterm.
-    export TERM=linux
+    save_terminal_title
+#hmmm: why were we doing this?  it scorches the user's logged in session, leaving it without proper terminal handling.
+#    # we save the value of TERM; we don't want to leave the user's terminal
+#    # brain dead once we come back from this function.
+#    local oldterm="$TERM"
+#    export TERM=linux
     /usr/bin/ssh -X -C "${args[@]}"
+#    # restore the terminal variable also.
+#    TERM="$oldterm"
     restore_terminal_title
   }
 
@@ -307,12 +313,18 @@ if [ -z "$skip_all" ]; then
     done
   }
   
+#hmmm: not really doing anything yet; ubuntu seems to have changed from pulseaudio in 17.04?
   # restarts the sound driver.
   function fix_sound_driver() {
-#if something
+    # stop bash complaining about blank function body.
+    local nothing=
+#if alsa something
 #    sudo service alsasound restart
+#elif pulse something
+#    sudo pulseaudio -k
+#    sudo pulseaudio -D
 #else
-    sudo service pulseaudio restart
+#    something else...?
 #fi
 
   }
@@ -464,6 +476,14 @@ if [ -z "$skip_all" ]; then
       echo "but that folder does not exist.  Skipping customization."
       return 1
     fi
+
+    # prevent permission foul-ups.
+#hmmm: save error output here instead of muting it.
+#hmmm: better yet actually, just don't complain on freaking cygwin, since that's where this happens
+    chown -R "$(logname):$(logname)" \
+        "$FEISTY_MEOW_LOADING_DOCK"/* "$FEISTY_MEOW_GENERATED_STORE"/* 2>/dev/null
+    test_or_continue "chowning to $(logname) didn't happen."
+
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
     incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
@@ -492,6 +512,11 @@ if [ -z "$skip_all" ]; then
     fi
     echo
     regenerate
+
+    # prevent permission foul-ups, again.
+    chown -R "$(logname):$(logname)" \
+        "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE" 2>/dev/null
+    test_or_continue "chowning to $(logname) didn't happen."
 
     restore_terminal_title
   }
@@ -832,6 +857,69 @@ return 0
     local folder="$1"; shift
     if [ ! -d "$folder" -o ! -w "$folder" ]; then return 1; fi
     return 0
+  }
+
+  ##############
+
+  # given a filename and a string to seek and a number of lines, then this
+  # function will remove the first occurrence of a line in the file that
+  # matches the string, and it will also axe the next N lines as specified.
+  function create_chomped_copy_of_file()
+  {
+    local filename="$1"; shift
+    local seeker="$1"; shift
+    local numlines=$1; shift
+
+#echo into create_chomped_copy...
+#var filename seeker numlines 
+
+    # make a backup first, oy.
+    \cp -f "$filename" "/tmp/$(basename ${filename}).bkup-${RANDOM}" 
+    test_or_die "backing up file: $filename"
+
+    # make a temp file to write to before we move file into place in bind.
+    local new_version="/tmp/$(basename ${filename}).bkup-${RANDOM}" 
+    \rm -f "$new_version"
+    test_or_die "cleaning out new version of file from: $new_version"
+
+    local line
+    local skip_count=0
+    local found_any=
+    while read line; do
+      # don't bother looking at the lines if we're already in skip mode.
+      if [[ $skip_count == 0 ]]; then
+        # find the string they're seeking.
+        if [[ ! "$line" =~ .*${seeker}.* ]]; then
+          # no match.
+          echo "$line" >> "$new_version"
+        else
+          # a match!  start skipping.  we will delete this line and the next N lines.
+          ((skip_count++))
+#echo first skip count is now $skip_count
+          found_any=yes
+        fi
+      else
+        # we're already skipping.  let's keep going until we hit the limit.
+        ((skip_count++))
+#echo ongoing skip count is now $skip_count
+        if (( $skip_count > $numlines )); then
+          echo "Done skipping, and back to writing output file."
+          skip_count=0
+        fi
+      fi
+    done < "$filename"
+
+#echo file we created looks like this:
+#cat "$new_version"
+
+    if [ ! -z "$found_any" ]; then
+      # put the file back into place under the original name.
+      \mv "$new_version" "$filename"
+      test_or_die "moving the new version into place in: $filename"
+    else
+      # cannot always be considered an error, but we can at least gripe.
+      echo "Did not find any matches for seeker '$seeker' in file: $filename"
+    fi
   }
 
   ##############
