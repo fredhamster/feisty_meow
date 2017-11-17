@@ -84,6 +84,11 @@ meow
     <p>Configuring host-only networking for the VM makes the VM completely local
       to your machine.&nbsp; The cakelampvm will not be accessible on the
       internet or from the LAN, and can only be accessed by your host PC.</p>
+    <p>Note: If the host-only or NAT network exist ahead of time, virtualbox may
+      complain about them even if they have the correct configuration.&nbsp;
+      This can be corrected simply by opening the VM settings and selecting the
+      appropriate network names again.</p>
+    <p>To configure the host-only network, follow these steps:</p>
     <ol>
       <li> Go to virtual box "Preferences" (global preferences, not for a
         specific vm).</li>
@@ -105,9 +110,15 @@ meow
         for convenience and stability.</li>
     </ol>
     <p>Additional information on host-only (and other) network adapter types is
-      at: https://www.virtualbox.org/manual/ch06.html#network_nat_service<br>
-    </p>
-    <h3>Configure the Nat Network on virtualbox<a id="#nat-network" name="#nat-network"></a></h3>
+      at: https://www.virtualbox.org/manual/ch06.html#network_nat_service</p>
+    <h3>Configure the NAT Network on virtualbox<a id="#nat-network" name="#nat-network"></a></h3>
+    <p>The NAT (Network Address Translation) network allows the VM to get off of
+      the machine and onto the internet safely.&nbsp; It will use this interface
+      for any communication off of the host machine.&nbsp; Since the real IP
+      address of the VM is hidden behind the NAT firewall on Virtualbox, this
+      keeps the VM safe from attackers, and hence your machine stays safe as
+      well.</p>
+    <p>To set up the NAT network, follow these steps:</p>
     <ol>
       <li> Go to virtual box "Preferences" (global preferences, not for a
         specific vm).</li>
@@ -165,7 +176,7 @@ meow
     <pre>ping cakelampvm.com</pre>
     <pre>ping defaultcake.cakelampvm.com</pre>
     <pre>ping mapsdemo.cakelampvm.com</pre>
-    <h3>Setting up DNS on Windows</h3>
+    <h3>Setting up DNS on Windows<a id="#windoze-dns" name="#windoze-dns"></a></h3>
     <p>The ipconfig tool will provide helpful information about your current
       networking and DNS configuration:</p>
     <pre>ipconfig --all</pre>
@@ -175,11 +186,12 @@ meow
     <pre>Control Panel | Network &amp; Sharing | click WiFI or Ethernet link near top right | click Adapter Settings on left | click on specific network device to modify | select Properties</pre>
     <p><br>
     </p>
-    <p><br>
+    <p>{fill in rest}<br>
     </p>
     <p><br>
     </p>
-    <h2>Editing files on the guest VM from the host</h2>
+    <h2>Editing files on the guest VM from the host<a id="#editing-files-on-vm"
+        name="#editing-files-on-vm"></a></h2>
     <p>On the host computer, look for the guest vm as a networked computer
       called cakelampvm.&nbsp; This should provide some network shares using
       Microsoft SMB protocol, and they can be attached to using the "developer"
@@ -197,7 +209,7 @@ meow
     <pre>sudo chmod g+w /var/www</pre>
     <p>Afterwards, the www folder should allow the developer user to create new
       folders at will.</p>
-    <h2>Accessing files on the host PC from the guest VM</h2>
+    <h2>Accessing files on the host PC from the guest VM<a id="#samba-shares" name="#samba-shares"></a></h2>
     <p>If you want to share a folder from the host to the guest, perhaps for
       driver updates or other conveniences, then make the share with these
       steps:</p>
@@ -215,14 +227,21 @@ meow
       </li>
     </ol>
     <h2>Adding a new website and domain on the guest VM</h2>
-    <p>To add a new website, you will need to pick one of the DNS options below
-      (A or B) depending on how you want to name the site.&nbsp; After the DNS
-      is updated, then follow the section after for creating a new apache conf
-      file.</p>
-    <p>Assuming one has created a new folder in "www" called "greatsite", then
-      the new web site can be brought online on the vm with one of the following
-      options.</p>
-    <h3>DNS Option A: Using a sub-domain in the cakelampvm.com domain</h3>
+    <p>To add a new website, you will first need to pick one of the DNS options
+      below (A or B) depending on how you want to name the site.</p>
+    <p>Let us say a customer needs an application called "excalibur".&nbsp; It
+      will be a new subdomain within an existing domain, such as the
+      "cakelampvm.com" domain, meaning we want the VM to start answering
+      requests for "excalibur.cakelampvm.com".</p>
+    <h3>DNS Option A: Adding a sub-domain in an existing domain</h3>
+    Note that this option requires the containing domain "cakelampvm.com" to
+    already exist before adding the subdomain; see DNS Option B below for
+    details on how to add a containing domain for the first time.
+    <h4>Quick approach: Use the feisty meow add_domain command.</h4>
+    <p>Run this command in a bash shell on the VM:</p>
+    <pre>add_domain excalibur.cakelampvm.com</pre>
+    <p>Done.</p>
+    <h4>Manual approach: Edit the bind9 configuration.</h4>
     Connect to the cakelampvm via ssh as the developer user, e.g.: ssh
     developer@cakelampvm.com
     <p>Execute the following command to edit the DNS file for the cakelampvm
