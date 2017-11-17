@@ -69,22 +69,22 @@ meow
     <ol>
       <li>Download and install virtualbox:
         https://www.virtualbox.org/wiki/Downloads</li>
-      <li>Install the extension pack for virtualbox: This provides USB drivers
-        and other features.&nbsp; This is installed on virtualbox itself, not on
-        the guests.</li>
+      <li>Install the extension pack for Virtualbox: This provides USB drivers
+        and other features.&nbsp; This is installed on Virtualbox itself (on the
+        Host PC), not on the guests.</li>
       <ol>
         <li>Download the extension pack at
           https://www.virtualbox.org/wiki/Downloads</li>
-        <li>Stop any running virtualbox vms.</li>
-        <li>Close virtualbox control panel.</li>
+        <li>Stop any running Virtualbox VMs.</li>
+        <li>Close the Virtualbox control panel.</li>
         <li>Double-click on the downloaded extensions package (in a file
-          explorer) and virtualbox should install it.</li>
+          explorer) and Virtualbox should be launched to install it.</li>
       </ol>
-      <li>Run the virtualbox control panel.</li>
+      <li>Run the Virtualbox control panel.</li>
       <li>Download the cakelampvm guest vm package and unzip it.&nbsp; Store the
         unzipped version in some appropriate place where you want the virtual
         machine to reside on your host's hard drive.</li>
-      <li>Add the guest VM to your list of VMs.&nbsp; From the virtualbox menus,
+      <li>Add the guest VM to your list of VMs.&nbsp; From the Virtualbox menus,
         choose the "Machine" menu and select "Add".&nbsp; Point the selector
         dialog at the cakelampvm folder you created above and open the
         cakelampvm.vbox file.</li>
@@ -92,11 +92,11 @@ meow
         machines.&nbsp; Before starting it, perform the following network
         configuration sections.</li>
     </ol>
-    <h3>Configure the Host-Only network on virtualbox<a id="#host-only" name="#host-only"></a></h3>
+    <h3>Configure the Host-Only network on Virtualbox<a id="#host-only" name="#host-only"></a></h3>
     <p>Configuring host-only networking for the VM makes the VM completely local
       to your machine.&nbsp; The cakelampvm will not be accessible on the
       internet or from the LAN, and can only be accessed by your host PC.</p>
-    <p>Note: If the host-only or NAT network exist ahead of time, virtualbox may
+    <p>Note: If the host-only or NAT network exist ahead of time, Virtualbox may
       complain about them even if they have the correct configuration.&nbsp;
       This can be corrected simply by opening the VM settings and selecting the
       appropriate network names again.</p>
@@ -123,7 +123,7 @@ meow
     </ol>
     <p>Additional information on host-only (and other) network adapter types is
       at: https://www.virtualbox.org/manual/ch06.html#network_nat_service</p>
-    <h3>Configure the NAT Network on virtualbox<a id="#nat-network" name="#nat-network"></a></h3>
+    <h3>Configure the NAT Network on Virtualbox<a id="#nat-network" name="#nat-network"></a></h3>
     <p>The NAT (Network Address Translation) network allows the VM to get off of
       the machine and onto the internet safely.&nbsp; It will use this interface
       for any communication off of the host machine.&nbsp; Since the real IP
@@ -146,7 +146,7 @@ meow
         <img alt="nat net config" src="images/nat_network_config.png"></li>
     </ol>
     <h2>Starting up the VM<a id="#start-vm" name="#start-vm"></a></h2>
-    <p>Using the virtualbox interface, you should now be able to start your
+    <p>Using the Virtualbox interface, you should now be able to start your
       virtual machine.&nbsp; Virtualbox will complain if it detects any
       remaining configuration problems in the VM, but it should start
       normally.&nbsp; The Linux boot sequence will show many lines of text,
@@ -298,7 +298,7 @@ meow
       steps:</p>
     <ol>
       <li>Create a folder on the host that is to be shared.</li>
-      <li>Right-click on the vm in virtualbox manager and choose "Settings".</li>
+      <li>Right-click on the vm in Virtualbox manager and choose "Settings".</li>
       <li>In the "Shared Folders" tab of the settings, go to "Machine Folders".</li>
       <li>Click the folder plus icon to create a new share.</li>
       <li>Fill in the "Folder Path" on the host PC to the folder that will be
@@ -440,7 +440,7 @@ meow
     <p>Then, reboot the guest VM: sudo reboot</p>
     <p>Or, halt the guest VM: sudo shutdown -h now</p>
     <p>Using these commands is better than just cycling the power from the
-      virtualbox control panel.</p>
+      Virtualbox control panel.</p>
     <p><br>
     </p>
     <p><br>
@@ -450,13 +450,13 @@ meow
     <h1>Gritty Details</h1>
     <p>This is the lowest level of plumbing for your VM.&nbsp; Hopefully you
       will not need to engage with this section.&nbsp; The most useful area here
-      is the one below about the "virtualbox guest additions", which you will
+      is the one below about the "Virtualbox guest additions", which you will
       probably need at some future point.&nbsp; Oracle releases updates to the
       guest additions fairly regularly.</p>
     <h2>Configuring the guest VM</h2>
     <p>The guest VM should already be set up appropriately.&nbsp; These steps
       are provided for reference and updates.</p>
-    <h3>Set up virtualbox guest additions for the VM</h3>
+    <h3>Set up Virtualbox guest additions for the VM</h3>
     This procedure is needed if the guest provides an older or incompatible
     version of the guest additions (which have already been installed on the
     guest vm).&nbsp; It may also be necessary when a new version of the guest
@@ -469,17 +469,18 @@ meow
       <li>On the guest VM, it may be necessary to mount the CD image that's now
         available:<br>
         <pre># sudo mount /dev/sr0 /media/cdrom</pre>
+        <p>Linux will mention that the device is mounted "read-only".</p>
       </li>
       <li>Since the VM currently has no windowing system installed, one must
         start the Guest Additions install manually:<br>
         <pre># cd /media/cdrom<br># sudo sh VBoxLinuxAdditions.run</pre>
       </li>
-      <li>This should install the guest additions.</li>
+      <li>The latest Virtualbox guest additions should now be installed.</li>
     </ol>
     <h3>Set up network adapters on guest VM</h3>
     <p>The network interfaces should already be configured on the guest within
-      the virtualbox configuration.&nbsp; This is available by clicking on the
-      VM in the virtualbox manager and selecting "Settings".&nbsp; These are the
+      the Virtualbox configuration.&nbsp; This is available by clicking on the
+      VM in the Virtualbox manager and selecting "Settings".&nbsp; These are the
       configuration settings used:</p>
     Adapter 1:<br>
     &nbsp; Attached to: Host-only Adapter<br>
@@ -498,11 +499,11 @@ meow
     <p>This is all work that should already have been done.&nbsp; It is
       mentioned here just as breadcrumbs for a future vm builder.</p>
     <ul>
-      <li>Downloaded and installed virtualbox for host computer (where the vm
+      <li>Downloaded and installed Virtualbox for host computer (where the vm
         image will be built).</li>
       <li>Downloaded ubuntu server 16.04 iso.
         (https://www.ubuntu.com/download/server)</li>
-      <li>Created a new vm in virtualbox, telling it to start from the ubuntu
+      <li>Created a new vm in Virtualbox, telling it to start from the ubuntu
         server iso.</li>
       <li>Installed LAMP stack on guest VM.&nbsp; Some help here:
         http://howtoubuntu.org/how-to-install-lamp-on-ubuntu</li>
@@ -510,7 +511,7 @@ meow
         https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04</li>
       <li>Configured the two network adapters as needed (one for host-only
         network and one for nat network).&nbsp; Here's some info about
-        virtualbox networking with two adapters similar to our setup:
+        Virtualbox networking with two adapters similar to our setup:
 https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in<br>
       </li>
       <li>Installed and configured Samba service for the guest VM.&nbsp; The
