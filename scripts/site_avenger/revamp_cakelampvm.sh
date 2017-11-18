@@ -20,6 +20,13 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 ##############
 
+echo "Regenerating feisty meow loading dock."
+
+reconfigure_feisty_meow
+test_or_die "feisty meow reconfiguration"
+
+##############
+
 echo "Making some important permission changes..."
 
 # fix up the main web storage.
