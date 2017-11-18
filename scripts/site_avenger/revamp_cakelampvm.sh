@@ -133,8 +133,11 @@ fi
 
 # sequel--tell them they're great and show the hello again also.
 
-regenerate
+echo "
 
+
+"
+regenerate
 echo "
 
 
