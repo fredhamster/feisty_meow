@@ -137,19 +137,30 @@ test_or_die "changing dir to fred's home; what have you done with fred?"
 pushd apps/mapsdemo/avenger5
 test_or_die "changing dir to mapsdemo app"
 
-# gets rid of the old version of configs.
-git stash 
-test_or_die "stashing unwanted mapsdemo changes"
-git stash drop 
-# intentionally ignore error, if there was nothing to drop.
+rpuffer . &>/dev/null
+if [ $? -ne 0 ]; then
+  # it seems our old files are still conflicting this.
+  if [ -f config/config_google.php ]; then
+    \rm -f config/config_google.php
+    test_or_die "removing old config for google"
+  fi
+  if [ -f config/app.php ]; then
+    \rm -f config/app.php
+    test_or_die "removing old config for app"
+  fi
+
+  git reset --hard HEAD
+  test_or_die "resetting git's hard head"
+
+  rpuffer .
+#hmmm: use output saver thing when that exists.
+  test_or_die "puffing out mapsdemo app after inadequate corrective action was taken"
+fi
 
 popd
 
-rpuffer apps
-test_or_die "puffing out apps directory"
-
 popd
-#...coolness
+#...coolness, if we got to here.
 
 ##############
 
