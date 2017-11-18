@@ -75,12 +75,9 @@ fi
 
 # install a better editor app.
 
-echo "
-The script is about to install the bluefish editor and some dependencies.
+echo " The script is about to install the bluefish editor and some dependencies.
 If the app is not already installed, then this process takes only about a
-minute on a slower home DSL internet connection...
-
-"
+minute on a slower home DSL internet connection..."
 
 apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
 test_or_continue "installing bluefish editor"
@@ -96,7 +93,7 @@ test_or_continue "installing bluefish editor"
 # site config files.  our original site was 000 and the new version is 001,
 # which we've done as a prefix on the config for some reason.  makes the
 # code below easy at least.
-if [ -l /etc/apache2/sites-enabled/000-default.conf ]; then
+if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
   # the old site is in place still, so let's update that.
   echo "Updating default web sites to latest version."
 
@@ -127,7 +124,7 @@ echo Doing some git repository maintenance in fred account.
 pushd /home/fred
 test_or_die "changing dir to fred's home; what have you done with fred?"
 
-pushd apps/mapsdemo
+pushd apps/mapsdemo/public
 test_or_die "changing dir to mapsdemo app"
 
 # gets rid of the old version of configs.
