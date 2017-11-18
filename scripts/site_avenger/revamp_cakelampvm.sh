@@ -20,6 +20,8 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 ##############
 
+echo "Making some important permission changes..."
+
 # fix up the main web storage.
 chown -R www-data:www-data /var/www 
 test_or_die "chown www-data"
@@ -50,12 +52,16 @@ test_or_die "chown feisty meow to fred"
 group_perm /opt/feistymeow.org 
 test_or_die "group perms on feisty meow"
 
+echo "Done with important permission changes."
+
 ##############
 #
 # some slightly tricky bits start here.  we want to massage the vm into the
 # best possible shape without needing to re-release it.
 #
 ##############
+
+echo "Updating developer welcome file."
 
 # only update hello if they've still got the file there.  we don't want to
 # keep forcing our hellos at people.
@@ -92,6 +98,8 @@ test_or_continue "installing bluefish editor"
 # code below easy at least.
 if [ -l /etc/apache2/sites-enabled/000-default.conf ]; then
   # the old site is in place still, so let's update that.
+  echo "Updating default web sites to latest version."
+
   a2dissite 000-default
   test_or_die "disabling old apache site"
 
@@ -109,6 +117,32 @@ if [ -l /etc/apache2/sites-enabled/000-default.conf ]; then
 
   restart_apache
 fi
+
+##############
+
+# clean out some old files that were not checked in in mapsdemo.
+echo Doing some git repository maintenance in fred account.
+#
+# change over to fred folder
+pushd /home/fred
+test_or_die "changing dir to fred's home; what have you done with fred?"
+
+pushd apps/mapsdemo
+test_or_die "changing dir to mapsdemo app"
+
+# gets rid of the old version of configs.
+git stash 
+test_or_die "stashing mapsdemo changes"
+git stash drop 
+test_or_die "dropping mapsdemo stash"
+
+popd
+
+rpuffer apps
+test_or_die "puffing out apps directory"
+
+popd
+#...coolness
 
 ##############
 
