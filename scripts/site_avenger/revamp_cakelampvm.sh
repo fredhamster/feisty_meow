@@ -134,7 +134,7 @@ echo Doing some git repository maintenance in fred account.
 pushd /home/fred
 test_or_die "changing dir to fred's home; what have you done with fred?"
 
-pushd apps/mapsdemo/public
+pushd apps/mapsdemo/avenger5
 test_or_die "changing dir to mapsdemo app"
 
 # gets rid of the old version of configs.
