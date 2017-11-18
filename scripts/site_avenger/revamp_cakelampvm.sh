@@ -97,6 +97,9 @@ if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
   # the old site is in place still, so let's update that.
   echo "Updating default web sites to latest version."
 
+  a2enmod ssl
+  test_or_die "enabling SSL for secure websites"
+
   a2dissite 000-default
   test_or_die "disabling old apache site"
 
