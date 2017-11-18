@@ -52,6 +52,8 @@ test_or_die "group perms on apache2 and bind"
 # fix perms for fred user.
 chown -R fred:fred /home/fred /home/archives/stuffing 
 test_or_die "chown fred home"
+group_perm $HOME/apps
+test_or_die "group perms on fred's apps"
 harsh_perm /home/fred/.ssh
 test_or_die "harsh_perm setting on fred .ssh"
 chown -R fred:fred /opt/feistymeow.org 
