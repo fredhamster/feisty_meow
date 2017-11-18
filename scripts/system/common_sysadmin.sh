@@ -181,7 +181,7 @@ function restart_bind()
     echo "The bind service did not restart properly.  Please check the error logs."
     exit 1
   fi
-  echo DNS server restarted.
+  echo DNS service restarted.
 }
 
 ############################################################################
@@ -317,6 +317,7 @@ function restart_apache()
     echo "Please consult the apache error logs for more details."
     exit 1
   fi
+  echo Apache2 service restarted.
 }
 
 # sets up the serverpilot storage location for a user hosted web site.
