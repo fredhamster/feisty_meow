@@ -20,6 +20,15 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 ##############
 
+echo "Regenerating feisty meow loading dock."
+
+reconfigure_feisty_meow
+test_or_die "feisty meow reconfiguration"
+
+##############
+
+echo "Making some important permission changes..."
+
 # fix up the main web storage.
 chown -R www-data:www-data /var/www 
 test_or_die "chown www-data"
@@ -43,6 +52,8 @@ test_or_die "group perms on apache2 and bind"
 # fix perms for fred user.
 chown -R fred:fred /home/fred /home/archives/stuffing 
 test_or_die "chown fred home"
+group_perm $HOME/apps
+test_or_die "group perms on fred's apps"
 harsh_perm /home/fred/.ssh
 test_or_die "harsh_perm setting on fred .ssh"
 chown -R fred:fred /opt/feistymeow.org 
@@ -50,12 +61,16 @@ test_or_die "chown feisty meow to fred"
 group_perm /opt/feistymeow.org 
 test_or_die "group perms on feisty meow"
 
+echo "Done with important permission changes."
+
 ##############
 #
 # some slightly tricky bits start here.  we want to massage the vm into the
 # best possible shape without needing to re-release it.
 #
 ##############
+
+echo "Updating developer welcome file."
 
 # only update hello if they've still got the file there.  we don't want to
 # keep forcing our hellos at people.
@@ -69,12 +84,9 @@ fi
 
 # install a better editor app.
 
-echo "
-The script is about to install the bluefish editor and some dependencies.
+echo " The script is about to install the bluefish editor and some dependencies.
 If the app is not already installed, then this process takes only about a
-minute on a slower home DSL internet connection...
-
-"
+minute on a slower home DSL internet connection..."
 
 apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
 test_or_continue "installing bluefish editor"
@@ -90,8 +102,16 @@ test_or_continue "installing bluefish editor"
 # site config files.  our original site was 000 and the new version is 001,
 # which we've done as a prefix on the config for some reason.  makes the
 # code below easy at least.
-if [ -l /etc/apache2/sites-enabled/000-default.conf ]; then
+if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
   # the old site is in place still, so let's update that.
+  echo "Updating default web sites to latest version."
+
+  a2enmod ssl
+  test_or_die "enabling SSL for secure websites"
+
+  restart_apache
+  test_or_die "getting SSL loaded in apache"
+
   a2dissite 000-default
   test_or_die "disabling old apache site"
 
@@ -112,10 +132,15 @@ fi
 
 ##############
 
+##############
+
 # sequel--tell them they're great and show the hello again also.
 
-regenerate
+echo "
 
+
+"
+regenerate
 echo "
 
 
