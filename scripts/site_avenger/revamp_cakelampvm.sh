@@ -109,6 +109,9 @@ if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
   a2enmod ssl
   test_or_die "enabling SSL for secure websites"
 
+  restart_apache
+  test_or_die "getting SSL loaded in apache"
+
   a2dissite 000-default
   test_or_die "disabling old apache site"
 
