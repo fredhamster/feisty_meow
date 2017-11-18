@@ -86,7 +86,7 @@ fi
 
 # install a better editor app.
 
-echo " The script is about to install the bluefish editor and some dependencies.
+echo "The script is about to install the bluefish editor and some dependencies.
 If the app is not already installed, then this process takes only about a
 minute on a slower home DSL internet connection..."
 
