@@ -139,11 +139,9 @@ test_or_die "changing dir to mapsdemo app"
 
 # gets rid of the old version of configs.
 git stash 
-if [ $? -eq 0 ]; then
-  # we actually stashed something, so deal with that.
-  git stash drop 
-  test_or_die "dropping mapsdemo stash"
-fi
+test_or_die "stashing unwanted mapsdemo changes"
+git stash drop 
+# intentionally ignore error, if there was nothing to drop.
 
 popd
 
