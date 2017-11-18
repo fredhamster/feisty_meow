@@ -24,6 +24,8 @@ echo "Regenerating feisty meow loading dock."
 
 reconfigure_feisty_meow
 test_or_die "feisty meow reconfiguration"
+chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
+test_or_die "fix after reconfigured as sudo"
 
 ##############
 
@@ -141,6 +143,9 @@ echo "
 
 "
 regenerate
+test_or_die "regenerating feisty meow scripts"
+chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
+test_or_die "fix after regenerate as sudo"
 echo "
 
 
