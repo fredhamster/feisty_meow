@@ -129,41 +129,6 @@ fi
 
 ##############
 
-# clean out some old files that were not checked in in mapsdemo.
-echo Doing some git repository maintenance in fred account.
-#
-# change over to fred folder
-pushd /home/fred
-test_or_die "changing dir to fred's home; what have you done with fred?"
-
-pushd apps/mapsdemo/avenger5
-test_or_die "changing dir to mapsdemo app"
-
-rgetem . &>/dev/null
-if [ $? -ne 0 ]; then
-  # it seems our old files are still conflicting this.
-  if [ -f config/config_google.php ]; then
-    \rm -f config/config_google.php
-    test_or_die "removing old config for google"
-  fi
-  if [ -f config/app.php ]; then
-    \rm -f config/app.php
-    test_or_die "removing old config for app"
-  fi
-
-  git reset --hard HEAD
-  test_or_die "resetting git's hard head"
-
-  rgetem .
-#hmmm: use output saver thing when that exists.
-  test_or_die "getting mapsdemo app after inadequate corrective action was taken"
-fi
-
-popd
-
-popd
-#...coolness, if we got to here.
-
 ##############
 
 # sequel--tell them they're great and show the hello again also.
