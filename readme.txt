@@ -34,6 +34,10 @@ Connect the feisty meow scripts to your login script (in ~/.bashrc).
 Note that this actually modifies ~/.bashrc.  This step is only needed once.
 # bash /opt/feistymeow.org/feisty_meow/scripts/core/connect_feisty_meow.sh
 
+| For the root user, you can pass a flag '--root' to the connect_feisty_meow
+| script.  This will add an alias for 'feistyme' which loads the feisty meow
+| scripts on demand (instead of automatically upon login).
+
 Load the script environment into the current shell.  This can be done for
 any new shell.  This is idempotent, so it does no harm to run it again.
 Note that you should not need this step if you connected feisty meow to

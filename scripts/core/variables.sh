@@ -149,11 +149,15 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   
   ##############
 
-  # umask sets a permission mask for all file creations.
-  # this mask disallows writes by "group" and "others".
-  umask 022
-  # this mask disallows writes by the "group" and disallows "others" completely.
+  # umask sets a permission mask for all file creations.  we don't set this for the users any
+  # more; they should set it themselves.  this is just documentation.
+  # 
+  # this mask disallows writes by the "group" and disallows all permissions for "others".
   #umask 027
+  # this mask disallows writes by "group" and "others".
+  #umask 022
+  # this mask allows writes by "group" but not by "others".
+  #umask 002
 
   # ulimit sets user limits.  we set the maximum allowed core dump file size
   # to zero, because it is obnoxious to see the core dumps from crashed
@@ -222,9 +226,12 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
     REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
   
-  # the archive collections list is a set of directories that are major
-  # repositories of data which can be synched to backup drives.
-  define_yeti_variable ARCHIVE_COLLECTIONS_LIST=
+  # the archive list is a set of directories that are major repositories of
+  # data which can be synched to backup drives.
+  define_yeti_variable MAJOR_ARCHIVE_SOURCES=
+  # the source collections list is a set of directories that indicate they
+  # harbor a lot of source code underneath.
+  define_yeti_variable SOURCECODE_HIERARCHY_LIST=
 
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()
@@ -283,8 +290,8 @@ fi
 
 ##############
 
-# pull in the custom overrides for feisty_meow scripts.  this is done last,
-# because we want to set everything up as expected, then let the user
+# pull in the custom overrides for feisty_meow scripts.  this is done almost
+# last, because we want to set everything up as expected, then let the user
 # override individual variables and definitions.  we also don't guard this
 # to avoid running it again, because we don't know what mix of functions and
 # aliases they want to define in there.
@@ -298,4 +305,38 @@ for i in $FEISTY_MEOW_LOADING_DOCK/custom/*.sh; do
   fi
   source "$i"
 done
+
+##############
+
+# a late breaking action is to set the editor, if we can.
+# we will fallback to whatever we can find on the host.
+export EDITOR
+if [ ! -z "$DISPLAY" ]; then
+  # only try to add bluefish, a gui editor, if there is an X display for it.
+  if [ -z "$EDITOR" ]; then
+    EDITOR="$(which bluefish)"
+  fi
+fi
+if [ -z "$EDITOR" ]; then
+  EDITOR="$(which gvim)"
+  if [ ! -z "$EDITOR" ]; then
+    # if we found gvim, then add in the no forking flag.
+    EDITOR+=" --nofork"
+  fi
+fi
+if [ -z "$EDITOR" ]; then
+  EDITOR="$(which vim)"
+fi
+if [ -z "$EDITOR" ]; then
+  EDITOR="$(which vi)"
+fi
+##
+# out of ideas about editors at this point.
+##
+# set the VISUAL variable from EDITOR if we found an editor to use.
+if [ ! -z "$EDITOR" ]; then
+  VISUAL="$EDITOR"
+fi
+
+##############
 

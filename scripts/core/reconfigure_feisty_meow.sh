@@ -25,15 +25,15 @@ export FEISTY_MEOW_APEX="$(/bin/pwd)"
 unset CORE_VARIABLES_LOADED
 
 # repetitive bit stolen from variables.  should make a file out of this somehow.
-IS_DOS=$(uname | grep -i ming)
-if [ -z "$IS_DOS" ]; then IS_DOS=$(uname | grep -i cygwin); fi
-# now if we're stuck in DOS, then fix the feisty meow variable name.
-if [ ! -z "$IS_DOS" ]; then
-  FEISTY_MEOW_APEX="$(cmd /c chdir | tr A-Z a-z | sed -e 's/\\/\//g')"
-echo feisty meow dos is: $FEISTY_MEOW_APEX
-  FEISTY_MEOW_APEX="$(dos_to_unix_path "$FEISTY_MEOW_APEX")"
-echo new feisty meow fixed dir is: $FEISTY_MEOW_APEX
-fi
+#IS_DOS=$(uname | grep -i ming)
+#if [ -z "$IS_DOS" ]; then IS_DOS=$(uname | grep -i cygwin); fi
+## now if we're stuck in DOS, then fix the feisty meow variable name.
+#if [ ! -z "$IS_DOS" ]; then
+#  FEISTY_MEOW_APEX="$(cmd /c chdir | tr A-Z a-z | sed -e 's/\\/\//g')"
+#echo feisty meow dos is: $FEISTY_MEOW_APEX
+#  FEISTY_MEOW_APEX="$(dos_to_unix_path "$FEISTY_MEOW_APEX")"
+#echo new feisty meow fixed dir is: $FEISTY_MEOW_APEX
+#fi
 
 popd &>/dev/null
 

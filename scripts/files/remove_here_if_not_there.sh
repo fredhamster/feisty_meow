@@ -3,8 +3,12 @@
 function print_instructions()
 {
   echo -e "\n$(basename $0 .sh):\n"
+
+  # calculate the number of columsn in the terminal.
+  local cols=$(get_maxcols)
+
   echo -e 'this script takes two parameters, a "here" folder and a "there" folder, almost as if it were a copy command.  but instead, this removes any file from under the "here" location if it cannot be found in the "there" location.  so the "there" location is considered a more definitive template of what should be in "here", such that we strip out what "there" does not have.\n\n
-the most" useful way to use this script is for a "here" hierarchy that is a copy of an older version of another "there" hierarchy.  the "there" hierarchy may have changed a lot, including new files, changed files, and deleted files.  it is a simple operation to copy everything from "there" into "here" (such as by using the command [ cp -R "$there"/* "$here" ] ) , but it is a lot harder to determine what stuff in "here" is out of date and should be removed.  that is where this script comes in; it can be run to flush out any older things in "here", rather than requiring the user to manually find all those files.  ' | splitter
+the most" useful way to use this script is for a "here" hierarchy that is a copy of an older version of another "there" hierarchy.  the "there" hierarchy may have changed a lot, including new files, changed files, and deleted files.  it is a simple operation to copy everything from "there" into "here" (such as by using the command [ cp -R "$there"/* "$here" ] ) , but it is a lot harder to determine what stuff in "here" is out of date and should be removed.  that is where this script comes in; it can be run to flush out any older things in "here", rather than requiring the user to manually find all those files.  ' | splitter --maxcol $(($cols - 1))
   echo
   echo "Example Usage:"
   echo 
