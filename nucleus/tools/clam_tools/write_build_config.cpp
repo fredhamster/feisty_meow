@@ -245,8 +245,8 @@ int write_build_config::execute()
   // find our storage area for the build headers.  we know a couple build
   // configurations by now, but this should really be coming out of a config
   // file instead.
-  astring library_directory = repodir + "/nucleus/library";
-  if (!filename(library_directory).good()) {
+  astring genstore_directory = environment::get("FEISTY_MEOW_GENERATED_STORE");
+  if (!filename(genstore_directory).good()) {
     non_continuable_error(static_class_name(), func,
         astring("failed to locate the library folder storing the generated files."));
   }
@@ -254,10 +254,8 @@ int write_build_config::execute()
   // these are very specific paths, but they really are where we expect to
   // see the headers.
 
-  astring cfg_header_filename = library_directory + "/"
-      "__build_configuration.h";
-  astring ver_header_filename = library_directory + "/"
-      "__build_version.h";
+  astring cfg_header_filename = genstore_directory + "/__build_configuration.h";
+  astring ver_header_filename = genstore_directory + "/__build_version.h";
 
   // open the ini file for reading.
   byte_filer ini(fname, "r");
@@ -378,6 +376,17 @@ int write_build_config::execute()
   }
   if (!write_output_file(ver_header_filename, ver_accumulator)) {
     LOG(astring("failed writing output file ") + ver_header_filename);
+  }
+
+  // now make a copy into the library folder, for when we release a production version.
+  astring library_directory = repodir + "/nucleus/library";
+  astring cfg_header_copy = library_directory + "/__build_configuration.h";
+  astring ver_header_copy = library_directory + "/__build_version.h";
+  if (!write_output_file(cfg_header_copy, cfg_accumulator)) {
+    LOG(astring("skipping copy due to read-only issue on output file: ") + cfg_header_copy);
+  }
+  if (!write_output_file(ver_header_copy, ver_accumulator)) {
+    LOG(astring("skipping copy due to read-only issue on output file: ") + ver_header_copy);
   }
 
   return 0;
