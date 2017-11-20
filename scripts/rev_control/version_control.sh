@@ -64,7 +64,7 @@ function do_checkin()
   if [ $nicedir == "." ]; then
     nicedir=$(\pwd)
   fi
-  local blatt="echo checking in '$nicedir'..."
+  local blatt="echo -n checking in '$nicedir'...  "
 
   do_update "$directory"
   test_or_die "repository update--this should be fixed before check-in."
