@@ -383,16 +383,16 @@ int write_build_config::execute()
     LOG(astring("failed writing output file ") + ver_header_filename);
   }
 
-  // now make a copy into the library folder, for when we release a production version.
-  astring library_directory = repodir + "/nucleus/library";
-  astring cfg_header_copy = library_directory + "/__build_configuration.h";
-  astring ver_header_copy = library_directory + "/__build_version.h";
-  if (!write_output_file(cfg_header_copy, cfg_accumulator)) {
-    LOG(astring("skipping copy due to read-only issue on output file: ") + cfg_header_copy);
-  }
-  if (!write_output_file(ver_header_copy, ver_accumulator)) {
-    LOG(astring("skipping copy due to read-only issue on output file: ") + ver_header_copy);
-  }
+//NO, not any more  // now make a copy into the library folder, for when we release a production version.
+//  astring library_directory = repodir + "/nucleus/library";
+//  astring cfg_header_copy = library_directory + "/__build_configuration.h";
+//  astring ver_header_copy = library_directory + "/__build_version.h";
+//  if (!write_output_file(cfg_header_copy, cfg_accumulator)) {
+//    LOG(astring("skipping copy due to read-only issue on output file: ") + cfg_header_copy);
+//  }
+//  if (!write_output_file(ver_header_copy, ver_accumulator)) {
+//    LOG(astring("skipping copy due to read-only issue on output file: ") + ver_header_copy);
+//  }
 
   return 0;
 }
