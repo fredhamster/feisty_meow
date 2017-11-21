@@ -229,7 +229,7 @@ export STATIC_LIBRARY_DIR = $(TARGETS_STORE)
 
 # "HEADER_SEARCH_PATH" is where the class interface files are to be found.
 # we add the generated store folder for the build version file.
-HEADER_SEARCH_PATH = $(FEISTY_MEOW_GENERATED_STORE)
+HEADER_SEARCH_PATH = $(FEISTY_MEOW_GENERATED_STORE)/versions
 
 # "HOOPLE_HEADERS" are locations where the HOOPLE headers can be found.
 ifeq "$(HOOPLE_HEADERS)" ""
