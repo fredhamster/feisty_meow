@@ -132,7 +132,7 @@
         These are my settings, with IPv6 left disabled:<br>
         <img alt="nat net config" src="images/nat_network_config.png"></li>
     </ol>
-    <h2>Starting up the VM<a id="#start-vm" name="#start-vm"></a></h2>
+    <h2>Starting up the VM and Connecting to It<a id="#start-vm" name="#start-vm"></a></h2>
     <p>Using the Virtualbox interface, you should now be able to start your
       virtual machine.&nbsp; Virtualbox will complain if it detects any
       remaining configuration problems in the VM.&nbsp; The Linux boot sequence
@@ -142,16 +142,24 @@
       firewall, then allow the Virtualbox to get through.&nbsp; Usually, telling
       Windows that once is enough, but if any odd network access problems
       result, edit the Windows firewall settings and allow Virtualbox to use
-      both "Public" and "Private" networks.</p>
-    <p>You can log in directly on the VM console with the developer account, but
-      it is generally more useful to connect to the cakelampvm over ssh.&nbsp;
-      If the networking has been established properly, you should be able to do
-      this with:</p>
+      both "Public" and "Private" networks.&nbsp; (Cortana can find the firewall
+      settings if you ask her about 'firewall'.&nbsp; Within the firewall
+      configuration dialog, look for "Allow an app or feature through..." on the
+      left and configure Virtualbox from within that list.)</p>
+    You can log in directly on the VM console with the developer account, but it
+    is generally more useful to connect to the cakelampvm over ssh.&nbsp; If the
+    networking has been established properly, you should be able to do this
+    with:
     <pre># ssh developer@10.28.42.20&nbsp;  # or the equivalent with your ssh client</pre>
     <p>And then provide the password to log in.</p>
     <p>Once the DNS services are set up (discussed in detail below), you will be
       able to run the much friendlier command:</p>
     <pre># ssh developer@cakelampvm.com</pre>
+    <h4>Key Forwarding to the VM</h4>
+    <p>It is important to set up ssh key forwarding to enable your use of git
+      repositories while logged into the VM.&nbsp; Key forwarding should be
+      enabled for the VM's two fake host identities:</p>
+    <pre>cakelampvm.com<br>10.28.42.20</pre>
     <h2>Updating cakelampvm to the Latest Model<a id="#update-vm" name="#update-vm"></a></h2>
     <p>The cakelampvm v002 is released with the intention that it not need to be
       released again.&nbsp; Version 001 was not built with that explicit
@@ -231,8 +239,8 @@ meow
       10.28.42.20.&nbsp; (The DNS server can be tested with nslookup, dig and
       other tools.)</p>
     <p>Note that the cakelampvm DNS should be listed first, if one intends to
-      override any DNS names that actually exist out on the internet.&nbsp; We
-      have also found it most effective to have only the cakelampvm as your DNS
+      override any DNS names that actually exist out on the internet.&nbsp; Further,
+      we have found it most effective to have *only* the cakelampvm as your DNS
       server, because a secondary DNS server can "take over" providing the name
       lookups, and thus foul up DNS requests that should succeed for your
       VM-hosted sites.</p>
@@ -240,7 +248,8 @@ meow
       below that is tailored to that operating system.</p>
     <p>Important Note: It behooves you to remember to switch back to a normal
       DNS server configuration when you shut off the cakelampvm, or your machine
-      will not know the names of any sites on the internet any more!</p>
+      will not know the names of any sites on the internet any more!&nbsp; The
+      official Google DNS servers are 8.8.8.8 and 8.8.4.4.</p>
     <p>Once the DNS server is properly set up (by whatever means necessary),
       these ping commands should get answering responses (from 10.28.42.20) on
       both the cakelampvm VM and on your host PC.&nbsp; Note: ping on Linux
@@ -259,11 +268,27 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       internet.&nbsp; If you instead get failures to find the domains, or if the
       "real internet" site comes up for cakelampvm.com (the page covered with
       red X marks and complaining), then the DNS is not hooked up properly yet.</p>
+    <h4>Setting up DNS on Windows<a id="#windoze-dns" name="#windoze-dns"></a></h4>
+    <p>The ipconfig tool will provide helpful information about your current
+      networking and DNS configuration:</p>
+    <pre>&gt; ipconfig --all</pre>
+    <p>The DNS configuration on Windows is somewhat byzantine.&nbsp; The pipe
+      characters ('|') below are used to separate the menus or tabs or dialogs
+      to traverse.&nbsp; Follow this path to get to the DNS config:</p>
+    <pre>Control Panel | Network &amp; Internet | Network &amp; Sharing | click WiFI or Ethernet link near top right | click Adapter Settings button...<br>  &nbsp;| click on the specific network device to modify | select Properties</pre>
+    <p>Once the properties dialog is displayed, find "internet protocol version
+      4" in the list and double click it.</p>
+    <p>Change the DNS setting from "obtain...automatically" to "use the
+      following dns addresses".</p>
+    <p>Enter 10.28.42.20 as the first DNS address and clear the second address
+      (all blanks).</p>
+    <p>Hit okay, then okay, then close, etc to back out of adapter
+      configuration.</p>
     <h4>Troubleshooting the DNS</h4>
     <p>If your pings are getting the wrong answers and you're certain the DNS
       settings on your Host PC are right, then you may need to flush your DNS
-      cache, and that might be sufficient.&nbsp; On Windows, the command for
-      flushing DNS is:</p>
+      cache, and that might be sufficient to start getting the right IP
+      address.&nbsp; On Windows, the command for flushing DNS is:</p>
     <pre>&gt; ipconfig /flushdns</pre>
     <p>and on Linux the flush DNS command can be many different things, but try
       these two most common options:</p>
@@ -274,6 +299,33 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     over your DNS configuration very carefully.&nbsp; The cakelampvm's DNS
     feature *does* actually work, but operating systems sometimes do their best
     to deny this.<br>
+    <h4>Host Key Issues for ssh</h4>
+    <p>There is one caveat to be aware of when connecting to the cakelampvm.com
+      domain.&nbsp; If you have accidentally added the "real" cakelampvm.com
+      domain from the internet to your ssh known_keys at some point, then ssh
+      will complain about connecting to the VM on the cakelampvm.com
+      domain.&nbsp; This complaint will look like:</p>
+    <pre>The authenticity of host 'cakelampvm.com (104.236.56.82)' can't be established.</pre>
+    <p>Note that the IP address shown is not our beloved 10.28.42.20 local IP
+      address.</p>
+    <p>To fix this, remove the entry pointing at the "real" site from the
+      known_hosts file (ssh will print out the line number of the offending
+      entry).&nbsp; The DNS configuration needs to be configured before you will
+      get the warning about the cakelampvm.com domain.&nbsp; Up until then, the
+      domain name is always referring to the site out on the internet with the
+      red X's and warnings.&nbsp; See the DNS configuration section below to
+      configure DNS the first time.</p>
+    <p>Once you connect to the VM and the ssh client records the VM's host key
+      in your known_hosts, then you're in good shape.&nbsp; This state also
+      gives you a "canary in a coal mine" warning system...&nbsp; Once the VM is
+      registered as a known host, then any attempt to connect back to the "real"
+      internet version of cakelampvm.com will garner a complaint from ssh.&nbsp;
+      This version of the ssh warning should be heeded; you do not want to
+      connect to the real internet site, and the warning indicates that the host
+      PC is no longer using the DNS on the VM (since it reached the real
+      internet site instead of the VM).&nbsp; That situation needs to be
+      corrected by running through the DNS configuration section again (and
+      testing the DNS until it is working).</p>
     <h4>Troubleshooting the Apache Sites</h4>
     <p>If your DNS pings and lookups are functioning properly, but you're just
       not getting the right websites, then try clearing your browser's cache and
@@ -281,20 +333,6 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       and try the address again.&nbsp; Often this cache dumping is enough to fix
       the browser so that you start seeing the local website versions on
       cakelampvm.com.</p>
-    <h3>Setting up DNS on Windows<a id="#windoze-dns" name="#windoze-dns"></a></h3>
-    <p>The ipconfig tool will provide helpful information about your current
-      networking and DNS configuration:</p>
-    <pre>ipconfig --all</pre>
-    <p>The DNS configuration on Windows is somewhat byzantine.&nbsp; The pipe
-      characters ('|') below are used to separate the menus or tabs or dialogs
-      to traverse.&nbsp; Follow this path to get to the DNS config:</p>
-    <pre>Control Panel | Network &amp; Sharing | click WiFI or Ethernet link near top right | click Adapter Settings on left | click on specific network device to modify | select Properties</pre>
-    <p><br>
-    </p>
-    <p>{fill in rest}<br>
-    </p>
-    <p><br>
-    </p>
     <h2>Editing files on the guest VM from the host<a id="#editing-files-on-vm"
         name="#editing-files-on-vm"></a></h2>
     <p>On the host computer, look for the guest vm as a networked computer
@@ -462,6 +500,22 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
         target="_blank" title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
     <p>A git branching model that seems to work well: <a target="_blank" title="release and patch process"
         href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
+    <p>This is a basic guide to the Google Developer Console and API Key
+      management: <a target="_blank" title="apis and creds at google" href="https://feistymeow.org//feisty_meow/documentation/google_apis/google_apis_and_credentials.pdf">Google
+        API Docs</a></p>
+    <p>&nbsp;</p>
+    <h3>Using the "meld" Tool to Compare Files &amp; Directories</h3>
+    <p>Meld is a great comparison tool that displays differences between two
+      files or directories or directory trees in a graphical view.&nbsp; Meld is
+      pre-installed on the VM.&nbsp; This tool can be launched either in the
+      VM's X Windowing System (on the console) or if X11 forwarding is enabled.</p>
+    <p>To run meld, just type this command:</p>
+    <p>#meld A B</p>
+    <p>where A and B are either both file names or they are both directory names.&nbsp;
+      If A and B are directories, meld will compare the entire tree structure
+      between the two directories.&nbsp; It allows one to copy from one side to
+      the other, even if the item that needs to be copied is an entire
+      subdirectory.</p>
     <h3>Get the network address on the guest vm</h3>
     <p>Run this command:</p>
     <pre># ifconfig</pre>
@@ -527,6 +581,28 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <pre>auto enp0s8</pre>
     <pre>iface enp0s8 inet dhcp</pre>
     <p> </p>
+    <h3>Compacting the VM Disk Image</h3>
+    <p>To minimize the size used for the disk image, there are three major
+      steps.</p>
+    <p>1. While running the VM, run this command:</p>
+    <pre># sudo apt clean</pre>
+    <p>This throws away any cached data from the apt tool, which can be
+      substantial.</p>
+    <p>If there are other junk files you know of that can be removed, delete
+      those now also.</p>
+    <p>2. Reboot the VM to the gparted ISO image (available at the <a target="_blank"
+        title="great free partition editor" href="https://gparted.org/livecd.php">gparted
+        site</a>) and run the following command:</p>
+    <pre># sudo zerofree /dev/sda</pre>
+    <p>This sets all free space to the zero byte, enabling Virtualbox to free
+      that space in the next step.</p>
+    <p>3. Shut the vm down after zerofree is complete and run this command on
+      the host PC (this is the Linux version of the command):</p>
+    <pre># VBoxManage modifyhd --compact ~/cake_lamp_vm/cake-lamp-vm-hd.vdi</pre>
+    <p>Replace the <span style="font-family: monospace;">~/cake_lamp_vm</span>
+      path with the real VM storage path.&nbsp; This command compacts the root
+      (and only) partition of the VM.</p>
+    <p>After these steps are complete, the VM should be its minimal size.</p>
     <h2>Notes on building the Cake Lamp VM</h2>
     <p>This is all work that should already have been done.&nbsp; It is
       mentioned here just as breadcrumbs for a future vm builder.</p>
