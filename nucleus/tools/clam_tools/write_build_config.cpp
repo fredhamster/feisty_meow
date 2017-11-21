@@ -206,12 +206,15 @@ if (read < 1) LOG("why is existing header contentless?");
   if (write_header) {
     // we actually want to blast out a new file.
     byte_filer build_header(filename, "wb");
-    if (!build_header.good())
-      non_continuable_error(static_class_name(), func, astring("failed to create "
+    if (!build_header.good()) {
+      continuable_error(static_class_name(), func, astring("could not create "
           "build header file in ") + build_header.name());
-    build_header.write(new_contents);
-    LOG(astring(static_class_name()) + ": wrote config to "
-        + build_header.name());
+      return false;
+    } else {
+      build_header.write(new_contents);
+      LOG(astring(static_class_name()) + ": wrote config to "
+          + build_header.name());
+    }
   } else {
     // nothing has changed.
 //    LOG(astring(static_class_name()) + ": config already up to date in "
@@ -245,8 +248,10 @@ int write_build_config::execute()
   // find our storage area for the build headers.  we know a couple build
   // configurations by now, but this should really be coming out of a config
   // file instead.
-  astring genstore_directory = environment::get("FEISTY_MEOW_GENERATED_STORE");
-  if (!filename(genstore_directory).good()) {
+  astring versions_directory = environment::get("FEISTY_MEOW_GENERATED_STORE");
+  // we keep our version files one level below the top of the generated store.
+  versions_directory += "/versions";
+  if (!filename(versions_directory).good()) {
     non_continuable_error(static_class_name(), func,
         astring("failed to locate the library folder storing the generated files."));
   }
@@ -254,8 +259,8 @@ int write_build_config::execute()
   // these are very specific paths, but they really are where we expect to
   // see the headers.
 
-  astring cfg_header_filename = genstore_directory + "/__build_configuration.h";
-  astring ver_header_filename = genstore_directory + "/__build_version.h";
+  astring cfg_header_filename = versions_directory + "/__build_configuration.h";
+  astring ver_header_filename = versions_directory + "/__build_version.h";
 
   // open the ini file for reading.
   byte_filer ini(fname, "r");
@@ -378,16 +383,16 @@ int write_build_config::execute()
     LOG(astring("failed writing output file ") + ver_header_filename);
   }
 
-  // now make a copy into the library folder, for when we release a production version.
-  astring library_directory = repodir + "/nucleus/library";
-  astring cfg_header_copy = library_directory + "/__build_configuration.h";
-  astring ver_header_copy = library_directory + "/__build_version.h";
-  if (!write_output_file(cfg_header_copy, cfg_accumulator)) {
-    LOG(astring("skipping copy due to read-only issue on output file: ") + cfg_header_copy);
-  }
-  if (!write_output_file(ver_header_copy, ver_accumulator)) {
-    LOG(astring("skipping copy due to read-only issue on output file: ") + ver_header_copy);
-  }
+//NO, not any more  // now make a copy into the library folder, for when we release a production version.
+//  astring library_directory = repodir + "/nucleus/library";
+//  astring cfg_header_copy = library_directory + "/__build_configuration.h";
+//  astring ver_header_copy = library_directory + "/__build_version.h";
+//  if (!write_output_file(cfg_header_copy, cfg_accumulator)) {
+//    LOG(astring("skipping copy due to read-only issue on output file: ") + cfg_header_copy);
+//  }
+//  if (!write_output_file(ver_header_copy, ver_accumulator)) {
+//    LOG(astring("skipping copy due to read-only issue on output file: ") + ver_header_copy);
+//  }
 
   return 0;
 }
