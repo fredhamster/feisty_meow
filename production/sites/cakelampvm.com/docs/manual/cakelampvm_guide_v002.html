@@ -9,7 +9,7 @@
       Configuration and Usage</h1>
     <h2 style=" text-align: center;">By Chris Koeritz</h2>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
-      Updated: 2017-11-16 (rev E)</h3>
+      Updated: 2017-11-20 (rev F)</h3>
     <p>The cakelampvm project provides a Virtualbox VM that acts as an "internet
       in a bottle".&nbsp; The virtual machine provides DNS services (<a title="dns server"
         href="http://www.bind9.net/">bind9</a>), a Web server (<a title="patchy"
@@ -29,8 +29,8 @@
       ssh session more convenient, because copy &amp; paste features work as
       expected.</p>
     <p>Commands preceded by a greater-than symbol ('&gt;') are intended to be
-      run on the Host PC in a Windows command prompt (or in a bash prompt running
-      on the Host PC).</p>
+      run on the Host PC in a Windows command prompt (or in a bash prompt
+      running on the Host PC).</p>
     <h2> Guest VM Configuration<a id="#config" name="#config"></a></h2>
     <ul>
       <li>Hostname: <a title="the vm's website, when configured properly" href="https://cakelampvm.com/">cakelampvm.com</a></li>
@@ -153,9 +153,9 @@ meow
       before bringing up a black console window with a login dialog.</p>
     <p>If Windows complains about the Virtualbox application slamming into its
       firewall, then allow the Virtualbox to get through.&nbsp; Usually, telling
-      Windows that once is enough, but if any odd network access problems result,
-      edit the Windows firewall settings and allow Virtualbox to use both
-      "Public" and "Private" networks.</p>
+      Windows that once is enough, but if any odd network access problems
+      result, edit the Windows firewall settings and allow Virtualbox to use
+      both "Public" and "Private" networks.</p>
     <p>You can log in directly on the VM console with the developer account, but
       it is generally more useful to connect to the cakelampvm over ssh.&nbsp;
       If the networking has been established properly, you should be able to do
@@ -177,8 +177,8 @@ meow
     <p>There is an update feature built into the VM that is quite easy to
       use.&nbsp; The updates are driven by the feisty meow script repository in
       conjunction with a local scripted command.&nbsp; To activate the "update
-      process" for your VM, run the following commands (without the initial '#'
-      symbol):</p>
+      process" for your VM, run the following commands on the VM (without the
+      initial '#' symbol):</p>
     <p># rpuffer $FEISTY_MEOW_APEX&nbsp;&nbsp; # updates to the latest version
       of feisty meow<br>
       # revamp_cakelampvm&nbsp;&nbsp;&nbsp; # enacts any configuration changes
@@ -189,6 +189,24 @@ meow
       the latest version of the feisty meow code.&nbsp; If there are bug fixes
       you need for the scripts or you want updated cakelampvm documentation,
       that is the command to use.</p>
+    <h2>First Tasks as the Developer User</h2>
+    <p>Here are some first steps that will make the vm your own:</p>
+    <ol>
+      <li>Change your password for the developer account.&nbsp; (This may
+        eventually be required and automatic.)&nbsp; First, log into the VM with
+        ssh.&nbsp; Then type this command:<br>
+        <pre># passwd</pre>
+        The 'passwd' command will ask for your current password, and then for a
+        new password plus a verification of that new password.<br>
+        &nbsp;</li>
+      <li>Change your git configuration for the user and email address.&nbsp; This
+        is how we've configured it so far:<br>
+        <pre># git config --global user.email "developer@cakelampvm.com"</pre>
+        <pre># git config --global user.name "Developer J. Cakemo"</pre>
+        If you're developing on a real project, you probably don't want the
+        bogus email and even more bogus name above attached to your
+        commits.&nbsp; Just run the two commands again but with proper values.</li>
+    </ol>
     <h2>Using the guest VM's DNS services<a id="#dns-from-vm" name="#dns-from-vm"></a></h2>
     <p>The cakelampvm has been set up to provide a DNS server which will answer
       name lookup requests on any of the sites that the cakelampvm is hosting
@@ -213,7 +231,8 @@ meow
     <p>Once the DNS server is properly set up (by whatever means necessary),
       these ping commands should get answering responses (from 10.28.42.20) on
       both the cakelampvm VM and on your host PC.&nbsp; Note: ping on Linux
-      keeps going forever, so hit control-C when you are tired of seeing the pings:</p>
+      keeps going forever, so hit control-C when you are tired of seeing the
+      pings:</p>
     <pre># ping cakelampvm.com</pre>
     <pre># ping mapsdemo.cakelampvm.com</pre>
     <p>Note that any other answer than 10.28.42.20 for the address is *bzzzt*
@@ -418,9 +437,9 @@ meow
       it means the DNS is working.&nbsp; If there are no responses or it's some
       other IP address talking back, check the instructions in the above DNS
       sections.</p>
-    <p>Once the DNS is working, try browsing to the site at "http://excalibur.tv".&nbsp;
-      That should at least bring up the configured site storage path, even if
-      nothing is being served from that folder yet.</p>
+    <p>Once the DNS is working, try browsing to the site at
+      "http://excalibur.tv".&nbsp; That should at least bring up the configured
+      site storage path, even if nothing is being served from that folder yet.</p>
     <p>If the new site is not showing up properly, try examining the apache logs
       for any error messages that can be corrected.&nbsp; The log files are
       stored in "/var/log/apache2" and are named after the website (if
