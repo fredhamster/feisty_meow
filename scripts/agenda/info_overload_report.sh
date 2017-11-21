@@ -133,6 +133,11 @@ analyze_hierarchy_and_report ~/cloud/disordered "unsorted files"
 # up our weight accounting considerably.
 analyze_hierarchy_and_report ~/cloud/reading "reading list (for a quiet afternoon)"
 
+####
+
+# vocation is a prefix for anything i consider part of my life's work.
+analyze_by_dir_patterns "life's work and other oddities" ~/cloud/vocation*
+
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active issues" ~/cloud/active*
 

@@ -67,24 +67,27 @@ int version_stamper::execute()
 {
   FUNCDEF("execute");
   SETUP_CONSOLE_LOGGER;  // override the file_logger from app_shell.
-  if (application::_global_argc < 2) {
-    log(astring("The directory where the 'version.ini' file is located\n"
-        "must be specified as the first parameter of this program.  Another\n"
-        "version file may optionally be specified as the second parameter of\n"
-        "the program; the version contained in this file will be used to set\n"
-        "the version of the file specified in the first parameter.\n"
-        "Additionally, if the environment variable 'DEBUG' exists, then the\n"
-        "generated RC file will be marked as a debug build.  Otherwise it is\n"
-        "marked as a release build.  Note that the CLAM system automatically\n"
-        "sets this for you.\n\n"), ALWAYS_PRINT);
+  if (application::_global_argc < 3) {
+    log(astring(
+"The directory where the 'version.ini' file is located must be specified as the\n"
+"first parameter of this program.  The second parameter must provide the\n"
+"storage location where the version header will be written.  Another version\n"
+"file may optionally be specified as the third parameter of the program; the\n"
+"version contained in this file will be used to set the version of the file\n"
+"specified in the first parameter.\n"
+"Additionally, if the environment variable 'DEBUG' exists, then the\n"
+"generated RC file will be marked as a debug build.  Otherwise it is\n"
+"marked as a release build.  Note that the CLAM system automatically\n"
+"sets this for you.\n\n"), ALWAYS_PRINT);
     return 1;
   }
 
   astring path_name = application::_global_argv[1];
+  astring storage_name = application::_global_argv[2];
   astring source_version_file;  // blank by default.
-  if (application::_global_argc > 2)
-    source_version_file = application::_global_argv[2];
-  bool ret = version_ini::one_stop_version_stamp(path_name, source_version_file, true);
+  if (application::_global_argc > 3)
+    source_version_file = application::_global_argv[3];
+  bool ret = version_ini::one_stop_version_stamp(path_name, storage_name, source_version_file, true);
   if (!ret) return 1;  // failure.
   return 0;  // success.
 }
