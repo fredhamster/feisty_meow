@@ -477,8 +477,6 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <pre># sudo shutdown -h now</pre>
     <p>Using these commands is kinder to the VM than just cycling the power from
       the Virtualbox control panel.</p>
-    <p><br>
-    </p>
     <h1>Gritty Details of the Nitty Variety<a id="#nitty-gritty" name="#nitty-gritty"></a></h1>
     <p>This is the lowest level of plumbing for your VM.&nbsp; Hopefully you
       will not need to engage with this section.&nbsp; The most useful doc
@@ -533,23 +531,25 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <ul>
       <li>Downloaded and installed Virtualbox for host computer (where the vm
         image will be built).</li>
-      <li>Downloaded ubuntu server 16.04 iso.
-        (https://www.ubuntu.com/download/server)</li>
+      <li>Downloaded ubuntu server 16.04 iso. (<a target="_blank" title="ubuntu server"
+          href="https://www.ubuntu.com/download/server">https://www.ubuntu.com/download/server</a>)</li>
       <li>Created a new vm in Virtualbox, telling it to start from the ubuntu
         server iso.</li>
-      <li>Installed LAMP stack on guest VM.&nbsp; Some help here:
-        http://howtoubuntu.org/how-to-install-lamp-on-ubuntu</li>
-      <li>Configured CAKE on the guest VM.&nbsp; Useful link:
-        https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04</li>
+      <li>Installed LAMP stack on guest VM.&nbsp; Some help here: <a target="_blank"
+          title="lamplighter" href="http://howtoubuntu.org/how-to-install-lamp-on-ubuntu">http://howtoubuntu.org/how-to-install-lamp-on-ubuntu</a></li>
+      <li>Configured CAKE on the guest VM.&nbsp; Useful link: <a target="_blank"
+          title="cakebundtu" href="https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04">https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04</a></li>
       <li>Configured the two network adapters as needed (one for host-only
         network and one for nat network).&nbsp; Here's some info about
         Virtualbox networking with two adapters similar to our setup:
-https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in<br>
+        <a target="_blank" href="https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in">https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-...</a><br>
       </li>
       <li>Installed and configured Samba service for the guest VM.&nbsp; The
         main config file lives in "/etc/samba/smb.conf".&nbsp; Some pointers
         here:
-https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21</li>
+        <a target="_blank" href="https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21">https://help.ubuntu.com/community/How%20to%20Create...</a></li>
+      <li><br>
+      </li>
     </ul>
     <p><br>
     </p>
