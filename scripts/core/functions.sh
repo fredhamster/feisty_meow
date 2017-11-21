@@ -488,9 +488,12 @@ if [ -z "$skip_all" ]; then
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
     incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
 
-    local fail_message="\nare the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
-    $(grep "apt.*perl" $FEISTY_MEOW_APEX/readme.txt)\n"
-    
+    local fail_message="\n
+are the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
+    $(grep "apt-get.*perl" $FEISTY_MEOW_APEX/readme.txt)\n
+or if you're on cygwin, then try this (if apt-cyg is available):\n
+    $(grep "apt-cyg.*perl" $FEISTY_MEOW_APEX/readme.txt)\n";
+
     #echo "the incongruous files list is: $incongruous_files"
     # disallow a single character result, since we get "*" as result when nothing exists yet.
     if [ ${#incongruous_files} -ge 2 ]; then
