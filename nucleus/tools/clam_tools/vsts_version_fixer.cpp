@@ -219,8 +219,13 @@ bool stamping_spider(const directory &current)
     if (current_file.ends("version.ini")
         && !current_file.iequals("core_version.ini") ) {
 //LOG(astring("found ver file: ") + current.path() + "/" + current_file);
+//
+      astring versions_directory = environment::get("FEISTY_MEOW_GENERATED_STORE");
+     // we keep our version files one level below the top of the generated store.
+      versions_directory += "/versions";
+
       version_ini::one_stop_version_stamp(current.path() + "/" + current_file,
-          global_build_ini, true);
+          versions_directory, global_build_ini, true);
     }
   }
   return true;

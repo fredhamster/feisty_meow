@@ -7,21 +7,29 @@
   <body>
     <h1 style="text-align: center;">The cakelampvm VM:<br>
       Configuration and Usage</h1>
-    <h2 style=" text-align: center;">By Chris Koeritz</h2>
+    <div style="text-align: center;"><span style="font-weight: bold;">By Chris
+        Koeritz</span><span style="font-family: Comic Sans MS;"></span><span style="font-family: Comic Sans MS;"></span><br>
+      <span style="font-family: Comic Sans MS;">feisty meow® concerns ltd</span>.</div>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
-      Updated: 2017-11-16 (rev E)</h3>
+      Updated: 2017-11-20 (rev. g)</h3>
     <p>The cakelampvm project provides a Virtualbox VM that acts as an "internet
-      in a bottle".&nbsp; The virtual machine provides DNS services (<a title="dns server"
-        href="http://www.bind9.net/">bind9</a>), a Web server (<a title="patchy"
-        href="https://httpd.apache.org/">Apache2</a>), a full <a title="ubuntu means compassion and humanity"
-        href="https://www.ubuntu.com/">Ubuntu</a> <a title="it's pronounced leenoox"
-        href="https://www.linuxfoundation.org/">Linux</a> desktop environment,
-      the <a title="flux is change" href="http://fluxbox.org/">Fluxbox</a> <a
-        title="a better windows" href="https://www.x.org/">X window manager</a>,
-      and a suite of tools called the <a title="feisty meow® concerns ltd. website"
-        href="https://feistymeow.org/">Feisty Meow® codebase</a> .&nbsp;
-      Together, these services provide you with a very flexible and powerful
-      testbed for web development, especially suited for <a title="it's cake" href="https://cakephp.org/">CakePHP</a>.</p>
+      in a bottle", serving up your web sites securely and only to your local
+      host.&nbsp; The virtual machine provides DNS services (<a target="_blank"
+        title="dns server" href="http://www.bind9.net/">bind9</a>), a Web server
+      (<a target="_blank" title="patchy" href="https://httpd.apache.org/">Apache2</a>),
+      a full <a target="_blank" title="ubuntu means compassion and humanity" href="https://www.ubuntu.com/">Ubuntu</a>
+      <a target="_blank" title="it's pronounced leenoox" href="https://www.linuxfoundation.org/">Linux</a>
+      desktop environment, the <a target="_blank" title="flux is change" href="http://fluxbox.org/">Fluxbox</a>
+      <a target="_blank" title="x11 -- best windowing system" href="https://www.x.org/">X
+        window manager</a>, and a suite of tools called the <a target="_blank"
+        title="feisty meow® concerns ltd. website" href="https://feistymeow.org/">Feisty
+        Meow® codebase</a> .&nbsp; Together, these services provide you with a
+      very flexible and powerful testbed for web development, especially suited
+      for <a target="_blank" title="it's cake" href="https://cakephp.org/">CakePHP</a>.&nbsp;
+      This VM was built with the assistance of and was partially funded by <a target="_blank"
+        title="saco design" href="http://sacodesign.com">Saco Design</a> of <a
+        target="_blank" title="winterport" href="http://www.winterportmaine.gov/">Winterport,
+        Maine</a>.</p>
     <p>Commands preceded by an octothorpe ('#') below are intended to be typed
       into a bash shell running on the cakelampvm virtual machine.&nbsp; The
       bash shell can be obtained either by logging into the VM through ssh or by
@@ -29,52 +37,28 @@
       ssh session more convenient, because copy &amp; paste features work as
       expected.</p>
     <p>Commands preceded by a greater-than symbol ('&gt;') are intended to be
-      run on the Host PC in a Windows command prompt (or in a bash prompt running
-      on the Host PC).</p>
+      run on the Host PC in a Windows command prompt (or in a bash prompt
+      running on the Host PC).</p>
     <h2> Guest VM Configuration<a id="#config" name="#config"></a></h2>
     <ul>
-      <li>Hostname: <a title="the vm's website, when configured properly" href="https://cakelampvm.com/">cakelampvm.com</a></li>
+      <li>Hostname: <a target="_blank" title="the vm's website, when configured properly"
+          href="https://cakelampvm.com/">cakelampvm.com</a></li>
       <li>Local IP Address: 10.28.42.20</li>
       <li>Services Included: DNS (bind9), apache2, fluxbox X windowing system, <a
-          title="not just in the garden" href="https://www.gnome.org/">gnome
+          target="_blank" title="not just in the garden" href="https://www.gnome.org/">gnome
           display manager</a></li>
       <li>Main VM User: developer (password distributed separately)</li>
       <li>Database Access: mysql root account, password: (password distributed
         separately)</li>
     </ul>
-    <h2>Powering up with the Feisty Meow® scripts<a id="#powerup" name="#powerup"></a></h2>
-    The feisty meow scripts are a cohesive bash scripting environment for
-    getting a variety of tasks done.&nbsp; The feisty meow scripts recently
-    incorporated the "avbash" collection from Saco Designs and added those
-    scripts to a new "site_avenger" collection of scripts.&nbsp; The site
-    avenger scripts provide tools for bringing up CakePHP web sites and managing
-    the collection of repositories for those sites.&nbsp; Each website is
-    considered an "application", and the application name itself (e.g.
-    "winterportlibrary") can often provide all the details for "powering up" the
-    site.&nbsp; The feisty meow team has added additional scripts for managing
-    DNS domains and Apache websites that provide the capability to "stand up" an
-    entire website around an application, with an accompanying DNS domain and
-    Apache2 site definition.
-    <p>The site avenger scripts are documented separately within the feisty meow
-      codebase.&nbsp; Consult the <span style="text-decoration: underline;">f</span><a
-        title="quickstart" href="https://feistymeow.org/feisty_meow/readme.txt">eisty
-meow
-        readme</a> file first, as it provides some valuable information on
-      configuring the codebase initially.&nbsp; The site avenger script commands
-      are documented in the <a title="useful commands" href="https://feistymeow.org/feisty_meow/documentation/feisty_meow_command_reference.txt">feisty
-        meow command reference</a> file.</p>
-    <p>(The feisty meow codebase is already configured for the developer account
-      on the cakelampvm virtual machine.)</p>
     <h2>How to set up virtualbox for your host PC<a id="#virtualbox-setup" name="#virtualbox-setup"></a></h2>
     <ol>
-      <li>Download and install virtualbox:
-        https://www.virtualbox.org/wiki/Downloads</li>
+      <li>Download and install virtualbox: <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a></li>
       <li>Install the extension pack for Virtualbox: This provides USB drivers
         and other features.&nbsp; This is installed on Virtualbox itself (on the
         Host PC), not on the guests.</li>
       <ol>
-        <li>Download the extension pack at
-          https://www.virtualbox.org/wiki/Downloads</li>
+        <li>Download the extension pack (also) at <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a></li>
         <li>Stop any running Virtualbox VMs.</li>
         <li>Close the Virtualbox control panel.</li>
         <li>Double-click on the downloaded extensions package (in a file
@@ -95,11 +79,13 @@ meow
     <h3>Configure the Host-Only network on Virtualbox<a id="#host-only" name="#host-only"></a></h3>
     <p>Configuring host-only networking for the VM makes the VM completely local
       to your machine.&nbsp; The cakelampvm will not be accessible on the
-      internet or from the LAN, and can only be accessed by your host PC.</p>
+      internet or from the LAN, and can only be accessed by your host PC.&nbsp;
+      This is a key component of security for your VM and your host PC, and is
+      considered a crucial configuration step.</p>
     <p>Note: If the host-only or NAT network exist ahead of time, Virtualbox may
       complain about them even if they have the correct configuration.&nbsp;
-      This can be corrected simply by opening the VM settings and selecting the
-      appropriate network names again.</p>
+      This can be corrected simply by opening the cakelampvm settings and
+      selecting the appropriate network names again.</p>
     <p>To configure the host-only network, follow these steps:</p>
     <ol>
       <li> Go to virtual box "Preferences" (global preferences, not for a
@@ -126,10 +112,11 @@ meow
     <h3>Configure the NAT Network on Virtualbox<a id="#nat-network" name="#nat-network"></a></h3>
     <p>The NAT (Network Address Translation) network allows the VM to get off of
       the machine and onto the internet safely.&nbsp; It will use this interface
-      for any communication off of the host machine.&nbsp; Since the real IP
-      address of the VM is hidden behind the NAT firewall on Virtualbox, this
-      keeps the VM safe from attackers, and hence your machine stays safe as
-      well.</p>
+      for any communication off of the host machine.&nbsp; This is another
+      crucial component for the security of the VM and your host PC.&nbsp; Since
+      the real IP address of the VM is hidden behind the NAT firewall on
+      Virtualbox, this keeps the VM safe from attackers, and hence your machine
+      stays safe as well.</p>
     <p>To set up the NAT network, follow these steps:</p>
     <ol>
       <li> Go to virtual box "Preferences" (global preferences, not for a
@@ -148,47 +135,91 @@ meow
     <h2>Starting up the VM<a id="#start-vm" name="#start-vm"></a></h2>
     <p>Using the Virtualbox interface, you should now be able to start your
       virtual machine.&nbsp; Virtualbox will complain if it detects any
-      remaining configuration problems in the VM, but it should start
-      normally.&nbsp; The Linux boot sequence will show many lines of text,
-      before bringing up a black console window with a login dialog.</p>
+      remaining configuration problems in the VM.&nbsp; The Linux boot sequence
+      will show many lines of text, before bringing up a black console window
+      with a login dialog.</p>
     <p>If Windows complains about the Virtualbox application slamming into its
       firewall, then allow the Virtualbox to get through.&nbsp; Usually, telling
-      Windows that once is enough, but if any odd network access problems result,
-      edit the Windows firewall settings and allow Virtualbox to use both
-      "Public" and "Private" networks.</p>
+      Windows that once is enough, but if any odd network access problems
+      result, edit the Windows firewall settings and allow Virtualbox to use
+      both "Public" and "Private" networks.</p>
     <p>You can log in directly on the VM console with the developer account, but
       it is generally more useful to connect to the cakelampvm over ssh.&nbsp;
       If the networking has been established properly, you should be able to do
       this with:</p>
-    <pre>ssh developer@cakelampvm.com&nbsp; (or equivalent with your ssh client)</pre>
+    <pre># ssh developer@10.28.42.20&nbsp;  # or the equivalent with your ssh client</pre>
     <p>And then provide the password to log in.</p>
-    <p>If a feature called "X forwarding" is enabled in your ssh client, then
-      you can start graphical applications on the VM and display them on your
-      local machine.&nbsp; This works right away on most Linux hosts, but can
-      also work on PCs with X window system installed.&nbsp; The section below
-      describes how to set up Cygwin to run X server, which enable X forwarding
-      to your local display.</p>
-    <p>...{insert that info}...</p>
+    <p>Once the DNS services are set up (discussed in detail below), you will be
+      able to run the much friendlier command:</p>
+    <pre># ssh developer@cakelampvm.com</pre>
     <h2>Updating cakelampvm to the Latest Model<a id="#update-vm" name="#update-vm"></a></h2>
-    <p>The cakelampvm is released with the intention to not be released
-      again.&nbsp; Version 001 was not built with that explicit intention, which
-      then required the release of Version 002.&nbsp; We hope to not need a v003
-      release.</p>
+    <p>The cakelampvm v002 is released with the intention that it not need to be
+      released again.&nbsp; Version 001 was not built with that explicit
+      intention, which then required the release of Version 002.&nbsp; But we
+      hope to not need a v003 release...</p>
     <p>There is an update feature built into the VM that is quite easy to
       use.&nbsp; The updates are driven by the feisty meow script repository in
       conjunction with a local scripted command.&nbsp; To activate the "update
-      process" for your VM, run the following commands (without the initial '#'
-      symbol):</p>
-    <p># rpuffer $FEISTY_MEOW_APEX&nbsp;&nbsp; # updates to the latest version
-      of feisty meow<br>
-      # revamp_cakelampvm&nbsp;&nbsp;&nbsp; # enacts any configuration changes
-      needed, plus fixes web folder and other permissions.</p>
+      process" for your VM, run the following commands on the VM (without the
+      initial '#' symbol):</p>
+    <pre># rpuffer $FEISTY_MEOW_APEX&nbsp;&nbsp; # updates to the latest version of feisty meow
+# revamp_cakelampvm&nbsp;&nbsp;&nbsp;        # enacts any configuration changes needed,<br>                              # plus fixes web folder and other permissions.</pre>
     <p>These two commands can be run at any time to patch up your VM to the
       latest.</p>
     <p>The first command ("rpuffer ...") is also useful on its own for getting
-      the latest version of the feisty meow code.&nbsp; If there are bug fixes
-      you need for the scripts or you want updated cakelampvm documentation,
-      that is the command to use.</p>
+      the latest version of the feisty meow code.&nbsp; Run it again if there
+      are bug fixes you need for any of the scripts or if you would like the
+      most up-to-date cakelampvm documentation.</p>
+    <h2>First Tasks as the Developer User</h2>
+    <p>Here are some first steps that will make the vm your own:</p>
+    <ol>
+      <li>Change your password for the developer account.&nbsp; (This may
+        eventually be required and automatic.)&nbsp; First, log into the VM with
+        ssh.&nbsp; Then type this command:<br>
+        <pre># passwd</pre>
+        The 'passwd' command will ask for your current password, and then for a
+        new password plus a verification of that new password.<br>
+        &nbsp;</li>
+      <li>Change your git configuration for the user and email address.&nbsp;
+        This is how we've configured it so far:<br>
+        <pre># git config --global user.email "developer@cakelampvm.com"</pre>
+        <pre># git config --global user.name "Developer J. Cakemo"</pre>
+        If you're developing on a real project, you probably don't want the
+        bogus email and even more bogus name above attached to your
+        commits.&nbsp; Just run the two commands again but with proper values.</li>
+    </ol>
+    <h2>Powering up with the Feisty Meow® scripts<a id="#powerup" name="#powerup"></a></h2>
+    The feisty meow scripts are a cohesive bash scripting environment for
+    getting a variety of tasks done.&nbsp; The feisty meow scripts recently
+    incorporated the "avbash" collection from Saco Design and added those
+    scripts to a new "site_avenger" collection of scripts.&nbsp; The site
+    avenger scripts provide tools for bringing up CakePHP web sites and managing
+    the collection of repositories for those sites.&nbsp; Each website is
+    considered an "application", and the application name itself (e.g.
+    "winterportlibrary") can often provide all the details for "powering up" the
+    site.&nbsp; The feisty meow team has added additional scripts for managing
+    DNS domains and Apache websites that provide the capability to "stand up" an
+    entire website around an application, with an accompanying DNS domain and an
+    Apache2 site definition.
+    <p>The site avenger scripts are documented separately within the feisty meow
+      codebase.&nbsp; Consult the <span style="text-decoration: underline;">f</span><a
+        target="_blank" title="quickstart" href="https://feistymeow.org/feisty_meow/readme.txt">eisty
+meow
+        readme</a> file first, as it provides some valuable information on
+      configuring the codebase initially.&nbsp; The site avenger script commands
+      are documented in the <a target="_blank" title="useful commands" href="https://feistymeow.org/feisty_meow/documentation/feisty_meow_command_reference.txt">feisty
+        meow command reference</a> file.</p>
+    <p>(The feisty meow codebase is already configured for the developer account
+      on the cakelampvm virtual machine.)</p>
+    <h2>X11 applications launched from the VM</h2>
+    <p>[incomplete section]</p>
+    <p>If a feature called "X forwarding" is enabled in your ssh client, then
+      you can start graphical applications on the VM and display them on your
+      local machine.&nbsp; This works right away on most Linux hosts, but can
+      also work on PCs with X window system installed.&nbsp; This section
+      describes how to set up Cygwin to run X server, which enables X11
+      forwarding to your local display.</p>
+    <p>...{insert that info}...</p>
     <h2>Using the guest VM's DNS services<a id="#dns-from-vm" name="#dns-from-vm"></a></h2>
     <p>The cakelampvm has been set up to provide a DNS server which will answer
       name lookup requests on any of the sites that the cakelampvm is hosting
@@ -213,15 +244,17 @@ meow
     <p>Once the DNS server is properly set up (by whatever means necessary),
       these ping commands should get answering responses (from 10.28.42.20) on
       both the cakelampvm VM and on your host PC.&nbsp; Note: ping on Linux
-      keeps going forever, so hit control-C when you are tired of seeing the pings:</p>
+      keeps going forever, so hit control-C when you are tired of seeing the
+      pings:</p>
     <pre># ping cakelampvm.com</pre>
     <pre># ping mapsdemo.cakelampvm.com</pre>
     <p>Note that any other answer than 10.28.42.20 for the address is *bzzzt*
       wrong, and means something needs to be fixed.</p>
     <p>If these pings succeed (which hopefully they will!), then try accessing
       the websites of each domain:</p>
-    <pre>(browse to) http://cakelampvm.com</pre>
-    <pre>(browse to) http://mapsdemo.cakelampvm.com</pre>
+    <pre>(browse to) <a target="_blank" title="vm website if dns working" href="http://cakelampvm.com">http://cakelampvm.com</a></pre>
+    <pre>(browse to) <a target="_blank" title="mapsdemo app, hopefully functional"
+href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <p>These should show local sites on the VM rather than sites on the
       internet.&nbsp; If you instead get failures to find the domains, or if the
       "real internet" site comes up for cakelampvm.com (the page covered with
@@ -285,13 +318,10 @@ meow
       developer's home folder also ("/home/developer").</p>
     <p>If you run into any permission problems that prevent file access, either
       remotely or within the VM itself, then try running this command to fix
-      them:</p>
+      them (repeated from the section above about updating the cakelampvm):</p>
     <pre># revamp_cakelampvm</pre>
     <p>Afterwards, the www folder and others should allow the developer user to
       create new folders at will.</p>
-    <p>The revamp command above is also used to deliver new configuration to the
-      VM from the feisty meow script environment; running it after any update of
-      the feisty meow codebase is a good idea.</p>
     <h2>Accessing files on the host PC from the guest VM<a id="#samba-shares" name="#samba-shares"></a></h2>
     <p>If you want to share a folder from the host to the guest, perhaps for
       driver updates or other conveniences, then make the share with these
@@ -312,7 +342,7 @@ meow
     <p>Note: these instructions, even the quick approaches below, pale in
       comparison to the ease of use of the "standup" command in feisty meow's
       site avenger scripts.&nbsp; The standup command is detailed in the&nbsp;<a
-        title="useful commands" href="https://feistymeow.org/feisty_meow/documentation/feisty_meow_command_reference.txt">feisty
+        target="_blank" title="useful commands" href="https://feistymeow.org/feisty_meow/documentation/feisty_meow_command_reference.txt">feisty
         meow command reference</a> document.&nbsp; These instructions are for
       situations when the domain or site is idiosyncratic in some way that
       standup doesn't support.</p>
@@ -418,9 +448,10 @@ meow
       it means the DNS is working.&nbsp; If there are no responses or it's some
       other IP address talking back, check the instructions in the above DNS
       sections.</p>
-    <p>Once the DNS is working, try browsing to the site at "http://excalibur.tv".&nbsp;
-      That should at least bring up the configured site storage path, even if
-      nothing is being served from that folder yet.</p>
+    <p>Once the DNS is working, try browsing to the site at "<a title="it's excalibur, wilbur!"
+        href="http://excalibur.tv">http://excalibur.tv</a>".&nbsp; That should
+      at least bring up the configured site storage path, even if nothing is
+      being served from that folder yet.</p>
     <p>If the new site is not showing up properly, try examining the apache logs
       for any error messages that can be corrected.&nbsp; The log files are
       stored in "/var/log/apache2" and are named after the website (if
@@ -428,13 +459,14 @@ meow
     <h2>Handy Techniques for Using cakelampvm</h2>
     <h3>Assorted Guides and Cheat-Sheets</h3>
     <p>A Cheat sheet for the Vim editor (there are many of these available): <a
-        title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
-    <p>A git branching model that seems to work well: <a title="release and patch process"
+        target="_blank" title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
+    <p>A git branching model that seems to work well: <a target="_blank" title="release and patch process"
         href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
     <h3>Get the network address on the guest vm</h3>
-    <p>Run this command: ifconfig</p>
-    <p>In the results, look for "inet addr".&nbsp; There may be more than one,
-      if there are multiple network interfaces.</p>
+    <p>Run this command:</p>
+    <pre># ifconfig</pre>
+    <p>In the results, look for "<span style="font-family: monospace;">inet addr</span>".&nbsp;
+      There may be more than one, if there are multiple network interfaces.</p>
     <p>The standard IP address is 10.28.42.20 for the cakelampvm.</p>
     <h3>How to cleanly reboot or shut down the guest VM</h3>
     <p>When you've got the DNS and everything integrated, these commands will
@@ -447,8 +479,6 @@ meow
     <pre># sudo shutdown -h now</pre>
     <p>Using these commands is kinder to the VM than just cycling the power from
       the Virtualbox control panel.</p>
-    <p><br>
-    </p>
     <h1>Gritty Details of the Nitty Variety<a id="#nitty-gritty" name="#nitty-gritty"></a></h1>
     <p>This is the lowest level of plumbing for your VM.&nbsp; Hopefully you
       will not need to engage with this section.&nbsp; The most useful doc
@@ -503,23 +533,24 @@ meow
     <ul>
       <li>Downloaded and installed Virtualbox for host computer (where the vm
         image will be built).</li>
-      <li>Downloaded ubuntu server 16.04 iso.
-        (https://www.ubuntu.com/download/server)</li>
+      <li>Downloaded ubuntu server 16.04 iso. (<a target="_blank" title="ubuntu server"
+          href="https://www.ubuntu.com/download/server">https://www.ubuntu.com/download/server</a>)</li>
       <li>Created a new vm in Virtualbox, telling it to start from the ubuntu
         server iso.</li>
-      <li>Installed LAMP stack on guest VM.&nbsp; Some help here:
-        http://howtoubuntu.org/how-to-install-lamp-on-ubuntu</li>
-      <li>Configured CAKE on the guest VM.&nbsp; Useful link:
-        https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04</li>
+      <li>Installed LAMP stack on guest VM.&nbsp; Some help here: <a target="_blank"
+          title="lamplighter" href="http://howtoubuntu.org/how-to-install-lamp-on-ubuntu">http://howtoubuntu.org/how-to-install-lamp-on-ubuntu</a></li>
+      <li>Configured CAKE on the guest VM.&nbsp; Useful link: <a target="_blank"
+          title="cakebundtu" href="https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04">https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04</a></li>
       <li>Configured the two network adapters as needed (one for host-only
         network and one for nat network).&nbsp; Here's some info about
-        Virtualbox networking with two adapters similar to our setup:
-https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in<br>
+        Virtualbox networking with two adapters similar to our setup: <a target="_blank"
+          href="https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in">https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-...</a><br>
       </li>
       <li>Installed and configured Samba service for the guest VM.&nbsp; The
         main config file lives in "/etc/samba/smb.conf".&nbsp; Some pointers
-        here:
-https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21</li>
+        here: <a target="_blank" href="https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21">https://help.ubuntu.com/community/How%20to%20Create...</a></li>
+      <li><br>
+      </li>
     </ul>
     <p><br>
     </p>
