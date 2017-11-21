@@ -7,10 +7,11 @@
   <body>
     <h1 style="text-align: center;">The cakelampvm VM:<br>
       Configuration and Usage</h1>
-    <h2 style="   text-align: center;">By Chris Koeritz<br>
-      <span style="font-family: Comic Sans MS;">feisty meow® concerns ltd</span></h2>
+    <div style="text-align: center;"><span style="font-weight: bold;">By Chris
+        Koeritz</span><span style="font-family: Comic Sans MS;"></span><span style="font-family: Comic Sans MS;"></span><br>
+      <span style="font-family: Comic Sans MS;">feisty meow® concerns ltd</span>.</div>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
-      Updated: 2017-11-20 (rev F)</h3>
+      Updated: 2017-11-20 (rev. g)</h3>
     <p>The cakelampvm project provides a Virtualbox VM that acts as an "internet
       in a bottle", serving up your web sites securely and only to your local
       host.&nbsp; The virtual machine provides DNS services (<a target="_blank"
@@ -179,8 +180,8 @@
         The 'passwd' command will ask for your current password, and then for a
         new password plus a verification of that new password.<br>
         &nbsp;</li>
-      <li>Change your git configuration for the user and email address.&nbsp; This
-        is how we've configured it so far:<br>
+      <li>Change your git configuration for the user and email address.&nbsp;
+        This is how we've configured it so far:<br>
         <pre># git config --global user.email "developer@cakelampvm.com"</pre>
         <pre># git config --global user.name "Developer J. Cakemo"</pre>
         If you're developing on a real project, you probably don't want the
@@ -462,9 +463,10 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <p>A git branching model that seems to work well: <a target="_blank" title="release and patch process"
         href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
     <h3>Get the network address on the guest vm</h3>
-    <p>Run this command: ifconfig</p>
-    <p>In the results, look for "inet addr".&nbsp; There may be more than one,
-      if there are multiple network interfaces.</p>
+    <p>Run this command:</p>
+    <pre># ifconfig</pre>
+    <p>In the results, look for "<span style="font-family: monospace;">inet addr</span>".&nbsp;
+      There may be more than one, if there are multiple network interfaces.</p>
     <p>The standard IP address is 10.28.42.20 for the cakelampvm.</p>
     <h3>How to cleanly reboot or shut down the guest VM</h3>
     <p>When you've got the DNS and everything integrated, these commands will
@@ -541,13 +543,12 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
           title="cakebundtu" href="https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04">https://askubuntu.com/questions/628938/how-to-install-cakephp-in-ubuntu-14-04</a></li>
       <li>Configured the two network adapters as needed (one for host-only
         network and one for nat network).&nbsp; Here's some info about
-        Virtualbox networking with two adapters similar to our setup:
-        <a target="_blank" href="https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in">https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-...</a><br>
+        Virtualbox networking with two adapters similar to our setup: <a target="_blank"
+          href="https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in">https://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-...</a><br>
       </li>
       <li>Installed and configured Samba service for the guest VM.&nbsp; The
         main config file lives in "/etc/samba/smb.conf".&nbsp; Some pointers
-        here:
-        <a target="_blank" href="https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21">https://help.ubuntu.com/community/How%20to%20Create...</a></li>
+        here: <a target="_blank" href="https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21">https://help.ubuntu.com/community/How%20to%20Create...</a></li>
       <li><br>
       </li>
     </ul>
