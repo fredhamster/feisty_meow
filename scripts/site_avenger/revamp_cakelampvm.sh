@@ -62,6 +62,8 @@ chown -R fred:fred /opt/feistymeow.org
 test_or_die "chown feisty meow to fred"
 group_perm /opt/feistymeow.org 
 test_or_die "group perms on feisty meow"
+group_perm /home/fred/apps/mapsdemo
+test_or_die "group perms on mapsdemo app"
 
 echo "Done with important permission changes."
 
