@@ -58,11 +58,14 @@ A couple of perl modules are required by some of the scripts (including the
 differ utility and the feisty meow customization system).  They can be
 installed with either apt-get or CPAN.
 
-Install using apt-get:
+Install using apt-get (on Ubuntu or Debian-based OS):
 # sudo apt-get install libfile-which-perl libtext-diff-perl
 
 or Install using perl's CPAN:
 # sudo cpan install Text::Diff File::Which
+
+or on Cygwin (MS-Windows), install with apt-cyg:
+# apt-cyg install perl-File-Which perl-Text-Diff
 
 ==============
 
