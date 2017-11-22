@@ -269,8 +269,9 @@ END\n\
 #define REPLACE(tag, replacement) \
   new_version_entry.replace_all(tag, replacement); \
 
-bool version_ini::write_rc(const version_record &to_write)
+bool version_ini::write_rc(const astring &header_store, const version_record &to_write)
 {
+  FUNCDEF("write_rc");
   astring new_version_entry(version_rc_template);
 
   // $file_ver -> w, x, y, z for version of the file.
@@ -320,7 +321,7 @@ bool version_ini::write_rc(const version_record &to_write)
   astring root_part = "/";
   root_part += _ini->load(VERSION_SECTION, ROOT, "");
 
-  astring rc_filename(astring(_path_name->dirname()) + root_part
+  astring rc_filename(header_store + "/" + root_part
       + "_version.rc");
 
   filename(rc_filename).chmod(filename::ALLOW_BOTH, filename::USER_RIGHTS);
@@ -374,8 +375,9 @@ const astring version_header_template = "\
 
 //////////////
 
-bool version_ini::write_code(const version_record &to_write)
+bool version_ini::write_code(const astring &header_store, const version_record &to_write)
 {
+  FUNCDEF("write_code");
   astring root_part = _ini->load(VERSION_SECTION, ROOT, "");
   astring root = root_part.upper();  // make upper case for naming sake.
   astring name = _ini->load(VERSION_SECTION, NAME, "");
@@ -409,7 +411,7 @@ bool version_ini::write_code(const version_record &to_write)
   // $web_address -> the web site for the company.  not actually stored.
   REPLACE("$web_address", to_write.web_address);
 
-  astring header_filename(_path_name->dirname().raw() + "/" + root_part
+  astring header_filename(header_store + "/" + root_part
       + astring("_version.h"));
 
   filename(header_filename).chmod(filename::ALLOW_BOTH, filename::USER_RIGHTS);
@@ -447,12 +449,16 @@ bool replace_version_entry(astring &full_string, const astring &look_for,
   return to_return;
 }
 
-bool version_ini::write_assembly(const version_record &to_write,
+bool version_ini::write_assembly(const astring &header_store, const version_record &to_write,
     bool do_logging)
 {
   FUNCDEF("write_assembly");
-  filename just_dir = _path_name->dirname();
-//LOG(astring("dir is set to: ") + just_dir);
+  filename just_dir = filename(header_store);
+	  //_path_name->dirname();
+
+//hmmm: make condit on debug
+LOG(astring("dir is set to: ") + just_dir);
+
   directory dir(just_dir);
   filename to_patch;
 //LOG(astring("dir has: ") + dir.files().text_form());
@@ -530,8 +536,9 @@ bool version_ini::write_assembly(const version_record &to_write,
 }
 
 bool version_ini::one_stop_version_stamp(const astring &path,
-    const astring &source_version, bool do_logging)
+    const astring &header_store, const astring &source_version, bool do_logging)
 {
+  FUNCDEF("one_stop_version_stamp");
   astring path_name = path;
   if (path_name.equal_to("."))
     path_name = application_configuration::current_directory();
@@ -569,24 +576,26 @@ bool version_ini::one_stop_version_stamp(const astring &path,
   version_ini verini(path_name);
   verini.set_record(source.get_record(), false);
 
-//  LOG(a_sprintf("The file \"%s\" contains this version information:",
-//      path_name.s()));
-//  LOG(verini.get_record().text_form());
+//put this in debug brackets
+  LOG(a_sprintf("The file \"%s\" contains this version information:",
+      path_name.s()));
+  LOG(verini.get_record().text_form());
+//...debug to here
 
-  if (!verini.write_rc(verini.get_record())) {
+  if (!verini.write_rc(header_store, verini.get_record())) {
     critical_events::alert_message(a_sprintf("Could not write the RC file in \"%s\".",
         filename(path_name).basename().raw().s()));
     return false;
   }
 
-  if (verini.library() && !verini.write_code(verini.get_record())) {
+  if (verini.library() && !verini.write_code(header_store, verini.get_record())) {
     critical_events::alert_message(astring("Could not write the C++ header file for "
         "the directory \"")
         + filename(path_name).basename() + astring("\".\n"));
     return false;
   }
 
-  if (!verini.write_assembly(verini.get_record(), do_logging)) {
+  if (!verini.write_assembly(header_store, verini.get_record(), do_logging)) {
     critical_events::alert_message(astring("Could not write the Assembly info file for "
         "the directory \"")
         + filename(path_name).basename() + astring("\".\n"));

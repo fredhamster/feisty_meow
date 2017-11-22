@@ -44,7 +44,7 @@ function locate_config_file()
   local app_dirname="$1"; shift
 
   local configfile="$WORKDIR/config/${app_dirname}.app"
-echo hoping config file would be: $configfile
+  echo "config file?: $configfile"
   if [ ! -f "$configfile" ]; then
     # this is not a good config file.  we can't auto-guess the config.
     echo -e "

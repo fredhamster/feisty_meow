@@ -19,18 +19,18 @@ source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
-check_application_dir "$APPLICATION_DIR"
+check_application_dir "$BASE_APPLICATION_PATH"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
   # no dir was passed, so guess it.
-  find_app_folder "$APPLICATION_DIR"
+  find_app_folder "$BASE_APPLICATION_PATH"
 else
-  test_app_folder "$APPLICATION_DIR" "$app_dirname"
+  test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
 
 # where we expect to find our checkout folder underneath.
-full_app_dir="$APPLICATION_DIR/$app_dirname"
+full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 
 # use our default values for the repository and theme if they're not provided.
 if [ -z "$repo_name" ]; then

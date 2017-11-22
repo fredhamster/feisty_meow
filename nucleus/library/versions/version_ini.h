@@ -80,18 +80,18 @@ public:
   bool ole_auto_registering();
     //!< returns true if this version file specifies ole auto registration.
 
-  bool write_rc(const structures::version_record &to_write);
+  bool write_rc(const basis::astring &header_store, const structures::version_record &to_write);
     //!< writes out the file 'X_version.rc' for the X library or application.
     /*!< the contents will include the information specified in "to_write",
     where X is the library name from that record. */
 
-  bool write_code(const structures::version_record &to_write);
+  bool write_code(const basis::astring &header_store, const structures::version_record &to_write);
     //!< writes out the header ('X_version.h') with the version information.
     /*!< this file is needed for other libraries or application to know this
     project's version number.  the users can make sure that the header info
     agrees with the actual version seen on the file. */
 
-  bool write_assembly(const structures::version_record &to_write, bool do_logging);
+  bool write_assembly(const basis::astring &header_store, const structures::version_record &to_write, bool do_logging);
     //!< fixes any assemblies with the info in "to_write".
 
   static bool executable(const basis::astring &path_name);
@@ -103,9 +103,11 @@ public:
     //!< specialized version ignores cache and gets version directly from file.
 
   static bool one_stop_version_stamp(const basis::astring &path,
-          const basis::astring &source_version, bool do_logging);
+          const basis::astring &header_store, const basis::astring &source_version,
+          bool do_logging);
     //!< performs version stamping using the ini file in "path".
-    /*!< "source_version" supplies the name of the main version file where
+    /*!< the created version files will be written to the "header_store".
+    "source_version" supplies the name of the main version file where
     we retrieve the current version numbers.  if that is not specified, then
     only the version header and RC file are created.  if "do_logging" is
     true, then version info will be sent to the program-wide logger. */
