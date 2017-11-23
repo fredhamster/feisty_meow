@@ -8,6 +8,11 @@
 
 feisty_path="$1"; shift
 
+if [ -z "$feisty_path" ]; then
+  echo This script requires the path to the feisty meow codebase under test.
+  exit 1
+fi
+
 export RUN_ALL_TESTS=true
 export HOME="$(mktemp -d "$feisty_path/home_store.XXXXXX")"
 cd "$feisty_path"
