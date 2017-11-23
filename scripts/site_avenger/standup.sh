@@ -47,24 +47,22 @@ elif [ -z "$app_dirname" ]; then
   print_instructions
 fi
 
-#we will require sudo later.
-#if [[ $EUID != 0 ]]; then
-#  echo "This script must be run as root or sudo."
-#  exit 1
-#fi
+# force the sudo at the start of the script, rather than waiting halfway
+# through to ask for access.
+sudo bash -c 'echo sudo permissions acquired.'
 
 source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
-check_application_dir "$APPLICATION_DIR"
+check_application_dir "$BASE_APPLICATION_PATH"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
   # no dir was passed, so guess it.
-  find_app_folder "$APPLICATION_DIR"
+  find_app_folder "$BASE_APPLICATION_PATH"
 else
-  test_app_folder "$APPLICATION_DIR" "$app_dirname"
+  test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
 
 #echo "!! domain being added is: $DOMAIN_NAME"
