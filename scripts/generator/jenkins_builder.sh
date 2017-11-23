@@ -16,9 +16,10 @@ fi
 export RUN_ALL_TESTS=true
 export HOME="$(mktemp -d "$feisty_path/home_store.XXXXXX")"
 cd "$feisty_path"
+export FEISTY_MEOW_APEX="$(\pwd)"
+export FEISTY_MEOW_SCRIPTS=$FEISTY_MEOW_APEX/scripts
 bash "$feisty_path/scripts/core/reconfigure_feisty_meow.sh"
 source "$feisty_path/scripts/core/launch_feisty_meow.sh"
-echo after probably hosed launch
 var FEISTY_MEOW_APEX FEISTY_MEOW_SCRIPTS
 bash "$feisty_path/scripts/generator/produce_feisty_meow.sh"
 
