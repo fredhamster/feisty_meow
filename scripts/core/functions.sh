@@ -510,7 +510,8 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
 
     if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
       echo "copying custom scripts for $custom_user"
-      netcp "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
+      rsync -avz "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
+      test_or_continue "copying customization scripts"
 #hmmm: could save output to show if an error occurs.
     fi
     echo
