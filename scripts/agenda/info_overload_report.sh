@@ -127,7 +127,7 @@ analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch 
 
 # and then count up the things that we think will be cleaned soon, but one thing we have learned
 # unsorted files haven't been categorized yet.
-analyze_hierarchy_and_report ~/cloud/disordered "unsorted files"
+analyze_hierarchy_and_report ~/cloud/disordered "disordered and maybe deranged files"
 
 # we now consider the backlog of things to read to be a relevant fact.  this is going to hose
 # up our weight accounting considerably.
@@ -151,7 +151,7 @@ analyze_by_dir_patterns "lab experiments" ~/cloud/experiment*
 analyze_by_dir_patterns "jobby work tasks" ~/cloud/job* 
 
 # scan all the trivial project folders.
-analyze_by_dir_patterns "trivialities" ~/cloud/trivia*
+analyze_by_dir_patterns "trivialities and back burner items" ~/cloud/trivia* ~/cloud/backburn*
 
 full_report+="================================================================\n\
 "
