@@ -8,7 +8,7 @@ source "$WORKDIR/../core/launch_feisty_meow.sh"
 
 #hmmm: why all the hard-coded paths below?
 
-/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
+/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=2048
 test_or_die "creating swap file"
 
 /bin/chmod 600 /var/swap.1
