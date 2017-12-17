@@ -149,7 +149,34 @@ else
   restart_apache
 fi
 
+##############
 
+# fix up bind so that we think of any address with cakelampvm.com on the end
+# as being on the vm.  this is already true for some specific sites, but we
+# want the wildcard enabled to ease the use of DNS for windows folks.
+
+grep -q "\*[[:blank:]]*IN A[[:blank:]]*10.28.42.20" /etc/bind/cakelampvm.com.conf
+if [ $? -eq 0 ]; then
+  # already present.
+  echo the bind settings for wildcard domains off of cakelampvm.com seems to already be present.  good deal.
+else
+  echo "
+; our bind magic, a wildcard domain, for all other sites with cakelampvm.com
+; in the domain.  this forces any other sites besides the ones above to route
+; to the actual vm IP address, which currently is singular and very fixated.
+*				IN A		10.28.42.20
+				IN HINFO	"linux vm" "ubuntu"
+" >> /etc/bind/cakelampvm.com.conf
+
+restart_bind
+
+##############
+
+
+
+
+
+##############
 ##############
 
 # sequel--tell them they're great and show the hello again also.
