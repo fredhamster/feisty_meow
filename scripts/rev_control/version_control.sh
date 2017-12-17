@@ -15,11 +15,23 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 export MAX_DEPTH=5
 
 # use our splitter tool for lengthy output if it's available.
-if [ ! -z "$(which splitter)" ]; then
+if [ ! -z "$(which splitter 2>/dev/null)" ]; then
   TO_SPLITTER="$(which splitter)"
+  # calculate the number of columsn in the terminal.
+  cols=$(get_maxcols)
+  TO_SPLITTER+=" --maxcol $(($cols - 1))"
 else
   TO_SPLITTER=cat
 fi
+
+##############
+
+#hmmm: move this to core
+# this makes the status of pipe N into the main return value.
+function promote_pipe_return()
+{
+  ( exit ${PIPESTATUS[$1]} )
+}
 
 ##############
 
@@ -52,7 +64,7 @@ function do_checkin()
   if [ $nicedir == "." ]; then
     nicedir=$(\pwd)
   fi
-  local blatt="echo checking in '$nicedir'..."
+  local blatt="echo -n checking in '$nicedir'...  "
 
   do_update "$directory"
   test_or_die "repository update--this should be fixed before check-in."
@@ -77,14 +89,26 @@ function do_checkin()
       $blatt
 
       # put all changed and new files in the commit.  not to everyone's liking.
-      git add --all .
+      git add --all . | $TO_SPLITTER
+      promote_pipe_return 0
       test_or_die "git add all new files"
 
       # see if there are any changes in the local repository.
       if ! git diff-index --quiet HEAD --; then
         # tell git about all the files and get a check-in comment.
+#hmmm: begins to look like, you guessed it, a reusable bit that all commit actions could enjoy.
         git commit .
-        test_or_die "git commit"
+        retval=$?
+        test_or_continue "git commit"
+        if [ $retval -ne 0 ]; then
+          echo -e -n "Commit failed or was aborted:\nShould we continue with other check-ins? [y/N] "
+          local line
+          read line
+          if [[ "${line:0:1}" != "y" ]]; then
+            echo "Stopping check-in process due to missing commit and user request."
+            exit 1
+          fi
+        fi
       fi
 
       # a new set of steps we have to take to make sure the branch integrity is good.
@@ -94,7 +118,8 @@ function do_checkin()
       # there could already be committed changes that haven't been pushed yet.
 
       # upload any changes to the upstream repo so others can see them.
-      git push origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      git push --tags origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      promote_pipe_return 0
       test_or_die "git push"
 
     fi
@@ -165,7 +190,7 @@ function do_report_new
   return 0
 }
 
-# checks in all the folders in a specified list.
+# checks in all the folders in the specified list.
 function checkin_list()
 {
   # make the list of directories unique.
@@ -183,7 +208,7 @@ function checkin_list()
     if [[ $outer =~ /.* ]]; then
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
-      do_checkin $outer
+      do_checkin "$outer"
       test_or_die "running check-in (absolute) on path: $outer"
       sep 28
     else
@@ -191,7 +216,7 @@ function checkin_list()
         # add in the directory component to see if we can find the folder.
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
-        do_checkin $path
+        do_checkin "$path"
         test_or_die "running check-in (relative) on path: $path"
         sep 28
       done
@@ -201,23 +226,61 @@ function checkin_list()
   restore_terminal_title
 }
 
-# takes out the first few carriage returns that are in the input.
-function squash_first_few_crs()
+# does a careful git update on all the folders in the specified list.
+function puff_out_list()
 {
-  i=0
-  while read input_text; do
-    i=$((i+1))
-    if [ $i -le 5 ]; then
-      echo -n "$input_text  "
+  # make the list of directories unique.
+  local list="$(uniquify $*)"
+
+  save_terminal_title
+
+  # turn repo list back into an array.
+  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+
+  local outer inner
+
+#hmmm: once again, seeing some reusable code in this loop...
+  for outer in "${repository_list[@]}"; do
+    # check the repository first, since it might be an absolute path.
+    if [[ $outer =~ /.* ]]; then
+      # yep, this path is absolute.  just handle it directly.
+      if [ ! -d "$outer" ]; then continue; fi
+      do_careful_git_update "$outer"
+      test_or_die "running puff-out (absolute) on path: $outer"
+      sep 28
     else
-      echo $input_text
+      for inner in $list; do
+        # add in the directory component to see if we can find the folder.
+        local path="$inner/$outer"
+        if [ ! -d "$path" ]; then continue; fi
+        do_careful_git_update "$path"
+        test_or_die "running puff-out (relative) on path: $path"
+        sep 28
+      done
     fi
   done
-  if [ $i -le 3 ]; then
-    # if we're still squashing eols, make sure we don't leave them hanging.
-    echo
-  fi
+
+  restore_terminal_title
 }
+
+#hmmm: to go below.
+### takes out the first few carriage returns that are in the input.
+##function squash_first_few_crs()
+##{
+  ##i=0
+  ##while read input_text; do
+    ##i=$((i+1))
+    ##if [ $i -le 5 ]; then
+      ##echo -n "$input_text  "
+    ##else
+      ##echo $input_text
+    ##fi
+  ##done
+  ##if [ $i -le 3 ]; then
+    ### if we're still squashing eols, make sure we don't leave them hanging.
+    ##echo
+  ##fi
+##}
 
 #hmmm: the below are git specific and should be named that way.
 
@@ -250,23 +313,43 @@ function check_branch_state()
 {
   local branch="$1"; shift
 
+  if [ -z "$branch" ]; then
+    echo "No branch was passed to check branch state."
+    return 1
+  fi
+
   local to_return=120  # unknown issue.
 
   local local_branch=$(git rev-parse @)
   local remote_branch=$(git rev-parse "$branch")
   local merge_base=$(git merge-base @ "$branch")
 
+  local to_echo=
   if [ "$local_branch" == "$remote_branch" ]; then
-    echo "okay"
+    to_echo="okay"
   elif [ "$local_branch" == "$merge_base" ]; then
-    echo "needs_pull"
+    to_echo="needs_pull"
   elif [ "$remote_branch" == "$merge_base" ]; then
-    echo "needs_push"
+    to_echo="needs_push"
   else
-    echo "diverged"
+    to_echo="diverged"
   fi
 
+  echo -n "$to_echo"
+
   return $to_return
+}
+
+# only shows the branch state if it's not okay.
+# note that this is not the same as a conditional branch (ha ha).
+function show_branch_conditionally()
+{
+  local this_branch="$1"; shift
+
+  local state=$(check_branch_state "$this_branch")
+  if [ "$state" != "okay" ]; then
+    echo "=> branch '$this_branch' state is not clean: $state"
+  fi
 }
 
 # the git update process just gets more and more complex when you bring in
@@ -284,41 +367,45 @@ function do_careful_git_update()
     return 0
   fi
 
+  local this_branch="$(my_branch_name)"
+
+  show_branch_conditionally "$this_branch"
+
   # first update all our remote branches to their current state from the repos.
-  git remote update
+  git remote update | $TO_SPLITTER
+  promote_pipe_return 0
   test_or_die "git remote update"
 
-  local this_branch="$(my_branch_name)"
-#appears to be useless; reports no changes when we need to know about remote changes that do exist:
-#hmmm: trying it out again now that things are better elsewhere.  let's see what it says.
-  state=$(check_branch_state "$this_branch")
-  echo "=> branch '$this_branch' state is: $state"
+  show_branch_conditionally "$this_branch"
 
   # this code is now doing what i have to do when i repair the repo.  and it seems to be good so far.
   local branch_list=$(all_branch_names)
   local bran
   for bran in $branch_list; do
 #    echo "synchronizing remote branch: $bran"
-    git checkout "$bran"
+    git checkout "$bran" | $TO_SPLITTER
+    promote_pipe_return 0
     test_or_die "git switching checkout to remote branch: $bran"
 
-    state=$(check_branch_state "$bran")
-    echo "=> branch '$bran' state is: $state"
+    show_branch_conditionally "$this_branch"
 
     remote_branch_info=$(git ls-remote --heads origin $bran 2>/dev/null)
     if [ ! -z "$remote_branch_info" ]; then
       # we are pretty sure the remote branch does exist.
-      git pull --no-ff origin "$bran"
+      git pull --no-ff origin "$bran" | $TO_SPLITTER
+      promote_pipe_return 0
     fi
     test_or_die "git pull of remote branch: $bran"
   done
   # now switch back to our branch.
-  git checkout "$this_branch"
+  git checkout "$this_branch" | $TO_SPLITTER
+  promote_pipe_return 0
   test_or_die "git checking out our current branch: $this_branch"
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
-  git pull --no-ff --all
+  git pull --no-ff --all | $TO_SPLITTER
+  promote_pipe_return 0
   test_or_die "git pulling all upstream"
 
   popd &>/dev/null
@@ -343,19 +430,21 @@ function do_update()
     if test_writeable "CVS"; then
       $blatt
       cvs update . | $TO_SPLITTER
+      promote_pipe_return 0
       test_or_die "cvs update"
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
       $blatt
       svn update . | $TO_SPLITTER
+      promote_pipe_return 0
       test_or_die "svn update"
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
       git pull --no-ff 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-      if [ ${PIPESTATUS[0]} -ne 0 ]; then false; fi
+      promote_pipe_return 0
       test_or_die "git pull of origin without fast forwards"
     fi
   else
@@ -426,8 +515,8 @@ function generate_rev_ctrl_filelist()
 
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
-  \rm "$tempfile"
   echo "$sortfile"
+  \rm "$tempfile"
 }
 
 # iterates across a list of directories contained in a file (first parameter).
@@ -462,6 +551,6 @@ function perform_revctrl_action_on_file()
 
   restore_terminal_title
 
-  rm $tempfile
+  rm "$tempfile"
 }
 

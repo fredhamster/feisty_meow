@@ -9,7 +9,21 @@
 # Feel free to send updates to: [ fred@gruntose.com ]
 ##############
 
-# a list of core aliases for feisty meow codebase.
+# this file provides a list of core aliases for feisty meow codebase.
+
+##############
+
+# call the generated aliases file, if it exists.
+# we do this first so that our core aliases get a chance to override the aliases
+# based on scripts.
+
+if [ -f "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh" ]; then 
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo loading script aliases...; fi
+  source "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh"
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo done loading script aliases.; fi
+fi
+
+##############
 
 # repurposes certain commands that feisty meow does a little differently.
 define_yeti_alias cls='clear_colormap; clear'
@@ -69,13 +83,32 @@ define_yeti_alias lesser='bash $FEISTY_MEOW_SCRIPTS/files/lesser.sh'
 
 # some aliases that are just generally nice to have.
 define_yeti_alias aliases=alias
-define_yeti_alias calc='kcalc'
+define_yeti_alias calc='galculator'
 define_yeti_alias cd..='\cd ..'
 define_yeti_alias cd...='\cd ../..'
 define_yeti_alias cd....='\cd ../../..'
 define_yeti_alias cd.....='\cd ../../../..'
 define_yeti_alias np='gvim'
 define_yeti_alias up='cd ..'
+
+##############
+
+# some information about the feisty meow codebase itself.
+
+define_yeti_alias feisty_branch='pushd $FEISTY_MEOW_APEX ; git branch ; popd'
+
+##############
+
+# some important retreads on aliases that provide a sudo-ized version of other scripts.
+
+define_yeti_alias snarf_linux_config="sudo -E PERLLIB=\$PERLLIB perl \$FEISTY_MEOW_SCRIPTS/archival/snarf_linux_config.pl"
+define_yeti_alias add_domain="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_domain.sh"
+define_yeti_alias remove_domain="sudo bash \$FEISTY_MEOW_SCRIPTS/system/remove_domain.sh"
+define_yeti_alias add_apache_site="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_apache_site.sh"
+define_yeti_alias remove_apache_site="sudo bash \$FEISTY_MEOW_SCRIPTS/system/remove_apache_site.sh"
+
+#hmmm: some magma intrusions from the fred customizations...
+define_yeti_alias revamp_cakelampvm="sudo bash \"$FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm.sh\""
 
 ##############
 
@@ -95,7 +128,7 @@ define_yeti_alias cputemp='acpi -t'
 # makes root user's home directory's permissions right.
 define_yeti_alias reroot='chown -R root:root /root'
 # yes, these are really helpful...
-define_yeti_alias whoareyou='echo -e "Hello, I am a computer named $(hostname)\nand I'\''m very pleased to meet you."'
+define_yeti_alias whoareyou='echo -e "Hello, I am a computer named $(hostname)\nand I am very pleased to meet you."'
 define_yeti_alias whereami='echo whoa dude, try not to think about it...'
 define_yeti_alias why='echo We all wonder what the point of the universe is at times.  If you figure it all out, please write us.'
 
@@ -103,24 +136,15 @@ define_yeti_alias why='echo We all wonder what the point of the universe is at t
 
 ##############
 
-# call the generated aliases file, if it exists.
-if [ -f "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh" ]; then 
-  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo loading script aliases...; fi
-  source "$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh"
-  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo done loading script aliases.; fi
-fi
-
-##############
-
-# remove the fredization macro if it was defined, helping to avoid running
-# the shell scripts twice for users like root that don't always load this
-# stuff.
-unalias fredme &>/dev/null
+# remove the "fredization" or "feistymeowization" macros if they're defined,
+# which reduces the chance of loading the shell environment twice for users
+# like root that don't load feisty meow automatically.
+unalias fredme feistyme &>/dev/null
 
 ##############
 
 # set the sentinel alias that says this file was handled.
-alias CORE_ALIASES_LOADED=true
+#alias CORE_ALIASES_LOADED=true
 
 ##############
 

@@ -11,11 +11,16 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-# get our configuration loaded.
+# get our configuration loaded, if we know the config file.
+# if there is none, we will use our default version.
 export SITE_MANAGEMENT_CONFIG_FILE
 if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
   SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/config/default.app"
+  echo "Site management config file was not set.  Using default:"
+  echo "  $SITE_MANAGEMENT_CONFIG_FILE"
 fi
+
+# load in at least the default version to get us moving.
 source "$SITE_MANAGEMENT_CONFIG_FILE"
 test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
 
@@ -31,6 +36,33 @@ function check_application_dir()
     mkdir "$appdir"
     test_or_die "Making apps directory when not already present"
   fi
+}
+
+# tries to find an appropriate config file for the application.
+function locate_config_file()
+{
+  local app_dirname="$1"; shift
+
+  local configfile="$WORKDIR/config/${app_dirname}.app"
+  echo "config file?: $configfile"
+  if [ ! -f "$configfile" ]; then
+    # this is not a good config file.  we can't auto-guess the config.
+    echo -e "
+There is no specific site configuration file in:
+  $configfile
+We will continue onward using the default and hope that this project follows
+the standard pattern for cakephp projects."
+    # we'll pull in the default config file we set earlier; this will
+    # reinitialize some variables based on the app name.
+  else
+    # they gave us a valid config file.  let's try using it.
+    export SITE_MANAGEMENT_CONFIG_FILE="$configfile"
+  fi
+
+  # try to load the config.
+  source "$SITE_MANAGEMENT_CONFIG_FILE"
+  test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
+
 }
 
 # this function will seek out top-level directories in the target directory passed in.
@@ -98,6 +130,8 @@ function test_app_folder()
     mkdir "$combo"
     test_or_die "Making application directory when not already present"
   fi
+
+  locate_config_file "$dir"
 }
 
 # eases some permissions to enable apache to write log files and do other shopkeeping.
@@ -144,6 +178,9 @@ function update_repo()
   local checkout_dirname="$1"; shift
   local repo_root="$1"; shift
   local repo_name="$1"; shift
+
+echo here are parms in update repo:
+var full_app_dir checkout_dirname repo_root repo_name
 
   # forget any prior value, since we are going to validate the path.
   unset site_store_path

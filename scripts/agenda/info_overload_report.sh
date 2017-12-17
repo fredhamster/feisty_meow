@@ -116,6 +116,9 @@ analyze_hierarchy_and_report ~/cloud/urgent "high priority (aieeee!)"
 # notes are individual files of tasks, usually, although some are combined.
 analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes (externalities)"
 
+# web site development tasks.
+analyze_hierarchy_and_report ~/cloud/webular "web design (ideas and tasks)"
+
 # feisty notes are about feisty meow(r) concerns ltd codebase development.
 analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (mondo coding)"
 
@@ -129,6 +132,11 @@ analyze_hierarchy_and_report ~/cloud/disordered "unsorted files"
 # we now consider the backlog of things to read to be a relevant fact.  this is going to hose
 # up our weight accounting considerably.
 analyze_hierarchy_and_report ~/cloud/reading "reading list (for a quiet afternoon)"
+
+####
+
+# vocation is a prefix for anything i consider part of my life's work.
+analyze_by_dir_patterns "life's work and other oddities" ~/cloud/vocation*
 
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active issues" ~/cloud/active*
