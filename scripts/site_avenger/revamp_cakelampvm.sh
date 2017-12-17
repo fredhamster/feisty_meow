@@ -176,13 +176,22 @@ fi
 # fix samba configuration for (ass-headed) default of read-only in user homes.
 # why add a necessary feature if you're just going to cripple it by default?
 
-search_replace a b
-/etc/samba/smb.conf 
+pattern="[#;][[:blank:]]*read only = yes"
+replacement="read only = no"
+
+# first see if we've already done this.
+# if we find any occurrence of the replacement, we assume we already did it.
+# ** we're assuming a lot about the structure of the samba config file!
+grep -q "$replacement" /etc/samba/smb.conf 
 if [ $? -ne 0 ]; then
-  echo "the samba configuration has already been fixed for user homes, so that's fine."
+  echo "the samba configuration has already been fixed for user homes, s'cool."
 else
+  # so not there yet; we need to make the replacement.
+  sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
+  test_or_die "patching samba configuration to enable write acccess on user home dirs"
+  # sweet, looks like that worked...
   restart_samba
-  echo successfully patched the samba configuration to enable writes on user home directories.  super cool.
+  echo successfully patched the samba configuration to enable writes on user home directories.  way cool.
 fi
 
 ##############
