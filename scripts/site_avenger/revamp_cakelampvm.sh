@@ -145,8 +145,8 @@ search_replace "^[[:blank:]]*Header always set Strict-Transport-Security.*" "# n
 if [ $? -ne 0 ]; then
   echo the apache tls-enabling.conf file seems to have already been patched to disable strict transport security.  good.
 else
-  echo successfully patched the apache tls-enabling.conf file to disable strict transport security.  awesome.
   restart_apache
+  echo successfully patched the apache tls-enabling.conf file to disable strict transport security.  awesome.
 fi
 
 ##############
@@ -167,11 +167,32 @@ else
 *				IN A		10.28.42.20
 				IN HINFO	"linux vm" "ubuntu"
 " >> /etc/bind/cakelampvm.com.conf
-
-restart_bind
+  restart_bind
+  echo "successfully added wildcard domains to the cakelampvm.com bind configuration, so we're still on track for greatness."
+fi
 
 ##############
 
+# fix samba configuration for (ass-headed) default of read-only in user homes.
+# why add a necessary feature if you're just going to cripple it by default?
+
+pattern="[#;][[:blank:]]*read only = yes"
+replacement="read only = no"
+
+# first see if we've already done this.
+# if we find any occurrence of the replacement, we assume we already did it.
+# ** we're assuming a lot about the structure of the samba config file!
+grep -q "$replacement" /etc/samba/smb.conf 
+if [ $? -ne 0 ]; then
+  echo "the samba configuration has already been fixed for user homes, s'cool."
+else
+  # so not there yet; we need to make the replacement.
+  sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
+  test_or_die "patching samba configuration to enable write acccess on user home dirs"
+  # sweet, looks like that worked...
+  restart_samba
+  echo successfully patched the samba configuration to enable writes on user home directories.  way cool.
+fi
 
 ##############
 ##############
