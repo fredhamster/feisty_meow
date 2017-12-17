@@ -140,7 +140,8 @@ fi
 # https site once the domain name switch has occurred.
 
 # we operate only on our own specialized tls conf file.  hopefully no one has messed with it besides revamp.
-search_replace "^[ 	]*Header always set Strict-Transport-Security.*" "# not good for cakelampvm.com -- Header always set Strict-Transport-Security \"max-age=63072000; includeSubdomains;\"" /etc/apache2/conf-library/tls-enabling.conf
+# note the use of the character class :blank: below to match spaces or tabs.
+search_replace "^[[:blank:]]*Header always set Strict-Transport-Security.*" "# not good for cakelampvm.com -- Header always set Strict-Transport-Security \"max-age=63072000; includeSubdomains;\"" /etc/apache2/conf-library/tls-enabling.conf
 if [ $? -ne 0 ]; then
   echo the apache tls-enabling.conf file seems to have already been patched to disable strict transport security.  good.
 else
