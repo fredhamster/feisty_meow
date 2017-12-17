@@ -145,8 +145,8 @@ search_replace "^[[:blank:]]*Header always set Strict-Transport-Security.*" "# n
 if [ $? -ne 0 ]; then
   echo the apache tls-enabling.conf file seems to have already been patched to disable strict transport security.  good.
 else
-  echo successfully patched the apache tls-enabling.conf file to disable strict transport security.  awesome.
   restart_apache
+  echo successfully patched the apache tls-enabling.conf file to disable strict transport security.  awesome.
 fi
 
 ##############
@@ -167,11 +167,23 @@ else
 *				IN A		10.28.42.20
 				IN HINFO	"linux vm" "ubuntu"
 " >> /etc/bind/cakelampvm.com.conf
-
-restart_bind
+  restart_bind
+  echo "successfully added wildcard domains to the cakelampvm.com bind configuration, so we're still on track for greatness."
+fi
 
 ##############
 
+# fix samba configuration for (ass-headed) default of read-only in user homes.
+# why add a necessary feature if you're just going to cripple it by default?
+
+search_replace a b
+/etc/samba/smb.conf 
+if [ $? -ne 0 ]; then
+  echo "the samba configuration has already been fixed for user homes, so that's fine."
+else
+  restart_samba
+  echo successfully patched the samba configuration to enable writes on user home directories.  super cool.
+fi
 
 ##############
 ##############
