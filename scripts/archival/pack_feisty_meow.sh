@@ -14,7 +14,7 @@ base_dir="$(basename "$FEISTY_MEOW_APEX")"
 pushd $parent_dir
 
 # zip up feisty meow, but exclude the file names we never want to see.
-tar -h -czf $TEMPO_FILE $base_dir $XC*/*.tar.gz $XC*/*.zip $XC*/waste/* $XC*/logs/* $XC*/binaries/* $XC*.git* $XC*/code_guide/* $XC*/kona/bin/*
+tar -h -czf $TEMPO_FILE $base_dir $XC*/*.tar.gz $XC*/*.zip $XC*/waste/* $XC*/logs/* $XC*/binaries/* $XC*.git* $XC*/kona/bin/* $XC*/code_guide
 
 # now move the newest version into its resting place.  this prepares the
 # feisty_meow package for uploading.
