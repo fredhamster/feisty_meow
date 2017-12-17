@@ -137,7 +137,7 @@ fi
 ##############
 
 # fix up the apache site so that HSTS is disabled.  otherwise we can't view
-# https site once the domain name switch has occurred.
+# the https site for cakelampvm.com once the domain name switch has occurred.
 
 # we operate only on our own specialized tls conf file.  hopefully no one has messed with it besides revamp.
 # note the use of the character class :blank: below to match spaces or tabs.
@@ -149,6 +149,9 @@ else
   restart_apache
 fi
 
+##############
+
+# 
 
 ##############
 
