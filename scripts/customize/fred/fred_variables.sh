@@ -10,7 +10,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
 
   # The gruntose web site is expected to reside below, if it exists at all.
   export WEBBED_SITES=$HOME/web
-  if [ "$(hostname)" = "zooty.koeritz.com" ]; then
+  if [ "$(hostname)" = "hamstertronic" ]; then
     export WEBBED_SITES=/var/www
   fi
 
