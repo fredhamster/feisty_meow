@@ -17,11 +17,14 @@ pushd $parent_dir
 
 # archive feisty meow current state, but exclude the file names we never want
 # to see in the archive.  the exclude vcs flag takes care of excluding
-# revision control system private dirs.  first line of excludes is for the
-# code guide files.  this should wash out the majority of those fat things.
+# revision control system private dirs.  first chunk of excludes is for the
+# code guide files; this should wash out the majority of those fat things.
 # next line is to exclude archives that shouldn't be in the output file.
 tar -h -cz --exclude-vcs -f $TEMPO_FILE $base_dir \
-  ${XC}*8cpp_source.html ${XC}*8h__dep__incl.map ${XC}*8h__dep__incl.md5 ${XC}*8h__dep__incl.png ${XC}*8h.html
+\
+  ${XC}*8cpp_source.html ${XC}*8h__dep__incl.map ${XC}*8h__dep__incl.md5 ${XC}*8h__dep__incl.png ${XC}*8h.html \
+  ${XC}*8h__incl.png ${XC}*8h_source.html ${XC}8h__dep__incl.md5 ${XC}8cpp.js \
+\
   ${XC}*.tar.gz ${XC}*.zip \
 
 # note: not currently excluded!  cannot do these with --exclude= flag!
