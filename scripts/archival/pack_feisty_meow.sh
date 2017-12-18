@@ -22,8 +22,9 @@ pushd $parent_dir
 # next line is to exclude archives that shouldn't be in the output file.
 tar -h -cz --exclude-vcs -f $TEMPO_FILE $base_dir \
 \
-  ${XC}*8cpp_source.html ${XC}*8h__dep__incl.map ${XC}*8h__dep__incl.md5 ${XC}*8h__dep__incl.png ${XC}*8h.html \
-  ${XC}*8h__incl.png ${XC}*8h_source.html ${XC}8h__dep__incl.md5 ${XC}8cpp.js \
+  ${XC}*incl.map ${XC}*incl.md5 ${XC}*incl.png \
+  ${XC}*8h.html ${XC}*8*source.html \
+  ${XC}*8cpp.js ${XC}*8h.js \
 \
   ${XC}*.tar.gz ${XC}*.zip \
 
