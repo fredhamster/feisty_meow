@@ -22,7 +22,12 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 # new requirement is to get the sql root password, since we need to do some sql db configuration.
 echo -n "Please enter the MySQL root account password: "
+# turn off echo but remember former setting.
+stty_orig=`stty -g`
+stty -echo
 read mysql_passwd
+# turn echo back on.
+stty $stty_orig
 if [ -z "$mysql_passwd" ]; then
   echo "This script must have the sql root password to proceed."
   exit 1
