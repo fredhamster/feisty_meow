@@ -30,6 +30,8 @@ fi
 
 ##############
 
+sep
+
 echo "Regenerating feisty meow loading dock."
 
 reconfigure_feisty_meow
@@ -84,6 +86,8 @@ echo "Done with important permission changes."
 #
 ##############
 
+sep
+
 echo "Updating developer welcome file."
 
 # only update hello if they've still got the file there.  we don't want to
@@ -97,6 +101,8 @@ fi
 ##############
 
 # install a better editor app.
+
+sep
 
 echo "The script is about to install the bluefish editor and some dependencies.
 If the app is not already installed, then this process takes only about a
@@ -117,6 +123,9 @@ test_or_continue "installing bluefish editor"
 # which we've done as a prefix on the config for some reason.  makes the
 # code below easy at least.
 if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
+
+  sep
+
   # the old site is in place still, so let's update that.
   echo "Updating default web sites to latest version."
 
@@ -150,6 +159,8 @@ fi
 # fix up the apache site so that HSTS is disabled.  otherwise we can't view
 # the https site for cakelampvm.com once the domain name switch has occurred.
 
+sep
+
 # we operate only on our own specialized tls conf file.  hopefully no one has messed with it besides revamp.
 # note the use of the character class :blank: below to match spaces or tabs.
 search_replace "^[[:blank:]]*Header always set Strict-Transport-Security.*" "# not good for cakelampvm.com -- Header always set Strict-Transport-Security \"max-age=63072000; includeSubdomains;\"" /etc/apache2/conf-library/tls-enabling.conf
@@ -166,17 +177,28 @@ fi
 # as being on the vm.  this is already true for some specific sites, but we
 # want the wildcard enabled to ease the use of DNS for windows folks.
 
+sep
+
 grep -q "\*[[:blank:]]*IN A[[:blank:]]*10.28.42.20" /etc/bind/cakelampvm.com.conf
 if [ $? -eq 0 ]; then
   # already present.
   echo the bind settings for wildcard domains off of cakelampvm.com seems to already be present. 
 else
   echo "
+
+
+;;;;;;
+
 ; our bind magic, a wildcard domain, for all other sites with cakelampvm.com
 ; in the domain.  this forces any other sites besides the ones above to route
 ; to the actual vm IP address, which currently is singular and very fixated.
 *				IN A		10.28.42.20
 				IN HINFO	"linux vm" "ubuntu"
+
+;;;;;;
+
+
+
 " >> /etc/bind/cakelampvm.com.conf
   restart_bind
   echo "successfully added wildcard domains to the cakelampvm.com bind configuration."
@@ -185,7 +207,9 @@ fi
 ##############
 
 # fix samba configuration for (ass-headed) default of read-only in user homes.
-# why add a necessary feature if you're just going to cripple it by default?
+# why cripple a necessary feature by default?
+
+sep
 
 pattern="[#;][[:blank:]]*read only = yes"
 replacement="read only = no"
@@ -201,6 +225,8 @@ echo successfully patched the samba configuration to enable writes on user home 
 ##############
 
 # set up some crucial users in the mysql db that we seem to have missed previously.
+
+sep
 
 mysql -u root -p"$mysql_passwd" <<EOF
   create user 'root'@'%' IDENTIFIED BY '$mysql_passwd';
@@ -218,8 +244,10 @@ test_or_die "configuring root, wampcake and lampcake users on mysql"
 
 # add the latest version of the cakelampvm environment variables for apache.
 
+sep
+
 # drop existing file, if already configured.  ignore errors.
-a2disconf env_vars_cakelampvm
+a2disconf env_vars_cakelampvm &>/dev/null
 
 # plug in the new version, just stomping anything there.
 # note: we only expect to have one version of the env_vars dir at a time in place in feisty...
@@ -237,10 +265,8 @@ echo Successfully configured the apache2 environment variables needed for cakela
 
 # sequel--tell them they're great and show the hello again also.
 
-echo "
+sep
 
-
-"
 regenerate
 test_or_die "regenerating feisty meow scripts"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
