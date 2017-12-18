@@ -23,8 +23,15 @@ pushd $parent_dir
 tar -h -cz --exclude-vcs -f $TEMPO_FILE \
 \
   ${XC}*incl.map ${XC}*incl.md5 ${XC}*incl.png \
-  ${XC}*8h.html ${XC}*8*source.html \
+  ${XC}*8h.html ${XC}*8c.html ${XC}*8cpp.html ${XC}*8*source.html \
+  ${XC}class*html ${XC}class*js ${XC}class*members.html \
+  ${XC}struct*html ${XC}struct*js ${XC}struct*members.html \
+  ${XC}globals*html ${XC}functions*html \
+  ${XC}navtree*js ${XC}inherit_graph_* \
+  ${XC}namespace*js ${XC}namespace*html \
+  ${XC}dir_*html ${XC}dir_*map ${XC}dir_*md5 ${XC}dir_*png ${XC}dir_*js \
   ${XC}*8cpp.js ${XC}*8h.js \
+  ${XC}*graph.map ${XC}*graph.md5 ${XC}*graph.png \
 \
   ${XC}*.tar.gz ${XC}*.zip \
 \
