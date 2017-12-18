@@ -229,13 +229,13 @@ echo successfully patched the samba configuration to enable writes on user home 
 sep
 
 mysql -u root -p"$mysql_passwd" <<EOF
-  create user 'root'@'%' IDENTIFIED BY '$mysql_passwd';
+  create user if not exists 'root'@'%' IDENTIFIED BY '$mysql_passwd';
   grant all privileges on *.* TO 'root'@'%' with grant option;
 
-  create user 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
+  create user if not exists 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
   grant all privileges on *.* TO 'wampcake'@'%' with grant option;
 
-  create user 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
+  create user if not exists 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
   grant all privileges on *.* TO 'lampcake'@'%' with grant option;
 EOF
 test_or_die "configuring root, wampcake and lampcake users on mysql"
