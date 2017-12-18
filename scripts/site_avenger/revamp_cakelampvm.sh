@@ -20,6 +20,16 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 ##############
 
+# new requirement is to get the sql root password, since we need to do some sql db configuration.
+echo -n "Please enter the MySQL root account password: "
+read mysql_passwd
+if [ -z "$mysql_passwd" ]; then
+  echo "This script must have the sql root password to proceed."
+  exit 1
+fi
+
+##############
+
 echo "Regenerating feisty meow loading dock."
 
 reconfigure_feisty_meow
@@ -122,8 +132,9 @@ if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
   rm -f /etc/apache2/sites-available/000-default.conf 
   test_or_die "removing old apache site"
 
-  # copy in our new 000 version (which  
-  cp $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
+  # copy in our new version of the default page.
+#hmmm: would be nice if this worked without mods for any new version, besides just 001.  see apache env var file below for example implem.
+  cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
       /etc/apache2/sites-available
   test_or_die "installing new apache default sites"
 
@@ -193,6 +204,42 @@ else
   restart_samba
   echo successfully patched the samba configuration to enable writes on user home directories.  way cool.
 fi
+
+##############
+
+# set up some crucial users in the mysql db that we seem to have missed previously.
+
+mysql -u root -p "$mysql_passwd" <<EOF
+  create user 'root'@'%' IDENTIFIED BY '$mysql_passwd';
+  grant all privileges on *.* TO 'root'@'%' with grant option;
+
+  create user 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'wampcake'@'%' with grant option;
+
+  create user 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'lampcake'@'%' with grant option;
+EOF
+test_or_die "configuring root, wampcake and lampcake users on mysql"
+
+##############
+
+# add the latest version of the cakelampvm environment variables for apache.
+
+echo Setting up environment variables for apache2...
+
+# drop existing file, if already configured.  ignore errors.
+a2disconf env_vars_cakelampvm
+
+# plug in the new version, just stomping anything there.
+# note: we only expect to have one version of the env_vars dir at a time in place in feisty...
+cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/env_vars.*/env_vars_cakelampvm.conf /etc/apache2/conf-available
+test_or_die "copying environment variables file into place"
+
+# enable the new version of the config file.
+a2enconf env_vars_cakelampvm
+test_or_die "enabling the new cakelampvm environment config for apache"
+
+echo Successfully configured the apache2 environment variables needed for cakelampvm.
 
 ##############
 ##############

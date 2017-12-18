@@ -72,8 +72,16 @@ test_or_die "Setting up domain: $DOMAIN_NAME"
 
 sep
 
+# add the main website as specified by the domain name they gave us.
 sudo bash "$FEISTY_MEOW_SCRIPTS/system/add_apache_site.sh" "$APPLICATION_NAME" "$DOMAIN_NAME"
 test_or_die "Setting up apache site for: $APPLICATION_NAME"
+
+# make the shadow site also, which always ends in cakelampvm.com.
+shadow_domain="${APPLICATION_NAME}.cakelampvm.com"
+if [ "$shadow_domain" != "$DOMAIN_NAME" ]; then
+  sudo bash "$FEISTY_MEOW_SCRIPTS/system/add_apache_site.sh" "$APPLICATION_NAME" "$shadow_domain"
+  test_or_die "Setting up shadow apache site on '$shadow_domain'"
+fi
 
 sep
 
