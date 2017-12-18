@@ -52,7 +52,8 @@ sep
 
 echo "Adding users to the mysql database."
 
-mysql -u root -p"$mysql_passwd" <<EOF
+#hmmm: good application for hiding output unless error here.
+mysql -u root -p"$mysql_passwd" &>/dev/null <<EOF
   create user if not exists 'root'@'%' IDENTIFIED BY '$mysql_passwd';
   grant all privileges on *.* TO 'root'@'%' with grant option;
 
@@ -65,6 +66,8 @@ EOF
 test_or_die "configuring root, wampcake and lampcake users on mysql"
 
 ##############
+
+sep
 
 echo "Making some important permission changes..."
 
