@@ -133,8 +133,8 @@ fi
 sep
 
 echo "The script is about to install the bluefish editor and some dependencies.
-If the app is not already installed, then this process takes only about a
-minute on a slower home DSL internet connection..."
+If the app is not already installed, then this process takes about one minute
+on a slow home DSL internet connection..."
 
 apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
 test_or_continue "installing bluefish editor"
