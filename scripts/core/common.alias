@@ -58,6 +58,7 @@ define_yeti_alias fix_ssh_perms='chmod 700 $HOME/.ssh ; chmod 600 $HOME/.ssh/*'
 define_yeti_alias halt='sudo shutdown -h now'
 define_yeti_alias i=inventory
 define_yeti_alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
+define_yeti_alias ll='ls_dot_add=-a perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
 define_yeti_alias ls='ls -HhFC $color_add'
 define_yeti_alias lsd='ls -hl'
 define_yeti_alias md='mkdir'
