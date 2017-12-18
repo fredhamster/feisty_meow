@@ -20,6 +20,16 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 ##############
 
+# new requirement is to get the sql root password, since we need to do some sql db configuration.
+echo -n "Please enter the MySQL root account password: "
+read mysql_passwd
+if [ -z "$mysql_passwd" ]; then
+  echo "This script must have the sql root password to proceed."
+  exit 1
+fi
+
+##############
+
 echo "Regenerating feisty meow loading dock."
 
 reconfigure_feisty_meow
@@ -193,6 +203,23 @@ else
   restart_samba
   echo successfully patched the samba configuration to enable writes on user home directories.  way cool.
 fi
+
+##############
+
+# set up some crucial users in the mysql db that we seem to have missed previously.
+
+mysql -u root -p "$mysql_passwd" <<EOF
+  create user 'root'@'%' IDENTIFIED BY '$mysql_passwd';
+  grant all privileges on *.* TO 'root'@'%' with grant option;
+
+  create user 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'wampcake'@'%' with grant option;
+
+  create user 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'lampcake'@'%' with grant option;
+
+EOF
+test_or_die "configuring root, wampcake and lampcake users on mysql"
 
 ##############
 ##############
