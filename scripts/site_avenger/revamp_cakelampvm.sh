@@ -154,10 +154,10 @@ fi
 # note the use of the character class :blank: below to match spaces or tabs.
 search_replace "^[[:blank:]]*Header always set Strict-Transport-Security.*" "# not good for cakelampvm.com -- Header always set Strict-Transport-Security \"max-age=63072000; includeSubdomains;\"" /etc/apache2/conf-library/tls-enabling.conf
 if [ $? -ne 0 ]; then
-  echo the apache tls-enabling.conf file seems to have already been patched to disable strict transport security.  good.
+  echo the apache tls-enabling.conf file seems to have already been patched to disable strict transport security. 
 else
   restart_apache
-  echo successfully patched the apache tls-enabling.conf file to disable strict transport security.  awesome.
+  echo successfully patched the apache tls-enabling.conf file to disable strict transport security. 
 fi
 
 ##############
@@ -169,7 +169,7 @@ fi
 grep -q "\*[[:blank:]]*IN A[[:blank:]]*10.28.42.20" /etc/bind/cakelampvm.com.conf
 if [ $? -eq 0 ]; then
   # already present.
-  echo the bind settings for wildcard domains off of cakelampvm.com seems to already be present.  good deal.
+  echo the bind settings for wildcard domains off of cakelampvm.com seems to already be present. 
 else
   echo "
 ; our bind magic, a wildcard domain, for all other sites with cakelampvm.com
@@ -179,7 +179,7 @@ else
 				IN HINFO	"linux vm" "ubuntu"
 " >> /etc/bind/cakelampvm.com.conf
   restart_bind
-  echo "successfully added wildcard domains to the cakelampvm.com bind configuration, so we're still on track for greatness."
+  echo "successfully added wildcard domains to the cakelampvm.com bind configuration."
 fi
 
 ##############
@@ -190,26 +190,19 @@ fi
 pattern="[#;][[:blank:]]*read only = yes"
 replacement="read only = no"
 
-# first see if we've already done this.
-# if we find any occurrence of the replacement, we assume we already did it.
-# ** we're assuming a lot about the structure of the samba config file!
-grep -q "$replacement" /etc/samba/smb.conf 
-if [ $? -ne 0 ]; then
-  echo "the samba configuration has already been fixed for user homes, s'cool."
-else
-  # so not there yet; we need to make the replacement.
-  sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
-  test_or_die "patching samba configuration to enable write acccess on user home dirs"
-  # sweet, looks like that worked...
-  restart_samba
-  echo successfully patched the samba configuration to enable writes on user home directories.  way cool.
-fi
+# we just always do the replacement now, after realizing the sentinel pattern
+# was acutally already in the file...  too much subtlety can get one into trouble.
+sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
+test_or_die "patching samba configuration to enable write acccess on user home dirs"
+# sweet, looks like that worked...
+restart_samba
+echo successfully patched the samba configuration to enable writes on user home directories. 
 
 ##############
 
 # set up some crucial users in the mysql db that we seem to have missed previously.
 
-mysql -u root -p "$mysql_passwd" <<EOF
+mysql -u root -p"$mysql_passwd" <<EOF
   create user 'root'@'%' IDENTIFIED BY '$mysql_passwd';
   grant all privileges on *.* TO 'root'@'%' with grant option;
 
@@ -224,8 +217,6 @@ test_or_die "configuring root, wampcake and lampcake users on mysql"
 ##############
 
 # add the latest version of the cakelampvm environment variables for apache.
-
-echo Setting up environment variables for apache2...
 
 # drop existing file, if already configured.  ignore errors.
 a2disconf env_vars_cakelampvm
