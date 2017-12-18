@@ -22,7 +22,12 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 # new requirement is to get the sql root password, since we need to do some sql db configuration.
 echo -n "Please enter the MySQL root account password: "
+# turn off echo but remember former setting.
+stty_orig=`stty -g`
+stty -echo
 read mysql_passwd
+# turn echo back on.
+stty $stty_orig
 if [ -z "$mysql_passwd" ]; then
   echo "This script must have the sql root password to proceed."
   exit 1
@@ -40,6 +45,29 @@ chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
 test_or_die "fix after reconfigured as sudo"
 
 ##############
+
+# set up some crucial users in the mysql db that we seem to have missed previously.
+
+sep
+
+echo "Adding users to the mysql database."
+
+#hmmm: good application for hiding output unless error here.
+mysql -u root -p"$mysql_passwd" &>/dev/null <<EOF
+  create user if not exists 'root'@'%' IDENTIFIED BY '$mysql_passwd';
+  grant all privileges on *.* TO 'root'@'%' with grant option;
+
+  create user if not exists 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'wampcake'@'%' with grant option;
+
+  create user if not exists 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'lampcake'@'%' with grant option;
+EOF
+test_or_die "configuring root, wampcake and lampcake users on mysql"
+
+##############
+
+sep
 
 echo "Making some important permission changes..."
 
@@ -143,7 +171,7 @@ if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
 
   # copy in our new version of the default page.
 #hmmm: would be nice if this worked without mods for any new version, besides just 001.  see apache env var file below for example implem.
-  cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
+  \cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
       /etc/apache2/sites-available
   test_or_die "installing new apache default sites"
 
@@ -224,24 +252,6 @@ echo successfully patched the samba configuration to enable writes on user home 
 
 ##############
 
-# set up some crucial users in the mysql db that we seem to have missed previously.
-
-sep
-
-mysql -u root -p"$mysql_passwd" <<EOF
-  create user 'root'@'%' IDENTIFIED BY '$mysql_passwd';
-  grant all privileges on *.* TO 'root'@'%' with grant option;
-
-  create user 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
-  grant all privileges on *.* TO 'wampcake'@'%' with grant option;
-
-  create user 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
-  grant all privileges on *.* TO 'lampcake'@'%' with grant option;
-EOF
-test_or_die "configuring root, wampcake and lampcake users on mysql"
-
-##############
-
 # add the latest version of the cakelampvm environment variables for apache.
 
 sep
@@ -251,7 +261,7 @@ a2disconf env_vars_cakelampvm &>/dev/null
 
 # plug in the new version, just stomping anything there.
 # note: we only expect to have one version of the env_vars dir at a time in place in feisty...
-cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/env_vars.*/env_vars_cakelampvm.conf /etc/apache2/conf-available
+\cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/env_vars.*/env_vars_cakelampvm.conf /etc/apache2/conf-available
 test_or_die "copying environment variables file into place"
 
 # enable the new version of the config file.
