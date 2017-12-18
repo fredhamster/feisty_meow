@@ -20,13 +20,15 @@ pushd $parent_dir
 # revision control system private dirs.  first chunk of excludes is for the
 # code guide files; this should wash out the majority of those fat things.
 # next line is to exclude archives that shouldn't be in the output file.
-tar -h -cz --exclude-vcs -f $TEMPO_FILE $base_dir \
+tar -h -cz --exclude-vcs -f $TEMPO_FILE \
 \
   ${XC}*incl.map ${XC}*incl.md5 ${XC}*incl.png \
   ${XC}*8h.html ${XC}*8*source.html \
   ${XC}*8cpp.js ${XC}*8h.js \
 \
   ${XC}*.tar.gz ${XC}*.zip \
+\
+$base_dir 
 
 # note: not currently excluded!  cannot do these with --exclude= flag!
 #${XC}*/waste/* ${XC}*/logs/* ${XC}*/binaries/* ${XC}*/kona/bin/*

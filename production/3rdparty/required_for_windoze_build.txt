@@ -1,0 +1,7 @@
+
+
+the windows build of feisty meow requires these additional libraries:
+
+curl
+openssl
+zlib
