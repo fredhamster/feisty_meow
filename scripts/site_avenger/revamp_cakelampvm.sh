@@ -143,7 +143,7 @@ if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
 
   # copy in our new version of the default page.
 #hmmm: would be nice if this worked without mods for any new version, besides just 001.  see apache env var file below for example implem.
-  cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
+  \cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
       /etc/apache2/sites-available
   test_or_die "installing new apache default sites"
 
@@ -251,7 +251,7 @@ a2disconf env_vars_cakelampvm &>/dev/null
 
 # plug in the new version, just stomping anything there.
 # note: we only expect to have one version of the env_vars dir at a time in place in feisty...
-cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/env_vars.*/env_vars_cakelampvm.conf /etc/apache2/conf-available
+\cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/env_vars.*/env_vars_cakelampvm.conf /etc/apache2/conf-available
 test_or_die "copying environment variables file into place"
 
 # enable the new version of the config file.
