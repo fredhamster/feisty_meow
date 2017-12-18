@@ -41,6 +41,26 @@ test_or_die "fix after reconfigured as sudo"
 
 ##############
 
+# set up some crucial users in the mysql db that we seem to have missed previously.
+
+sep
+
+echo "Adding users to the mysql database."
+
+mysql -u root -p"$mysql_passwd" <<EOF
+  create user if not exists 'root'@'%' IDENTIFIED BY '$mysql_passwd';
+  grant all privileges on *.* TO 'root'@'%' with grant option;
+
+  create user if not exists 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'wampcake'@'%' with grant option;
+
+  create user if not exists 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'lampcake'@'%' with grant option;
+EOF
+test_or_die "configuring root, wampcake and lampcake users on mysql"
+
+##############
+
 echo "Making some important permission changes..."
 
 # fix up the main web storage.
@@ -221,24 +241,6 @@ test_or_die "patching samba configuration to enable write acccess on user home d
 # sweet, looks like that worked...
 restart_samba
 echo successfully patched the samba configuration to enable writes on user home directories. 
-
-##############
-
-# set up some crucial users in the mysql db that we seem to have missed previously.
-
-sep
-
-mysql -u root -p"$mysql_passwd" <<EOF
-  create user if not exists 'root'@'%' IDENTIFIED BY '$mysql_passwd';
-  grant all privileges on *.* TO 'root'@'%' with grant option;
-
-  create user if not exists 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
-  grant all privileges on *.* TO 'wampcake'@'%' with grant option;
-
-  create user if not exists 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
-  grant all privileges on *.* TO 'lampcake'@'%' with grant option;
-EOF
-test_or_die "configuring root, wampcake and lampcake users on mysql"
 
 ##############
 
