@@ -20,12 +20,22 @@ pushd $parent_dir
 # revision control system private dirs.  first chunk of excludes is for the
 # code guide files; this should wash out the majority of those fat things.
 # next line is to exclude archives that shouldn't be in the output file.
-tar -h -cz --exclude-vcs -f $TEMPO_FILE $base_dir \
+tar -h -cz --exclude-vcs -f $TEMPO_FILE \
 \
-  ${XC}*8cpp_source.html ${XC}*8h__dep__incl.map ${XC}*8h__dep__incl.md5 ${XC}*8h__dep__incl.png ${XC}*8h.html \
-  ${XC}*8h__incl.png ${XC}*8h_source.html ${XC}8h__dep__incl.md5 ${XC}8cpp.js \
+  ${XC}*incl.map ${XC}*incl.md5 ${XC}*incl.png \
+  ${XC}*8h.html ${XC}*8c.html ${XC}*8cpp.html ${XC}*8*source.html \
+  ${XC}class*html ${XC}class*js ${XC}class*members.html \
+  ${XC}struct*html ${XC}struct*js ${XC}struct*members.html \
+  ${XC}globals*html ${XC}functions*html \
+  ${XC}navtree*js ${XC}inherit_graph_* \
+  ${XC}namespace*js ${XC}namespace*html \
+  ${XC}dir_*html ${XC}dir_*map ${XC}dir_*md5 ${XC}dir_*png ${XC}dir_*js \
+  ${XC}*8cpp.js ${XC}*8h.js \
+  ${XC}*graph.map ${XC}*graph.md5 ${XC}*graph.png \
 \
   ${XC}*.tar.gz ${XC}*.zip \
+\
+$base_dir 
 
 # note: not currently excluded!  cannot do these with --exclude= flag!
 #${XC}*/waste/* ${XC}*/logs/* ${XC}*/binaries/* ${XC}*/kona/bin/*
