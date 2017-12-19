@@ -221,7 +221,7 @@ else
 ; in the domain.  this forces any other sites besides the ones above to route
 ; to the actual vm IP address, which currently is singular and very fixated.
 *				IN A		10.28.42.20
-				IN HINFO	"linux vm" "ubuntu"
+				IN HINFO	\"linux vm\" \"ubuntu\"
 
 ;;;;;;
 
