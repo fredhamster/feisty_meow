@@ -10,7 +10,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
 
   # The gruntose web site is expected to reside below, if it exists at all.
   export WEBBED_SITES=$HOME/web
-  if [ "$(hostname)" = "zooty.koeritz.com" ]; then
+  if [ "$(hostname)" = "hamstertronic" ]; then
     export WEBBED_SITES=/var/www
   fi
 
@@ -18,7 +18,9 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   REPOSITORY_LIST+=" cloud ebooks web "
 
   # adds our locally relevant archive folders into the list to be synched.
-  ARCHIVE_COLLECTIONS_LIST+="/z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
+  MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
+  # our set of known source hierarchy folder names.
+  SOURCECODE_HIERARCHY_LIST="codebarn extra_brain interbrane"
 
   # point to our local certificate for ssh usage.
   export SVN_SSH="ssh -i $HOME/.ssh/id_dsa_sourceforge"

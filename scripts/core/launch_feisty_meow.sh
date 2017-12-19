@@ -67,7 +67,7 @@ runs.  Check \$HOME/.bashrc to see if a change there will fix the problem.
 "
 else
   # apex is good, so let's make the scripts good too.
-  if [ ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
+  if [ -z "$FEISTY_MEOW_SCRIPTS" -o ! -d "$FEISTY_MEOW_SCRIPTS" ]; then
     export FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"
   fi
   # check again to test our belief system...
@@ -76,11 +76,6 @@ else
     echo -e "The feisty meow scripts cannot be found under the current top:\n  FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX"
   fi
 fi
-
-#; /bin/bash -i --norc --noprofile\" > \$HOME/fm-fix 
-#; exec /bin/bash -i --norc --noprofile -c 'bash \$HOME/fm-fix ; echo hello ; read line'
-#--norc --noprofile 
-#; source \$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh
 
 if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
 
@@ -127,9 +122,8 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     fi
   
     ##############
-  
+
     if [ -z "$ERROR_OCCURRED" ]; then
-  
       # pull in our generated variables that are the minimal set we need to find
       # the rest of our resources.
       source "$FEISTY_MEOW_VARIABLES_LOADING_FILE"
@@ -143,10 +137,9 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   ##############
 
   if [ -z "$ERROR_OCCURRED" ]; then
-
-    # load the larger body of standard feisty meow variables into the environment.
-    # we actually want this to always run also; it will decide what variables need
-    # to be set again.
+    # no error occurred in our tests above, so load the larger body of standard feisty
+    # meow variables into the environment.  we actually want this to always run also;
+    # it will decide what variables need to be set again.
     source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
 
     ##############
@@ -161,6 +154,7 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
 
     ##############
 
+#hmmm: abstract this to a twiddle shell options method.
     # check hash table before searching path.
     shopt -s checkhash
     # don't check path for sourced files.
@@ -220,6 +214,26 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     echo
     unset FEISTY_MEOW_SHOW_LAUNCH_GREETING
   fi
+
+  # only run this hello file if the core feisty meow support haven't been loaded already.  this
+  # hopefully guarantees we show the info at most once in one shell continuum.
+  # this can also be disabled if the NO_HELLO variable has a non-empty value.
+  type CORE_VARIABLES_LOADED &>/dev/null
+  if [ $? -ne 0 -a -z "$NO_HELLO" ]; then
+    # print out a personalized hello file if we find one.
+    if [ -f ~/hello.txt ]; then
+      echo
+      sep 28
+      perl $FEISTY_MEOW_SCRIPTS/*/filedump.pl ~/hello.txt
+      sep 28
+      echo
+    fi
+    # from now on there should be no extra helloing.
+    export NO_HELLO=true
+  fi
+
+  # load the last bits we do here.
+  source "$FEISTY_MEOW_LOADING_DOCK/fmc_ending_sentinel.sh"
 
 fi # "$NO_REPAIRS_NEEDED" was == "true" 
 

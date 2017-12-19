@@ -678,7 +678,7 @@ ifeq "$(OMIT_VERSIONS)" ""
   ifneq "$(VERSION_RC_ROOT)" ""
 # only redo the version resource if it or version.ini is out of date.
 %_version.rc: version.ini $(PARAMETER_FILE)
-	$(CATCHER)$(CLAM_BINARIES)/version_stamper$(EXE_END) . $(PARAMETER_FILE)
+	$(CATCHER)$(CLAM_BINARIES)/version_stamper$(EXE_END) . $(FEISTY_MEOW_GENERATED_STORE)/versions $(PARAMETER_FILE)
   endif
 endif
 
@@ -769,10 +769,11 @@ endif # no-deps.
 
 ############################################################################
 
-# examines the required variables and complains if they're missing.
+# examines the required variables and complains if they are missing.
 check_requirements:
 	$(HIDESH) -c 'if [ -z "$(PROJECT)" ]; then echo the PROJECT variable is not defined!; . $(CLAM_SCRIPTS)/exit_make.sh; fi'
 	$(HIDESH) -c 'if [ -z "$(TYPE)" ]; then echo the TYPE variable is not defined!; . $(CLAM_SCRIPTS)/exit_make.sh; fi'
+	$(HIDESH) -c 'if [ ! -d $(FEISTY_MEOW_GENERATED_STORE)/versions ]; then mkdir $(FEISTY_MEOW_GENERATED_STORE)/versions; fi'
  
 ############################################################################
 
