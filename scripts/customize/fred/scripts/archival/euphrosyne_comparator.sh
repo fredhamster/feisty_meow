@@ -5,25 +5,26 @@
 
 #hmmm: add a check that this is in fact the right host, euphrosyne.
 
+target=wildmutt
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 sep 14
 echo "Comparing basement folder..."
-compare_dirs /z/basement wildmutt:/z/basement
+compare_dirs /z/basement ${target}:/z/basement
 sep 14
 
 sep 14
 echo "Comparing imaginations folder..."
-compare_dirs /z/imaginations wildmutt:/z/imaginations
+compare_dirs /z/imaginations ${target}:/z/imaginations
 sep 14
 
 sep 14
 echo "Comparing musix folder..."
-compare_dirs /z/musix wildmutt:/z/musix
+compare_dirs /z/musix ${target}:/z/musix
 sep 14
 
 sep 14
 echo "Comparing walrus folder..."
-compare_dirs /z/walrus wildmutt:/z/walrus
+compare_dirs /z/walrus ${target}:/z/walrus
 sep 14

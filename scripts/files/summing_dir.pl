@@ -20,7 +20,7 @@
 
 require "filename_helper.pl";
 
-use Env qw($TMP $color_add $TERM);
+use Env qw($TMP $color_add $ls_dot_add $TERM);
 
 local($chewed_line) = "";
 local(@arg_list);
@@ -37,6 +37,8 @@ if ($#ARGV < 0) {
   @arg_list = &glob_list(@ARGV);
 }
 
+# add parameters to our chewed_line, but skip items if they are flags we don't
+# implement.
 foreach $dir (@arg_list) {
   if ($dir eq "-al") { next; }  # skip ls directives.
   if ($dir eq "-l") { next; }  # skip ls directives.
@@ -56,8 +58,8 @@ chop($temp_file);
 
 # drop the main payload, the list of directory info, but also save that
 # info to a file for analysis.
-system("ls -HhlF $color_add $chewed_line");
-system("ls -HhlF $color_add $chewed_line > $temp_file");
+system("ls -HhlF $ls_dot_add $color_add $chewed_line");
+system("ls -HhlF $ls_dot_add $color_add $chewed_line > $temp_file");
   # the color_add variable, if defined, will have flags for setting the
   # directory listing color scheme.
 
