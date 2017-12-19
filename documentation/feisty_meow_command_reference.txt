@@ -120,7 +120,7 @@ managing web sites.  these scripts offer a lot of power to the developer, and
 of course that comes with great responsibility...
 
 the site avenger scripts are configured by "app" files stored in the "config"
-directory (in $FEISTY_MEOW_SCRIPTS/scripts/site_avenger/config).  the scripts
+directory (in $FEISTY_MEOW_SCRIPTS/site_avenger/config).  the scripts
 seek out a config file named after the application, e.g. they look for
 "winterportlibrary.app" if the application name is "winterportlibrary".
 the basic config file "default.app" is used for any application that is unknown
