@@ -22,13 +22,20 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 # new requirement is to get the sql root password, since we need to do some sql db configuration.
 echo -n "Please enter the MySQL root account password: "
+# turn off echo but remember former setting.
+stty_orig=`stty -g`
+stty -echo
 read mysql_passwd
+# turn echo back on.
+stty $stty_orig
 if [ -z "$mysql_passwd" ]; then
   echo "This script must have the sql root password to proceed."
   exit 1
 fi
 
 ##############
+
+sep
 
 echo "Regenerating feisty meow loading dock."
 
@@ -38,6 +45,29 @@ chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
 test_or_die "fix after reconfigured as sudo"
 
 ##############
+
+# set up some crucial users in the mysql db that we seem to have missed previously.
+
+sep
+
+echo "Adding users to the mysql database."
+
+#hmmm: good application for hiding output unless error here.
+mysql -u root -p"$mysql_passwd" &>/dev/null <<EOF
+  create user if not exists 'root'@'%' IDENTIFIED BY '$mysql_passwd';
+  grant all privileges on *.* TO 'root'@'%' with grant option;
+
+  create user if not exists 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'wampcake'@'%' with grant option;
+
+  create user if not exists 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
+  grant all privileges on *.* TO 'lampcake'@'%' with grant option;
+EOF
+test_or_die "configuring root, wampcake and lampcake users on mysql"
+
+##############
+
+sep
 
 echo "Making some important permission changes..."
 
@@ -84,6 +114,8 @@ echo "Done with important permission changes."
 #
 ##############
 
+sep
+
 echo "Updating developer welcome file."
 
 # only update hello if they've still got the file there.  we don't want to
@@ -98,9 +130,11 @@ fi
 
 # install a better editor app.
 
+sep
+
 echo "The script is about to install the bluefish editor and some dependencies.
-If the app is not already installed, then this process takes only about a
-minute on a slower home DSL internet connection..."
+If the app is not already installed, then this process takes about one minute
+on a slow home DSL internet connection..."
 
 apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
 test_or_continue "installing bluefish editor"
@@ -117,6 +151,9 @@ test_or_continue "installing bluefish editor"
 # which we've done as a prefix on the config for some reason.  makes the
 # code below easy at least.
 if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
+
+  sep
+
   # the old site is in place still, so let's update that.
   echo "Updating default web sites to latest version."
 
@@ -134,7 +171,7 @@ if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
 
   # copy in our new version of the default page.
 #hmmm: would be nice if this worked without mods for any new version, besides just 001.  see apache env var file below for example implem.
-  cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
+  \cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
       /etc/apache2/sites-available
   test_or_die "installing new apache default sites"
 
@@ -150,14 +187,16 @@ fi
 # fix up the apache site so that HSTS is disabled.  otherwise we can't view
 # the https site for cakelampvm.com once the domain name switch has occurred.
 
+sep
+
 # we operate only on our own specialized tls conf file.  hopefully no one has messed with it besides revamp.
 # note the use of the character class :blank: below to match spaces or tabs.
 search_replace "^[[:blank:]]*Header always set Strict-Transport-Security.*" "# not good for cakelampvm.com -- Header always set Strict-Transport-Security \"max-age=63072000; includeSubdomains;\"" /etc/apache2/conf-library/tls-enabling.conf
 if [ $? -ne 0 ]; then
-  echo the apache tls-enabling.conf file seems to have already been patched to disable strict transport security.  good.
+  echo the apache tls-enabling.conf file seems to have already been patched to disable strict transport security. 
 else
   restart_apache
-  echo successfully patched the apache tls-enabling.conf file to disable strict transport security.  awesome.
+  echo successfully patched the apache tls-enabling.conf file to disable strict transport security. 
 fi
 
 ##############
@@ -166,73 +205,63 @@ fi
 # as being on the vm.  this is already true for some specific sites, but we
 # want the wildcard enabled to ease the use of DNS for windows folks.
 
+sep
+
 grep -q "\*[[:blank:]]*IN A[[:blank:]]*10.28.42.20" /etc/bind/cakelampvm.com.conf
 if [ $? -eq 0 ]; then
   # already present.
-  echo the bind settings for wildcard domains off of cakelampvm.com seems to already be present.  good deal.
+  echo the bind settings for wildcard domains off of cakelampvm.com seems to already be present. 
 else
   echo "
+
+
+;;;;;;
+
 ; our bind magic, a wildcard domain, for all other sites with cakelampvm.com
 ; in the domain.  this forces any other sites besides the ones above to route
 ; to the actual vm IP address, which currently is singular and very fixated.
 *				IN A		10.28.42.20
-				IN HINFO	"linux vm" "ubuntu"
+				IN HINFO	\"linux vm\" \"ubuntu\"
+
+;;;;;;
+
+
+
 " >> /etc/bind/cakelampvm.com.conf
   restart_bind
-  echo "successfully added wildcard domains to the cakelampvm.com bind configuration, so we're still on track for greatness."
+  echo "successfully added wildcard domains to the cakelampvm.com bind configuration."
 fi
 
 ##############
 
 # fix samba configuration for (ass-headed) default of read-only in user homes.
-# why add a necessary feature if you're just going to cripple it by default?
+# why cripple a necessary feature by default?
+
+sep
 
 pattern="[#;][[:blank:]]*read only = yes"
 replacement="read only = no"
 
-# first see if we've already done this.
-# if we find any occurrence of the replacement, we assume we already did it.
-# ** we're assuming a lot about the structure of the samba config file!
-grep -q "$replacement" /etc/samba/smb.conf 
-if [ $? -ne 0 ]; then
-  echo "the samba configuration has already been fixed for user homes, s'cool."
-else
-  # so not there yet; we need to make the replacement.
-  sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
-  test_or_die "patching samba configuration to enable write acccess on user home dirs"
-  # sweet, looks like that worked...
-  restart_samba
-  echo successfully patched the samba configuration to enable writes on user home directories.  way cool.
-fi
-
-##############
-
-# set up some crucial users in the mysql db that we seem to have missed previously.
-
-mysql -u root -p "$mysql_passwd" <<EOF
-  create user 'root'@'%' IDENTIFIED BY '$mysql_passwd';
-  grant all privileges on *.* TO 'root'@'%' with grant option;
-
-  create user 'wampcake'@'%' IDENTIFIED BY 'bakecamp';
-  grant all privileges on *.* TO 'wampcake'@'%' with grant option;
-
-  create user 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
-  grant all privileges on *.* TO 'lampcake'@'%' with grant option;
-EOF
-test_or_die "configuring root, wampcake and lampcake users on mysql"
+# we just always do the replacement now, after realizing the sentinel pattern
+# was acutally already in the file...  too much subtlety can get one into trouble.
+sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
+test_or_die "patching samba configuration to enable write acccess on user home dirs"
+# sweet, looks like that worked...
+restart_samba
+echo successfully patched the samba configuration to enable writes on user home directories. 
 
 ##############
 
 # add the latest version of the cakelampvm environment variables for apache.
 
-echo Setting up environment variables for apache2...
+sep
 
 # drop existing file, if already configured.  ignore errors.
-a2disconf env_vars_cakelampvm
+a2disconf env_vars_cakelampvm &>/dev/null
 
 # plug in the new version, just stomping anything there.
 # note: we only expect to have one version of the env_vars dir at a time in place in feisty...
-cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/env_vars.*/env_vars_cakelampvm.conf /etc/apache2/conf-available
+\cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/env_vars.*/env_vars_cakelampvm.conf /etc/apache2/conf-available
 test_or_die "copying environment variables file into place"
 
 # enable the new version of the config file.
@@ -246,10 +275,8 @@ echo Successfully configured the apache2 environment variables needed for cakela
 
 # sequel--tell them they're great and show the hello again also.
 
-echo "
+sep
 
-
-"
 regenerate
 test_or_die "regenerating feisty meow scripts"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
