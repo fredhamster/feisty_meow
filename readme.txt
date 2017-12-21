@@ -6,19 +6,20 @@ Quick Start Guide for the Feisty Meow Codebase
 Commands that can be typed in a console or terminal are are prefixed with "#".
 Information that varies by platform is prefixed with a '|' character.
 
+This documentation assumes that the code is stored in the default location:
+  /opt/feistymeow.org/feistymeow
+If you have stored it elsewhere, then please adapt the commands accordingly.
+
 ==============
 
 How to get the feisty meow codebase
 
 | On Microsoft Windows, install the Cygwin tools as documented here:
-| ~/feisty_meow/documentation/cygwin_install_list.txt (local file) or
+| /opt/feistymeow.org/feisty_meow/documentation/cygwin_install_list.txt (local file) or
 | https://feistymeow.org/feisty_meow/documentation/cygwin_install_list.txt (web)
 
 Retrieve a clone of the feisty meow codebase:
 # git clone git://feistymeow.org/feisty_meow
-
-The remainder of these notes assume that the code is stored in:
-  ~/feisty_meow (aka $HOME/feisty_meow).
 
 ==============
 
@@ -27,17 +28,21 @@ How to load the feisty meow script environment
 Set up the feisty_meow scripts; this is only needed once, when you first get
 the codebase.  It will also regenerate the scripts using the latest installed
 version.
-# bash ~/feisty_meow/scripts/core/reconfigure_feisty_meow.sh
+# bash /opt/feistymeow.org/feisty_meow/scripts/core/reconfigure_feisty_meow.sh
 
 Connect the feisty meow scripts to your login script (in ~/.bashrc).
 Note that this actually modifies ~/.bashrc.  This step is only needed once.
-# bash ~/feisty_meow/scripts/core/connect_feisty_meow.sh
+# bash /opt/feistymeow.org/feisty_meow/scripts/core/connect_feisty_meow.sh
+
+| For the root user, you can pass a flag '--root' to the connect_feisty_meow
+| script.  This will add an alias for 'feistyme' which loads the feisty meow
+| scripts on demand (instead of automatically upon login).
 
 Load the script environment into the current shell.  This can be done for
 any new shell.  This is idempotent, so it does no harm to run it again.
 Note that you should not need this step if you connected feisty meow to
 ~/.bashrc above.
-# source ~/feisty_meow/scripts/core/launch_feisty_meow.sh
+# source /opt/feistymeow.org/feisty_meow/scripts/core/launch_feisty_meow.sh
 
 When the feisty meow script environment loaded, many new aliases and
 functions are available for use.  These come from the $FEISTY_MEOW_SCRIPTS
@@ -53,11 +58,14 @@ A couple of perl modules are required by some of the scripts (including the
 differ utility and the feisty meow customization system).  They can be
 installed with either apt-get or CPAN.
 
-Install using apt-get:
+Install using apt-get (on Ubuntu or Debian-based OS):
 # sudo apt-get install libfile-which-perl libtext-diff-perl
 
 or Install using perl's CPAN:
 # sudo cpan install Text::Diff File::Which
+
+or on Cygwin (MS-Windows), install with apt-cyg:
+# apt-cyg install perl-File-Which perl-Text-Diff
 
 ==============
 
@@ -71,10 +79,6 @@ in the "nucleus", "octopi", "graphiq" and other C++ collections.
 
 | Centos / Redhat / Fedora:
 | # sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel
-
-| Microsoft Windows:
-| Download and install the Cygwin environment first from cygwin.com, which is
-| documented in ~/feisty_meow/documentation/cygwin_install_list.txt
 
 The "kona" collection depends on Java version 8 or better.
 
@@ -90,8 +94,7 @@ Run the following command to build the feisty meow libraries and applications.
 # produce_feisty_meow
 
 After the build is complete, the feisty meow applications can be found in
-$FEISTY_MEOW_BINARIES (environment variable).
-# ls $FEISTY_MEOW_BINARIES 
+the folder pointed at by the $FEISTY_MEOW_BINARIES environment variable.
 
 ==============
 

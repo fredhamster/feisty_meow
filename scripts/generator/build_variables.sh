@@ -9,12 +9,12 @@
 #  building the source code.  It can either be run as a bash script directly
 #  like so:
 #
-#      bash ~/feisty_meow/scripts/generator/build_variables.sh
+#      bash $FEISTY_MEOW_APEX/scripts/generator/build_variables.sh
 #
 #  which will establish a new shell containing all the variables, or you can
 #  'source' the script like so:
 #
-#      build_vars=~/feisty_meow/scripts/generator/build_variables.sh
+#      build_vars=$FEISTY_MEOW_APEX/scripts/generator/build_variables.sh
 #      source $build_vars $build_vars
 #
 #  to set all of the variables in your current shell.  The full path is

@@ -35,15 +35,14 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 
 # grab the top level stuff.
-&backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore"));
+&backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore", "*.yml"));
 
 # snarf up all the important directories.
 # CAK: current as of 2012-05-05.
 ###moved &backup_hierarchy($snarf_file_base, $number, $root, "customize");
 &backup_hierarchy($snarf_file_base, $number, $root, "infobase");
 &backup_hierarchy($snarf_file_base, $number, $root, "documentation");
-&backup_hierarchy($snarf_file_base, $number, $root, "examples");
-&backup_hierarchy($snarf_file_base, $number, $root, "feisty_inits");
+&backup_hierarchy($snarf_file_base, $number, $root, "experiments");
 &backup_hierarchy($snarf_file_base, $number, $root, "graphiq");
 &backup_hierarchy($snarf_file_base, $number, $root, "huffware");
 &backup_hierarchy($snarf_file_base, $number, $root, "kona");
@@ -59,6 +58,7 @@ local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/assign_bases");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/check_versions");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/setup_src");
+&backup_hierarchy($snarf_file_base, $number, "$root", "production/sites");
 
 # now rename the file so only the unpacker can access it.
 &rename_archive($snarf_file);

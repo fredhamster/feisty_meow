@@ -1,0 +1,130 @@
+#!/bin/sh
+
+# set up gnome desktop environment for remote access via vnc.
+
+# this script depends on the gnome desktop.
+
+# references:
+#   https://www.digitalocean.com/community/tutorials/how-to-setup-vnc-for-ubuntu-12
+#   https://www.digitalocean.com/community/questions/how-to-install-ubuntu-desktop-and-vnc
+#   https://ubuntuforums.org/showthread.php?t=1903220
+#   https://askubuntu.com/questions/800302/vncserver-grey-screen-ubuntu-16-04-lts
+
+############################
+# items marked with #H: below were on until recently.
+############################
+
+# boilerplate that people seem to mostly agree on.
+
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+[ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup
+[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+xsetroot -solid darkgreen
+vncconfig -iconic &
+
+############################
+
+# the chaos zone.  all of these are still being tested.
+
+#not helping
+#if [ -x /etc/X11/xinit/xinitrc ]; then
+#  exec /etc/X11/xinit/xinitrc
+#fi
+#if [ -f /etc/X11/xinit/xinitrc ]; then
+#  exec sh /etc/X11/xinit/xinitrc
+#fi
+
+#######
+gnome-session --session=ubuntu &
+# valid values for session that we've seen: ubuntu, gnome, unity, 2d-gnome (?)
+#######
+
+#... some new stuff that hopefully will help out.
+#/usr/lib/gnome-session/gnome-session-binary –session=ubuntu &
+unity-panel-service &
+unity-settings-daemon &
+
+#seeing if indicator multiload does this:
+#for indicator in /usr/lib/x86_64-linux-gnu/indicator-*; do
+#  basename=’basename \${indicator}’ 
+#  dirname=’dirname \${indicator}’ 
+#  service=\${dirname}/\${basename}/\${basename}-service 
+#  \${service} &
+#done
+#unity
+
+
+#######
+# are these alternatives also?
+x-session-manager &
+#x-window-manager &
+#######
+
+# we don't see this running at home, but it sure seems needed on vmbuilder.
+#H: gnome-panel &
+
+# do we need this?
+gnome-shell &
+
+#######
+# one or the other of the window managers here.
+#hmmm: but mutter doesn't work at all.
+#H: metacity &
+#mutter --replace &
+#######
+
+# this just brings up an initial file exploring window, although at one point i needed to
+# have nautilus running to see icons on the desktop.
+####right now there are no visible icons on the desktop, so is it failing?
+nautilus &
+
+############################
+
+# experimental additions since still getting lots of weird isssues:
+indicator-multiload &
+gnome-keyring-daemon &
+#H: ibus-daemon &
+#H: zeitgeist-daemon &
+
+############################
+
+# these processes are just nice to have started already.
+#
+# you know you were going to want them.
+
+# password tools from kde.
+kwalletd &
+
+############################
+
+# limbo of useless boneheads.
+#
+# these things just don't seem to work.
+
+# this never ever shows up.
+#x-terminal-emulator -geometry 100x32 -ls -title "$VNCDESKTOP Desktop" &
+
+# no longer exists?
+#gnome-settings-daemon &
+
+#doesn't seem to help.
+#gnome-terminal-server &
+
+############################
+
+# ------------------------------
+# "&@}*(@^!$)_-{%:</~`|#=;" !!!!
+# dungeon of pain and suffering.
+# "&@}*(@^!$)_-{%:</~`|#=;" !!!!
+# ------------------------------
+#
+# adding these in just makes things go splatfooey.
+
+# compiz causes xterm to no longer be a distinct window, which is how things were
+# originally before i started fixing them.
+#compiz &
+# maybe needed now though??
+
+############################
+

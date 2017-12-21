@@ -1,0 +1,2 @@
+Welcome to the CakePHP LAMP VM.
+Documentation is available at: http://cakelampvm.com

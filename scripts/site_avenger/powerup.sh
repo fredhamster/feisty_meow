@@ -5,8 +5,6 @@
 
 # This script "powers up" a cakephp site by running the database migrations,
 # cleaning out the ORM cache, and fixing file permissions.
-# Note that the mysql database must already exist and allow permissions to
-# the configured username/password in config/app.php.
 # This script is currently highly specific to site avenger.
 
 # General Info:
@@ -23,17 +21,17 @@
 # start with.  The concept of the theme comes from cakephp.
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-source "$WORKDIR/shared_site_mgr.sh"
+export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
 
-# get our defaults.
-source "$WORKDIR/site_avenger.config"
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
 ############################
 
 function print_instructions()
 {
   echo
-  echo "$(basename $0 .sh) [app dirname] [repository] [theme name]"
+  echo "$(basename $0 .sh) [app dirname] [repository] [theme name] "
+#[user name]
   echo
   echo "All parameters are optional, and intelligent guesses for them will be made."
   echo
@@ -57,20 +55,22 @@ if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
 fi
 
+source "$WORKDIR/shared_site_mgr.sh"
+
 sep
 
-check_application_dir "$APPLICATION_DIR"
+check_application_dir "$BASE_APPLICATION_PATH"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
   # no dir was passed, so guess it.
-  find_app_folder "$APPLICATION_DIR"
+  find_app_folder "$BASE_APPLICATION_PATH"
 else
-  test_app_folder "$APPLICATION_DIR" "$app_dirname"
+  test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
 
 # where we expect to find our checkout folder underneath.
-full_app_dir="$APPLICATION_DIR/$app_dirname"
+full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 
 # use our default values for the repository and theme if they're not provided.
 if [ -z "$repo_name" ]; then
@@ -84,14 +84,17 @@ echo "Repository: $repo_name"
 echo "Theme name: $theme_name"
 sep
 
+echo in powerup before update repo with:
+var CHECKOUT_DIR_NAME DEFAULT_REPOSITORY_ROOT
+
 # this should set the site_store_path variable if everything goes well.
 update_repo "$full_app_dir" "$CHECKOUT_DIR_NAME" "$DEFAULT_REPOSITORY_ROOT" "$repo_name"
-test_or_fail "Updating the repository storage directory"
+test_or_die "Updating the repository storage directory"
 
 # update the site to load dependencies.
 sep
 composer_repuff "$site_store_path"
-test_or_fail "Installing site dependencies with composer"
+test_or_die "Installing site dependencies with composer"
 
 # set up the symbolic links needed to achieve siteliness.
 sep
@@ -99,6 +102,21 @@ sep
 create_site_links "$site_store_path" "$theme_name"
 
 sep
+
+# go with the default user running the script.
+user_name=$USER
+if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
+  echo "Chowning the apps folder to be owned by: $user_name"
+#hmmm: have to hope for now for standard group named after user 
+  chown -R "$user_name:$user_name" "$BASE_APPLICATION_PATH"
+  test_or_die "Chowning $BASE_APPLICATION_PATH to be owned by $user_name"
+
+else
+echo "user name failed checks for chowning, was '$user_name'"
+fi
+
+sep
+
 
 echo "Finished powering up the site in '${app_dirname}'."
 

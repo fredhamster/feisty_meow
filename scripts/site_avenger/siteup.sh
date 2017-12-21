@@ -6,10 +6,6 @@
 # updates a site avenger app.
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-source "$WORKDIR/shared_site_mgr.sh"
-
-# get our defaults.
-source "$WORKDIR/site_avenger.config"
 
 ############################
 
@@ -19,20 +15,22 @@ source "$WORKDIR/site_avenger.config"
 app_dirname="$1"; shift
 repo_name="$1"; shift
 
+source "$WORKDIR/shared_site_mgr.sh"
+
 sep
 
-check_application_dir "$APPLICATION_DIR"
+check_application_dir "$BASE_APPLICATION_PATH"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
   # no dir was passed, so guess it.
-  find_app_folder "$APPLICATION_DIR"
+  find_app_folder "$BASE_APPLICATION_PATH"
 else
-  test_app_folder "$APPLICATION_DIR" "$app_dirname"
+  test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
 
 # where we expect to find our checkout folder underneath.
-full_app_dir="$APPLICATION_DIR/$app_dirname"
+full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 
 # use our default values for the repository and theme if they're not provided.
 if [ -z "$repo_name" ]; then
@@ -44,7 +42,7 @@ sep
 
 # this should set the site_store_path variable if everything goes well.
 update_repo "$full_app_dir" "$CHECKOUT_DIR_NAME" "$DEFAULT_REPOSITORY_ROOT" "$repo_name"
-test_or_fail "Updating the repository storage directory"
+test_or_die "Updating the repository storage directory"
 
 ####
 
