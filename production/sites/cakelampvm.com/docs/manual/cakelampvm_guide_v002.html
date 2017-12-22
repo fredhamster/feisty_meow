@@ -11,7 +11,7 @@
         Koeritz</span><span style="font-family: Comic Sans MS;"></span><span style="font-family: Comic Sans MS;"></span><br>
       <span style="font-family: Comic Sans MS;">feisty meow® concerns ltd</span>.</div>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
-      Updated: 2017-11-20 (rev. g)</h3>
+      Updated: 2017-12-19 (rev. h)</h3>
     <p>The cakelampvm project provides a Virtualbox VM that acts as an "internet
       in a bottle", serving up your web sites securely and only to your local
       host.&nbsp; The virtual machine provides DNS services (<a target="_blank"
@@ -30,12 +30,11 @@
         title="saco design" href="http://sacodesign.com">Saco Design</a> of <a
         target="_blank" title="winterport" href="http://www.winterportmaine.gov/">Winterport,
         Maine</a>.</p>
-    <p>Commands preceded by an octothorpe ('#') below are intended to be typed
-      into a bash shell running on the cakelampvm virtual machine.&nbsp; The
-      bash shell can be obtained either by logging into the VM through ssh or by
-      logging in directly to the Virtualbox VM console.&nbsp; You may find the
-      ssh session more convenient, because copy &amp; paste features work as
-      expected.</p>
+    <p>Commands in fixed-width bold below are intended to be typed into a bash
+      shell running on the cakelampvm virtual machine.&nbsp; The bash shell can
+      be obtained either by logging into the VM through ssh or by logging in
+      directly to the Virtualbox VM console.&nbsp; You may find the ssh session
+      more convenient, because copy &amp; paste features work as expected.</p>
     <p>Commands preceded by a greater-than symbol ('&gt;') are intended to be
       run on the Host PC in a Windows command prompt (or in a bash prompt
       running on the Host PC).</p>
@@ -99,7 +98,8 @@
         IPv4 Network Mask: 255.255.255.0<br>
         IPv6 Address: (leave blank)<br>
         IPv6 Prefix Length: 0<br>
-        Virtualbox will fill in the other details like so:<br>
+        Virtualbox will fill in the other details like so (this dialog may
+        differ between versions of virtualbox):<br>
         <p><img alt="host only network adapter" src="images/host_only_network_adapter.png"></p>
       </li>
       <li>Set the "DHCP Server Settings" to disabled, e.g.<br>
@@ -129,7 +129,8 @@
         Network CIDR: 10.0.2.0/24<br>
         Supports DHCP: checked<br>
         Supports IPv6: optionally checked<br>
-        These are my settings, with IPv6 left disabled:<br>
+        These are my settings, with IPv6 left disabled (this dialog may differ
+        between versions of virtualbox):<br>
         <img alt="nat net config" src="images/nat_network_config.png"></li>
     </ol>
     <h2>Starting up the VM and Connecting to It<a id="#start-vm" name="#start-vm"></a></h2>
@@ -150,16 +151,16 @@
     is generally more useful to connect to the cakelampvm over ssh.&nbsp; If the
     networking has been established properly, you should be able to do this
     with:
-    <pre># ssh developer@10.28.42.20&nbsp;  # or the equivalent with your ssh client</pre>
+    <pre><span style="font-weight: bold;">ssh developer@10.28.42.20<br># or perform the equivalent connection with your ssh client.</span></pre>
     <p>And then provide the password to log in.</p>
     <p>Once the DNS services are set up (discussed in detail below), you will be
       able to run the much friendlier command:</p>
-    <pre># ssh developer@cakelampvm.com</pre>
+    <pre><span style="font-weight: bold;">ssh developer@cakelampvm.com</span></pre>
     <h4>Key Forwarding to the VM</h4>
     <p>It is important to set up ssh key forwarding to enable your use of git
       repositories while logged into the VM.&nbsp; Key forwarding should be
       enabled for the VM's two fake host identities:</p>
-    <pre>cakelampvm.com<br>10.28.42.20</pre>
+    <pre><span style="font-weight: bold;">cakelampvm.com<br>10.28.42.20</span></pre>
     <h2>Updating cakelampvm to the Latest Model<a id="#update-vm" name="#update-vm"></a></h2>
     <p>The cakelampvm v002 is released with the intention that it not need to be
       released again.&nbsp; Version 001 was not built with that explicit
@@ -168,30 +169,45 @@
     <p>There is an update feature built into the VM that is quite easy to
       use.&nbsp; The updates are driven by the feisty meow script repository in
       conjunction with a local scripted command.&nbsp; To activate the "update
-      process" for your VM, run the following commands on the VM (without the
-      initial '#' symbol):</p>
-    <pre># rpuffer $FEISTY_MEOW_APEX&nbsp;&nbsp; # updates to the latest version of feisty meow
-# revamp_cakelampvm&nbsp;&nbsp;&nbsp;        # enacts any configuration changes needed,<br>                              # plus fixes web folder and other permissions.</pre>
+      process" for your VM, run the following commands on the VM:</p>
+    <pre><span style="font-weight: bold;"># update to the latest version of feisty meow.<br>rpuffer $FEISTY_MEOW_APEX; reconfigure_feisty_meow<br># enact any configuration changes needed, such as permissions and account setup.
+revamp_cakelampvm</span></pre>
+    <span style="font-weight: bold;"> </span>
     <p>These two commands can be run at any time to patch up your VM to the
       latest.</p>
-    <p>The first command ("rpuffer ...") is also useful on its own for getting
-      the latest version of the feisty meow code.&nbsp; Run it again if there
-      are bug fixes you need for any of the scripts or if you would like the
-      most up-to-date cakelampvm documentation.</p>
+    <p>Recent versions of feisty meow support a new "<span style="font-weight: bold; font-family: monospace;">get_feisty</span>"
+      command, which will behave the same as the first line above.&nbsp; Once
+      you have run the "puffer..." command above for the first time (on
+      cakelampvm v002), this new command becomes available.</p>
+    <ul>
+      <li>The "<span style="font-weight: bold; font-family: monospace;">get_feisty</span>"
+        command is useful in its own right for getting the latest version of the
+        feisty meow code; run it again if you need bug fixes or if you want the
+        most recent cakelampvm documentation.</li>
+      <li>The "<span style="font-weight: bold; font-family: monospace;">revamp_cakelampvm</span>"
+        command can be used to repair many situations when the cakelampvm has
+        gone astray, especially for problems with permissions.</li>
+    </ul>
     <h2>First Tasks as the Developer User</h2>
     <p>Here are some first steps that will make the vm your own:</p>
     <ol>
       <li>Change your password for the developer account.&nbsp; (This may
         eventually be required and automatic.)&nbsp; First, log into the VM with
         ssh.&nbsp; Then type this command:<br>
-        <pre># passwd</pre>
+        <pre><span style="font-weight: bold;">passwd</span></pre>
         The 'passwd' command will ask for your current password, and then for a
         new password plus a verification of that new password.<br>
         &nbsp;</li>
       <li>Change your git configuration for the user and email address.&nbsp;
         This is how we've configured it so far:<br>
-        <pre># git config --global user.email "developer@cakelampvm.com"</pre>
-        <pre># git config --global user.name "Developer J. Cakemo"</pre>
+        <ul>
+          <li>
+            <pre><span style="font-weight: bold;">git config --global user.email "developer@cakelampvm.com"</span></pre>
+          </li>
+          <li>
+            <pre><span style="font-weight: bold;">git config --global user.name "Developer J. Cakemo"</span></pre>
+          </li>
+        </ul>
         If you're developing on a real project, you probably don't want the
         bogus email and even more bogus name above attached to your
         commits.&nbsp; Just run the two commands again but with proper values.</li>
@@ -219,15 +235,6 @@ meow
         meow command reference</a> file.</p>
     <p>(The feisty meow codebase is already configured for the developer account
       on the cakelampvm virtual machine.)</p>
-    <h2>X11 applications launched from the VM</h2>
-    <p>[incomplete section]</p>
-    <p>If a feature called "X forwarding" is enabled in your ssh client, then
-      you can start graphical applications on the VM and display them on your
-      local machine.&nbsp; This works right away on most Linux hosts, but can
-      also work on PCs with X window system installed.&nbsp; This section
-      describes how to set up Cygwin to run X server, which enables X11
-      forwarding to your local display.</p>
-    <p>...{insert that info}...</p>
     <h2>Using the guest VM's DNS services<a id="#dns-from-vm" name="#dns-from-vm"></a></h2>
     <p>The cakelampvm has been set up to provide a DNS server which will answer
       name lookup requests on any of the sites that the cakelampvm is hosting
@@ -239,11 +246,11 @@ meow
       10.28.42.20.&nbsp; (The DNS server can be tested with nslookup, dig and
       other tools.)</p>
     <p>Note that the cakelampvm DNS should be listed first, if one intends to
-      override any DNS names that actually exist out on the internet.&nbsp; Further,
-      we have found it most effective to have *only* the cakelampvm as your DNS
-      server, because a secondary DNS server can "take over" providing the name
-      lookups, and thus foul up DNS requests that should succeed for your
-      VM-hosted sites.</p>
+      override any DNS names that actually exist out on the internet.&nbsp;
+      Further, we have found it most effective to have *only* the cakelampvm as
+      your DNS server, because a secondary DNS server can "take over" providing
+      the name lookups, and thus foul up DNS requests that should succeed for
+      your VM-hosted sites.</p>
     <p>If your Host PC is running Windows, see the DNS configuration section
       below that is tailored to that operating system.</p>
     <p>Important Note: It behooves you to remember to switch back to a normal
@@ -255,8 +262,9 @@ meow
       both the cakelampvm VM and on your host PC.&nbsp; Note: ping on Linux
       keeps going forever, so hit control-C when you are tired of seeing the
       pings:</p>
-    <pre># ping cakelampvm.com</pre>
-    <pre># ping mapsdemo.cakelampvm.com</pre>
+    <pre><span style="font-weight: bold;">ping cakelampvm.com</span></pre>
+    <span style="font-weight: bold;"> </span>
+    <pre><span style="font-weight: bold;">ping www.cakelampvm.com</span></pre>
     <p>Note that any other answer than 10.28.42.20 for the address is *bzzzt*
       wrong, and means something needs to be fixed.</p>
     <p>If these pings succeed (which hopefully they will!), then try accessing
@@ -292,9 +300,9 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <pre>&gt; ipconfig /flushdns</pre>
     <p>and on Linux the flush DNS command can be many different things, but try
       these two most common options:</p>
-    <pre># sudo service dns-clean restart&nbsp;&nbsp; # restarts the client side DNS cache.</pre>
+    <pre><span style="font-weight: bold;"># restarts the client side DNS cache.<br>sudo service dns-clean restart</span></pre>
     <p>or</p>
-    <pre># sudo service nscd restart&nbsp;&nbsp; # restarts the nscd caching server.</pre>
+    <pre><span style="font-weight: bold;"># restarts the nscd caching server.<br>sudo service nscd restart</span></pre>
     After, this try the pings again.&nbsp; If they still fail, please go back
     over your DNS configuration very carefully.&nbsp; The cakelampvm's DNS
     feature *does* actually work, but operating systems sometimes do their best
@@ -357,7 +365,7 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <p>If you run into any permission problems that prevent file access, either
       remotely or within the VM itself, then try running this command to fix
       them (repeated from the section above about updating the cakelampvm):</p>
-    <pre># revamp_cakelampvm</pre>
+    <pre><span style="font-weight: bold;">revamp_cakelampvm</span></pre>
     <p>Afterwards, the www folder and others should allow the developer user to
       create new folders at will.</p>
     <h2>Accessing files on the host PC from the guest VM<a id="#samba-shares" name="#samba-shares"></a></h2>
@@ -373,9 +381,18 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
         shared, and give it a name for the guest.&nbsp; We assume the folder
         name will be "myshare".</li>
       <li>On the guest vm, run the following commands to mount the share:<br>
-        <pre># mkdir ~/shared&nbsp;&nbsp;&nbsp; # for the guest's version of the shared folder<br># sudo mount -t vboxsf myshare ~/shared&nbsp;&nbsp;&nbsp; # mount the vm's share name onto the folder on the vm.</pre>
+        <pre><span style="font-weight: bold;"># make the guest's version of the shared folder<br>mkdir ~/shared<br># mount the vm's share name onto the folder on the vm.<br>sudo mount -t vboxsf myshare ~/shared</span></pre>
       </li>
     </ol>
+    <h2>X11 applications launched from the VM</h2>
+    <p>[incomplete section]</p>
+    <p>If a feature called "X forwarding" is enabled in your ssh client, then
+      you can start graphical applications on the VM and display them on your
+      local machine.&nbsp; This works right away on most Linux hosts, but can
+      also work on PCs with X window system installed.&nbsp; This section
+      describes how to set up Cygwin to run X server, which enables X11
+      forwarding to your local display.</p>
+    <p>...{insert that info}...</p>
     <h2>Adding a new website and domain on the guest VM</h2>
     <p>Note: these instructions, even the quick approaches below, pale in
       comparison to the ease of use of the "standup" command in feisty meow's
@@ -404,18 +421,18 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     details on how to add a containing domain for the first time.
     <h4>Quick approach: Use the feisty meow "add_domain" command.</h4>
     <p>Run this command in a bash shell on the VM:</p>
-    <pre># add_domain excalibur.cakelampvm.com</pre>
+    <pre><span style="font-weight: bold;">add_domain excalibur.cakelampvm.com</span></pre>
     <p>Done.</p>
     <h4>Manual approach: Edit the bind9 configuration.</h4>
     <p>Note: the manual approach is not compatible with later use of feisty
       meow's "remove_domain".</p>
     Execute the following command to edit the DNS file for the cakelampvm
     domain:
-    <pre># sudo vi /etc/bind/cakelampvm.com.conf</pre>
+    <pre><span style="font-weight: bold;">sudo vi /etc/bind/cakelampvm.com.conf</span></pre>
     <p>Add a stanza for the new site at the end of this file:</p>
     <pre>excalibur.cakelampvm.com.&nbsp;&nbsp;&nbsp; IN A&nbsp;&nbsp;&nbsp; 10.28.42.20<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IN HINFO "linux server" "ubuntu"</pre>
     <p>Restart the DNS server:</p>
-    <pre># sudo service bind9 restart</pre>
+    <pre><span style="font-weight: bold;">sudo service bind9 restart</span></pre>
     <p>Afterwards, pinging excalibur.cakelampvm.com should work from both the
       guest VM and the host PC.</p>
     <h3>DNS Option B: Using an entirely new domain for the site</h3>
@@ -424,7 +441,7 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       this example, we need to add the site "excalibur.tv" into the DNS.</p>
     <h4>Quick approach: Use the feisty meow "add_domain" command.</h4>
     Run this command in a bash shell on the VM:
-    <pre># add_domain excalibur.tv</pre>
+    <pre><span style="font-weight: bold;">add_domain excalibur.tv</span></pre>
     <p>Done.</p>
     <h4>Manual approach: Edit a new DNS config file</h4>
     <p>Note: the manual approach is not compatible with later use of feisty
@@ -441,7 +458,7 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       to add the new file by adding this bit of configuration at the end:</p>
     <pre>zone "excalibur.tv" in {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file "/etc/bind/excalibur.tv.conf";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type master;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; allow-query { any; };<br>};</pre>
     <p>Restart the DNS server:</p>
-    <pre># sudo service bind9 restart</pre>
+    <pre><span style="font-weight: bold;">sudo service bind9 restart</span></pre>
     <p>Afterwards, pinging excalibur.tv should work from both the guest and the
       host.</p>
     <h3>Creating a New Apache Site</h3>
@@ -449,7 +466,7 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       developer@cakelampvm.com </p>
     <h4>Quick approach: Use the feisty meow "add_apache_site" command.</h4>
     <p>Run this command in a bash shell on the VM:</p>
-    <pre># add_apache_site excalibur excalibur.tv</pre>
+    <pre><span style="font-weight: bold;">add_apache_site excalibur excalibur.tv</span></pre>
     <p>(The first parameter is the application name, the second is the domain
       name.)</p>
     <p>Done.</p>
@@ -471,21 +488,21 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       appropriate file name that includes the site's domain name.&nbsp; We will
       call our config file "excalibur.tv.conf".&nbsp; If you developed the file
       in your home folder, this would be the command to move it up to Apache:</p>
-    <pre># sudo cp ~/excalibur.tv.conf /etc/apache2/sites-available</pre>
+    <pre><span style="font-weight: bold;">sudo cp ~/excalibur.tv.conf /etc/apache2/sites-available</span></pre>
     <p>Then tell apache to use the new file:</p>
-    <pre># sudo a2ensite excalibur.tv  # the '.conf' portion of the filename is unnecessary for this command.
+    <pre><span style="font-weight: bold;">sudo a2ensite excalibur.tv<br># the '.conf' portion of the filename is unnecessary for this command.</span>
 </pre>
     <p>Finally, restart apache to get it to begin serving the site:</p>
-    <pre># sudo service apache2 restart</pre>
+    <pre><span style="font-weight: bold;">sudo service apache2 restart</span></pre>
     <h3>Test the new web site</h3>
     <p>Given the configuration above, your host PC should now be able to access
       the new website on the domain "excalibur.tv".</p>
     <p>To test this, first try pinging the new DNS name:</p>
-    <pre># ping excalibur.tv</pre>
-    <p>If there are responses to the ping *and* the answer is 10.28.42.20, then
-      it means the DNS is working.&nbsp; If there are no responses or it's some
-      other IP address talking back, check the instructions in the above DNS
-      sections.</p>
+    <pre><span style="font-weight: bold;">ping excalibur.tv</span></pre>
+    <p>If there are responses to the ping <span style="font-weight: bold;">*and*</span>
+      the answer is 10.28.42.20, then it means the DNS is working.</p>
+    <p>If there are no responses or it's some other IP address talking back,
+      check the instructions in the above DNS sections.</p>
     <p>Once the DNS is working, try browsing to the site at "<a title="it's excalibur, wilbur!"
         href="http://excalibur.tv">http://excalibur.tv</a>".&nbsp; That should
       at least bring up the configured site storage path, even if nothing is
@@ -502,23 +519,22 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
         href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
     <p>This is a basic guide to the Google Developer Console and API Key
       management: <a target="_blank" title="apis and creds at google" href="https://feistymeow.org//feisty_meow/documentation/google_apis/google_apis_and_credentials.pdf">Google
-        API Docs</a></p>
-    <p>&nbsp;</p>
+        API Docs</a>&nbsp; </p>
     <h3>Using the "meld" Tool to Compare Files &amp; Directories</h3>
     <p>Meld is a great comparison tool that displays differences between two
       files or directories or directory trees in a graphical view.&nbsp; Meld is
       pre-installed on the VM.&nbsp; This tool can be launched either in the
       VM's X Windowing System (on the console) or if X11 forwarding is enabled.</p>
     <p>To run meld, just type this command:</p>
-    <p>#meld A B</p>
-    <p>where A and B are either both file names or they are both directory names.&nbsp;
-      If A and B are directories, meld will compare the entire tree structure
-      between the two directories.&nbsp; It allows one to copy from one side to
-      the other, even if the item that needs to be copied is an entire
-      subdirectory.</p>
+    <pre><span style="font-weight: bold;">meld A B</span></pre>
+    <p>where A and B are either both file names or they are both directory
+      names.&nbsp; If A and B are directories, meld will compare the entire tree
+      structure between the two directories.&nbsp; It allows one to copy from
+      one side to the other, even if the item that needs to be copied is an
+      entire subdirectory.</p>
     <h3>Get the network address on the guest vm</h3>
     <p>Run this command:</p>
-    <pre># ifconfig</pre>
+    <pre><span style="font-weight: bold;">ifconfig</span></pre>
     <p>In the results, look for "<span style="font-family: monospace;">inet addr</span>".&nbsp;
       There may be more than one, if there are multiple network interfaces.</p>
     <p>The standard IP address is 10.28.42.20 for the cakelampvm.</p>
@@ -526,11 +542,11 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <p>When you've got the DNS and everything integrated, these commands will
       manage the vm's state:</p>
     <p>First, log into the guest VM:</p>
-    <pre># ssh developer@cakelampvm.com</pre>
+    <pre><span style="font-weight: bold;">ssh developer@cakelampvm.com</span></pre>
     <p>Then, to reboot the guest VM:</p>
-    <pre># sudo reboot</pre>
+    <pre><span style="font-weight: bold;">sudo reboot</span></pre>
     <p>Or, to halt the guest VM:</p>
-    <pre># sudo shutdown -h now</pre>
+    <pre><span style="font-weight: bold;">sudo shutdown -h now</span></pre>
     <p>Using these commands is kinder to the VM than just cycling the power from
       the Virtualbox control panel.</p>
     <h1>Gritty Details of the Nitty Variety<a id="#nitty-gritty" name="#nitty-gritty"></a></h1>
@@ -554,12 +570,12 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
         Image".&nbsp; This will mount the CD's ISO image on the VM.</li>
       <li>On the guest VM, it may be necessary to mount the CD image that's now
         available:<br>
-        <pre># sudo mount /dev/sr0 /media/cdrom</pre>
+        <pre><span style="font-weight: bold;">sudo mount /dev/sr0 /media/cdrom</span></pre>
         <p>Linux will mention that the device is mounted "read-only".</p>
       </li>
       <li>Since the VM currently has no windowing system installed, one must
         start the Guest Additions install manually:<br>
-        <pre># cd /media/cdrom<br># sudo sh VBoxLinuxAdditions.run</pre>
+        <pre><span style="font-weight: bold;">cd /media/cdrom<br>sudo sh VBoxLinuxAdditions.run</span></pre>
       </li>
       <li>The latest Virtualbox guest additions should now be installed.</li>
     </ol>
@@ -585,7 +601,7 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <p>To minimize the size used for the disk image, there are three major
       steps.</p>
     <p>1. While running the VM, run this command:</p>
-    <pre># sudo apt clean</pre>
+    <pre><span style="font-weight: bold;">sudo apt clean</span></pre>
     <p>This throws away any cached data from the apt tool, which can be
       substantial.</p>
     <p>If there are other junk files you know of that can be removed, delete
@@ -593,12 +609,12 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <p>2. Reboot the VM to the gparted ISO image (available at the <a target="_blank"
         title="great free partition editor" href="https://gparted.org/livecd.php">gparted
         site</a>) and run the following command:</p>
-    <pre># sudo zerofree /dev/sda</pre>
+    <pre><span style="font-weight: bold;">sudo zerofree /dev/sda</span></pre>
     <p>This sets all free space to the zero byte, enabling Virtualbox to free
       that space in the next step.</p>
     <p>3. Shut the vm down after zerofree is complete and run this command on
       the host PC (this is the Linux version of the command):</p>
-    <pre># VBoxManage modifyhd --compact ~/cake_lamp_vm/cake-lamp-vm-hd.vdi</pre>
+    <pre><span style="font-weight: bold;">VBoxManage modifyhd --compact ~/cake_lamp_vm/cake-lamp-vm-hd.vdi</span></pre>
     <p>Replace the <span style="font-family: monospace;">~/cake_lamp_vm</span>
       path with the real VM storage path.&nbsp; This command compacts the root
       (and only) partition of the VM.</p>
@@ -625,8 +641,6 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       <li>Installed and configured Samba service for the guest VM.&nbsp; The
         main config file lives in "/etc/samba/smb.conf".&nbsp; Some pointers
         here: <a target="_blank" href="https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21">https://help.ubuntu.com/community/How%20to%20Create...</a></li>
-      <li><br>
-      </li>
     </ul>
     <p><br>
     </p>
