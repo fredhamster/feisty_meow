@@ -383,6 +383,10 @@ function do_careful_git_update()
   local bran
   for bran in $branch_list; do
 #    echo "synchronizing remote branch: $bran"
+    if [ "$this_branch" == "$bran" ]; then
+      echo "skipping redundant update on initial branch: $bran"
+      continue;
+    fi
     git checkout "$bran" | $TO_SPLITTER
     promote_pipe_return 0
     test_or_die "git switching checkout to remote branch: $bran"
