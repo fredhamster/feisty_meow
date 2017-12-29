@@ -379,6 +379,8 @@ function do_careful_git_update()
   show_branch_conditionally "$this_branch"
 
   # this code is now doing what i have to do when i repair the repo.  and it seems to be good so far.
+  # note that we allow the local branch to be merged with its remote counterpart; otherwise we would
+  # miss changes that happened elsewhere which should be seen in our local copy.
   local branch_list=$(all_branch_names)
   local bran
   for bran in $branch_list; do

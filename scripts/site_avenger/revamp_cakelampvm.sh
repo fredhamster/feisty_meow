@@ -285,6 +285,9 @@ echo "
 
 
 Thanks for revamping your cakelampvm.  :-)
+
+You may want to update your current shell's feisty meow environment by typing:
+  reconfigure_feisty_meow
 "
 
 ##############
