@@ -394,7 +394,9 @@ function do_careful_git_update()
     remote_branch_info=$(git ls-remote --heads origin $bran 2>/dev/null)
     if [ ! -z "$remote_branch_info" ]; then
       # we are pretty sure the remote branch does exist.
-      git pull --no-ff origin "$bran" | $TO_SPLITTER
+      git pull origin "$bran" | $TO_SPLITTER
+# we may want to choose to do fast forward, to avoid crazy multiple merge histories
+# without any changes in them.  --no-ff
       promote_pipe_return 0
     fi
     test_or_die "git pull of remote branch: $bran"
@@ -406,7 +408,10 @@ function do_careful_git_update()
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
-  git pull --no-ff --all | $TO_SPLITTER
+  git pull --all | $TO_SPLITTER
+#is the above really important when we did this branch already in the loop?
+#it does an --all, but is that effective or different?  should we be doing that in above loop?
+# --no-ff   
   promote_pipe_return 0
   test_or_die "git pulling all upstream"
 
@@ -445,9 +450,10 @@ function do_update()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt
-      git pull --no-ff 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      git pull 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+#ordinary pulls should be allowed to do fast forward: --no-ff 
       promote_pipe_return 0
-      test_or_die "git pull of origin without fast forwards"
+      test_or_die "git pull of origin"
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
