@@ -103,20 +103,5 @@ create_site_links "$site_store_path" "$theme_name"
 
 sep
 
-# go with the default user running the script.
-user_name=$USER
-if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
-  echo "Chowning the apps folder to be owned by: $user_name"
-#hmmm: have to hope for now for standard group named after user 
-  chown -R "$user_name:$user_name" "$BASE_APPLICATION_PATH"
-  test_or_die "Chowning $BASE_APPLICATION_PATH to be owned by $user_name"
-
-else
-echo "user name failed checks for chowning, was '$user_name'"
-fi
-
-sep
-
-
 echo "Finished powering up the site in '${app_dirname}'."
 
