@@ -15,7 +15,7 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 # this appears to be an ubuntu issue, where xenial did not provide it even though the
 # feature appeared in git 2.6 and xenial claims it has git version 2.7.4.  eventually,
 # this version test can go away.
-gitvertest="$(git version | sed -e 's/git version [0-9]\.//' | sed -e 's/\.0$//' )"
+gitvertest="$(git version | sed -e 's/git version [0-9]\.//' | sed -e 's/\.[0-9][0-9]*$//' )"
 #hmmm: temp below!
 echo gitvertest is $gitvertest
 if (( $gitvertest >= 11 )); then
