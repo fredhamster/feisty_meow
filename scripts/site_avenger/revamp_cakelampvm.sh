@@ -271,6 +271,55 @@ test_or_die "enabling the new cakelampvm environment config for apache"
 echo Successfully configured the apache2 environment variables needed for cakelampvm.
 
 ##############
+
+# add in a swap mount if not already configured.
+
+sep
+
+echo "Checking existing swap partition configuration.
+"
+
+# check for existing swap.
+free | grep -q "Swap:[[:blank:]]*[1-9][0-9]"
+if [ $? -ne 0 ]; then
+  # no swap in current session, so add it.
+  echo "Enabling ramdisk swap partition...
+"
+  add_swap_mount
+  echo "
+Enabled ramdisk swap partition for current boot session."
+fi
+
+# the above just gives this session a swap partition, but we want to have
+# the vm boot with one also.
+
+# check if there is already swap mentioned in the root crontab.  we will get root's
+# crontab below since this script has to run as sudo.
+crontab -l | grep -iq add_swap_mount
+if [ $? -ne 0 ]; then
+  # no existing swap setup in crontab, so add it.
+  echo "
+Adding a boot-time ramdisk swap partition...
+"
+  # need to do it carefully, since sed won't add lines to a null file.  we thus
+  # create a temporary file to do our work in and ignore sed as a tool for this.
+  tmpfile="$(mktemp junk.XXXXXX)"
+  crontab -l 2>/dev/null >"$tmpfile"
+  echo "
+# need to explicitly set any variables we will use.
+FEISTY_MEOW_APEX=${FEISTY_MEOW_APEX}
+# add swap space to increase memory available.
+@reboot bash $FEISTY_MEOW_APEX/scripts/system/add_swap_mount.sh
+" >>"$tmpfile"
+  # now install our new version of the crontab.
+  crontab "$tmpfile"
+  rm "$tmpfile"
+
+  echo "
+Added boot-time ramdisk swap partition to crontab for root."
+fi
+
+##############
 ##############
 
 # sequel--tell them they're great and show the hello again also.
