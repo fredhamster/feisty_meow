@@ -16,8 +16,6 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 # feature appeared in git 2.6 and xenial claims it has git version 2.7.4.  eventually,
 # this version test can go away.
 gitvertest="$(git version | sed -e 's/git version [0-9]\.//' | sed -e 's/\.[0-9][0-9]*$//' )"
-#hmmm: temp below!
-echo gitvertest is $gitvertest
 if (( $gitvertest >= 11 )); then
   # auto-stash is not available until 2.6 for git, but ubuntu is misreporting or using a
   # differing version number somehow.  we are sure autostash was missing on ubuntu xenial

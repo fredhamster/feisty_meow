@@ -94,7 +94,7 @@ sep
 
 # hmmm: pass the real user name who should own the files?
 # hmmm: "$(logname)" $USER works, but logname wasn't?
-fix_ownership "$BASE_APPLICATION_PATH" "$APPLICATION_NAME" 
+fix_appdir_ownership "$BASE_APPLICATION_PATH" "$APPLICATION_NAME" 
 
 sep
 
