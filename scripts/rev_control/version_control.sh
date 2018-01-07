@@ -11,11 +11,17 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
 ##############
 
+# check git version to see if we can use autostash.
+# this appears to be an ubuntu issue, where xenial did not provide it even though the
+# feature appeared in git 2.6 and xenial claims it has git version 2.7.4.  eventually,
+# this version test can go away.
 gitvertest="$(git version | sed -e 's/git version [0-9]\.//' | sed -e 's/\.0$//' )"
+#hmmm: temp below!
 echo gitvertest is $gitvertest
-if [[ $gitvertest > 9 ]]; then
-  # we believe auto-stash is not available until 2.9, but we are sure it was missing
-  # on ubuntu xenial with git 2.7.4.
+if (( $gitvertest >= 11 )); then
+  # auto-stash is not available until 2.6 for git, but ubuntu is misreporting or using a
+  # differing version number somehow.  we are sure autostash was missing on ubuntu xenial
+  # with git 2.7.4 and it's definitely present in zesty with git at 2.11.
   PULL_ADDITION='--rebase --autostash'
 fi
 
