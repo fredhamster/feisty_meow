@@ -320,6 +320,22 @@ Added boot-time ramdisk swap partition to crontab for root."
 fi
 
 ##############
+
+sep
+
+# repair the google config key for mapsdemo, which lives over in fred's account.
+search_replace \
+  "^[[:blank:]]*'key'[[:blank:]]*=>[[:blank:]]*'AIzaSyCd2kfOBf8tyd-_m2aM_ayMoAq8r_M1yUk'," \
+  "\t'key' => 'AIzaSyCvKs62XudEWPZpA21rCGI1Dkh6UxSQzzQ'," \
+  ~fred/apps/mapsdemo/avenger5/config/config_google.php
+
+if [ $? -ne 0 ]; then
+  echo Google config key for mapsdemo in fred account seems to already be patched.
+else
+  echo Patched the google config key for mapsdemo app in fred account.
+fi
+
+##############
 ##############
 
 # sequel--tell them they're great and show the hello again also.
