@@ -276,13 +276,17 @@ echo Successfully configured the apache2 environment variables needed for cakela
 
 sep
 
+echo "Checking existing swap partition configuration."
+
 # check for existing swap.
 free | grep -q "Swap:[[:blank:]]*[1-9][0-9]"
 if [ $? -ne 0 ]; then
   # no swap in current session, so add it.
+  echo "Enabling ramdisk swap partition...
+"
   add_swap_mount
-
-  echo "Enabled ramdisk swap partition for the current boot session."
+  echo "
+Enabled ramdisk swap partition for current boot session."
 fi
 
 # the above just gives this session a swap partition, but we want to have
@@ -293,6 +297,8 @@ fi
 crontab -l | grep -iq add_swap_mount
 if [ $? -ne 0 ]; then
   # no existing swap setup in crontab, so add it.
+  echo "Adding a boot-time ramdisk swap partition...
+"
   # need to do it carefully, since sed won't add lines to a null file.  we thus
   # create a temporary file to do our work in and ignore sed as a tool for this.
   tmpfile="$(mktemp junk.XXXXXX)"
@@ -307,7 +313,8 @@ FEISTY_MEOW_APEX=${FEISTY_MEOW_APEX}
   crontab "$tmpfile"
   rm "$tmpfile"
 
-  echo "Added boot-time ramdisk swap partition to crontab for root."
+  echo "
+Added boot-time ramdisk swap partition to crontab for root."
 fi
 
 ##############
