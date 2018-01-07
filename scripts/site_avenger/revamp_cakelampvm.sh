@@ -276,7 +276,8 @@ echo Successfully configured the apache2 environment variables needed for cakela
 
 sep
 
-echo "Checking existing swap partition configuration."
+echo "Checking existing swap partition configuration.
+"
 
 # check for existing swap.
 free | grep -q "Swap:[[:blank:]]*[1-9][0-9]"
@@ -297,7 +298,8 @@ fi
 crontab -l | grep -iq add_swap_mount
 if [ $? -ne 0 ]; then
   # no existing swap setup in crontab, so add it.
-  echo "Adding a boot-time ramdisk swap partition...
+  echo "
+Adding a boot-time ramdisk swap partition...
 "
   # need to do it carefully, since sed won't add lines to a null file.  we thus
   # create a temporary file to do our work in and ignore sed as a tool for this.
