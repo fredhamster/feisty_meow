@@ -354,7 +354,7 @@ function update_composer_repository()
 # fixes the ownership for a site avenger or php application.
 # this almost certainly will require sudo capability, if there are any ownership problems
 # that need to be resolved.
-function fix_ownership()
+function fix_appdir_ownership()
 {
   local appsdir="$1"; shift
   local dir="$1"; shift
