@@ -17,6 +17,7 @@ SWAP_SIZE="$1"; shift
 
 if [ "$SWAP_INSTANCE" == "--help" ]; then
   echo "\
+$(basename $0):
 This script will add a swap partition for Linux that uses hard drive space for
 swap memory.  This increases the amount of available memory on RAM constrained
 systems.  It accepts two parameters: (1) the instance of the swap file, which
