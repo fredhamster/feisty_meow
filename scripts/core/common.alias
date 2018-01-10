@@ -55,6 +55,7 @@ fi
 # re-use work we did on 'exp' macro for the longer windows command.
 define_yeti_alias explorer=exp
 define_yeti_alias fix_ssh_perms='chmod 700 $HOME/.ssh ; chmod 600 $HOME/.ssh/*'
+define_yeti_alias get_feisty='rpuffer $FEISTY_MEOW_APEX; reconfigure_feisty_meow'
 define_yeti_alias halt='sudo shutdown -h now'
 define_yeti_alias i=inventory
 define_yeti_alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
@@ -107,6 +108,7 @@ define_yeti_alias add_domain="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_domain.
 define_yeti_alias remove_domain="sudo bash \$FEISTY_MEOW_SCRIPTS/system/remove_domain.sh"
 define_yeti_alias add_apache_site="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_apache_site.sh"
 define_yeti_alias remove_apache_site="sudo bash \$FEISTY_MEOW_SCRIPTS/system/remove_apache_site.sh"
+define_yeti_alias add_swap_mount="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_swap_mount.sh"
 
 #hmmm: some magma intrusions from the fred customizations...
 define_yeti_alias revamp_cakelampvm="sudo bash \"$FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm.sh\""
