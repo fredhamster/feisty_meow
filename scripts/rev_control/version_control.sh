@@ -20,7 +20,10 @@ if (( $gitvertest >= 11 )); then
   # auto-stash is not available until 2.6 for git, but ubuntu is misreporting or using a
   # differing version number somehow.  we are sure autostash was missing on ubuntu xenial
   # with git 2.7.4 and it's definitely present in zesty with git at 2.11.
-  PULL_ADDITION='--rebase --autostash'
+#  PULL_ADDITION='--rebase --autostash'
+#although initially attractive, above set of flags seems to lose history we don't want to
+#lose.
+PULL_ADDITION=
 fi
 
 ##############
