@@ -351,4 +351,26 @@ function update_composer_repository()
   fi
 }
 
+# fixes the ownership for a site avenger or php application.
+# this almost certainly will require sudo capability, if there are any ownership problems
+# that need to be resolved.
+function fix_appdir_ownership()
+{
+  local appsdir="$1"; shift
+  local dir="$1"; shift
+
+  local combo="$appsdir/$dir"
+
+  # go with the default user running the script.
+  user_name="$USER"
+  if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
+    echo "Chowning the apps folder to be owned by: $user_name"
+#hmmm: have to hope for now for standard group named after user 
+    chown -R "$user_name:$user_name" "$combo"
+    test_or_die "Chowning $combo to be owned by $user_name"
+  else
+    echo "user name failed checks for chowning, was found as '$user_name'"
+  fi
+}
+
 

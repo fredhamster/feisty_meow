@@ -11,7 +11,7 @@
         Koeritz</span><span style="font-family: Comic Sans MS;"></span><span style="font-family: Comic Sans MS;"></span><br>
       <span style="font-family: Comic Sans MS;">feisty meow® concerns ltd</span>.</div>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
-      Updated: 2017-12-19 (rev. h)</h3>
+      Updated: 2018-1-7 (rev. i)</h3>
     <p>The cakelampvm project provides a Virtualbox VM that acts as an "internet
       in a bottle", serving up your web sites securely and only to your local
       host.&nbsp; The virtual machine provides DNS services (<a target="_blank"
@@ -197,6 +197,10 @@ revamp_cakelampvm</span></pre>
         <pre><span style="font-weight: bold;">passwd</span></pre>
         The 'passwd' command will ask for your current password, and then for a
         new password plus a verification of that new password.<br>
+        You will probably want to change your samba password as well, which is
+        used when accessing the virtual machine over the network.&nbsp; This is
+        a different, but very similar, command on Linux:<br>
+        <pre><span style="font-weight: bold;">smbpasswd</span></pre>
         &nbsp;</li>
       <li>Change your git configuration for the user and email address.&nbsp;
         This is how we've configured it so far:<br>
@@ -279,7 +283,7 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
     <h4>Setting up DNS on Windows<a id="#windoze-dns" name="#windoze-dns"></a></h4>
     <p>The ipconfig tool will provide helpful information about your current
       networking and DNS configuration:</p>
-    <pre>&gt; ipconfig /all</pre>
+    <pre><span style="font-weight: bold;">&gt; ipconfig /all</span></pre>
     <p>The DNS configuration on Windows is somewhat byzantine.&nbsp; The pipe
       characters ('|') below are used to separate the menus or tabs or dialogs
       to traverse.&nbsp; Follow this path to get to the DNS config:</p>
@@ -297,7 +301,7 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       settings on your Host PC are right, then you may need to flush your DNS
       cache, and that might be sufficient to start getting the right IP
       address.&nbsp; On Windows, the command for flushing DNS is:</p>
-    <pre>&gt; ipconfig /flushdns</pre>
+    <pre><span style="font-weight: bold;">&gt; ipconfig /flushdns</span></pre>
     <p>and on Linux the flush DNS command can be many different things, but try
       these two most common options:</p>
     <pre><span style="font-weight: bold;"># restarts the client side DNS cache.<br>sudo service dns-clean restart</span></pre>
