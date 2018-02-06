@@ -38,7 +38,6 @@ function print_instructions()
   echo "app dirname: The folder where the app will be stored."
   echo "repository: The name of the git repository (short version, no URL)."
   echo "theme name: The name to use for the cakephp theme."
-#  echo "user name: The name of the user to chown the checkout to."
   echo
   exit 0
 }
@@ -51,9 +50,6 @@ function print_instructions()
 app_dirname="$1"; shift
 repo_name="$1"; shift
 theme_name="$1"; shift
-#user_name="$1"; shift
-
-#echo "*** user name is $user_name"
 
 if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
@@ -106,16 +102,6 @@ sep
 create_site_links "$site_store_path" "$theme_name"
 
 sep
-
-#if [ ! -z "$user_name" ]; then
-#  echo "Chowning the apps folder to be owned by: $user_name"
-##hmmm: have to hope for now for standard group named after user 
-#  chown -R "$user_name:$user_name" "$BASE_APPLICATION_PATH"
-#  test_or_die "Chowning $BASE_APPLICATION_PATH to be owned by $user_name"
-#fi
-
-sep
-
 
 echo "Finished powering up the site in '${app_dirname}'."
 

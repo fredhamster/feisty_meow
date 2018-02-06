@@ -62,6 +62,13 @@ sep
 sudo bash "$FEISTY_MEOW_SCRIPTS/system/remove_apache_site.sh" "$DOMAIN_NAME"
 test_or_die "dropping apache site for: $DOMAIN_NAME"
 
+# drop the shadow site too.
+shadow_domain="${APPLICATION_NAME}.cakelampvm.com"
+if [ "$shadow_domain" != "$DOMAIN_NAME" ]; then
+  sudo bash "$FEISTY_MEOW_SCRIPTS/system/remove_apache_site.sh" "$shadow_domain"
+  test_or_die "dropping shadow apache site on '$shadow_domain'"
+fi
+
 sep
 
 #echo "!! domain being removed is: $DOMAIN_NAME"

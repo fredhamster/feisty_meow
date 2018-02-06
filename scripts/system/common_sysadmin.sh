@@ -186,6 +186,25 @@ function restart_bind()
 
 ############################################################################
 
+# samba server helper functions...
+
+function restart_samba
+{
+  echo restarting samba server.
+  service smbd restart
+  if [ $? -ne 0 ]; then
+    echo "The samba service did not restart properly.  Please check the error logs."
+    exit 1
+  fi
+  service nmbd restart
+  if [ $? -ne 0 ]; then
+    echo "The samba name service (nmbd) did not restart properly.  This may not always be fatal, so we are ignoring it, but you may want to check the error logs."
+  fi
+  echo samba service restarted.
+}
+
+############################################################################
+
 # apache2 methods...
 
 # removes a config file for apache given the app name and site name.

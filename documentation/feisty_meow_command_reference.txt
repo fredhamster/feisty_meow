@@ -29,6 +29,9 @@ generally useful commands
   show the directory with a "summing" feature that calculates the full size
   consumed by all files in the listing, with somewhat esthetic output.
 
+  ll:
+  like 'dir' but also includes hidden files (e.g. those starting with a dot).
+
   ls:
   the standard ls command (not the summing directory), but with ls colors
   enabled.
@@ -37,6 +40,10 @@ generally useful commands
   invoke "safedel" feature to remove the files specified.  this archives the
   deleted files in "$TMP/zz_safedel_keep" and writes a report of the deletion
   history in "$TMP/zz_safedel_report.txt".
+
+  get_feisty:
+  update the feisty meow codebase from its origin and run the reconfigure
+  script to update the current user's feisty meow configuration.
 
 note: currently there is no "empty the trash" function aside from running a
 command such as:
@@ -120,7 +127,7 @@ managing web sites.  these scripts offer a lot of power to the developer, and
 of course that comes with great responsibility...
 
 the site avenger scripts are configured by "app" files stored in the "config"
-directory (in $FEISTY_MEOW_SCRIPTS/scripts/site_avenger/config).  the scripts
+directory (in $FEISTY_MEOW_SCRIPTS/site_avenger/config).  the scripts
 seek out a config file named after the application, e.g. they look for
 "winterportlibrary.app" if the application name is "winterportlibrary".
 the basic config file "default.app" is used for any application that is unknown
