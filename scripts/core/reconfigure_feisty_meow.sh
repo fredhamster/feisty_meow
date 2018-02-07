@@ -81,3 +81,6 @@ if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
   echo ==============
 fi
 
+# now try a full reload to get latest aliases and everything.
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
