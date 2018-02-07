@@ -8,14 +8,12 @@
 # two requirements are done automatically by the store_password function.
 
 # load_password:
-# provides a way to read a password out of a file.
-# the return value is an echoed password, so this method should always be
-# called from within a subshell, e.g.:
-#    mypass="$(load_password /etc/glorp/secret_passcode)"
-# the returned echo will be blank if the function failed.
+# provides a way to read a password out of a file.  the filename is the first
+# paramater and the variable to fill with the password is the second.
 function load_password()
 {
   local passfile="$1"; shift
+  local varname="$1"; shift
   if [ -z "$passfile" ]; then
     echo 'The load_password function needs a filename to read the password from.'
     return 1
@@ -27,7 +25,11 @@ function load_password()
   fi
   local passwd
   read passwd < "$passfile"
-  echo "$passwd"
+
+  # return the password in the variable they provided.
+  eval $varname="$passwd"
+#echo varname is: $varname
+#echo new value of that variable is ${!varname}
 }
 
 # stores a password into a password file.  the password file should be the
@@ -56,21 +58,25 @@ and (2) the password that should be stored.
 }
 
 # reads a password from the console, without echoing the letters when they
-# are typed.  the prompt to show the user is required as the first parameter.
-# the password read in is returned as an echo, like load_password above.
+# are typed.  the prompt to show the user is required as the first parameter,
+# and the variable to fill with the result is the second parameter.
 function read_password()
 {
-  prompt="$1"; shift
+  local prompt="$1"; shift
+  local varname="$1"; shift
+#hmmm: complain if not enough parms.
   echo -n "$prompt "
-#  sync
   # turn off echo but remember former setting.
   stty_orig=`stty -g`
   stty -echo
+  local the_passwd
   read the_passwd
   # turn echo back on.
   stty $stty_orig
-  # return the password as an echo.
-  echo "$the_passwd"
+  # return the password in the variable they provided.
+  eval $varname="$the_passwd"
+#echo varname is: $varname
+#echo new value of that variable is ${!varname}
 }
 
 
