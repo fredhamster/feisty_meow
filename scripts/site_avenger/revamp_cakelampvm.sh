@@ -27,10 +27,11 @@ source "$FEISTY_MEOW_SCRIPTS/security/password_functions.sh"
 echo A
 load_password /etc/mysql/secret_password mysql_passwd
 echo B
-if [ -z "$mysql_password" ]; then
+if [ -z "$mysql_passwd" ]; then
 echo C
-  read_password "Please enter the MySQL root account password:" mysql_password
+  read_password "Please enter the MySQL root account password:" mysql_passwd
 echo D
+echo password was found as: $mysql_passwd
 #  echo -n "Please enter the MySQL root account password: "
 #  # turn off echo but remember former setting.
 #  stty_orig=`stty -g`
@@ -45,7 +46,7 @@ echo E
   exit 1
 else
 echo F
-  store_password /etc/mysql/secret_password "$mysql_password"
+  store_password /etc/mysql/secret_password "$mysql_passwd"
 fi
 
 ##############
