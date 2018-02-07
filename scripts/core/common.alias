@@ -55,7 +55,7 @@ fi
 # re-use work we did on 'exp' macro for the longer windows command.
 define_yeti_alias explorer=exp
 define_yeti_alias fix_ssh_perms='chmod 700 $HOME/.ssh ; chmod 600 $HOME/.ssh/*'
-define_yeti_alias get_feisty='rpuffer $FEISTY_MEOW_APEX; reconfigure_feisty_meow'
+define_yeti_alias get_feisty='rpuffer $FEISTY_MEOW_APEX; regenerate'
 define_yeti_alias halt='sudo shutdown -h now'
 define_yeti_alias i=inventory
 define_yeti_alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
@@ -143,11 +143,6 @@ define_yeti_alias why='echo We all wonder what the point of the universe is at t
 # which reduces the chance of loading the shell environment twice for users
 # like root that don't load feisty meow automatically.
 unalias fredme feistyme &>/dev/null
-
-##############
-
-# set the sentinel alias that says this file was handled.
-#alias CORE_ALIASES_LOADED=true
 
 ##############
 

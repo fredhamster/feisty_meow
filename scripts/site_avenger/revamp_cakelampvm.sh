@@ -39,8 +39,8 @@ sep
 
 echo "Regenerating feisty meow loading dock."
 
-reconfigure_feisty_meow
-test_or_die "feisty meow reconfiguration"
+regenerate
+test_or_die "regenerating feisty meow configuration"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
 test_or_die "fix after reconfigured as sudo"
 
@@ -342,7 +342,7 @@ echo "
 Thanks for revamping your cakelampvm.  :-)
 
 You may want to update your current shell's feisty meow environment by typing:
-  reconfigure_feisty_meow
+  regenerate
 "
 
 ##############
