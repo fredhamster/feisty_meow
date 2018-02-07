@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta content="text/html; charset=windows-1252" http-equiv="content-type">
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
     <title>Cake LAMP VM Documentation</title>
   </head>
   <body>
@@ -11,7 +11,7 @@
         Koeritz</span><span style="font-family: Comic Sans MS;"></span><span style="font-family: Comic Sans MS;"></span><br>
       <span style="font-family: Comic Sans MS;">feisty meow® concerns ltd</span>.</div>
     <h3 style="   text-align: center;"> Vintage: cakelampvm v002 &nbsp;&nbsp;
-      Updated: 2018-1-7 (rev. i)</h3>
+      Updated: 2018-2-7 (rev. j)</h3>
     <p>The cakelampvm project provides a Virtualbox VM that acts as an "internet
       in a bottle", serving up your web sites securely and only to your local
       host.&nbsp; The virtual machine provides DNS services (<a target="_blank"
@@ -47,8 +47,7 @@
           target="_blank" title="not just in the garden" href="https://www.gnome.org/">gnome
           display manager</a></li>
       <li>Main VM User: developer (password distributed separately)</li>
-      <li>Database Access: mysql root account, password: (password distributed
-        separately)</li>
+      <li>Database Access: mysql root account (password distributed separately)</li>
     </ul>
     <h2>How to set up virtualbox for your host PC<a id="#virtualbox-setup" name="#virtualbox-setup"></a></h2>
     <ol>
@@ -134,6 +133,8 @@
         <img alt="nat net config" src="images/nat_network_config.png"></li>
     </ol>
     <h2>Starting up the VM and Connecting to It<a id="#start-vm" name="#start-vm"></a></h2>
+    <p>&#9733; This section requires that the VM is already configured properly for
+      Host-Only and NAT networks.</p>
     <p>Using the Virtualbox interface, you should now be able to start your
       virtual machine.&nbsp; Virtualbox will complain if it detects any
       remaining configuration problems in the VM.&nbsp; The Linux boot sequence
@@ -153,15 +154,35 @@
     with:
     <pre><span style="font-weight: bold;">ssh developer@10.28.42.20<br># or perform the equivalent connection with your ssh client.</span></pre>
     <p>And then provide the password to log in.</p>
-    <p>Once the DNS services are set up (discussed in detail below), you will be
-      able to run the much friendlier command:</p>
+    <p>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    </p>
+    <p>
+      <meta charset="utf-8">
+      &#9733; It is very important that the ssh connection is working properly before
+      proceeding to other configuration steps.&nbsp; If ssh is not working, try
+      pinging the host:</p>
+    <pre><b>ping 10.28.42.20</b></pre>
+    <p>If the ping is also failing, then please re-check the two network
+      configuration sections above (for Host-Only networking and NAT
+      networking).&nbsp; These are both required for the VM's network to
+      function as designed.</p>
+    <p>Optional: Once the DNS services are set up (discussed in detail below),
+      you will be able to run the much friendlier command:</p>
     <pre><span style="font-weight: bold;">ssh developer@cakelampvm.com</span></pre>
     <h4>Key Forwarding to the VM</h4>
     <p>It is important to set up ssh key forwarding to enable your use of git
       repositories while logged into the VM.&nbsp; Key forwarding should be
       enabled for the VM's two fake host identities:</p>
     <pre><span style="font-weight: bold;">cakelampvm.com<br>10.28.42.20</span></pre>
+    <p>The details of configuring ssh key forwarding vary for each ssh
+      client.&nbsp; For Linux ssh, the <b>~/.ssh/config</b> file might contain
+      this information:</p>
+    <pre><b>Host cakelampvm.com 10.28.42.20<br>&nbsp; ForwardAgent yes<br></b></pre>
+    <pre><span style="font-weight: bold;"></span></pre>
     <h2>Updating cakelampvm to the Latest Model<a id="#update-vm" name="#update-vm"></a></h2>
+    <p>&#9733; This section requires that the VM is already configured and is
+      accessible via ssh.</p>
     <p>The cakelampvm v002 is released with the intention that it not need to be
       released again.&nbsp; Version 001 was not built with that explicit
       intention, which then required the release of Version 002.&nbsp; But we
@@ -169,12 +190,13 @@
     <p>There is an update feature built into the VM that is quite easy to
       use.&nbsp; The updates are driven by the feisty meow script repository in
       conjunction with a local scripted command.&nbsp; To activate the "update
-      process" for your VM, run the following commands on the VM:</p>
+      process" for your VM, run the following commands on the VM, logged in as
+      the <i>developer</i> user:</p>
     <pre><span style="font-weight: bold;"># update to the latest version of feisty meow.<br>rpuffer $FEISTY_MEOW_APEX; regenerate<br># enact any configuration changes needed, such as permissions and account setup.
 revamp_cakelampvm</span></pre>
     <span style="font-weight: bold;"> </span>
     <p>These two commands can be run at any time to patch up your VM to the
-      latest.</p>
+      latest configuration.</p>
     <p>Recent versions of feisty meow support a new "<span style="font-weight: bold; font-family: monospace;">get_feisty</span>"
       command, which will behave the same as the first line above.&nbsp; Once
       you have run the "puffer..." command above for the first time (on
@@ -189,7 +211,9 @@ revamp_cakelampvm</span></pre>
         gone astray, especially for problems with permissions.</li>
     </ul>
     <h2>First Tasks as the Developer User</h2>
-    <p>Here are some first steps that will make the vm your own:</p>
+    <p>&#9733; This section requires that the VM is already configured and is
+      accessible via ssh.</p>
+    <p>Here are some first steps that will make the vm your own.</p>
     <ol>
       <li>Change your password for the developer account.&nbsp; (This may
         eventually be required and automatic.)&nbsp; First, log into the VM with
@@ -240,6 +264,8 @@ meow
     <p>(The feisty meow codebase is already configured for the developer account
       on the cakelampvm virtual machine.)</p>
     <h2>Using the guest VM's DNS services<a id="#dns-from-vm" name="#dns-from-vm"></a></h2>
+    <p>&#9733; This section requires that the VM is already configured and is
+      accessible via ssh.</p>
     <p>The cakelampvm has been set up to provide a DNS server which will answer
       name lookup requests on any of the sites that the cakelampvm is hosting
       for you.&nbsp; It will also serve as a general DNS server for any other
@@ -397,6 +423,114 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       describes how to set up Cygwin to run X server, which enables X11
       forwarding to your local display.</p>
     <p>...{insert that info}...</p>
+    <h2>Handy Techniques for Using cakelampvm</h2>
+    <h3>Assorted Guides and Cheat-Sheets</h3>
+    <p>A Cheat sheet for the Vim editor (there are many of these available): <a
+        target="_blank" title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
+    <p>A git branching model that seems to work well: <a target="_blank" title="release and patch process"
+        href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
+    <p>This is a basic guide to the Google Developer Console and API Key
+      management: <a target="_blank" title="apis and creds at google" href="https://feistymeow.org//feisty_meow/documentation/google_apis/google_apis_and_credentials.pdf">Google
+        API Docs</a>&nbsp; </p>
+    <h3>Using the "meld" Tool to Compare Files &amp; Directories</h3>
+    <p>Meld is a great comparison tool that displays differences between two
+      files or directories or directory trees in a graphical view.&nbsp; Meld is
+      pre-installed on the VM.&nbsp; This tool can be launched either in the
+      VM's X Windowing System (on the console) or if X11 forwarding is enabled.</p>
+    <p>To run meld, just type this command:</p>
+    <pre><span style="font-weight: bold;">meld A B</span></pre>
+    <p>where A and B are either both file names or they are both directory
+      names.&nbsp; If A and B are directories, meld will compare the entire tree
+      structure between the two directories.&nbsp; It allows one to copy from
+      one side to the other, even if the item that needs to be copied is an
+      entire subdirectory.</p>
+    <h3>Get the network address on the guest vm</h3>
+    <p>Run this command:</p>
+    <pre><span style="font-weight: bold;">ifconfig</span></pre>
+    <p>In the results, look for "<span style="font-family: monospace;">inet addr</span>".&nbsp;
+      There may be more than one, if there are multiple network interfaces.</p>
+    <p>The standard IP address is 10.28.42.20 for the cakelampvm.</p>
+    <h3>How to cleanly reboot or shut down the guest VM</h3>
+    <p>When you've got the DNS and everything integrated, these commands will
+      manage the vm's state:</p>
+    <p>First, log into the guest VM:</p>
+    <pre><span style="font-weight: bold;">ssh developer@cakelampvm.com</span></pre>
+    <p>Then, to reboot the guest VM:</p>
+    <pre><span style="font-weight: bold;">sudo reboot</span></pre>
+    <p>Or, to halt the guest VM:</p>
+    <pre><span style="font-weight: bold;">sudo shutdown -h now</span></pre>
+    <p>Using these commands is kinder to the VM than just cycling the power from
+      the Virtualbox control panel.</p>
+    <h1>Gritty Details of the Nitty Variety<a id="#nitty-gritty" name="#nitty-gritty"></a></h1>
+    <p>This is the lowest level of plumbing for your VM.&nbsp; Hopefully you
+      will not need to engage with this section.&nbsp; The most useful doc
+      section here is the one below about the "Virtualbox guest additions",
+      which you will probably need at some future point.&nbsp; Oracle releases
+      updates to the guest additions fairly regularly.</p>
+    <h2>Configuring the guest VM</h2>
+    <p>The guest VM should already be set up appropriately.&nbsp; These steps
+      are provided for reference and updates.</p>
+    <h3>Set up Virtualbox guest additions for the VM</h3>
+    This procedure is needed if the guest provides an older or incompatible
+    version of the guest additions (which have already been installed on the
+    guest vm).&nbsp; It may also be necessary when a new version of the guest
+    additions becomes available.
+    <ol>
+      <li>To install the guest additions, open the guest VM and have its window
+        in focus.</li>
+      <li>Choose the "Devices" menu and select "Insert Guest Additions CD
+        Image".&nbsp; This will mount the CD's ISO image on the VM.</li>
+      <li>On the guest VM, it may be necessary to mount the CD image that's now
+        available:<br>
+        <pre><span style="font-weight: bold;">sudo mount /dev/sr0 /media/cdrom</span></pre>
+        <p>Linux will mention that the device is mounted "read-only".</p>
+      </li>
+      <li>Since the VM currently has no windowing system installed, one must
+        start the Guest Additions install manually:<br>
+        <pre><span style="font-weight: bold;">cd /media/cdrom<br>sudo sh VBoxLinuxAdditions.run</span></pre>
+      </li>
+      <li>The latest Virtualbox guest additions should now be installed.</li>
+    </ol>
+    <h3>Set up network adapters on guest VM</h3>
+    <p>The network interfaces should already be configured on the guest within
+      the Virtualbox configuration.&nbsp; This is available by clicking on the
+      VM in the Virtualbox manager and selecting "Settings".&nbsp; These are the
+      configuration settings used:</p>
+    Adapter 1:<br>
+    &nbsp; Attached to: Host-only Adapter<br>
+    &nbsp; Name: vboxnet0&nbsp; <br>
+    <p>Adapter 2:<br>
+      &nbsp; Attached to: Nat Network<br>
+      &nbsp; Name: NatNetwork</p>
+    <p>On the guest VM itself, the network settings are specified in a file
+      called /etc/network/interfaces.&nbsp; Here are the current contents of
+      that file:</p>
+    <pre>source /etc/network/interfaces.d/*<br><br>auto lo<br>iface lo inet loopback<br><br>auto enp0s3<br>iface enp0s3 inet static<br>&nbsp; address 10.28.42.20<br>&nbsp; netmask 255.255.255.0<br>&nbsp; network 10.28.42.0<br>&nbsp; broadcast 10.28.42.255<br>&nbsp; dns-domain cakelampvm.com<br>&nbsp; dns-search cakelampvm.com<br>&nbsp; dns-nameservers 127.0.0.1 8.8.8.8</pre>
+    <pre>auto enp0s8</pre>
+    <pre>iface enp0s8 inet dhcp</pre>
+    <p> </p>
+    <h3>Compacting the VM Disk Image</h3>
+    <p>To minimize the size used for the disk image, there are three major
+      steps.</p>
+    <p>1. While running the VM, run this command:</p>
+    <pre><span style="font-weight: bold;">sudo apt clean</span></pre>
+    <p>This throws away any cached data from the apt tool, which can be
+      substantial.</p>
+    <p>If there are other junk files you know of that can be removed, delete
+      those now also.</p>
+    <p>2. Reboot the VM to the gparted ISO image (available at the <a target="_blank"
+        title="great free partition editor" href="https://gparted.org/livecd.php">gparted
+        site</a>) and run the following command:</p>
+    <pre><span style="font-weight: bold;">sudo zerofree /dev/sda</span></pre>
+    <p>This sets all free space to the zero byte, enabling Virtualbox to free
+      that space in the next step.</p>
+    <p>3. Shut the vm down after zerofree is complete and run this command on
+      the host PC (this is the Linux version of the command):</p>
+    <pre><span style="font-weight: bold;">VBoxManage modifyhd --compact ~/cake_lamp_vm/cake-lamp-vm-hd.vdi</span></pre>
+    <p>Replace the <span style="font-family: monospace;">~/cake_lamp_vm</span>
+      path with the real VM storage path.&nbsp; This command compacts the root
+      (and only) partition of the VM.</p>
+    <p>After these steps are complete, the VM should be its minimal size.</p>
     <h2>Adding a new website and domain on the guest VM</h2>
     <p>Note: these instructions, even the quick approaches below, pale in
       comparison to the ease of use of the "standup" command in feisty meow's
@@ -515,114 +649,6 @@ href="http://mapsdemo.cakelampvm.com">http://mapsdemo.cakelampvm.com</a></pre>
       for any error messages that can be corrected.&nbsp; The log files are
       stored in "/var/log/apache2" and are named after the website (if
       configured through the above process).</p>
-    <h2>Handy Techniques for Using cakelampvm</h2>
-    <h3>Assorted Guides and Cheat-Sheets</h3>
-    <p>A Cheat sheet for the Vim editor (there are many of these available): <a
-        target="_blank" title="vim commands" href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></p>
-    <p>A git branching model that seems to work well: <a target="_blank" title="release and patch process"
-        href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
-    <p>This is a basic guide to the Google Developer Console and API Key
-      management: <a target="_blank" title="apis and creds at google" href="https://feistymeow.org//feisty_meow/documentation/google_apis/google_apis_and_credentials.pdf">Google
-        API Docs</a>&nbsp; </p>
-    <h3>Using the "meld" Tool to Compare Files &amp; Directories</h3>
-    <p>Meld is a great comparison tool that displays differences between two
-      files or directories or directory trees in a graphical view.&nbsp; Meld is
-      pre-installed on the VM.&nbsp; This tool can be launched either in the
-      VM's X Windowing System (on the console) or if X11 forwarding is enabled.</p>
-    <p>To run meld, just type this command:</p>
-    <pre><span style="font-weight: bold;">meld A B</span></pre>
-    <p>where A and B are either both file names or they are both directory
-      names.&nbsp; If A and B are directories, meld will compare the entire tree
-      structure between the two directories.&nbsp; It allows one to copy from
-      one side to the other, even if the item that needs to be copied is an
-      entire subdirectory.</p>
-    <h3>Get the network address on the guest vm</h3>
-    <p>Run this command:</p>
-    <pre><span style="font-weight: bold;">ifconfig</span></pre>
-    <p>In the results, look for "<span style="font-family: monospace;">inet addr</span>".&nbsp;
-      There may be more than one, if there are multiple network interfaces.</p>
-    <p>The standard IP address is 10.28.42.20 for the cakelampvm.</p>
-    <h3>How to cleanly reboot or shut down the guest VM</h3>
-    <p>When you've got the DNS and everything integrated, these commands will
-      manage the vm's state:</p>
-    <p>First, log into the guest VM:</p>
-    <pre><span style="font-weight: bold;">ssh developer@cakelampvm.com</span></pre>
-    <p>Then, to reboot the guest VM:</p>
-    <pre><span style="font-weight: bold;">sudo reboot</span></pre>
-    <p>Or, to halt the guest VM:</p>
-    <pre><span style="font-weight: bold;">sudo shutdown -h now</span></pre>
-    <p>Using these commands is kinder to the VM than just cycling the power from
-      the Virtualbox control panel.</p>
-    <h1>Gritty Details of the Nitty Variety<a id="#nitty-gritty" name="#nitty-gritty"></a></h1>
-    <p>This is the lowest level of plumbing for your VM.&nbsp; Hopefully you
-      will not need to engage with this section.&nbsp; The most useful doc
-      section here is the one below about the "Virtualbox guest additions",
-      which you will probably need at some future point.&nbsp; Oracle releases
-      updates to the guest additions fairly regularly.</p>
-    <h2>Configuring the guest VM</h2>
-    <p>The guest VM should already be set up appropriately.&nbsp; These steps
-      are provided for reference and updates.</p>
-    <h3>Set up Virtualbox guest additions for the VM</h3>
-    This procedure is needed if the guest provides an older or incompatible
-    version of the guest additions (which have already been installed on the
-    guest vm).&nbsp; It may also be necessary when a new version of the guest
-    additions becomes available.
-    <ol>
-      <li>To install the guest additions, open the guest VM and have its window
-        in focus.</li>
-      <li>Choose the "Devices" menu and select "Insert Guest Additions CD
-        Image".&nbsp; This will mount the CD's ISO image on the VM.</li>
-      <li>On the guest VM, it may be necessary to mount the CD image that's now
-        available:<br>
-        <pre><span style="font-weight: bold;">sudo mount /dev/sr0 /media/cdrom</span></pre>
-        <p>Linux will mention that the device is mounted "read-only".</p>
-      </li>
-      <li>Since the VM currently has no windowing system installed, one must
-        start the Guest Additions install manually:<br>
-        <pre><span style="font-weight: bold;">cd /media/cdrom<br>sudo sh VBoxLinuxAdditions.run</span></pre>
-      </li>
-      <li>The latest Virtualbox guest additions should now be installed.</li>
-    </ol>
-    <h3>Set up network adapters on guest VM</h3>
-    <p>The network interfaces should already be configured on the guest within
-      the Virtualbox configuration.&nbsp; This is available by clicking on the
-      VM in the Virtualbox manager and selecting "Settings".&nbsp; These are the
-      configuration settings used:</p>
-    Adapter 1:<br>
-    &nbsp; Attached to: Host-only Adapter<br>
-    &nbsp; Name: vboxnet0&nbsp; <br>
-    <p>Adapter 2:<br>
-      &nbsp; Attached to: Nat Network<br>
-      &nbsp; Name: NatNetwork</p>
-    <p>On the guest VM itself, the network settings are specified in a file
-      called /etc/network/interfaces.&nbsp; Here are the current contents of
-      that file:</p>
-    <pre>source /etc/network/interfaces.d/*<br><br>auto lo<br>iface lo inet loopback<br><br>auto enp0s3<br>iface enp0s3 inet static<br>&nbsp; address 10.28.42.20<br>&nbsp; netmask 255.255.255.0<br>&nbsp; network 10.28.42.0<br>&nbsp; broadcast 10.28.42.255<br>&nbsp; dns-domain cakelampvm.com<br>&nbsp; dns-search cakelampvm.com<br>&nbsp; dns-nameservers 127.0.0.1 8.8.8.8</pre>
-    <pre>auto enp0s8</pre>
-    <pre>iface enp0s8 inet dhcp</pre>
-    <p> </p>
-    <h3>Compacting the VM Disk Image</h3>
-    <p>To minimize the size used for the disk image, there are three major
-      steps.</p>
-    <p>1. While running the VM, run this command:</p>
-    <pre><span style="font-weight: bold;">sudo apt clean</span></pre>
-    <p>This throws away any cached data from the apt tool, which can be
-      substantial.</p>
-    <p>If there are other junk files you know of that can be removed, delete
-      those now also.</p>
-    <p>2. Reboot the VM to the gparted ISO image (available at the <a target="_blank"
-        title="great free partition editor" href="https://gparted.org/livecd.php">gparted
-        site</a>) and run the following command:</p>
-    <pre><span style="font-weight: bold;">sudo zerofree /dev/sda</span></pre>
-    <p>This sets all free space to the zero byte, enabling Virtualbox to free
-      that space in the next step.</p>
-    <p>3. Shut the vm down after zerofree is complete and run this command on
-      the host PC (this is the Linux version of the command):</p>
-    <pre><span style="font-weight: bold;">VBoxManage modifyhd --compact ~/cake_lamp_vm/cake-lamp-vm-hd.vdi</span></pre>
-    <p>Replace the <span style="font-family: monospace;">~/cake_lamp_vm</span>
-      path with the real VM storage path.&nbsp; This command compacts the root
-      (and only) partition of the VM.</p>
-    <p>After these steps are complete, the VM should be its minimal size.</p>
     <h2>Notes on building the Cake Lamp VM</h2>
     <p>This is all work that should already have been done.&nbsp; It is
       mentioned here just as breadcrumbs for a future vm builder.</p>
