@@ -62,6 +62,7 @@ function read_password()
 {
   prompt="$1"; shift
   echo -n "$prompt "
+#  sync
   # turn off echo but remember former setting.
   stty_orig=`stty -g`
   stty -echo
