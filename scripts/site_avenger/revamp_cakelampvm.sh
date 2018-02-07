@@ -16,21 +16,30 @@ export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
 
 export NO_HELLO=right
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
+# load dependencies for our script.
 source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
+source "$FEISTY_MEOW_SCRIPTS/security/password_functions.sh"
 
 ##############
 
-# new requirement is to get the sql root password, since we need to do some sql db configuration.
-echo -n "Please enter the MySQL root account password: "
-# turn off echo but remember former setting.
-stty_orig=`stty -g`
-stty -echo
-read mysql_passwd
-# turn echo back on.
-stty $stty_orig
+# new requirement to have the sql root password, since we need to do some sql db configuration.
+
+mysql_passwd="$(load_password /etc/mysql/secret_password)"
+if [ -z "$mysql_password" ]; then
+  mysql_password="$(read_password "Please enter the MySQL root account password:")"
+#  echo -n "Please enter the MySQL root account password: "
+#  # turn off echo but remember former setting.
+#  stty_orig=`stty -g`
+#  stty -echo
+#  read mysql_passwd
+#  # turn echo back on.
+#  stty $stty_orig
+fi
 if [ -z "$mysql_passwd" ]; then
   echo "This script must have the sql root password to proceed."
   exit 1
+else
+  store_password /etc/mysql/secret_password "$mysql_password"
 fi
 
 ##############
