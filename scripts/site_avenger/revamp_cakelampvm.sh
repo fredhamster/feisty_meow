@@ -324,7 +324,9 @@ fi
 
 sep
 
-# next bit can go here.
+echo Adding site avenger packages to composer.
+# add in site avenger dependencies so we can build avcore properly.
+composer config -g repositories.siteavenger composer https://packages.siteavenger.com/
 
 ##############
 ##############
