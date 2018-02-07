@@ -20,6 +20,11 @@ function load_password()
     echo 'The load_password function needs a filename to read the password from.'
     return 1
   fi
+  if [ ! -f "$passfile" ]; then
+    # no file, which is not an error necessarily, but return a blank password
+    # in any case.
+    return 0
+  fi
   local passwd
   read passwd < "$passfile"
   echo "$passwd"
