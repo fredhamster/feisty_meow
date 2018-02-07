@@ -22,30 +22,15 @@ source "$FEISTY_MEOW_SCRIPTS/security/password_functions.sh"
 
 ##############
 
-# new requirement to have the sql root password, since we need to do some sql db configuration.
-
-echo A
+# it's a requirement to have sql root password, since we may need some sql db configuration.
 load_password /etc/mysql/secret_password mysql_passwd
-echo B
 if [ -z "$mysql_passwd" ]; then
-echo C
   read_password "Please enter the MySQL root account password:" mysql_passwd
-echo D
-echo password was found as: $mysql_passwd
-#  echo -n "Please enter the MySQL root account password: "
-#  # turn off echo but remember former setting.
-#  stty_orig=`stty -g`
-#  stty -echo
-#  read mysql_passwd
-#  # turn echo back on.
-#  stty $stty_orig
 fi
 if [ -z "$mysql_passwd" ]; then
-echo E
   echo "This script must have the sql root password to proceed."
   exit 1
 else
-echo F
   store_password /etc/mysql/secret_password "$mysql_passwd"
 fi
 

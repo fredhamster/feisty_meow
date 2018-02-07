@@ -28,8 +28,6 @@ function load_password()
 
   # return the password in the variable they provided.
   eval $varname="$passwd"
-#echo varname is: $varname
-#echo new value of that variable is ${!varname}
 }
 
 # stores a password into a password file.  the password file should be the
@@ -75,8 +73,6 @@ function read_password()
   stty $stty_orig
   # return the password in the variable they provided.
   eval $varname="$the_passwd"
-#echo varname is: $varname
-#echo new value of that variable is ${!varname}
 }
 
 
