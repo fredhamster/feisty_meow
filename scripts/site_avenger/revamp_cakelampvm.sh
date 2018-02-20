@@ -16,21 +16,22 @@ export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
 
 export NO_HELLO=right
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
+# load dependencies for our script.
 source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
+source "$FEISTY_MEOW_SCRIPTS/security/password_functions.sh"
 
 ##############
 
-# new requirement is to get the sql root password, since we need to do some sql db configuration.
-echo -n "Please enter the MySQL root account password: "
-# turn off echo but remember former setting.
-stty_orig=`stty -g`
-stty -echo
-read mysql_passwd
-# turn echo back on.
-stty $stty_orig
+# it's a requirement to have sql root password, since we may need some sql db configuration.
+load_password /etc/mysql/secret_password mysql_passwd
+if [ -z "$mysql_passwd" ]; then
+  read_password "Please enter the MySQL root account password:" mysql_passwd
+fi
 if [ -z "$mysql_passwd" ]; then
   echo "This script must have the sql root password to proceed."
   exit 1
+else
+  store_password /etc/mysql/secret_password "$mysql_passwd"
 fi
 
 ##############
@@ -39,8 +40,8 @@ sep
 
 echo "Regenerating feisty meow loading dock."
 
-reconfigure_feisty_meow
-test_or_die "feisty meow reconfiguration"
+regenerate
+test_or_die "regenerating feisty meow configuration"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
 test_or_die "fix after reconfigured as sudo"
 
@@ -323,17 +324,9 @@ fi
 
 sep
 
-# repair the google config key for mapsdemo, which lives over in fred's account.
-search_replace \
-  "^[[:blank:]]*'key'[[:blank:]]*=>[[:blank:]]*'AIzaSyCd2kfOBf8tyd-_m2aM_ayMoAq8r_M1yUk'," \
-  "\t'key' => 'AIzaSyCvKs62XudEWPZpA21rCGI1Dkh6UxSQzzQ'," \
-  ~fred/apps/mapsdemo/avenger5/config/config_google.php
-
-if [ $? -ne 0 ]; then
-  echo Google config key for mapsdemo in fred account seems to already be patched.
-else
-  echo Patched the google config key for mapsdemo app in fred account.
-fi
+echo Adding site avenger packages to composer.
+# add in site avenger dependencies so we can build avcore properly.
+composer config -g repositories.siteavenger composer https://packages.siteavenger.com/
 
 ##############
 ##############
@@ -352,7 +345,7 @@ echo "
 Thanks for revamping your cakelampvm.  :-)
 
 You may want to update your current shell's feisty meow environment by typing:
-  reconfigure_feisty_meow
+  regenerate
 "
 
 ##############

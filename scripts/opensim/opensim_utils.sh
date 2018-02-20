@@ -41,7 +41,8 @@ local boguslog=$HOME/screen_junk_$(date_stringer).log
 #maybe they unbroke it in 17.10?  yes, but it requires NO space now.  *&@#*&@#
 #hmmm: bring back old version but check for ubuntu 17.04 vs 17.10 now.
 #actually they made it a new parm.  arghhh!
-  screen -L $boguslog -S "$screen_name" -d -m nice -n $NICENESS_LEVEL mono "$app_name" 
+  screen -L -S "$screen_name" -d -m nice -n $NICENESS_LEVEL mono "$app_name" 
+#$boguslog 
 
   echo "$(date_stringer ' '): $screen_name started."
   # only sleep if we are not at the last process that gets started.
