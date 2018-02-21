@@ -89,6 +89,10 @@ chown -R developer:developer /etc/apache2 /etc/bind
 test_or_die "chown apache2 and bind to developer"
 group_perm /etc/apache2 /etc/bind 
 test_or_die "group perms on apache2 and bind"
+chown -R developer:developer /opt/feistymeow.org 
+test_or_die "chown feisty meow to developer"
+group_perm /opt/feistymeow.org 
+test_or_die "group perms on feisty meow"
 
 ##############
 
@@ -99,10 +103,6 @@ group_perm $HOME/apps
 test_or_die "group perms on fred's apps"
 harsh_perm /home/fred/.ssh
 test_or_die "harsh_perm setting on fred .ssh"
-chown -R fred:fred /opt/feistymeow.org 
-test_or_die "chown feisty meow to fred"
-group_perm /opt/feistymeow.org 
-test_or_die "group perms on feisty meow"
 group_perm /home/fred/apps/mapsdemo
 test_or_die "group perms on mapsdemo app"
 
