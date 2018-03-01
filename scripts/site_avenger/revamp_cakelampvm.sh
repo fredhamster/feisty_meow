@@ -326,7 +326,9 @@ sep
 
 echo Adding site avenger packages to composer.
 # add in site avenger dependencies so we can build avcore properly.
+pushd ~ &>/dev/null
 sudo -u $(logname) composer config -g repositories.siteavenger composer https://packages.siteavenger.com/
+popd &>/dev/null
 
 ##############
 ##############
