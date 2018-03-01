@@ -74,10 +74,16 @@ full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 
 # use our default values for the repository and theme if they're not provided.
 if [ -z "$repo_name" ]; then
-  repo_name="$app_dirname"
+  repo_name="$REPO_NAME"
+  if [ -z "$repo_name" ]; then
+    repo_name="$app_dirname"
+  fi
 fi
 if [ -z "$theme_name" ]; then
-  theme_name="$(capitalize_first_char ${app_dirname})"
+  theme_name="$THEME_NAME"
+  if [ -z "$theme_name" ]; then
+    theme_name="$(capitalize_first_char ${app_dirname})"
+  fi
 fi
 
 echo "Repository: $repo_name"
