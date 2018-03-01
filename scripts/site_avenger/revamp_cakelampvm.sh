@@ -131,14 +131,14 @@ fi
 
 # install a better editor app.
 
-sep
+#sep
 
-echo "The script is about to install the bluefish editor and some dependencies.
-If the app is not already installed, then this process takes about one minute
-on a slow home DSL internet connection..."
+#echo "The script is about to install the bluefish editor and some dependencies.
+#If the app is not already installed, then this process takes about one minute
+#on a slow home DSL internet connection..."
 
-apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
-test_or_continue "installing bluefish editor"
+#apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
+#test_or_continue "installing bluefish editor"
 
 ##############
 
@@ -329,6 +329,28 @@ echo Adding site avenger packages to composer.
 pushd ~ &>/dev/null
 sudo -u $(logname) composer config -g repositories.siteavenger composer https://packages.siteavenger.com/
 popd &>/dev/null
+
+##############
+
+# make the apache umask set group permissions automatically, so we stop having weird
+# permission issues on temp dirs.
+
+sep
+
+grep -q "umask" /etc/apache2/envvars
+if [ $? -eq 0 ]; then
+  # already present.
+  echo the umask configuration for apache already appears to be set.
+else
+  echo "
+
+# set umask to enable group read/write on files and directories.
+umask 002
+
+" >> /etc/apache2/envvars
+  restart_apache
+  echo "successfully changed apache umask configuration to enable group read/write"
+fi
 
 ##############
 ##############
