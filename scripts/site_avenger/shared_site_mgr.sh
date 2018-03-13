@@ -142,17 +142,17 @@ function fix_site_perms()
   local site_dir="$app_dir/$CHECKOUT_DIR_NAME"
 
   if [ -f "$site_dir/bin/cake" ]; then
-    chmod -R a+rx "$site_dir/bin/cake"
+    sudo chmod -R a+rx "$site_dir/bin/cake"
     test_or_die "Enabling execute bit on cake binary"
   fi
 
   if [ -d "$site_dir/logs" ]; then
-    chmod -R g+w "$site_dir/logs"
+    sudo chmod -R g+w "$site_dir/logs"
     test_or_die "Enabling group write on site's Logs directory"
   fi
 
   if [ -d "$site_dir/tmp" ]; then
-    chmod -R g+w "$site_dir/tmp"
+    sudo chmod -R g+w "$site_dir/tmp"
     test_or_die "Enabling group write on site's tmp directory"
   fi
 }
@@ -370,7 +370,7 @@ function fix_appdir_ownership()
   if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
     echo "Chowning the app folder to be owned by: $user_name"
 #hmmm: have to hope for now for standard group named after user 
-    chown -R "$user_name:$user_name" "$combo"
+    sudo chown -R "$user_name:$user_name" "$combo"
     test_or_die "Chowning $combo to be owned by $user_name"
   else
     echo "user name failed checks for chowning, was found as '$user_name'"

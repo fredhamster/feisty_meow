@@ -98,11 +98,6 @@ powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 
 sep
 
-# run this again after checkout to ensure apache can write.
-fix_appdir_ownership "$BASE_APPLICATION_PATH" "$APPLICATION_NAME" 
-
-sep
-
 echo "
 Finished standing up the full domain and site for: ${app_dirname}
 The domain name is: $DOMAIN_NAME
