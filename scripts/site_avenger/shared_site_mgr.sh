@@ -147,14 +147,14 @@ function fix_site_perms()
   fi
 
   if [ ! -d "$site_dir/logs" ]; then
-    mkdir "$site_dir/logs"
+    mkdir -p "$site_dir/logs"
     test_or_die "Creating logs directory"
   fi
   chmod -R g+w "$site_dir/logs"
   test_or_die "Enabling group write on site's Logs directory"
 
   if [ ! -d "$site_dir/tmp" ]; then
-    mkdir "$site_dir/tmp"
+    mkdir -p "$site_dir/tmp"
     test_or_die "Creating tmp directory"
   fi
   chmod -R g+w "$site_dir/tmp"
