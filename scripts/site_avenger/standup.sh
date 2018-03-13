@@ -85,6 +85,11 @@ fi
 
 sep
 
+# run this prior to the checkout to fix perms.
+fix_appdir_ownership "$BASE_APPLICATION_PATH" "$APPLICATION_NAME" 
+
+sep
+
 #echo about to do powerup with: app="$APPLICATION_NAME" repo="$REPO_NAME" theme="$THEME_NAME"
 #echo default repo is "$DEFAULT_REPOSITORY_ROOT" 
 
@@ -92,6 +97,7 @@ powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 
 sep
 
+# run this again after checkout to ensure apache can write.
 fix_appdir_ownership "$BASE_APPLICATION_PATH" "$APPLICATION_NAME" 
 
 sep
