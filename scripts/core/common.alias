@@ -112,7 +112,6 @@ define_yeti_alias add_swap_mount="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_swa
 
 # some site avenger sudoized aliases.
 define_yeti_alias revamp_cakelampvm="sudo bash \"$FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm.sh\""
-define_yeti_alias standup="sudo bash \"$FEISTY_MEOW_SCRIPTS/site_avenger/standup.sh\""
 
 ##############
 
