@@ -137,22 +137,28 @@ function test_app_folder()
 # eases some permissions to enable apache to write log files and do other shopkeeping.
 function fix_site_perms()
 {
-  local site_dir="$1"; shift
+  local app_dir="$1"; shift
+
+  local site_dir="$app_dir/$CHECKOUT_DIR_NAME"
 
   if [ -f "$site_dir/bin/cake" ]; then
     chmod -R a+rx "$site_dir/bin/cake"
     test_or_die "Enabling execute bit on cake binary"
   fi
 
-  if [ -d "$site_dir/logs" ]; then
-    chmod -R g+w "$site_dir/logs"
-    test_or_die "Enabling group write on site's Logs directory"
+  if [ ! -d "$site_dir/logs" ]; then
+    mkdir "$site_dir/logs"
+    test_or_die "Creating logs directory"
   fi
+  chmod -R g+w "$site_dir/logs"
+  test_or_die "Enabling group write on site's Logs directory"
 
-  if [ -d "$site_dir/tmp" ]; then
-    chmod -R g+w "$site_dir/tmp"
-    test_or_die "Enabling group write on site's tmp directory"
+  if [ ! -d "$site_dir/tmp" ]; then
+    mkdir "$site_dir/tmp"
+    test_or_die "Creating tmp directory"
   fi
+  chmod -R g+w "$site_dir/tmp"
+  test_or_die "Enabling group write on site's tmp directory"
 }
 
 # tosses out any cached object data that originated from the database.
@@ -226,8 +232,10 @@ var full_app_dir checkout_dirname repo_root repo_name
     test_or_die "Git clone of repository: $repo_name"
   fi
 
-  fix_site_perms "$complete_path"
+#not doing this here since powerup uses this and has no sudo.
+  #fix_site_perms "$complete_path"
 
+#unused?
   # construct the full path to where the app will actually live.
   site_store_path="$complete_path"
 
@@ -371,6 +379,10 @@ function fix_appdir_ownership()
   else
     echo "user name failed checks for chowning, was found as '$user_name'"
   fi
+
+  # 
+#probably not enough for path!
+  fix_site_perms "$combo"
 }
 
 

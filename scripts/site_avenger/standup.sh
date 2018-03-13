@@ -92,8 +92,6 @@ powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
 
 sep
 
-# hmmm: pass the real user name who should own the files?
-# hmmm: "$(logname)" $USER works, but logname wasn't?
 fix_appdir_ownership "$BASE_APPLICATION_PATH" "$APPLICATION_NAME" 
 
 sep
