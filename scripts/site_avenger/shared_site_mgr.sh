@@ -146,19 +146,15 @@ function fix_site_perms()
     test_or_die "Enabling execute bit on cake binary"
   fi
 
-  if [ ! -d "$site_dir/logs" ]; then
-    mkdir -p "$site_dir/logs"
-    test_or_die "Creating logs directory"
+  if [ -d "$site_dir/logs" ]; then
+    chmod -R g+w "$site_dir/logs"
+    test_or_die "Enabling group write on site's Logs directory"
   fi
-  chmod -R g+w "$site_dir/logs"
-  test_or_die "Enabling group write on site's Logs directory"
 
-  if [ ! -d "$site_dir/tmp" ]; then
-    mkdir -p "$site_dir/tmp"
-    test_or_die "Creating tmp directory"
+  if [ -d "$site_dir/tmp" ]; then
+    chmod -R g+w "$site_dir/tmp"
+    test_or_die "Enabling group write on site's tmp directory"
   fi
-  chmod -R g+w "$site_dir/tmp"
-  test_or_die "Enabling group write on site's tmp directory"
 }
 
 # tosses out any cached object data that originated from the database.
@@ -372,7 +368,7 @@ function fix_appdir_ownership()
   # go with the default user running the script.
   user_name="$USER"
   if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
-    echo "Chowning the apps folder to be owned by: $user_name"
+    echo "Chowning the app folder to be owned by: $user_name"
 #hmmm: have to hope for now for standard group named after user 
     chown -R "$user_name:$user_name" "$combo"
     test_or_die "Chowning $combo to be owned by $user_name"
