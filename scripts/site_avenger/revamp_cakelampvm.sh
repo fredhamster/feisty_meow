@@ -244,7 +244,7 @@ pattern="[#;][[:blank:]]*read only = yes"
 replacement="read only = no"
 
 # we just always do the replacement now, after realizing the sentinel pattern
-# was acutally already in the file...  too much subtlety can get one into trouble.
+# was actually already in the file...  too much subtlety can get one into trouble.
 sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
 test_or_die "patching samba configuration to enable write acccess on user home dirs"
 # sweet, looks like that worked...
