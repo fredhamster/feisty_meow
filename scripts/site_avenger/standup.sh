@@ -49,7 +49,8 @@ fi
 
 # force the sudo at the start of the script, rather than waiting halfway
 # through to ask for access.
-sudo bash -c 'echo sudo permissions acquired.'
+#sudo bash -c 'echo sudo permissions acquired.'
+#hmmm: no longer necessary since whole script is sudoized from alias.
 
 source "$WORKDIR/shared_site_mgr.sh"
 
