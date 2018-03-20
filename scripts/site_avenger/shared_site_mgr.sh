@@ -28,7 +28,7 @@ test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG
 export NO_CHECKIN_VENDOR=true
 
 # tests that the main storage folder for apps exists.
-function check_application_dir()
+function check_apps_root()
 {
   local appdir="$1"; shift
   if [ ! -d "$appdir" ]; then
@@ -63,6 +63,7 @@ the standard pattern for cakephp projects."
   source "$SITE_MANAGEMENT_CONFIG_FILE"
   test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
 
+  return 0
 }
 
 # this function will seek out top-level directories in the target directory passed in.
@@ -100,14 +101,14 @@ function find_app_folder()
     options=( $(find "$appsdir" -mindepth 1 -maxdepth 1 -type d -exec basename {} ';') "Quit")
     select app_dirname in "${options[@]}"; do
       case $app_dirname in
-        "Quit") echo ; echo "Quitting from the script."; exit 1; ;;
+        "Quit") echo ; echo "Quitting from the script."; return 1; ;;
         *) echo ; echo "You picked folder '$app_dirname'" ; break; ;;
       esac
     done
     if [ -z "$app_dirname" ]; then
       echo "The folder was not provided.  This script needs a directory name"
       echo "within which to initialize the site."
-      exit 1
+      return 1
     fi
     PS3="$holdps3"
   fi
@@ -115,9 +116,11 @@ function find_app_folder()
   test_or_die "Testing application folder: $app_dirname"
 
   echo "Application folder is: $app_dirname"
+  return 0
 }
 
-# ensures that the app directory name is valid.
+# ensures that the app directory name is valid and then loads the config
+# for the app (either via a specific file or using the defaults).
 function test_app_folder()
 {
   local appsdir="$1"; shift
@@ -388,7 +391,7 @@ function switch_to()
   # check for parameters.
   app_dirname="$1"; shift
 
-  check_application_dir "$BASE_APPLICATION_PATH"
+  check_apps_root "$BASE_APPLICATION_PATH"
 
   # find proper webroot where the site will be initialized.
   if [ -z "$app_dirname" ]; then
@@ -396,6 +399,10 @@ function switch_to()
     find_app_folder "$BASE_APPLICATION_PATH"
   else
     test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
+  fi
+  if [ $? -ne 0 ]; then
+    echo "Could not locate that application directory"
+    return 1
   fi
 
   # where we expect to find our checkout folder underneath.

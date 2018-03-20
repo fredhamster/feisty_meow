@@ -55,7 +55,7 @@ source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
-check_application_dir "$BASE_APPLICATION_PATH"
+check_apps_root "$BASE_APPLICATION_PATH"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
@@ -64,6 +64,7 @@ if [ -z "$app_dirname" ]; then
 else
   test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
+test_or_die "finding and testing app folder"
 
 #echo "!! domain being added is: $DOMAIN_NAME"
 
