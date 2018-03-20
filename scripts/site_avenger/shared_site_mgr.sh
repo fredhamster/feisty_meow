@@ -381,4 +381,27 @@ function fix_appdir_ownership()
   fix_site_perms "$combo"
 }
 
+# Jumps to an application directory given the app name.  If no app name is
+# given, it will show a menu to pick the app.
+function switch_to()
+{
+  # check for parameters.
+  app_dirname="$1"; shift
+
+  check_application_dir "$BASE_APPLICATION_PATH"
+
+  # find proper webroot where the site will be initialized.
+  if [ -z "$app_dirname" ]; then
+    # no dir was passed, so guess it.
+    find_app_folder "$BASE_APPLICATION_PATH"
+  else
+    test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
+  fi
+
+  # where we expect to find our checkout folder underneath.
+  full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
+
+  cd $full_app_dir/$CHECKOUT_DIR_NAME
+  pwd
+}
 

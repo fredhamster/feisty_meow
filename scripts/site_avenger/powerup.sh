@@ -3,8 +3,8 @@
 # Author: Kevin Wentworth
 # Author: Chris Koeritz
 
-# This script "powers up" a cakephp site by running the database migrations,
-# cleaning out the ORM cache, and fixing file permissions.
+# This script "powers up" a cakephp site by checking out the code from the
+# git repository and installing the composer dependencies.
 # This script is currently highly specific to site avenger.
 
 # General Info:
@@ -13,7 +13,7 @@
 # A git repository is expected to be provided, and we will get all the code
 # for the web site from there.  The repository is expected to have a single
 # application "name" and one or more "themes".  By convention, the name
-# and the theme are often the same.
+# and the theme are often the same, except the theme is capitalized.
 # For example, let's say our app name is "turtle" and our theme name is "box".
 # The repo is checked out to a folder called "~/apps/turtle".
 # This script will want to use "turtle" as the app name.
