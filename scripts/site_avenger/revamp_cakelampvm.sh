@@ -255,7 +255,9 @@ echo successfully patched the samba configuration to enable writes on user home 
 grep -q "map archive" /etc/samba/smb.conf
 # if the phrase wasn't found, we need to add it.
 if [ $? -ne 0 ]; then
-  sed -i "/\[global\]/[global]\n\nmap archive = no" /etc/samba/smb.conf
+  sed -i "s/\[global\]/\[global\]\n\nmap archive = no/" /etc/samba/smb.conf
+  test_or_die "patching samba configuration to turn off archive bit mapping feature"
+  echo Successfully fixed Samba to not use the archive bit mapping feature.
 fi
 
 # sweet, looks like that worked...
