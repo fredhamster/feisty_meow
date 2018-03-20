@@ -243,11 +243,20 @@ sep
 pattern="[#;][[:blank:]]*read only = yes"
 replacement="read only = no"
 
-# we just always do the replacement now, after realizing the sentinel pattern
-# was actually already in the file...  too much subtlety can get one into trouble.
+# we just always do the replacement now rather than making it conditional,
+# after realizing the sentinel pattern was actually already in the file...
+# too much subtlety can get one into trouble.
 sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
 test_or_die "patching samba configuration to enable write acccess on user home dirs"
 echo successfully patched the samba configuration to enable writes on user home directories. 
+
+# add in a disabling of the archive bit mapping feature, which hoses up the execute bit
+# in an attempt to save the sad old DOS archive bit across the samba connection.
+grep -q "map archive" /etc/samba/smb.conf
+# if the phrase wasn't found, we need to add it.
+if [ $? -ne 0 ]; then
+  sed -i "/\[global\]/[global]\n\nmap archive = no" /etc/samba/smb.conf
+fi
 
 # sweet, looks like that worked...
 restart_samba
