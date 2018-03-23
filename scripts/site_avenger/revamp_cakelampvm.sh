@@ -9,6 +9,11 @@ if [[ $EUID != 0 ]]; then
   exit 1
 fi
 
+if [[ ! $(hostname) == *cakelampvm* ]]; then
+  echo "This script is only designed to be run on the cakelampvm host."
+  exit 1
+fi
+
 ##############
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
