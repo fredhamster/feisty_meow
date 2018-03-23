@@ -55,7 +55,7 @@ source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
-check_application_dir "$BASE_APPLICATION_PATH"
+check_apps_root "$BASE_APPLICATION_PATH"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
@@ -64,6 +64,7 @@ if [ -z "$app_dirname" ]; then
 else
   test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
+test_or_die "finding and testing app folder"
 
 #echo "!! domain being added is: $DOMAIN_NAME"
 
@@ -85,16 +86,15 @@ fi
 
 sep
 
+# run this prior to the checkout to fix perms.
+fix_appdir_ownership "$BASE_APPLICATION_PATH" "$APPLICATION_NAME" 
+
+sep
+
 #echo about to do powerup with: app="$APPLICATION_NAME" repo="$REPO_NAME" theme="$THEME_NAME"
 #echo default repo is "$DEFAULT_REPOSITORY_ROOT" 
 
 powerup "$APPLICATION_NAME" "$REPO_NAME" "$THEME_NAME"
-
-sep
-
-# hmmm: pass the real user name who should own the files?
-# hmmm: "$(logname)" $USER works, but logname wasn't?
-fix_appdir_ownership "$BASE_APPLICATION_PATH" "$APPLICATION_NAME" 
 
 sep
 

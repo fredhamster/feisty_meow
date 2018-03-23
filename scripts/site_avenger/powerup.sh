@@ -3,8 +3,8 @@
 # Author: Kevin Wentworth
 # Author: Chris Koeritz
 
-# This script "powers up" a cakephp site by running the database migrations,
-# cleaning out the ORM cache, and fixing file permissions.
+# This script "powers up" a cakephp site by checking out the code from the
+# git repository and installing the composer dependencies.
 # This script is currently highly specific to site avenger.
 
 # General Info:
@@ -13,7 +13,7 @@
 # A git repository is expected to be provided, and we will get all the code
 # for the web site from there.  The repository is expected to have a single
 # application "name" and one or more "themes".  By convention, the name
-# and the theme are often the same.
+# and the theme are often the same, except the theme is capitalized.
 # For example, let's say our app name is "turtle" and our theme name is "box".
 # The repo is checked out to a folder called "~/apps/turtle".
 # This script will want to use "turtle" as the app name.
@@ -59,7 +59,7 @@ source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
-check_application_dir "$BASE_APPLICATION_PATH"
+check_apps_root "$BASE_APPLICATION_PATH"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
@@ -68,16 +68,23 @@ if [ -z "$app_dirname" ]; then
 else
   test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
+test_or_die "finding and testing app folder"
 
 # where we expect to find our checkout folder underneath.
 full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 
 # use our default values for the repository and theme if they're not provided.
 if [ -z "$repo_name" ]; then
-  repo_name="$app_dirname"
+  repo_name="$REPO_NAME"
+  if [ -z "$repo_name" ]; then
+    repo_name="$app_dirname"
+  fi
 fi
 if [ -z "$theme_name" ]; then
-  theme_name="$(capitalize_first_char ${app_dirname})"
+  theme_name="$THEME_NAME"
+  if [ -z "$theme_name" ]; then
+    theme_name="$(capitalize_first_char ${app_dirname})"
+  fi
 fi
 
 echo "Repository: $repo_name"

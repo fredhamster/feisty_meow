@@ -9,6 +9,11 @@ if [[ $EUID != 0 ]]; then
   exit 1
 fi
 
+if [[ ! $(hostname) == *cakelampvm* ]]; then
+  echo "This script is only designed to be run on the cakelampvm host."
+  exit 1
+fi
+
 ##############
 
 export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
@@ -89,6 +94,10 @@ chown -R developer:developer /etc/apache2 /etc/bind
 test_or_die "chown apache2 and bind to developer"
 group_perm /etc/apache2 /etc/bind 
 test_or_die "group perms on apache2 and bind"
+chown -R developer:developer /opt/feistymeow.org 
+test_or_die "chown feisty meow to developer"
+group_perm /opt/feistymeow.org 
+test_or_die "group perms on feisty meow"
 
 ##############
 
@@ -99,10 +108,6 @@ group_perm $HOME/apps
 test_or_die "group perms on fred's apps"
 harsh_perm /home/fred/.ssh
 test_or_die "harsh_perm setting on fred .ssh"
-chown -R fred:fred /opt/feistymeow.org 
-test_or_die "chown feisty meow to fred"
-group_perm /opt/feistymeow.org 
-test_or_die "group perms on feisty meow"
 group_perm /home/fred/apps/mapsdemo
 test_or_die "group perms on mapsdemo app"
 
@@ -131,14 +136,14 @@ fi
 
 # install a better editor app.
 
-sep
+#sep
 
-echo "The script is about to install the bluefish editor and some dependencies.
-If the app is not already installed, then this process takes about one minute
-on a slow home DSL internet connection..."
+#echo "The script is about to install the bluefish editor and some dependencies.
+#If the app is not already installed, then this process takes about one minute
+#on a slow home DSL internet connection..."
 
-apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
-test_or_continue "installing bluefish editor"
+#apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
+#test_or_continue "installing bluefish editor"
 
 ##############
 
@@ -235,7 +240,7 @@ fi
 
 ##############
 
-# fix samba configuration for (ass-headed) default of read-only in user homes.
+# fix samba configuration for screwy default of read-only in user homes.
 # why cripple a necessary feature by default?
 
 sep
@@ -243,13 +248,25 @@ sep
 pattern="[#;][[:blank:]]*read only = yes"
 replacement="read only = no"
 
-# we just always do the replacement now, after realizing the sentinel pattern
-# was acutally already in the file...  too much subtlety can get one into trouble.
+# we just always do the replacement now rather than making it conditional,
+# after realizing the sentinel pattern was actually already in the file...
+# too much subtlety can get one into trouble.
 sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
 test_or_die "patching samba configuration to enable write acccess on user home dirs"
+echo successfully patched the samba configuration to enable writes on user home directories. 
+
+# add in a disabling of the archive bit mapping feature, which hoses up the execute bit
+# in an attempt to save the sad old DOS archive bit across the samba connection.
+grep -q "map archive" /etc/samba/smb.conf
+# if the phrase wasn't found, we need to add it.
+if [ $? -ne 0 ]; then
+  sed -i "s/\[global\]/\[global\]\n\nmap archive = no/" /etc/samba/smb.conf
+  test_or_die "patching samba configuration to turn off archive bit mapping feature"
+  echo Successfully fixed Samba to not use the archive bit mapping feature.
+fi
+
 # sweet, looks like that worked...
 restart_samba
-echo successfully patched the samba configuration to enable writes on user home directories. 
 
 ##############
 
@@ -277,47 +294,52 @@ echo Successfully configured the apache2 environment variables needed for cakela
 
 sep
 
-echo "Checking existing swap partition configuration.
+# we will only add swap now if explicitly asked for it.  this is to avoid creating
+# a swap file where the vm is running on an SSD, since that can use up the SSD's lifespan
+# too quickly.
+if [ ! -z "$ADD_SWAP" ]; then
+  echo "Checking existing swap partition configuration.
 "
 
-# check for existing swap.
-free | grep -q "Swap:[[:blank:]]*[1-9][0-9]"
-if [ $? -ne 0 ]; then
-  # no swap in current session, so add it.
-  echo "Enabling ramdisk swap partition...
+  # check for existing swap.
+  free | grep -q "Swap:[[:blank:]]*[1-9][0-9]"
+  if [ $? -ne 0 ]; then
+    # no swap in current session, so add it.
+    echo "Enabling ramdisk swap partition...
 "
-  add_swap_mount
-  echo "
+    add_swap_mount
+    echo "
 Enabled ramdisk swap partition for current boot session."
-fi
+  fi
 
-# the above just gives this session a swap partition, but we want to have
-# the vm boot with one also.
+  # the above just gives this session a swap partition, but we want to have
+  # the vm boot with one also.
 
-# check if there is already swap mentioned in the root crontab.  we will get root's
-# crontab below since this script has to run as sudo.
-crontab -l | grep -iq add_swap_mount
-if [ $? -ne 0 ]; then
-  # no existing swap setup in crontab, so add it.
-  echo "
+  # check if there is already swap mentioned in the root crontab.  we will get root's
+  # crontab below since this script has to run as sudo.
+  crontab -l | grep -iq add_swap_mount
+  if [ $? -ne 0 ]; then
+    # no existing swap setup in crontab, so add it.
+    echo "
 Adding a boot-time ramdisk swap partition...
 "
-  # need to do it carefully, since sed won't add lines to a null file.  we thus
-  # create a temporary file to do our work in and ignore sed as a tool for this.
-  tmpfile="$(mktemp junk.XXXXXX)"
-  crontab -l 2>/dev/null >"$tmpfile"
-  echo "
+    # need to do it carefully, since sed won't add lines to a null file.  we thus
+    # create a temporary file to do our work in and ignore sed as a tool for this.
+    tmpfile="$(mktemp junk.XXXXXX)"
+    crontab -l 2>/dev/null >"$tmpfile"
+    echo "
 # need to explicitly set any variables we will use.
 FEISTY_MEOW_APEX=${FEISTY_MEOW_APEX}
 # add swap space to increase memory available.
 @reboot bash $FEISTY_MEOW_APEX/scripts/system/add_swap_mount.sh
 " >>"$tmpfile"
-  # now install our new version of the crontab.
-  crontab "$tmpfile"
-  rm "$tmpfile"
+    # now install our new version of the crontab.
+    crontab "$tmpfile"
+    rm "$tmpfile"
 
-  echo "
+    echo "
 Added boot-time ramdisk swap partition to crontab for root."
+  fi
 fi
 
 ##############
@@ -326,7 +348,31 @@ sep
 
 echo Adding site avenger packages to composer.
 # add in site avenger dependencies so we can build avcore properly.
-composer config -g repositories.siteavenger composer https://packages.siteavenger.com/
+pushd ~ &>/dev/null
+sudo -u $(logname) composer config -g repositories.siteavenger composer https://packages.siteavenger.com/
+popd &>/dev/null
+
+##############
+
+# make the apache umask set group permissions automatically, so we stop having weird
+# permission issues on temp dirs.
+
+sep
+
+grep -q "umask" /etc/apache2/envvars
+if [ $? -eq 0 ]; then
+  # already present.
+  echo the umask configuration for apache already appears to be set.
+else
+  echo "
+
+# set umask to enable group read/write on files and directories.
+umask 002
+
+" >> /etc/apache2/envvars
+  restart_apache
+  echo "successfully changed apache umask configuration to enable group read/write"
+fi
 
 ##############
 ##############
