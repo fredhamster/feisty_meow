@@ -220,9 +220,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   fi
   # add in any site avenger applications that are in the apps folder.
   if [ -d "$HOME/apps" ]; then
-    # first, simple projects.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -iname "avenger5" -type d) "
-    # then, site avenger specific projects.
+    # back up all the apps.
     REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
   
