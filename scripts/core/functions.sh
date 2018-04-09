@@ -453,6 +453,7 @@ if [ -z "$skip_all" ]; then
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
     echo "reloading the feisty meow scripts."
+    echo
     source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
     # run nechung oracle to give user a new fortune.
     nechung
