@@ -39,7 +39,7 @@ This script needs to know (1) the application name for the new site and
 appropriate name for a file-system compatible folder name.  There is an
 optional third parameter (3) the path for site storage.  If the site path
 is not provided, we'll use this path:
-  $BASE_APPLICATION_PATH/{app name}/$STORAGE_SUFFIX"
+  $BASE_APPLICATION_PATH/{app name}$STORAGE_SUFFIX"
   exit 1
 fi
 

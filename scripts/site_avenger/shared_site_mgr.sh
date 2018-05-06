@@ -28,7 +28,7 @@ test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG
 export NO_CHECKIN_VENDOR=true
 
 # tests that the main storage folder for apps exists.
-function check_application_dir()
+function check_apps_root()
 {
   local appdir="$1"; shift
   if [ ! -d "$appdir" ]; then
@@ -63,6 +63,7 @@ the standard pattern for cakephp projects."
   source "$SITE_MANAGEMENT_CONFIG_FILE"
   test_or_die "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
 
+  return 0
 }
 
 # this function will seek out top-level directories in the target directory passed in.
@@ -100,14 +101,14 @@ function find_app_folder()
     options=( $(find "$appsdir" -mindepth 1 -maxdepth 1 -type d -exec basename {} ';') "Quit")
     select app_dirname in "${options[@]}"; do
       case $app_dirname in
-        "Quit") echo ; echo "Quitting from the script."; exit 1; ;;
+        "Quit") echo ; echo "Quitting from the script."; return 1; ;;
         *) echo ; echo "You picked folder '$app_dirname'" ; break; ;;
       esac
     done
     if [ -z "$app_dirname" ]; then
       echo "The folder was not provided.  This script needs a directory name"
       echo "within which to initialize the site."
-      exit 1
+      return 1
     fi
     PS3="$holdps3"
   fi
@@ -115,9 +116,11 @@ function find_app_folder()
   test_or_die "Testing application folder: $app_dirname"
 
   echo "Application folder is: $app_dirname"
+  return 0
 }
 
-# ensures that the app directory name is valid.
+# ensures that the app directory name is valid and then loads the config
+# for the app (either via a specific file or using the defaults).
 function test_app_folder()
 {
   local appsdir="$1"; shift
@@ -137,20 +140,22 @@ function test_app_folder()
 # eases some permissions to enable apache to write log files and do other shopkeeping.
 function fix_site_perms()
 {
-  local site_dir="$1"; shift
+  local app_dir="$1"; shift
+
+  local site_dir="$app_dir/$CHECKOUT_DIR_NAME"
 
   if [ -f "$site_dir/bin/cake" ]; then
-    chmod -R a+rx "$site_dir/bin/cake"
+    sudo chmod -R a+rx "$site_dir/bin/cake"
     test_or_die "Enabling execute bit on cake binary"
   fi
 
   if [ -d "$site_dir/logs" ]; then
-    chmod -R g+w "$site_dir/logs"
+    sudo chmod -R g+w "$site_dir/logs"
     test_or_die "Enabling group write on site's Logs directory"
   fi
 
   if [ -d "$site_dir/tmp" ]; then
-    chmod -R g+w "$site_dir/tmp"
+    sudo chmod -R g+w "$site_dir/tmp"
     test_or_die "Enabling group write on site's tmp directory"
   fi
 }
@@ -226,8 +231,10 @@ var full_app_dir checkout_dirname repo_root repo_name
     test_or_die "Git clone of repository: $repo_name"
   fi
 
-  fix_site_perms "$complete_path"
+#not doing this here since powerup uses this and has no sudo.
+  #fix_site_perms "$complete_path"
 
+#unused?
   # construct the full path to where the app will actually live.
   site_store_path="$complete_path"
 
@@ -351,4 +358,57 @@ function update_composer_repository()
   fi
 }
 
+# fixes the ownership for a site avenger or php application.
+# this almost certainly will require sudo capability, if there are any ownership problems
+# that need to be resolved.
+function fix_appdir_ownership()
+{
+  local appsdir="$1"; shift
+  local dir="$1"; shift
+
+  local combo="$appsdir/$dir"
+
+  # go with the default user running the script.
+  user_name="$USER"
+  if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
+    echo "Chowning the app folder to be owned by: $user_name"
+#hmmm: have to hope for now for standard group named after user 
+    sudo chown -R "$user_name:$user_name" "$combo"
+    test_or_die "Chowning $combo to be owned by $user_name"
+  else
+    echo "user name failed checks for chowning, was found as '$user_name'"
+  fi
+
+  # 
+#probably not enough for path!
+  fix_site_perms "$combo"
+}
+
+# Jumps to an application directory given the app name.  If no app name is
+# given, it will show a menu to pick the app.
+function switch_to()
+{
+  # check for parameters.
+  app_dirname="$1"; shift
+
+  check_apps_root "$BASE_APPLICATION_PATH"
+
+  # find proper webroot where the site will be initialized.
+  if [ -z "$app_dirname" ]; then
+    # no dir was passed, so guess it.
+    find_app_folder "$BASE_APPLICATION_PATH"
+  else
+    test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
+  fi
+  if [ $? -ne 0 ]; then
+    echo "Could not locate that application directory"
+    return 1
+  fi
+
+  # where we expect to find our checkout folder underneath.
+  full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
+
+  cd $full_app_dir/$CHECKOUT_DIR_NAME
+  pwd
+}
 

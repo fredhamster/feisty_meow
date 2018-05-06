@@ -3,8 +3,8 @@
 # Author: Kevin Wentworth
 # Author: Chris Koeritz
 
-# This script "powers up" a cakephp site by running the database migrations,
-# cleaning out the ORM cache, and fixing file permissions.
+# This script "powers up" a cakephp site by checking out the code from the
+# git repository and installing the composer dependencies.
 # This script is currently highly specific to site avenger.
 
 # General Info:
@@ -13,7 +13,7 @@
 # A git repository is expected to be provided, and we will get all the code
 # for the web site from there.  The repository is expected to have a single
 # application "name" and one or more "themes".  By convention, the name
-# and the theme are often the same.
+# and the theme are often the same, except the theme is capitalized.
 # For example, let's say our app name is "turtle" and our theme name is "box".
 # The repo is checked out to a folder called "~/apps/turtle".
 # This script will want to use "turtle" as the app name.
@@ -38,7 +38,6 @@ function print_instructions()
   echo "app dirname: The folder where the app will be stored."
   echo "repository: The name of the git repository (short version, no URL)."
   echo "theme name: The name to use for the cakephp theme."
-#  echo "user name: The name of the user to chown the checkout to."
   echo
   exit 0
 }
@@ -51,9 +50,6 @@ function print_instructions()
 app_dirname="$1"; shift
 repo_name="$1"; shift
 theme_name="$1"; shift
-#user_name="$1"; shift
-
-#echo "*** user name is $user_name"
 
 if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
@@ -63,7 +59,7 @@ source "$WORKDIR/shared_site_mgr.sh"
 
 sep
 
-check_application_dir "$BASE_APPLICATION_PATH"
+check_apps_root "$BASE_APPLICATION_PATH"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
@@ -72,16 +68,23 @@ if [ -z "$app_dirname" ]; then
 else
   test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
+test_or_die "finding and testing app folder"
 
 # where we expect to find our checkout folder underneath.
 full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 
 # use our default values for the repository and theme if they're not provided.
 if [ -z "$repo_name" ]; then
-  repo_name="$app_dirname"
+  repo_name="$REPO_NAME"
+  if [ -z "$repo_name" ]; then
+    repo_name="$app_dirname"
+  fi
 fi
 if [ -z "$theme_name" ]; then
-  theme_name="$(capitalize_first_char ${app_dirname})"
+  theme_name="$THEME_NAME"
+  if [ -z "$theme_name" ]; then
+    theme_name="$(capitalize_first_char ${app_dirname})"
+  fi
 fi
 
 echo "Repository: $repo_name"
@@ -106,16 +109,6 @@ sep
 create_site_links "$site_store_path" "$theme_name"
 
 sep
-
-#if [ ! -z "$user_name" ]; then
-#  echo "Chowning the apps folder to be owned by: $user_name"
-##hmmm: have to hope for now for standard group named after user 
-#  chown -R "$user_name:$user_name" "$BASE_APPLICATION_PATH"
-#  test_or_die "Chowning $BASE_APPLICATION_PATH to be owned by $user_name"
-#fi
-
-sep
-
 
 echo "Finished powering up the site in '${app_dirname}'."
 

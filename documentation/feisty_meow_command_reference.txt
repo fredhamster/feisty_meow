@@ -4,14 +4,59 @@ Welcome, adventurous script user.
 These are the handiest commands available in the Feisty Meow scripts.
 Note that each script is expected to be self-documenting.  Try running it
 with a "--help" flag (or with no parameters in some cases) to print the
-built-in docs.  At worst, you may have to read the script (documentation
-fail--please let us know).
+built-in docs.  At worst, you may have to read the script (that is a
+"documentation fail" on our part; please let us know).
 
 setup and loading commands
 ==========================
 
 + read "readme.txt" in the top of the feisty meow codebase, or
 + read it online at: https://feistymeow.org/feisty_meow/readme.txt
+
+generally useful commands
+=========================
+
+  pwd:
+  reports similarly to the good old system "pwd", but translates the $HOME
+  variable into the '~' name.  e.g., if you're fred in /home/fred/turnips
+  and you run 'pwd', then it will print: ~/turnips
+
+  i:
+  take inventory.  prints out some time and relative dimension in space
+  information and shows the current directory's contents.
+
+  dir or l (lower-case L):
+  show the directory with a "summing" feature that calculates the full size
+  consumed by all files in the listing, with somewhat esthetic output.
+
+  ll:
+  like 'dir' but also includes hidden files (e.g. those starting with a dot).
+
+  ls:
+  the standard ls command (not the summing directory), but with ls colors
+  enabled.
+
+  del or rm:
+  invoke "safedel" feature to remove the files specified.  this archives the
+  deleted files in "$TMP/zz_safedel_keep" and writes a report of the deletion
+  history in "$TMP/zz_safedel_report.txt".
+
+  note about safe deletion support:
+  currently there is no "empty the trash" function aside from running a
+  command such as:
+    $ \rm -rf $TMP/zz_safedel*
+  the backslash forces bash to run the "rm" tool from the path rather than
+  using the feisty meow alias.  a trash flushing feature is planned for the
+  somewhat near future.
+
+  regenerate:
+  runs the feisty meow reconfiguration process to adapt to a new version of
+  the scripts.  this also updates the current shell's functions and aliases
+  to reflect any changes.
+
+  get_feisty:
+  update the feisty meow codebase from its origin and run the regeneration
+  script to update the current user's feisty meow configuration.
 
 revision control commands
 =========================
@@ -88,7 +133,7 @@ managing web sites.  these scripts offer a lot of power to the developer, and
 of course that comes with great responsibility...
 
 the site avenger scripts are configured by "app" files stored in the "config"
-directory (in $FEISTY_MEOW_SCRIPTS/scripts/site_avenger/config).  the scripts
+directory (in $FEISTY_MEOW_SCRIPTS/site_avenger/config).  the scripts
 seek out a config file named after the application, e.g. they look for
 "winterportlibrary.app" if the application name is "winterportlibrary".
 the basic config file "default.app" is used for any application that is unknown
@@ -123,8 +168,9 @@ overriding the domain name for the mapsdemo application.
   powerup:
   similar to standup, but just gets the application source out and powers it
   up with composer.
-(note: automatic database configuration and inflation is in the pipeline but
-is not ready yet.  that will go into powerup.)
+
+(note: automatic database configuration and inflation is in the pipeline for
+the powerup command, but is not ready yet.)
   
   avcoreup:
   updates the avcore portion of a site avenger application.  this command can
@@ -140,19 +186,27 @@ is not ready yet.  that will go into powerup.)
   checks in the source code and other site assets for a site avenger app.
   supports passing an app name on the command line, or auto-picks the app.
 
-
   satis-refresh:
   updates satis for a site(?).
-note: this is the one site avenger command that hasn't been "feisty meowicized" yet.
 
-lower level scripts used by site avenger scripts:
+note: satis-refresh is the one site avenger command that hasn't been "feisty meowicized" yet.
 
-  add_domain / remove_domain: (from system script collection)
-  adds a DNS domain to the bind9 configuration.
-  (the domain tools, for example, are
-    very sensitive to edits within the chunks of code they have written.  if you
-  need to edit bind config files, be sure to do it way above or way below the
-  auto-generated domains.)
+lower level scripts used by site avenger scripts
+------------------------------------------------
 
-  add_apache_site / remove_apache_site:
+  add_domain and remove_domain: (from system script collection)
+  adds (or removes) a DNS domain to the bind9 configuration.  the domain
+  tools, are very sensitive to any edits within the chunks of code they have
+  written.  when it comes time to remove the domain again, the script will eat
+  the number of lines it expects to find after the beginning of the domain
+  definition that it added.  to avoid any issues, if you need to edit the bind
+  config files, be sure to do it way above or way below the auto-generated
+  domain chunks.
+
+  add_apache_site and remove_apache_site: (from system script collection)
+  creates (or removes) an apache compatible site definition.  this will rely
+  on the site's domain previously having been added to the DNS.
+
+note: currently we only implement the http site, but we're planning to add https support via self-signed certificates soon.
+
 

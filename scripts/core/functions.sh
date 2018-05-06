@@ -144,7 +144,7 @@ if [ -z "$skip_all" ]; then
   function test_or_die()
   {
     if [ $? -ne 0 ]; then
-      echo -e "\n\naction failed: $*\n\nExiting script..."
+      echo -e "\n\naction failed: $*\n\n*** Exiting script..."
       error_sound
       exit 1
     fi
@@ -154,7 +154,7 @@ if [ -z "$skip_all" ]; then
   function test_or_continue()
   {
     if [ $? -ne 0 ]; then
-      echo -e "\n\nerror occurred: $*\n\nContinuing script..."
+      echo -e "\n\nerror occurred: $*\n\n=> Continuing script..."
       error_sound
     fi
   }
@@ -452,6 +452,7 @@ if [ -z "$skip_all" ]; then
     unalias CORE_ALIASES_LOADED &>/dev/null
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
+    echo "reloading the feisty meow scripts."
     source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
     # run nechung oracle to give user a new fortune.
     nechung
@@ -488,9 +489,12 @@ if [ -z "$skip_all" ]; then
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
     incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
 
-    local fail_message="\nare the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
-    $(grep "apt.*perl" $FEISTY_MEOW_APEX/readme.txt)\n"
-    
+    local fail_message="\n
+are the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
+    $(grep "apt-get.*perl" $FEISTY_MEOW_APEX/readme.txt)\n
+or if you're on cygwin, then try this (if apt-cyg is available):\n
+    $(grep "apt-cyg.*perl" $FEISTY_MEOW_APEX/readme.txt)\n";
+
     #echo "the incongruous files list is: $incongruous_files"
     # disallow a single character result, since we get "*" as result when nothing exists yet.
     if [ ${#incongruous_files} -ge 2 ]; then
@@ -507,7 +511,8 @@ if [ -z "$skip_all" ]; then
 
     if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
       echo "copying custom scripts for $custom_user"
-      netcp "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
+      rsync -avz "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
+      test_or_continue "copying customization scripts"
 #hmmm: could save output to show if an error occurs.
     fi
     echo
@@ -920,6 +925,16 @@ return 0
       # cannot always be considered an error, but we can at least gripe.
       echo "Did not find any matches for seeker '$seeker' in file: $filename"
     fi
+  }
+
+  ##############
+
+  # site avenger aliases
+  function switchto()
+  {
+    WORKDIR="$FEISTY_MEOW_SCRIPTS/site_avenger"
+    source "$FEISTY_MEOW_SCRIPTS/site_avenger/shared_site_mgr.sh"
+    switch_to "$1"
   }
 
   ##############

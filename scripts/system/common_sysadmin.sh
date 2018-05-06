@@ -181,7 +181,26 @@ function restart_bind()
     echo "The bind service did not restart properly.  Please check the error logs."
     exit 1
   fi
-  echo DNS server restarted.
+  echo DNS service restarted.
+}
+
+############################################################################
+
+# samba server helper functions...
+
+function restart_samba
+{
+  echo restarting samba server.
+  service smbd restart
+  if [ $? -ne 0 ]; then
+    echo "The samba service did not restart properly.  Please check the error logs."
+    exit 1
+  fi
+  service nmbd restart
+  if [ $? -ne 0 ]; then
+    echo "The samba name service (nmbd) did not restart properly.  This may not always be fatal, so we are ignoring it, but you may want to check the error logs."
+  fi
+  echo samba service restarted.
 }
 
 ############################################################################
@@ -317,6 +336,7 @@ function restart_apache()
     echo "Please consult the apache error logs for more details."
     exit 1
   fi
+  echo Apache2 service restarted.
 }
 
 # sets up the serverpilot storage location for a user hosted web site.
