@@ -47,7 +47,7 @@ while ($whackers[0] =~ /^-/) {
 if (scalar(@whackers) > 0) {
   print "ZAPPING FOREVER! @whackers ...\n";
   system("sleep 4") == 0 || &interrupt_handler;
-  print "\nNow really deleting files! => @whackers\n";
+  print "\nReally deleting files! => @whackers\n";
 }
 
 
