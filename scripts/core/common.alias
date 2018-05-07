@@ -43,7 +43,8 @@ if [ "$OS" != "Windows_NT" ]; then
     define_yeti_alias exp='open'
   elif [ ! -z "$(which dolphin 2>/dev/null)" ]; then
     # we prefer dolphin if available.
-    define_yeti_alias exp='screen -L -S dolphin-$RANDOM -d -m dolphin --select '
+    define_yeti_alias exp='screen -L -S dolphin-$RANDOM -d -m dolphin '
+#--select 
   elif [ ! -z "$(which nautilus 2>/dev/null)" ]; then
     # launch nautilus if available.
     define_yeti_alias exp='nautilus'
