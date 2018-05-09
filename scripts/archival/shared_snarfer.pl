@@ -387,7 +387,12 @@ sub backup_number {
   print NUM_PREFIX $number_prefix;
   close(NUM_PREFIX);
 
-  $outcome = 0xff & system $tar_tool, "-rf",
+  $outcome = 0xff & system $tar_tool, 
+
+#hmmm: trying to dereference symbolic links and stop missing stuff.
+"-h",
+
+"-rf",
       &canonicalize($target_file), &canonicalize($prefix_file);
   if ($outcome) { die("failure to archive"); }
   unlink($prefix_file);
