@@ -101,17 +101,7 @@ test_or_die "group perms on feisty meow"
 
 ##############
 
-# fix perms for fred user.
-chown -R fred:fred /home/fred /home/archives/stuffing /home/fred/.[a-zA-Z0-9]*
-test_or_die "chown fred home"
-group_perm $HOME/apps
-test_or_die "group perms on fred's apps"
-harsh_perm /home/fred/.ssh
-test_or_die "harsh_perm setting on fred .ssh"
-group_perm /home/fred/apps/mapsdemo
-test_or_die "group perms on mapsdemo app"
-
-echo "Done with important permission changes."
+echo "...done with important permission changes."
 
 ##############
 #
