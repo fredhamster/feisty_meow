@@ -122,6 +122,9 @@ analyze_hierarchy_and_report ~/cloud/webular "web design (ideas and tasks)"
 # feisty notes are about feisty meow(r) concerns ltd codebase development.
 analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (mondo coding)"
 
+# metaverse notes are about our ongoing simulator development and LSL scripting.
+analyze_hierarchy_and_report ~/cloud/metaverse "metaverse in cyberspace design and scripting"
+
 # home notes are a new top-level category; used to be under the grunty.
 analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road)"
 
