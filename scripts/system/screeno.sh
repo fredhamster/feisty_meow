@@ -13,8 +13,8 @@ if [ -z "$app" ]; then
   exit 1
 fi
 if [ -z "$title" ]; then
-  title="$app"
-#hmmm: we should be sanitizing that guy!  don't want a long deal title.
+  title="$(basename $app)"
+#hmmm: we should be sanitizing that guy!  don't want a weird title or a dangerous one.
 fi
 
 screen -L -S "$title" -d -m "$app"
