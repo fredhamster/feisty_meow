@@ -57,7 +57,7 @@ git pull downstream master
 test_or_die "running the git pull downstream master"
 
 # send our little boat down the stream to the dependent repository.
-git push downstream master
+git push --tags downstream master
 test_or_die "running the git push downstream master"
 
 popd &>/dev/null
