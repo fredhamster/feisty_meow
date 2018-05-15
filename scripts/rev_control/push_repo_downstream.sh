@@ -51,9 +51,14 @@ test_or_die "generating revision control file list"
 perform_revctrl_action_on_file "$tempfile" do_careful_git_update
 test_or_die "doing a careful git update on: $tempfile"
 
+# seems to be needed to cause a merge to be resolved.
+git pull downstream master
+# -m "unfortunate merge"
+test_or_die "running the git pull downstream master"
+
 # send our little boat down the stream to the dependent repository.
 git push downstream master
-test_or_die "running the git push downstream"
+test_or_die "running the git push downstream master"
 
 popd &>/dev/null
 
