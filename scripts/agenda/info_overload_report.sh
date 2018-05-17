@@ -144,6 +144,9 @@ analyze_by_dir_patterns "life's work and other oddities" ~/cloud/vocation*
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active issues" ~/cloud/active*
 
+# rub alongside all the travel notes to see if any have interesting burrs.
+analyze_by_dir_patterns "travel plans" ~/cloud/walkabout*
+
 # scan across all appropriately named project or research folders that live in the "cloud".
 analyze_by_dir_patterns "running projects" ~/cloud/project* ~/cloud/research*
 
