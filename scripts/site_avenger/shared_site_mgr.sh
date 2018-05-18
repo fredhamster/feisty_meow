@@ -11,13 +11,15 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
+export SSM_LOG_FILE="$TMP/$(logname)-siteavenger-script.log"
+
 # get our configuration loaded, if we know the config file.
 # if there is none, we will use our default version.
 export SITE_MANAGEMENT_CONFIG_FILE
 if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
   SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/config/default.app"
-  echo "Site management config file was not set.  Using default:"
-  echo "  $SITE_MANAGEMENT_CONFIG_FILE"
+  echo "Site management config file was not set.  Using default:" >> "$SSM_LOG_FILE"
+  echo "  $SITE_MANAGEMENT_CONFIG_FILE" >> "$SSM_LOG_FILE"
 fi
 
 # load in at least the default version to get us moving.
@@ -32,7 +34,7 @@ function check_apps_root()
 {
   local appdir="$1"; shift
   if [ ! -d "$appdir" ]; then
-    echo "Creating the apps directory: $appdir"
+    echo "Creating the apps directory: $appdir" >> "$SSM_LOG_FILE"
     mkdir "$appdir"
     test_or_die "Making apps directory when not already present"
   fi
@@ -44,14 +46,14 @@ function locate_config_file()
   local app_dirname="$1"; shift
 
   local configfile="$WORKDIR/config/${app_dirname}.app"
-  echo "config file?: $configfile"
+  echo "config file guessed?: $configfile" >> "$SSM_LOG_FILE"
   if [ ! -f "$configfile" ]; then
     # this is not a good config file.  we can't auto-guess the config.
     echo -e "
 There is no specific site configuration file in:
   $configfile
 We will continue onward using the default and hope that this project follows
-the standard pattern for cakephp projects."
+the standard pattern for cakephp projects." >> "$SSM_LOG_FILE"
     # we'll pull in the default config file we set earlier; this will
     # reinitialize some variables based on the app name.
   else
@@ -129,7 +131,7 @@ function test_app_folder()
   local combo="$appsdir/$dir"
 
   if [ ! -d "$combo" ]; then
-    echo "Creating app directory: $combo"
+    echo "Creating app directory: $combo" >> "$SSM_LOG_FILE"
     mkdir "$combo"
     test_or_die "Making application directory when not already present"
   fi
@@ -184,8 +186,8 @@ function update_repo()
   local repo_root="$1"; shift
   local repo_name="$1"; shift
 
-echo here are parms in update repo:
-var full_app_dir checkout_dirname repo_root repo_name
+echo here are parms in update repo: >> "$SSM_LOG_FILE"
+var full_app_dir checkout_dirname repo_root repo_name >> "$SSM_LOG_FILE"
 
   # forget any prior value, since we are going to validate the path.
   unset site_store_path
@@ -371,12 +373,12 @@ function fix_appdir_ownership()
   # go with the default user running the script.
   user_name="$USER"
   if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
-    echo "Chowning the app folder to be owned by: $user_name"
+    echo "Chowning the app folder to be owned by: $user_name" >> "$SSM_LOG_FILE"
 #hmmm: have to hope for now for standard group named after user 
     sudo chown -R "$user_name:$user_name" "$combo"
     test_or_die "Chowning $combo to be owned by $user_name"
   else
-    echo "user name failed checks for chowning, was found as '$user_name'"
+    echo "user name failed checks for chowning, was found as '$user_name'" >> "$SSM_LOG_FILE"
   fi
 
   # 
@@ -401,7 +403,7 @@ function switch_to()
     test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
   fi
   if [ $? -ne 0 ]; then
-    echo "Could not locate that application directory"
+    echo "Could not locate the application directory: ${app_dirname}"
     return 1
   fi
 

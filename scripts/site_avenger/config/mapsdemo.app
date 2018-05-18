@@ -5,6 +5,5 @@
 
 export DOMAIN_NAME="${APPLICATION_NAME}.cakelampvm.com"
 
-
-echo "*** overrode domain name as: $DOMAIN_NAME"
+echo "*** overrode domain name as: $DOMAIN_NAME" >> "$SSM_LOG_FILE"
 
