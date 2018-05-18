@@ -24,6 +24,7 @@ tempfile=$(generate_rev_ctrl_filelist)
 test_or_die "generating revision control file list"
 popd &>/dev/null
 
-perform_revctrl_action_on_file "$tempfile" do_careful_git_update
+#perform_revctrl_action_on_file "$tempfile" do_careful_git_update
+perform_revctrl_action_on_file "$tempfile" puff_out_list
 test_or_die "puffing out repository at: $tempfile"
 

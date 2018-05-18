@@ -129,7 +129,7 @@ function do_checkin()
       fi
 
       # a new set of steps we have to take to make sure the branch integrity is good.
-      do_careful_git_update "$(\pwd)"
+      puff_out_list "$(\pwd)"
 
       # we continue on to the push, even if there were no changes this time, because
       # there could already be committed changes that haven't been pushed yet.

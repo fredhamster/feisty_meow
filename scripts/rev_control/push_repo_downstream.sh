@@ -48,7 +48,8 @@ test_or_die "changing to directory: $dir"
 tempfile=$(generate_rev_ctrl_filelist)
 test_or_die "generating revision control file list"
 
-perform_revctrl_action_on_file "$tempfile" do_careful_git_update
+#perform_revctrl_action_on_file "$tempfile" do_careful_git_update
+perform_revctrl_action_on_file "$tempfile" puff_out_list
 test_or_die "doing a careful git update on: $tempfile"
 
 # seems to be needed to cause a merge to be resolved.
