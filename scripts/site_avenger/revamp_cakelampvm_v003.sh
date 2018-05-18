@@ -86,8 +86,10 @@ test_or_die "group_perm www-data"
 ##############
 
 # set up access on some important folders for the developer user.
-chown -R developer:developer /home/developer /home/developer/.[a-zA-Z0-9]*
-test_or_die "chown developer home"
+redeveloper
+test_or_die "running redeveloper to fix ownership"
+#chown -R developer:developer /home/developer /home/developer/.[a-zA-Z0-9]*
+#test_or_die "chown developer home"
 harsh_perm /home/developer/.ssh
 test_or_die "harsh_perm setting on developer .ssh"
 chown -R developer:developer /etc/apache2 /etc/bind 

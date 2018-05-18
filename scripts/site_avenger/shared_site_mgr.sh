@@ -410,7 +410,7 @@ function switch_to()
   # where we expect to find our checkout folder underneath.
   full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 
-  cd $full_app_dir/$CHECKOUT_DIR_NAME
-  pwd
+  pushd $full_app_dir/$CHECKOUT_DIR_NAME
+#redundant if pushd  pwd
 }
 
