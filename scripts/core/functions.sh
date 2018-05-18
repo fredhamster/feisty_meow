@@ -467,15 +467,15 @@ if [ -z "$skip_all" ]; then
     local custom_user="$1"; shift
     if [ -z "$custom_user" ]; then
       # use our default example user if there was no name provided.
-      custom_user=fred
+      custom_user=$(logname)
     fi
 
     save_terminal_title
 
     if [ ! -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" ]; then
-      echo "The customization folder provided for $custom_user should be:"
-      echo "  '$FEISTY_MEOW_SCRIPTS/customize/$custom_user'"
-      echo "but that folder does not exist.  Skipping customization."
+      echo "The customization folder for '$custom_user' would be:"
+      echo "  $FEISTY_MEOW_SCRIPTS/customize/$custom_user"
+      echo "but that folder does not exist.  Skipping recustomization."
       return 1
     fi
 
