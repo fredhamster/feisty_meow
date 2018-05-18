@@ -21,23 +21,28 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 if [ -z "$IP_ADDRESS" ]; then
   # in our scheme, the single IP address that all our domains map to.
-  IP_ADDRESS="10.28.42.20"
+  IP_ADDRESS="$(get_ip_addresses | head)"
+  echo "** defaulting IP address to $IP_ADDRESS"
 fi
 if [ -z "$SERVER_ADMIN" ]; then
   # the email address (where first dot is replaced by @) for the administrator of the domain.
-  SERVER_ADMIN="developer.cakelampvm.com"
+  SERVER_ADMIN="$(logname).localhost"
+  echo "** defaulting server admin to $SERVER_ADMIN"
 fi
 if [ -z "$MAIN_NAME_SERVER" ]; then
   # the name of the name server for the new domains (should already be configured).
-  MAIN_NAME_SERVER="ns.cakelampvm.com"
+  MAIN_NAME_SERVER="ns.localhost"
+  echo "** defaulting main name server to $MAIN_NAME_SERVER"
 fi
 if [ -z "$MAIL_SERVER" ]; then
   # the name of the mail server for a new domain (should already be configured).
-  MAIL_SERVER="mail.cakelampvm.com"
+  MAIL_SERVER="mail.localhost"
+  echo "** defaulting mail server to $MAIL_SERVER"
 fi
 if [ -z "$DISTRO" ]; then
   # the distribution name to be listed in info for the new domain or subdomain.
   DISTRO="ubuntu"
+  echo "** defaulting distro to $DISTRO"
 fi
 
 # main body of script.

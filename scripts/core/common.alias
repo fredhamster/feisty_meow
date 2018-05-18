@@ -114,8 +114,13 @@ define_yeti_alias add_apache_site="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_ap
 define_yeti_alias remove_apache_site="sudo bash \$FEISTY_MEOW_SCRIPTS/system/remove_apache_site.sh"
 define_yeti_alias add_swap_mount="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_swap_mount.sh"
 
-# some site avenger sudoized aliases.
-define_yeti_alias revamp_cakelampvm="sudo bash \"$FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm.sh\""
+### some site avenger sudoized aliases.
+##define_yeti_alias revamp_cakelampvm="echo -e '\
+##You might want to run one of these commands to perform the revamp process,\n
+##depending on your VM version:\n'; 
+##for i in $FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm*; do
+##  echo sudo bash \"$FEISTY_MEOW_SCRIPTS/site_avenger/$(basename $i)\";
+##done"
 
 ##############
 
