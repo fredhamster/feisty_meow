@@ -243,7 +243,10 @@ function checkin_list()
   restore_terminal_title
 }
 
-# does a careful git update on all the folders in the specified list.
+# does a careful update on all the folders in the specified list;
+# it looks in the REPOSITORY_LIST for those names and updates them.
+# this is just like checkout_list, but it's for the puffing up action
+# we need to do on git.
 function puff_out_list()
 {
   # make the list of directories unique.
@@ -379,9 +382,15 @@ function do_careful_git_update()
   test_or_die "changing to directory: $directory"
 
   if [ ! -d ".git" ]; then
-    # we ignore if they're jumping into a non-useful folder, but also tell them.
-    echo "Directory is not a git repository: $directory"
-    return 0
+
+#    # we ignore if they're jumping into a non-useful folder, but also tell them.
+#    echo "Directory is not a git repository: $directory"
+#    return 0
+
+    # new and better approach; just boil down to a getem action.
+    popd &>/dev/null
+    do_update $directory
+    return $?
   fi
 
   local this_branch="$(my_branch_name)"
