@@ -18,8 +18,8 @@ export SSM_LOG_FILE="$TMP/$(logname)-siteavenger-script.log"
 export SITE_MANAGEMENT_CONFIG_FILE
 if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
   SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/config/default.app"
-  echo "Site management config file was not set.  Using default:" >> "$SSM_LOG_FILE"
-  echo "  $SITE_MANAGEMENT_CONFIG_FILE" >> "$SSM_LOG_FILE"
+  echo "$(date_stringer): Site management config file was not set.  Using default:" >> "$SSM_LOG_FILE"
+  echo "$(date_stringer):   $SITE_MANAGEMENT_CONFIG_FILE" >> "$SSM_LOG_FILE"
 fi
 
 # load in at least the default version to get us moving.
@@ -34,7 +34,7 @@ function check_apps_root()
 {
   local appdir="$1"; shift
   if [ ! -d "$appdir" ]; then
-    echo "Creating the apps directory: $appdir" >> "$SSM_LOG_FILE"
+    echo "$(date_stringer): Creating the apps directory: $appdir" >> "$SSM_LOG_FILE"
     mkdir "$appdir"
     test_or_die "Making apps directory when not already present"
   fi
@@ -46,10 +46,10 @@ function locate_config_file()
   local app_dirname="$1"; shift
 
   local configfile="$WORKDIR/config/${app_dirname}.app"
-  echo "config file guessed?: $configfile" >> "$SSM_LOG_FILE"
+  echo "$(date_stringer): config file guessed?: $configfile" >> "$SSM_LOG_FILE"
   if [ ! -f "$configfile" ]; then
     # this is not a good config file.  we can't auto-guess the config.
-    echo -e "
+    echo -e "$(date_stringer): 
 There is no specific site configuration file in:
   $configfile
 We will continue onward using the default and hope that this project follows
@@ -131,7 +131,7 @@ function test_app_folder()
   local combo="$appsdir/$dir"
 
   if [ ! -d "$combo" ]; then
-    echo "Creating app directory: $combo" >> "$SSM_LOG_FILE"
+    echo "$(date_stringer): Creating app directory: $combo" >> "$SSM_LOG_FILE"
     mkdir "$combo"
     test_or_die "Making application directory when not already present"
   fi
@@ -186,8 +186,8 @@ function update_repo()
   local repo_root="$1"; shift
   local repo_name="$1"; shift
 
-echo here are parms in update repo: >> "$SSM_LOG_FILE"
-var full_app_dir checkout_dirname repo_root repo_name >> "$SSM_LOG_FILE"
+echo "$(date_stringer): here are parms in update repo:" >> "$SSM_LOG_FILE"
+echo "$(date_stringer): $(var full_app_dir checkout_dirname repo_root repo_name)" >> "$SSM_LOG_FILE"
 
   # forget any prior value, since we are going to validate the path.
   unset site_store_path
@@ -373,12 +373,12 @@ function fix_appdir_ownership()
   # go with the default user running the script.
   user_name="$USER"
   if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
-    echo "Chowning the app folder to be owned by: $user_name" >> "$SSM_LOG_FILE"
+    echo "$(date_stringer): Chowning the app folder to be owned by: $user_name" >> "$SSM_LOG_FILE"
 #hmmm: have to hope for now for standard group named after user 
     sudo chown -R "$user_name:$user_name" "$combo"
     test_or_die "Chowning $combo to be owned by $user_name"
   else
-    echo "user name failed checks for chowning, was found as '$user_name'" >> "$SSM_LOG_FILE"
+    echo "$(date_stringer): user name failed checks for chowning, was found as '$user_name'" >> "$SSM_LOG_FILE"
   fi
 
   # 

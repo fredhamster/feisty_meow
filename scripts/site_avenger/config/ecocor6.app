@@ -4,6 +4,6 @@
 
 export THEME_NAME="Ecocor"
 
-echo "*** overrode THEME_NAME as: $THEME_NAME" >> "$SSM_LOG_FILE"
+echo "$(date_stringer): *** overrode THEME_NAME as: $THEME_NAME" >> "$SSM_LOG_FILE"
 
  
