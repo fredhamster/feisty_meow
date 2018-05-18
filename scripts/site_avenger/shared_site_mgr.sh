@@ -5,7 +5,7 @@
 
 # This contains a bunch of reusable functions that help out in managing websites.
 
-# This script is sourced, and relies on the value of WORKDIR, which should
+# This script is sourced, and relies on the value of THISDIR, which should
 # point at the directory where the site management scripts are stored,
 # especially this one.
 
@@ -17,7 +17,7 @@ export SSM_LOG_FILE="$TMP/$(logname)-siteavenger-script.log"
 # if there is none, we will use our default version.
 export SITE_MANAGEMENT_CONFIG_FILE
 if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
-  SITE_MANAGEMENT_CONFIG_FILE="$WORKDIR/config/default.app"
+  SITE_MANAGEMENT_CONFIG_FILE="$THISDIR/config/default.app"
   echo "$(date_stringer): Site management config file was not set.  Using default:" >> "$SSM_LOG_FILE"
   echo "$(date_stringer):   $SITE_MANAGEMENT_CONFIG_FILE" >> "$SSM_LOG_FILE"
 fi
@@ -45,7 +45,7 @@ function locate_config_file()
 {
   local app_dirname="$1"; shift
 
-  local configfile="$WORKDIR/config/${app_dirname}.app"
+  local configfile="$THISDIR/config/${app_dirname}.app"
   echo "$(date_stringer): config file guessed?: $configfile" >> "$SSM_LOG_FILE"
   if [ ! -f "$configfile" ]; then
     # this is not a good config file.  we can't auto-guess the config.

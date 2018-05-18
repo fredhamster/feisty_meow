@@ -933,7 +933,7 @@ return 0
   # site avenger aliases
   function switchto()
   {
-    WORKDIR="$FEISTY_MEOW_SCRIPTS/site_avenger"
+    THISDIR="$FEISTY_MEOW_SCRIPTS/site_avenger"
     source "$FEISTY_MEOW_SCRIPTS/site_avenger/shared_site_mgr.sh"
     switch_to "$1"
   }

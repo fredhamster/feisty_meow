@@ -20,8 +20,8 @@
 # It will have to be told the theme name, but will assume it's 'Turtle' to
 # start with.  The concept of the theme comes from cakephp.
 
-export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+export THISDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
 
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
@@ -55,7 +55,7 @@ if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
 fi
 
-source "$WORKDIR/shared_site_mgr.sh"
+source "$THISDIR/shared_site_mgr.sh"
 
 sep
 

@@ -19,7 +19,7 @@
 ##############
 
 # this script cannot handle figuring out where it lives, so approaches that
-# get the WORKDIR will fail.  this is a consequence of this always being used
+# get the THISDIR will fail.  this is a consequence of this always being used
 # in bash's 'source' directive, which does not pass the script name as
 # argument 0.  instead, we just check for the bad condition of a malconfigured
 # script system and try to repair it.

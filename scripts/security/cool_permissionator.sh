@@ -28,11 +28,18 @@ function reapply_cool_permissions()
   fi
 
   # fix some permissions for important security considerations.
-  harsh_perm $HOME/.ssh
+  if [ -d $HOME/.ssh ]; then
+    harsh_perm $HOME/.ssh
+  fi
 
-#hmmm: consider adding feisty meow apex to the list below.
+#hmmm: consider adding feisty meow apex to the dirname list below.
+
   # iterate across the list of dirs we want cooluser to own and change their ownership.
-  for dirname in $HOME $DEFAULT_FEISTYMEOW_ORG_DIR /usr/local/${cooluser} /home/games $arch_addin; do
+  for dirname in $HOME \
+        $DEFAULT_FEISTYMEOW_ORG_DIR \
+        /usr/local/${cooluser} \
+        /home/games \
+        $arch_addin; do
     if [ -d "$dirname" ]; then
       echo "revising ownership on '$dirname'"
       sudo chown -R ${cooluser}:${cooluser} "$dirname"
@@ -40,19 +47,19 @@ function reapply_cool_permissions()
     fi
   done
 
-  # special case for archives directory.
+  # special case for archives directory in stuffing.
   if [ -d /z/stuffing -o -L /z/stuffing ]; then
-    sudo chown ${cooluser}:${cooluser} /z
+    sudo chown ${cooluser}:${cooluser} /z/
     test_or_die "chowning /z for ${cooluser}"
     sudo chmod g+rx,o+rx /z
     test_or_die "chmodding /z/ for ${cooluser}"
-    sudo chown ${cooluser}:${cooluser} /z/stuffing
+    sudo chown ${cooluser}:${cooluser} /z/stuffing/
     test_or_die "chowning /z/stuffing for ${cooluser}"
     sudo chmod g+rx,o-rwx /z/stuffing
     test_or_die "chmodding /z/stuffing for ${cooluser}"
     pushd /z/stuffing &>/dev/null
     if [ -d archives -o -L archives ]; then
-      sudo chown ${cooluser}:${cooluser} archives
+      sudo chown ${cooluser}:${cooluser} archives/
       test_or_die "chowning /z/stuffing/archives for ${cooluser}"
       sudo chmod -R g+rwx archives
       test_or_die "chmodding /z/stuffing/archives for ${cooluser}"
@@ -60,7 +67,7 @@ function reapply_cool_permissions()
     popd &>/dev/null
   fi
 
-  # make the logs readable by normal humans.
+  # make the log files readable by normal humans.
   sudo bash $FEISTY_MEOW_SCRIPTS/security/normal_perm.sh /var/log
   test_or_die "setting normal perms on /var/log"
 }
@@ -69,11 +76,17 @@ function reapply_cool_permissions()
 # than when it's just being sourced.
 
 # this runs the cool permission applier on the current user.
-if [[ $0 =~ .*reapply_cool_permissions\.sh.* ]]; then
+if [[ $0 =~ .*cool_permissionator\.sh.* ]]; then
+echo A
   THISDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"
+echo B
+  export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
+echo B.2
   source "$THISDIR/../core/launch_feisty_meow.sh"
   test_or_die "sourcing the feisty meow launcher"
+echo C
   reapply_cool_permissions $(logname)
   test_or_die "reapplying cool permissions on $(logname)"
+echo D
 fi
 

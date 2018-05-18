@@ -3,8 +3,8 @@
 # creates a new apache website for a specified domain.
 
 # auto-find the scripts, since we might want to run this as sudo.
-export WORKDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.
-export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+export THISDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
 
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
