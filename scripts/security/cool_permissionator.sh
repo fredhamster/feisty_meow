@@ -12,11 +12,11 @@ function reapply_cool_permissions()
 
   # first build a list of dirs based on their location in /home/archives.
   local arch_builder="archons basement codebarn games imaginations musix pooling prewar_toaster stuffing toaster walrus"
-  local ARCHIVE_HOME=/home/archives
+  local ARCHIVE_TOP=/home/archives
   local dirname
   local arch_addin
   for dirname in $arch_builder; do
-    arch_addin+="$ARCHIVE_HOME/$dirname "
+    arch_addin+="$ARCHIVE_TOP/$dirname "
   done
 #echo arch addin now is: $arch_addin
 
