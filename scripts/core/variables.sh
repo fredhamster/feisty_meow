@@ -220,8 +220,9 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   fi
   # add in any site avenger applications that are in the applications folder.
   if [ -d "$HOME/apps" ]; then
-    # general search for normal folders at top level 
+    # general search for normal project folders in apps.
     REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
 
     # special search for site avenger directories; they have avenger5 as second level.
     REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
