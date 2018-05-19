@@ -24,7 +24,7 @@ function reapply_cool_permissions()
   # everything else is only re-permed if it exists.
   if [ ! -d "$DEFAULT_FEISTYMEOW_ORG_DIR" ]; then
     sudo mkdir "$DEFAULT_FEISTYMEOW_ORG_DIR"
-    test_or_die "making directory: $DEFAULT_FEISTYMEOW_ORG_DIR"
+    exit_on_error "making directory: $DEFAULT_FEISTYMEOW_ORG_DIR"
   fi
 
   # fix some permissions for important security considerations.
@@ -43,33 +43,33 @@ function reapply_cool_permissions()
     if [ -d "$dirname" ]; then
       echo "revising ownership on '$dirname'"
       sudo chown -R ${cooluser}:${cooluser} "$dirname"
-      test_or_die "chowning for ${cooluser}: $dirname"
+      exit_on_error "chowning for ${cooluser}: $dirname"
     fi
   done
 
   # special case for archives directory in stuffing.
   if [ -d /z/stuffing -o -L /z/stuffing ]; then
     sudo chown ${cooluser}:${cooluser} /z/
-    test_or_die "chowning /z for ${cooluser}"
+    exit_on_error "chowning /z for ${cooluser}"
     sudo chmod g+rx,o+rx /z
-    test_or_die "chmodding /z/ for ${cooluser}"
+    exit_on_error "chmodding /z/ for ${cooluser}"
     sudo chown ${cooluser}:${cooluser} /z/stuffing/
-    test_or_die "chowning /z/stuffing for ${cooluser}"
+    exit_on_error "chowning /z/stuffing for ${cooluser}"
     sudo chmod g+rx,o-rwx /z/stuffing
-    test_or_die "chmodding /z/stuffing for ${cooluser}"
+    exit_on_error "chmodding /z/stuffing for ${cooluser}"
     pushd /z/stuffing &>/dev/null
     if [ -d archives -o -L archives ]; then
       sudo chown ${cooluser}:${cooluser} archives/
-      test_or_die "chowning /z/stuffing/archives for ${cooluser}"
+      exit_on_error "chowning /z/stuffing/archives for ${cooluser}"
       sudo chmod -R g+rwx archives
-      test_or_die "chmodding /z/stuffing/archives for ${cooluser}"
+      exit_on_error "chmodding /z/stuffing/archives for ${cooluser}"
     fi
     popd &>/dev/null
   fi
 
   # make the log files readable by normal humans.
   sudo bash $FEISTY_MEOW_SCRIPTS/security/normal_perm.sh /var/log
-  test_or_die "setting normal perms on /var/log"
+  exit_on_error "setting normal perms on /var/log"
 }
 
 # this block should execute when the script is actually run, rather
@@ -83,10 +83,10 @@ echo B
   export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
 echo B.2
   source "$THISDIR/../core/launch_feisty_meow.sh"
-  test_or_die "sourcing the feisty meow launcher"
+  exit_on_error "sourcing the feisty meow launcher"
 echo C
   reapply_cool_permissions $(logname)
-  test_or_die "reapplying cool permissions on $(logname)"
+  exit_on_error "reapplying cool permissions on $(logname)"
 echo D
 fi
 

@@ -141,7 +141,7 @@ if [ -z "$skip_all" ]; then
   # checks the result of the last command that was run, and if that failed,
   # then this complains and exits from bash.  the function parameters are
   # used as the message to print as a complaint.
-  function test_or_die()
+  function exit_on_error()
   {
     if [ $? -ne 0 ]; then
       echo -e "\n\naction failed: $*\n\n*** Exiting script..."
@@ -150,8 +150,8 @@ if [ -z "$skip_all" ]; then
     fi
   }
 
-  # like test_or_die, but will keep going after complaining.
-  function test_or_continue()
+  # like exit_on_error, but will keep going after complaining.
+  function continue_on_error()
   {
     if [ $? -ne 0 ]; then
       echo -e "\n\nerror occurred: $*\n\n=> Continuing script..."
@@ -484,7 +484,7 @@ if [ -z "$skip_all" ]; then
 #hmmm: better yet actually, just don't complain on freaking cygwin, since that's where this happens
     chown -R "$(logname):$(logname)" \
         "$FEISTY_MEOW_LOADING_DOCK"/* "$FEISTY_MEOW_GENERATED_STORE"/* 2>/dev/null
-    test_or_continue "chowning to $(logname) didn't happen."
+    continue_on_error "chowning to $(logname) didn't happen."
 
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
@@ -501,19 +501,19 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
     if [ ${#incongruous_files} -ge 2 ]; then
       echo "cleaning unknown older overrides..."
       perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
-      test_or_continue "running safedel.  $fail_message" 
+      continue_on_error "running safedel.  $fail_message" 
       echo
     fi
     popd &>/dev/null
     echo "copying custom overrides for $custom_user"
     mkdir -p "$FEISTY_MEOW_LOADING_DOCK/custom" 2>/dev/null
     perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom"
-    test_or_continue "running cpdiff.  $fail_message"
+    continue_on_error "running cpdiff.  $fail_message"
 
     if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
       echo "copying custom scripts for $custom_user"
       rsync -avz "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
-      test_or_continue "copying customization scripts"
+      continue_on_error "copying customization scripts"
 #hmmm: could save output to show if an error occurs.
     fi
     echo
@@ -522,7 +522,7 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
     # prevent permission foul-ups, again.
     chown -R "$(logname):$(logname)" \
         "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE" 2>/dev/null
-    test_or_continue "chowning to $(logname) didn't happen."
+    continue_on_error "chowning to $(logname) didn't happen."
 
     restore_terminal_title
   }
@@ -803,7 +803,7 @@ return 0
   
     if [ -d "$src" ]; then
       ln -s "$src" "$target"
-      test_or_die "Creating symlink from '$src' to '$target'"
+      exit_on_error "Creating symlink from '$src' to '$target'"
     fi
     echo "Created symlink from '$src' to '$target'."
   }
@@ -820,7 +820,7 @@ return 0
       temp_out="$TMP/$file.view"
       cat "$file" | python -m json.tool > "$temp_out"
       show_list+=($temp_out)
-      test_or_continue "pretty printing '$file'"
+      continue_on_error "pretty printing '$file'"
     done
     filedump "${show_list[@]}"
     rm "${show_list[@]}"
@@ -881,12 +881,12 @@ return 0
 
     # make a backup first, oy.
     \cp -f "$filename" "/tmp/$(basename ${filename}).bkup-${RANDOM}" 
-    test_or_die "backing up file: $filename"
+    exit_on_error "backing up file: $filename"
 
     # make a temp file to write to before we move file into place in bind.
     local new_version="/tmp/$(basename ${filename}).bkup-${RANDOM}" 
     \rm -f "$new_version"
-    test_or_die "cleaning out new version of file from: $new_version"
+    exit_on_error "cleaning out new version of file from: $new_version"
 
     local line
     local skip_count=0
@@ -921,7 +921,7 @@ return 0
     if [ ! -z "$found_any" ]; then
       # put the file back into place under the original name.
       \mv "$new_version" "$filename"
-      test_or_die "moving the new version into place in: $filename"
+      exit_on_error "moving the new version into place in: $filename"
     else
       # cannot always be considered an error, but we can at least gripe.
       echo "Did not find any matches for seeker '$seeker' in file: $filename"
@@ -957,7 +957,7 @@ return 0
     echo running tests on set_var_if_undefined.
     flagrant=petunia
     set_var_if_undefined flagrant forknordle
-    test_or_die "testing if defined variable would be whacked"
+    exit_on_error "testing if defined variable would be whacked"
     if [ $flagrant != petunia ]; then
       echo set_var_if_undefined failed to leave the test variable alone
       exit 1

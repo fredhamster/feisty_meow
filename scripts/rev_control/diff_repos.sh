@@ -16,10 +16,10 @@ if [ -z "$dir" ]; then
 fi
 
 pushd "$dir" &>/dev/null
-test_or_die "changing to directory: $dir"
+exit_on_error "changing to directory: $dir"
 tempfile=$(generate_rev_ctrl_filelist)
 popd &>/dev/null
 
 perform_revctrl_action_on_file "$tempfile" do_diff
-test_or_die "performing revision control action do_diff on: $tempfile"
+exit_on_error "performing revision control action do_diff on: $tempfile"
 

@@ -44,21 +44,21 @@ if [ -z "$dir" ]; then
 fi
 
 pushd "$dir" &>/dev/null
-test_or_die "changing to directory: $dir"
+exit_on_error "changing to directory: $dir"
 tempfile=$(generate_rev_ctrl_filelist)
-test_or_die "generating revision control file list"
+exit_on_error "generating revision control file list"
 
 perform_revctrl_action_on_file "$tempfile" do_careful_git_update
-test_or_die "doing a careful update on: $tempfile"
+exit_on_error "doing a careful update on: $tempfile"
 
 # seems to be needed to cause a merge to be resolved.
 git pull downstream master
 # -m "unfortunate merge"
-test_or_die "running the git pull downstream master"
+exit_on_error "running the git pull downstream master"
 
 # send our little boat down the stream to the dependent repository.
 git push --tags downstream master
-test_or_die "running the git push downstream master"
+exit_on_error "running the git push downstream master"
 
 popd &>/dev/null
 

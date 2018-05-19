@@ -19,11 +19,11 @@ if [ -z "$dir" ]; then
 fi
 
 pushd "$dir" &>/dev/null
-test_or_die "changing to directory: $dir"
+exit_on_error "changing to directory: $dir"
 tempfile=$(generate_rev_ctrl_filelist)
-test_or_die "generating revision control file list"
+exit_on_error "generating revision control file list"
 popd &>/dev/null
 
 perform_revctrl_action_on_file "$tempfile" do_careful_git_update
-test_or_die "puffing out repository at: $tempfile"
+exit_on_error "puffing out repository at: $tempfile"
 

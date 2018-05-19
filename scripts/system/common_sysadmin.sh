@@ -17,7 +17,7 @@ function remove_domain_file()
   if [ -f "$domain_file" ]; then
     # don't destroy, just shuffle.
     \mv -f "$domain_file" "/tmp/$(basename ${domain_file})-old-${RANDOM}"
-    test_or_die "removing domain file: $domain_file"
+    exit_on_error "removing domain file: $domain_file"
   else
     echo "Did not see a domain file to remove: $domain_file"
   fi
@@ -61,7 +61,7 @@ ${domain_name}.	IN A	${IP_ADDRESS}
 
   # our personalized configuration approach wants the real owner to own the file.
   chown "$(logname):$(logname)" $domain_file
-  test_or_die "setting ownership on: $domain_file"
+  exit_on_error "setting ownership on: $domain_file"
 }
 
 # takes a zone back out of the local conf file for bind
@@ -100,7 +100,7 @@ zone \"${domain_name}\" in {
 
   # keep ownership for the real user.
   chown "$(logname):$(logname)" /etc/bind/named.conf.local
-  test_or_die "setting ownership on: /etc/bind/named.conf.local"
+  exit_on_error "setting ownership on: /etc/bind/named.conf.local"
 }
 
 # zaps a subdomain out of the containing domain file.
@@ -170,7 +170,7 @@ function add_new_subdomain()
 
   # keep ownership for real user.
   chown "$(logname):$(logname)" "/etc/bind/${containing_domain}.conf"
-  test_or_die "setting ownership on: /etc/bind/${containing_domain}.conf"
+  exit_on_error "setting ownership on: /etc/bind/${containing_domain}.conf"
 }
 
 function restart_bind()
@@ -217,7 +217,7 @@ function remove_apache_config()
   if [ -f "$site_config" ]; then
     # don't destroy, just shuffle.
     \mv -f "$site_config" "/tmp/$(basename ${site_config})-old-${RANDOM}"
-    test_or_die "removing site config: $site_config"
+    exit_on_error "removing site config: $site_config"
   else
     echo "Did not see a site config to remove: $site_config"
   fi
@@ -278,7 +278,7 @@ function write_apache_config()
 " >"$site_config" 
 
   chown "$(logname):$(logname)" "$site_config"
-  test_or_die "setting ownership on: $site_config"
+  exit_on_error "setting ownership on: $site_config"
 }
 
 # stops apache from serving up the site.
@@ -347,7 +347,7 @@ function maybe_create_site_storage()
   local full_path="$BASE_APPLICATION_PATH/$our_app"
   if [ ! -d "$full_path" ]; then
     mkdir -p $full_path
-    test_or_die "The app storage path could not be created.\n  Path in question is: $full_path"
+    exit_on_error "The app storage path could not be created.\n  Path in question is: $full_path"
   fi
 
   # now give the web server some access to the folder.  this is crucial since the folders
@@ -359,10 +359,10 @@ function maybe_create_site_storage()
   while [[ $chow_path != $HOME ]]; do
 #echo chow path is now $chow_path
     chmod g+rx "$chow_path"
-    test_or_die "Failed to add group permissions on the path: $chow_path"
+    exit_on_error "Failed to add group permissions on the path: $chow_path"
     # reassert the user's ownership of any directories we might have just created.
     chown $(logname) "$chow_path"
-    test_or_die "changing ownership to user failed on the path: $chow_path"
+    exit_on_error "changing ownership to user failed on the path: $chow_path"
     chow_path="$(dirname "$chow_path")"
   done
 }

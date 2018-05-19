@@ -16,6 +16,6 @@ if [ -z "$filename" ]; then
 fi
 
 svn resolve --accept=working "$filename"
-test_or_die "resolving tree conflict by accepting the working directory as the right one"
+exit_on_error "resolving tree conflict by accepting the working directory as the right one"
 
 

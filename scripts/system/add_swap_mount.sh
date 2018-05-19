@@ -39,16 +39,16 @@ if [ -z "$SWAP_SIZE" ]; then
 fi
 
 /bin/dd if=/dev/zero of=/var/swap.${SWAP_INSTANCE} bs=1M count=${SWAP_SIZE}
-test_or_die "creating swap file"
+exit_on_error "creating swap file"
 
 /bin/chmod 600 /var/swap.${SWAP_INSTANCE}
-test_or_die "setting swap file permissions"
+exit_on_error "setting swap file permissions"
 
 /sbin/mkswap /var/swap.${SWAP_INSTANCE}
-test_or_die "formatting swap file as swap partition"
+exit_on_error "formatting swap file as swap partition"
 
 /sbin/swapon /var/swap.${SWAP_INSTANCE}
-test_or_die "enabling new swap partition"
+exit_on_error "enabling new swap partition"
 
 free
 

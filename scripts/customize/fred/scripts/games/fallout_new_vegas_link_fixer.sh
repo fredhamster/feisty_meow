@@ -31,7 +31,7 @@ function make_local_dir_link()
     return
   fi
   ln -s "$name" "$new_name"
-  test_or_die "creating link for $dir/$new_name from $dir/$name"
+  exit_on_error "creating link for $dir/$new_name from $dir/$name"
   echo "Created link $dir/$new_name from $dir/$name"
   popd &>/dev/null
 }

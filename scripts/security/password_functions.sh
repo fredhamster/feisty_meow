@@ -46,13 +46,13 @@ and (2) the password that should be stored.
   fi
 
   echo "$passwd" > "$passfile"
-  test_or_die "writing password into the file $passfile"
+  exit_on_error "writing password into the file $passfile"
 
   chown root:root "$passfile"
-  test_or_die "chowning the password file to root ownership for: $passfile"
+  exit_on_error "chowning the password file to root ownership for: $passfile"
 
   chmod 600 "$passfile"
-  test_or_die "restricting permissions on password file for: $passfile"
+  exit_on_error "restricting permissions on password file for: $passfile"
 }
 
 # reads a password from the console, without echoing the letters when they

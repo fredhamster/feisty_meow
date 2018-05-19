@@ -46,9 +46,9 @@ sep
 echo "Regenerating feisty meow loading dock."
 
 regenerate
-test_or_die "regenerating feisty meow configuration"
+exit_on_error "regenerating feisty meow configuration"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
-test_or_die "fix after reconfigured as sudo"
+exit_on_error "fix after reconfigured as sudo"
 
 ##############
 
@@ -69,7 +69,7 @@ mysql -u root -p"$mysql_passwd" &>/dev/null <<EOF
   create user if not exists 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
   grant all privileges on *.* TO 'lampcake'@'%' with grant option;
 EOF
-test_or_die "configuring root, wampcake and lampcake users on mysql"
+exit_on_error "configuring root, wampcake and lampcake users on mysql"
 
 ##############
 
@@ -81,9 +81,9 @@ echo "Making some important permission changes..."
 
 # fix up the main web storage.
 chown -R www-data:www-data /var/www 
-test_or_die "chown www-data"
+exit_on_error "chown www-data"
 group_perm /var/www 
-test_or_die "group_perm www-data"
+exit_on_error "group_perm www-data"
 
 ##############
 
@@ -92,20 +92,20 @@ test_or_die "group_perm www-data"
 # set the developer user as uber owner of many things with redeveloper alias.
 # (must have run feisty meow "recustomize" command at some point to enable.)
 redeveloper
-test_or_die "running redeveloper to fix ownership"
+exit_on_error "running redeveloper to fix ownership"
 
 ##############
 
 # give the developer control over the apache and bind config files, as well
 # as giving the user ownership of the local feisty meow repository.
 chown -R developer:developer /etc/apache2 /etc/bind 
-test_or_die "chown apache2 and bind to developer"
+exit_on_error "chown apache2 and bind to developer"
 group_perm /etc/apache2 /etc/bind 
-test_or_die "group perms on apache2 and bind"
+exit_on_error "group perms on apache2 and bind"
 chown -R developer:developer /opt/feistymeow.org 
-test_or_die "chown feisty meow to developer"
+exit_on_error "chown feisty meow to developer"
 group_perm /opt/feistymeow.org 
-test_or_die "group perms on feisty meow"
+exit_on_error "group perms on feisty meow"
 
 ##############
 
@@ -133,9 +133,9 @@ echo "...done with permission changes."
 sep
 
 regenerate
-test_or_die "regenerating feisty meow scripts"
+exit_on_error "regenerating feisty meow scripts"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
-test_or_die "fix after regenerate as sudo"
+exit_on_error "fix after regenerate as sudo"
 echo "
 
 

@@ -16,7 +16,7 @@ if [ "$OS" == "Windows_NT" ]; then
 fi
 
 checkin_list $FULL_LIST
-test_or_die "checking in list: $FULL_LIST"
+exit_on_error "checking in list: $FULL_LIST"
 
 ##############
 

@@ -84,7 +84,7 @@ function do_checkin()
   local blatt="echo -n checking in '$nicedir'...  "
 
   do_update "$directory"
-  test_or_die "repository update--this should be fixed before check-in."
+  exit_on_error "repository update--this should be fixed before check-in."
 
   pushd "$directory" &>/dev/null
   if [ -f ".no-checkin" ]; then
@@ -93,13 +93,13 @@ function do_checkin()
     if test_writeable "CVS"; then
       $blatt
       cvs ci .
-      test_or_die "cvs checkin"
+      exit_on_error "cvs checkin"
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
       $blatt
       svn ci .
-      test_or_die "svn checkin"
+      exit_on_error "svn checkin"
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
@@ -108,7 +108,7 @@ function do_checkin()
       # put all changed and new files in the commit.  not to everyone's liking.
       git add --all . | $TO_SPLITTER
       promote_pipe_return 0
-      test_or_die "git add all new files"
+      exit_on_error "git add all new files"
 
       # see if there are any changes in the local repository.
       if ! git diff-index --quiet HEAD --; then
@@ -116,7 +116,7 @@ function do_checkin()
 #hmmm: begins to look like, you guessed it, a reusable bit that all commit actions could enjoy.
         git commit .
         retval=$?
-        test_or_continue "git commit"
+        continue_on_error "git commit"
         if [ $retval -ne 0 ]; then
           echo -e -n "Commit failed or was aborted:\nShould we continue with other check-ins? [y/N] "
           local line
@@ -137,7 +137,7 @@ function do_checkin()
       # upload any changes to the upstream repo so others can see them.
       git push --tags origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       promote_pipe_return 0
-      test_or_die "git push"
+      exit_on_error "git push"
 
     fi
   else
@@ -163,13 +163,13 @@ function do_diff
   # only update if we see a repository living there.
   if [ -d ".svn" ]; then
     svn diff .
-    test_or_die "subversion diff"
+    exit_on_error "subversion diff"
   elif [ -d ".git" ]; then
     git diff 
-    test_or_die "git diff"
+    exit_on_error "git diff"
   elif [ -d "CVS" ]; then
     cvs diff .
-    test_or_die "cvs diff"
+    exit_on_error "cvs diff"
   fi
 
   popd &>/dev/null
@@ -194,10 +194,10 @@ function do_report_new
   elif [ -d ".svn" ]; then
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
-    test_or_die "svn diff"
+    exit_on_error "svn diff"
   elif [ -d ".git" ]; then
     git status -u
-    test_or_die "git status -u"
+    exit_on_error "git status -u"
   fi
 
   popd &>/dev/null
@@ -226,7 +226,7 @@ function checkin_list()
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
       do_checkin "$outer"
-      test_or_die "running check-in (absolute) on path: $outer"
+      exit_on_error "running check-in (absolute) on path: $outer"
       sep 28
     else
       for inner in $list; do
@@ -234,7 +234,7 @@ function checkin_list()
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
         do_checkin "$path"
-        test_or_die "running check-in (relative) on path: $path"
+        exit_on_error "running check-in (relative) on path: $path"
         sep 28
       done
     fi
@@ -266,7 +266,7 @@ function puff_out_list()
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
       do_careful_git_update "$outer"
-      test_or_die "running puff-out (absolute) on path: $outer"
+      exit_on_error "running puff-out (absolute) on path: $outer"
       sep 28
     else
       for inner in $list; do
@@ -274,7 +274,7 @@ function puff_out_list()
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
         do_careful_git_update "$path"
-        test_or_die "running puff-out (relative) on path: $path"
+        exit_on_error "running puff-out (relative) on path: $path"
         sep 28
       done
     fi
@@ -379,7 +379,7 @@ function do_careful_git_update()
 {
   local directory="$1"; shift
   pushd "$directory" &>/dev/null
-  test_or_die "changing to directory: $directory"
+  exit_on_error "changing to directory: $directory"
 
   if [ ! -d ".git" ]; then
 
@@ -400,7 +400,7 @@ function do_careful_git_update()
   # first update all our remote branches to their current state from the repos.
   git remote update | $TO_SPLITTER
   promote_pipe_return 0
-  test_or_die "git remote update"
+  exit_on_error "git remote update"
 
   show_branch_conditionally "$this_branch"
 
@@ -413,7 +413,7 @@ function do_careful_git_update()
 #    echo "synchronizing remote branch: $bran"
     git checkout "$bran" | $TO_SPLITTER
     promote_pipe_return 0
-    test_or_die "git switching checkout to remote branch: $bran"
+    exit_on_error "git switching checkout to remote branch: $bran"
 
     show_branch_conditionally "$this_branch"
 
@@ -425,12 +425,12 @@ function do_careful_git_update()
 # without any changes in them.  --no-ff
       promote_pipe_return 0
     fi
-    test_or_die "git pull of remote branch: $bran"
+    exit_on_error "git pull of remote branch: $bran"
   done
   # now switch back to our branch.
   git checkout "$this_branch" | $TO_SPLITTER
   promote_pipe_return 0
-  test_or_die "git checking out our current branch: $this_branch"
+  exit_on_error "git checking out our current branch: $this_branch"
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
@@ -439,7 +439,7 @@ function do_careful_git_update()
 #it does an --all, but is that effective or different?  should we be doing that in above loop?
 # --no-ff   
   promote_pipe_return 0
-  test_or_die "git pulling all upstream"
+  exit_on_error "git pulling all upstream"
 
   popd &>/dev/null
 }
@@ -464,14 +464,14 @@ function do_update()
       $blatt
       cvs update . | $TO_SPLITTER
       promote_pipe_return 0
-      test_or_die "cvs update"
+      exit_on_error "cvs update"
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
       $blatt
       svn update . | $TO_SPLITTER
       promote_pipe_return 0
-      test_or_die "svn update"
+      exit_on_error "svn update"
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
@@ -479,7 +479,7 @@ function do_update()
       git pull --tags $PULL_ADDITION 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
 #ordinary pulls should be allowed to do fast forward: --no-ff 
       promote_pipe_return 0
-      test_or_die "git pull of origin"
+      exit_on_error "git pull of origin"
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
@@ -510,7 +510,7 @@ function checkout_list()
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
       do_update $outer
-      test_or_die "running update on: $path"
+      exit_on_error "running update on: $path"
       sep 28
     else
       for inner in $list; do
@@ -518,7 +518,7 @@ function checkout_list()
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
         do_update $path
-        test_or_die "running update on: $path"
+        exit_on_error "running update on: $path"
         sep 28
       done
     fi
@@ -574,7 +574,7 @@ function perform_revctrl_action_on_file()
     echo "[$(pwd)]"
     # pass the current directory plus the remaining parameters from function invocation.
     $action . 
-    test_or_die "performing action $action on: $(pwd)"
+    exit_on_error "performing action $action on: $(pwd)"
     sep 28
     popd &>/dev/null
   done 3<"$tempfile"

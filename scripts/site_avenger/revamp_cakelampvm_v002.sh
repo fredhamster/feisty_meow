@@ -46,9 +46,9 @@ sep
 echo "Regenerating feisty meow loading dock."
 
 regenerate
-test_or_die "regenerating feisty meow configuration"
+exit_on_error "regenerating feisty meow configuration"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
-test_or_die "fix after reconfigured as sudo"
+exit_on_error "fix after reconfigured as sudo"
 
 ##############
 
@@ -69,7 +69,7 @@ mysql -u root -p"$mysql_passwd" &>/dev/null <<EOF
   create user if not exists 'lampcake'@'%' IDENTIFIED BY 'bakecamp';
   grant all privileges on *.* TO 'lampcake'@'%' with grant option;
 EOF
-test_or_die "configuring root, wampcake and lampcake users on mysql"
+exit_on_error "configuring root, wampcake and lampcake users on mysql"
 
 ##############
 
@@ -81,17 +81,17 @@ echo "Making some important permission changes..."
 
 # fix up the main web storage.
 chown -R www-data:www-data /var/www 
-test_or_die "chown www-data"
+exit_on_error "chown www-data"
 group_perm /var/www 
-test_or_die "group_perm www-data"
+exit_on_error "group_perm www-data"
 
 ##############
 
 # set up access on some important folders for the developer user.
 chown -R developer:developer /home/developer /home/developer/.[a-zA-Z0-9]*
-test_or_die "chown developer home"
+exit_on_error "chown developer home"
 harsh_perm /home/developer/.ssh
-test_or_die "harsh_perm setting on developer .ssh"
+exit_on_error "harsh_perm setting on developer .ssh"
 
 
 ##############
@@ -99,25 +99,25 @@ test_or_die "harsh_perm setting on developer .ssh"
 # give the developer control over the apache and bind config files, as well
 # as giving the user ownership of the local feisty meow repository.
 chown -R developer:developer /etc/apache2 /etc/bind 
-test_or_die "chown apache2 and bind to developer"
+exit_on_error "chown apache2 and bind to developer"
 group_perm /etc/apache2 /etc/bind 
-test_or_die "group perms on apache2 and bind"
+exit_on_error "group perms on apache2 and bind"
 chown -R developer:developer /opt/feistymeow.org 
-test_or_die "chown feisty meow to developer"
+exit_on_error "chown feisty meow to developer"
 group_perm /opt/feistymeow.org 
-test_or_die "group perms on feisty meow"
+exit_on_error "group perms on feisty meow"
 
 ##############
 
 # fix perms for fred user.
 chown -R fred:fred /home/fred /home/archives/stuffing /home/fred/.[a-zA-Z0-9]*
-test_or_die "chown fred home"
+exit_on_error "chown fred home"
 group_perm $HOME/apps
-test_or_die "group perms on fred's apps"
+exit_on_error "group perms on fred's apps"
 harsh_perm /home/fred/.ssh
-test_or_die "harsh_perm setting on fred .ssh"
+exit_on_error "harsh_perm setting on fred .ssh"
 group_perm /home/fred/apps/mapsdemo
-test_or_die "group perms on mapsdemo app"
+exit_on_error "group perms on mapsdemo app"
 
 echo "...done with permission changes."
 
@@ -137,7 +137,7 @@ echo "Updating developer welcome file."
 if [ -f "$HOME/hello.txt" ]; then
   # copy the most recent hello file into place for the user.
   \cp -f "$FEISTY_MEOW_APEX/production/sites/cakelampvm.com/hello.txt" "$HOME"
-  test_or_continue "copying hello file for user"
+  continue_on_error "copying hello file for user"
 fi
 
 ##############
@@ -159,26 +159,26 @@ if [ -L /etc/apache2/sites-enabled/000-default.conf ]; then
   echo "Updating default web sites to latest version."
 
   a2enmod ssl
-  test_or_die "enabling SSL for secure websites"
+  exit_on_error "enabling SSL for secure websites"
 
   restart_apache
-  test_or_die "getting SSL loaded in apache"
+  exit_on_error "getting SSL loaded in apache"
 
   a2dissite 000-default
-  test_or_die "disabling old apache site"
+  exit_on_error "disabling old apache site"
 
   rm -f /etc/apache2/sites-available/000-default.conf 
-  test_or_die "removing old apache site"
+  exit_on_error "removing old apache site"
 
   # copy in our new version of the default page.
 #hmmm: would be nice if this worked without mods for any new version, besides just 001.  see apache env var file below for example implem.
   \cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/default_page.001/* \
       /etc/apache2/sites-available
-  test_or_die "installing new apache default sites"
+  exit_on_error "installing new apache default sites"
 
   # there should only be ours at this version level and with that prefix.
   a2ensite 001-*
-  test_or_die "enabling new apache default sites"
+  exit_on_error "enabling new apache default sites"
 
   restart_apache
 fi
@@ -247,7 +247,7 @@ replacement="read only = no"
 # after realizing the sentinel pattern was actually already in the file...
 # too much subtlety can get one into trouble.
 sed -i "0,/$pattern/{s/$pattern/$replacement/}" /etc/samba/smb.conf
-test_or_die "patching samba configuration to enable write acccess on user home dirs"
+exit_on_error "patching samba configuration to enable write acccess on user home dirs"
 echo successfully patched the samba configuration to enable writes on user home directories. 
 
 # add in a disabling of the archive bit mapping feature, which hoses up the execute bit
@@ -256,7 +256,7 @@ grep -q "map archive" /etc/samba/smb.conf
 # if the phrase wasn't found, we need to add it.
 if [ $? -ne 0 ]; then
   sed -i "s/\[global\]/\[global\]\n\nmap archive = no/" /etc/samba/smb.conf
-  test_or_die "patching samba configuration to turn off archive bit mapping feature"
+  exit_on_error "patching samba configuration to turn off archive bit mapping feature"
   echo Successfully fixed Samba to not use the archive bit mapping feature.
 fi
 
@@ -275,11 +275,11 @@ a2disconf env_vars_cakelampvm &>/dev/null
 # plug in the new version, just stomping anything there.
 # note: we only expect to have one version of the env_vars dir at a time in place in feisty...
 \cp -f $FEISTY_MEOW_APEX/production/sites/cakelampvm.com/rolling/env_vars.*/env_vars_cakelampvm.conf /etc/apache2/conf-available
-test_or_die "copying environment variables file into place"
+exit_on_error "copying environment variables file into place"
 
 # enable the new version of the config file.
 a2enconf env_vars_cakelampvm
-test_or_die "enabling the new cakelampvm environment config for apache"
+exit_on_error "enabling the new cakelampvm environment config for apache"
 
 echo Successfully configured the apache2 environment variables needed for cakelampvm.
 
@@ -377,9 +377,9 @@ fi
 sep
 
 regenerate
-test_or_die "regenerating feisty meow scripts"
+exit_on_error "regenerating feisty meow scripts"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
-test_or_die "fix after regenerate as sudo"
+exit_on_error "fix after regenerate as sudo"
 echo "
 
 

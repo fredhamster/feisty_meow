@@ -20,7 +20,7 @@ if [ "$OS" == "Windows_NT" ]; then
 fi
 
 puff_out_list $FULL_LIST
-test_or_die "puffing out list: $FULL_LIST"
+exit_on_error "puffing out list: $FULL_LIST"
 
 ##############
 
