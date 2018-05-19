@@ -110,6 +110,11 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
     define_yeti_variable TMP=$HOME/.tmp
   fi
 
+  # set up our event logging file for any notable situation to be recorded in.
+  if [ -z "$FEISTY_MEOW_EVENT_LOG" ]; then
+    define_yeti_variable FEISTY_MEOW_EVENT_LOG="$TMP/zz_feisty_meow_events.log"
+  fi
+
   # set up the top-level for all build creations and logs and such.
   if [ -z "$FEISTY_MEOW_GENERATED_STORE" ]; then
     define_yeti_variable FEISTY_MEOW_GENERATED_STORE="$TMP/generated-feisty_meow"

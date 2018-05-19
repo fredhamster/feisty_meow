@@ -1,7 +1,8 @@
 
 # these metrics are how bogged down we are in to-do type items.
 
-REPORT_FILE="$HOME/cloud/fred_stats/overload_history.txt"
+# logged historical file where we append our latest report.
+REPORT_FILE="$HOME/cloud/magic_cabinet/fred/task_stats/overload_history.txt"
 
 # given a path, this will find how many items are under it, ignoring svn and git files, plus
 # other patterns we happen to notice are not useful.

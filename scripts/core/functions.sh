@@ -144,7 +144,7 @@ if [ -z "$skip_all" ]; then
   function exit_on_error()
   {
     if [ $? -ne 0 ]; then
-      echo -e "\n\naction failed: $*\n\n*** Exiting script..."
+      echo -e "\n\nan important action failed and this script will stop:\n\n$*\n\n*** Exiting script..."
       error_sound
       exit 1
     fi
@@ -154,9 +154,17 @@ if [ -z "$skip_all" ]; then
   function continue_on_error()
   {
     if [ $? -ne 0 ]; then
-      echo -e "\n\nerror occurred: $*\n\n=> Continuing script..."
+      echo -e "\n\na problem occurred, but we can continue:\n\n$*\n\n=> Continuing script..."
       error_sound
     fi
+  }
+
+  ##############
+
+  # accepts any number of arguments and outputs them to the feisty meow event log.
+  function log_feisty_meow_event()
+  {
+    echo -e "$(date_stringer) -- $(basename $0):\t\t$*" >> "$FEISTY_MEOW_EVENT_LOG"
   }
 
   ##############
