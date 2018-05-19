@@ -77,16 +77,12 @@ function reapply_cool_permissions()
 
 # this runs the cool permission applier on the current user.
 if [[ $0 =~ .*cool_permissionator\.sh.* ]]; then
-echo A
   THISDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"
-echo B
   export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
-echo B.2
   source "$THISDIR/../core/launch_feisty_meow.sh"
   exit_on_error "sourcing the feisty meow launcher"
-echo C
-  reapply_cool_permissions $(logname)
-  exit_on_error "reapplying cool permissions on $(logname)"
-echo D
+  coolio="$(logname)"
+  reapply_cool_permissions "$coolio"
+  exit_on_error "reapplying cool permissions on $coolio"
 fi
 

@@ -34,10 +34,10 @@ use Env qw(CLOUD_BASE TMP);
 local($TEMPO_FILE) = `mktemp "$TMP/zz_reminder.XXXXXX"`;
 chop($TEMPO_FILE);
 
-local($USERNAME) = "$REPLYTO";
-if (! $USERNAME) { $USERNAME="fred" }
+local($USER_NAME) = "$REPLYTO";
+if (! $USER_NAME) { $USER_NAME="fred" }
 
-#print "TEMPO is $TEMPO_FILE ; USER is $USERNAME ; \n";
+#print "TEMPO is $TEMPO_FILE ; USER is $USER_NAME ; \n";
 
 local($CAL_FILE);
 if (! $CAL_FILE) {
@@ -133,8 +133,8 @@ while (<DATES>) {
 # send mail here if there's anything to say.
 if (! -z $TEMPO_FILE) {
   # there are some alerts in there.
-#print "will run: system(\"mail -s \"FredMinder: \$(head -1 $TEMPO_FILE)\" $USERNAME <$TEMPO_FILE\");\n";
-  system("mail -s \"FredMinder: \$(head -1 $TEMPO_FILE)\" $USERNAME <$TEMPO_FILE");
+#print "will run: system(\"mail -s \"FredMinder: \$(head -1 $TEMPO_FILE)\" $USER_NAME <$TEMPO_FILE\");\n";
+  system("mail -s \"FredMinder: \$(head -1 $TEMPO_FILE)\" $USER_NAME <$TEMPO_FILE");
 }
 
 unlink $TEMPO_FILE;

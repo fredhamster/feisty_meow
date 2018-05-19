@@ -164,7 +164,7 @@ if [ -z "$skip_all" ]; then
   # accepts any number of arguments and outputs them to the feisty meow event log.
   function log_feisty_meow_event()
   {
-    echo -e "$(date_stringer) -- $(logname)@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
+    echo -e "$(date_stringer) -- ${USER}@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
   }
 
   ##############
@@ -460,7 +460,7 @@ if [ -z "$skip_all" ]; then
     unalias CORE_ALIASES_LOADED &>/dev/null
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
-    log_feisty_meow_event "reloading the feisty meow scripts for $(logname) in current shell."
+    log_feisty_meow_event "reloading the feisty meow scripts for $USER in current shell."
     source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
     # run nechung oracle to give user a new fortune.
     nechung
@@ -473,8 +473,11 @@ if [ -z "$skip_all" ]; then
   {
     local custom_user="$1"; shift
     if [ -z "$custom_user" ]; then
-      # use our default example user if there was no name provided.
-      custom_user=$(logname)
+      # default to login name if there was no name provided.
+      custom_user="$(logname)"
+        # we do intend to use logname here to get the login name and to ignore
+        # if the user has sudo root access; we don't want to provide a custom
+        # profile for root.
     fi
 
     save_terminal_title
@@ -487,11 +490,13 @@ if [ -z "$skip_all" ]; then
     fi
 
     # prevent permission foul-ups.
-#hmmm: save error output here instead of muting it.
-#hmmm: better yet actually, just don't complain on freaking cygwin, since that's where this happens
-    chown -R "$(logname):$(logname)" \
+    my_user="$USER"
+      # here we definitely want the effective user name (in USER), since
+      # we don't want, say, fred (as logname) to own all of root's loading
+      # dock stuff.
+    chown -R "$my_user:$my_user" \
         "$FEISTY_MEOW_LOADING_DOCK"/* "$FEISTY_MEOW_GENERATED_STORE"/* 2>/dev/null
-    continue_on_error "chowning to $(logname) didn't happen."
+    continue_on_error "chowning feisty meow generated directories to $my_user"
 
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
@@ -518,16 +523,16 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
 
     if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
       log_feisty_meow_event "copying custom scripts for $custom_user"
+#hmmm: could save output to show if an error occurs.
       rsync -avz "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
       continue_on_error "copying customization scripts"
-#hmmm: could save output to show if an error occurs.
     fi
     regenerate
 
     # prevent permission foul-ups, again.
-    chown -R "$(logname):$(logname)" \
+    chown -R "$my_user:$my_user" \
         "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE" 2>/dev/null
-    continue_on_error "chowning to $(logname) didn't happen."
+    continue_on_error "once more chowning feisty meow generated directories to $my_user"
 
     restore_terminal_title
   }
@@ -557,10 +562,9 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
     echo $(which $to_find)
   }
 
-#hmmm: improve this by not adding the link
-# if already there, or if the drive is not valid.
   function add_cygwin_drive_mounts() {
     for i in c d e f g h q z ; do
+#hmmm: improve this by not adding the link if already there, or if the drive is not valid.
       ln -s /cygdrive/$i $i
     done
   }

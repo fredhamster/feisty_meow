@@ -361,7 +361,7 @@ function maybe_create_site_storage()
     chmod g+rx "$chow_path"
     exit_on_error "Failed to add group permissions on the path: $chow_path"
     # reassert the user's ownership of any directories we might have just created.
-    chown $(logname) "$chow_path"
+    chown "$(logname):$(logname)" "$chow_path"
     exit_on_error "changing ownership to user failed on the path: $chow_path"
     chow_path="$(dirname "$chow_path")"
   done
