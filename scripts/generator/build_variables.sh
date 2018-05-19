@@ -180,11 +180,11 @@ if [ -z "$got_bad" ]; then
   # where we store the binaries used for building the rest of the code base.
   export CLAM_BINARIES="$RUNTIME_PATH/clam_bin"
     # the final destination for the new binaries which provide the hoople
-    # build with all the apps it needs to get going.
+    # build with all the applications it needs to get going.
   export TARGETS_STORE="$RUNTIME_PATH/binaries"
     # targets directory is meaningful to clam, which will use it for output.
   export INTERMEDIATE_STORE="$TARGETS_STORE"
-    # where we are building the apps before they get promoted.
+    # where we are building the applications before they get promoted.
 
 #hmmm: could allow override on this if already set.
   # calculate which build ini file to use.

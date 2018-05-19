@@ -780,8 +780,8 @@ return 0
   # count the number of sub-directories in a directory and echo the result.
   function count_directories()
   {
-    local appsdir="$1"; shift
-    numdirs="$(find "$appsdir" -mindepth 1 -maxdepth 1 -type d | wc -l)"
+    local subbydir="$1"; shift
+    numdirs="$(find "$subbydir" -mindepth 1 -maxdepth 1 -type d | wc -l)"
     echo $numdirs
   }
 

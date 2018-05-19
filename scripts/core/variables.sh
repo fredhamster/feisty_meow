@@ -218,9 +218,12 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   if [ -d "$HOME/active" ]; then
     REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
   fi
-  # add in any site avenger applications that are in the apps folder.
+  # add in any site avenger applications that are in the applications folder.
   if [ -d "$HOME/apps" ]; then
-    # back up all the apps.
+    # general search for normal folders at top level 
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
+
+    # special search for site avenger directories; they have avenger5 as second level.
     REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
   
