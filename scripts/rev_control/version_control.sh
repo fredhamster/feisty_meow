@@ -56,7 +56,7 @@ function promote_pipe_return()
 # is a DOS path, but we need it to be a DOS path for our GFFS testing, so that blows.
 # to get past this, TMP gets changed below to a hopefully generic and safe place.
 if [[ "$TMP" =~ .:.* ]]; then
-  echo "making weirdo temporary directory for PCDOS-style path."
+  log_feisty_meow_event "making weirdo temporary directory for PCDOS-style path."
   export TMP=/tmp/rev_control_$USER
 fi
 if [ ! -d "$TMP" ]; then
@@ -65,6 +65,12 @@ fi
 if [ ! -d "$TMP" ]; then
   echo "could not create the temporary directory TMP in: $TMP"
   echo "this script will not work properly without an existing TMP directory."
+  echo
+#hmmm: odd approach to solving the "sourced scripts shouldn't exit or they take down the
+#      original caller too" issue.
+  echo "hit ctrl-c to stay in this shell now, otherwise it may exit in 10 seconds..."
+  sleep 10
+  exit 1
 fi
 
 ##############
@@ -142,7 +148,7 @@ function do_checkin()
     fi
   else
     # nothing there.  it's not an error though.
-    echo no repository in $directory
+    log_feisty_meow_event no repository in $directory
   fi
   popd &>/dev/null
 
@@ -283,26 +289,7 @@ function puff_out_list()
   restore_terminal_title
 }
 
-#hmmm: to go below.
-### takes out the first few carriage returns that are in the input.
-##function squash_first_few_crs()
-##{
-  ##i=0
-  ##while read input_text; do
-    ##i=$((i+1))
-    ##if [ $i -le 5 ]; then
-      ##echo -n "$input_text  "
-    ##else
-      ##echo $input_text
-    ##fi
-  ##done
-  ##if [ $i -le 3 ]; then
-    ### if we're still squashing eols, make sure we don't leave them hanging.
-    ##echo
-  ##fi
-##}
-
-#hmmm: the below are git specific and should be named that way.
+#hmmm: below functions are git specific and should be named that way.
 
 function all_branch_names()
 {
@@ -382,14 +369,9 @@ function do_careful_git_update()
   exit_on_error "changing to directory: $directory"
 
   if [ ! -d ".git" ]; then
-
-#    # we ignore if they're jumping into a non-useful folder, but also tell them.
-#    echo "Directory is not a git repository: $directory"
-#    return 0
-
-    # new and better approach; just boil down to a getem action.
+    # not a git project, so just boil this down to a getem action.
     popd &>/dev/null
-    do_update $directory
+    do_update "$directory"
     return $?
   fi
 
@@ -483,7 +465,7 @@ function do_update()
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
-    echo no repository in $directory
+    log_feisty_meow_event "no repository in $directory"
   fi
   popd &>/dev/null
 
