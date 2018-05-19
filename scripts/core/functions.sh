@@ -164,7 +164,7 @@ if [ -z "$skip_all" ]; then
   # accepts any number of arguments and outputs them to the feisty meow event log.
   function log_feisty_meow_event()
   {
-    echo -e "$(date_stringer) -- $(basename $0):\t\t$*" >> "$FEISTY_MEOW_EVENT_LOG"
+    echo -e "$(date_stringer) -- $(logname)@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
   }
 
   ##############
@@ -460,8 +460,7 @@ if [ -z "$skip_all" ]; then
     unalias CORE_ALIASES_LOADED &>/dev/null
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
-    echo "reloading the feisty meow scripts."
-    echo
+    log_feisty_meow_event "reloading the feisty meow scripts for $(logname) in current shell."
     source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
     # run nechung oracle to give user a new fortune.
     nechung
@@ -507,24 +506,22 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
     #echo "the incongruous files list is: $incongruous_files"
     # disallow a single character result, since we get "*" as result when nothing exists yet.
     if [ ${#incongruous_files} -ge 2 ]; then
-      echo "cleaning unknown older overrides..."
+      log_feisty_meow_event "cleaning unknown older overrides..."
       perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
       continue_on_error "running safedel.  $fail_message" 
-      echo
     fi
     popd &>/dev/null
-    echo "copying custom overrides for $custom_user"
+    log_feisty_meow_event "copying custom overrides for $custom_user"
     mkdir -p "$FEISTY_MEOW_LOADING_DOCK/custom" 2>/dev/null
     perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom"
     continue_on_error "running cpdiff.  $fail_message"
 
     if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
-      echo "copying custom scripts for $custom_user"
+      log_feisty_meow_event "copying custom scripts for $custom_user"
       rsync -avz "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
       continue_on_error "copying customization scripts"
 #hmmm: could save output to show if an error occurs.
     fi
-    echo
     regenerate
 
     # prevent permission foul-ups, again.
