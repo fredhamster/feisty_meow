@@ -77,6 +77,8 @@ sep
 
 echo "Making some important permission changes..."
 
+##############
+
 # fix up the main web storage.
 chown -R www-data:www-data /var/www 
 test_or_die "chown www-data"
@@ -90,6 +92,12 @@ chown -R developer:developer /home/developer /home/developer/.[a-zA-Z0-9]*
 test_or_die "chown developer home"
 harsh_perm /home/developer/.ssh
 test_or_die "harsh_perm setting on developer .ssh"
+
+
+##############
+
+# give the developer control over the apache and bind config files, as well
+# as giving the user ownership of the local feisty meow repository.
 chown -R developer:developer /etc/apache2 /etc/bind 
 test_or_die "chown apache2 and bind to developer"
 group_perm /etc/apache2 /etc/bind 
@@ -111,7 +119,7 @@ test_or_die "harsh_perm setting on fred .ssh"
 group_perm /home/fred/apps/mapsdemo
 test_or_die "group perms on mapsdemo app"
 
-echo "Done with important permission changes."
+echo "...done with permission changes."
 
 ##############
 #
@@ -131,19 +139,6 @@ if [ -f "$HOME/hello.txt" ]; then
   \cp -f "$FEISTY_MEOW_APEX/production/sites/cakelampvm.com/hello.txt" "$HOME"
   test_or_continue "copying hello file for user"
 fi
-
-##############
-
-# install a better editor app.
-
-#sep
-
-#echo "The script is about to install the bluefish editor and some dependencies.
-#If the app is not already installed, then this process takes about one minute
-#on a slow home DSL internet connection..."
-
-#apt-get install -y bluefish &> "/tmp/install_bluefish-$(logname).log"
-#test_or_continue "installing bluefish editor"
 
 ##############
 
