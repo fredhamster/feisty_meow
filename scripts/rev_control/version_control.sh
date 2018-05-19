@@ -148,7 +148,7 @@ function do_checkin()
     fi
   else
     # nothing there.  it's not an error though.
-    log_feisty_meow_event no repository in $directory
+    log_feisty_meow_event "no repository in $directory"
   fi
   popd &>/dev/null
 
