@@ -16,12 +16,12 @@ if [ "$OS" == "Windows_NT" ]; then
 fi
 
 checkin_list $FULL_LIST
-exit_on_error "checking in list: $FULL_LIST"
+exit_on_error "revision control check-in of list: $FULL_LIST"
 
 ##############
 
-# regenerate the scripts after checking in, since this could mean a modified version
-# of feisty meow is present.
+# regenerate the scripts after the check-in, since an update during check-in
+# could mean we have a modified version of feisty meow is present.
 regenerate
 
 ##############

@@ -87,7 +87,7 @@ function do_checkin()
   if [ $nicedir == "." ]; then
     nicedir=$(\pwd)
   fi
-  local blatt="echo -n checking in '$nicedir'...  "
+  local blatt="echo -ne \nchecking in '$nicedir'...  "
 
   do_update "$directory"
   exit_on_error "repository update--this should be fixed before check-in."
@@ -233,7 +233,7 @@ function checkin_list()
       if [ ! -d "$outer" ]; then continue; fi
       do_checkin "$outer"
       exit_on_error "running check-in (absolute) on path: $outer"
-      sep 28
+#      sep 28
     else
       for inner in $list; do
         # add in the directory component to see if we can find the folder.
@@ -241,7 +241,7 @@ function checkin_list()
         if [ ! -d "$path" ]; then continue; fi
         do_checkin "$path"
         exit_on_error "running check-in (relative) on path: $path"
-        sep 28
+#        sep 28
       done
     fi
   done
@@ -273,7 +273,7 @@ function puff_out_list()
       if [ ! -d "$outer" ]; then continue; fi
       do_careful_git_update "$outer"
       exit_on_error "running puff-out (absolute) on path: $outer"
-      sep 28
+#      sep 28
     else
       for inner in $list; do
         # add in the directory component to see if we can find the folder.
@@ -281,7 +281,7 @@ function puff_out_list()
         if [ ! -d "$path" ]; then continue; fi
         do_careful_git_update "$path"
         exit_on_error "running puff-out (relative) on path: $path"
-        sep 28
+#        sep 28
       done
     fi
   done
@@ -493,7 +493,7 @@ function checkout_list()
       if [ ! -d "$outer" ]; then continue; fi
       do_update $outer
       exit_on_error "running update on: $path"
-      sep 28
+#      sep 28
     else
       for inner in $list; do
         # add in the directory component to see if we can find the folder.
@@ -501,7 +501,7 @@ function checkout_list()
         if [ ! -d "$path" ]; then continue; fi
         do_update $path
         exit_on_error "running update on: $path"
-        sep 28
+#        sep 28
       done
     fi
   done
@@ -557,7 +557,7 @@ function perform_revctrl_action_on_file()
     # pass the current directory plus the remaining parameters from function invocation.
     $action . 
     exit_on_error "performing action $action on: $(pwd)"
-    sep 28
+#    sep 28
     popd &>/dev/null
   done 3<"$tempfile"
 
