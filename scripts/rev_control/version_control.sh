@@ -90,7 +90,7 @@ function do_checkin()
   local blatt="echo -ne \nchecking in '$nicedir'...  "
 
   do_update "$directory"
-  exit_on_error "repository update--this should be fixed before check-in."
+  exit_on_error "updating repository; this issue should be fixed before check-in."
 
   pushd "$directory" &>/dev/null
   if [ -f ".no-checkin" ]; then
@@ -371,6 +371,7 @@ function do_careful_git_update()
   if [ ! -d ".git" ]; then
     # not a git project, so just boil this down to a getem action.
     popd &>/dev/null
+echo "special case; not doing careful git update on non git repository: $directory"
     do_update "$directory"
     return $?
   fi
@@ -438,7 +439,7 @@ function do_update()
   if [ $nicedir == "." ]; then
     nicedir=$(\pwd)
   fi
-  local blatt="echo retrieving '$nicedir'..."
+  local blatt="echo -e \nretrieving '$nicedir'..."
 
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
