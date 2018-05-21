@@ -483,9 +483,18 @@ if [ -z "$skip_all" ]; then
     save_terminal_title
 
     if [ ! -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" ]; then
-      echo "The customization folder for '$custom_user' would be:"
-      echo "  $FEISTY_MEOW_SCRIPTS/customize/$custom_user"
-      echo "but that folder does not exist.  Skipping recustomization."
+      echo -e "the customization folder for '$custom_user' is missing:
+
+    $FEISTY_MEOW_SCRIPTS/customize/$custom_user
+
+we will skip recustomization, but these other customizations are available:
+"
+      # a little tr and sed magic to fix the carriage returns into commas.
+      local line="$(find $FEISTY_MEOW_SCRIPTS/customize -mindepth 1 -maxdepth 1 -type d -exec basename {} ';' | tr '\n' '&' | sed 's/&/, /g' | sed -e 's/, $//')"
+        # make the line feeds and carriage returns manageable with tr.
+        # convert the ampersand, our weird replacement for EOL, with a comma + space in sed.
+        # last touch with sed removes the last comma.
+      echo "    $line"
       return 1
     fi
 
