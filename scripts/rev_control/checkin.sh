@@ -19,6 +19,8 @@ fi
 checkin_list $FULL_LIST
 exit_on_error "revision control check-in of list: $FULL_LIST"
 
+echo
+
 ##############
 
 # regenerate the scripts after the check-in, since an update during check-in

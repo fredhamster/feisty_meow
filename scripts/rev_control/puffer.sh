@@ -23,6 +23,8 @@ fi
 puff_out_list $FULL_LIST
 exit_on_error "puffing out list: $FULL_LIST"
 
+echo
+
 ##############
 
 # regenerate the scripts after puffing out, since this could mean a modified version
