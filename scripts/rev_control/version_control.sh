@@ -92,26 +92,34 @@ function do_revctrl_checkin()
 #  least to call do_revctrl_simple_update, but is there a reason not to call the careful git update instead?
 #AHA, below we do call a careful git update, which is at least partially redundant with calling do_revctrl_simple_update here.
 # how about pushing the do_revctrl_simple_update down into the two cases that use it and just not calling it for the git case?
-  do_revctrl_simple_update "$directory"
-  exit_on_error "updating repository; this issue should be fixed before check-in."
+#hmmm: trying the better seeming approach below now.
 
   pushd "$directory" &>/dev/null
   if [ -f ".no-checkin" ]; then
     echo "skipping check-in due to presence of .no-checkin sentinel file."
   elif [ -d "CVS" ]; then
     if test_writeable "CVS"; then
+      do_revctrl_simple_update "$directory"
+      exit_on_error "updating repository; this issue should be fixed before check-in."
       $blatt
       cvs ci .
       exit_on_error "cvs checkin"
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
+      do_revctrl_simple_update "$directory"
+      exit_on_error "updating repository; this issue should be fixed before check-in."
       $blatt
       svn ci .
       exit_on_error "svn checkin"
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
+
+#hmmm: trying this in front; i have a bad feeling we used to do it like this and there were problems from not committing first!
+# a new set of steps we have to take to make sure the branch integrity is good.
+do_revctrl_careful_update "$(\pwd)"
+
       $blatt
 
       # put all changed and new files in the commit.  not to everyone's liking.
@@ -140,7 +148,7 @@ function do_revctrl_checkin()
       fi
 
       # a new set of steps we have to take to make sure the branch integrity is good.
-      do_revctrl_careful_update "$(\pwd)"
+#hold      do_revctrl_careful_update "$(\pwd)"
 
       # we continue on to the push, even if there were no changes this time, because
       # there could already be committed changes that haven't been pushed yet.
