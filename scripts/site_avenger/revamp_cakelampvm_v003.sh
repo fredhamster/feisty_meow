@@ -45,7 +45,7 @@ sep
 
 echo "Regenerating feisty meow loading dock."
 
-regenerate
+recustomize
 exit_on_error "regenerating feisty meow configuration"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
 exit_on_error "fix after reconfigured as sudo"
@@ -137,17 +137,17 @@ echo "...done with permission changes."
 
 sep
 
-regenerate
-exit_on_error "regenerating feisty meow scripts"
+recustomize
+exit_on_error "recustomize-ing feisty meow scripts"
 chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
-exit_on_error "fix after regenerate as sudo"
+exit_on_error "fix after recustomize as sudo"
 echo "
 
 
 Thanks for revamping your cakelampvm.  :-)
 
 You may want to update your current shell's feisty meow environment by typing:
-  regenerate
+  recustomize
 "
 
 ##############

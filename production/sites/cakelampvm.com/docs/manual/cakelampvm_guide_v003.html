@@ -10,8 +10,9 @@
     <div style="text-align: center;"><span style="font-weight: bold;">By Chris
         Koeritz</span><span style="font-family: Comic Sans MS;"></span><span style="font-family: Comic Sans MS;"></span><br>
       <span style="font-family: Comic Sans MS;">feisty meow® concerns ltd</span>.</div>
-    <h3 style="   text-align: center;"> Vintage: cakelampvm v003 &nbsp;&nbsp;
-      Updated: 2018-2-7 (rev. j)</h3>
+    <h3 style="   text-align: center;">VM Vintage: cakelampvm v003 &nbsp; &nbsp;
+      &nbsp;
+      Docs Updated: 2018-05-21</h3>
     <p>The cakelampvm project provides a Virtualbox VM that acts as an "internet
       in a bottle", serving up your web sites securely and only to your local
       host.&nbsp; The virtual machine provides DNS services (<a target="_blank"
@@ -154,14 +155,10 @@
     with:
     <pre><span style="font-weight: bold;">ssh developer@10.28.42.20<br># or perform the equivalent connection with your ssh client.</span></pre>
     <p>And then provide the password to log in.</p>
-    <p>
-      <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    </p>
-    <p>
-      <meta charset="utf-8">
-      &#9733; It is very important that the ssh connection is working properly before
-      proceeding to other configuration steps.&nbsp; If ssh is not working, try
-      pinging the host:</p>
+    <p> </p>
+    <p> &#9733; It is very important that the ssh connection is working properly
+      before proceeding to other configuration steps.&nbsp; If ssh is not
+      working, try pinging the host:</p>
     <pre><b>ping 10.28.42.20</b></pre>
     <p>If the ping is also failing, then please re-check the two network
       configuration sections above (for Host-Only networking and NAT
@@ -183,17 +180,16 @@
     <h2>Updating cakelampvm to the Latest Model<a id="#update-vm" name="#update-vm"></a></h2>
     <p>&#9733; This section requires that the VM is already configured and is
       accessible via ssh.</p>
-    <p>argh: fix this info...  
-The cakelampvm v002 is released with the intention that it not need to be
-      released again.&nbsp; Version 001 was not built with that explicit
-      intention, which then required the release of Version 002.&nbsp; But we
-      hope to not need a v003 release...</p>
+    <p>argh: fix this info... The cakelampvm v002 is released with the intention
+      that it not need to be released again.&nbsp; Version 001 was not built
+      with that explicit intention, which then required the release of Version
+      002.&nbsp; But we hope to not need a v003 release...</p>
     <p>There is an update feature built into the VM that is quite easy to
       use.&nbsp; The updates are driven by the feisty meow script repository in
       conjunction with a local scripted command.&nbsp; To activate the "update
       process" for your VM, run the following commands on the VM, logged in as
       the <i>developer</i> user:</p>
-    <pre><span style="font-weight: bold;"># update to the latest version of feisty meow.<br>rpuffer $FEISTY_MEOW_APEX; regenerate<br># enact any configuration changes needed, such as permissions and account setup.
+    <pre><span style="font-weight: bold;"># update to the latest version of feisty meow.<br>rpuffer $FEISTY_MEOW_APEX; recustomize<br># enact any configuration changes needed, such as permissions and account setup.
 revamp_cakelampvm</span></pre>
     <span style="font-weight: bold;"> </span>
     <p>These two commands can be run at any time to patch up your VM to the
