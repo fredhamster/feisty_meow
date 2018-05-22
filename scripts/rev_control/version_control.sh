@@ -43,15 +43,6 @@ fi
 
 ##############
 
-#hmmm: move this to core
-# this makes the status of pipe N into the main return value.
-#function promote_pipe_return()
-#{
-#  ( exit ${PIPESTATUS[$1]} )
-#}
-
-##############
-
 # one unpleasantry to take care of first; cygwin barfs aggressively if the TMP directory
 # is a DOS path, but we need it to be a DOS path for our GFFS testing, so that blows.
 # to get past this, TMP gets changed below to a hopefully generic and safe place.
@@ -80,19 +71,13 @@ function do_revctrl_checkin()
 {
   local directory="$1"; shift
 
+#hmmm: another piece of reusable code, to process the directory for printing.
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
   if [ $nicedir == "." ]; then
     nicedir=$(\pwd)
   fi
   local blatt="echo -ne \nchecking in '$nicedir'...  "
-
-#hmmm: we don't do a puff out on this directory to carefully update the git repo.  is there a good reason why?
-#  we know we at least have to get the remote version synched up to avoid severe tire damage, so it's sensible at
-#  least to call do_revctrl_simple_update, but is there a reason not to call the careful git update instead?
-#AHA, below we do call a careful git update, which is at least partially redundant with calling do_revctrl_simple_update here.
-# how about pushing the do_revctrl_simple_update down into the two cases that use it and just not calling it for the git case?
-#hmmm: trying the better seeming approach below now.
 
   pushd "$directory" &>/dev/null
   if [ -f ".no-checkin" ]; then
@@ -116,9 +101,8 @@ function do_revctrl_checkin()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
 
-#hmmm: trying this in front; i have a bad feeling we used to do it like this and there were problems from not committing first!
-# a new set of steps we have to take to make sure the branch integrity is good.
-do_revctrl_careful_update "$(\pwd)"
+      # take steps to make sure the branch integrity is good and we're up to date against remote repos.
+      do_revctrl_careful_update "$(\pwd)"
 
       $blatt
 
@@ -127,8 +111,6 @@ do_revctrl_careful_update "$(\pwd)"
       promote_pipe_return 0
       exit_on_error "git add all new files"
 
-#hmmm: was there a reason to commit before doing the puffing out careful git update?  i seem to think there was.
-# would be nice to remember that or recapture the reason, so we can be sure we're not committing too early.
       # see if there are any changes in the local repository.
       if ! git diff-index --quiet HEAD --; then
         # tell git about all the files and get a check-in comment.
@@ -147,10 +129,7 @@ do_revctrl_careful_update "$(\pwd)"
         fi
       fi
 
-      # a new set of steps we have to take to make sure the branch integrity is good.
-#hold      do_revctrl_careful_update "$(\pwd)"
-
-      # we continue on to the push, even if there were no changes this time, because
+      # we continue on to the push, even if there were no obvious changes this run, because
       # there could already be committed changes that haven't been pushed yet.
 
       # upload any changes to the upstream repo so others can see them.
@@ -253,19 +232,19 @@ function all_branch_names()
   echo "$(git branch -vv | cut -d ' ' -f2)"
 }
 
-# a helpful method that reports the git branch for the current directory's
-# git repository.
-function my_branch_name()
-{
-  echo "$(git branch -vv | grep '\*' | cut -d ' ' -f2)"
-}
-
 #this had a -> in it at one point for not matching, didn't it?
 # this reports the upstream branch for the current repo.
 ##function parent_branch_name()
 ##{
   ##echo "$(git branch -vv | grep \* | cut -d ' ' -f2)"
 ##}
+
+# a helpful method that reports the git branch for the current directory's
+# git repository.
+function my_branch_name()
+{
+  echo "$(git branch -vv | grep '\*' | cut -d ' ' -f2)"
+}
 
 # reports the status of the branch by echoing one of these values:
 #   okay: up to date and everything is good.
@@ -359,7 +338,7 @@ function do_revctrl_careful_update()
   local branch_list=$(all_branch_names)
   local bran
   for bran in $branch_list; do
-#    echo "synchronizing remote branch: $bran"
+    log_feisty_meow_event "synchronizing remote branch: $bran"
     git checkout "$bran" | $TO_SPLITTER
     promote_pipe_return 0
     exit_on_error "git switching checkout to remote branch: $bran"
@@ -370,8 +349,6 @@ function do_revctrl_careful_update()
     if [ ! -z "$remote_branch_info" ]; then
       # we are pretty sure the remote branch does exist.
       git pull --tags $PULL_ADDITION origin "$bran" | $TO_SPLITTER
-# we may want to choose to do fast forward, to avoid crazy multiple merge histories
-# without any changes in them.  --no-ff
       promote_pipe_return 0
     fi
     exit_on_error "git pull of remote branch: $bran"
@@ -386,7 +363,6 @@ function do_revctrl_careful_update()
   git pull --tags $PULL_ADDITION --all | $TO_SPLITTER
 #is the above really important when we did this branch already in the loop?
 #it does an --all, but is that effective or different?  should we be doing that in above loop?
-# --no-ff   
   promote_pipe_return 0
   exit_on_error "git pulling all upstream"
 
@@ -398,6 +374,7 @@ function do_revctrl_simple_update()
 {
   directory="$1"; shift
 
+#hmmm: another piece of reusable code, to process the directory for printing.
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
   if [ $nicedir == "." ]; then
@@ -424,7 +401,6 @@ function do_revctrl_simple_update()
     if test_writeable ".git"; then
       $blatt
       git pull --tags $PULL_ADDITION 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-#ordinary pulls should be allowed to do fast forward: --no-ff 
       promote_pipe_return 0
       exit_on_error "git pull of origin"
     fi
