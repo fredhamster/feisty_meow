@@ -183,23 +183,18 @@
     updates provided by the feisty meow script repository.&nbsp; To activate the
     update process for your VM, run the following commands on the VM, logged in
     as the <i>developer</i> user:
-    <pre><span style="font-weight: bold;"># update to the latest version of feisty meow.<br>rpuffer $FEISTY_MEOW_APEX; recustomize<br># enact any configuration changes needed, such as permissions and account setup.
-revamp_cakelampvm</span></pre>
+    <pre><span style="font-weight: bold;"># updates to the latest version of feisty meow.<br>get_feisty; recustomize<br># enacts any configuration changes needed, such as permissions and account setup.
+revamp_cakelampvm_v003</span></pre>
     <span style="font-weight: bold;"> </span>
-    <p>These two commands can be run at any time to patch up your VM to the
+    <p>The commands above can be run at any time to patch up your VM to the
       latest configuration.</p>
-    <p>Recent versions of feisty meow support a new "<span style="font-weight: bold; font-family: monospace;">get_feisty</span>"
-      command, which will behave the same as the first line above.&nbsp; Once
-      you have run the "puffer..." command above for the first time (on
-      cakelampvm v002), this new command becomes available.</p>
+    <p>Expert Notes: The "<span style="font-weight: bold; font-family: monospace;">get_feisty</span>"
+      command is useful in its own right for getting the latest version of the
+      feisty meow code; it downloads the latest bug fixes and gets the most
+      recent cakelampvm documentation.&nbsp; The "<span style="font-weight: bold; font-family: monospace;">revamp_cakelampvm</span>"
+      command can repair most situations where the cakelampvm has gone astray,
+      especially for problems with permissions.</p>
     <ul>
-      <li>The "<span style="font-weight: bold; font-family: monospace;">get_feisty</span>"
-        command is useful in its own right for getting the latest version of the
-        feisty meow code; run it again if you need bug fixes or if you want the
-        most recent cakelampvm documentation.</li>
-      <li>The "<span style="font-weight: bold; font-family: monospace;">revamp_cakelampvm</span>"
-        command can be used to repair many situations when the cakelampvm has
-        gone astray, especially for problems with permissions.</li>
     </ul>
     <h2>First Tasks as the Developer User</h2>
     <p>&#9733; This section requires that the VM is already configured and is
