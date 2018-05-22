@@ -81,7 +81,7 @@ function do_revctrl_checkin()
 
   pushd "$directory" &>/dev/null
   if [ -f ".no-checkin" ]; then
-    echo "skipping check-in due to presence of .no-checkin sentinel file."
+    echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
   elif [ -d "CVS" ]; then
     if test_writeable "CVS"; then
       do_revctrl_simple_update "$directory"
@@ -180,7 +180,7 @@ function do_revctrl_report_new
 
   # only update if we see a repository living there.
   if [ -f ".no-checkin" ]; then
-    echo "skipping reporting due to presence of .no-checkin sentinel file."
+    echo -ne "\nskipping reporting due to presence of .no-checkin sentinel file: $directory"
   elif [ -d ".svn" ]; then
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
