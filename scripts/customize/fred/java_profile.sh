@@ -80,7 +80,7 @@ if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR=$HOME/eclipse
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
-  ECLIPSE_DIR=$HOME/apps/eclipse
+  ECLIPSE_DIR=/usr/local/fred/eclipse
 fi
 if [ ! -d "$ECLIPSE_DIR" ]; then
   ECLIPSE_DIR="c:/tools/eclipse"

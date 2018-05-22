@@ -5,9 +5,9 @@
 # this script adds the feisty inits code to .bashrc, if we think it has not yet been added.
 
 # auto-locate the feisty meow scripts, since they supposedly are not enabled yet.
-export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export THISDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 # normalize the path we want to cobble together.
-export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
 
 echo calculated apex as $FEISTY_MEOW_APEX
 

@@ -43,20 +43,20 @@ export DISTRO="ubuntu"
 
 export APPLICATION_NAME="${app_dirname}"
 
-echo app name was computed as $APPLICATION_NAME
+echo "$(date_stringer): app name was computed as $APPLICATION_NAME" >> "$SSM_LOG_FILE"
 
 # change this if the site is on the "real" internet.
 export DOMAIN_NAME="${app_dirname}.vm"
 
-echo domain name was computed as $DOMAIN_NAME
+echo "$(date_stringer): domain name was computed as $DOMAIN_NAME" >> "$SSM_LOG_FILE"
 
 export REPO_NAME="${app_dirname}"
 
-echo repo name was computed as $REPO_NAME
+echo "$(date_stringer): repo name was computed as $REPO_NAME" >> "$SSM_LOG_FILE"
 
 export THEME_NAME="$(capitalize_first_char "${app_dirname}")"
 
-echo theme name was computed as $THEME_NAME
+echo "$(date_stringer): theme name was computed as $THEME_NAME" >> "$SSM_LOG_FILE"
 
 ####
 

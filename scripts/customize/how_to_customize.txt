@@ -1,16 +1,37 @@
 
-this folder has some examples of how various people (or one person right now)
-do their custom scripts.
+customizations are cool
+=======================
 
-the folder can have alias files (ending in .alias) that are written in bash,
-and it can also have shell scripts that are sourced into the main-line of
-script initialization (any files ending in .sh).
+this folder has some examples of customizations that override the default
+feisty meow environment.
 
-when you have some custom scripts you want to use, copy them from your own
-folder to the $FEISTY_MEOW_LOADING_DOCK/custom directory.
+user customization folder organization
+======================================
 
+the user's optional custom folder is located at:
+echo $FEISTY_MEOW_SCRIPTS/customize/$(logname)
 
-(needs to talk about the scripts directory which is handled specially.
-are there any keyword matched filenames with special functions?)
+the top-level of the customization folder can store:
+
++ alias files (ending in .alias) that are written in bash; these are added
+  into the feisty meow environment as additional aliases.
+
++ sourceable bash scripts (ending in our bash extension of '.sh'); these
+  will be pulled into the main-line of the script initialization process
+  using the bash 'source' command.  these scripts can change or add any
+  environment variables and aliases as needed, so be careful writing them.
+
+custom script aliases
+=====================
+
+there is also a facility for adding aliases automatically for any custom
+scripts that have been developed by the user.  these join the other aliases
+provided by the feisty meow environment.
+
+store any custom scripts in the folder:
+$FEISTY_MEOW_SCRIPTS/customize/$(logname)/scripts
+
+any scripts in that folder (or in a directory under that folder) will
+automatically be turned into aliases.
 
 

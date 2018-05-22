@@ -5,7 +5,7 @@
 
 # updates just the site avenger core portion of an app.
 
-export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export THISDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 
 ############################
 
@@ -14,7 +14,7 @@ export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's work
 # check for parameters.
 app_dirname="$1"; shift
 
-source "$WORKDIR/shared_site_mgr.sh"
+source "$THISDIR/shared_site_mgr.sh"
 
 sep
 
@@ -27,7 +27,7 @@ if [ -z "$app_dirname" ]; then
 else
   test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
-test_or_die "finding and testing app folder"
+exit_on_error "finding and testing app folder"
 
 # where we expect to find our checkout folder underneath.
 full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
@@ -35,7 +35,7 @@ full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 # simplistic approach here; just go to the folder and pull the changes.
 
 pushd "$full_app_dir" &>/dev/null
-test_or_die "Changing to app path '$full_app_dir'"
+exit_on_error "Changing to app path '$full_app_dir'"
 
 dir="avenger5/vendor/siteavenger/avcore"
 if [ ! -d $dir ]; then
@@ -44,7 +44,7 @@ else
   pushd "$dir" &>/dev/null
 
   git pull
-  test_or_die "Pulling git repo for avcore under '$full_app_dir'"
+  exit_on_error "Pulling git repo for avcore under '$full_app_dir'"
 
   echo "Finished updating the avcore portion of site in ${app_dirname}."
 

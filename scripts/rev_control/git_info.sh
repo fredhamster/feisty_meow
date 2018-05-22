@@ -6,6 +6,12 @@
 # license: MIT
 #
 # Based on discussion at http://kerneltrap.org/mailarchive/git/2007/11/12/406496
+
+# mods made to save and restore terminal title by fred for feisty meow codebase.
+
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
+save_terminal_title
  
 pushd . >/dev/null
  
@@ -38,3 +44,6 @@ echo "not a git repository."
 fi
  
 popd >/dev/null
+
+restore_terminal_title
+

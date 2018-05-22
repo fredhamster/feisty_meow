@@ -1,1 +1,1 @@
-ifconfig | grep "inet addr:" | sed -e "s/^.*addr:\([0-9.]*\) .*$/\1/"
+ifconfig | grep "inet " | sed -e "s/^.*inet \([0-9.]*\) .*$/\1/"

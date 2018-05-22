@@ -110,6 +110,11 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
     define_yeti_variable TMP=$HOME/.tmp
   fi
 
+  # set up our event logging file for any notable situation to be recorded in.
+  if [ -z "$FEISTY_MEOW_EVENT_LOG" ]; then
+    define_yeti_variable FEISTY_MEOW_EVENT_LOG="$TMP/$USER-feisty_meow-events.log"
+  fi
+
   # set up the top-level for all build creations and logs and such.
   if [ -z "$FEISTY_MEOW_GENERATED_STORE" ]; then
     define_yeti_variable FEISTY_MEOW_GENERATED_STORE="$TMP/generated-feisty_meow"
@@ -218,9 +223,13 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   if [ -d "$HOME/active" ]; then
     REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
   fi
-  # add in any site avenger applications that are in the apps folder.
+  # add in any site avenger applications that are in the applications folder.
   if [ -d "$HOME/apps" ]; then
-    # back up all the apps.
+    # general search for normal project folders in apps.
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
+
+    # special search for site avenger directories; they have avenger5 as second level.
     REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
   

@@ -20,8 +20,8 @@
 # It will have to be told the theme name, but will assume it's 'Turtle' to
 # start with.  The concept of the theme comes from cakephp.
 
-export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+export THISDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
 
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
@@ -55,7 +55,7 @@ if [ "$app_dirname" == "-help" -o "$app_dirname" == "--help" ]; then
   print_instructions
 fi
 
-source "$WORKDIR/shared_site_mgr.sh"
+source "$THISDIR/shared_site_mgr.sh"
 
 sep
 
@@ -68,7 +68,7 @@ if [ -z "$app_dirname" ]; then
 else
   test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
-test_or_die "finding and testing app folder"
+exit_on_error "finding and testing app folder"
 
 # where we expect to find our checkout folder underneath.
 full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
@@ -96,12 +96,12 @@ var CHECKOUT_DIR_NAME DEFAULT_REPOSITORY_ROOT
 
 # this should set the site_store_path variable if everything goes well.
 update_repo "$full_app_dir" "$CHECKOUT_DIR_NAME" "$DEFAULT_REPOSITORY_ROOT" "$repo_name"
-test_or_die "Updating the repository storage directory"
+exit_on_error "Updating the repository storage directory"
 
 # update the site to load dependencies.
 sep
 composer_repuff "$site_store_path"
-test_or_die "Installing site dependencies with composer"
+exit_on_error "Installing site dependencies with composer"
 
 # set up the symbolic links needed to achieve siteliness.
 sep

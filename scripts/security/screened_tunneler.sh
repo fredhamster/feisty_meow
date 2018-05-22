@@ -36,7 +36,7 @@ LAUNCH_IT="$1"; shift
 
 function print_instructions()
 {
-  echo "\
+  echo -e "\
 $(basename $0): This script requires at least three parameters and can\n\
 take up to five.  The parameters are (1) tunnel user at hostname, (2) ssh tunnel\n\
 link command, (3) tunnel screen name, (4) tunnel security key, (5) the launch\n\

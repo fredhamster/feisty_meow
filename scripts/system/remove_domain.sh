@@ -6,35 +6,14 @@
 #
 # Author: Chris Koeritz
 
-export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+export THISDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
 
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 
 # some defaults that are convenient for current purposes.
 # existing values will be respected over our defaults.
-
-#if [ -z "$IP_ADDRESS" ]; then
-#  # in our scheme, the single IP address that all our domains map to.
-#  IP_ADDRESS="10.28.42.20"
-#fi
-#if [ -z "$SERVER_ADMIN" ]; then
-#  # the email address (where first dot is replaced by @) for the administrator of the domain.
-#  SERVER_ADMIN="developer.cakelampvm.com"
-#fi
-#if [ -z "$MAIN_NAME_SERVER" ]; then
-#  # the name of the name server for the new domains (should already be configured).
-#  MAIN_NAME_SERVER="ns.cakelampvm.com"
-#fi
-#if [ -z "$MAIL_SERVER" ]; then
-#  # the name of the mail server for a new domain (should already be configured).
-#  MAIL_SERVER="mail.cakelampvm.com"
-#fi
-#if [ -z "$DISTRO" ]; then
-#  # the distribution name to be listed in info for the new domain or subdomain.
-#  DISTRO="ubuntu"
-#fi
 
 # main body of script.
 

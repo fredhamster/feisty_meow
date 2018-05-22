@@ -1,0 +1,16 @@
+
+# overrides for the developer user, who is assumed to be running on a
+# cakelampvm machine.
+
+# some site avenger sudoized aliases.
+
+define_yeti_alias revamp_cakelampvm="echo -e \"\
+
+You might want to run one of these commands to perform the revamp process,
+depending on your VM version:\n\"; 
+for i in \$FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm*; do
+  echo -e \\\\tsudo bash \"\\\$FEISTY_MEOW_SCRIPTS/site_avenger/\$(basename \$i)\"\\\\n ;
+done"
+
+define_yeti_alias revamp_cakelampvm_v003="sudo bash \$FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm_v003.sh"
+

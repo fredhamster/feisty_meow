@@ -9,29 +9,29 @@ echo Doing some git repository maintenance in fred account.
 #
 # change over to fred folder
 pushd /home/fred
-test_or_die "changing dir to fred's home; what have you done with fred?"
+exit_on_error "changing dir to fred's home; what have you done with fred?"
 
 pushd apps/mapsdemo/avenger5
-test_or_die "changing dir to mapsdemo app"
+exit_on_error "changing dir to mapsdemo app"
 
 rpuffer . &>/dev/null
 if [ $? -ne 0 ]; then
   # it seems our old files are still conflicting this.
   if [ -f config/config_google.php ]; then
     \rm -f config/config_google.php
-    test_or_die "removing old config for google"
+    exit_on_error "removing old config for google"
   fi
   if [ -f config/app.php ]; then
     \rm -f config/app.php
-    test_or_die "removing old config for app"
+    exit_on_error "removing old config for app"
   fi
 
   git reset --hard HEAD
-  test_or_die "resetting git's hard head"
+  exit_on_error "resetting git's hard head"
 
   rpuffer .
 #hmmm: use output saver thing when that exists.
-  test_or_die "puffing out mapsdemo app after inadequate corrective action was taken"
+  exit_on_error "puffing out mapsdemo app after inadequate corrective action was taken"
 fi
 
 popd
