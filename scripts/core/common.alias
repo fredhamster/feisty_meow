@@ -41,8 +41,12 @@ if [ "$OS" != "Windows_NT" ]; then
   if [ -n "$IS_DARWIN" ]; then
     # case for mac os x.
     define_yeti_alias exp='open'
+  elif [ ! -z "$(which dolphin 2>/dev/null)" ]; then
+    # we prefer dolphin if available.
+    define_yeti_alias exp='screen -L -S dolphin-$RANDOM -d -m dolphin '
+#--select 
   elif [ ! -z "$(which nautilus 2>/dev/null)" ]; then
-    # we prefer nautilus if available.
+    # launch nautilus if available.
     define_yeti_alias exp='nautilus'
   else
     # last ditch is konqueror browser.
@@ -109,9 +113,6 @@ define_yeti_alias remove_domain="sudo bash \$FEISTY_MEOW_SCRIPTS/system/remove_d
 define_yeti_alias add_apache_site="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_apache_site.sh"
 define_yeti_alias remove_apache_site="sudo bash \$FEISTY_MEOW_SCRIPTS/system/remove_apache_site.sh"
 define_yeti_alias add_swap_mount="sudo bash \$FEISTY_MEOW_SCRIPTS/system/add_swap_mount.sh"
-
-# some site avenger sudoized aliases.
-define_yeti_alias revamp_cakelampvm="sudo bash \"$FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm.sh\""
 
 ##############
 

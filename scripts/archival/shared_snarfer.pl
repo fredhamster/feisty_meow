@@ -168,7 +168,7 @@ sub snarfer {
   chdir($root);
 
   local($outcome) = 0;
-  my @lines = qx( $find_tool "$subdir" @extra_flags "-type" "f" );
+  my @lines = qx( $find_tool "$subdir" @extra_flags "-follow" "-type" "f" );
 #  if ( ($! != 0) || ($? != 0) ) {
 #    die("failure to find files in $subdir"); 
 #  }
@@ -184,6 +184,8 @@ sub snarfer {
   }
 
   local($outcome) = 0xff & system $tar_tool, 
+#hmmm: trying to dereference symbolic links and stop missing stuff.
+"-h",
       "-rf", &canonicalize($target_file), @excludes,
       "--files-from=" . &canonicalize($temp_file);
   if ($outcome) {
@@ -225,7 +227,11 @@ sub snarf_file_list {
     }
     local($outcome) = 0xff & system $tar_tool,
 #"--directory=" . "$root",
-        @extra_flags, "-rf", &canonicalize($target_file), @excludes, $i;
+
+#hmmm: trying to dereference symbolic links and stop missing stuff.
+"-h",
+        @extra_flags, 
+"-rf", &canonicalize($target_file), @excludes, $i;
     if ($outcome) { die("failure to archive"); }
   }
   chdir("$currdir");
@@ -382,7 +388,12 @@ sub backup_number {
   print NUM_PREFIX $number_prefix;
   close(NUM_PREFIX);
 
-  $outcome = 0xff & system $tar_tool, "-rf",
+  $outcome = 0xff & system $tar_tool, 
+
+#hmmm: trying to dereference symbolic links and stop missing stuff.
+"-h",
+
+"-rf",
       &canonicalize($target_file), &canonicalize($prefix_file);
   if ($outcome) { die("failure to archive"); }
   unlink($prefix_file);

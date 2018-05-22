@@ -11,7 +11,11 @@ fi
 
 percentage="$1"; shift
 
-for i in $*; do
-  mogrify -resize $percentage% $i;
+while true; do
+  picname="$1"; shift
+  if [ -z "$picname" ]; then
+    break
+  fi
+  mogrify -resize "$percentage%" "$picname";
 done
 

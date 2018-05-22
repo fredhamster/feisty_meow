@@ -119,7 +119,7 @@ sub diff_dirs {
     @name_components = split(/\//, $filename);
     $basename = $name_components[$#name_components];
 #    print "doing diff of $filename against $compare_directory/$basename\n";
-    &do_diff($filename, $compare_directory."/".$basename);
+    &compute_file_differences($filename, $compare_directory."/".$basename);
   }
   closedir CURDIR;
 
@@ -222,7 +222,7 @@ sub change_to_saw_same {
 
 # checks the differences between the two files and creates appropriate output.
 
-sub do_diff {
+sub compute_file_differences {
   local($first, $second) = @_; 
 
   # turn stupid pc slashes into normal ones.

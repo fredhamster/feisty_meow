@@ -15,7 +15,7 @@ function synch_to_backup()
   fi
   echo "Synchronizing $source into $dest."
   synch_files "$source" "$dest"
-  test_or_continue "synching $source to $dest"
+  continue_on_error "synching $source to $dest"
 }
 
 ##############
@@ -27,12 +27,12 @@ function synch_to_backup()
 
 # now saddle up the backup.
 #NO LONGER USING MOUNT: mount /z/backup/
-#NO LONGER USING MOUNT: test_or_die "mounting backup folder"
+#NO LONGER USING MOUNT: exit_on_error "mounting backup folder"
 
 # we should always be synching to an existing set in there.  make sure they exist.
 # for the first ever backup, this is not a good check...
 #test -d /z/backup/etc -a -d /z/backup/home
-#test_or_die "testing presence of prior backup"
+#exit_on_error "testing presence of prior backup"
 
 ##############
 
@@ -52,6 +52,6 @@ synch_to_backup /var/lib/mysql /z/backup/var/lib/mysql
 ##############
 
 #NO LONGER USING MOUNT: umount /z/backup/
-#NO LONGER USING MOUNT: test_or_die "unmounting backup folder"
+#NO LONGER USING MOUNT: exit_on_error "unmounting backup folder"
 
 

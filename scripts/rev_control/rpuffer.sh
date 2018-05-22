@@ -11,6 +11,8 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+save_terminal_title
+
 ##############
 
 dir="$1"; shift
@@ -19,11 +21,13 @@ if [ -z "$dir" ]; then
 fi
 
 pushd "$dir" &>/dev/null
-test_or_die "changing to directory: $dir"
+exit_on_error "changing to directory: $dir"
 tempfile=$(generate_rev_ctrl_filelist)
-test_or_die "generating revision control file list"
+exit_on_error "generating revision control file list"
 popd &>/dev/null
 
-perform_revctrl_action_on_file "$tempfile" do_careful_git_update
-test_or_die "puffing out repository at: $tempfile"
+perform_revctrl_action_on_file "$tempfile" do_revctrl_careful_update
+exit_on_error "puffing out repository at: $tempfile"
+
+restore_terminal_title
 

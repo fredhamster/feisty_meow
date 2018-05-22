@@ -9,10 +9,11 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+save_terminal_title
+
 ##############
 
 echo "puffing out repositories at: $(date)"
-echo
 
 FULL_LIST=" $(dirname $FEISTY_MEOW_APEX) $HOME "
 if [ "$OS" == "Windows_NT" ]; then
@@ -20,7 +21,9 @@ if [ "$OS" == "Windows_NT" ]; then
 fi
 
 puff_out_list $FULL_LIST
-test_or_die "puffing out list: $FULL_LIST"
+exit_on_error "puffing out list: $FULL_LIST"
+
+echo
 
 ##############
 
@@ -30,3 +33,4 @@ regenerate
 
 ##############
 
+restore_terminal_title

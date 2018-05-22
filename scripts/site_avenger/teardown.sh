@@ -5,8 +5,8 @@
 #
 # Author: Chris Koeritz
 
-export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+export THISDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
 
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
@@ -43,7 +43,7 @@ fi
 # through to ask for access.
 sudo bash -c 'echo sudo permissions acquired.'
 
-source "$WORKDIR/shared_site_mgr.sh"
+source "$THISDIR/shared_site_mgr.sh"
 
 sep
 
@@ -56,18 +56,18 @@ if [ -z "$app_dirname" ]; then
 else
   test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
-test_or_die "finding and testing app folder"
+exit_on_error "finding and testing app folder"
 
 sep
 
 sudo bash "$FEISTY_MEOW_SCRIPTS/system/remove_apache_site.sh" "$DOMAIN_NAME"
-test_or_die "dropping apache site for: $DOMAIN_NAME"
+exit_on_error "dropping apache site for: $DOMAIN_NAME"
 
 # drop the shadow site too.
 shadow_domain="${APPLICATION_NAME}.cakelampvm.com"
 if [ "$shadow_domain" != "$DOMAIN_NAME" ]; then
   sudo bash "$FEISTY_MEOW_SCRIPTS/system/remove_apache_site.sh" "$shadow_domain"
-  test_or_die "dropping shadow apache site on '$shadow_domain'"
+  exit_on_error "dropping shadow apache site on '$shadow_domain'"
 fi
 
 sep
@@ -75,7 +75,7 @@ sep
 #echo "!! domain being removed is: $DOMAIN_NAME"
 
 sudo bash "$FEISTY_MEOW_SCRIPTS/system/remove_domain.sh" "$DOMAIN_NAME"
-test_or_die "dropping domain: $DOMAIN_NAME"
+exit_on_error "dropping domain: $DOMAIN_NAME"
 
 sep
 

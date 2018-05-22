@@ -2,7 +2,7 @@
 
 # fixes the links that wine makes to our home folder under linux.  that's a really bad
 # practice that exposes all one's private files to the wine subsystem.  dumb.
-# instead, this replaces those links to a local folder with things that the wine apps
+# instead, this replaces those links to a local folder with things that the wine applications
 # can't pooch up too much.  must be used within a wine user directory.  for example,
 # i fix my directory '~/.PlayOnLinux/wineprefix/Steam/drive_c/users/fred' with this.
 

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
+save_terminal_title
+
 # check for whether we see a .git folder.
 if [ ! -d ".git" ]; then
   echo This script needs to run in the directory where a git repository lives,
@@ -12,4 +16,4 @@ git config --global pack.windowMemory "100m"
 git config --global pack.SizeLimit "100m" 
 git config --global pack.threads "1"
 
-
+restore_terminal_title
