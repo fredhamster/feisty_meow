@@ -45,10 +45,10 @@ fi
 
 #hmmm: move this to core
 # this makes the status of pipe N into the main return value.
-function promote_pipe_return()
-{
-  ( exit ${PIPESTATUS[$1]} )
-}
+#function promote_pipe_return()
+#{
+#  ( exit ${PIPESTATUS[$1]} )
+#}
 
 ##############
 

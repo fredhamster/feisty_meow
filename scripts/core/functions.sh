@@ -40,13 +40,23 @@ if [ -z "$skip_all" ]; then
     cd "$1"
   }
 
+  # returns true if the variable is an array.
   function is_array() {
     [[ "$(declare -p $1)" =~ "declare -a" ]]
   }
 
+  # returns true if the name provided is a defined alias.
   function is_alias() {
     alias $1 &>/dev/null
     return $?
+  }
+
+  # makes the status of pipe number N (passed as first parameter) into the
+  # main return value (i.e., the value for $?).  this is super handy to avoid
+  # repeating the awkward looking code below in multiple places.
+  function promote_pipe_return()
+  {
+    ( exit ${PIPESTATUS[$1]} )
   }
 
   ##############
