@@ -86,18 +86,19 @@ sub rebuild_script_aliases {
   @ALIAS_DEFINITION_FILES = ("$FEISTY_MEOW_SCRIPTS/core/common.alias");
 
   # if custom aliases files exist, add them to the list.
+#hmmm: would be nice to have this name in a symbol somewhere instead of having "custom" or "customize" everywhere.
   foreach $i (&glob_list("$FEISTY_MEOW_LOADING_DOCK/custom/*.alias")) {
     if (-f $i) { push(@ALIAS_DEFINITION_FILES, $i); }
   }
   if (length($DEBUG_FEISTY_MEOW)) {
     print "using these alias files:\n";
-print "HEY IS THIS PROBLEM CHILD?\n";
+#print "HEY IS THIS PROBLEM CHILD?\n";
     foreach $i (@ALIAS_DEFINITION_FILES) {
       local $base_of_dir = &basename(&dirname($i));
       local $basename = &basename($i);
       print "  $base_of_dir/$basename\n";
     }
-print "WAS PROBLEM CHILD ABOVE HERE?\n";
+#print "WAS PROBLEM CHILD ABOVE HERE?\n";
   }
 
   # write the aliases for sh and bash scripts.
@@ -194,6 +195,7 @@ open(she, ">> $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 
 # find the list of files in the scripts directory.
 @shell_files = (find_files(recursive_find_directories("$FEISTY_MEOW_SCRIPTS")),
+    find_files("$FEISTY_MEOW_LOADING_DOCK/custom/scripts"),
     find_files(recursive_find_directories("$FEISTY_MEOW_LOADING_DOCK/custom/scripts")));
 
 # strip out the customization files, since they are added in on demand only.
@@ -215,11 +217,9 @@ foreach $file (@shell_files) {
       || $file =~ /\/\.\.$/
       || $file =~ /\/\.svn$/
       || $file =~ /\/\.git$/
-      || $file =~ /\/custom\/[a-zA-Z0-9_]+\/[a-zA-Z0-9_.]+$/
-#hmmm: would be nice to have this name in a symbol somewhere instead of having "customize" everywhere.
       ) {
     # just skip this item; it's a special directory or a file we don't want to include.
-#    print "skipping name: $file\n";
+    print "skipping name: $file\n";
   } else {
      &make_alias($file, "");
   }

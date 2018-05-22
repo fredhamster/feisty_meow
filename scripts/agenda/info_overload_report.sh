@@ -1,7 +1,8 @@
 
 # these metrics are how bogged down we are in to-do type items.
 
-REPORT_FILE="$HOME/cloud/fred_stats/overload_history.txt"
+# logged historical file where we append our latest report.
+REPORT_FILE="$HOME/cloud/magic_cabinet/fred/task_stats/overload_history.txt"
 
 # given a path, this will find how many items are under it, ignoring svn and git files, plus
 # other patterns we happen to notice are not useful.
@@ -122,6 +123,9 @@ analyze_hierarchy_and_report ~/cloud/webular "web design (ideas and tasks)"
 # feisty notes are about feisty meow(r) concerns ltd codebase development.
 analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (mondo coding)"
 
+# metaverse notes are about our ongoing simulator development and LSL scripting.
+analyze_hierarchy_and_report ~/cloud/metaverse "metaverse in cyberspace design and scripting"
+
 # home notes are a new top-level category; used to be under the grunty.
 analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road)"
 
@@ -140,6 +144,9 @@ analyze_by_dir_patterns "life's work and other oddities" ~/cloud/vocation*
 
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active issues" ~/cloud/active*
+
+# rub alongside all the travel notes to see if any have interesting burrs.
+analyze_by_dir_patterns "travel plans" ~/cloud/walkabout*
 
 # scan across all appropriately named project or research folders that live in the "cloud".
 analyze_by_dir_patterns "running projects" ~/cloud/project* ~/cloud/research*

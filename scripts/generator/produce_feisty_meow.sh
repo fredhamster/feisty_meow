@@ -94,7 +94,7 @@ export BOOT_STRAPPING=true
 declare -a BUILD_DEFAULTS=( "BOOT_STRAPPING=t" "OPTIMIZE=t" "REBUILD=t" "DEBUG=" )
   # bootstrapping is always turned on for this particular script.
   # we also always optimize these builds and turn off the debug flag.
-  # rebuild ensures that the new apps are made fresh: "REBUILD=t"
+  # rebuild ensures that the new applications are made fresh: "REBUILD=t"
   #   it can be turned off when the build bootstrapper is being tested.
   # noisy can be added to spew lots of text: "NOISY=t"
   #   this can help with compilation issues by showing all the flags.
@@ -203,7 +203,7 @@ if [ ! -f "$CLAM_BINARIES/makedep$EXE_ENDING" ]; then
   popd &>/dev/null
 fi
 
-# rebuild the version tools and other support apps.
+# rebuild the version tools and other support applications.
 if [ ! -f "$CLAM_BINARIES/value_tagger$EXE_ENDING" \
     -o ! -f "$CLAM_BINARIES/version_stamper$EXE_ENDING" \
     -o ! -f "$CLAM_BINARIES/vsts_version_fixer$EXE_ENDING" \
@@ -212,7 +212,7 @@ if [ ! -f "$CLAM_BINARIES/value_tagger$EXE_ENDING" \
   make_code pre_compilation OMIT_VERSIONS=t
   make_code OMIT_VERSIONS=t
 
-#hmmm: really this should check all the expected apps.
+#hmmm: really this should check all the expected applications.
 #      nice to just have an array of the things built by this guy.
   if [ ! -f "$INTERMEDIATE_STORE/version_stamper$EXE_ENDING" ]; then
     echo ""

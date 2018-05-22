@@ -6,8 +6,8 @@
 # management scripts.  So far, the scripts rely on at least php.  The support
 # is much more powerful if the site is based on cakephp and site avenger.
 
-export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
-export FEISTY_MEOW_APEX="$( \cd "$WORKDIR/../.." && \pwd )"
+export THISDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
 
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
@@ -51,7 +51,7 @@ fi
 # through to ask for access.
 sudo bash -c 'echo sudo permissions acquired.'
 
-source "$WORKDIR/shared_site_mgr.sh"
+source "$THISDIR/shared_site_mgr.sh"
 
 sep
 
@@ -64,24 +64,24 @@ if [ -z "$app_dirname" ]; then
 else
   test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
-test_or_die "finding and testing app folder"
+exit_on_error "finding and testing app folder"
 
 #echo "!! domain being added is: $DOMAIN_NAME"
 
 sudo bash "$FEISTY_MEOW_SCRIPTS/system/add_domain.sh" "$DOMAIN_NAME"
-test_or_die "Setting up domain: $DOMAIN_NAME"
+exit_on_error "Setting up domain: $DOMAIN_NAME"
 
 sep
 
 # add the main website as specified by the domain name they gave us.
 sudo bash "$FEISTY_MEOW_SCRIPTS/system/add_apache_site.sh" "$APPLICATION_NAME" "$DOMAIN_NAME"
-test_or_die "Setting up apache site for: $APPLICATION_NAME"
+exit_on_error "Setting up apache site for: $APPLICATION_NAME"
 
 # make the shadow site also, which always ends in cakelampvm.com.
 shadow_domain="${APPLICATION_NAME}.cakelampvm.com"
 if [ "$shadow_domain" != "$DOMAIN_NAME" ]; then
   sudo bash "$FEISTY_MEOW_SCRIPTS/system/add_apache_site.sh" "$APPLICATION_NAME" "$shadow_domain"
-  test_or_die "Setting up shadow apache site on '$shadow_domain'"
+  exit_on_error "Setting up shadow apache site on '$shadow_domain'"
 fi
 
 sep

@@ -5,7 +5,7 @@
 
 # checks the chosen site into the online git repository.
 
-export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
+export THISDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's working directory.
 
 ############################
 
@@ -15,7 +15,7 @@ export WORKDIR="$( \cd "$(\dirname "$0")" && \pwd )"  # obtain the script's work
 app_dirname="$1"; shift
 repo_name="$1"; shift
 
-source "$WORKDIR/shared_site_mgr.sh"
+source "$THISDIR/shared_site_mgr.sh"
 
 sep
 
@@ -28,7 +28,7 @@ if [ -z "$app_dirname" ]; then
 else
   test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
 fi
-test_or_die "finding and testing app folder"
+exit_on_error "finding and testing app folder"
 
 # where we expect to find our checkout folder underneath.
 full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
@@ -43,7 +43,7 @@ sep
 
 # this should set the site_store_path variable if everything goes well.
 update_repo "$full_app_dir" "$CHECKOUT_DIR_NAME" "$DEFAULT_REPOSITORY_ROOT" "$repo_name"
-test_or_die "Updating the repository storage directory"
+exit_on_error "Updating the repository storage directory"
 
 sep
 

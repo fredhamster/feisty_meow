@@ -15,7 +15,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   fi
 
   # add a bunch of personal folders to the list for checkin & checkout.
-  REPOSITORY_LIST+=" cloud ebooks web "
+  REPOSITORY_LIST=" cloud ebooks web ${REPOSITORY_LIST} "
 
   # adds our locally relevant archive folders into the list to be synched.
   MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus"

@@ -40,13 +40,23 @@ if [ -z "$skip_all" ]; then
     cd "$1"
   }
 
+  # returns true if the variable is an array.
   function is_array() {
     [[ "$(declare -p $1)" =~ "declare -a" ]]
   }
 
+  # returns true if the name provided is a defined alias.
   function is_alias() {
     alias $1 &>/dev/null
     return $?
+  }
+
+  # makes the status of pipe number N (passed as first parameter) into the
+  # main return value (i.e., the value for $?).  this is super handy to avoid
+  # repeating the awkward looking code below in multiple places.
+  function promote_pipe_return()
+  {
+    ( exit ${PIPESTATUS[$1]} )
   }
 
   ##############
@@ -141,22 +151,30 @@ if [ -z "$skip_all" ]; then
   # checks the result of the last command that was run, and if that failed,
   # then this complains and exits from bash.  the function parameters are
   # used as the message to print as a complaint.
-  function test_or_die()
+  function exit_on_error()
   {
     if [ $? -ne 0 ]; then
-      echo -e "\n\naction failed: $*\n\n*** Exiting script..."
+      echo -e "\n\nan important action failed and this script will stop:\n\n$*\n\n*** Exiting script..."
       error_sound
       exit 1
     fi
   }
 
-  # like test_or_die, but will keep going after complaining.
-  function test_or_continue()
+  # like exit_on_error, but will keep going after complaining.
+  function continue_on_error()
   {
     if [ $? -ne 0 ]; then
-      echo -e "\n\nerror occurred: $*\n\n=> Continuing script..."
+      echo -e "\n\na problem occurred, but we can continue:\n\n$*\n\n=> Continuing script..."
       error_sound
     fi
+  }
+
+  ##############
+
+  # accepts any number of arguments and outputs them to the feisty meow event log.
+  function log_feisty_meow_event()
+  {
+    echo -e "$(date_stringer) -- ${USER}@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
   }
 
   ##############
@@ -452,7 +470,7 @@ if [ -z "$skip_all" ]; then
     unalias CORE_ALIASES_LOADED &>/dev/null
     unset -f function_sentinel 
     # reload feisty meow environment in current shell.
-    echo "reloading the feisty meow scripts."
+    log_feisty_meow_event "reloading the feisty meow scripts for $USER in current shell."
     source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
     # run nechung oracle to give user a new fortune.
     nechung
@@ -465,25 +483,39 @@ if [ -z "$skip_all" ]; then
   {
     local custom_user="$1"; shift
     if [ -z "$custom_user" ]; then
-      # use our default example user if there was no name provided.
-      custom_user=fred
+      # default to login name if there was no name provided.
+      custom_user="$(logname)"
+        # we do intend to use logname here to get the login name and to ignore
+        # if the user has sudo root access; we don't want to provide a custom
+        # profile for root.
     fi
 
     save_terminal_title
 
     if [ ! -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" ]; then
-      echo "The customization folder provided for $custom_user should be:"
-      echo "  '$FEISTY_MEOW_SCRIPTS/customize/$custom_user'"
-      echo "but that folder does not exist.  Skipping customization."
+      echo -e "the customization folder for '$custom_user' is missing:
+
+    $FEISTY_MEOW_SCRIPTS/customize/$custom_user
+
+we will skip recustomization, but these other customizations are available:
+"
+      # a little tr and sed magic to fix the carriage returns into commas.
+      local line="$(find $FEISTY_MEOW_SCRIPTS/customize -mindepth 1 -maxdepth 1 -type d -exec basename {} ';' | tr '\n' '&' | sed 's/&/, /g' | sed -e 's/, $//')"
+        # make the line feeds and carriage returns manageable with tr.
+        # convert the ampersand, our weird replacement for EOL, with a comma + space in sed.
+        # last touch with sed removes the last comma.
+      echo "    $line"
       return 1
     fi
 
     # prevent permission foul-ups.
-#hmmm: save error output here instead of muting it.
-#hmmm: better yet actually, just don't complain on freaking cygwin, since that's where this happens
-    chown -R "$(logname):$(logname)" \
+    my_user="$USER"
+      # here we definitely want the effective user name (in USER), since
+      # we don't want, say, fred (as logname) to own all of root's loading
+      # dock stuff.
+    chown -R "$my_user:$my_user" \
         "$FEISTY_MEOW_LOADING_DOCK"/* "$FEISTY_MEOW_GENERATED_STORE"/* 2>/dev/null
-    test_or_continue "chowning to $(logname) didn't happen."
+    continue_on_error "chowning feisty meow generated directories to $my_user"
 
     regenerate >/dev/null
     pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
@@ -498,30 +530,28 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
     #echo "the incongruous files list is: $incongruous_files"
     # disallow a single character result, since we get "*" as result when nothing exists yet.
     if [ ${#incongruous_files} -ge 2 ]; then
-      echo "cleaning unknown older overrides..."
+      log_feisty_meow_event "cleaning unknown older overrides..."
       perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
-      test_or_continue "running safedel.  $fail_message" 
-      echo
+      continue_on_error "running safedel.  $fail_message" 
     fi
     popd &>/dev/null
-    echo "copying custom overrides for $custom_user"
+    log_feisty_meow_event "copying custom overrides for $custom_user"
     mkdir -p "$FEISTY_MEOW_LOADING_DOCK/custom" 2>/dev/null
     perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom"
-    test_or_continue "running cpdiff.  $fail_message"
+    continue_on_error "running cpdiff.  $fail_message"
 
     if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
-      echo "copying custom scripts for $custom_user"
-      rsync -avz "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
-      test_or_continue "copying customization scripts"
+      log_feisty_meow_event "copying custom scripts for $custom_user"
 #hmmm: could save output to show if an error occurs.
+      rsync -avz "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
+      continue_on_error "copying customization scripts"
     fi
-    echo
     regenerate
 
     # prevent permission foul-ups, again.
-    chown -R "$(logname):$(logname)" \
+    chown -R "$my_user:$my_user" \
         "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE" 2>/dev/null
-    test_or_continue "chowning to $(logname) didn't happen."
+    continue_on_error "once more chowning feisty meow generated directories to $my_user"
 
     restore_terminal_title
   }
@@ -551,10 +581,9 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
     echo $(which $to_find)
   }
 
-#hmmm: improve this by not adding the link
-# if already there, or if the drive is not valid.
   function add_cygwin_drive_mounts() {
     for i in c d e f g h q z ; do
+#hmmm: improve this by not adding the link if already there, or if the drive is not valid.
       ln -s /cygdrive/$i $i
     done
   }
@@ -779,8 +808,8 @@ return 0
   # count the number of sub-directories in a directory and echo the result.
   function count_directories()
   {
-    local appsdir="$1"; shift
-    numdirs="$(find "$appsdir" -mindepth 1 -maxdepth 1 -type d | wc -l)"
+    local subbydir="$1"; shift
+    numdirs="$(find "$subbydir" -mindepth 1 -maxdepth 1 -type d | wc -l)"
     echo $numdirs
   }
 
@@ -802,7 +831,7 @@ return 0
   
     if [ -d "$src" ]; then
       ln -s "$src" "$target"
-      test_or_die "Creating symlink from '$src' to '$target'"
+      exit_on_error "Creating symlink from '$src' to '$target'"
     fi
     echo "Created symlink from '$src' to '$target'."
   }
@@ -819,7 +848,7 @@ return 0
       temp_out="$TMP/$file.view"
       cat "$file" | python -m json.tool > "$temp_out"
       show_list+=($temp_out)
-      test_or_continue "pretty printing '$file'"
+      continue_on_error "pretty printing '$file'"
     done
     filedump "${show_list[@]}"
     rm "${show_list[@]}"
@@ -880,12 +909,12 @@ return 0
 
     # make a backup first, oy.
     \cp -f "$filename" "/tmp/$(basename ${filename}).bkup-${RANDOM}" 
-    test_or_die "backing up file: $filename"
+    exit_on_error "backing up file: $filename"
 
     # make a temp file to write to before we move file into place in bind.
     local new_version="/tmp/$(basename ${filename}).bkup-${RANDOM}" 
     \rm -f "$new_version"
-    test_or_die "cleaning out new version of file from: $new_version"
+    exit_on_error "cleaning out new version of file from: $new_version"
 
     local line
     local skip_count=0
@@ -920,7 +949,7 @@ return 0
     if [ ! -z "$found_any" ]; then
       # put the file back into place under the original name.
       \mv "$new_version" "$filename"
-      test_or_die "moving the new version into place in: $filename"
+      exit_on_error "moving the new version into place in: $filename"
     else
       # cannot always be considered an error, but we can at least gripe.
       echo "Did not find any matches for seeker '$seeker' in file: $filename"
@@ -932,7 +961,7 @@ return 0
   # site avenger aliases
   function switchto()
   {
-    WORKDIR="$FEISTY_MEOW_SCRIPTS/site_avenger"
+    THISDIR="$FEISTY_MEOW_SCRIPTS/site_avenger"
     source "$FEISTY_MEOW_SCRIPTS/site_avenger/shared_site_mgr.sh"
     switch_to "$1"
   }
@@ -956,7 +985,7 @@ return 0
     echo running tests on set_var_if_undefined.
     flagrant=petunia
     set_var_if_undefined flagrant forknordle
-    test_or_die "testing if defined variable would be whacked"
+    exit_on_error "testing if defined variable would be whacked"
     if [ $flagrant != petunia ]; then
       echo set_var_if_undefined failed to leave the test variable alone
       exit 1

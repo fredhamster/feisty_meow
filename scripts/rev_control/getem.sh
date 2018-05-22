@@ -5,6 +5,8 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+save_terminal_title
+
 ##############
 
 # trickery to ensure we can always update feisty meow, including this specific
@@ -20,13 +22,13 @@ if [ "$(\pwd)" != "$tmpdir" ]; then
   fi
   new_name="$TMP/zz_$(basename $0)"
   \cp -f "$0" "$new_name"
-  test_or_die "failed to copy this script up to the TMP directory.  exploit attempted?"
+  exit_on_error "failed to copy this script up to the TMP directory.  exploit attempted?"
   pushd "$TMP" &>/dev/null
-  test_or_die "changing to TMP directory: $TMP"
+  exit_on_error "changing to TMP directory: $TMP"
   chmod a+x "$new_name"
-  test_or_die "chmodding of file: $new_name"
+  exit_on_error "chmodding of file: $new_name"
   exec "$new_name"
-  test_or_die "execing cloned getemscript"
+  exit_on_error "execing cloned getemscript"
   popd &>/dev/null
 fi
 
@@ -35,10 +37,9 @@ fi
 export TMPO_CHK=$TMP/zz_chk.log
 
 rm -f "$TMPO_CHK"
-test_or_die "removing file: $TMPO_CHK"
+exit_on_error "removing file: $TMPO_CHK"
 
 echo "getting repositories at: $(date)"
-echo
 
 # perform the checkouts as appropriate per OS.
 FULL_LIST="$(dirname $FEISTY_MEOW_APEX) $HOME"
@@ -46,7 +47,9 @@ if [ "$OS" == "Windows_NT" ]; then
   FULL_LIST+="c:/ d:/ e:/"
 fi
 checkout_list $FULL_LIST 2>&1 | tee -a "$TMPO_CHK"
-test_or_die "checking out list: $FULL_LIST"
+exit_on_error "checking out list: $FULL_LIST"
+
+echo
 
 ##############
 
@@ -54,4 +57,6 @@ test_or_die "checking out list: $FULL_LIST"
 regenerate
 
 ##############
+
+restore_terminal_title
 
