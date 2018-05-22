@@ -7,6 +7,8 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+save_terminal_title
+
 ##############
 
 dir="$1"; shift
@@ -20,6 +22,8 @@ tempfile=$(generate_rev_ctrl_filelist)
 exit_on_error "generating revision control file list"
 popd &>/dev/null
 
-perform_revctrl_action_on_file "$tempfile" do_update
+perform_revctrl_action_on_file "$tempfile" do_revctrl_simple_update
 exit_on_error "running revision control update"
+
+restore_terminal_title
 

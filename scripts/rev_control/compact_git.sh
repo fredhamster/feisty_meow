@@ -5,6 +5,8 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+save_terminal_title
+
 ##############
 
 prune_dir="$1"
@@ -26,4 +28,6 @@ git repack
 exit_on_error "git repack"
 
 popd &>/dev/null
+
+restore_terminal_title
 

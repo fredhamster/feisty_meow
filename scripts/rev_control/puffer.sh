@@ -9,6 +9,8 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+save_terminal_title
+
 ##############
 
 echo "puffing out repositories at: $(date)"
@@ -29,3 +31,4 @@ regenerate
 
 ##############
 
+restore_terminal_title

@@ -76,11 +76,9 @@ fi
 ##############
 
 # checks the directory provided into the revision control system repository it belongs to.
-function do_checkin()
+function do_revctrl_checkin()
 {
   local directory="$1"; shift
-
-  save_terminal_title
 
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
@@ -91,10 +89,10 @@ function do_checkin()
 
 #hmmm: we don't do a puff out on this directory to carefully update the git repo.  is there a good reason why?
 #  we know we at least have to get the remote version synched up to avoid severe tire damage, so it's sensible at
-#  least to call do_update, but is there a reason not to call the careful git update instead?
-#AHA, below we do call a careful git update, which is at least partially redundant with calling do_update here.
-# how about pushing the do_update down into the two cases that use it and just not calling it for the git case?
-  do_update "$directory"
+#  least to call do_revctrl_simple_update, but is there a reason not to call the careful git update instead?
+#AHA, below we do call a careful git update, which is at least partially redundant with calling do_revctrl_simple_update here.
+# how about pushing the do_revctrl_simple_update down into the two cases that use it and just not calling it for the git case?
+  do_revctrl_simple_update "$directory"
   exit_on_error "updating repository; this issue should be fixed before check-in."
 
   pushd "$directory" &>/dev/null
@@ -142,7 +140,7 @@ function do_checkin()
       fi
 
       # a new set of steps we have to take to make sure the branch integrity is good.
-      do_careful_git_update "$(\pwd)"
+      do_revctrl_careful_update "$(\pwd)"
 
       # we continue on to the push, even if there were no changes this time, because
       # there could already be committed changes that haven't been pushed yet.
@@ -159,17 +157,13 @@ function do_checkin()
   fi
   popd &>/dev/null
 
-  restore_terminal_title
-
   return 0
 }
 
 # shows the local changes in a repository.
-function do_diff
+function do_revctrl_diff
 {
   local directory="$1"; shift
-
-  save_terminal_title
 
   pushd "$directory" &>/dev/null
 
@@ -187,17 +181,13 @@ function do_diff
 
   popd &>/dev/null
 
-  restore_terminal_title
-
   return 0
 }
 
 # reports any files that are not already known to the upstream repository.
-function do_report_new
+function do_revctrl_report_new
 {
   local directory="$1"; shift
-
-  save_terminal_title
 
   pushd "$directory" &>/dev/null
 
@@ -215,8 +205,6 @@ function do_report_new
 
   popd &>/dev/null
 
-  restore_terminal_title
-
   return 0
 }
 
@@ -225,8 +213,6 @@ function checkin_list()
 {
   # make the list of directories unique.
   local list="$(uniquify $*)"
-
-  save_terminal_title
 
   # turn repo list back into an array.
   eval "repository_list=( ${REPOSITORY_LIST[*]} )"
@@ -238,22 +224,18 @@ function checkin_list()
     if [[ $outer =~ /.* ]]; then
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
-      do_checkin "$outer"
+      do_revctrl_checkin "$outer"
       exit_on_error "running check-in (absolute) on path: $outer"
-#      sep 28
     else
       for inner in $list; do
         # add in the directory component to see if we can find the folder.
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
-        do_checkin "$path"
+        do_revctrl_checkin "$path"
         exit_on_error "running check-in (relative) on path: $path"
-#        sep 28
       done
     fi
   done
-
-  restore_terminal_title
 }
 
 #hmmm: below functions are git specific and should be named that way.
@@ -329,7 +311,7 @@ function show_branch_conditionally()
 # the git update process just gets more and more complex when you bring in
 # branches, so we've moved this here to avoid having a ton of code in the
 # other methods.
-function do_careful_git_update()
+function do_revctrl_careful_update()
 {
   local directory="$1"; shift
   pushd "$directory" &>/dev/null
@@ -338,8 +320,8 @@ function do_careful_git_update()
   if [ ! -d ".git" ]; then
     # not a git project, so just boil this down to a getem action.
     popd &>/dev/null
-echo "special case; not doing careful git update on non git repository: $directory"
-    do_update "$directory"
+    log_feisty_meow_event "skipping careful part and doing simple update on non-git repository: $directory"
+    do_revctrl_simple_update "$directory"
     return $?
   fi
 
@@ -349,7 +331,7 @@ echo "special case; not doing careful git update on non git repository: $directo
   if [ $nicedir == "." ]; then
     nicedir=$(\pwd)
   fi
-  local blatt="echo -e \nretrieving '$nicedir'..."
+  local blatt="echo -e \ncarefully retrieving '$nicedir'..."
   $blatt
 
   local this_branch="$(my_branch_name)"
@@ -404,11 +386,9 @@ echo "special case; not doing careful git update on non git repository: $directo
 }
 
 # gets the latest versions of the assets from the upstream repository.
-function do_update()
+function do_revctrl_simple_update()
 {
   directory="$1"; shift
-
-  save_terminal_title
 
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
@@ -446,8 +426,6 @@ function do_update()
   fi
   popd &>/dev/null
 
-  restore_terminal_title
-
   return 0
 }
 
@@ -455,8 +433,6 @@ function do_update()
 function checkout_list()
 {
   local list="$(uniquify $*)"
-
-  save_terminal_title
 
   # turn repo list back into an array.
   eval "repository_list=( ${REPOSITORY_LIST[*]} )"
@@ -468,22 +444,18 @@ function checkout_list()
     if [[ $outer =~ /.* ]]; then
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
-      do_update $outer
+      do_revctrl_simple_update $outer
       exit_on_error "running update on: $path"
-#      sep 28
     else
       for inner in $list; do
         # add in the directory component to see if we can find the folder.
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
-        do_update $path
+        do_revctrl_simple_update $path
         exit_on_error "running update on: $path"
-#        sep 28
       done
     fi
   done
-
-  restore_terminal_title
 }
 
 # does a careful update on all the folders in the specified list;
@@ -494,8 +466,6 @@ function puff_out_list()
 {
   # make the list of directories unique.
   local list="$(uniquify $*)"
-
-  save_terminal_title
 
   # turn repo list back into an array.
   eval "repository_list=( ${REPOSITORY_LIST[*]} )"
@@ -508,22 +478,18 @@ function puff_out_list()
     if [[ $outer =~ /.* ]]; then
       # yep, this path is absolute.  just handle it directly.
       if [ ! -d "$outer" ]; then continue; fi
-      do_careful_git_update "$outer"
+      do_revctrl_careful_update "$outer"
       exit_on_error "running puff-out (absolute) on path: $outer"
-#      sep 28
     else
       for inner in $list; do
         # add in the directory component to see if we can find the folder.
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
-        do_careful_git_update "$path"
+        do_revctrl_careful_update "$path"
         exit_on_error "running puff-out (relative) on path: $path"
-#        sep 28
       done
     fi
   done
-
-  restore_terminal_title
 }
 
 # provides a list of absolute paths of revision control directories
@@ -559,8 +525,6 @@ function perform_revctrl_action_on_file()
   local tempfile="$1"; shift
   local action="$1"; shift
 
-  save_terminal_title
-
   local did_anything=
 
   while read -u 3 dirname; do
@@ -574,15 +538,12 @@ function perform_revctrl_action_on_file()
     # pass the current directory plus the remaining parameters from function invocation.
     $action . 
     exit_on_error "performing action $action on: $(pwd)"
-#    sep 28
     popd &>/dev/null
   done 3<"$tempfile"
 
   if [ -z "$did_anything" ]; then
     echo "There was nothing to do the action '$action' on."
   fi
-
-  restore_terminal_title
 
   rm "$tempfile"
 }

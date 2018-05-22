@@ -5,6 +5,8 @@
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 
+save_terminal_title
+
 ##############
 
 echo "committing repositories at: $(date)"
@@ -24,4 +26,6 @@ exit_on_error "revision control check-in of list: $FULL_LIST"
 regenerate
 
 ##############
+
+restore_terminal_title
 

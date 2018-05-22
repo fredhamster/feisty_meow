@@ -15,10 +15,16 @@
 # http://stackoverflow.com/questions/160104/how-do-you-add-all-untracked-files-in-svn-something-like-git-add-i
 #
 
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
+save_terminal_title
+
 PATTERN="$1"; shift
 
 svn st | egrep "^\\${PATTERN}[ ]+" | \
   sed -e "s|^\\${PATTERN}[ ]*||" | \
   sed -e "s|\\\\|/|g" | \
   xargs -i "$@" '{}'
+
+restore_terminal_title
 
