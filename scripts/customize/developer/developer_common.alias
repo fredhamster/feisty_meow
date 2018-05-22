@@ -12,4 +12,5 @@ for i in \$FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm*; do
   echo -e \\\\tsudo bash \"\\\$FEISTY_MEOW_SCRIPTS/site_avenger/\$(basename \$i)\"\\\\n ;
 done"
 
+define_yeti_alias revamp_cakelampvm_v003="sudo bash \$FEISTY_MEOW_SCRIPTS/site_avenger/revamp_cakelampvm_v003.sh"
 
