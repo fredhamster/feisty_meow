@@ -58,7 +58,12 @@ sep
 
 echo "Adding users to the mysql database."
 
-#hmmm: good application for hiding output unless error here.
+# note regarding v003 of the revamp script: i am leaving the mysql code
+# alone for the moment; it's a good example of using our password, gathered
+# above.  (a better example wouldn't pass the password on the command line
+# but involving an "expect" script is out of scope currently.)  --fred
+
+#hmmm: good example here for why we need the code that "hides output unless error".
 mysql -u root -p"$mysql_passwd" &>/dev/null <<EOF
   create user if not exists 'root'@'%' IDENTIFIED BY '$mysql_passwd';
   grant all privileges on *.* TO 'root'@'%' with grant option;
