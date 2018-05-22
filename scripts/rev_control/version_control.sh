@@ -89,6 +89,11 @@ function do_checkin()
   fi
   local blatt="echo -ne \nchecking in '$nicedir'...  "
 
+#hmmm: we don't do a puff out on this directory to carefully update the git repo.  is there a good reason why?
+#  we know we at least have to get the remote version synched up to avoid severe tire damage, so it's sensible at
+#  least to call do_update, but is there a reason not to call the careful git update instead?
+#AHA, below we do call a careful git update, which is at least partially redundant with calling do_update here.
+# how about pushing the do_update down into the two cases that use it and just not calling it for the git case?
   do_update "$directory"
   exit_on_error "updating repository; this issue should be fixed before check-in."
 
@@ -116,6 +121,8 @@ function do_checkin()
       promote_pipe_return 0
       exit_on_error "git add all new files"
 
+#hmmm: was there a reason to commit before doing the puffing out careful git update?  i seem to think there was.
+# would be nice to remember that or recapture the reason, so we can be sure we're not committing too early.
       # see if there are any changes in the local repository.
       if ! git diff-index --quiet HEAD --; then
         # tell git about all the files and get a check-in comment.
@@ -249,46 +256,6 @@ function checkin_list()
   restore_terminal_title
 }
 
-# does a careful update on all the folders in the specified list;
-# it looks in the REPOSITORY_LIST for those names and updates them.
-# this is just like checkout_list, but it's for the puffing up action
-# we need to do on git.
-function puff_out_list()
-{
-  # make the list of directories unique.
-  local list="$(uniquify $*)"
-
-  save_terminal_title
-
-  # turn repo list back into an array.
-  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
-
-  local outer inner
-
-#hmmm: once again, seeing some reusable code in this loop...
-  for outer in "${repository_list[@]}"; do
-    # check the repository first, since it might be an absolute path.
-    if [[ $outer =~ /.* ]]; then
-      # yep, this path is absolute.  just handle it directly.
-      if [ ! -d "$outer" ]; then continue; fi
-      do_careful_git_update "$outer"
-      exit_on_error "running puff-out (absolute) on path: $outer"
-#      sep 28
-    else
-      for inner in $list; do
-        # add in the directory component to see if we can find the folder.
-        local path="$inner/$outer"
-        if [ ! -d "$path" ]; then continue; fi
-        do_careful_git_update "$path"
-        exit_on_error "running puff-out (relative) on path: $path"
-#        sep 28
-      done
-    fi
-  done
-
-  restore_terminal_title
-}
-
 #hmmm: below functions are git specific and should be named that way.
 
 function all_branch_names()
@@ -375,6 +342,15 @@ echo "special case; not doing careful git update on non git repository: $directo
     do_update "$directory"
     return $?
   fi
+
+#hmmm: another piece of reusable code, to process the directory for printing.
+  # make a nice echoer since we want to use it inside conditions below.
+  local nicedir="$directory"
+  if [ $nicedir == "." ]; then
+    nicedir=$(\pwd)
+  fi
+  local blatt="echo -e \nretrieving '$nicedir'..."
+  $blatt
 
   local this_branch="$(my_branch_name)"
 
@@ -502,6 +478,46 @@ function checkout_list()
         if [ ! -d "$path" ]; then continue; fi
         do_update $path
         exit_on_error "running update on: $path"
+#        sep 28
+      done
+    fi
+  done
+
+  restore_terminal_title
+}
+
+# does a careful update on all the folders in the specified list;
+# it looks in the REPOSITORY_LIST for those names and updates them.
+# this is just like checkout_list, but it's for the puffing up action
+# we need to do on git.
+function puff_out_list()
+{
+  # make the list of directories unique.
+  local list="$(uniquify $*)"
+
+  save_terminal_title
+
+  # turn repo list back into an array.
+  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+
+  local outer inner
+
+#hmmm: once again, seeing some reusable code in this loop...
+  for outer in "${repository_list[@]}"; do
+    # check the repository first, since it might be an absolute path.
+    if [[ $outer =~ /.* ]]; then
+      # yep, this path is absolute.  just handle it directly.
+      if [ ! -d "$outer" ]; then continue; fi
+      do_careful_git_update "$outer"
+      exit_on_error "running puff-out (absolute) on path: $outer"
+#      sep 28
+    else
+      for inner in $list; do
+        # add in the directory component to see if we can find the folder.
+        local path="$inner/$outer"
+        if [ ! -d "$path" ]; then continue; fi
+        do_careful_git_update "$path"
+        exit_on_error "running puff-out (relative) on path: $path"
 #        sep 28
       done
     fi

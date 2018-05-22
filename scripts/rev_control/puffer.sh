@@ -12,7 +12,6 @@ source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 ##############
 
 echo "puffing out repositories at: $(date)"
-echo
 
 FULL_LIST=" $(dirname $FEISTY_MEOW_APEX) $HOME "
 if [ "$OS" == "Windows_NT" ]; then
