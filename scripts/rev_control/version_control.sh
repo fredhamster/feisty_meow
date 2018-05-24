@@ -88,7 +88,7 @@ function do_revctrl_checkin()
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f ".no-checkin" ]; then
 #        echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
-        tell_no_checkin
+        $tell_no_checkin
       else
         $blatt_report
         cvs ci .
@@ -101,7 +101,7 @@ function do_revctrl_checkin()
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f ".no-checkin" ]; then
 #        echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
-        tell_no_checkin
+        $tell_no_checkin
       else
         $blatt_report
         svn ci .
@@ -116,7 +116,7 @@ function do_revctrl_checkin()
 
       if [ -f ".no-checkin" ]; then
 #        echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
-        tell_no_checkin
+        $tell_no_checkin
       else
         $blatt_report
 
