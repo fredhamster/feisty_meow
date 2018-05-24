@@ -16,15 +16,15 @@ TEMPO_FILE="$(mktemp "$TMP/zz_feistypack.XXXXXX")"
 
 log_feisty_meow_event "packing feisty meow in temporary file $TEMPO_FILE"
 
-# shortcut for the lengthy exclude parameter.
-# note that this only works on file patterns apparently, like *.hosed,
-# instead of working with general patterns (like */code_guide/*).
-export XC='--exclude='
-
 parent_dir="$(dirname "$FEISTY_MEOW_APEX")"
 base_dir="$(basename "$FEISTY_MEOW_APEX")"
 
 pushd $parent_dir
+
+# shortcut for the lengthy exclude parameter.
+# note that this only works on file patterns apparently, like *.hosed,
+# instead of working with general patterns (like */code_guide/*).
+export XC='--exclude='
 
 # archive feisty meow current state, but exclude the file names we never want
 # to see in the archive.  the exclude vcs flag takes care of excluding

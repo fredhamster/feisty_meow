@@ -77,26 +77,36 @@ function do_revctrl_checkin()
   if [ $nicedir == "." ]; then
     nicedir=$(\pwd)
   fi
-  local blatt="echo -ne \nchecking in '$nicedir'...  "
+  local blatt_report="echo -ne \nchecking in '$nicedir'...  "
+  local tell_no_checkin="echo -ne \nskipping check-in due to presence of .no-checkin sentinel file: $nicedir"
 
   pushd "$directory" &>/dev/null
-  if [ -f ".no-checkin" ]; then
-    echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
-  elif [ -d "CVS" ]; then
+#hmmm: overly elaborate sections below here, but we do want precise handling for git case.
+  if [ -d "CVS" ]; then
     if test_writeable "CVS"; then
       do_revctrl_simple_update "$directory"
       exit_on_error "updating repository; this issue should be fixed before check-in."
-      $blatt
-      cvs ci .
-      exit_on_error "cvs checkin"
+      if [ -f ".no-checkin" ]; then
+#        echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
+        tell_no_checkin
+      else
+        $blatt_report
+        cvs ci .
+        exit_on_error "cvs checkin"
+      fi
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
       do_revctrl_simple_update "$directory"
       exit_on_error "updating repository; this issue should be fixed before check-in."
-      $blatt
-      svn ci .
-      exit_on_error "svn checkin"
+      if [ -f ".no-checkin" ]; then
+#        echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
+        tell_no_checkin
+      else
+        $blatt_report
+        svn ci .
+        exit_on_error "svn checkin"
+      fi
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
@@ -104,39 +114,43 @@ function do_revctrl_checkin()
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
       do_revctrl_careful_update "$(\pwd)"
 
-      $blatt
+      if [ -f ".no-checkin" ]; then
+#        echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
+        tell_no_checkin
+      else
+        $blatt_report
 
-      # put all changed and new files in the commit.  not to everyone's liking.
-      git add --all . | $TO_SPLITTER
-      promote_pipe_return 0
-      exit_on_error "git add all new files"
+        # put all changed and new files in the commit.  not to everyone's liking.
+        git add --all . | $TO_SPLITTER
+        promote_pipe_return 0
+        exit_on_error "git add all new files"
 
-      # see if there are any changes in the local repository.
-      if ! git diff-index --quiet HEAD --; then
-        # tell git about all the files and get a check-in comment.
+        # see if there are any changes in the local repository.
+        if ! git diff-index --quiet HEAD --; then
+          # tell git about all the files and get a check-in comment.
 #hmmm: begins to look like, you guessed it, a reusable bit that all commit actions could enjoy.
-        git commit .
-        retval=$?
-        continue_on_error "git commit"
-        if [ $retval -ne 0 ]; then
-          echo -e -n "Commit failed or was aborted:\nShould we continue with other check-ins? [y/N] "
-          local line
-          read line
-          if [[ "${line:0:1}" != "y" ]]; then
-            echo "Stopping check-in process due to missing commit and user request."
-            exit 1
+          git commit .
+          retval=$?
+          continue_on_error "git commit"
+          if [ $retval -ne 0 ]; then
+            echo -e -n "Commit failed or was aborted:\nShould we continue with other check-ins? [y/N] "
+            local line
+            read line
+            if [[ "${line:0:1}" != "y" ]]; then
+              echo "Stopping check-in process due to missing commit and user request."
+              exit 1
+            fi
           fi
         fi
+
+        # we continue on to the push, even if there were no obvious changes this run, because
+        # there could already be committed changes that haven't been pushed yet.
+
+        # upload any changes to the upstream repo so others can see them.
+        git push --tags origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+        promote_pipe_return 0
+        exit_on_error "git push"
       fi
-
-      # we continue on to the push, even if there were no obvious changes this run, because
-      # there could already be committed changes that haven't been pushed yet.
-
-      # upload any changes to the upstream repo so others can see them.
-      git push --tags origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
-      promote_pipe_return 0
-      exit_on_error "git push"
-
     fi
   else
     # nothing there.  it's not an error though.
@@ -318,8 +332,8 @@ function do_revctrl_careful_update()
   if [ $nicedir == "." ]; then
     nicedir=$(\pwd)
   fi
-  local blatt="echo -e \ncarefully retrieving '$nicedir'..."
-  $blatt
+  local blatt_report="echo -e \ncarefully retrieving '$nicedir'..."
+  $blatt_report
 
   local this_branch="$(my_branch_name)"
 
@@ -380,26 +394,26 @@ function do_revctrl_simple_update()
   if [ $nicedir == "." ]; then
     nicedir=$(\pwd)
   fi
-  local blatt="echo -e \nretrieving '$nicedir'..."
+  local blatt_report="echo -e \nretrieving '$nicedir'..."
 
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
     if test_writeable "CVS"; then
-      $blatt
+      $blatt_report
       cvs update . | $TO_SPLITTER
       promote_pipe_return 0
       exit_on_error "cvs update"
     fi
   elif [ -d ".svn" ]; then
     if test_writeable ".svn"; then
-      $blatt
+      $blatt_report
       svn update . | $TO_SPLITTER
       promote_pipe_return 0
       exit_on_error "svn update"
     fi
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
-      $blatt
+      $blatt_report
       git pull --tags $PULL_ADDITION 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       promote_pipe_return 0
       exit_on_error "git pull of origin"
