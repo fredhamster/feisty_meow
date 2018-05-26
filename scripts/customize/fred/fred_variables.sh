@@ -18,7 +18,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   REPOSITORY_LIST=" cloud ebooks web ${REPOSITORY_LIST} "
 
   # adds our locally relevant archive folders into the list to be synched.
-  MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus"
+  MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus $HOME/brobdingnag"
   # our set of known source hierarchy folder names.
   SOURCECODE_HIERARCHY_LIST="codebarn extra_brain interbrane"
 
