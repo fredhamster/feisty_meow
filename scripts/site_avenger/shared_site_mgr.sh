@@ -60,21 +60,32 @@ the requested name was found or not.
 "
     return 1
   fi
+  # signal a failure by default with our return value.
+  local retval=1
   # loop upwards in dir hierarchy to find the name.
   while true; do
     local currdir="$(\pwd)"
     if [ "$currdir" == "/" ]; then
       # we climbed out of all subdirs.  this is a failure case.
-      return 1
+      retval=1
+      break
     fi
     # get the base part of our name to check on success.
     local base="$(basename "$currdir")"
     if [ "$base" == "$dir_name_sought" ]; then
       # yes, that is the right name.  success case.  save our result.
       export PARENT_DIR_FOUND="$currdir"
-      return 0
+      retval=0
+      break
     fi
+    # hop up a directory.
+    pushd .. &>/dev/null
   done
+
+  # rollback any directories we pushed.
+  while popd &>/dev/null; do true; done
+
+  return $retval
 }
 
 # tries to find an appropriate config file for the application.
@@ -117,7 +128,7 @@ function find_app_folder()
   unset app_dirname
   
   # count number of directories...  if exactly one, then choose it.
-  numdirs=$(count_directories "$appsdir")
+  numdirs=$(count_directories "$appsdir/")
 
   if [ $numdirs -eq 0 ]; then
     sep
@@ -128,24 +139,32 @@ function find_app_folder()
     echo "on the command line, e.g.:"
     echo "  $(basename $0) turtle"
     sep
-    exit 1
+    return 1
   elif [ $numdirs -eq 1 ]; then
-    app_dirname="$(basename $(find "$appsdir" -mindepth 1 -maxdepth 1 -type d) )"
+    # one directory in apps, so we'll pick that one.
+    app_dirname="$(basename $(find "$appsdir" -follow -mindepth 1 -maxdepth 1 -type d) )"
     exit_on_error "Guessing application folder"
   else
     # there's more than one folder in apps...
 
-    # if we can find an avenger5 directory above our current PWD, then that might tell us our name.
-    if find_named_parent_dir "avenger5"; then
-      # we can grab a name above the avenger5 location.  let's try that.
-      app_dirname="$(basename "$(dirname $PARENT_DIR_FOUND)" )"
+    # make sure we're allowed to auto-guess the folder name from our current dir.
+    if [ -z "$NO_AUTOMATIC_FOLDER_GUESS" ]; then
+      # if we can find an avenger5 directory above our current PWD, then that
+      # might tell us our name.
+      if  find_named_parent_dir "avenger5"; then
+        # we can grab a name above the avenger5 location.  let's try that.
+        app_dirname="$(basename "$(dirname $PARENT_DIR_FOUND)" )"
+      fi
     else
+      # flag maintenance, to avoid hosing other commands by leaving this set.
+      unset NO_AUTOMATIC_FOLDER_GUESS
+
       # well, we couldn't guess a directory based on our current location,
       # so ask the user to choose.
       # Reference: https://askubuntu.com/questions/1705/how-can-i-create-a-select-menu-in-a-shell-script
       holdps3="$PS3"
       PS3='Please pick a folder for site initialization: '
-      options=( $(find "$appsdir" -mindepth 1 -maxdepth 1 -type d -exec basename {} ';') "Quit")
+      options=( $(find "$appsdir" -follow -mindepth 1 -maxdepth 1 -type d -exec basename {} ';') "Quit")
       select app_dirname in "${options[@]}"; do
         case $app_dirname in
           "Quit") echo ; echo "Quitting from the script."; return 1; ;;
@@ -444,12 +463,15 @@ function switch_to()
   # find proper webroot where the site will be initialized.
   if [ -z "$app_dirname" ]; then
     # no dir was passed, so guess it.
+    export NO_AUTOMATIC_FOLDER_GUESS=true
     find_app_folder "$BASE_APPLICATION_PATH"
   else
     test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
   fi
   if [ $? -ne 0 ]; then
-    echo "Could not locate the application directory: ${app_dirname}"
+    if [ "$app_dirname" != "Quit" ]; then
+      echo "Could not locate the application directory: ${app_dirname}"
+    fi
     return 1
   fi
 
