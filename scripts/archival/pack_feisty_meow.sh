@@ -2,18 +2,29 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
+# location where we intend to store these packages.
+RELEASE_PATH="$WEBBED_SITES/feistymeow.org/releases"
+
+# check that we can see the release path.
+if [ ! -d "$RELEASE_PATH" ]; then
+  echo "The release path does not exist: $RELEASE_PATH"
+  exit 1
+fi
+
 TEMPO_FILE="$(mktemp "$TMP/zz_feistypack.XXXXXX")"
   # specify where we keep the file until we're ready to move it.
 
-# shortcut for the lengthy exclude parameter.
-# note that this only works on file patterns apparently, like *.hosed,
-# instead of working with general patterns (like */code_guide/*).
-export XC='--exclude='
+log_feisty_meow_event "packing feisty meow in temporary file $TEMPO_FILE"
 
 parent_dir="$(dirname "$FEISTY_MEOW_APEX")"
 base_dir="$(basename "$FEISTY_MEOW_APEX")"
 
 pushd $parent_dir
+
+# shortcut for the lengthy exclude parameter.
+# note that this only works on file patterns apparently, like *.hosed,
+# instead of working with general patterns (like */code_guide/*).
+export XC='--exclude='
 
 # archive feisty meow current state, but exclude the file names we never want
 # to see in the archive.  the exclude vcs flag takes care of excluding
@@ -42,7 +53,7 @@ $base_dir
 
 # now move the newest version into its resting place.  this prepares the
 # feisty_meow package for uploading.
-mv -v $TEMPO_FILE $WEBBED_SITES/feistymeow.org/releases/feisty_meow_codebase_$(date_stringer).tar.gz
+mv -v $TEMPO_FILE "$RELEASE_PATH/feisty_meow_codebase_$(date_stringer).tar.gz"
 
 popd
 

@@ -40,6 +40,54 @@ function check_apps_root()
   fi
 }
 
+#hmmm: extract to core somewhere...
+# locates a parent directory of a certain name, if possible.  returns success
+# (as zero) if the directory was found, and failure if there was no parent
+# named as requested.  sets a global variable PARENT_DIR_FOUND to the full
+# directory name that matched, including the name being sought (but omitting
+# any deeper directories than that).
+function find_named_parent_dir()
+{
+  local dir_name_sought="$1"; shift
+  # clear any previous global result.
+  unset PARENT_DIR_FOUND
+  # check for degenerate case of parameter count.
+  if [ -z "$dir_name_sought" ]; then
+    echo "
+find_named_parent_dir: requires a directory name parameter, which will be
+sought out above the current directory.  the return value indicates whether
+the requested name was found or not.
+"
+    return 1
+  fi
+  # signal a failure by default with our return value.
+  local retval=1
+  # loop upwards in dir hierarchy to find the name.
+  while true; do
+    local currdir="$(\pwd)"
+    if [ "$currdir" == "/" ]; then
+      # we climbed out of all subdirs.  this is a failure case.
+      retval=1
+      break
+    fi
+    # get the base part of our name to check on success.
+    local base="$(basename "$currdir")"
+    if [ "$base" == "$dir_name_sought" ]; then
+      # yes, that is the right name.  success case.  save our result.
+      export PARENT_DIR_FOUND="$currdir"
+      retval=0
+      break
+    fi
+    # hop up a directory.
+    pushd .. &>/dev/null
+  done
+
+  # rollback any directories we pushed.
+  while popd &>/dev/null; do true; done
+
+  return $retval
+}
+
 # tries to find an appropriate config file for the application.
 function locate_config_file()
 {
@@ -80,7 +128,7 @@ function find_app_folder()
   unset app_dirname
   
   # count number of directories...  if exactly one, then choose it.
-  numdirs=$(count_directories "$appsdir")
+  numdirs=$(count_directories "$appsdir/")
 
   if [ $numdirs -eq 0 ]; then
     sep
@@ -91,28 +139,45 @@ function find_app_folder()
     echo "on the command line, e.g.:"
     echo "  $(basename $0) turtle"
     sep
-    exit 1
+    return 1
   elif [ $numdirs -eq 1 ]; then
-    app_dirname="$(basename $(find "$appsdir" -mindepth 1 -maxdepth 1 -type d) )"
+    # one directory in apps, so we'll pick that one.
+    app_dirname="$(basename $(find "$appsdir" -follow -mindepth 1 -maxdepth 1 -type d) )"
     exit_on_error "Guessing application folder"
   else
-    # if more than one folder, force user to choose.
-    # Reference: https://askubuntu.com/questions/1705/how-can-i-create-a-select-menu-in-a-shell-script
-    holdps3="$PS3"
-    PS3='Please pick a folder for site initialization: '
-    options=( $(find "$appsdir" -mindepth 1 -maxdepth 1 -type d -exec basename {} ';') "Quit")
-    select app_dirname in "${options[@]}"; do
-      case $app_dirname in
-        "Quit") echo ; echo "Quitting from the script."; return 1; ;;
-        *) echo ; echo "You picked folder '$app_dirname'" ; break; ;;
-      esac
-    done
-    if [ -z "$app_dirname" ]; then
-      echo "The folder was not provided.  This script needs a directory name"
-      echo "within which to initialize the site."
-      return 1
+    # there's more than one folder in apps...
+
+    # make sure we're allowed to auto-guess the folder name from our current dir.
+    if [ -z "$NO_AUTOMATIC_FOLDER_GUESS" ]; then
+      # if we can find an avenger5 directory above our current PWD, then that
+      # might tell us our name.
+      if  find_named_parent_dir "avenger5"; then
+        # we can grab a name above the avenger5 location.  let's try that.
+        app_dirname="$(basename "$(dirname $PARENT_DIR_FOUND)" )"
+      fi
+    else
+      # flag maintenance, to avoid hosing other commands by leaving this set.
+      unset NO_AUTOMATIC_FOLDER_GUESS
+
+      # well, we couldn't guess a directory based on our current location,
+      # so ask the user to choose.
+      # Reference: https://askubuntu.com/questions/1705/how-can-i-create-a-select-menu-in-a-shell-script
+      holdps3="$PS3"
+      PS3='Please pick a folder for site initialization: '
+      options=( $(find "$appsdir" -follow -mindepth 1 -maxdepth 1 -type d -exec basename {} ';') "Quit")
+      select app_dirname in "${options[@]}"; do
+        case $app_dirname in
+          "Quit") echo ; echo "Quitting from the script."; return 1; ;;
+          *) echo ; echo "You picked folder '$app_dirname'" ; break; ;;
+        esac
+      done
+      if [ -z "$app_dirname" ]; then
+        echo "The folder was not provided.  This script needs a directory name"
+        echo "within which to initialize the site."
+        return 1
+      fi
+      PS3="$holdps3"
     fi
-    PS3="$holdps3"
   fi
   test_app_folder "$appsdir" "$app_dirname"
   exit_on_error "Testing application folder: $app_dirname"
@@ -398,12 +463,15 @@ function switch_to()
   # find proper webroot where the site will be initialized.
   if [ -z "$app_dirname" ]; then
     # no dir was passed, so guess it.
+    export NO_AUTOMATIC_FOLDER_GUESS=true
     find_app_folder "$BASE_APPLICATION_PATH"
   else
     test_app_folder "$BASE_APPLICATION_PATH" "$app_dirname"
   fi
   if [ $? -ne 0 ]; then
-    echo "Could not locate the application directory: ${app_dirname}"
+    if [ "$app_dirname" != "Quit" ]; then
+      echo "Could not locate the application directory: ${app_dirname}"
+    fi
     return 1
   fi
 
