@@ -51,7 +51,9 @@ function get_terminal_title()
   which xprop &>/dev/null
   if [ $? -eq 0 ]; then
     # make sure we're actually using xterm *and* that we have a window ID.
-    if [[ "$TERM" =~ .*"xterm".* && ! -z "$WINDOWID" ]]; then
+    if [[ ! -z "$GNOME_TERMINAL_SCREEN" ]]; then
+      term_title_found="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+    elif [[ "$TERM" =~ .*"xterm".* && ! -z "$WINDOWID" ]]; then
       term_title_found="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
     fi
   fi
