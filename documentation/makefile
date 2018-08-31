@@ -19,7 +19,7 @@ if [ $$? -ne 0 ]; then \
   echo failed to run doxygen on our configuration file.; \
   echo perhaps it is not installed?; \
   echo these are the ubuntu install steps:; \
-  echo   sudo apt-get install doxygen graphviz; \
+  echo   sudo apt install doxygen graphviz; \
 echo and something else, uhhh....; \
 echo oy; \
 fi \

@@ -532,7 +532,7 @@ we will skip recustomization, but these other customizations are available:
 
     local fail_message="\n
 are the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
-    $(grep "apt-get.*perl" $FEISTY_MEOW_APEX/readme.txt)\n
+    $(grep "apt.*perl" $FEISTY_MEOW_APEX/readme.txt)\n
 or if you're on cygwin, then try this (if apt-cyg is available):\n
     $(grep "apt-cyg.*perl" $FEISTY_MEOW_APEX/readme.txt)\n";
 
