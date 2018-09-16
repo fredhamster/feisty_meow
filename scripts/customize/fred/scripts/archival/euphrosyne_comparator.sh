@@ -5,7 +5,8 @@
 
 #hmmm: add a check that this is in fact the right host, euphrosyne.
 
-target=wildmutt
+#target=wildmutt
+target=curie
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
