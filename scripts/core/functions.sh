@@ -717,7 +717,7 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
     while [ $# -gt 0 ]; do
       arg="$1"; shift
       if [ ! -f "$arg" -a ! -d "$arg" ]; then
-        echo "failure to find a file or directory named '$arg'."
+        echo "=> did not find a file or directory named '$arg'."
         continue
       fi
 
