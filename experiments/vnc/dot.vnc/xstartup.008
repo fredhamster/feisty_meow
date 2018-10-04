@@ -4,7 +4,7 @@
 
 # this script depends on the gnome desktop.  to install the minimal
 # parts of gnome needed (as far as i know), run this command:
-#   sudo apt-get install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal 
+#   sudo apt install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal 
 
 # references:
 #   best? https://askubuntu.com/questions/475023/how-to-make-vnc-server-work-with-ubuntu-desktop-without-xfce

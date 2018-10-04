@@ -10,6 +10,9 @@ function reapply_cool_permissions()
 {
   local cooluser="$1"; shift
 
+#hmmm: check for non empty name.
+  local homebase="/home/$cooluser"
+
   # first build a list of dirs based on their location in /home/archives.
   local arch_builder="archons basement codebarn games imaginations musix pooling prewar_toaster stuffing toaster walrus"
   local ARCHIVE_TOP=/home/archives
@@ -28,14 +31,14 @@ function reapply_cool_permissions()
   fi
 
   # fix some permissions for important security considerations.
-  if [ -d $HOME/.ssh ]; then
-    harsh_perm $HOME/.ssh
+  if [ -d $homebase/.ssh ]; then
+    harsh_perm $homebase/.ssh
   fi
 
 #hmmm: consider adding feisty meow apex to the dirname list below.
 
   # iterate across the list of dirs we want cooluser to own and change their ownership.
-  for dirname in $HOME \
+  for dirname in $homebase \
         $DEFAULT_FEISTYMEOW_ORG_DIR \
         /usr/local/${cooluser} \
         /home/games \
@@ -81,7 +84,7 @@ if [[ $0 =~ .*cool_permissionator\.sh.* ]]; then
   export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
   source "$THISDIR/../core/launch_feisty_meow.sh"
   exit_on_error "sourcing the feisty meow launcher"
-  coolio="$(logname)"
+  coolio="$USER"
   reapply_cool_permissions "$coolio"
   exit_on_error "reapplying cool permissions on $coolio"
 fi

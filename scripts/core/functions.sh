@@ -187,6 +187,9 @@ if [ -z "$skip_all" ]; then
     # version for the other side (just 'linux'); we don't want the remote side still
     # thinking it's running xterm.
     save_terminal_title
+    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+      echo TERM saved is: $PRIOR_TERMINAL_TITLE
+    fi
 #hmmm: why were we doing this?  it scorches the user's logged in session, leaving it without proper terminal handling.
 #    # we save the value of TERM; we don't want to leave the user's terminal
 #    # brain dead once we come back from this function.
@@ -195,7 +198,13 @@ if [ -z "$skip_all" ]; then
     /usr/bin/ssh -X -C "${args[@]}"
 #    # restore the terminal variable also.
 #    TERM="$oldterm"
+    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+      echo TERM before restore, will use prior title of: $PRIOR_TERMINAL_TITLE
+    fi
     restore_terminal_title
+    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+      echo TERM title restored to prior value
+    fi
   }
 
   ##############
@@ -523,7 +532,7 @@ we will skip recustomization, but these other customizations are available:
 
     local fail_message="\n
 are the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
-    $(grep "apt-get.*perl" $FEISTY_MEOW_APEX/readme.txt)\n
+    $(grep "apt.*perl" $FEISTY_MEOW_APEX/readme.txt)\n
 or if you're on cygwin, then try this (if apt-cyg is available):\n
     $(grep "apt-cyg.*perl" $FEISTY_MEOW_APEX/readme.txt)\n";
 
@@ -708,7 +717,7 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
     while [ $# -gt 0 ]; do
       arg="$1"; shift
       if [ ! -f "$arg" -a ! -d "$arg" ]; then
-        echo "failure to find a file or directory named '$arg'."
+        echo "=> did not find a file or directory named '$arg'."
         continue
       fi
 

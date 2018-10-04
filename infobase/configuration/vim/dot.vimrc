@@ -2,7 +2,7 @@
 " this file is an example .vimrc for the vim editor.  it should be in your home directory.
 "
 " also, this config uses the elflord color scheme.  this may require installing the full
-" vim package, e.g.: sudo apt-get install vim
+" vim package, e.g.: sudo apt install vim
 
 " cranks up the register saved buffer size to 1000 lines, since otherwise the cut buffer will only
 " preserve the default 50 lines for a paste to another file.  this makes all registers go up to
