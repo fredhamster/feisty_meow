@@ -1,0 +1,11 @@
+
+
+to access digitalocean's spaces from the command line, use s3cmd.
+
+setup access token:
+https://www.digitalocean.com/community/tutorials/how-to-create-a-digitalocean-space-and-api-key
+
+configure s3cmd:
+https://www.digitalocean.com/community/tutorials/how-to-configure-s3cmd-2-x-to-manage-digitalocean-spaces
+
+
