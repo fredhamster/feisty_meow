@@ -10,7 +10,7 @@
 # this script depends on the gnome desktop.  to install the minimal
 # parts of gnome needed (as far as i know), run this command:
 #
-#   sudo apt-get install gnome-panel gnome-settings-daemon gnome-terminal kwalletmanager metacity nautilus
+#   sudo apt install gnome-panel gnome-settings-daemon gnome-terminal kwalletmanager metacity nautilus
 
 # references:
 #
