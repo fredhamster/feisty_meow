@@ -98,4 +98,13 @@ function update_archive_drive()
   popd
 }
 
+#hmmm: abstractable piece?  the runtime plug at the end of a library script?
+# this block should execute when the script is actually run, rather
+# than when it's just being sourced.
+if [[ $0 =~ .*general_updater\.sh.* ]]; then
+  source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+  exit_on_error "sourcing the feisty meow environment"
+  update_archive_drive "${@}"
+  exit_on_error "updating archive drive at: $*"
+fi
 

@@ -6,7 +6,19 @@
 test_to_run="$1"
 
 if [ -z "$test_to_run" ]; then
-  echo "This script requires a test or program to run as the first parameter."
+  echo "
+rounder: this script requires a test or program to run as the first parameter.
+
+the parameter can be an arbitrarily complex bash command as long as it's
+escaped properly.  for example, this command will check a directory size and
+then sleep for 10 seconds:
+
+  rounder  '\du -s ~/a_folder_i_watch; sleep 10'
+
+rounder will run this check, snoozing in between checks, until the universe
+ends or something intervenes.  note that without the sleep, the check would
+occur very rapidly and spew output.
+"
   exit 1
 fi
 

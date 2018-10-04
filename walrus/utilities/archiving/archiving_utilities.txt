@@ -1,7 +1,7 @@
 
 infozip: source for infozip version of zip and unzip.
 found in most modern linux distributions already, like:
-  sudo apt-get install zip unzip
+  sudo apt install zip unzip
 http://www.info-zip.org/
 
 tar and gzip are of course old favorites and use by many.

@@ -56,10 +56,10 @@ How to install the feisty meow script dependencies
 
 A couple of perl modules are required by some of the scripts (including the
 differ utility and the feisty meow customization system).  They can be
-installed with either apt-get or CPAN.
+installed with either apt or CPAN.
 
-Install using apt-get (on Ubuntu or Debian-based OS):
-$ sudo apt-get install libfile-which-perl libtext-diff-perl
+Install using apt (on Ubuntu or Debian-based OS):
+$ sudo apt install libfile-which-perl libtext-diff-perl
 
 or Install using perl's CPAN:
 $ sudo cpan install Text::Diff File::Which
@@ -87,7 +87,7 @@ These dependencies are used for building the applications, tools and tests
 in the "nucleus", "octopi", "graphiq" and other C++ collections.
 
 | Ubuntu / Debian:
-| $ sudo apt-get install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
+| $ sudo apt install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
 
 | Centos / Redhat / Fedora:
 | $ sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel

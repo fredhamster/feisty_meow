@@ -1,0 +1,9 @@
+
+if you want to see all your steam games from the web, try this URL:
+
+  https://steamcommunity.com/id/mysteamname/games/?tab=all
+
+where you replace "mysteamname" with your steam user name.
+
+
+

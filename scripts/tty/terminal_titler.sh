@@ -33,7 +33,7 @@ function set_terminal_title()
 {
   apply_title_to_terminal $*
 
-#tricky tries to get it to be available when we ask for it in get_terminal_title
+#tricky attempts to get it to be available when we ask for it in get_terminal_title
   sync
 #  echo -n
 
@@ -50,8 +50,12 @@ function get_terminal_title()
   # save the former terminal title if we're running in X with xterm.
   which xprop &>/dev/null
   if [ $? -eq 0 ]; then
-    # make sure we're actually using xterm *and* that we have a window ID.
-    if [[ "$TERM" =~ .*"xterm".* && ! -z "$WINDOWID" ]]; then
+    # gnome-terminal doesn't set WINDOWID currently, but we can work around this.
+    if [[ -z "$WINDOWID" && ! -z "$(which xwininfo)" ]]; then
+#not good solution.      term_title_found="$(xprop -id $(xdotool getactivewindow) | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+      term_title_found=$(xwininfo -id $(xprop -root | awk '/NET_ACTIVE_WINDOW/ { print $5; exit }') | awk -F\" '/xwininfo:/ { print $2; exit }')
+    # check if we're actually using xterm *and* that we have a window ID.
+    elif [[ "$TERM" =~ .*"xterm".* && ! -z "$WINDOWID" ]]; then
       term_title_found="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
     fi
   fi
