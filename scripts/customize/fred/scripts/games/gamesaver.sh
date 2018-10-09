@@ -5,9 +5,8 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-#we are missing the netcp thing.  why????
-
-WINE_SOURCE_DIR="$HOME/wine_goods/My Games"
+WINE_GOODS_DIR="$HOME/wine_goods"
+WINE_SOURCE_DIR="$WINE_GOODS_DIR/My Games"
 SPOOLING_OUTPUT_DIR="$HOME/data/spooling_saves"
 
 if [ ! -d "$WINE_SOURCE_DIR" ]; then
@@ -32,7 +31,6 @@ function copyem()
 
   if [ -d "$source_dir" ]; then
     echo $game_name
-#old    cp -v -n "$source_dir"/* "$out_dir"/
     netcp "$source_dir"/* "$out_dir"/
     sep 28
   fi
@@ -59,5 +57,7 @@ copyem "fallout 3" "$WINE_SOURCE_DIR/Fallout3/Saves" "$SPOOLING_OUTPUT_DIR/fallo
 copyem "oblivion" "$WINE_SOURCE_DIR/Oblivion/Saves" "$SPOOLING_OUTPUT_DIR/oblivion/"
 
 copyem "fallout 4" "$WINE_SOURCE_DIR/Fallout4/Saves" "$SPOOLING_OUTPUT_DIR/fallout_4"
+
+copyem "witcher 3" "$WINE_GOODS_DIR/The Witcher 3/gamesaves" "$SPOOLING_OUTPUT_DIR/witcher_3"
 
 
