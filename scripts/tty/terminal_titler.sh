@@ -45,18 +45,36 @@ function set_terminal_title()
 # echoes back the current title on the terminal window, if we can acquire it.
 function get_terminal_title()
 {
+#hmmm: totally failing since gnome doesn't provide the info we need like it should; WINDOWID is empty.
+#hmmm: need to revise this somehow to work around that, but nothing is quite right so far.
+#hmmm: had to disable the xwininfo approach because it's super messy (console noise) and still isn't right (just like xdotool approach wasn't right).
+
   # this is an important value now; it is checked for in save_terminal_title.
   local term_title_found="unknown"
   # save the former terminal title if we're running in X with xterm.
-  which xprop &>/dev/null
-  if [ $? -eq 0 ]; then
-    # gnome-terminal doesn't set WINDOWID currently, but we can work around this.
-    if [[ -z "$WINDOWID" && ! -z "$(which xwininfo)" ]]; then
-#not good solution.      term_title_found="$(xprop -id $(xdotool getactivewindow) | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
-      term_title_found=$(xwininfo -id $(xprop -root | awk '/NET_ACTIVE_WINDOW/ { print $5; exit }') | awk -F\" '/xwininfo:/ { print $2; exit }')
-    # check if we're actually using xterm *and* that we have a window ID.
-    elif [[ "$TERM" =~ .*"xterm".* && ! -z "$WINDOWID" ]]; then
-      term_title_found="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+
+  # are we even running a terminal?
+#hmmm: abstract out that condition below to check against a list of names.
+  if [[ "$TERM" =~ .*"xterm".* ]]; then
+    # check that we have a window ID.
+    if [[ ! -z "$WINDOWID" ]]; then
+      # the window id exists in the variable; can we get its info?
+      if [[ ! -z "$(which xprop)" ]]; then
+        # sweet, we have all the info we need to get this done.
+        term_title_found="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+      fi
+    else
+      # gnome-terminal doesn't set WINDOWID currently; we can try to work around this.
+      false
+#hmmm: so far, none of these approaches are any good.
+#      # not good solution; gets wrong titles.  plus uses xdotool which is not installed by default in ubuntu.
+#      if [[ ! -z "$(which xdotool)" ]]; then
+#        term_title_found="$(xprop -id $(xdotool getactivewindow) | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
+#      fi
+#      # this solution also fails by getting the wrong window title if this one isn't focussed.
+#      if [[ ! -z "$(which xwininfo)" ]]; then
+#        term_title_found=$(xwininfo -id $(xprop -root | awk '/NET_ACTIVE_WINDOW/ { print $5; exit }') | awk -F\" '/xwininfo:/ { print $2; exit }')
+#      fi
     fi
   fi
   echo -n "$term_title_found"
