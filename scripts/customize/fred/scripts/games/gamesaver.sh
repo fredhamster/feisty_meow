@@ -58,6 +58,6 @@ copyem "oblivion" "$WINE_SOURCE_DIR/Oblivion/Saves" "$SPOOLING_OUTPUT_DIR/oblivi
 
 copyem "fallout 4" "$WINE_SOURCE_DIR/Fallout4/Saves" "$SPOOLING_OUTPUT_DIR/fallout_4"
 
-copyem "witcher 3" "$WINE_GOODS_DIR/The Witcher 3/gamesaves" "$SPOOLING_OUTPUT_DIR/witcher_3"
+copyem "witcher 3" "$WINE_GOODS_DIR/The*Witcher*3/gamesaves" "$SPOOLING_OUTPUT_DIR/witcher_3"
 
 
