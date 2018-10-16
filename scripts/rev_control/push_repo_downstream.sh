@@ -62,6 +62,10 @@ exit_on_error "running the git pull downstream master"
 git push --tags downstream master
 exit_on_error "running the git push downstream master"
 
+# do our dev branch also.
+git push --tags downstream dev
+continue_on_error "running the git push downstream dev: is there a dev branch?"
+
 popd &>/dev/null
 
 restore_terminal_title
