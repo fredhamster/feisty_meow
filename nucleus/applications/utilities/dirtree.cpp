@@ -38,10 +38,20 @@ public:
   int execute();
   int print_instructions_and_exit() {
     LOG(a_sprintf("\
-%s: This utility requires a directory name on the command line.\n\
-The subdirectories under that directory will be shown.  If a second paramter\n\
-is provided, it is taken as a pattern that will be used to show the files in\n\
-those directories also.  Otherwise, just the tree of directories is shown.\n\
+%s: This utility shows the sub-directory structure for a chosen directory.\n\
+It expects a directory name to be provided on the command line.  If no\n\
+directory is provided, then the current directory is assumed.  The sub-\n\
+directories under the chosen directory will be displayed on the console in a\n\
+stylized textual tree.  If a second parameter is provided, it is taken as a\n\
+file pattern that causes matching files to be displayed.  Without a pattern,\n\
+just the directory tree is shown.\n\
+For example:\n\
+  dirtree\n\
+    => shows the directory structure of the current directory.\n\
+  dirtree udon\n\
+    => shows the structure of directory 'udon'\n\
+  dirtree soba \"*.txt\"\n\
+    => displays all text files and sub-directories of 'soba'\n\
 ", filename(application::_global_argv[0]).basename().raw().s()));
     return 23;
   }
@@ -58,20 +68,30 @@ astring hier_prefix(int depth, int kids)
 int dirtree::execute()
 {
   astring path;
-
  
- 
-  if (application::_global_argc < 2) {
-    return print_instructions_and_exit();
-  }
+//hmmm: we really need an abstraction to do some checking if they want --help;
+//      this comparison way of doing it is lame.
+astring helpword = astring("--help");
 
-  path = application::_global_argv[1];
+  if (application::_global_argc <= 1) {
+    // plug in our default path if they gave us no parameters.
+  	path = ".";
+	} else {
+		// they gave us some parameters.  but are they asking for help?
+		if (helpword == astring(application::_global_argv[1])) {
+			return print_instructions_and_exit();
+		} else {
+			// this seems like a serious path request.
+			path = application::_global_argv[1];
+		}
+	}
 
   // check if we should show any of the files.
   bool show_files = false;
   astring pattern;
-  if (application::_global_argc >= 3)
+  if (application::_global_argc >= 3) {
     pattern = application::_global_argv[2];
+  }
   if (pattern.t()) {
     show_files = true;
   }
@@ -83,7 +103,7 @@ int dirtree::execute()
   if (!dir.good()) {
     continuable_error(class_name(), "tree construction",
         "the directory could not be read");
-    return 82;
+    return print_instructions_and_exit();
   }
 
   dir_tree_iterator *ted = dir.start(directory_tree::prefix);
@@ -99,8 +119,9 @@ int dirtree::execute()
     directory_tree::depth(*ted, depth);
     directory_tree::children(*ted, kids); 
     astring name_to_log = curr.basename().raw();
-    if (!depth)
+    if (!depth) {
       name_to_log = curr.raw();
+    }
     LOG(hier_prefix(depth, kids) + name_to_log);
     if (show_files) {
       astring names;
@@ -108,6 +129,10 @@ int dirtree::execute()
       if (names.length()) {
         astring split;
         string_manipulation::split_lines(names, split, depth * 2 + 2);
+        // strip eol chars off the string we got back, since we already add that in log.
+        while (parser_bits::is_eol(split[split.end()])) {
+        	split.zap(split.end(), split.end());
+        }
         LOG(split);
       }
     }
