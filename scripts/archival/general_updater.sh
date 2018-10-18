@@ -98,6 +98,52 @@ function update_archive_drive()
   popd
 }
 
+# compares one local well-known folder against the similar folder on a
+# remote destination.
+function do_a_folder_compare()
+{
+  local archname="$1"; shift
+  local dest="$1"; shift
+  if [ -z "$archname" -o -z "$dest" ]; then
+    echo "do_a_folder_compare needs an archive name and a destination host."
+    return 1
+  fi
+
+  if [ -d "/z/$archname" ]; then
+    sep 14
+    echo "Comparing $archname folder..."
+    compare_dirs /z/${archname} ${dest}:/z/${archname}
+    sep 14
+  fi
+}
+
+# runs through all the local archives on this host to make sure nothing is
+# different when compared with the mainline versions on the specified host.
+function uber_archive_comparator()
+{
+  local target="$1"; shift
+  if [ -z "$target" ]; then
+    echo uber_archive_comparator needs the target host to compare with.
+    return 1
+  fi
+
+  sep 14
+  echo "comparing against host '$target'"
+  sep 14
+
+#hmmm: shouldn't this be a list in a variable someplace?
+  for archicle in \
+    basement \
+    imaginations \
+    musix \
+    toaster \
+    walrus \
+    ; do
+      do_a_folder_compare $archicle $target
+  done
+}
+
+
 #hmmm: abstractable piece?  the runtime plug at the end of a library script?
 # this block should execute when the script is actually run, rather
 # than when it's just being sourced.
