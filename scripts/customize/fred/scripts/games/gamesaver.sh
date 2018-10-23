@@ -30,7 +30,7 @@ function copyem()
   source_dir="$1"; shift
   out_dir="$1"; shift
 
-  if [ -d "$source_dir" ]; then
+  if [ -d "$source_dir" -a $(ls "$source_dir" 2>/dev/null | wc -c) != 0 ]; then
     echo $game_name
     if [ ! -d "$out_dir" ]; then
       mkdir -p "$out_dir"
