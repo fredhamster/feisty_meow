@@ -115,7 +115,7 @@ full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 analyze_hierarchy_and_report ~/cloud/urgent "high priority (aieeee!)"
 
 # notes are individual files of tasks, usually, although some are combined.
-analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes (externalities)"
+analyze_hierarchy_and_report ~/cloud/grunty* "grunty (external facing) notes"
 
 # web site development tasks.
 analyze_hierarchy_and_report ~/cloud/webular "web design (ideas and tasks)"
