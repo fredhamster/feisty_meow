@@ -170,7 +170,7 @@ if (! -d $FEISTY_MEOW_LOADING_DOCK) {
 
 # set the executable bit for binaries for just this current user.
 if (-d $FEISTY_MEOW_BINARIES) {
-  system("chmod -R u+x \"$FEISTY_MEOW_BINARIES\"/*");
+  system("find \"$FEISTY_MEOW_BINARIES\" -type f -exec chmod u+x \"{}\" ';'");
 }
 
 ##############
