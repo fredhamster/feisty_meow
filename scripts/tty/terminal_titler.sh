@@ -4,7 +4,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 source "$FEISTY_MEOW_SCRIPTS/core/common.alias"
 
 # uncomment this to get extra noisy debugging.
-export DEBUG_TERM_TITLE=true
+#export DEBUG_TERM_TITLE=true
 
 ##############
 
@@ -25,7 +25,7 @@ function apply_title_to_terminal()
   else
     # not running interactively, so just echo the title.
     sep
-    echo ${title}
+    echo "${title}"
     sep
   fi
 }
@@ -39,11 +39,13 @@ function save_terminal_title()
   local title="$*"
 
   if [ -z "$title" ]; then
-echo "empty title: pushing current title again"
+    if [ ! -z "$DEBUG_TERM_TITLE" ]; then
+      echo "terminal_titler: empty title: pushing current title again"
+    fi
     peek_title_stack
     title="$LAST_TITLE"
     if [ -z "$title" ]; then
-      echo "there was no saved title, so we're ignoring the save attempt."
+      log_feisty_meow_event "terminal_titler: there was no saved title, so we're ignoring the save attempt."
       return 1
     fi
   fi
@@ -57,8 +59,10 @@ echo "empty title: pushing current title again"
     export TERMINAL_TITLE_STACK="$TERMINAL_TITLE_STACK,\"$title\""
   fi
 
-echo new terminal title stack is:
-echo $TERMINAL_TITLE_STACK
+  if [ ! -z "$DEBUG_TERM_TITLE" ]; then
+    echo "terminal_titler: new terminal title stack is:"
+    echo "$TERMINAL_TITLE_STACK"
+  fi
 }
 
 # takes a terminal title off the stack and sets the LAST_TITLE variable.
@@ -97,8 +101,8 @@ function restore_terminal_title()
 
   if [ ! -z "$LAST_TITLE" ]; then
     if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-      echo "restoring prior terminal title of '$LAST_TITLE'"
-      echo "while new title stack is: $TERMINAL_TITLE_STACK"
+      echo "terminal_titler: restoring prior terminal title of '$LAST_TITLE'"
+      echo "terminal_titler: while new title stack is: $TERMINAL_TITLE_STACK"
     fi
     apply_title_to_terminal "$LAST_TITLE"
   fi
@@ -110,7 +114,7 @@ function label_terminal_with_info()
   # we only label the terminal anew if there's no saved title.
   if [ -z "$TERMINAL_TITLE_STACK" ]; then
     if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-      echo "showing new generated title since prior title was empty"
+      echo "terminal_titler: showing new generated title since prior title was empty"
     fi
     pruned_host=$(echo $HOSTNAME | sed -e 's/^\([^\.]*\)\..*$/\1/')
     date_string=$(date +"%Y %b %e @ %T")
