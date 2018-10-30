@@ -187,20 +187,18 @@ if [ -z "$skip_all" ]; then
     # version for the other side (just 'linux'); we don't want the remote side still
     # thinking it's running xterm.
     save_terminal_title
-    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-      echo TERM saved is: $PRIOR_TERMINAL_TITLE
-    fi
+
 #hmmm: why were we doing this?  it scorches the user's logged in session, leaving it without proper terminal handling.
 #    # we save the value of TERM; we don't want to leave the user's terminal
 #    # brain dead once we come back from this function.
 #    local oldterm="$TERM"
 #    export TERM=linux
+
     /usr/bin/ssh -X -C "${args[@]}"
+
 #    # restore the terminal variable also.
 #    TERM="$oldterm"
-    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-      echo TERM before restore, will use prior title of: $PRIOR_TERMINAL_TITLE
-    fi
+
     restore_terminal_title
     if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
       echo TERM title restored to prior value
