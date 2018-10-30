@@ -14,19 +14,14 @@ fi
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
-LOG_FILE=$TMP/zz_transients.log
-  # log file for this script.
-
-word=Verified
 if [ ! -d "$TMP" ]; then
   mkdir -p $TMP
-  word=Created
   chown $USER $TMP
   if [ $? -ne 0 ]; then
     echo "failed to chown $TMP to user's ownership."
   fi
+  log_feisty_meow_event "created transient area \"$TMP\" for $USER on $(date_stringer)." 
 fi
-echo "$word transient area \"$TMP\" for $USER on $(date_stringer)." >>$LOG_FILE
 
 # set other temporary variables to the same place as TMP.
 export TEMP=$TMP
