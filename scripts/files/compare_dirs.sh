@@ -20,6 +20,8 @@ if [ "$dir1" == "$dir2" ]; then
   exit 1
 fi
 
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
 out1="$(mktemp "$TMP/compare_dirs_output.XXXXXX")"
 out2="$(mktemp "$TMP/compare_dirs_output.XXXXXX")"
 
@@ -44,11 +46,13 @@ fi
 if [ -z "$host1" ]; then
   # fully local compare location for first dir.
   pushd "$dir1" &>/dev/null
+  exit_on_error "compare_dirs: seeking directory $dir1"
   find . >"$out1"
   popd &>/dev/null
 else
   # remote compare location for first dir.
   ssh "$host1" "cd \"$dir1\" && find ." >"$out1"
+  exit_on_error "compare_dirs: listing remote directory $dir1"
 fi
 
 # sort the output from listing the first directory.
@@ -57,11 +61,13 @@ sort "$out1" >"$out1".sort
 if [ -z "$host2" ]; then
   # fully local compare location for second dir.
   pushd "$dir2" &>/dev/null
+  exit_on_error "compare_dirs: seeking directory $dir2"
   find . >"$out2"
   popd &>/dev/null
 else
   # remote compare location for second dir.
   ssh "$host2" "cd \"$dir2\" && find ." >"$out2"
+  exit_on_error "compare_dirs: listing remote directory $dir2"
 fi
 
 # sort the output from listing the second directory.
