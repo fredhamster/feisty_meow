@@ -8,7 +8,7 @@
 " preserve the default 50 lines for a paste to another file.  this makes all registers go up to
 " this size though, so if you save to a lot of different ones, you will use more space in your
 " viminfo file.
-set viminfo='100,<1000,s10,h
+set viminfo='100,<1000,s100,h
 
 " tells vim not to make a backup of the file before editing it; this is living dangerously.
 set nobk
