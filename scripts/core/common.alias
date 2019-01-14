@@ -128,10 +128,16 @@ define_yeti_alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 
 # says goodbye when leaving a shell.
 define_yeti_alias bye='. $FEISTY_MEOW_SCRIPTS/processes/goodbye.sh'
+
 define_yeti_alias cputemp='acpi -t'
+
 # makes root user's home directory's permissions right.
 define_yeti_alias reroot='chown -R root:root /root'
-# yes, these are really helpful...
+
+# space 'em all fixes naming for all of the files of the appropriate types in the current directory.
+define_yeti_alias spacemall='spacem *.txt *.pdf *.jpg *.png *.odt *.ods *.JPG *.docx *.m4a *.mp3 *.eml *.html 2>> ~/.tmp/zz_spacem.log'
+
+# yes, these what/who/why functions are really helpful...
 define_yeti_alias whoareyou='echo -e "Hello, I am a computer named $(hostname)\nand I am very pleased to meet you."'
 define_yeti_alias whereami='echo whoa dude, try not to think about it...'
 define_yeti_alias why='echo We all wonder what the point of the universe is at times.  If you figure it all out, please write us.'
