@@ -23,6 +23,14 @@ function reapply_cool_permissions()
   done
 #echo arch addin now is: $arch_addin
 
+  # now another round with similar setup, to ensure we get any directories
+  # that actually live out in /z but not in /home/archives.
+  ARCHIVE_TOP=/z
+  for dirname in $arch_builder; do
+    arch_addin+="$ARCHIVE_TOP/$dirname "
+  done
+#echo arch addin now is: $arch_addin
+
   # special case that makes our software hierarchy folder, if it doesn't exist.
   # everything else is only re-permed if it exists.
   if [ ! -d "$DEFAULT_FEISTYMEOW_ORG_DIR" ]; then
