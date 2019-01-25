@@ -51,7 +51,7 @@ function reapply_cool_permissions()
         /usr/local/${cooluser} \
         /home/games \
         $arch_addin; do
-    if [ -d "$dirname" ]; then
+    if [ -d "$dirname" -o -L "$dirname" ]; then
       echo "revising ownership on '$dirname'"
       sudo chown -R ${cooluser}:${cooluser} "$dirname"
       continue_on_error "chowning for ${cooluser}: $dirname"
