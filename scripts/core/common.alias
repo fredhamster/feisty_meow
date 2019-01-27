@@ -141,7 +141,7 @@ define_yeti_alias cputemp='acpi -t'
 define_yeti_alias reroot='chown -R root:root /root'
 
 # space 'em all fixes naming for all of the files of the appropriate types in the current directory.
-define_yeti_alias spacemall="find . -maxdepth 1 -mindepth 1 -type f \( $(echo pdf png jpg jpeg odt ods docx m4a mp3 eml html mov pptx xlsx | sed -e 's/\([a-z0-9][a-z0-9]*\)/-iname \"*.\1\" -o /g') -iname \"*.txt\" \) -exec bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh" \"{}\" \; "
+define_yeti_alias spacemall="find . -maxdepth 1 -mindepth 1 -type f \( $(echo pdf png jpg jpeg odt ods docx m4a mp3 eml html mov pptx xlsx zip | sed -e 's/\([a-z0-9][a-z0-9]*\)/-iname \"*.\1\" -o /g') -iname \"*.txt\" \) -exec bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh" \"{}\" \; "
 #2>> ~/.tmp/zz_spacem.log'
 
 # yes, these what/who/why functions are really helpful...
