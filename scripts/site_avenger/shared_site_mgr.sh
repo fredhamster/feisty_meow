@@ -13,29 +13,64 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 export SSM_LOG_FILE="$TMP/$(logname)-siteavenger-script.log"
 
-# get our configuration loaded, if we know the config file.
-# if there is none, we will use our default version.
-export SITE_MANAGEMENT_CONFIG_FILE
-if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
-  SITE_MANAGEMENT_CONFIG_FILE="$THISDIR/config/default.app"
-  echo "$(date_stringer): Site management config file was not set.  Using default:" >> "$SSM_LOG_FILE"
-  echo "$(date_stringer):   $SITE_MANAGEMENT_CONFIG_FILE" >> "$SSM_LOG_FILE"
-fi
-
-# load in at least the default version to get us moving.
-source "$SITE_MANAGEMENT_CONFIG_FILE"
-exit_on_error "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
-
 # configure feisty revision control to ignore vendor folders.
 export NO_CHECKIN_VENDOR=true
 
+# handles the computation of the base application path and the app dir name.
+# this expects to be passed the application directory name, but it will attempt to
+# do something intelligent if no name is passed in.
+function autoconfigure_paths()
+{
+  export app_dirname="$1"; shift
+
+  if [ -z "$app_dirname" ]; then
+    echo "$(date_stringer): Guessing application dir from local folder."
+    app_dirname="$(basename $(\pwd))"
+    export BASE_APPLICATION_PATH="$(dirname $(\pwd))"
+echo "calculated application dir of '$app_dirname' and"
+echo "a base app path of '$BASE_APPLICATION_PATH'"
+  fi
+
+  # get our configuration loaded, if we know the config file.
+  # if there is none, we will use our default version.
+  export SITE_MANAGEMENT_CONFIG_FILE
+  if [ -z "$SITE_MANAGEMENT_CONFIG_FILE" ]; then
+    SITE_MANAGEMENT_CONFIG_FILE="$THISDIR/config/default.app"
+    echo "$(date_stringer): Site management config file was not set.  Using default:" >> "$SSM_LOG_FILE"
+    echo "$(date_stringer):   $SITE_MANAGEMENT_CONFIG_FILE" >> "$SSM_LOG_FILE"
+  fi
+
+  # load in at least the default version to get us moving.
+  source "$SITE_MANAGEMENT_CONFIG_FILE"
+  exit_on_error "loading site management configuration from: $SITE_MANAGEMENT_CONFIG_FILE"
+
+
+echo "after site config file sourced, app dirname now '$app_dirname' and"
+echo "base app path now '$BASE_APPLICATION_PATH'"
+
+}
+
 # tests that the main storage folder for apps exists.
+# the parameter passed in should be the application directory name (app_dirname), without
+# any additional path components.  the script will attempt to auto-configure the application
+# base path (above the project folder with app_dirname) and get all the other path variables
+# established.
 function check_apps_root()
 {
-  local appdir="$1"; shift
-  if [ ! -d "$appdir" ]; then
-    echo "$(date_stringer): Creating the apps directory: $appdir" >> "$SSM_LOG_FILE"
-    mkdir "$appdir"
+  local temp_app_dirname="$1"; shift
+
+echo new call to auto conf func...
+  autoconfigure_paths "$temp_app_dirname"
+echo after call to auto conf func...
+
+  if [ -z "$BASE_APPLICATION_PATH" ]; then
+echo fix this: we had no base app path, what to do now?
+exit 1
+  fi
+
+  if [ ! -d "$BASE_APPLICATION_PATH" ]; then
+    echo "$(date_stringer): Creating the apps directory: $BASE_APPLICATION_PATH" >> "$SSM_LOG_FILE"
+    mkdir "$BASE_APPLICATION_PATH"
     exit_on_error "Making apps directory when not already present"
   fi
 }
@@ -458,7 +493,7 @@ function switch_to()
   # check for parameters.
   app_dirname="$1"; shift
 
-  check_apps_root "$BASE_APPLICATION_PATH"
+  check_apps_root "$app_dirname"
 
   # find proper webroot where the site will be initialized.
   if [ -z "$app_dirname" ]; then
