@@ -4,6 +4,7 @@ function spacem_out()
 {
   while [ $# -gt 0 ]; do
     arg="$1"; shift
+echo "arg is '$arg'"
     if [ ! -f "$arg" -a ! -d "$arg" ]; then
       echo "=> did not find a file or directory named '$arg'."
       continue
@@ -19,18 +20,18 @@ function spacem_out()
       intermediate_name="'$arg'"
     else 
       # now zap the first part of the name off (since original name is not needed).
-      intermediate_name="$(echo $intermediate_name | sed -e 's/.*=> //')"
+      intermediate_name="$(echo "$intermediate_name" | sed -e 's/.*=> //')"
       saw_intermediate_result=1
     fi
 
     # first we rename the file to be lower case.
-    actual_file="$(echo $intermediate_name | sed -e "s/'\([^']*\)'/\1/")"
-    final_name="$(perl $FEISTY_MEOW_SCRIPTS/files/renlower.pl "$actual_file")"
+    actual_file="$(echo "$intermediate_name" | sed -e "s/\'\([^']*\)\'/\1/")"
+    final_name="$(perl "$FEISTY_MEOW_SCRIPTS/files/renlower.pl" "$actual_file")"
     local saw_final_result=0
     if [ -z "$final_name" ]; then
       final_name="$intermediate_name"
     else
-      final_name="$(echo $final_name | sed -e 's/.*=> //' )"
+      final_name="$(echo "$final_name" | sed -e 's/.*=> //' )"
       saw_final_result=1
     fi
 #echo intermed=$saw_intermediate_result 

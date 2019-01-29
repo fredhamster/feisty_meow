@@ -965,6 +965,22 @@ return 0
 
   ##############
 
+  # space 'em all fixes naming for all of the files of the appropriate types in the directories specified.
+  function spacemall() {
+    local -a dirs=("${@}")
+echo "dirs from params are: " "${dirs[@]}"
+    if [ ${#dirs[@]} -eq 0 ]; then
+echo dirs had zero entries
+      dirs=(.)
+    fi
+echo "dirs are: " "${dirs[@]}"
+
+#was using: -maxdepth 1 -mindepth 1 
+    find "${dirs[@]}" -follow -type f \( $(echo pdf png jpg jpeg odt ods docx m4a mp3 eml html mov pptx xlsx zip | sed -e 's/\([a-z0-9][a-z0-9]*\)/-iname \"*.\1\" -o /g') -iname "*.txt" \) -exec bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh" "{}" \;
+  }
+
+  ##############
+
   # site avenger aliases
   function switchto()
   {

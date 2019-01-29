@@ -45,9 +45,9 @@ sub rename_lower {
 #print "new name='$new_name'\n";
       local $intermediate_name = $dir . "RL" .  rand() . ".tmp";
 #print "\n";
-#print "command A is: rename [$old_name] [$intermediate_name]\n";
-#print "command B is: rename [$intermediate_name] [$new_name]\n";
-#print "\n";
+print "command A is: rename [$old_name] [$intermediate_name]\n";
+print "command B is: rename [$intermediate_name] [$new_name]\n";
+print "\n";
       rename($old_name, $intermediate_name)
           || die "failed to do initial rename";
       rename($intermediate_name, $new_name)
