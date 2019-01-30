@@ -2,18 +2,18 @@
 
 # compares this machine's local archives against an exemplar set.
 
-target="$1"; shift
-if [ -z "$target" ]; then
-  target=wildmutt
-  #target=curie
+remote_place="$1"; shift
+if [ -z "$remote_place" ]; then
+  remote_place=wildmutt
+  #remote_place=curie
 fi
-where="$1"; shift
-if [ -z "$where" ]; then
-  where=/z
+local_place="$1"; shift
+if [ -z "$local_place" ]; then
+  local_place=/z
 fi
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"
 
-uber_archive_comparator $target $where
+uber_archive_comparator $remote_place $local_place
 
