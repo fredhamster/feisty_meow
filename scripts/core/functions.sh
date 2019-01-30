@@ -974,9 +974,7 @@ echo dirs had zero entries
       dirs=(.)
     fi
 echo "dirs are: " "${dirs[@]}"
-
-#was using: -maxdepth 1 -mindepth 1 
-    find "${dirs[@]}" -follow -type f \( $(echo pdf png jpg jpeg odt ods docx m4a mp3 eml html mov pptx xlsx zip | sed -e 's/\([a-z0-9][a-z0-9]*\)/-iname \"*.\1\" -o /g') -iname "*.txt" \) -exec bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh" "{}" \;
+    find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f \( $(echo pdf png jpg jpeg odt ods docx m4a mp3 eml html mov pptx xlsx zip | sed -e 's/\([a-z0-9][a-z0-9]*\)/-iname \"*.\1\" -o /g') -iname "*.txt" \) -exec bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh" "{}" \;
   }
 
   ##############
