@@ -42,7 +42,7 @@ function synch_directory_to_target()
   sep
 
   if [ ! -d "$from" ]; then
-    echo "skipping synch on missing source directory: ${from}"
+    echo "skipping synch on missing source directory: $from"
     return 0
   fi
   if [ ! -d "$to" ]; then
@@ -69,12 +69,12 @@ function update_archive_drive()
 
   sep
 
-  echo Target drive currently has...
-  ls "$target_folder"
-  if [ $? -ne 0 ]; then
-    echo "The target location '$target_folder' is not mounted currently, so cannot be updated."
+  if [ ! -d "$target_folder" -a ! -f "$target_folder" ]; then
+    echo "Target '$target_folder' is not available currently; not updating."
     return 1
   fi
+  echo Target drive currently has...
+  dir "$target_folder"
 
   # synch all our targets.
   for currdir in $MAJOR_ARCHIVE_SOURCES; do
