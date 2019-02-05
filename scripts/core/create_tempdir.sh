@@ -28,6 +28,7 @@ export TEMP=$TMP
 
 # Make sure no one else is playing around in the temporary directory.
 chmod 700 $TMP
+continue_on_error chmodding to secure temporary directory.
 
 if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo done creating temporary directory....; fi
 
