@@ -304,18 +304,25 @@ echo "$(date_stringer): $(var full_app_dir checkout_dirname repo_root repo_name)
   exit_on_error "Switching to our app dir '$full_app_dir'"
 
   local complete_path="$full_app_dir"
-  if [ ! -z "$checkout_dirname" ]; then
+#hmmm: below code problematic for when we want a new git clone to show up!
+  if [ ! -z "$checkout_dirname" -a -d "$full_app_dir/$checkout_dirname" ]; then
     # make the full path using the non-empty checkout dir name.
     complete_path+="/$checkout_dirname"
+  else
+    # using the additional path component failed, so we reset that to see if
+    # we can still proceed normally.
+    unset checkout_dirname
   fi
+
+echo set complete_path: $complete_path
 
   # see if the checkout directory exits.  the repo_found variable is set to
   # non-empty if we find it and it's a valid git repo.
   repo_found=
-  if [ -d "$full_app_dir" ]; then
+  if [ -d "$complete_path" ]; then
     # checkout directory exists, so let's check it.
-    pushd "$full_app_dir" &>/dev/null
-    exit_on_error "Switching to directory for check out: $full_app_dir"
+    pushd "$complete_path" &>/dev/null
+    exit_on_error "Switching to directory for check out: $complete_path"
 
     # ask for repository name (without .git).
     if git rev-parse --git-dir > /dev/null 2>&1; then
@@ -326,7 +333,7 @@ echo "$(date_stringer): $(var full_app_dir checkout_dirname repo_root repo_name)
     # we don't consider the state of having the dir exist but the repo be wrong as good.
     if [ -z "$repo_found" ]; then
       echo "There is a problem; this folder is not a valid repository:"
-      echo "  $full_app_dir"
+      echo "  $complete_path"
       echo "This script cannot continue unless the git repository is valid."
       exit 1
     fi
@@ -335,14 +342,20 @@ echo "$(date_stringer): $(var full_app_dir checkout_dirname repo_root repo_name)
 
   if [ ! -z "$repo_found" ]; then
     # a repository was found, so update the version here and leave.
+    pushd "$complete_path" &>/dev/null
+    exit_on_error "Switching to directory for repo update: $complete_path"
     echo "Repository $repo_name exists.  Updating it."
-    rgetem
+    git pull --tags --all
     exit_on_error "Recursive checkout on: $complete_path"
+    popd &>/dev/null
   else
     # clone the repo since it wasn't found.
+    pushd "$complete_path/.." &>/dev/null
+    exit_on_error "Switching to parent directory prior to new clone: $complete_path/.."
     echo "Cloning repository $repo_name now."
     git clone "$repo_root/$repo_name.git" $checkout_dirname
     exit_on_error "Git clone of repository: $repo_name"
+    popd &>/dev/null
   fi
 
 #unused?
