@@ -184,10 +184,10 @@ function find_app_folder()
 
     # make sure we're allowed to auto-guess the folder name from our current dir.
     if [ -z "$NO_AUTOMATIC_FOLDER_GUESS" ]; then
-      # if we can find an avenger5 directory above our current PWD, then that
-      # might tell us our name.
-      if  find_named_parent_dir "avenger5"; then
-        # we can grab a name above the avenger5 location.  let's try that.
+      # if we can find the special checkout directory name above our current PWD, then that
+      # might tell us our project name.
+      if  find_named_parent_dir "$CHECKOUT_DIR_NAME"; then
+        # we can grab a name above the checkout dir name location.  let's try that.
         app_dirname="$(basename "$(dirname $PARENT_DIR_FOUND)" )"
       fi
     else

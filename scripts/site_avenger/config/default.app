@@ -15,8 +15,9 @@
 export BASE_APPLICATION_PATH="$HOME/apps"
 # where the code should come from.
 export DEFAULT_REPOSITORY_ROOT="git@github.com:kwentworth"
-# we checkout the git repository to a directory underneath the
-# app storage directory named this:
+# we checkout the git repository to a directory underneath the app storage
+# directory named this (see below for "this"), if that directory name is found.
+# this is a saco designs infrastructure standard.
 export CHECKOUT_DIR_NAME="avenger5"
 # the subfolder that the web browser will look for the site in,
 # underneath the application's specific path.
