@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Author: Kevin Wentworth
 # Author: Chris Koeritz
+# Author: Kevin Wentworth
 
 # This contains a bunch of reusable functions that help out in managing websites.
 
@@ -186,7 +186,7 @@ function find_app_folder()
     if [ -z "$NO_AUTOMATIC_FOLDER_GUESS" ]; then
       # if we can find the special checkout directory name above our current PWD, then that
       # might tell us our project name.
-      if  find_named_parent_dir "$CHECKOUT_DIR_NAME"; then
+      if find_named_parent_dir "$CHECKOUT_DIR_NAME"; then
         # we can grab a name above the checkout dir name location.  let's try that.
         app_dirname="$(basename "$(dirname $PARENT_DIR_FOUND)" )"
       fi
@@ -229,19 +229,29 @@ function test_app_folder()
   local dir="$1"; shift
 
   local combo="$appsdir/$dir"
+  if [ "$dir" == " " ]; then
+    # trickery here means we don't expect an intermediate directory component.
+    combo="$appsdir"
+  fi
 
   if [ ! -d "$combo" ]; then
+    # the directory wasn't there yet, so we will auto-create it.  this should
+    # hopefully be the right decision usually.
     echo "$(date_stringer): Creating app directory: $combo" >> "$SSM_LOG_FILE"
     mkdir "$combo"
     exit_on_error "Making application directory when not already present"
+  else
+    # the directory does exist.  let's test out a theory that it might not be
+    # an official site avenger style folder, in which case we need to patch a
+    # variable to set expectations.
+    if [ ! -d "$combo/$CHECKOUT_DIR_NAME" ]; then
+      echo "Dropping expectation for intermediate checkout directory name."
+      CHECKOUT_DIR_NAME=" "
+    fi
   fi
 
-echo yo combo is $combo
-
-  if [ -d "$combo/$CHECKOUT_DIRNAME" ]; then
-    echo "Dropping expectation for intermediary checkout directory name."
-    unset CHECKOUT_DIRNAME
-  fi
+echo yo modulopius on the variables:
+var combo CHECKOUT_DIR_NAME
 
   locate_config_file "$dir"
 }
@@ -249,9 +259,7 @@ echo yo combo is $combo
 # eases some permissions to enable apache to write log files and do other shopkeeping.
 function fix_site_perms()
 {
-  local app_dir="$1"; shift
-
-  local site_dir="$app_dir/$CHECKOUT_DIR_NAME"
+  local site_dir="$1"; shift
 
   if [ -f "$site_dir/bin/cake" ]; then
     sudo chmod -R a+rx "$site_dir/bin/cake"
@@ -281,6 +289,34 @@ function clear_orm_cache()
   fi
 }
 
+# checks that the directory provided is a valid git repository.
+function is_valid_git_repo()
+{
+  local complete_path="$1"; shift
+  
+  # see if the directory even exists.
+  if [ ! -d "$complete_path" ]; then
+    # nope, that's not a git repo since it's not even there.
+    false
+    return
+  fi
+
+  # directory exists, so let's test it out.
+  pushd "$complete_path" &>/dev/null
+  exit_on_error "Switching to directory for check out: $complete_path"
+
+  # ask for repository name (without .git).
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    # this is a valid git repo.
+    true
+    return
+  fi
+ 
+  # no, this is not a valid git repository.
+  popd &>/dev/null
+  false
+}
+
 # updates the revision control repository passed in.  this expects that the
 # repo will live in a folder called "checkout_dirname" under the app path,
 # which is the standard for deployed site avenger sites.  if that directory is
@@ -300,56 +336,32 @@ echo "$(date_stringer): $(var full_app_dir checkout_dirname repo_root repo_name)
   # forget any prior value, since we are going to validate the path.
   unset site_store_path
 
-  pushd "$full_app_dir" &>/dev/null
-  exit_on_error "Switching to our app dir '$full_app_dir'"
+#  pushd "$full_app_dir" &>/dev/null
+#  exit_on_error "Switching to our app dir '$full_app_dir'"
 
   local complete_path="$full_app_dir"
-#hmmm: below code problematic for when we want a new git clone to show up!
-  if [ ! -z "$checkout_dirname" -a -d "$full_app_dir/$checkout_dirname" ]; then
+  if [ ! "$checkout_dirname" == " " ]; then
     # make the full path using the non-empty checkout dir name.
     complete_path+="/$checkout_dirname"
-  else
-    # using the additional path component failed, so we reset that to see if
-    # we can still proceed normally.
-    unset checkout_dirname
   fi
 
 echo set complete_path: $complete_path
+  # store the local version into our special global.
+  site_store_path="$complete_path"
 
-  # see if the checkout directory exits.  the repo_found variable is set to
-  # non-empty if we find it and it's a valid git repo.
-  repo_found=
-  if [ -d "$complete_path" ]; then
-    # checkout directory exists, so let's check it.
-    pushd "$complete_path" &>/dev/null
-    exit_on_error "Switching to directory for check out: $complete_path"
-
-    # ask for repository name (without .git).
-    if git rev-parse --git-dir > /dev/null 2>&1; then
-      # this is a valid git repo.
-      repo_found=yes
-    fi
- 
-    # we don't consider the state of having the dir exist but the repo be wrong as good.
-    if [ -z "$repo_found" ]; then
+  # check out the directory to see if it's a git repository.
+  if ! is_valid_git_repo "$complete_path"; then
+    if [ -d "$complete_path" ]; then
+      # we don't consider the state of having the dir exist but the repo be wrong as good.
       echo "There is a problem; this folder is not a valid repository:"
       echo "  $complete_path"
       echo "This script cannot continue unless the git repository is valid."
       exit 1
     fi
-    popd &>/dev/null
-  fi
-
-  if [ ! -z "$repo_found" ]; then
-    # a repository was found, so update the version here and leave.
-    pushd "$complete_path" &>/dev/null
-    exit_on_error "Switching to directory for repo update: $complete_path"
-    echo "Repository $repo_name exists.  Updating it."
-    git pull --tags --all
-    exit_on_error "Recursive checkout on: $complete_path"
-    popd &>/dev/null
-  else
-    # clone the repo since it wasn't found.
+    # okay, so the directory doesn't even exist.  that means we will try to
+    # clone the project anew.
+    mkdir "$complete_path"
+    exit_on_error "Making project directory prior to new clone: $complete_path"
     pushd "$complete_path/.." &>/dev/null
     exit_on_error "Switching to parent directory prior to new clone: $complete_path/.."
     echo "Cloning repository $repo_name now."
@@ -358,10 +370,12 @@ echo set complete_path: $complete_path
     popd &>/dev/null
   fi
 
-#unused?
-  # construct the full path to where the app will actually live.
-  site_store_path="$complete_path"
-
+  # a repository was found, so update the version here and leave.
+  pushd "$complete_path" &>/dev/null
+  exit_on_error "Switching to directory for repo update: $complete_path"
+  echo "Repository $repo_name exists.  Updating it."
+  git pull --tags --all
+  exit_on_error "Recursive checkout on: $complete_path"
   popd &>/dev/null
 }
 
@@ -381,8 +395,8 @@ function composer_repuff()
   exit_on_error "Composer installation step on '$site_store_path'."
   echo "Site updated."
 
-#hmmm: argh global
-  dir="$site_store_path/$CHECKOUT_DIR_NAME/vendor/siteavenger/avcore"
+#hmmm: untested, had wrong path here and was never being run.
+  dir="vendor/siteavenger/avcore"
   if [ -d "$dir" ]; then
     echo "Running avcore database migrations..."
     logfile="$TMP/problem-avcore_db_migration-$(date_stringer).log"
@@ -415,6 +429,7 @@ function create_site_links()
   exit_on_error "Switching to our app dir '$site_store_path'"
 
   pushd webroot &>/dev/null
+  exit_on_error "Switching to our webroot dir"
 
   # remove all symlinks that might plague us.
   find . -maxdepth 1 -type l -exec rm -f {} ';'
@@ -438,32 +453,41 @@ function create_site_links()
   # get back out of webroot.
   popd &>/dev/null
 
-  # hop up a level above where we had been.
+  # hop up a level above where we had been.  this is a level above the
+  # site store path, which will not be appropriate for all projects, so
+  # we must tread carefully.
   pushd .. &>/dev/null
 
-  # link 'public' to webroot.
-  if [ -L public ]; then
-    # public is a symlink.
-    \rm public
-    exit_on_error "Removing public directory symlink"
-  elif [ -d public ]; then
-    # public is a folder with default files.
+  # we only do the following linking exercises when we are sure this is a
+  # site avenger style application.  otherwise we would be creating links
+  # above our own heads, sort of.
+  if [ -d "$CHECKOUT_DIR_NAME" ]; then
+    # link 'public' to webroot.
+    if [ -L public ]; then
+      # public is a symlink.
+      \rm public
+      exit_on_error "Removing public directory symlink"
+    elif [ -d public ]; then
+      # public is a folder with default files.
 #hmmm: is that safe?
-    \rm -rf public
-    exit_on_error "Removing public directory and contents"
-  fi
+      \rm -rf public
+      exit_on_error "Removing public directory and contents"
+    fi
 
-  # create the main 'public' symlink
+    # create the main 'public' symlink
 #hmmm: argh global
-  make_safe_link $CHECKOUT_DIR_NAME/webroot public
-  exit_on_error "Creating link to webroot called 'public'"
-
+    make_safe_link $CHECKOUT_DIR_NAME/webroot public
+    exit_on_error "Creating link to webroot called 'public'"
 #hmmm: public/$themelower/im will be created automatically by system user with appropriate permissions
 
-  echo Created symbolic links.
+  else
+    echo "Skipping 'public' link for project without '$CHECKOUT_DIR_NAME' folder."
+  fi
 
   popd &>/dev/null
   popd &>/dev/null
+
+  echo Created symbolic links.
 }
 
 # fetches composer to make sure it's up to date.
@@ -503,9 +527,8 @@ function fix_appdir_ownership()
     echo "$(date_stringer): user name failed checks for chowning, was found as '$user_name'" >> "$SSM_LOG_FILE"
   fi
 
-  # 
-#probably not enough for path!
-  fix_site_perms "$combo"
+#hmmm: is this variable set by this point?  it's the right thing to pass down there anyway.
+  fix_site_perms "$site_store_path"
 }
 
 # Jumps to an application directory given the app name.  If no app name is
