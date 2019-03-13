@@ -236,6 +236,13 @@ function test_app_folder()
     exit_on_error "Making application directory when not already present"
   fi
 
+echo yo combo is $combo
+
+  if [ -d "$combo/$CHECKOUT_DIRNAME" ]; then
+    echo "Dropping expectation for intermediary checkout directory name."
+    unset CHECKOUT_DIRNAME
+  fi
+
   locate_config_file "$dir"
 }
 
@@ -276,7 +283,8 @@ function clear_orm_cache()
 
 # updates the revision control repository passed in.  this expects that the
 # repo will live in a folder called "checkout_dirname" under the app path,
-# which is the standard for our deployed sites.
+# which is the standard for deployed site avenger sites.  if that directory is
+# missing, then we assume a checkout of the top-level repository instead.
 # important: this also sets a global variable called site_store_path to the full
 # path of the application.
 function update_repo()
@@ -295,15 +303,19 @@ echo "$(date_stringer): $(var full_app_dir checkout_dirname repo_root repo_name)
   pushd "$full_app_dir" &>/dev/null
   exit_on_error "Switching to our app dir '$full_app_dir'"
 
-  local complete_path="$full_app_dir/$checkout_dirname"
+  local complete_path="$full_app_dir"
+  if [ ! -z "$checkout_dirname" ]; then
+    # make the full path using the non-empty checkout dir name.
+    complete_path+="/$checkout_dirname"
+  fi
 
   # see if the checkout directory exits.  the repo_found variable is set to
   # non-empty if we find it and it's a valid git repo.
   repo_found=
-  if [ -d "$checkout_dirname" ]; then
+  if [ -d "$full_app_dir" ]; then
     # checkout directory exists, so let's check it.
-    pushd "$checkout_dirname" &>/dev/null
-    exit_on_error "Switching to our checkout directory: $checkout_dirname"
+    pushd "$full_app_dir" &>/dev/null
+    exit_on_error "Switching to directory for check out: $full_app_dir"
 
     # ask for repository name (without .git).
     if git rev-parse --git-dir > /dev/null 2>&1; then
@@ -332,9 +344,6 @@ echo "$(date_stringer): $(var full_app_dir checkout_dirname repo_root repo_name)
     git clone "$repo_root/$repo_name.git" $checkout_dirname
     exit_on_error "Git clone of repository: $repo_name"
   fi
-
-#not doing this here since powerup uses this and has no sudo.
-  #fix_site_perms "$complete_path"
 
 #unused?
   # construct the full path to where the app will actually live.
