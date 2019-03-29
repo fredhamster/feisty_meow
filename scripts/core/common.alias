@@ -132,6 +132,9 @@ define_yeti_alias play='bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh'
 
 # some really eccentric feisty meow aliases...
 
+# launches a bash session in the background using the screen command.
+define_yeti_alias bashido='screen -L -S bashido -d -m bash'
+
 # says goodbye when leaving a shell.
 define_yeti_alias bye='. $FEISTY_MEOW_SCRIPTS/processes/goodbye.sh'
 
