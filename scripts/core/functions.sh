@@ -926,15 +926,18 @@ return 0
   # in the directories specified.
   function spacemall() {
     local -a dirs=("${@}")
-echo "dirs from params are: " "${dirs[@]}"
     if [ ${#dirs[@]} -eq 0 ]; then
-echo dirs had zero entries
       dirs=(.)
     fi
-echo "dirs are now: " "${dirs[@]}"
-    local ext_list="$(echo pdf png jpg jpeg odt ods docx m4a mp3 eml html mov pptx xlsx zip | sed -e 's/\([a-z0-9][a-z0-9]*\)/-iname \"*.\1\" -o /g')"
-echo "ext_list=$ext_list"
-    find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f $ext_list -iname "*.txt" -exec bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh" "{}" \;
+
+    local charnfile="$(mktemp $TMP/zz_charn.XXXXXX)"
+    find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f | \
+        grep \
+"docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|pptx\|txt\|xlsx\|zip" | \
+        sed -e 's/^/"/' | sed -e 's/$/"/' | \
+        xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
+    # drop the temp file now that we're done.
+    rm "$charnfile"
   }
 
   ##############
