@@ -932,7 +932,7 @@ return 0
 
     local charnfile="$(mktemp $TMP/zz_charn.XXXXXX)"
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f | \
-        grep \
+        grep -i \
 "docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|pptx\|txt\|xlsx\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
