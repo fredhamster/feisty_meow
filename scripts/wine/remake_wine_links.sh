@@ -9,26 +9,26 @@
 if [ ! -L "My Documents" -o ! -L "Desktop" ]; then
   echo "This script is meant to be used in a user directory under wine."
   echo "It will re-hook the links for the desktop and documents to a local folder"
-  echo "called '~/wine_goods'"
+  echo "called '~/linx/wine_goods'"
   exit 1
 fi
 
 \rm "Desktop" "My Documents" "My Pictures" "My Videos" "My Music"
 
-if [ ! -d ~/wine_goods ]; then
-  mkdir ~/wine_goods
+if [ ! -d ~/linx/wine_goods ]; then
+  mkdir ~/linx/wine_goods
 fi
-if [ ! -d ~/wine_goods/desktop ]; then
-  mkdir ~/wine_goods/desktop
+if [ ! -d ~/linx/wine_goods/desktop ]; then
+  mkdir ~/linx/wine_goods/desktop
 fi
-if [ ! -d ~/wine_goods/otherlinks ]; then
-  mkdir ~/wine_goods/otherlinks
+if [ ! -d ~/linx/wine_goods/otherlinks ]; then
+  mkdir ~/linx/wine_goods/otherlinks
 fi
 
-ln -s ~/wine_goods "My Documents"
-ln -s ~/wine_goods/desktop "Desktop"
-ln -s ~/wine_goods/otherlinks "My Pictures"
-ln -s ~/wine_goods/otherlinks "My Videos"
-ln -s ~/wine_goods/otherlinks "My Music"
+ln -s ~/linx/wine_goods "My Documents"
+ln -s ~/linx/wine_goods/desktop "Desktop"
+ln -s ~/linx/wine_goods/otherlinks "My Pictures"
+ln -s ~/linx/wine_goods/otherlinks "My Videos"
+ln -s ~/linx/wine_goods/otherlinks "My Music"
 
 
