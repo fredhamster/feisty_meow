@@ -1,7 +1,7 @@
 #!/bin/bash
 # this script makes a tunnel for fred's SMTP traffic.
 
-#hmmm: move this script to fred customized stuff
+#hmmm: move this script to fred's custom stuff
 
 TUNNEL_USER_PLUS_HOST="fred@serene.feistymeow.org"
 TUNNEL_LINK="-L 14008:localhost:25"

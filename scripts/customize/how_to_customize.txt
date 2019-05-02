@@ -8,8 +8,8 @@ feisty meow environment.
 user customization folder organization
 ======================================
 
-the user's optional custom folder is located at:
-echo $FEISTY_MEOW_SCRIPTS/customize/$(logname)
+the user's optional custom folder is usually located at:
+  $FEISTY_MEOW_SCRIPTS/customize/$(logname)
 
 the top-level of the customization folder can store:
 
@@ -26,10 +26,10 @@ custom script aliases
 
 there is also a facility for adding aliases automatically for any custom
 scripts that have been developed by the user.  these join the other aliases
-provided by the feisty meow environment.
+that are already provided by the feisty meow environment.
 
 store any custom scripts in the folder:
-$FEISTY_MEOW_SCRIPTS/customize/$(logname)/scripts
+  $FEISTY_MEOW_SCRIPTS/customize/$(logname)/scripts
 
 any scripts in that folder (or in a directory under that folder) will
 automatically be turned into aliases.

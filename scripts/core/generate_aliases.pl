@@ -92,17 +92,14 @@ sub rebuild_script_aliases {
   }
   if (length($DEBUG_FEISTY_MEOW)) {
     print "using these alias files:\n";
-#print "HEY IS THIS PROBLEM CHILD?\n";
     foreach $i (@ALIAS_DEFINITION_FILES) {
       local $base_of_dir = &basename(&dirname($i));
       local $basename = &basename($i);
       print "  $base_of_dir/$basename\n";
     }
-#print "WAS PROBLEM CHILD ABOVE HERE?\n";
   }
 
   # write the aliases for sh and bash scripts.
-
   local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh";
   if (length($DEBUG_FEISTY_MEOW)) {
     print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";

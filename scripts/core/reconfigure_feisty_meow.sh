@@ -54,9 +54,11 @@ PERL5LIB=$PERLLIB
 # make toast out of generated files right away, but leave any custom scripts.
 find "$FEISTY_MEOW_LOADING_DOCK" -maxdepth 1 -type f -exec perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" "{}" ';'
 # &>/dev/null
-if [ ! -d "$FEISTY_MEOW_LOADING_DOCK/custom" ]; then
-  mkdir "$FEISTY_MEOW_LOADING_DOCK/custom"
-fi
+
+## #no, old:
+## if [ ! -d "$FEISTY_MEOW_LOADING_DOCK/custom" ]; then
+##   mkdir "$FEISTY_MEOW_LOADING_DOCK/custom"
+## fi
 
 # just a variable we use in here to refer to the generated variables file.
 FEISTY_MEOW_VARIABLES_LOADING_FILE="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"
