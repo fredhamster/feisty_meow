@@ -59,10 +59,13 @@ function copy_all_save_games()
   copyem "witcher 3" "$WINE_GOODS_DIR/The Witcher 3/gamesaves" "$SPOOLING_OUTPUT_DIR/witcher_3"
 }
 
+####
+
 # mainline of script tries out a few locations to back up.
 
 # first try our play on linux storage.  very individualized for fred.
 wine_goods_dir="$HOME/linx/wine_goods"
+# hmmm, this second attempt is a gloss over differences on windows, where some steam games might save to the my documents folder?
 if [ ! -d "$wine_goods_dir" ]; then
   wine_goods_dir="/cygdrive/c/users/fred/My Documents"
 fi
@@ -83,4 +86,5 @@ else
   copy_all_save_games "$wine_goods_dir"
 fi
 
+####
 
