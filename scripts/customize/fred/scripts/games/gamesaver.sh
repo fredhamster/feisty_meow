@@ -62,7 +62,7 @@ function copy_all_save_games()
 # mainline of script tries out a few locations to back up.
 
 # first try our play on linux storage.  very individualized for fred.
-wine_goods_dir="$HOME/wine_goods"
+wine_goods_dir="$HOME/linx/wine_goods"
 if [ ! -d "$wine_goods_dir" ]; then
   wine_goods_dir="/cygdrive/c/users/fred/My Documents"
 fi
@@ -76,9 +76,9 @@ fi
 # this uses a link in the home directory called steam_goods which is connected to
 # "$HOME/.steam/steam/SteamApps/compatdata/MYNUM/pfx/drive_c/users/steamuser/My Documents"
 # where MYNUM is replaced with one's steam ID number.
-wine_goods_dir="$HOME/steam_goods"
+wine_goods_dir="$HOME/linx/steam_goods"
 if [ ! -d "$wine_goods_dir" ]; then
-  echo "not trying to back up any wine goods; could not find an appropriate folder."
+  echo "not trying to back up any steam goods; could not find an appropriate folder."
 else
   copy_all_save_games "$wine_goods_dir"
 fi
