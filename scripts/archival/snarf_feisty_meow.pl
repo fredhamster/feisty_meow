@@ -56,6 +56,7 @@ local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/3rdparty");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/assign_bases");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/check_versions");
+&backup_hierarchy($snarf_file_base, $number, "$root", "production/example_apps");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/setup_src");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/sites");
 
