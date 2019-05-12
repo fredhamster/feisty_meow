@@ -17,9 +17,21 @@ function compare_archives_with_target()
   done
 }
 
-#hmmm: generalize this one also.
+# decide which drive to compare.
+targets="$1"
+if [ -z "$targets" ]; then
+  targets=($($(which ls) -1 /media/$USERNAME))
+  if [ ${#targets[@]} -gt 1 ]; then
+    echo "
+Please provide a media drive name on the command line, because more than
+one possibility exists.
+"
+  fi
+fi
 
-compare_archives_with_target /media/fred/soapboxdrive
+echo "comparing the media drive '${targets[0]}' against local archives."
+
+compare_archives_with_target "/media/$USERNAME/${targets[0]}"
 
 sep
 
