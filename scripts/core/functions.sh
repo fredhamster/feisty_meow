@@ -543,22 +543,23 @@ we will skip recustomization, but these other customizations are available:
       # there's an existing link, so remove it.
       \rm custom
     fi
+    # make sure we cleaned up the area before we re-link.
     if [ -h custom -o -d custom -o -f custom ]; then
       echo "
 Due to an over-abundance of caution, we are not going to remove an unexpected
-'custom' object in the file system.  This is located here:
-  $(pwd)
-and here are the current contents, showing the rogue 'custom' folder:"
-      ls -al .
+'custom' object found in the file system.  This object is located in the
+feisty meow loading dock here: $(pwd)
+And here is a description of the rogue 'custom' object:
+"
+      ls -al custom
       echo "
 If you are pretty sure that this is just a remnant of an older approach in
-feisty meow, where we copied the custom directory rather than linking it,
-and it most likely is just such a bit of cruft of that nature, then please
-remove that old remnant item, for example by saying:
+feisty meow, where we copied the custom directory rather than linking it
+(and it most likely is just such a bit of cruft of that nature), then please
+remove that old remnant 'custom' item, for example by saying:
   /bin/rm -rf \"custom\" ; popd
 Sorry for the interruption, but we want to make sure this removal wasn't
-automatic if there is a small amount of doubt about the issue.
-"
+automatic if there is even a small amount of doubt about the issue."
       return 1
     fi
 
