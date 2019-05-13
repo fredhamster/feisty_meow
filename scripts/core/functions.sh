@@ -61,6 +61,23 @@ if [ -z "$skip_all" ]; then
 
   ##############
 
+  function fm_username()
+  {
+    # see if we can get the user name from the login name.  oddly this sometimes doesn't work.
+    local custom_user="$(logname 2>/dev/null)"
+    if [ -z "$custom_user" ]; then
+      # try the normal unix user variable.
+      custom_user="$USER"
+    fi
+    if [ -z "$custom_user" ]; then
+      # try the windows user variable.
+      custom_user="$USERNAME"
+    fi
+    echo "$custom_user"
+  }
+
+  ##############
+
   # displays the value of a variable in bash friendly format.
   function var() {
     HOLDIFS="$IFS"
@@ -493,8 +510,8 @@ if [ -z "$skip_all" ]; then
     local custom_user="$1"; shift
     if [ -z "$custom_user" ]; then
       # default to login name if there was no name provided.
-      custom_user="$(logname)"
-        # we do intend to use logname here to get the login name and to ignore
+      custom_user="$(fm_username)"
+        # we do intend to use the login name here to get the login name and to ignore
         # if the user has sudo root access; we don't want to provide a custom
         # profile for root.
     fi
@@ -517,59 +534,6 @@ we will skip recustomization, but these other customizations are available:
       return 1
     fi
 
-#hmmm: begin old custom section...
-#hmmm: here is where it starts being wrong for a link due to current borked copy approach.
-##    # prevent permission foul-ups.
-##    my_user="$USER"
-##      # here we definitely want the effective user name (in USER), since
-##      # we don't want, say, fred (as logname) to own all of root's loading
-##      # dock stuff.
-###hmmm: argh, seems a bit heavyweight to do chowning here!
-##    chown -R "$my_user:$my_user" \
-##        "$FEISTY_MEOW_LOADING_DOCK"/* "$FEISTY_MEOW_GENERATED_STORE"/* 2>/dev/null
-##    continue_on_error "chowning feisty meow generated directories to $my_user"
-##
-##    regenerate >/dev/null
-##
-##    pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
-##    incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
-##
-##    local fail_message="\n
-##are the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
-##    $(grep "apt.*perl" $FEISTY_MEOW_APEX/readme.txt)\n
-##or if you're on cygwin, then try this (if apt-cyg is available):\n
-##    $(grep "apt-cyg.*perl" $FEISTY_MEOW_APEX/readme.txt)\n";
-##
-##    #echo "the incongruous files list is: $incongruous_files"
-##    # disallow a single character result, since we get "*" as result when nothing exists yet.
-##    if [ ${#incongruous_files} -ge 2 ]; then
-##      log_feisty_meow_event "cleaning unknown older overrides..."
-##      perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
-##      continue_on_error "running safedel.  $fail_message" 
-##    fi
-##    popd &>/dev/null
-##    log_feisty_meow_event "copying custom overrides for $custom_user"
-##    mkdir -p "$FEISTY_MEOW_LOADING_DOCK/custom" 2>/dev/null
-##    perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom"
-##    continue_on_error "running cpdiff.  $fail_message"
-##
-##    if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
-##      log_feisty_meow_event "copying custom scripts for $custom_user"
-###hmmm: could save output to show if an error occurs.
-##      rsync -avz "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
-##      continue_on_error "copying customization scripts"
-##    fi
-##    regenerate
-##
-##    # prevent permission foul-ups, again.
-##    chown -R "$my_user:$my_user" \
-##        "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE" 2>/dev/null
-##    continue_on_error "once more chowning feisty meow generated directories to $my_user"
-#hmmm: begin old custom section.
-
-####
-
-#hmmm: begin new customization section...
     # recreate the feisty meow loading dock.
     regenerate >/dev/null
 
@@ -596,9 +560,6 @@ Due to an over-abundance of caution, we are not going to remove an unexpected
 
     # now take into account all the customizations by regenerating the feisty meow environment.
     regenerate
-#hmmm: end new customization section.
-
-####
 
     restore_terminal_title
   }

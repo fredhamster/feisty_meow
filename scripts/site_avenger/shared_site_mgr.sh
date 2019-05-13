@@ -11,7 +11,7 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-export SSM_LOG_FILE="$TMP/$(logname)-siteavenger-script.log"
+export SSM_LOG_FILE="$TMP/$(fm_username)-siteavenger-script.log"
 
 # configure feisty revision control to ignore vendor folders.
 export NO_CHECKIN_VENDOR=true
