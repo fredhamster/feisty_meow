@@ -26,7 +26,7 @@ if [ -z "$IP_ADDRESS" ]; then
 fi
 if [ -z "$SERVER_ADMIN" ]; then
   # the email address (where first dot is replaced by @) for the administrator of the domain.
-  SERVER_ADMIN="$(logname).localhost"
+  SERVER_ADMIN="$(fm_username).localhost"
   echo "** defaulting server admin to $SERVER_ADMIN"
 fi
 if [ -z "$MAIN_NAME_SERVER" ]; then

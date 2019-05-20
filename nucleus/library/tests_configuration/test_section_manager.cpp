@@ -17,6 +17,7 @@
 
 #include <application/hoople_main.h>
 #include <basis/astring.h>
+#include <basis/environment.h>
 #include <basis/guards.h>
 #include <configuration/ini_configurator.h>
 #include <configuration/section_manager.h>
@@ -55,6 +56,10 @@ public:
 int test_section_manager::execute()
 {
   FUNCDEF("execute");
+
+  // prepare the storage area for ini config.
+  environment::set("ALLUSERSPROFILE", environment::get("TEMPORARIES_PILE"));
+
   {
     astring TEST = "First Test";
     ini_configurator ini("t_section_manager_1.ini", ini_configurator::AUTO_STORE);

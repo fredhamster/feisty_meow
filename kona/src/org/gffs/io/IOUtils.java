@@ -19,7 +19,7 @@ public class IOUtils
 
 	static final private int BUFFER_SIZE = 1024 * 8;
 
-	static private final int COPY_SIZE = 1024 * 8;
+//	static private final int COPY_SIZE = 1024 * 8;
 
 	static public void copy(InputStream in, OutputStream out) throws IOException
 	{

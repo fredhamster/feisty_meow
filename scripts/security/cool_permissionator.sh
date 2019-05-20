@@ -23,11 +23,19 @@ function reapply_cool_permissions()
   done
 #echo arch addin now is: $arch_addin
 
+  # now another round with similar setup, to ensure we get any directories
+  # that actually live out in /z but not in /home/archives.
+  ARCHIVE_TOP=/z
+  for dirname in $arch_builder; do
+    arch_addin+="$ARCHIVE_TOP/$dirname "
+  done
+#echo arch addin now is: $arch_addin
+
   # special case that makes our software hierarchy folder, if it doesn't exist.
   # everything else is only re-permed if it exists.
   if [ ! -d "$DEFAULT_FEISTYMEOW_ORG_DIR" ]; then
     sudo mkdir "$DEFAULT_FEISTYMEOW_ORG_DIR"
-    exit_on_error "making directory: $DEFAULT_FEISTYMEOW_ORG_DIR"
+    continue_on_error "making directory: $DEFAULT_FEISTYMEOW_ORG_DIR"
   fi
 
   # fix some permissions for important security considerations.
@@ -43,36 +51,36 @@ function reapply_cool_permissions()
         /usr/local/${cooluser} \
         /home/games \
         $arch_addin; do
-    if [ -d "$dirname" ]; then
+    if [ -d "$dirname" -o -L "$dirname" ]; then
       echo "revising ownership on '$dirname'"
       sudo chown -R ${cooluser}:${cooluser} "$dirname"
-      exit_on_error "chowning for ${cooluser}: $dirname"
+      continue_on_error "chowning for ${cooluser}: $dirname"
     fi
   done
 
   # special case for archives directory in stuffing.
   if [ -d /z/stuffing -o -L /z/stuffing ]; then
     sudo chown ${cooluser}:${cooluser} /z/
-    exit_on_error "chowning /z for ${cooluser}"
+    continue_on_error "chowning /z for ${cooluser}"
     sudo chmod g+rx,o+rx /z
-    exit_on_error "chmodding /z/ for ${cooluser}"
+    continue_on_error "chmodding /z/ for ${cooluser}"
     sudo chown ${cooluser}:${cooluser} /z/stuffing/
-    exit_on_error "chowning /z/stuffing for ${cooluser}"
+    continue_on_error "chowning /z/stuffing for ${cooluser}"
     sudo chmod g+rx,o-rwx /z/stuffing
-    exit_on_error "chmodding /z/stuffing for ${cooluser}"
+    continue_on_error "chmodding /z/stuffing for ${cooluser}"
     pushd /z/stuffing &>/dev/null
     if [ -d archives -o -L archives ]; then
       sudo chown ${cooluser}:${cooluser} archives/
-      exit_on_error "chowning /z/stuffing/archives for ${cooluser}"
+      continue_on_error "chowning /z/stuffing/archives for ${cooluser}"
       sudo chmod -R g+rwx archives
-      exit_on_error "chmodding /z/stuffing/archives for ${cooluser}"
+      continue_on_error "chmodding /z/stuffing/archives for ${cooluser}"
     fi
     popd &>/dev/null
   fi
 
   # make the log files readable by normal humans.
   sudo bash $FEISTY_MEOW_SCRIPTS/security/normal_perm.sh /var/log
-  exit_on_error "setting normal perms on /var/log"
+  continue_on_error "setting normal perms on /var/log"
 }
 
 # this block should execute when the script is actually run, rather
@@ -83,9 +91,9 @@ if [[ $0 =~ .*cool_permissionator\.sh.* ]]; then
   THISDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"
   export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
   source "$THISDIR/../core/launch_feisty_meow.sh"
-  exit_on_error "sourcing the feisty meow launcher"
+  continue_on_error "sourcing the feisty meow launcher"
   coolio="$USER"
   reapply_cool_permissions "$coolio"
-  exit_on_error "reapplying cool permissions on $coolio"
+  continue_on_error "reapplying cool permissions on $coolio"
 fi
 

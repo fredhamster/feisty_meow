@@ -180,10 +180,12 @@ if [ -z "$SAVE_BINARIES" ]; then
 fi
 
 # make the clam shell scripts executable.
-chmod 755 "$CLAM_SCRIPTS"/*.sh
-chmod 755 "$CLAM_SCRIPTS"/cpp/*.sh
+#hmmm: why?  this should no longer be needed.
+#      and even if it's needed, the perms should be stored in the repo.
+#chmod 755 "$CLAM_SCRIPTS"/*.sh
+#chmod 755 "$CLAM_SCRIPTS"/cpp/*.sh
 #chmod 755 "$CLAM_SCRIPTS"/csharp/*.sh
-chmod 755 "$FEISTY_MEOW_SCRIPTS/generator/wrapdoze.sh"
+#chmod 755 "$FEISTY_MEOW_SCRIPTS/generator/wrapdoze.sh"
 
 # rebuild the dependency tool.  needed by everything, pretty much, but
 # since it's from the xfree project, it doesn't need any of our libraries.

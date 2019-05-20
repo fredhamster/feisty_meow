@@ -36,7 +36,7 @@ $TMP =~ s/\\/\//g;  # fix the temp variable for ms-winders.
 @missing_log = ();
 
 # these files are considered unimportant and won't be included in the archive.
-@junk_file_list = ("*~", "*.$$$", "3rdparty", "*.aps", "*.bak", "binaries",
+@junk_file_list = ("*~", "*.$$$", "*.aps", "*.bak", "binaries",
     "*.bsc", "*.cgl", "*.csm", "CVS", "Debug", "*.dll", "*.err", "*.exe",
     "generated_*", "*.git", "*.glb", "inprogress", "ipch", "*.llm",
     "*.log", "*.lnk",

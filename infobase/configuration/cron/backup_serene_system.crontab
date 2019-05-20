@@ -1,5 +1,9 @@
 
+##############
+
 #[backup serene system]
 # backs up config files and important parts of home directories to off-machine storage.
 14 2 * * */7 (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/archival/serene_backer_upper.sh) &>>/tmp/${CRONUSER}-cron-backup_serene_system.log
+
+##############
 

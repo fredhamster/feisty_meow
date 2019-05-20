@@ -2,7 +2,9 @@
 # these metrics are how bogged down we are in to-do type items.
 
 # logged historical file where we append our latest report.
-REPORT_FILE="$HOME/cloud/magic_cabinet/fred/task_stats/overload_history.txt"
+REPORT_FILE="$CLOUD_BASE/stats/overload_history.txt"
+
+#hmmm: check path validity?
 
 # given a path, this will find how many items are under it, ignoring svn and git files, plus
 # other patterns we happen to notice are not useful.
@@ -112,53 +114,53 @@ full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 #hmmm: don't fail if the hierarchy doesn't exist.
 
 # high priority stuff would be called urgent.
-analyze_hierarchy_and_report ~/cloud/urgent "high priority (aieeee!)"
+analyze_hierarchy_and_report $CLOUD_BASE/urgent "high priority (aieeee!)"
 
 # notes are individual files of tasks, usually, although some are combined.
-analyze_hierarchy_and_report ~/cloud/grunty_notes "grunty notes (externalities)"
+analyze_hierarchy_and_report $CLOUD_BASE/grunty* "grunty (external facing) notes"
 
 # web site development tasks.
-analyze_hierarchy_and_report ~/cloud/webular "web design (ideas and tasks)"
+analyze_hierarchy_and_report $CLOUD_BASE/webular "web design (ideas and tasks)"
 
 # feisty notes are about feisty meow(r) concerns ltd codebase development.
-analyze_hierarchy_and_report ~/cloud/feisty_notes "feisty meow notes (mondo coding)"
+analyze_hierarchy_and_report $CLOUD_BASE/feisty_notes "feisty meow notes (mondo coding)"
 
 # metaverse notes are about our ongoing simulator development and LSL scripting.
-analyze_hierarchy_and_report ~/cloud/metaverse "metaverse in cyberspace design and scripting"
+analyze_hierarchy_and_report $CLOUD_BASE/metaverse "metaverse in cyberspace design and scripting"
 
 # home notes are a new top-level category; used to be under the grunty.
-analyze_hierarchy_and_report ~/cloud/branch_road "hearth and home notes (branch road)"
+analyze_hierarchy_and_report $CLOUD_BASE/branch_road "hearth and home notes (branch road)"
 
 # and then count up the things that we think will be cleaned soon, but one thing we have learned
 # unsorted files haven't been categorized yet.
-analyze_hierarchy_and_report ~/cloud/disordered "disordered and maybe deranged files"
+analyze_hierarchy_and_report $CLOUD_BASE/disordered "disordered and maybe deranged files"
 
 # we now consider the backlog of things to read to be a relevant fact.  this is going to hose
 # up our weight accounting considerably.
-analyze_hierarchy_and_report ~/cloud/reading "reading list (for a quiet afternoon)"
+analyze_hierarchy_and_report $CLOUD_BASE/reading "reading list (for a quiet afternoon)"
 
 ####
 
 # vocation is a prefix for anything i consider part of my life's work.
-analyze_by_dir_patterns "life's work and other oddities" ~/cloud/vocation*
+analyze_by_dir_patterns "life's work and other oddities" $CLOUD_BASE/vocation*
 
 # scan all the items declared as active projects.
-analyze_by_dir_patterns "active issues" ~/cloud/active*
+analyze_by_dir_patterns "active issues" $CLOUD_BASE/active*
 
 # rub alongside all the travel notes to see if any have interesting burrs.
-analyze_by_dir_patterns "travel plans" ~/cloud/walkabout*
+analyze_by_dir_patterns "travel plans" $CLOUD_BASE/walkabout*
 
-# scan across all appropriately named project or research folders that live in the "cloud".
-analyze_by_dir_patterns "running projects" ~/cloud/project* ~/cloud/research*
+# scan across all appropriately named project or research folders.
+analyze_by_dir_patterns "running projects" $CLOUD_BASE/project* $CLOUD_BASE/research*
 
 # look for our mad scientist style efforts.
-analyze_by_dir_patterns "lab experiments" ~/cloud/experiment*
+analyze_by_dir_patterns "lab experiments" $CLOUD_BASE/experiment*
 
 # snag any work related items for that category.
-analyze_by_dir_patterns "jobby work tasks" ~/cloud/job* 
+analyze_by_dir_patterns "jobby work tasks" $CLOUD_BASE/job* 
 
 # scan all the trivial project folders.
-analyze_by_dir_patterns "trivialities and back burner items" ~/cloud/trivia* ~/cloud/backburn*
+analyze_by_dir_patterns "trivialities and back burner items" $CLOUD_BASE/trivia* $CLOUD_BASE/backburn*
 
 full_report+="================================================================\n\
 "

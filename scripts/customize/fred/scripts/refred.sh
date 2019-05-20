@@ -15,6 +15,6 @@ if [[ $0 =~ .*refred\.sh.* ]]; then
   source "$FEISTY_MEOW_SCRIPTS/security/cool_permissionator.sh"
   exit_on_error "sourcing the permission script"
   do_refred
-  exit_on_error "refredding process"
+  continue_on_error "refredding process"
 fi
 

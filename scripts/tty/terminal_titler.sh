@@ -6,6 +6,8 @@ source "$FEISTY_MEOW_SCRIPTS/core/common.alias"
 # uncomment this to get extra noisy debugging.
 #export DEBUG_TERM_TITLE=true
 
+##############
+
 # puts a specific textual label on the terminal title bar.
 # this doesn't consider any previous titles; it just labels the terminal.
 # the title may not be visible in some window managers.
@@ -23,59 +25,70 @@ function apply_title_to_terminal()
   else
     # not running interactively, so just echo the title.
     sep
-    echo ${title}
+    echo "${title}"
     sep
   fi
 }
 
-# user friendly version that saves the title being added.
-function set_terminal_title()
-{
-  apply_title_to_terminal $*
+##############
 
-#tricky attempts to get it to be available when we ask for it in get_terminal_title
-  sync
-#  echo -n
-
-#  # we're enforcing a new title from here on.
-#  unset PRIOR_TERMINAL_TITLE
-  save_terminal_title
-}
-
-# echoes back the current title on the terminal window, if we can acquire it.
-function get_terminal_title()
-{
-  # this is an important value now; it is checked for in save_terminal_title.
-  local term_title_found="unknown"
-  # save the former terminal title if we're running in X with xterm.
-  which xprop &>/dev/null
-  if [ $? -eq 0 ]; then
-    # gnome-terminal doesn't set WINDOWID currently, but we can work around this.
-    if [[ -z "$WINDOWID" && ! -z "$(which xwininfo)" ]]; then
-#not good solution.      term_title_found="$(xprop -id $(xdotool getactivewindow) | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
-      term_title_found=$(xwininfo -id $(xprop -root | awk '/NET_ACTIVE_WINDOW/ { print $5; exit }') | awk -F\" '/xwininfo:/ { print $2; exit }')
-    # check if we're actually using xterm *and* that we have a window ID.
-    elif [[ "$TERM" =~ .*"xterm".* && ! -z "$WINDOWID" ]]; then
-      term_title_found="$(xprop -id $WINDOWID | perl -nle 'print $1 if /^WM_NAME.+= \"(.*)\"$/')"
-    fi
-  fi
-  echo -n "$term_title_found"
-}
-
-# reads the current terminal title, if possible, and saves it to our record.
+# records the current terminal title, pushing it down on the stack of titles,
+# possibly prior to a new one being used.
 function save_terminal_title()
 {
-  local title="$(get_terminal_title)"
-  if [ "$title" != "unknown" ]; then
-    # there was a title, so save it.
+  local title="$*"
+
+  if [ -z "$title" ]; then
     if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-      echo "saving prior terminal title as '$title'"
+      echo "terminal_titler: empty title: pushing current title again"
     fi
-    export PRIOR_TERMINAL_TITLE="$title"
+    peek_title_stack
+    title="$LAST_TITLE"
+    if [ -z "$title" ]; then
+      log_feisty_meow_event "terminal_titler: there was no saved title, so we're ignoring the save attempt."
+      return 1
+    fi
+  fi
+
+#hmmm: need a validation step here to remove bad chars that conflict with our title compression scheme.
+
+  # only slap a comma after the existing value if it wasn't empty.
+  if [ -z "$TERMINAL_TITLE_STACK" ]; then
+    export TERMINAL_TITLE_STACK="\"$title\""
   else
-    # the terminal had no title, or we couldn't access it, or there's no terminal.
-    if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-      echo "not saving prior terminal title which was empty"
+    export TERMINAL_TITLE_STACK="$TERMINAL_TITLE_STACK,\"$title\""
+  fi
+
+  if [ ! -z "$DEBUG_TERM_TITLE" ]; then
+    echo "terminal_titler: new terminal title stack is:"
+    echo "$TERMINAL_TITLE_STACK"
+  fi
+}
+
+# takes a terminal title off the stack and sets the LAST_TITLE variable.
+function pop_title_stack()
+{
+  # whack our output variable, just in case.
+  unset LAST_TITLE
+  # get our stack top.
+  peek_title_stack
+  # trim the popped item out of the stack.
+  if [ ! -z "$TERMINAL_TITLE_STACK" ]; then
+    TERMINAL_TITLE_STACK="$(echo $TERMINAL_TITLE_STACK | sed -n -e 's/\(.*\),[^,]*$/\1/p')"
+  fi
+}
+
+# like pop, but does not change the stack, effectively handing you the most
+# recently set title.
+function peek_title_stack()
+{
+  # whack our output variable, just in case.
+  unset LAST_TITLE
+
+  if [ ! -z "$TERMINAL_TITLE_STACK" ]; then
+    LAST_TITLE="$(echo $TERMINAL_TITLE_STACK | sed -n -e 's/.*","\([^,]*\)"$/\1/p')"
+    if [ -z "$LAST_TITLE" ]; then
+      LAST_TITLE="$(echo $TERMINAL_TITLE_STACK | sed -n -e 's/"//gp')"
     fi
   fi
 }
@@ -83,16 +96,15 @@ function save_terminal_title()
 # using our stored terminal title, this replaces the title on the terminal.
 function restore_terminal_title()
 {
-# we don't want to emit anything extra if this is being driven by git.
-#hmmm...  this could be a problem?
-#  if [ -z "$(echo $* | grep git)" ]; then
-
   # run the terminal labeller to restore the prior title, if there was one.
-  if [ ! -z "$PRIOR_TERMINAL_TITLE" ]; then
+  pop_title_stack
+
+  if [ ! -z "$LAST_TITLE" ]; then
     if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-      echo "restoring prior terminal title of '$PRIOR_TERMINAL_TITLE'"
+      echo "terminal_titler: restoring prior terminal title of '$LAST_TITLE'"
+      echo "terminal_titler: while new title stack is: $TERMINAL_TITLE_STACK"
     fi
-    apply_title_to_terminal "$PRIOR_TERMINAL_TITLE"
+    apply_title_to_terminal "$LAST_TITLE"
   fi
 }
 
@@ -100,28 +112,36 @@ function restore_terminal_title()
 function label_terminal_with_info()
 {
   # we only label the terminal anew if there's no saved title.
-  if [ -z "$PRIOR_TERMINAL_TITLE" ]; then
+  if [ -z "$TERMINAL_TITLE_STACK" ]; then
     if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-      echo "showing new generated title since prior title was empty"
+      echo "terminal_titler: showing new generated title since prior title was empty"
     fi
     pruned_host=$(echo $HOSTNAME | sed -e 's/^\([^\.]*\)\..*$/\1/')
     date_string=$(date +"%Y %b %e @ %T")
-    user="$(logname)"
+    user="$(fm_username)"
     if [ -z "$user" ]; then
       # try snagging the windoze name.
       user=$USERNAME
     fi
     new_title="-- $user@$pruned_host -- [$date_string]"
     apply_title_to_terminal "$new_title"
-    save_terminal_title
+    save_terminal_title "$new_title"
   else
     # use the former title; paste it back up there just in case.
-    if [ ! -z "$DEBUG_TERM_TITLE" ]; then
-      echo "showing prior terminal title since there was a prior title!"
-      echo "using prior terminal title of '$PRIOR_TERMINAL_TITLE'"
-    fi
-    apply_title_to_terminal "$PRIOR_TERMINAL_TITLE"
+    peek_title_stack
+    apply_title_to_terminal "$LAST_TITLE"
   fi
 }
+
+##############
+
+# user friendly version sets the terminal title and saves the title being added.
+function set_terminal_title()
+{
+  apply_title_to_terminal $*
+  save_terminal_title $*
+}
+
+##############
 
 

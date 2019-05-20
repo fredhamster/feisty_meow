@@ -3,7 +3,6 @@
 *~
 *#
 *.bak
-__build_configuration.h
 *.class
 .DS_Store
 *.log

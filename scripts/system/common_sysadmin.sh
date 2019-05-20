@@ -60,7 +60,7 @@ ${domain_name}.	IN A	${IP_ADDRESS}
 " >"$domain_file"
 
   # our personalized configuration approach wants the real owner to own the file.
-  chown "$(logname):$(logname)" $domain_file
+  chown "$(fm_username):$(fm_username)" $domain_file
   exit_on_error "setting ownership on: $domain_file"
 }
 
@@ -99,7 +99,7 @@ zone \"${domain_name}\" in {
 " >> /etc/bind/named.conf.local
 
   # keep ownership for the real user.
-  chown "$(logname):$(logname)" /etc/bind/named.conf.local
+  chown "$(fm_username):$(fm_username)" /etc/bind/named.conf.local
   exit_on_error "setting ownership on: /etc/bind/named.conf.local"
 }
 
@@ -169,7 +169,7 @@ function add_new_subdomain()
 " >> /etc/bind/${containing_domain}.conf
 
   # keep ownership for real user.
-  chown "$(logname):$(logname)" "/etc/bind/${containing_domain}.conf"
+  chown "$(fm_username):$(fm_username)" "/etc/bind/${containing_domain}.conf"
   exit_on_error "setting ownership on: /etc/bind/${containing_domain}.conf"
 }
 
@@ -277,7 +277,7 @@ function write_apache_config()
 </VirtualHost>
 " >"$site_config" 
 
-  chown "$(logname):$(logname)" "$site_config"
+  chown "$(fm_username):$(fm_username)" "$site_config"
   exit_on_error "setting ownership on: $site_config"
 }
 
@@ -361,7 +361,7 @@ function maybe_create_site_storage()
     chmod g+rx "$chow_path"
     exit_on_error "Failed to add group permissions on the path: $chow_path"
     # reassert the user's ownership of any directories we might have just created.
-    chown "$(logname):$(logname)" "$chow_path"
+    chown "$(fm_username):$(fm_username)" "$chow_path"
     exit_on_error "changing ownership to user failed on the path: $chow_path"
     chow_path="$(dirname "$chow_path")"
   done
