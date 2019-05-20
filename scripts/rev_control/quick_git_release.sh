@@ -38,7 +38,7 @@ branch name and release tag name of the new release.
   # make up a release name based on the version number.
   local new_release="release-${new_version}"
   # make a new branch for the release based on the dev branch.
-echo about to git checkout
+echo about to git checkout--hit enter
 read line
   git checkout -b $new_release dev
   exit_on_error checking out a new branch called $new_release
@@ -46,23 +46,23 @@ read line
   bash ./scripts/generator/next_version.sh
   exit_on_error bumping version for feisty meow codebase
   # check in the changes in the new release branch, which now includes a revised version.
-echo about to commit
+echo about to commit--hit enter
 read line
   git commit -a
   exit_on_error committing all changes
 
   # not sure if we really need to check in the release branch as a remote, but we like to see it in the list.
-echo about to push new release branch
+echo about to push new release branch--hit enter
 read line
   git push --set-upstream origin "$new_release"
 
   # grab out the master branch as the active one.
-echo about to check out master
+echo about to check out master--hit enter
 read line
   git checkout master
   exit_on_error checking out master branch
   # merge the master branch with the new release.
-echo about to merge
+echo about to merge--hit enter
 read line
   git merge --no-ff $new_release
   exit_on_error merging in the new release in master
@@ -75,22 +75,22 @@ read line
   # and useful comments for what has changed in this release, gathered from the gitk that
   # we just launched.  this should include all of the work on the development branch since
   # the last release...
-echo about to TAG
+echo about to TAG--hit enter
 read line
   git tag -a $new_version
   exit_on_error tagging new version as $new_version
   # commit the full set of changes for the master branch now, including the tags.
-echo about to commit master branch with all those changes
+echo about to commit master branch with all those changes--hit enter
 read line
   rcheckin .
   exit_on_error checking in the changes in master branch
   # switch back to the dev branch.
-echo switching to dev branch
+echo switching to dev branch--hit enter
 read line
   git checkout dev
   exit_on_error checking the dev branch out again
   # merge in the latest changes from master, which should only be the revised version really.
-echo merging in from release branch to dev
+echo merging in from release branch to dev--hit enter
 read line
   git merge --no-ff $new_release
   exit_on_error merging the release changes into the dev branch
