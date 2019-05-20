@@ -4,9 +4,8 @@
 if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   # if we don't see the nethack variable defined, this probably hasn't run yet.
 
-  # The cloud directory is our new repository that's always available.  It serves as our
-  # personal cloud for data.
-  export CLOUD_BASE=$HOME/cloud
+  # The nuage directory is a cloud-like repository of our personal data, managed as a git repo.
+  export CLOUD_BASE=$HOME/nuage
 
   # The gruntose web site is expected to reside below, if it exists at all.
   export WEBBED_SITES=$HOME/web
@@ -15,7 +14,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   fi
 
   # add a bunch of personal folders to the list for checkin & checkout.
-  REPOSITORY_LIST=" cloud ebooks web ${REPOSITORY_LIST} "
+  REPOSITORY_LIST=" nuage ebooks web ${REPOSITORY_LIST} "
 
   # adds our locally relevant archive folders into the list to be synched.
   MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus $HOME/brobdingnag"

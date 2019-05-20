@@ -16,6 +16,10 @@ define_yeti_alias update_fredmusicprime='source "$FEISTY_MEOW_SCRIPTS/archival/g
 # updates my little 1 TB "soapbox" style usb drive with any appropriate archives and source.
 define_yeti_alias update_soapbox='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/soapboxdrive"'
 
+# does the updating thing on the new tiny flat drive that for a while was serving the ps4 shuttle service but now is an honest ext4 drive.
+define_yeti_alias update_slimpickenz='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/slimpickenz"'
+
+
 # moo and unmoo mount the local folders i use most.
 #no longer used.  we are doing mostly full directory stores without nfs mounts these days.
 #define_yeti_alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky ; check_mount /z/fredgrid'

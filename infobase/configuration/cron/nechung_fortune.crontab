@@ -1,7 +1,11 @@
 
+##############
+
 #[nechung fortune]
 # runs every minute and recreates a fortune for thunderbird signature.
 # a lot of the detail below is to get the feisty meow environment loaded for
 # the new_sig command.
 * * * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; perl $FEISTY_MEOW_SCRIPTS/text/new_sig.pl) &>>/tmp/${CRONUSER}-cron-nechung_fortune.log
+
+##############
 

@@ -2,8 +2,10 @@
 
 the VNC program is great for remote controlling a desktop.
 
-it's available at http://www.realvnc.com/
+ultravnc is currently the best one for windows.
+it's available at: https://www.uvnc.com/
 
-hmmm, maybe ultravnc is better for windows?
+on linux, krdc is the viewer i use a lot.
+for the server side, i have used vnc4server, i think.
 
-=> make sure you're using the open source and cost-free solution.
+

@@ -23,7 +23,7 @@
 
 require "filename_helper.pl";
 
-use Env qw(FEISTY_MEOW_BINARIES BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS DEBUG_FEISTY_MEOW );
+use Env qw(FEISTY_MEOW_BINARIES BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS DEBUG_FEISTY_MEOW HOME );
 
 # given a possible aliasable filename, this will decide whether to create a perl
 # or bash alias for it.  it needs the filename of the possible alias and the
@@ -92,17 +92,14 @@ sub rebuild_script_aliases {
   }
   if (length($DEBUG_FEISTY_MEOW)) {
     print "using these alias files:\n";
-#print "HEY IS THIS PROBLEM CHILD?\n";
     foreach $i (@ALIAS_DEFINITION_FILES) {
       local $base_of_dir = &basename(&dirname($i));
       local $basename = &basename($i);
       print "  $base_of_dir/$basename\n";
     }
-#print "WAS PROBLEM CHILD ABOVE HERE?\n";
   }
 
   # write the aliases for sh and bash scripts.
-
   local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh";
   if (length($DEBUG_FEISTY_MEOW)) {
     print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";
@@ -170,7 +167,7 @@ if (! -d $FEISTY_MEOW_LOADING_DOCK) {
 
 # set the executable bit for binaries for just this current user.
 if (-d $FEISTY_MEOW_BINARIES) {
-  system("chmod -R u+x \"$FEISTY_MEOW_BINARIES\"/*");
+  system("find \"$FEISTY_MEOW_BINARIES\" -type f -exec chmod u+x \"{}\" ';'");
 }
 
 ##############

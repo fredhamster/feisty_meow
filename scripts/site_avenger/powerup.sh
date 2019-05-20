@@ -59,7 +59,11 @@ source "$THISDIR/shared_site_mgr.sh"
 
 sep
 
-check_apps_root "$BASE_APPLICATION_PATH"
+check_apps_root "$app_dirname"
+
+echo fixing some things here...
+echo "apps root is now '$BASE_APPLICATION_PATH'"
+echo " => this should be just above the app dir name if we got no parms!"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then

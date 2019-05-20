@@ -5,9 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
 
-import org.feistymeow.algorithms.RectangleIntersector.SortedElement;
-import org.feistymeow.algorithms.RectangleIntersector.SortedElementComparator;
-
 /**
  * reports if any two rectangles in a list intersect. uses screen coordinates.
  */
@@ -179,11 +176,11 @@ public class RectangleIntersector
 		Vector<Rectangle> list2 = new Vector<Rectangle>(Arrays.asList(r1, r2));
 		Vector<Rectangle> list3 = new Vector<Rectangle>(Arrays.asList(r1, r3, r4));
 
-		RectangleIntersector secto = new RectangleIntersector();
+//		RectangleIntersector secto = new RectangleIntersector();
 
-		Vector<Rectangle> answer1 = secto.findOverlap(list1);
-		Vector<Rectangle> answer2 = secto.findOverlap(list2);
-		Vector<Rectangle> answer3 = secto.findOverlap(list3);
+		Vector<Rectangle> answer1 = RectangleIntersector.findOverlap(list1);
+		Vector<Rectangle> answer2 = RectangleIntersector.findOverlap(list2);
+		Vector<Rectangle> answer3 = RectangleIntersector.findOverlap(list3);
 
 		if (answer1 == null) {
 			System.out.println("FAILURE: test 1 did not find intersection in list");

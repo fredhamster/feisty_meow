@@ -12,17 +12,28 @@
 # basic information that is constant for all site avenger sites.
 
 # the top level of the user's application storage.
-export BASE_APPLICATION_PATH="$HOME/apps"
+if [ -z "$BASE_APPLICATION_PATH" ]; then
+  export BASE_APPLICATION_PATH="$HOME/apps"
+fi
 # where the code should come from.
-export DEFAULT_REPOSITORY_ROOT="git@github.com:kwentworth"
-# we checkout the git repository to a directory underneath the
-# app storage directory named this:
-export CHECKOUT_DIR_NAME="avenger5"
+if [ -z "$DEFAULT_REPOSITORY_ROOT" ]; then
+  export DEFAULT_REPOSITORY_ROOT="git@github.com:kwentworth"
+fi
+# we checkout the git repository to a directory underneath the app storage
+# directory named this (see below for "this"), if that directory name is found.
+# this is a saco designs infrastructure standard.
+if [ -z "$CHECKOUT_DIR_NAME" ]; then
+  export CHECKOUT_DIR_NAME="avenger5"
+fi
 # the subfolder that the web browser will look for the site in,
 # underneath the application's specific path.
-export STORAGE_SUFFIX="/public"
+if [ -z "$STORAGE_SUFFIX" ]; then
+  export STORAGE_SUFFIX="/public"
+fi
 
 ####
+
+#hmmm: below does not have any protection to avoid overriding existing values, like above does.  do we need more?
 
 # constants within our cakelampvm machine.
 

@@ -1,16 +1,18 @@
 
+##############
+
 #[time synch]
 
-# standard to synch to local machine.
+LOCAL_TIME_SERVER=greendragon
+
+# standard version synchs to a local machine.  can be used on a network
+# to get time from central host.
+*/4 * * * * /usr/sbin/ntpdate $LOCAL_TIME_SERVER &>>/tmp/${CRONUSER}-cron-time_synch.log
 
 ##############
 
-# synchronize time/date with our nearest time server.
-*/4 * * * * /usr/sbin/ntpdate greendragon &>>/tmp/${CRONUSER}-cron-time_synch.log
-
-##############
-
-# one machine on the network uses this version, to synch externally.
+# the central host machine uses this version, to synch time externally.
 0 0,4,8,12,16,20 * * * /usr/bin/rdate -s time.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
-#hmmm: is above still correct?
+
+##############
 

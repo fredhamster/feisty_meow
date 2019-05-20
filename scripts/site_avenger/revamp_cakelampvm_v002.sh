@@ -47,7 +47,7 @@ echo "Regenerating feisty meow loading dock."
 
 regenerate
 exit_on_error "regenerating feisty meow configuration"
-chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
+chown -R "$(fm_username)":"$(fm_username)" /home/$(fm_username)/.[a-zA-Z0-9]*
 exit_on_error "fix after reconfigured as sudo"
 
 ##############
@@ -344,7 +344,7 @@ sep
 echo Adding site avenger packages to composer.
 # add in site avenger dependencies so we can build avcore properly.
 pushd ~ &>/dev/null
-sudo -u $(logname) composer config -g repositories.siteavenger composer https://packages.siteavenger.com/
+sudo -u $(fm_username) composer config -g repositories.siteavenger composer https://packages.siteavenger.com/
 popd &>/dev/null
 
 ##############
@@ -378,7 +378,7 @@ sep
 
 regenerate
 exit_on_error "regenerating feisty meow scripts"
-chown -R "$(logname)":"$(logname)" /home/$(logname)/.[a-zA-Z0-9]*
+chown -R "$(fm_username)":"$(fm_username)" /home/$(fm_username)/.[a-zA-Z0-9]*
 exit_on_error "fix after regenerate as sudo"
 echo "
 

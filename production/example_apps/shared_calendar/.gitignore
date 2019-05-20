@@ -1,0 +1,10 @@
+/vendor/*
+/config/app.php
+/config/*secret*
+/config/config_google.php
+/tmp/*
+/logs/*
+/vendor/
+/webroot/avmaps
+/webroot/debug_kit
+

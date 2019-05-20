@@ -19,7 +19,7 @@ source "$THISDIR/shared_site_mgr.sh"
 
 sep
 
-check_apps_root "$BASE_APPLICATION_PATH"
+check_apps_root "$app_dirname"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then

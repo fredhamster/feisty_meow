@@ -61,6 +61,23 @@ if [ -z "$skip_all" ]; then
 
   ##############
 
+  function fm_username()
+  {
+    # see if we can get the user name from the login name.  oddly this sometimes doesn't work.
+    local custom_user="$(logname 2>/dev/null)"
+    if [ -z "$custom_user" ]; then
+      # try the normal unix user variable.
+      custom_user="$USER"
+    fi
+    if [ -z "$custom_user" ]; then
+      # try the windows user variable.
+      custom_user="$USERNAME"
+    fi
+    echo "$custom_user"
+  }
+
+  ##############
+
   # displays the value of a variable in bash friendly format.
   function var() {
     HOLDIFS="$IFS"
@@ -187,20 +204,18 @@ if [ -z "$skip_all" ]; then
     # version for the other side (just 'linux'); we don't want the remote side still
     # thinking it's running xterm.
     save_terminal_title
-    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-      echo TERM saved is: $PRIOR_TERMINAL_TITLE
-    fi
+
 #hmmm: why were we doing this?  it scorches the user's logged in session, leaving it without proper terminal handling.
 #    # we save the value of TERM; we don't want to leave the user's terminal
 #    # brain dead once we come back from this function.
 #    local oldterm="$TERM"
 #    export TERM=linux
+
     /usr/bin/ssh -X -C "${args[@]}"
+
 #    # restore the terminal variable also.
 #    TERM="$oldterm"
-    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-      echo TERM before restore, will use prior title of: $PRIOR_TERMINAL_TITLE
-    fi
+
     restore_terminal_title
     if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
       echo TERM title restored to prior value
@@ -486,15 +501,17 @@ if [ -z "$skip_all" ]; then
     restore_terminal_title
   }
 
-  # copies a set of custom scripts into the proper location for feisty meow
-  # to merge their functions and aliases with the standard set.
+  # merges a set of custom scripts into the feisty meow environment.  can be
+  # passed a name to use as the custom scripts source folder (found on path
+  # $FEISTY_MEOW_SCRIPTS/customize/{name}), or it will try to guess the name
+  # by using the login name.
   function recustomize()
   {
     local custom_user="$1"; shift
     if [ -z "$custom_user" ]; then
       # default to login name if there was no name provided.
-      custom_user="$(logname)"
-        # we do intend to use logname here to get the login name and to ignore
+      custom_user="$(fm_username)"
+        # we do intend to use the login name here to get the login name and to ignore
         # if the user has sudo root access; we don't want to provide a custom
         # profile for root.
     fi
@@ -517,50 +534,42 @@ we will skip recustomization, but these other customizations are available:
       return 1
     fi
 
-    # prevent permission foul-ups.
-    my_user="$USER"
-      # here we definitely want the effective user name (in USER), since
-      # we don't want, say, fred (as logname) to own all of root's loading
-      # dock stuff.
-    chown -R "$my_user:$my_user" \
-        "$FEISTY_MEOW_LOADING_DOCK"/* "$FEISTY_MEOW_GENERATED_STORE"/* 2>/dev/null
-    continue_on_error "chowning feisty meow generated directories to $my_user"
-
+    # recreate the feisty meow loading dock.
     regenerate >/dev/null
-    pushd "$FEISTY_MEOW_LOADING_DOCK/custom" &>/dev/null
-    incongruous_files="$(bash "$FEISTY_MEOW_SCRIPTS/files/list_non_dupes.sh" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom")"
 
-    local fail_message="\n
-are the perl dependencies installed?  if you're on ubuntu or debian, try this:\n
-    $(grep "apt.*perl" $FEISTY_MEOW_APEX/readme.txt)\n
-or if you're on cygwin, then try this (if apt-cyg is available):\n
-    $(grep "apt-cyg.*perl" $FEISTY_MEOW_APEX/readme.txt)\n";
-
-    #echo "the incongruous files list is: $incongruous_files"
-    # disallow a single character result, since we get "*" as result when nothing exists yet.
-    if [ ${#incongruous_files} -ge 2 ]; then
-      log_feisty_meow_event "cleaning unknown older overrides..."
-      perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" $incongruous_files
-      continue_on_error "running safedel.  $fail_message" 
+    # jump into the loading dock and make our custom link.
+    pushd "$FEISTY_MEOW_LOADING_DOCK" &>/dev/null
+    if [ -h custom ]; then
+      # there's an existing link, so remove it.
+      \rm custom
     fi
+    # make sure we cleaned up the area before we re-link.
+    if [ -h custom -o -d custom -o -f custom ]; then
+      echo "
+Due to an over-abundance of caution, we are not going to remove an unexpected
+'custom' object found in the file system.  This object is located in the
+feisty meow loading dock here: $(pwd)
+And here is a description of the rogue 'custom' object:
+"
+      ls -al custom
+      echo "
+If you are pretty sure that this is just a remnant of an older approach in
+feisty meow, where we copied the custom directory rather than linking it
+(and it most likely is just such a bit of cruft of that nature), then please
+remove that old remnant 'custom' item, for example by saying:
+  /bin/rm -rf \"custom\" ; popd
+Sorry for the interruption, but we want to make sure this removal wasn't
+automatic if there is even a small amount of doubt about the issue."
+      return 1
+    fi
+
+    # create the custom folder as a link to the customizations.
+    ln -s "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" custom
+
     popd &>/dev/null
-    log_feisty_meow_event "copying custom overrides for $custom_user"
-    mkdir -p "$FEISTY_MEOW_LOADING_DOCK/custom" 2>/dev/null
-    perl "$FEISTY_MEOW_SCRIPTS/text/cpdiff.pl" "$FEISTY_MEOW_SCRIPTS/customize/$custom_user" "$FEISTY_MEOW_LOADING_DOCK/custom"
-    continue_on_error "running cpdiff.  $fail_message"
 
-    if [ -d "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" ]; then
-      log_feisty_meow_event "copying custom scripts for $custom_user"
-#hmmm: could save output to show if an error occurs.
-      rsync -avz "$FEISTY_MEOW_SCRIPTS/customize/$custom_user/scripts" "$FEISTY_MEOW_LOADING_DOCK/custom/" &>/dev/null
-      continue_on_error "copying customization scripts"
-    fi
+    # now take into account all the customizations by regenerating the feisty meow environment.
     regenerate
-
-    # prevent permission foul-ups, again.
-    chown -R "$my_user:$my_user" \
-        "$FEISTY_MEOW_LOADING_DOCK" "$FEISTY_MEOW_GENERATED_STORE" 2>/dev/null
-    continue_on_error "once more chowning feisty meow generated directories to $my_user"
 
     restore_terminal_title
   }
@@ -710,49 +719,6 @@ or if you're on cygwin, then try this (if apt-cyg is available):\n
     rm -rf $* &>/dev/null
     if [ $? -ne 0 ]; then echo received a failure code when removing.; fi
     popd &>/dev/null
-  }
-
-  function spacem()
-  {
-    while [ $# -gt 0 ]; do
-      arg="$1"; shift
-      if [ ! -f "$arg" -a ! -d "$arg" ]; then
-        echo "=> did not find a file or directory named '$arg'."
-        continue
-      fi
-
-      # first we will capture the output of the character replacement operation for reporting.
-      # this is done first since some filenames can't be properly renamed in perl (e.g. if they
-      # have pipe characters apparently).
-      intermediate_name="$(bash "$FEISTY_MEOW_SCRIPTS/files/replace_spaces_with_underscores.sh" "$arg")"
-      local saw_intermediate_result=0
-      if [ -z "$intermediate_name" ]; then
-        # make sure we report something, if there are no further name changes.
-        intermediate_name="'$arg'"
-      else 
-        # now zap the first part of the name off (since original name isn't needed).
-        intermediate_name="$(echo $intermediate_name | sed -e 's/.*=> //')"
-        saw_intermediate_result=1
-      fi
-
-      # first we rename the file to be lower case.
-      actual_file="$(echo $intermediate_name | sed -e "s/'\([^']*\)'/\1/")"
-      final_name="$(perl $FEISTY_MEOW_SCRIPTS/files/renlower.pl "$actual_file")"
-      local saw_final_result=0
-      if [ -z "$final_name" ]; then
-        final_name="$intermediate_name"
-      else
-        final_name="$(echo $final_name | sed -e 's/.*=> //')"
-        saw_final_result=1
-      fi
-#echo intermed=$saw_intermediate_result 
-#echo final=$saw_final_result 
-
-      if [[ $saw_intermediate_result != 0 || $saw_final_result != 0 ]]; then
-        # printout the combined operation results.
-        echo "'$arg' => $final_name"
-      fi
-    done
   }
 
   ##############
@@ -963,6 +929,26 @@ return 0
       # cannot always be considered an error, but we can at least gripe.
       echo "Did not find any matches for seeker '$seeker' in file: $filename"
     fi
+  }
+
+  ##############
+
+  # space 'em all: fixes naming for all of the files of the appropriate types
+  # in the directories specified.
+  function spacemall() {
+    local -a dirs=("${@}")
+    if [ ${#dirs[@]} -eq 0 ]; then
+      dirs=(.)
+    fi
+
+    local charnfile="$(mktemp $TMP/zz_charn.XXXXXX)"
+    find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f | \
+        grep -i \
+"docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|pptx\|txt\|xlsx\|zip" | \
+        sed -e 's/^/"/' | sed -e 's/$/"/' | \
+        xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
+    # drop the temp file now that we're done.
+    rm "$charnfile"
   }
 
   ##############

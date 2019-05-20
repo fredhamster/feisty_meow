@@ -18,7 +18,7 @@ source "$THISDIR/shared_site_mgr.sh"
 
 sep
 
-check_apps_root "$BASE_APPLICATION_PATH"
+check_apps_root "$app_dirname"
 
 # find proper webroot where the site will be initialized.
 if [ -z "$app_dirname" ]; then
@@ -37,7 +37,7 @@ full_app_dir="$BASE_APPLICATION_PATH/$app_dirname"
 pushd "$full_app_dir" &>/dev/null
 exit_on_error "Changing to app path '$full_app_dir'"
 
-dir="avenger5/vendor/siteavenger/avcore"
+dir="$CHECKOUT_DIR_NAME/vendor/siteavenger/avcore"
 if [ ! -d $dir ]; then
   echo "The application doesn't seem to use avcore: $full_app_dir"
 else

@@ -11,23 +11,6 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
 ##############
 
-# check git version to see if we can use autostash.
-# this appears to be an ubuntu issue, where xenial did not provide it even though the
-# feature appeared in git 2.6 and xenial claims it has git version 2.7.4.  eventually,
-# this version test can go away.
-gitvertest="$(git version | sed -e 's/git version [0-9]\.//' | sed -e 's/\.[0-9][0-9]*$//' )"
-if (( $gitvertest >= 11 )); then
-  # auto-stash is not available until 2.6 for git, but ubuntu is misreporting or using a
-  # differing version number somehow.  we are sure autostash was missing on ubuntu xenial
-  # with git 2.7.4 and it's definitely present in zesty with git at 2.11.
-#  PULL_ADDITION='--rebase --autostash'
-#although initially attractive, above set of flags seems to lose history we don't want to
-#lose.
-PULL_ADDITION=
-fi
-
-##############
-
 # the maximum depth that the recursive functions will try to go below the starting directory.
 export MAX_DEPTH=5
 
@@ -362,7 +345,7 @@ function do_revctrl_careful_update()
     remote_branch_info=$(git ls-remote --heads origin $bran 2>/dev/null)
     if [ ! -z "$remote_branch_info" ]; then
       # we are pretty sure the remote branch does exist.
-      git pull --tags $PULL_ADDITION origin "$bran" | $TO_SPLITTER
+      git pull --tags origin "$bran" | $TO_SPLITTER
       promote_pipe_return 0
     fi
     exit_on_error "git pull of remote branch: $bran"
@@ -374,7 +357,7 @@ function do_revctrl_careful_update()
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
-  git pull --tags $PULL_ADDITION --all | $TO_SPLITTER
+  git pull --tags --all | $TO_SPLITTER
 #is the above really important when we did this branch already in the loop?
 #it does an --all, but is that effective or different?  should we be doing that in above loop?
   promote_pipe_return 0
@@ -414,7 +397,7 @@ function do_revctrl_simple_update()
   elif [ -d ".git" ]; then
     if test_writeable ".git"; then
       $blatt_report
-      git pull --tags $PULL_ADDITION 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
+      git pull --tags 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       promote_pipe_return 0
       exit_on_error "git pull of origin"
     fi

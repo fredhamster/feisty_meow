@@ -42,7 +42,7 @@ function synch_directory_to_target()
   sep
 
   if [ ! -d "$from" ]; then
-    echo "skipping synch on missing source directory: ${from}"
+    echo "skipping synch on missing source directory: $from"
     return 0
   fi
   if [ ! -d "$to" ]; then
@@ -69,12 +69,12 @@ function update_archive_drive()
 
   sep
 
-  echo Target drive currently has...
-  ls "$target_folder"
-  if [ $? -ne 0 ]; then
-    echo "The target location '$target_folder' is not mounted currently, so cannot be updated."
+  if [ ! -d "$target_folder" -a ! -f "$target_folder" ]; then
+    echo "Target '$target_folder' is not available currently; not updating."
     return 1
   fi
+  echo Target drive currently has...
+  dir "$target_folder"
 
   # synch all our targets.
   for currdir in $MAJOR_ARCHIVE_SOURCES; do
@@ -97,6 +97,66 @@ function update_archive_drive()
   echo
   popd
 }
+
+# compares one local well-known folder against the similar folder on a
+# remote destination.  the first folder is the archive name, with no paths.
+# the second paramter is the local path component of the archive, such as
+# "/z" if the archives are found in the /z hierarchy.  the third parameter
+# is the remote location of the archive, which should just be a host name.
+# the fourth parameter is the destination path component to match the local
+# path component (since these can differ).
+function do_a_folder_compare()
+{
+  local archname="$1"; shift
+  local pathing="$1"; shift
+  local dest="$1"; shift
+  local destpath="$1"; shift
+  if [ -z "$archname" -o -z "$dest" ]; then
+    echo "do_a_folder_compare needs an archive name and a destination host."
+    return 1
+  fi
+
+  if [ -d "/z/$archname" ]; then
+    sep 14
+    echo "Comparing ${pathing}/${archname} with remote $dest:${destpath}/${archname}"
+    compare_dirs ${pathing}/${archname} ${dest}:${destpath}/${archname}
+    sep 14
+  fi
+}
+
+# runs through all the local archives on this host to make sure nothing is
+# different when compared with the mainline versions on the specified host.
+# the first parameter is the remote version to compare against.  if there is
+# a second parameter, it is used as the path on the local machine where the
+# comparison should be based (e.g. an archive drive rather than /z/).
+function uber_archive_comparator()
+{
+  local remote_arch="$1"; shift
+  if [ -z "$remote_arch" ]; then
+    echo uber_archive_comparator needs the remote archive host to compare with.
+    return 1
+  fi
+  local local_place="$1"; shift
+  if [ -z "$local_place" ]; then
+    local_place="/z"
+  fi
+
+  sep 14
+  echo "comparing against host '$remote_arch'"
+  sep 14
+
+#hmmm: shouldn't this be a list in a variable someplace?
+  for archicle in \
+    basement \
+    imaginations \
+    musix \
+    toaster \
+    walrus \
+    ; do
+      do_a_folder_compare ${archicle} ${local_place} ${remote_arch} "/z"
+  done
+}
+
 
 #hmmm: abstractable piece?  the runtime plug at the end of a library script?
 # this block should execute when the script is actually run, rather
