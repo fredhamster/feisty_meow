@@ -45,19 +45,25 @@ read line
   # bump feisty meow version. 
   bash ./scripts/generator/next_version.sh
   exit_on_error bumping version for feisty meow codebase
+  # check in the changes in the new release branch, which now includes a revised version.
 echo about to commit
 read line
-  # check in the changes in the new release branch, which now includes a revised version.
   git commit -a
   exit_on_error committing all changes
+
+  # not sure if we really need to check in the release branch as a remote, but we like to see it in the list.
+echo about to push new release branch
+read line
+  git push --set-upstream origin "$new_release"
+
+  # grab out the master branch as the active one.
 echo about to check out master
 read line
-  # grab out the master branch as the active one.
   git checkout master
   exit_on_error checking out master branch
+  # merge the master branch with the new release.
 echo about to merge
 read line
-  # merge the master branch with the new release.
   git merge --no-ff $new_release
   exit_on_error merging in the new release in master
   # let the committer see the most recent changes.
@@ -73,19 +79,19 @@ echo about to TAG
 read line
   git tag -a $new_version
   exit_on_error tagging new version as $new_version
+  # commit the full set of changes for the master branch now, including the tags.
 echo about to commit master branch with all those changes
 read line
-  # commit the full set of changes for the master branch now, including the tags.
   rcheckin .
   exit_on_error checking in the changes in master branch
+  # switch back to the dev branch.
 echo switching to dev branch
 read line
-  # switch back to the dev branch.
   git checkout dev
   exit_on_error checking the dev branch out again
-echo merging in from master
-read line
   # merge in the latest changes from master, which should only be the revised version really.
+echo merging in from release branch to dev
+read line
   git merge --no-ff $new_release
   exit_on_error merging the release changes into the dev branch
   # back to where we started.
