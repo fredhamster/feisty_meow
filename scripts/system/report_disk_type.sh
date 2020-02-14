@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# reports whether the disk partition provided is spinning physical media or solid state.
-# if no partition is specified, then /dev/sda is the default.
+# reports whether a disk is spinning physical media or solid state.
+# if no drive is specified, then /dev/sda is the default.
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
@@ -10,7 +10,9 @@ drive="$1"; shift
 # plug in a default drive if none is provided.
 if [ -z "$drive" ]; then drive="sda"; fi
 
-# chop off the /dev/ portion of the disk partition name, if it exists.
+# chop off the /dev/ portion of the disk name, if it exists.  also chop off
+# any partition numbers, since the script can only check whole drives (where,
+# so far at least, all partitions on a drive are the same type).
 if [[ "$drive" =~ ^/dev/.*$ ]]; then
   drive="$(echo "$drive" | sed -e 's/^\/dev\///')"
 #  echo "after mangle, drive is: '$drive'"
@@ -31,4 +33,5 @@ if [ $(cat /sys/block/${drive}/queue/rotational) -eq 0 ]; then
 else
   echo "drive $drive is a spinning physical disk."
 fi
+
 
