@@ -32,7 +32,7 @@ function calculate_weight()
 function calculate_complexity()
 {
   local dir="$1"; shift
-  local complexity=$(find "$dir" -type d | wc -l)
+  local complexity=$(find "$dir" -type d | wc -l | tr -d ' ')
   if [ -z "$complexity" ]; then echo 0; else echo "$complexity"; fi
 }
 
