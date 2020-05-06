@@ -928,9 +928,7 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
   DEPENDENCY_DEFINITIONS += NO_VERSION
   DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(COMPILER_VERSION) -X/usr/include/c++/$(COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(COMPILER_VERSION)/include
 
-#protect other additions to make them only for debian?
-#  COMPILER_HEADER_DIR := /usr/include /usr/local/include 
-  COMPILER_HEADER_DIR := /System/Library/Frameworks/Foundation.framework/Versions/C/Headers
+  COMPILER_HEADER_DIR := /usr/local/include /usr/include /System/Library/Frameworks/Foundation.framework/Versions/C/Headers
 
   # "USE_XWIN" specifies that this project needs X window system support.
   #USE_XWIN =
@@ -939,8 +937,7 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
 #    COMPILER_LIBRARY_DIR = /lib64 /usr/lib64 /usr/local/lib64
 #  else
 
-    COMPILER_LIBRARY_DIR = /usr/lib 
-###/usr/local/lib
+    COMPILER_LIBRARY_DIR = /usr/lib /usr/local/lib
 #/lib 
 
 #  endif

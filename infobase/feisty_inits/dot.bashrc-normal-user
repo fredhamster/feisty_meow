@@ -5,9 +5,11 @@
 
 ##############
 
-# drag in the default version of this file.  this may not be needed if your
-# .bashrc script already has substantial code or already does this.
-source /etc/bash.bashrc
+if [ -f /etc/bash.bashrc ]; then
+  # drag in the default version of this file.  this may not be needed if your
+  # .bashrc script already has substantial code or already does this.
+  source /etc/bash.bashrc
+fi
 
 ##############
 

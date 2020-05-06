@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # these metrics are how bogged down we are in to-do type items.
 
@@ -22,7 +23,7 @@ function calculate_count()
 function calculate_weight()
 {
   local dir="$1"; shift
-  local weight=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null | grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | xargs ls -al | awk '{ print $5 }' | paste -sd+ | bc 2>/dev/null)
+  local weight=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null | grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | xargs ls -al | awk '{ print $5 }' | paste -sd+ - | bc 2>/dev/null)
   if [ -z "$weight" ]; then echo 0; else echo "$weight"; fi
 }
 
@@ -31,7 +32,7 @@ function calculate_weight()
 function calculate_complexity()
 {
   local dir="$1"; shift
-  local complexity=$(find "$dir" -type d | wc -l)
+  local complexity=$(find "$dir" -type d | wc -l | tr -d ' ')
   if [ -z "$complexity" ]; then echo 0; else echo "$complexity"; fi
 }
 

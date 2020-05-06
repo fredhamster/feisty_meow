@@ -451,6 +451,9 @@ if [ -z "$skip_all" ]; then
   # label if they're doing an su with the sudo.
   function sudo() {
     save_terminal_title
+    # hoist our X authorization info in case environment is passed along;
+    # this can allow root to use our display to show Xorg windows.
+    export IMPORTED_XAUTH="$(xauth list $DISPLAY)"
     /usr/bin/sudo "$@"
     retval=$?
     restore_terminal_title
@@ -515,6 +518,8 @@ if [ -z "$skip_all" ]; then
         # if the user has sudo root access; we don't want to provide a custom
         # profile for root.
     fi
+    # chop off any email address style formatting to leave just the name.
+    custom_user="$(echo "$custom_user" | cut -f1 -d'@')"
 
     save_terminal_title
 

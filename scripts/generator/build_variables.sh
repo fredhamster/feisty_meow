@@ -208,7 +208,7 @@ if [ -z "$got_bad" ]; then
   if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
     source "$BUILD_SCRIPTS_PATH/vis_stu_vars.sh"
   else
-    export LD_LIBRARY_PATH="$TARGETS_STORE"
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$TARGETS_STORE"
   fi
   
   popd &>/dev/null # checking is over, jump back to the starting point.
