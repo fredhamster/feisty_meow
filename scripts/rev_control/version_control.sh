@@ -156,7 +156,7 @@ function do_revctrl_diff
     svn diff .
     exit_on_error "subversion diff"
   elif [ -d ".git" ]; then
-    git diff 
+    git --no-pager diff 
     exit_on_error "git diff"
   elif [ -d "CVS" ]; then
     cvs diff .

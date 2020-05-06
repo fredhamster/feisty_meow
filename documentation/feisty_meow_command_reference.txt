@@ -58,6 +58,10 @@ generally useful commands
   update the feisty meow codebase from its origin and run the regeneration
   script to update the current user's feisty meow configuration.
 
+  whackem:
+  permanently delete files, rather than using safe delete (safedel).  this
+  script will accept all the standard arguments to "rm".
+
 revision control commands
 =========================
 
