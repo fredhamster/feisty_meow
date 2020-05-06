@@ -25,4 +25,6 @@ popd &>/dev/null
 perform_revctrl_action_on_file "$tempfile" do_revctrl_checkin
 exit_on_error "doing a check-in on: $tempfile"
 
+rm "$tempfile"
+
 restore_terminal_title
