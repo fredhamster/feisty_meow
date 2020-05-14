@@ -26,7 +26,11 @@ export FEISTY_MEOW_APEX="/opt/feistymeow.org/feisty_meow"
 
 # sets up the feisty_meow scripts if appropriate for the environment.
 if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" ]; then
-  source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
+  if [ -d "$FEISTY_MEOW_APEX" ]; then
+    source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
+  else
+    echo "feisty meow codebase is not available at: $FEISTY_MEOW_APEX"
+  fi
 fi
 
 # if not commented out, then feisty meow will run all the unit tests during builds.
