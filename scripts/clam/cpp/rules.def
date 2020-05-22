@@ -115,7 +115,7 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
   endif
 
   ifneq "$(USE_SSL)" ""
-    LIBS_USED += crypto
+    LIBS_USED += crypto ssl
   endif
   
   ifneq "$(USE_WXWIDGETS)" ""
