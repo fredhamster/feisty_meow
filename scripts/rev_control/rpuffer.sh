@@ -29,5 +29,7 @@ popd &>/dev/null
 perform_revctrl_action_on_file "$tempfile" do_revctrl_careful_update
 exit_on_error "puffing out repository at: $tempfile"
 
+rm "$tempfile"
+
 restore_terminal_title
 

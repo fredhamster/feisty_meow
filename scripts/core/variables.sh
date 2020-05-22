@@ -318,12 +318,10 @@ done
 # a late breaking action is to set the editor, if we can.
 # we will fallback to whatever we can find on the host.
 export EDITOR
-if [ ! -z "$DISPLAY" ]; then
-  # only try to add bluefish, a gui editor, if there is an X display for it.
-  if [ -z "$EDITOR" ]; then
-    EDITOR="$(which bluefish)"
-  fi
-fi
+# note: the editors for revision control must wait while the document is
+# edited, so gvim and others that launch a separate x window are not
+# going to work well unless they can be prevented from forking the process
+# off.
 if [ -z "$EDITOR" ]; then
   EDITOR="$(which gvim)"
   if [ ! -z "$EDITOR" ]; then
@@ -337,12 +335,18 @@ fi
 if [ -z "$EDITOR" ]; then
   EDITOR="$(which vi)"
 fi
-##
+if [ -z "$EDITOR" ]; then
+  EDITOR="$(which emacs)"
+fi
+####
 # out of ideas about editors at this point.
-##
-# set the VISUAL variable from EDITOR if we found an editor to use.
+####
+# set the VISUAL and other variables from EDITOR if we found an editor to use.
 if [ ! -z "$EDITOR" ]; then
   VISUAL="$EDITOR"
+
+  export GIT_EDITOR="$EDITOR"
+  export SVN_EDITOR="$EDITOR"
 fi
 
 ##############

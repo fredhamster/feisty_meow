@@ -30,7 +30,7 @@ function lesser()
   fi
 
   # run the source highlighter first if needed.
-  /bin/less $EXTRA_OPTIONS "${@}" 
+  /usr/bin/env less $EXTRA_OPTIONS "${@}" 
 }
 
 ##############

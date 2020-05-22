@@ -92,6 +92,13 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
     export USER="$CRONUSER"
   fi
+
+  # use the xauth info if we were given one in the environment.
+  # this allows root or other su'd identities to create windows with same
+  # display variable.
+  if [ ! -z "$DISPLAY" -a ! -z "$IMPORTED_XAUTH" ]; then
+    xauth add $IMPORTED_XAUTH
+  fi
   
   ##############
   

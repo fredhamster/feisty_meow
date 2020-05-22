@@ -451,6 +451,9 @@ if [ -z "$skip_all" ]; then
   # label if they're doing an su with the sudo.
   function sudo() {
     save_terminal_title
+    # hoist our X authorization info in case environment is passed along;
+    # this can allow root to use our display to show Xorg windows.
+    export IMPORTED_XAUTH="$(xauth list $DISPLAY)"
     /usr/bin/sudo "$@"
     retval=$?
     restore_terminal_title
@@ -515,6 +518,8 @@ if [ -z "$skip_all" ]; then
         # if the user has sudo root access; we don't want to provide a custom
         # profile for root.
     fi
+    # chop off any email address style formatting to leave just the name.
+    custom_user="$(echo "$custom_user" | cut -f1 -d'@')"
 
     save_terminal_title
 
@@ -944,7 +949,7 @@ return 0
     local charnfile="$(mktemp $TMP/zz_charn.XXXXXX)"
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f | \
         grep -i \
-"docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|pptx\|txt\|xlsx\|zip" | \
+"doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|txt\|vsd\|vsdx\|xls\|xlsx\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.

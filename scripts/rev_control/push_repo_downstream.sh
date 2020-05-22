@@ -53,6 +53,8 @@ exit_on_error "generating revision control file list"
 perform_revctrl_action_on_file "$tempfile" do_revctrl_careful_update
 exit_on_error "doing a careful update on: $tempfile"
 
+rm "$tempfile"
+
 # seems to be needed to cause a merge to be resolved.
 git pull downstream master
 # -m "unfortunate merge"
