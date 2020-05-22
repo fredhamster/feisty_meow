@@ -94,11 +94,16 @@ echo merging in from release branch to dev--hit enter
 read line
   git merge --no-ff $new_release
   exit_on_error merging the release changes into the dev branch
+echo pushing merged dev branch up
+  git push 
+  exit_on_error pushing merged dev branch up
+
+  # done with the serious actions.
+  echo -e '\ncompleted the release of version $new_version\n'
+
   # back to where we started.
   popd
 }
 
-
 make_new_feisty_meow_release "$1"
-
 
