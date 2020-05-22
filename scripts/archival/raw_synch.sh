@@ -15,7 +15,7 @@ for currdir in basement imaginations musix toaster walrus; do
   if [ -d "/z/$currdir" ]; then
     sep
     echo "synching $currdir folder from $synch_host..."
-    rsync -avz "$synch_host":/z/$currdir/* /z/$currdir/
+    rsync -avz "fred@${synch_host}:/z/$currdir"/* /z/$currdir/
     continue_on_error synching with $currdir from remote host.
   fi
 done
