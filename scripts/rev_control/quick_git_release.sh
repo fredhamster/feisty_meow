@@ -115,7 +115,7 @@ echo pushing merged dev branch up
   exit_on_error pushing merged dev branch up
 
   # done with the serious actions.
-  echo -e '\ncompleted the release of version $new_version\n'
+  echo -e "\ncompleted the release of version $new_version\n"
 
   # back to where we started.
   popd
