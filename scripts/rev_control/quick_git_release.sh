@@ -68,7 +68,7 @@ read line
   exit_on_error merging in the new release in master
   # let the committer see the most recent changes.
   echo "=> launching gitk to show you the full set of changes;"
-  echo "=> please prepare a kick-ass commit comment."
+  echo "=> please prepare an excellent commit comment."
   gitk
   exit_on_error launching gitk
   # now make a tag for the new release, which is where we should go crazy with the detailed
