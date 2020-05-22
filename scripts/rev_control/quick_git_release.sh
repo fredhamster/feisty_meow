@@ -40,11 +40,23 @@ branch name and release tag name of the new release.
   # make a new branch for the release based on the dev branch.
 echo about to git checkout--hit enter
 read line
+
+  # make sure we're working on the dev branch, since that's where our releases come from.
+  git checkout dev
+  exit_on_error checking out the dev branch
+
+  # inflate all the git branches we might need, getting all their latest.
+  rpuffer
+  exit_on_error running rpuffer on the dev branch to update it
+
+  # branch off our new release as its own entity.
   git checkout -b $new_release dev
   exit_on_error checking out a new branch called $new_release
+
   # bump feisty meow version. 
   bash ./scripts/generator/next_version.sh
   exit_on_error bumping version for feisty meow codebase
+
   # check in the changes in the new release branch, which now includes a revised version.
 echo about to commit--hit enter
 read line
@@ -61,6 +73,10 @@ echo about to check out master--hit enter
 read line
   git checkout master
   exit_on_error checking out master branch
+
+  rpuffer
+  exit_on_error running rpuffer on master branch to update it
+
   # merge the master branch with the new release.
 echo about to merge--hit enter
 read line
