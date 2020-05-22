@@ -37,9 +37,10 @@ branch name and release tag name of the new release.
   pushd $FEISTY_MEOW_APEX
   # make up a release name based on the version number.
   local new_release="release-${new_version}"
-  # make a new branch for the release based on the dev branch.
-echo about to git checkout--hit enter
-read line
+
+  echo "About to create the release called '$new_release' as a branch"
+  echo "on the git repository -- please hit Enter."
+  read line
 
   # make sure we're working on the dev branch, since that's where our releases come from.
   git checkout dev
@@ -49,7 +50,7 @@ read line
   rpuffer
   exit_on_error running rpuffer on the dev branch to update it
 
-  # branch off our new release as its own entity.
+  # make a new branch for the release based on the dev branch.
   git checkout -b $new_release dev
   exit_on_error checking out a new branch called $new_release
 
@@ -58,19 +59,19 @@ read line
   exit_on_error bumping version for feisty meow codebase
 
   # check in the changes in the new release branch, which now includes a revised version.
-echo about to commit--hit enter
-read line
+#echo about to commit--hit enter
+#read line
   git commit -a
   exit_on_error committing all changes
 
   # not sure if we really need to check in the release branch as a remote, but we like to see it in the list.
-echo about to push new release branch--hit enter
-read line
+#echo about to push new release branch--hit enter
+#read line
   git push --set-upstream origin "$new_release"
 
   # grab out the master branch as the active one.
-echo about to check out master--hit enter
-read line
+#echo about to check out master--hit enter
+#read line
   git checkout master
   exit_on_error checking out master branch
 
@@ -78,39 +79,47 @@ read line
   exit_on_error running rpuffer on master branch to update it
 
   # merge the master branch with the new release.
-echo about to merge--hit enter
-read line
+#echo about to merge--hit enter
+#read line
   git merge --no-ff $new_release
   exit_on_error merging in the new release in master
+
   # let the committer see the most recent changes.
+  echo
   echo "=> launching gitk to show you the full set of changes;"
   echo "=> please prepare an excellent commit comment."
   gitk
   exit_on_error launching gitk
+
   # now make a tag for the new release, which is where we should go crazy with the detailed
   # and useful comments for what has changed in this release, gathered from the gitk that
   # we just launched.  this should include all of the work on the development branch since
   # the last release...
-echo about to TAG--hit enter
-read line
+#echo about to TAG--hit enter
+#read line
   git tag -a $new_version
   exit_on_error tagging new version as $new_version
+
   # commit the full set of changes for the master branch now, including the tags.
-echo about to commit master branch with all those changes--hit enter
-read line
+#echo about to commit master branch with all those changes--hit enter
+#read line
   rcheckin .
   exit_on_error checking in the changes in master branch
+
   # switch back to the dev branch.
-echo switching to dev branch--hit enter
-read line
+#echo switching to dev branch--hit enter
+#read line
   git checkout dev
   exit_on_error checking the dev branch out again
+
   # merge in the latest changes from master, which should only be the revised version really.
-echo merging in from release branch to dev--hit enter
-read line
+#echo merging in from release branch to dev--hit enter
+#read line
   git merge --no-ff $new_release
   exit_on_error merging the release changes into the dev branch
-echo pushing merged dev branch up
+#echo pushing merged dev branch up
+
+  # now update anything from our merged state in remote.
   git push 
   exit_on_error pushing merged dev branch up
 
