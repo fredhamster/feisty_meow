@@ -9,8 +9,6 @@
 
 ##############
 
-#hmmm: moved from functions.sh; does that hose everything up?
-
   # defines a variable within the feisty meow environment and remembers that
   # this is a new or modified definition.  if the feisty meow codebase is
   # unloaded, then so are all the variables that were defined.
@@ -29,6 +27,17 @@
 
 return 0
   }
+
+  # switches from an X:/ form to a /cygdrive/X/path form.  this is only useful
+  # for the cygwin environment currently.
+  # defined here rather than in functions.sh since we need it when setting variables
+  # and cannot count on load order during a fresh startup in some circumstances.
+  function dos_to_unix_path() {
+    # we always remove dos slashes in favor of forward slashes.
+#old:    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
+         echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/cygdrive\/\1\/\2/'
+  }
+
 
 
 ##############
