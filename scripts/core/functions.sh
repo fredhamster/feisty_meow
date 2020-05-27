@@ -422,30 +422,30 @@ if [ -z "$skip_all" ]; then
     fi
   }
   
-  # su function: makes su perform a login.
-  # for some OSes, this transfers the X authority information to the new login.
-  function su() {
-    if debian_like; then
-      # debian currently requires the full version which imports X authority
-      # information for su.
-  
-      # get the x authority info for our current user.
-      source "$FEISTY_MEOW_SCRIPTS/security/get_x_auth.sh"
-  
-      if [ -z "$X_auth_info" ]; then
-        # if there's no authentication info to pass along, we just do a normal su.
-        /bin/su -l $*
-      else
-        # under X, we update the new login's authority info with the previous
-        # user's info.
-        (unset XAUTHORITY; /bin/su -l $* -c "$X_auth_info ; export DISPLAY=$DISPLAY ; bash")
-      fi
-    else
-      # non-debian supposedly doesn't need the extra overhead any more.
-      # or at least suse doesn't, which is the other one we've tested on.
-      /bin/su -l $*
-    fi
-  }
+#bork  # su function: makes su perform a login.
+#bork  # for some OSes, this transfers the X authority information to the new login.
+#bork  function su() {
+#bork    if debian_like; then
+#bork      # debian currently requires the full version which imports X authority
+#bork      # information for su.
+#bork  
+#bork      # get the x authority info for our current user.
+#bork      source "$FEISTY_MEOW_SCRIPTS/security/get_x_auth.sh"
+#bork  
+#bork      if [ -z "$X_auth_info" ]; then
+#bork        # if there's no authentication info to pass along, we just do a normal su.
+#bork        /bin/su -l $*
+#bork      else
+#bork        # under X, we update the new login's authority info with the previous
+#bork        # user's info.
+#bork        (unset XAUTHORITY; /bin/su -l $* -c "$X_auth_info ; export DISPLAY=$DISPLAY ; bash")
+#bork      fi
+#bork    else
+#bork      # non-debian supposedly doesn't need the extra overhead any more.
+#bork      # or at least suse doesn't, which is the other one we've tested on.
+#bork      /bin/su -l $*
+#bork    fi
+#bork  }
   
   # this function wraps the normal sudo by ensuring we replace the terminal
   # label before we launch what they're passing to sudo.  we also ensure that
