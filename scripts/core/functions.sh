@@ -460,23 +460,25 @@ if [ -z "$skip_all" ]; then
     if [ ! -z "$DISPLAY" ]; then
       export IMPORTED_XAUTH="$(xauth list $DISPLAY | head -n 1 | awk '{print $3}')"
     fi
-    # prep a simple string here, rather than messing with arguments in the
-    # already complicated command below.
+    # prep a simple command string here, rather than messing with arguments
+    # in the already complicated command below.  i was seeing some really
+    # screwy behavior trying to expand $@ when embedded for the bash -c flag,
+    # but making the variable ahead of time gets rid of that.
     cmd="/usr/bin/sudo ""$@"
 
     # omit any variables that are either wrong for a different user or used
     # to shield the feisty meow scripts from reconfiguring.  when we do the
-    # sudo, we want a fresh start for feisty meow at least.  this approach
-    # is complicated by our sentinel alias, which normally is passed to any
-    # subshells.
+    # sudo, we want a fresh start for feisty meow at least.
+    # our approach to launching sudo is further complicated by our sentinel
+    # alias, which normally is passed to any subshells (to prevent recreating
+    # aliases).  we turn off the expand_aliases shell option to avoid passing
+    # the sentinel, which ensures aliases do get recreated for the new user.
     BUILD_VARS_LOADED= \
     CORE_VARIABLES_LOADED= \
     FEISTY_MEOW_SCRIPTS_LOADED= \
     function_sentinel= \
     MAIL= \
     bash +O expand_aliases -c "$cmd"
-      # the above does cause an extra shell, but we need it to work
-      # identically to the normal sudo syntax, and that gets us this.
     retval=$?
     restore_terminal_title
     return $retval
