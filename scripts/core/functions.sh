@@ -211,7 +211,7 @@ if [ -z "$skip_all" ]; then
 #    local oldterm="$TERM"
 #    export TERM=linux
 
-    /usr/bin/ssh -X -C "${args[@]}"
+    /usr/bin/ssh -Y -C "${args[@]}"
 
 #    # restore the terminal variable also.
 #    TERM="$oldterm"
