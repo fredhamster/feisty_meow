@@ -104,7 +104,7 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   # this allows root or other su'd identities to create windows with same
   # display variable.
   if [ ! -z "$DISPLAY" -a ! -z "$IMPORTED_XAUTH" ]; then
-    xauth add $IMPORTED_XAUTH
+    xauth add $DISPLAY . $IMPORTED_XAUTH
   fi
   
   ##############

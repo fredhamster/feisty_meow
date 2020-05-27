@@ -199,7 +199,7 @@ if [ -z "$skip_all" ]; then
   # wraps secure shell with some parameters we like, most importantly to enable X forwarding.
   function ssh()
   {
-    local args=($*)
+    local args=($@)
     # we remember the old terminal title, then force the TERM variable to a more generic
     # version for the other side (just 'linux'); we don't want the remote side still
     # thinking it's running xterm.
@@ -447,20 +447,38 @@ if [ -z "$skip_all" ]; then
     fi
   }
   
-  # sudo function wraps the normal sudo by ensuring we replace the terminal
-  # label if they're doing an su with the sudo.
+  # this function wraps the normal sudo by ensuring we replace the terminal
+  # label before we launch what they're passing to sudo.  we also ensure that
+  # the feisty meow environment is recreated; normal subshells don't need
+  # this, but when switching identity with sudo, it seems important.  yet,
+  # we also don't want to hose up their normal sudo actions, such as passing
+  # along the current environment, should the user choose.
   function sudo() {
     save_terminal_title
     # hoist our X authorization info in case environment is passed along;
     # this can allow root to use our display to show Xorg windows.
-    export IMPORTED_XAUTH="$(xauth list $DISPLAY)"
-    /usr/bin/sudo "$@"
+    if [ ! -z "$DISPLAY" ]; then
+      export IMPORTED_XAUTH="$(xauth list $DISPLAY | head -n 1 | awk '{print $3}')"
+    fi
+    # prep a simple string here, rather than messing with arguments in the
+    # already complicated command below.
+    cmd="/usr/bin/sudo ""$@"
+
+    # omit any variables that are either wrong for a different user or used
+    # to shield the feisty meow scripts from reconfiguring.  when we do the
+    # sudo, we want a fresh start for feisty meow at least.  this approach
+    # is complicated by our sentinel alias, which normally is passed to any
+    # subshells.
+    BUILD_VARS_LOADED= \
+    CORE_VARIABLES_LOADED= \
+    FEISTY_MEOW_SCRIPTS_LOADED= \
+    function_sentinel= \
+    MAIL= \
+    bash +O expand_aliases -c "$cmd"
+      # the above does cause an extra shell, but we need it to work
+      # identically to the normal sudo syntax, and that gets us this.
     retval=$?
     restore_terminal_title
-#    if [ "$first_command" == "su" ]; then
-#      # yep, they were doing an su, but they're back now.
-#      label_terminal_with_info
-#    fi
     return $retval
   }
   
