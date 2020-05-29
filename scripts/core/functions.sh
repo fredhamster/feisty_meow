@@ -199,7 +199,7 @@ if [ -z "$skip_all" ]; then
   # wraps secure shell with some parameters we like, most importantly to enable X forwarding.
   function ssh()
   {
-    local args=($*)
+    local args=($@)
     # we remember the old terminal title, then force the TERM variable to a more generic
     # version for the other side (just 'linux'); we don't want the remote side still
     # thinking it's running xterm.
@@ -211,7 +211,7 @@ if [ -z "$skip_all" ]; then
 #    local oldterm="$TERM"
 #    export TERM=linux
 
-    /usr/bin/ssh -X -C "${args[@]}"
+    /usr/bin/ssh -Y -C "${args[@]}"
 
 #    # restore the terminal variable also.
 #    TERM="$oldterm"
@@ -400,13 +400,13 @@ if [ -z "$skip_all" ]; then
     fi
   }
   
-  # switches from an X:/ form to a /cygdrive/X/path form.  this is only useful
-  # for the cygwin environment currently.
-  function dos_to_unix_path() {
-    # we always remove dos slashes in favor of forward slashes.
-#old:    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
-         echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/cygdrive\/\1\/\2/'
-  }
+#  # switches from an X:/ form to a /cygdrive/X/path form.  this is only useful
+#  # for the cygwin environment currently.
+#  function dos_to_unix_path() {
+#    # we always remove dos slashes in favor of forward slashes.
+##old:    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
+#         echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/cygdrive\/\1\/\2/'
+#  }
 
   # returns a successful value (0) if this system is debian or ubuntu.
   function debian_like() {
@@ -422,45 +422,65 @@ if [ -z "$skip_all" ]; then
     fi
   }
   
-  # su function: makes su perform a login.
-  # for some OSes, this transfers the X authority information to the new login.
-  function su() {
-    if debian_like; then
-      # debian currently requires the full version which imports X authority
-      # information for su.
+#bork  # su function: makes su perform a login.
+#bork  # for some OSes, this transfers the X authority information to the new login.
+#bork  function su() {
+#bork    if debian_like; then
+#bork      # debian currently requires the full version which imports X authority
+#bork      # information for su.
+#bork  
+#bork      # get the x authority info for our current user.
+#bork      source "$FEISTY_MEOW_SCRIPTS/security/get_x_auth.sh"
+#bork  
+#bork      if [ -z "$X_auth_info" ]; then
+#bork        # if there's no authentication info to pass along, we just do a normal su.
+#bork        /bin/su -l $*
+#bork      else
+#bork        # under X, we update the new login's authority info with the previous
+#bork        # user's info.
+#bork        (unset XAUTHORITY; /bin/su -l $* -c "$X_auth_info ; export DISPLAY=$DISPLAY ; bash")
+#bork      fi
+#bork    else
+#bork      # non-debian supposedly doesn't need the extra overhead any more.
+#bork      # or at least suse doesn't, which is the other one we've tested on.
+#bork      /bin/su -l $*
+#bork    fi
+#bork  }
   
-      # get the x authority info for our current user.
-      source "$FEISTY_MEOW_SCRIPTS/security/get_x_auth.sh"
-  
-      if [ -z "$X_auth_info" ]; then
-        # if there's no authentication info to pass along, we just do a normal su.
-        /bin/su -l $*
-      else
-        # under X, we update the new login's authority info with the previous
-        # user's info.
-        (unset XAUTHORITY; /bin/su -l $* -c "$X_auth_info ; export DISPLAY=$DISPLAY ; bash")
-      fi
-    else
-      # non-debian supposedly doesn't need the extra overhead any more.
-      # or at least suse doesn't, which is the other one we've tested on.
-      /bin/su -l $*
-    fi
-  }
-  
-  # sudo function wraps the normal sudo by ensuring we replace the terminal
-  # label if they're doing an su with the sudo.
+  # this function wraps the normal sudo by ensuring we replace the terminal
+  # label before we launch what they're passing to sudo.  we also ensure that
+  # the feisty meow environment is recreated; normal subshells don't need
+  # this, but when switching identity with sudo, it seems important.  yet,
+  # we also don't want to hose up their normal sudo actions, such as passing
+  # along the current environment, should the user choose.
   function sudo() {
     save_terminal_title
     # hoist our X authorization info in case environment is passed along;
     # this can allow root to use our display to show Xorg windows.
-    export IMPORTED_XAUTH="$(xauth list $DISPLAY)"
-    /usr/bin/sudo "$@"
+    if [ ! -z "$DISPLAY" ]; then
+      export IMPORTED_XAUTH="$(xauth list $DISPLAY | head -n 1 | awk '{print $3}')"
+    fi
+    # prep a simple command string here, rather than messing with arguments
+    # in the already complicated command below.  i was seeing some really
+    # screwy behavior trying to expand $@ when embedded for the bash -c flag,
+    # but making the variable ahead of time gets rid of that.
+    cmd="/usr/bin/sudo ""$@"
+
+    # omit any variables that are either wrong for a different user or used
+    # to shield the feisty meow scripts from reconfiguring.  when we do the
+    # sudo, we want a fresh start for feisty meow at least.
+    # our approach to launching sudo is further complicated by our sentinel
+    # alias, which normally is passed to any subshells (to prevent recreating
+    # aliases).  we turn off the expand_aliases shell option to avoid passing
+    # the sentinel, which ensures aliases do get recreated for the new user.
+    BUILD_VARS_LOADED= \
+    CORE_VARIABLES_LOADED= \
+    FEISTY_MEOW_SCRIPTS_LOADED= \
+    function_sentinel= \
+    MAIL= \
+    bash +O expand_aliases -c "$cmd"
     retval=$?
     restore_terminal_title
-#    if [ "$first_command" == "su" ]; then
-#      # yep, they were doing an su, but they're back now.
-#      label_terminal_with_info
-#    fi
     return $retval
   }
   
