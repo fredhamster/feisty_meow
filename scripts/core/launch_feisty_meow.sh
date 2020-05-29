@@ -86,6 +86,13 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   # some preconditions we want to establish before loading anything...
   
   # make sure that aliases can be used in non-interactive shells.
+  # this causes all aliases that are currently defined for this shell to
+  # be inherited by subshells that this shell starts.  this is unusual,
+  # but is preferred for my workflow in feisty meow scripts; it saves me
+  # time re-adding aliases if i can count on them already being there.
+  # this is a problem if you *don't* want the aliases there though.  we can
+  # solve that problem by running bash with the "-O expand_aliases" flags to
+  # stop the expansion for the next subshell.
   shopt -s expand_aliases
   
   # patch the user variable if we were launched by one of our cron jobs.
@@ -97,7 +104,7 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   # this allows root or other su'd identities to create windows with same
   # display variable.
   if [ ! -z "$DISPLAY" -a ! -z "$IMPORTED_XAUTH" ]; then
-    xauth add $IMPORTED_XAUTH
+    xauth add $DISPLAY . $IMPORTED_XAUTH
   fi
   
   ##############
