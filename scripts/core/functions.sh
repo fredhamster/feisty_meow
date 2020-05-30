@@ -355,22 +355,6 @@ if [ -z "$skip_all" ]; then
     done
   }
   
-#hmmm: not really doing anything yet; ubuntu seems to have changed from pulseaudio in 17.04?
-  # restarts the sound driver.
-  function fix_sound_driver() {
-    # stop bash complaining about blank function body.
-    local nothing=
-#if alsa something
-#    sudo service alsasound restart
-#elif pulse something
-#    sudo pulseaudio -k
-#    sudo pulseaudio -D
-#else
-#    something else...?
-#fi
-
-  }
-
   function screen() {
     save_terminal_title
 #hmmm: ugly absolute path here.
@@ -421,31 +405,6 @@ if [ -z "$skip_all" ]; then
       return 1
     fi
   }
-  
-#bork  # su function: makes su perform a login.
-#bork  # for some OSes, this transfers the X authority information to the new login.
-#bork  function su() {
-#bork    if debian_like; then
-#bork      # debian currently requires the full version which imports X authority
-#bork      # information for su.
-#bork  
-#bork      # get the x authority info for our current user.
-#bork      source "$FEISTY_MEOW_SCRIPTS/security/get_x_auth.sh"
-#bork  
-#bork      if [ -z "$X_auth_info" ]; then
-#bork        # if there's no authentication info to pass along, we just do a normal su.
-#bork        /bin/su -l $*
-#bork      else
-#bork        # under X, we update the new login's authority info with the previous
-#bork        # user's info.
-#bork        (unset XAUTHORITY; /bin/su -l $* -c "$X_auth_info ; export DISPLAY=$DISPLAY ; bash")
-#bork      fi
-#bork    else
-#bork      # non-debian supposedly doesn't need the extra overhead any more.
-#bork      # or at least suse doesn't, which is the other one we've tested on.
-#bork      /bin/su -l $*
-#bork    fi
-#bork  }
   
   # this function wraps the normal sudo by ensuring we replace the terminal
   # label before we launch what they're passing to sudo.  we also ensure that
@@ -985,6 +944,28 @@ return 0
     source "$FEISTY_MEOW_SCRIPTS/site_avenger/shared_site_mgr.sh"
     switch_to "$1"
   }
+
+  ##############
+
+  # you have hit the borderline functional zone...
+
+#hmmm: not really doing anything yet; ubuntu seems to have changed from pulseaudio in 17.04?
+  # restarts the sound driver.
+  function fix_sound_driver() {
+    # stop bash complaining about blank function body.
+    local nothing=
+#if alsa something
+#    sudo service alsasound restart
+#elif pulse something
+#    sudo pulseaudio -k
+#    sudo pulseaudio -D
+#else
+#    something else...?
+#fi
+
+  }
+
+  # ...and here's the end of the borderline functional zone.
 
   ##############
 
