@@ -132,9 +132,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
     mkdir -p "$FEISTY_MEOW_GENERATED_STORE"
   fi
   # set up our effluent outsourcing valves.
-  if [ -z "$TEMPORARIES_PILE" ]; then
-    define_yeti_variable TEMPORARIES_PILE="$FEISTY_MEOW_GENERATED_STORE/temporaries"
-  fi
+  define_yeti_variable TEMPORARIES_PILE="$FEISTY_MEOW_GENERATED_STORE/temporaries"
   if [ ! -d "$TEMPORARIES_PILE" ]; then
     mkdir -p "$TEMPORARIES_PILE"
   fi
