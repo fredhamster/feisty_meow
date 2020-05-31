@@ -433,10 +433,11 @@ if [ -z "$skip_all" ]; then
     # aliases).  we turn off the expand_aliases shell option to avoid passing
     # the sentinel, which ensures aliases do get recreated for the new user.
     BUILD_VARS_LOADED= \
-    CORE_VARIABLES_LOADED= \
-    FEISTY_MEOW_SCRIPTS_LOADED= \
-    function_sentinel= \
-    MAIL= \
+      CORE_VARIABLES_LOADED= \
+      FEISTY_MEOW_SCRIPTS_LOADED= \
+      function_sentinel= \
+      MAIL= \
+      HOME= \
     bash +O expand_aliases -c "$cmd"
     retval=$?
     restore_terminal_title
