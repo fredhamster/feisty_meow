@@ -331,20 +331,20 @@ export EDITOR
 # going to work well unless they can be prevented from forking the process
 # off.
 if [ -z "$EDITOR" ]; then
-  EDITOR="$(which gvim)"
+  EDITOR="$(whichable gvim)"
   if [ ! -z "$EDITOR" ]; then
     # if we found gvim, then add in the no forking flag.
     EDITOR+=" --nofork"
   fi
 fi
 if [ -z "$EDITOR" ]; then
-  EDITOR="$(which vim)"
+  EDITOR="$(whichable vim)"
 fi
 if [ -z "$EDITOR" ]; then
-  EDITOR="$(which vi)"
+  EDITOR="$(whichable vi)"
 fi
 if [ -z "$EDITOR" ]; then
-  EDITOR="$(which emacs)"
+  EDITOR="$(whichable emacs)"
 fi
 ####
 # out of ideas about editors at this point.

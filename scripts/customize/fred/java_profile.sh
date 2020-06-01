@@ -65,7 +65,7 @@ fi
 if [ ! -d "$JAVA_HOME" ]; then
   unset JAVA_HOME
   unset JAVA_BIN_PIECE
-  if [ -z "$(whichable java 2>/dev/null)" ]; then
+  if [ -z "$(whichable java)" ]; then
     intuition_failure JAVA_HOME
   fi
 fi
@@ -104,7 +104,7 @@ else
     ECLIPSE_DIR=$(echo $ECLIPSE_DIR | sed -e 's/^\(.\):/\/cygdrive\/\1/')
   fi
 fi
-if [ -z "$ECLIPSE_DIR" -a -z "$(whichable eclipse 2>/dev/null)" ]; then
+if [ -z "$ECLIPSE_DIR" -a -z "$(whichable eclipse)" ]; then
   intuition_failure ECLIPSE_DIR
 fi
 
