@@ -407,23 +407,44 @@ if [ -z "$skip_all" ]; then
   }
   
   # this function wraps the normal sudo by ensuring we replace the terminal
-  # label before we launch what they're passing to sudo.  we also ensure that
-  # the feisty meow environment is recreated; normal subshells don't need
-  # this, but when switching identity with sudo, it seems important.  yet,
-  # we also don't want to hose up their normal sudo actions, such as passing
-  # along the current environment, should the user choose.
+  # label before we launch what they're passing to sudo.  we also preserve
+  # specific variables that enable the main user's ssh credentials to still
+  # be relied on for ssh forwarding, even if the '-i' flag is passed to cause
+  # a fresh shell (which normally doesn't get the launching user's environment
+  # variables).
+
+##questioning our approach: we also ensure that
+#  # the feisty meow environment is recreated; normal subshells don't need
+#  # this, but when switching identity with sudo, it seems important.  yet,
+#  # we also don't want to hose up their normal sudo actions, such as passing
+#  # along the current environment, should the user choose.
+
   function sudo() {
     save_terminal_title
+
     # hoist our X authorization info in case environment is passed along;
-    # this can allow root to use our display to show Xorg windows.
-    if [ ! -z "$DISPLAY" ]; then
+    # this can allow root to use our display to show X.org windows.
+    if [ -z "$IMPORTED_XAUTH" -a ! -z "$DISPLAY" ]; then
       export IMPORTED_XAUTH="$(xauth list $DISPLAY | head -n 1 | awk '{print $3}')"
     fi
+
+    # launch sudo with just the variables we want to reach the other side.
+    # we take an extra step to null out the PATH, since MacOS seems to want
+    # to pass that even for a login shell (-i) somehow.
+    PATH= /usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH "$@"
+#"SSH_AUTH_SOCK='$SSH_AUTH_SOCK'" "IMPORTED_XAUTH='$IMPORTED_XAUTH'" "$@"
+    retval=$?
+
+    unset IMPORTED_XAUTH
+    restore_terminal_title
+    return $retval
+
+##potential boneyard:
     # prep a simple command string here, rather than messing with arguments
     # in the already complicated command below.  i was seeing some really
     # screwy behavior trying to expand $@ when embedded for the bash -c flag,
     # but making the variable ahead of time gets rid of that.
-    cmd="/usr/bin/sudo ""$@"
+    cmd="/usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH ""$@"
 
     # omit any variables that are either wrong for a different user or used
     # to shield the feisty meow scripts from reconfiguring.  when we do the
