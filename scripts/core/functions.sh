@@ -33,6 +33,20 @@ if [ -z "$skip_all" ]; then
     date +"%Y$sep%m$sep%d$sep%H%M$sep%S" | tr -d '/\n/'
   }
   
+  # a wrapper for the which command that finds items on the path.  some OSes
+  # do not provide which, so we want to not be spewing errors when that
+  # happens.
+  function whichable()
+  {
+    to_find="$1"; shift
+    local WHICHER="$(which which 2>/dev/null)"
+    if [ $? -ne 0 ]; then
+      # there is no which command here.  we produce nothing due to this.
+      echo
+    fi
+    echo $($WHICHER $to_find)
+  }
+
   # makes a directory of the name specified and then tries to change the
   # current directory to that directory.
   function mcd() {
@@ -475,7 +489,7 @@ if [ -z "$skip_all" ]; then
 
   # overlay for nechung binary so that we can complain less grossly about it when it's missing.
   function nechung() {
-    local wheres_nechung=$(which nechung 2>/dev/null)
+    local wheres_nechung=$(whichable nechung)
     if [ -z "$wheres_nechung" ]; then
       echo "The nechung oracle program cannot be found.  You may want to consider"
       echo "rebuilding the feisty meow applications with this command:"
@@ -589,20 +603,6 @@ automatic if there is even a small amount of doubt about the issue."
     [ "$2" == "0" ] && CHAR="[:alnum:]" || CHAR="[:graph:]"
     cat /dev/urandom | tr -cd "$CHAR" | head -c ${1:-32}
     echo
-  }
-
-  # a wrapper for the which command that finds items on the path.  some OSes
-  # do not provide which, so we want to not be spewing errors when that
-  # happens.
-  function whichable()
-  {
-    to_find="$1"; shift
-    which which &>/dev/null
-    if [ $? -ne 0 ]; then
-      # there is no which command here.  we produce nothing due to this.
-      echo
-    fi
-    echo $(which $to_find)
   }
 
   function add_cygwin_drive_mounts() {
@@ -860,7 +860,7 @@ return 0
       this_host=$(hostname)
     elif [ ! -z "$(echo $MACHTYPE | grep suse)" ]; then
       this_host=$(hostname --long)
-    elif [ -x "$(which hostname 2>/dev/null)" ]; then
+    elif [ -x "$(whichable hostname)" ]; then
       this_host=$(hostname)
     fi
     echo "$this_host"

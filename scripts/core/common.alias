@@ -14,7 +14,6 @@
 ##############
 
 # make our functions available to the aliases.
-#hmmm: should this be necessary?  will it even work?
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 ##############
@@ -47,11 +46,11 @@ if [ "$OS" != "Windows_NT" ]; then
   if [ -n "$IS_DARWIN" ]; then
     # case for mac os x.
     define_yeti_alias exp='open'
-  elif [ ! -z "$(which dolphin 2>/dev/null)" ]; then
+  elif [ ! -z "$(whichable dolphin)" ]; then
     # we prefer dolphin if available.
     define_yeti_alias exp='screen -L -S dolphin-$RANDOM -d -m dolphin '
 #--select 
-  elif [ ! -z "$(which nautilus 2>/dev/null)" ]; then
+  elif [ ! -z "$(whichable nautilus)" ]; then
     # launch nautilus if available.
     define_yeti_alias exp='nautilus'
   else

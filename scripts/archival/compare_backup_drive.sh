@@ -22,7 +22,7 @@ echo would do--    compare_dirs "$target/$(basename $currdir)" "$currdir"
 # decide which drive to compare.
 targets="$1"
 if [ -z "$targets" ]; then
-  targets=($($(which ls) -1 /media/$USER/*))
+  targets=($($(whichable ls) -1 /media/$USER/*))
   if [ ${#targets[@]} -gt 1 ]; then
     echo "
 Please provide a media drive name on the command line, because more than

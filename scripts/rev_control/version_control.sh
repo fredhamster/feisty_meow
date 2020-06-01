@@ -15,8 +15,8 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 export MAX_DEPTH=5
 
 # use our splitter tool for lengthy output if it's available.
-if [ ! -z "$(which splitter 2>/dev/null)" ]; then
-  TO_SPLITTER="$(which splitter)"
+if [ ! -z "$(whichable splitter)" ]; then
+  TO_SPLITTER="$(whichable splitter)"
   # calculate the number of columsn in the terminal.
   cols=$(get_maxcols)
   TO_SPLITTER+=" --maxcol $(($cols - 1))"
