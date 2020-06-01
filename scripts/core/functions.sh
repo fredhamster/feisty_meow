@@ -44,7 +44,7 @@ if [ -z "$skip_all" ]; then
       # there is no which command here.  we produce nothing due to this.
       echo
     fi
-    echo $($WHICHER $to_find)
+    echo $($WHICHER $to_find 2>/dev/null)
   }
 
   # makes a directory of the name specified and then tries to change the
