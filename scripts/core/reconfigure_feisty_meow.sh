@@ -51,10 +51,9 @@ export PERLLIB=$(echo $PERLLIB | sed -e "s?\([:]*\)\([^:]*feisty_meow[^:]*\)\([:
 PERLLIB=$PERLLIB:"$FEISTY_MEOW_SCRIPTS/core":"$FEISTY_MEOW_SCRIPTS/files":"$FEISTY_MEOW_SCRIPTS/generator"
 PERL5LIB=$PERLLIB
 #echo PERLLIB after modification is $PERLLIB
+
 # make toast out of generated files right away, but leave any custom scripts.
-\rm "$FEISTY_MEOW_LOADING_DOCK"/fmc_*
-#NO! find "$FEISTY_MEOW_LOADING_DOCK" -maxdepth 1 -type f -exec perl "$FEISTY_MEOW_SCRIPTS/files/safedel.pl" "{}" ';'
-# &>/dev/null
+\rm -f "$FEISTY_MEOW_LOADING_DOCK"/fmc_*
 
 ## #no, old:
 ## if [ ! -d "$FEISTY_MEOW_LOADING_DOCK/custom" ]; then
