@@ -199,7 +199,7 @@ if [ -z "$skip_all" ]; then
   # wraps secure shell with some parameters we like, most importantly to enable X forwarding.
   function ssh()
   {
-    local args=($*)
+    local args=($@)
     # we remember the old terminal title, then force the TERM variable to a more generic
     # version for the other side (just 'linux'); we don't want the remote side still
     # thinking it's running xterm.
@@ -211,7 +211,7 @@ if [ -z "$skip_all" ]; then
 #    local oldterm="$TERM"
 #    export TERM=linux
 
-    /usr/bin/ssh -X -C "${args[@]}"
+    /usr/bin/ssh -Y -C "${args[@]}"
 
 #    # restore the terminal variable also.
 #    TERM="$oldterm"
@@ -355,22 +355,6 @@ if [ -z "$skip_all" ]; then
     done
   }
   
-#hmmm: not really doing anything yet; ubuntu seems to have changed from pulseaudio in 17.04?
-  # restarts the sound driver.
-  function fix_sound_driver() {
-    # stop bash complaining about blank function body.
-    local nothing=
-#if alsa something
-#    sudo service alsasound restart
-#elif pulse something
-#    sudo pulseaudio -k
-#    sudo pulseaudio -D
-#else
-#    something else...?
-#fi
-
-  }
-
   function screen() {
     save_terminal_title
 #hmmm: ugly absolute path here.
@@ -400,13 +384,13 @@ if [ -z "$skip_all" ]; then
     fi
   }
   
-  # switches from an X:/ form to a /cygdrive/X/path form.  this is only useful
-  # for the cygwin environment currently.
-  function dos_to_unix_path() {
-    # we always remove dos slashes in favor of forward slashes.
-#old:    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
-         echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/cygdrive\/\1\/\2/'
-  }
+#  # switches from an X:/ form to a /cygdrive/X/path form.  this is only useful
+#  # for the cygwin environment currently.
+#  function dos_to_unix_path() {
+#    # we always remove dos slashes in favor of forward slashes.
+##old:    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
+#         echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/cygdrive\/\1\/\2/'
+#  }
 
   # returns a successful value (0) if this system is debian or ubuntu.
   function debian_like() {
@@ -422,45 +406,62 @@ if [ -z "$skip_all" ]; then
     fi
   }
   
-  # su function: makes su perform a login.
-  # for some OSes, this transfers the X authority information to the new login.
-  function su() {
-    if debian_like; then
-      # debian currently requires the full version which imports X authority
-      # information for su.
-  
-      # get the x authority info for our current user.
-      source "$FEISTY_MEOW_SCRIPTS/security/get_x_auth.sh"
-  
-      if [ -z "$X_auth_info" ]; then
-        # if there's no authentication info to pass along, we just do a normal su.
-        /bin/su -l $*
-      else
-        # under X, we update the new login's authority info with the previous
-        # user's info.
-        (unset XAUTHORITY; /bin/su -l $* -c "$X_auth_info ; export DISPLAY=$DISPLAY ; bash")
-      fi
-    else
-      # non-debian supposedly doesn't need the extra overhead any more.
-      # or at least suse doesn't, which is the other one we've tested on.
-      /bin/su -l $*
-    fi
-  }
-  
-  # sudo function wraps the normal sudo by ensuring we replace the terminal
-  # label if they're doing an su with the sudo.
+  # this function wraps the normal sudo by ensuring we replace the terminal
+  # label before we launch what they're passing to sudo.  we also preserve
+  # specific variables that enable the main user's ssh credentials to still
+  # be relied on for ssh forwarding, even if the '-i' flag is passed to cause
+  # a fresh shell (which normally doesn't get the launching user's environment
+  # variables).
+
+##questioning our approach: we also ensure that
+#  # the feisty meow environment is recreated; normal subshells don't need
+#  # this, but when switching identity with sudo, it seems important.  yet,
+#  # we also don't want to hose up their normal sudo actions, such as passing
+#  # along the current environment, should the user choose.
+
   function sudo() {
     save_terminal_title
+
     # hoist our X authorization info in case environment is passed along;
-    # this can allow root to use our display to show Xorg windows.
-    export IMPORTED_XAUTH="$(xauth list $DISPLAY)"
-    /usr/bin/sudo "$@"
+    # this can allow root to use our display to show X.org windows.
+    if [ -z "$IMPORTED_XAUTH" -a ! -z "$DISPLAY" ]; then
+      export IMPORTED_XAUTH="$(xauth list $DISPLAY | head -n 1 | awk '{print $3}')"
+    fi
+
+    # launch sudo with just the variables we want to reach the other side.
+    # we take an extra step to null out the PATH, since MacOS seems to want
+    # to pass that even for a login shell (-i) somehow.
+    PATH= /usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH "$@"
+#"SSH_AUTH_SOCK='$SSH_AUTH_SOCK'" "IMPORTED_XAUTH='$IMPORTED_XAUTH'" "$@"
+    retval=$?
+
+    unset IMPORTED_XAUTH
+    restore_terminal_title
+    return $retval
+
+##potential boneyard:
+    # prep a simple command string here, rather than messing with arguments
+    # in the already complicated command below.  i was seeing some really
+    # screwy behavior trying to expand $@ when embedded for the bash -c flag,
+    # but making the variable ahead of time gets rid of that.
+    cmd="/usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH ""$@"
+
+    # omit any variables that are either wrong for a different user or used
+    # to shield the feisty meow scripts from reconfiguring.  when we do the
+    # sudo, we want a fresh start for feisty meow at least.
+    # our approach to launching sudo is further complicated by our sentinel
+    # alias, which normally is passed to any subshells (to prevent recreating
+    # aliases).  we turn off the expand_aliases shell option to avoid passing
+    # the sentinel, which ensures aliases do get recreated for the new user.
+    BUILD_VARS_LOADED= \
+      CORE_VARIABLES_LOADED= \
+      FEISTY_MEOW_SCRIPTS_LOADED= \
+      function_sentinel= \
+      MAIL= \
+      HOME= \
+    bash +O expand_aliases -c "$cmd"
     retval=$?
     restore_terminal_title
-#    if [ "$first_command" == "su" ]; then
-#      # yep, they were doing an su, but they're back now.
-#      label_terminal_with_info
-#    fi
     return $retval
   }
   
@@ -965,6 +966,28 @@ return 0
     source "$FEISTY_MEOW_SCRIPTS/site_avenger/shared_site_mgr.sh"
     switch_to "$1"
   }
+
+  ##############
+
+  # you have hit the borderline functional zone...
+
+#hmmm: not really doing anything yet; ubuntu seems to have changed from pulseaudio in 17.04?
+  # restarts the sound driver.
+  function fix_sound_driver() {
+    # stop bash complaining about blank function body.
+    local nothing=
+#if alsa something
+#    sudo service alsasound restart
+#elif pulse something
+#    sudo pulseaudio -k
+#    sudo pulseaudio -D
+#else
+#    something else...?
+#fi
+
+  }
+
+  # ...and here's the end of the borderline functional zone.
 
   ##############
 
