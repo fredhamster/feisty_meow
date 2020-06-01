@@ -9,8 +9,6 @@
 
 ##############
 
-#hmmm: moved from functions.sh; does that hose everything up?
-
   # defines a variable within the feisty meow environment and remembers that
   # this is a new or modified definition.  if the feisty meow codebase is
   # unloaded, then so are all the variables that were defined.
@@ -29,6 +27,17 @@
 
 return 0
   }
+
+  # switches from an X:/ form to a /cygdrive/X/path form.  this is only useful
+  # for the cygwin environment currently.
+  # defined here rather than in functions.sh since we need it when setting variables
+  # and cannot count on load order during a fresh startup in some circumstances.
+  function dos_to_unix_path() {
+    # we always remove dos slashes in favor of forward slashes.
+#old:    echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/\1\/\2/'
+         echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/cygdrive\/\1\/\2/'
+  }
+
 
 
 ##############
@@ -123,9 +132,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
     mkdir -p "$FEISTY_MEOW_GENERATED_STORE"
   fi
   # set up our effluent outsourcing valves.
-  if [ -z "$TEMPORARIES_PILE" ]; then
-    define_yeti_variable TEMPORARIES_PILE="$FEISTY_MEOW_GENERATED_STORE/temporaries"
-  fi
+  define_yeti_variable TEMPORARIES_PILE="$FEISTY_MEOW_GENERATED_STORE/temporaries"
   if [ ! -d "$TEMPORARIES_PILE" ]; then
     mkdir -p "$TEMPORARIES_PILE"
   fi
@@ -281,7 +288,8 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   
   # add to the PATH variables used for locating applications.  this step is taken after any
   # potential overrides from the user.
-  define_yeti_variable PATH="$(dos_to_unix_path $FEISTY_MEOW_LOADING_DOCK):$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
+#old:  define_yeti_variable PATH="$(dos_to_unix_path $FEISTY_MEOW_LOADING_DOCK):$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
+  define_yeti_variable PATH="$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
   
   ##############
 
