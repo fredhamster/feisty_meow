@@ -288,7 +288,8 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   
   # add to the PATH variables used for locating applications.  this step is taken after any
   # potential overrides from the user.
-  define_yeti_variable PATH="$(dos_to_unix_path $FEISTY_MEOW_LOADING_DOCK):$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
+#old:  define_yeti_variable PATH="$(dos_to_unix_path $FEISTY_MEOW_LOADING_DOCK):$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
+  define_yeti_variable PATH="$PATH:$(find /usr/local/games -maxdepth 1 -type d -exec echo -n {}: ';' 2>/dev/null)/sbin"
   
   ##############
 
