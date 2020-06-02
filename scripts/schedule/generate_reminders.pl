@@ -21,10 +21,12 @@
 #
 # Apr 24 Saint Shanty's Day
 # Jul 8 Normality Day
+# Oct 24 1985 Saint Splivven's Day
 #
 # Month names must currently be three letters and must be capitalized.
-# The day must be a number, followed by a space.  Anything after that
-# space is considered the description of the event.
+# The day must be a number, followed by a space.  An optional 4 digit
+# year can be included.  Anything after that is considered to be the
+# description of the event.
 
 use Env qw(CLOUD_BASE TMP);
 
