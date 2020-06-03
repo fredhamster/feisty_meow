@@ -33,6 +33,20 @@ if [ -z "$skip_all" ]; then
     date +"%Y$sep%m$sep%d$sep%H%M$sep%S" | tr -d '/\n/'
   }
   
+  # a wrapper for the which command that finds items on the path.  some OSes
+  # do not provide which, so we want to not be spewing errors when that
+  # happens.
+  function whichable()
+  {
+    to_find="$1"; shift
+    local WHICHER="$(\which which 2>/dev/null)"
+    if [ $? -ne 0 ]; then
+      # there is no which command here.  we produce nothing due to this.
+      echo
+    fi
+    echo $($WHICHER $to_find 2>/dev/null)
+  }
+
   # makes a directory of the name specified and then tries to change the
   # current directory to that directory.
   function mcd() {
@@ -412,13 +426,6 @@ if [ -z "$skip_all" ]; then
   # be relied on for ssh forwarding, even if the '-i' flag is passed to cause
   # a fresh shell (which normally doesn't get the launching user's environment
   # variables).
-
-##questioning our approach: we also ensure that
-#  # the feisty meow environment is recreated; normal subshells don't need
-#  # this, but when switching identity with sudo, it seems important.  yet,
-#  # we also don't want to hose up their normal sudo actions, such as passing
-#  # along the current environment, should the user choose.
-
   function sudo() {
     save_terminal_title
 
@@ -426,41 +433,19 @@ if [ -z "$skip_all" ]; then
     # this can allow root to use our display to show X.org windows.
     if [ -z "$IMPORTED_XAUTH" -a ! -z "$DISPLAY" ]; then
       export IMPORTED_XAUTH="$(xauth list $DISPLAY | head -n 1 | awk '{print $3}')"
+      local REMOVE_IMP_XAUTH=true
     fi
 
     # launch sudo with just the variables we want to reach the other side.
     # we take an extra step to null out the PATH, since MacOS seems to want
     # to pass that even for a login shell (-i) somehow.
     PATH= /usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH "$@"
-#"SSH_AUTH_SOCK='$SSH_AUTH_SOCK'" "IMPORTED_XAUTH='$IMPORTED_XAUTH'" "$@"
     retval=$?
 
-    unset IMPORTED_XAUTH
-    restore_terminal_title
-    return $retval
-
-##potential boneyard:
-    # prep a simple command string here, rather than messing with arguments
-    # in the already complicated command below.  i was seeing some really
-    # screwy behavior trying to expand $@ when embedded for the bash -c flag,
-    # but making the variable ahead of time gets rid of that.
-    cmd="/usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH ""$@"
-
-    # omit any variables that are either wrong for a different user or used
-    # to shield the feisty meow scripts from reconfiguring.  when we do the
-    # sudo, we want a fresh start for feisty meow at least.
-    # our approach to launching sudo is further complicated by our sentinel
-    # alias, which normally is passed to any subshells (to prevent recreating
-    # aliases).  we turn off the expand_aliases shell option to avoid passing
-    # the sentinel, which ensures aliases do get recreated for the new user.
-    BUILD_VARS_LOADED= \
-      CORE_VARIABLES_LOADED= \
-      FEISTY_MEOW_SCRIPTS_LOADED= \
-      function_sentinel= \
-      MAIL= \
-      HOME= \
-    bash +O expand_aliases -c "$cmd"
-    retval=$?
+    # take the xauth info away again if it wasn't set already.
+    if [ ! -z "$REMOVE_IMP_XAUTH" ]; then
+      unset IMPORTED_XAUTH
+    fi
     restore_terminal_title
     return $retval
   }
@@ -475,7 +460,7 @@ if [ -z "$skip_all" ]; then
 
   # overlay for nechung binary so that we can complain less grossly about it when it's missing.
   function nechung() {
-    local wheres_nechung=$(which nechung 2>/dev/null)
+    local wheres_nechung=$(whichable nechung)
     if [ -z "$wheres_nechung" ]; then
       echo "The nechung oracle program cannot be found.  You may want to consider"
       echo "rebuilding the feisty meow applications with this command:"
@@ -589,20 +574,6 @@ automatic if there is even a small amount of doubt about the issue."
     [ "$2" == "0" ] && CHAR="[:alnum:]" || CHAR="[:graph:]"
     cat /dev/urandom | tr -cd "$CHAR" | head -c ${1:-32}
     echo
-  }
-
-  # a wrapper for the which command that finds items on the path.  some OSes
-  # do not provide which, so we want to not be spewing errors when that
-  # happens.
-  function whichable()
-  {
-    to_find="$1"; shift
-    which which &>/dev/null
-    if [ $? -ne 0 ]; then
-      # there is no which command here.  we produce nothing due to this.
-      echo
-    fi
-    echo $(which $to_find)
   }
 
   function add_cygwin_drive_mounts() {
@@ -860,7 +831,7 @@ return 0
       this_host=$(hostname)
     elif [ ! -z "$(echo $MACHTYPE | grep suse)" ]; then
       this_host=$(hostname --long)
-    elif [ -x "$(which hostname 2>/dev/null)" ]; then
+    elif [ -x "$(whichable hostname)" ]; then
       this_host=$(hostname)
     fi
     echo "$this_host"
