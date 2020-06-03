@@ -426,13 +426,6 @@ if [ -z "$skip_all" ]; then
   # be relied on for ssh forwarding, even if the '-i' flag is passed to cause
   # a fresh shell (which normally doesn't get the launching user's environment
   # variables).
-
-##questioning our approach: we also ensure that
-#  # the feisty meow environment is recreated; normal subshells don't need
-#  # this, but when switching identity with sudo, it seems important.  yet,
-#  # we also don't want to hose up their normal sudo actions, such as passing
-#  # along the current environment, should the user choose.
-
   function sudo() {
     save_terminal_title
 
@@ -440,41 +433,19 @@ if [ -z "$skip_all" ]; then
     # this can allow root to use our display to show X.org windows.
     if [ -z "$IMPORTED_XAUTH" -a ! -z "$DISPLAY" ]; then
       export IMPORTED_XAUTH="$(xauth list $DISPLAY | head -n 1 | awk '{print $3}')"
+      local REMOVE_IMP_XAUTH=true
     fi
 
     # launch sudo with just the variables we want to reach the other side.
     # we take an extra step to null out the PATH, since MacOS seems to want
     # to pass that even for a login shell (-i) somehow.
     PATH= /usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH "$@"
-#"SSH_AUTH_SOCK='$SSH_AUTH_SOCK'" "IMPORTED_XAUTH='$IMPORTED_XAUTH'" "$@"
     retval=$?
 
-    unset IMPORTED_XAUTH
-    restore_terminal_title
-    return $retval
-
-##potential boneyard:
-    # prep a simple command string here, rather than messing with arguments
-    # in the already complicated command below.  i was seeing some really
-    # screwy behavior trying to expand $@ when embedded for the bash -c flag,
-    # but making the variable ahead of time gets rid of that.
-    cmd="/usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH ""$@"
-
-    # omit any variables that are either wrong for a different user or used
-    # to shield the feisty meow scripts from reconfiguring.  when we do the
-    # sudo, we want a fresh start for feisty meow at least.
-    # our approach to launching sudo is further complicated by our sentinel
-    # alias, which normally is passed to any subshells (to prevent recreating
-    # aliases).  we turn off the expand_aliases shell option to avoid passing
-    # the sentinel, which ensures aliases do get recreated for the new user.
-    BUILD_VARS_LOADED= \
-      CORE_VARIABLES_LOADED= \
-      FEISTY_MEOW_SCRIPTS_LOADED= \
-      function_sentinel= \
-      MAIL= \
-      HOME= \
-    bash +O expand_aliases -c "$cmd"
-    retval=$?
+    # take the xauth info away again if it wasn't set already.
+    if [ ! -z "$REMOVE_IMP_XAUTH" ]; then
+      unset IMPORTED_XAUTH
+    fi
     restore_terminal_title
     return $retval
   }
