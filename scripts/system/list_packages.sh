@@ -16,14 +16,14 @@ if debian_like; then
   exit $?
 fi
 
-rpm_available="$(which rpm)"
+rpm_available="$(whichable rpm)"
 if [ ! -z "$rpm_available" ]; then
 #is that the right phrase for rpm?  somewhat forgotten.
   rpm -qa | eval $SEEK_PIECE
   exit $?
 fi
 
-yum_available="$(which yum)"
+yum_available="$(whichable yum)"
 if [ ! -z "$yum_available" ]; then
   yum list | eval $SEEK_PIECE
   exit $?
