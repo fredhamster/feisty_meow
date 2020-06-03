@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ##############
 #
 #  Name   : build variable calculator
