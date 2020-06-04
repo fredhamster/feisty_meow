@@ -439,7 +439,10 @@ if [ -z "$skip_all" ]; then
     # launch sudo with just the variables we want to reach the other side.
     # we take an extra step to null out the PATH, since MacOS seems to want
     # to pass that even for a login shell (-i) somehow.
-    PATH= /usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH "$@"
+    local varmods="PATH= "
+    if [ ! -z "$IMPORTED_XAUTH" ]; then varmods+="IMPORTED_XAUTH=$IMPORTED_XAUTH "; fi
+    if [ ! -z "$SSH_AUTH_SOCK" ]; then varmods+="SSH_AUTH_SOCK=$SSH_AUTH_SOCK"; fi
+    /usr/bin/sudo $varmods "$@"
     retval=$?
 
     # take the xauth info away again if it wasn't set already.
