@@ -932,7 +932,21 @@ return 0
 
   ##############
 
-  # site avenger aliases
+  # tty relevant functions...
+
+  # keep_awake: sends a message to the screen from the background.
+  function keep_awake()
+  {
+    # just starts the keep_awake process in the background.
+    bash $FEISTY_MEOW_SCRIPTS/tty/keep_awake_process.sh &
+      # this should leave the job running as %1 or a higher number if there
+      # are pre-existing background jobs.
+  }
+
+  ##############
+
+  # site avenger functions...
+
   function switchto()
   {
     THISDIR="$FEISTY_MEOW_SCRIPTS/site_avenger"
