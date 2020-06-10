@@ -12,7 +12,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 # loop sort of forever.
 while true; do
-  echo "trying not to fall asleep at $(date_stringer)"
+  echo -e "\n\ntrying not to fall asleep at $(date_stringer)\n"
   # magical number of seconds to sleep...
   sleep 64
 done
