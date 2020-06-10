@@ -937,6 +937,8 @@ return 0
   # keep_awake: sends a message to the screen from the background.
   function keep_awake()
   {
+    # blank line to get off previous command line before job prints.
+    echo
     # just starts the keep_awake process in the background.
     bash $FEISTY_MEOW_SCRIPTS/tty/keep_awake_process.sh &
       # this should leave the job running as %1 or a higher number if there
