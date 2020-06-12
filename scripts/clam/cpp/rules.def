@@ -104,6 +104,10 @@ endif
 ###############################################################################
 
 ifeq "$(COMPILER)" "GNU_DARWIN"
+  # finds the crypto code on macos.
+  HEADER_SEARCH_PATH += /usr/local/opt/openssl/include
+  LIBRARY_SEARCH_PATH += /usr/local/opt/openssl/lib/
+
   ifneq "$(USE_XWIN)" ""
     DEFINITIONS += __XWINDOWS__ __X__
     LIBS_USED += 
@@ -111,7 +115,7 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
 #need to separate out with a USE_MOTIF kind of thing.
 #LIBS_USED += Xmu
     HEADER_SEARCH_PATH += /usr/include/X11 /usr/X11R6/include /usr/include/g++
-    LIBRARY_SEARCH_PATH += /usr/X11R6/lib 
+    LIBRARY_SEARCH_PATH += /usr/X11R6/lib
   endif
 
   ifneq "$(USE_SSL)" ""
