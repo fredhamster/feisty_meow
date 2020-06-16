@@ -32,6 +32,11 @@ function intuition_failure()
 # this bin portion works for most javas...
 export JAVA_BIN_PIECE=bin
 
+# try using java itself if we can.
+#if [ ! -d "$JAVA_HOME" ]; then
+
+#fi
+
 if [ ! -d "$JAVA_HOME" ]; then
   # try a recent version.
   export JAVA_HOME=/usr/lib/jvm/java-8-oracle
