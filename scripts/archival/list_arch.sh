@@ -13,6 +13,8 @@
 # An arbitrary format archive lister, although really we are mainly supporting
 # tar and zip currently, including compressed formats.
 
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
 archive_file="$1"; shift
 if [ -z "$archive_file" ]; then
   echo "This script takes one archive name (in .tar.gz, .zip, etc. formats) and"
@@ -25,9 +27,9 @@ if [ ! -f "$archive_file" ]; then
 fi
 
 if [ -z "$PAGER" ]; then
-  PAGER=$(which less)
+  PAGER=$(whichable less)
   if [ -z "$PAGER" ]; then
-    PAGER=$(which more)
+    PAGER=$(whichable more)
     if [ -z "$PAGER" ]; then
       PAGER="cat"
     fi

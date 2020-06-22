@@ -250,7 +250,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   # initializes the feisty meow build variables, if possible.
   function initialize_build_variables()
   {
-    found_build_vars=0
+    local found_build_vars=nope
     # we need to know the feisty meow directory, or we bail.
     if [ -z "$FEISTY_MEOW_APEX" ]; then return; fi
     # pick from our expected generator folder, but make sure it's there...
@@ -258,10 +258,10 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
     if [ -f "$buildvars" ]; then
       # yep, that one looks good, so pull in the build defs.
       source "$buildvars" "$buildvars"
-      found_build_vars=1
+      found_build_vars=true
     fi
     # now augment the environment if we found our build variables.
-    if [ $found_build_vars == 1 ]; then
+    if [ $found_build_vars == true ]; then
       # the binary directory contains our collection of handy programs.
       define_yeti_variable FEISTY_MEOW_BINARIES=$TARGETS_STORE
       # add binaries created within build to the path.
@@ -331,20 +331,20 @@ export EDITOR
 # going to work well unless they can be prevented from forking the process
 # off.
 if [ -z "$EDITOR" ]; then
-  EDITOR="$(which gvim)"
+  EDITOR="$(whichable gvim)"
   if [ ! -z "$EDITOR" ]; then
     # if we found gvim, then add in the no forking flag.
     EDITOR+=" --nofork"
   fi
 fi
 if [ -z "$EDITOR" ]; then
-  EDITOR="$(which vim)"
+  EDITOR="$(whichable vim)"
 fi
 if [ -z "$EDITOR" ]; then
-  EDITOR="$(which vi)"
+  EDITOR="$(whichable vi)"
 fi
 if [ -z "$EDITOR" ]; then
-  EDITOR="$(which emacs)"
+  EDITOR="$(whichable emacs)"
 fi
 ####
 # out of ideas about editors at this point.
