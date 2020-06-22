@@ -1,0 +1,17 @@
+
+to increase security on an sshd server, and assuming you have
+registered your ssh keys ahead of time in authorized_keys, then
+this bit goes in /etc/sshd_config (at the end works fine):
+
+##############
+
+# fred mods 2019-02-19:
+# trying to keep intruders out...  this disables password logins.
+# also of course disables root logins, which should already have been done.
+PermitRootLogin no
+ChallengeResponseAuthentication no
+PasswordAuthentication no
+UsePAM no
+
+##############
+

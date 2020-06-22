@@ -22,15 +22,23 @@ function intuition_failure()
 
 ############################
 
-# set some fairly liberal limits for ant.
-#no. export ANT_OPTS="-Xms512m -Xmx768m -XX:MaxPermSize=768m"
-
-############################
-
 # start guessing some settings...
+
+# whatever we figure out, we want to export the java home variable.
+export JAVA_HOME
 
 # this bin portion works for most javas...
 export JAVA_BIN_PIECE=bin
+
+# try using java itself to locate the JAVA_HOME if we can.
+if [ ! -d "$JAVA_HOME" ]; then
+  JAVA_HOME=$(java -XshowSettings:properties -version 2>&1 | grep -i java.home | sed -e 's/.*java.home = \(.*\)$/\1/')
+fi
+
+# if that didn't work, then we try a series of random bizarro places where
+# we have seen java live before.
+
+#hmmm: below list is way out of date.  we really hope the first attempt above works.
 
 if [ ! -d "$JAVA_HOME" ]; then
   # try a recent version.
@@ -65,7 +73,7 @@ fi
 if [ ! -d "$JAVA_HOME" ]; then
   unset JAVA_HOME
   unset JAVA_BIN_PIECE
-  if [ -z "$(whichable java 2>/dev/null)" ]; then
+  if [ -z "$(whichable java)" ]; then
     intuition_failure JAVA_HOME
   fi
 fi
@@ -104,7 +112,7 @@ else
     ECLIPSE_DIR=$(echo $ECLIPSE_DIR | sed -e 's/^\(.\):/\/cygdrive\/\1/')
   fi
 fi
-if [ -z "$ECLIPSE_DIR" -a -z "$(whichable eclipse 2>/dev/null)" ]; then
+if [ -z "$ECLIPSE_DIR" -a -z "$(whichable eclipse)" ]; then
   intuition_failure ECLIPSE_DIR
 fi
 
