@@ -260,9 +260,9 @@ function check_branch_state()
 
   local to_return=120  # unknown issue.
 
-  local local_branch=$(git rev-parse @)
+  local local_branch=$(git rev-parse HEAD)
   local remote_branch=$(git rev-parse "$branch")
-  local merge_base=$(git merge-base @ "$branch")
+  local merge_base=$(git merge-base HEAD "$branch")
 
   local to_echo=
   if [ "$local_branch" == "$remote_branch" ]; then
@@ -357,7 +357,7 @@ function do_revctrl_careful_update()
 
   # now pull down any changes in our own origin in the repo, to stay in synch
   # with any changes from others.
-  git pull --tags --all | $TO_SPLITTER
+  git fetch --tags --all | $TO_SPLITTER
 #is the above really important when we did this branch already in the loop?
 #it does an --all, but is that effective or different?  should we be doing that in above loop?
   promote_pipe_return 0
