@@ -437,9 +437,11 @@ if [ -z "$skip_all" ]; then
     fi
 
     # launch sudo with just the variables we want to reach the other side.
-    # we take an extra step to null out the PATH, since MacOS seems to want
-    # to pass that even for a login shell (-i) somehow.
-    PATH= /usr/bin/sudo --preserve-env=SSH_AUTH_SOCK,IMPORTED_XAUTH "$@"
+    local varmods=
+#    varmods+="PATH= "
+    if [ ! -z "$IMPORTED_XAUTH" ]; then varmods+="IMPORTED_XAUTH=$IMPORTED_XAUTH "; fi
+    if [ ! -z "$SSH_AUTH_SOCK" ]; then varmods+="SSH_AUTH_SOCK=$SSH_AUTH_SOCK"; fi
+    /usr/bin/sudo $varmods "$@"
     retval=$?
 
     # take the xauth info away again if it wasn't set already.
@@ -919,9 +921,10 @@ return 0
     fi
 
     local charnfile="$(mktemp $TMP/zz_charn.XXXXXX)"
+#hmmm: any way to do the below more nicely or reusably?
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f | \
         grep -i \
-"doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|txt\|vsd\|vsdx\|xls\|xlsx\|zip" | \
+"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|txt\|vsd\|vsdx\|xls\|xlsx\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.
@@ -930,7 +933,21 @@ return 0
 
   ##############
 
-  # site avenger aliases
+  # tty relevant functions...
+
+  # keep_awake: sends a message to the screen from the background.
+  function keep_awake()
+  {
+    # just starts the keep_awake process in the background.
+    bash $FEISTY_MEOW_SCRIPTS/tty/keep_awake_process.sh &
+      # this should leave the job running as %1 or a higher number if there
+      # are pre-existing background jobs.
+  }
+
+  ##############
+
+  # site avenger functions...
+
   function switchto()
   {
     THISDIR="$FEISTY_MEOW_SCRIPTS/site_avenger"
