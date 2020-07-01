@@ -921,9 +921,10 @@ return 0
     fi
 
     local charnfile="$(mktemp $TMP/zz_charn.XXXXXX)"
+#hmmm: any way to do the below more nicely or reusably?
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f | \
         grep -i \
-"doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|txt\|vsd\|vsdx\|xls\|xlsx\|zip" | \
+"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|txt\|vsd\|vsdx\|xls\|xlsx\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.
