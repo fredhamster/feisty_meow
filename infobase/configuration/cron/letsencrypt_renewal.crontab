@@ -3,7 +3,9 @@
 
 #[letsencrypt renewal]
 # run the letsencrypt certificate renewal process every 4 hours.
-37 */4 * * * letsencrypt renew &>>/tmp/${CRONUSER}-cron-letsencrypt_renewal.log 
+# fixing issues in renewal by setting PATH.
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+37 */4 * * * (date ; letsencrypt renew) &>> /tmp/${CRONUSER}-cron-letsencrypt_renewal.txt
 
 ##############
 
