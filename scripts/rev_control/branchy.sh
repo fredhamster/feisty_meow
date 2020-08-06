@@ -10,7 +10,7 @@ save_terminal_title
 
 ##############
 
-echo "showing repository branches at: $(date)"
+###echo "showing repository branches at: $(date)"
 
 FULL_LIST="$@"
 
@@ -25,8 +25,6 @@ fi
 
 show_active_branch $FULL_LIST
 exit_on_error "showing branches: $FULL_LIST"
-
-echo
 
 ##############
 
