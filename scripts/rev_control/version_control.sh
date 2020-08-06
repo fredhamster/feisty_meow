@@ -280,6 +280,23 @@ function check_branch_state()
   return $to_return
 }
 
+# showes the branch currently active in the repository.
+function show_active_branch()
+{
+#hmmm: if no args, assume current dir!
+
+  for directory in "$@"; do
+    echo -n "active branch for '$directory': "
+    pushd "$directory" &>/dev/null
+
+#hmmm: if git...
+    git rev-parse --abbrev-ref HEAD
+#hmmm: else OTHERS!!!
+
+    popd &>/dev/null
+  done
+}
+
 # only shows the branch state if it's not okay.
 # note that this is not the same as a conditional branch (ha ha).
 function show_branch_conditionally()
