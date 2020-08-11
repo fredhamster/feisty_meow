@@ -10,17 +10,11 @@ save_terminal_title
 
 ##############
 
-###echo "showing repository branches at: $(date)"
-
 FULL_LIST="$@"
 
-# only add the standard feisty meow repo list items if we were given no args on command line.
-#hmmm: below seems to be oddly just major locations; is the repo list all relative names?
+# use the current directory if no paths were provided.
 if [ -z "$FULL_LIST" ]; then
-  FULL_LIST=" $(dirname $FEISTY_MEOW_APEX) $HOME "
-  if [ "$OS" == "Windows_NT" ]; then
-    FULL_LIST+=" c:/ d:/ e:/ "
-  fi
+  FULL_LIST="."
 fi
 
 show_active_branch $FULL_LIST
@@ -29,3 +23,4 @@ exit_on_error "showing branches: $FULL_LIST"
 ##############
 
 restore_terminal_title
+
