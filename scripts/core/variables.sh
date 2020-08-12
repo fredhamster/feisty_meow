@@ -294,7 +294,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   ##############
 
   # set the SHUNIT_PATH so our shunit tests can find the codebase.
-  define_yeti_variable SHUNIT_PATH="$FEISTY_MEOW_SCRIPTS/shunit"
+  define_yeti_variable SHUNIT_PATH="$FEISTY_MEOW_SCRIPTS/testkit/shunit"
   
   ##############
 
