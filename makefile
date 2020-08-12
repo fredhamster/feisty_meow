@@ -8,7 +8,8 @@ BUILD_BEFORE = scripts \
   kona \
   documentation huffware hypermedia \
   production \
-  experiments 
+  testkit \
+  experiments
 LAST_TARGETS += end_make
 
 include rules.def
