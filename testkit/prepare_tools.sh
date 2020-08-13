@@ -43,6 +43,16 @@ GRITTY_TESTING_TOP_LEVEL="$(echo "$GRITTY_TESTING_TOP_LEVEL" | sed -e 's/\/cygdr
 # the top-level directory for tests, i.e. the root of testing hierarchy.
 export TESTKIT_ROOT="$GRITTY_TESTING_TOP_LEVEL"
 
+# location needed for shunit temporary files.
+export TMPDIR="$HOME/.shunit-temp"
+if [ ! -d "$TMPDIR" ]; then
+  mkdir -p "$TMPDIR"
+  if [ $? -ne 0 ]; then
+    echo "Failure during creation of TMPDIR for shunit!"
+    exit 1
+  fi
+fi
+
 # a bit of a dance to not pull in code too early...
 export TESTKIT_BOOTSTRAPPING=true
 source "$TESTKIT_ROOT/library/establish_environment.sh"
