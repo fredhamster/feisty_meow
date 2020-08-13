@@ -42,10 +42,12 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # gather any directories in our home that match these often recurring patterns.
 &snarf_by_pattern($snarf_file_base, "$root", "crucial");
+&snarf_by_pattern($snarf_file_base, "$root", "Documents");
 &snarf_by_pattern($snarf_file_base, "$root", "idea");
 &snarf_by_pattern($snarf_file_base, "$root", "issue");
 &snarf_by_pattern($snarf_file_base, "$root", "list");
 &snarf_by_pattern($snarf_file_base, "$root", "note");
+&snarf_by_pattern($snarf_file_base, "$root", "nuage");
 &snarf_by_pattern($snarf_file_base, "$root", "project");
 &snarf_by_pattern($snarf_file_base, "$root", "task");
 &snarf_by_pattern($snarf_file_base, "$root", "invention");
