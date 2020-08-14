@@ -5,14 +5,13 @@
   </head>
   <body vlink="purple" link="blue" lang="EN-US">
     <h1 style=" text-align:center">$BRANDING TestKit Reference Manual</h1>
-      <h3 style=" text-align:center">Author: Chris Koeritz</h3>
-    <address style=" text-align:center">
-      Version 1.0 ― Updated August 14 2020</address>
+    <h3 style=" text-align:center">Author: Chris Koeritz</h3>
+    <address style=" text-align:center"> Version 1.0 ― Updated August 14 2020</address>
     <h1>The $BRANDING TestKit</h1>
     <p>The TestKit is a collection of scripts that leverages the ShUnit unit
-      testing environment.&nbsp; TestKit provides a pattern for creating test
-      suites using a simple configuration file approach.&nbsp; Full reporting on
-      test runs is provided in a convenient tabular format.</p>
+      testing environment.&nbsp; The TestKit provides a pattern for creating
+      test suites using a simple configuration file approach.&nbsp; Full
+      reporting on test runs is provided in a convenient tabular format.</p>
     <p>Generally, writing a test script using the TestKit is a matter of
       minutes.&nbsp; A blank test is provided as a template, and that can be
       expanded with whatever test steps are needed.</p>
@@ -28,18 +27,22 @@
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
 background:#DDD9C3;margin-left:.1in;margin-right:.1in">
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
-margin-left:0in;background:#DDD9C3"><span style="font-family: monospace;">sudo
+margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">sudo
           mkdir /opt/feistymeow.org<br>
           sudo chown -R $USER /opt/feistymeow.org<br>
           cd /opt/feistymeow.org<br>
-          git clone git://feistymeow.org/feisty_meow</span></p>
+          git clone git://feistymeow.org/feisty_meow<br>
+          ls feisty_meow/testkit&nbsp; # the testkit location; can be copied
+          elsewhere for use.</span><span style="font-family: monospace;"><br>
+        </span></p>
     </div>
-    <p>This is the code used to create the $BRANDING version of the TestKit.</p>
-    <p>It is possible to check out the TestKit within one's own code base, and
-      then it is possible to retrieve an updated Feisty Meow® TestKit by running
-      "git pull" on the "testkit" folder.&nbsp; This will get the latest version
-      from the Feisty Meow® Codebase without disturbing whatever project's
-      revision control repository contains the TestKit for testing.</p>
+    <p>The above steps were used to kick-start the local version of the TestKit.</p>
+    <p>It is possible to check out the TestKit within one's own code base (by
+      adding the Feisty Meow® Codebase that was retrieved above).&nbsp; Then one
+      can retrieve an updated Feisty Meow® TestKit by running "git pull" on the
+      "feisty_meow" folder.&nbsp; This will get the latest version of TestKit
+      without disturbing whatever project's revision control repository contains
+      the TestKit for testing.</p>
     <h3>Preparing the TestKit on Linux</h3>
     <p>Linux is the easiest environment for running the TestKit, given that the
       tests were built using the bash shell within a Linux environment.&nbsp; If
@@ -70,83 +73,81 @@ margin-left:0in;background:#DDD9C3"><span style="font-family: monospace;">sudo
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
 background:#DDD9C3;margin-left:.1in;margin-right:.1in">
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
-margin-left:0in;margin-bottom:.0001pt;background:#DDD9C3">bc <br>
-        crypt <br>
-        cygutils <br>
-        emacs <br>
-        email <br>
-        expect <br>
-        gcc-g++<br>
-        git <br>
-        gitk <br>
-        gvim <br>
-        inetutils <br>
-        less <br>
-        make <br>
-        mutt <br>
-        ncftp <br>
-        openssh <br>
-        perl <br>
-        procps<br>
-        python <br>
-        sharutils <br>
-        shutdown <br>
-        subversion <br>
-        time <br>
-        unzip <br>
-        util-linux <br>
-        vim<br>
-        wget<br>
-        xinit <br>
-        xterm <br>
-        zip </p>
+margin-left:0in;margin-bottom:.0001pt;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">bc
+          <br> crypt <br>
+          cygutils <br>
+          emacs <br>
+          email <br>
+          expect <br>
+          gcc-g++<br>
+          git <br>
+          gitk <br>
+          gvim <br>
+          inetutils <br>
+          less <br>
+          make <br>
+          mutt <br>
+          ncftp <br>
+          openssh <br>
+          perl <br>
+          procps<br>
+          python <br>
+          sharutils <br>
+          shutdown <br>
+          subversion <br>
+          time <br>
+          unzip <br>
+          util-linux <br>
+          vim<br>
+          wget<br>
+          xinit <br>
+          xterm <br>
+          zip </span></p>
     </div>
-    <p>&nbsp;</p>
     <h3>Apt-cyg Installation Process</h3>
     <p>The apt-cyg program brings the convenience of the Debian and Ubuntu
       installer application (apt-get) to Cygwin.&nbsp; This program does require
       a couple of additional setup steps.&nbsp; This material is drawn from the
       apt-cyg home page: <a href="https://github.com/transcode-open/apt-cyg">https://github.com/transcode-open/apt-cyg</a></p>
-    <p class="MsoListParagraphCxSpFirst" style="text-indent:-.25in">1.&nbsp;
-      Install the basic Cygwin packages with setup.exe (rather than the long
-      list above), but add these two packages which are not selected by default:</p>
+    <p>1.&nbsp; Install the basic Cygwin packages with setup.exe (rather than
+      the long list above), but add these two packages which are not selected by
+      default:</p>
     <ul>
       <li>subversion</li>
       <li>wget</li>
     </ul>
-    <p class="MsoListParagraphCxSpLast" style="text-indent:-.25in">2.&nbsp;&nbsp;
-      Download and install the apt-cyg program from within a Cygwin bash prompt:</p>
+    <p>2.&nbsp;&nbsp; Download and install the apt-cyg program from within a
+      Cygwin bash prompt:</p>
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
 background:#DDD9C3;margin-left:.5in;margin-right:.1in">
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
-margin-left:0in;background:#DDD9C3">lynx -source
-        rawgit.com/transcode-open/apt-cyg/master/apt-cyg &gt; apt-cyg<br>
-        install apt-cyg /bin</p>
+margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">lynx
+          -source rawgit.com/transcode-open/apt-cyg/master/apt-cyg &gt; apt-cyg<br>
+          install apt-cyg /bin</span></p>
     </div>
-    <p class="MsoListParagraph" style="text-indent:-.25in">3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      Install the packages required for the TestKit:</p>
+    <p>3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Install the packages required for
+      the TestKit:</p>
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
 background:#DDD9C3;margin-left:.5in;margin-right:.1in">
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:0in;
-margin-left:0in;margin-bottom:.0001pt;background:#DDD9C3">apt-cyg install bc
-        crypt cygutils emacs email expect gcc-g++ git gitk gvim \<br>
-        &nbsp; inetutils less make mutt ncftp openssh perl procps python
-        sharutils \<br>
-        &nbsp; shutdown time unzip util-linux vim xinit xterm zip</p>
+margin-left:0in;margin-bottom:.0001pt;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">apt-cyg
+          install bc crypt cygutils emacs email expect gcc-g++ git gitk gvim \<br>
+          &nbsp; inetutils less make mutt ncftp openssh perl procps python
+          sharutils \<br>
+          &nbsp; shutdown time unzip util-linux vim xinit xterm zip</span></p>
     </div>
-    <p class="MsoListParagraph" style="text-indent:-.25in">4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      The installation will run for a while but then should conclude with all
-      required packages installed.</p>
+    <p>4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The installation will run for a
+      while but then should conclude with all required packages installed.</p>
     <h2> Setting up a Test Suite</h2>
-    <p>Tunning tests in TestKit uses a configuration file called
+    <p>Running tests in TestKit uses a configuration file called
       “testkit.config” to define the environment and, optionally, which test
       scripts to run.&nbsp; This file is the main switchboard that defines where
-      the tests will find users, home directories, queues, containers, and so
-      forth. &nbsp;The configuration file can be specified via the environment
-      variable “TESTKIT_CFG_FILE”.&nbsp; This variable can be set to any
-      location, enabling the configuration file to reside in a directory other
-      than the toolkit folder.&nbsp; If the variable is not defined, then the
-      testing config file defaults to “$TESTKIT_ROOT/testkit.config”.</p>
+      the tests will find the resources they require.</p>
+    <p>The configuration file can be specified via the environment variable
+      “TESTKIT_CFG_FILE”.&nbsp; This variable can be set to any location,
+      enabling the configuration file to reside in a directory other than the
+      toolkit folder.&nbsp; If the variable is not defined, then the testing
+      config file defaults to “$TESTKIT_ROOT/testkit.config”.</p>
     The TESTKIT_ROOT variable is frequently referred to in command
     examples.&nbsp; It is set up automatically by the prepare_tools script (see
     below).
@@ -157,8 +158,9 @@ margin-left:0in;margin-bottom:.0001pt;background:#DDD9C3">apt-cyg install bc
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
 background:#DDD9C3;margin-left:.1in;margin-right:.1in">
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
-margin-left:0in;background:#DDD9C3">&nbsp;bash <i>{TESTKIT_FOLDER}</i>/test_driver.sh
-        </p> </div>
+margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">&nbsp;bash
+          <i>{TESTKIT_FOLDER}</i>/test_driver.sh </span></p>
+    </div>
     <p>Where the <i>{TESTKIT_FOLDER}</i> should be replaced with whatever path
       the TestKit is stored in.</p>
     <p>Alternatively, if the TESTKIT_ROOT folder is already established, the
@@ -166,7 +168,8 @@ margin-left:0in;background:#DDD9C3">&nbsp;bash <i>{TESTKIT_FOLDER}</i>/test_driv
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
 background:#DDD9C3;margin-left:.1in;margin-right:.1in">
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
-margin-left:0in;background:#DDD9C3">&nbsp;bash "$TESTKIT_ROOT/test_driver.sh"</p>
+margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">&nbsp;bash
+          "$TESTKIT_ROOT/test_driver.sh"</span></p>
     </div>
     <p></p>
     <h3> What to Expect From the Test Run</h3>
@@ -182,39 +185,40 @@ margin-left:0in;background:#DDD9C3">&nbsp;bash "$TESTKIT_ROOT/test_driver.sh"</p
       run that had no errors in any test (that's good, since it is our super
       simple example test):</p>
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
-background:#DDD9C3;margin-left:.1in;margin-right:.1in">$ cd
-      $FEISTY_MEOW_APEX/testkit<br>
-      $ ./test_driver.sh summary<br>
-      ===========================================================<br>
-      Testkit environment loaded.<br>
-      TESTKIT_ROOT=/opt/feistymeow.org/feisty_meow/testkit<br>
-      TESTKIT_CFG_FILE=/opt/feistymeow.org/feisty_meow/testkit/testkit.config<br>
-      TMP=/Users/fred/.tmp<br>
-      TEST_TEMP=/Users/fred/.tmp/testkit_logs_fred<br>
-      ===========================================================<br>
-      +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
-      TestKit running from: /opt/feistymeow.org/feisty_meow/testkit<br>
-      TestKit config file:
-      /opt/feistymeow.org/feisty_meow/testkit/testkit.config<br>
-      +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
-      Full set of tests:<br>
-      1: /opt/feistymeow.org/feisty_meow/testkit/examples/blank_test.sh<br>
-      <br>
-      ======================================================================<br>
-      Wed Aug 12 14:11:00 EDT 2020: Now running test 1:
-      /opt/feistymeow.org/feisty_meow/testkit/examples/blank_test.sh<br>
-      &nbsp; Test output file:
-      /Users/fred/.tmp/testkit_logs_fred/run_2020_08_12/test_log.vKf7J3<br>
-      OK: successful test run for test
-      /opt/feistymeow.org/feisty_meow/testkit/examples/blank_test.sh<br>
-      <br>
-      <br>
-      Results table for this test run:<br>
-      <br>
-      01: OKAY -- /opt/feistymeow.org/feisty_meow/testkit/examples/blank_test.sh<br>
-      <br>
-      Total testing duration: 00:00 hh:mm (1 seconds total)<br>
-      OK: All 1 Tests Ran Successfully.<br>
+background:#DDD9C3;margin-left:.1in;margin-right:.1in"><span style="font-family: Courier New,Courier,monospace;">$
+        cd $FEISTY_MEOW_APEX/testkit<br>
+        $ ./test_driver.sh summary<br>
+        ===========================================================<br>
+        Testkit environment loaded.<br>
+        TESTKIT_ROOT=/opt/feistymeow.org/feisty_meow/testkit<br>
+        TESTKIT_CFG_FILE=/opt/feistymeow.org/feisty_meow/testkit/testkit.config<br>
+        TMP=/Users/fred/.tmp<br>
+        TEST_TEMP=/Users/fred/.tmp/testkit_logs_fred<br>
+        ===========================================================<br>
+        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
+        TestKit running from: /opt/feistymeow.org/feisty_meow/testkit<br>
+        TestKit config file:
+        /opt/feistymeow.org/feisty_meow/testkit/testkit.config<br>
+        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
+        Full set of tests:<br>
+        1: /opt/feistymeow.org/feisty_meow/testkit/examples/blank_test.sh<br>
+        <br>
+        ======================================================================<br>
+        Wed Aug 12 14:11:00 EDT 2020: Now running test 1:
+        /opt/feistymeow.org/feisty_meow/testkit/examples/blank_test.sh<br>
+        &nbsp; Test output file:
+        /Users/fred/.tmp/testkit_logs_fred/run_2020_08_12/test_log.vKf7J3<br>
+        OK: successful test run for test
+        /opt/feistymeow.org/feisty_meow/testkit/examples/blank_test.sh<br>
+        <br>
+        <br>
+        Results table for this test run:<br>
+        <br>
+        01: OKAY --
+        /opt/feistymeow.org/feisty_meow/testkit/examples/blank_test.sh<br>
+        <br>
+        Total testing duration: 00:00 hh:mm (1 seconds total)<br>
+        OK: All 1 Tests Ran Successfully.</span><br>
     </div>
     <p class="Textbody">The above shows the "summary" view, which does not allow
       the individual tests to output to the console.&nbsp; If the "summary" flag
@@ -229,14 +233,16 @@ background:#DDD9C3;margin-left:.1in;margin-right:.1in">$ cd
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
 background:#DDD9C3;margin-left:.1in;margin-right:.1in">
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
-margin-left:0in;background:#DDD9C3">01: OKAY –
-        AckPfft_Tests/Gorp_Tests/deslagToaster.sh<br>
-        02: FAIL – AckPfft_Tests/Gorp_Tests/spumeMerchantry.sh<br>
-        03: OKAY – AckPfft_Tests/Gorp_Tests/octopusLauncher.sh<br>
-        …<br>
-        22: OKAY -- Snargle_Tests/scramTests/scramForPetunias.sh</p>
+margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">01:
+          OKAY – AckPfft_Tests/Gorp_Tests/deslagToaster.sh<br>
+          02: FAIL – AckPfft_Tests/Gorp_Tests/spumeMerchantry.sh<br>
+          03: OKAY – AckPfft_Tests/Gorp_Tests/octopusLauncher.sh<br>
+          …<br>
+          22: OKAY -- Snargle_Tests/scramTests/scramForPetunias.sh</span></p>
+      <span style="font-family: Courier New,Courier,monospace;"> </span>
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
-margin-left:0in;background:#DDD9C3">FAILURE: 1 Tests Failed out of 22 Tests.</p>
+margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">FAILURE:
+          1 Tests Failed out of 22 Tests.</span></p>
     </div>
     <p>A failed test will also return a non-zero value from the test execution,
       enabling the run of a test suite to be tested for success when launched
@@ -248,19 +254,22 @@ margin-left:0in;background:#DDD9C3">FAILURE: 1 Tests Failed out of 22 Tests.</p>
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;
 background:#DDD9C3;margin-left:.1in;margin-right:.1in">
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
-margin-left:0in;background:#DDD9C3">cd <i>{TESTKIT_FOLDER}</i>&nbsp; # replace
-        with actual location of TestKit.<br>
-        source prepare_tools.sh prepare_tools.sh<br>
-        source $TESTKIT_ROOT/library/process_configuration.sh<br>
-        define_and_export_variables</p>
-      # Show the important variables.<br>
-      var $TESTKIT_ROOT $TESTKIT_CFG_FILE</div>
+margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">cd
+          <i>{TESTKIT_FOLDER}</i>&nbsp; # replace with actual location of
+          TestKit.<br>
+          source prepare_tools.sh prepare_tools.sh<br>
+          source $TESTKIT_ROOT/library/process_configuration.sh<br>
+          define_and_export_variables</span></p>
+      <span style="font-family: Courier New,Courier,monospace;"> # Show the
+        important variables.<br>
+        var $TESTKIT_ROOT $TESTKIT_CFG_FILE</span></div>
     <p>After loading the TestKit environment, one can execute a specific test
       and see its results, for example:</p>
     <div style="border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;background:#DDD9C3;margin-left:.1in;margin-right:.1in">
       <p class="Code-Box" style="margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
-margin-left:0in;background:#DDD9C3">cd examples<br>
-        bash blank_test.sh</p>
+margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courier,monospace;">cd
+          examples<br>
+          bash blank_test.sh</span></p>
     </div>
     <p>The test will run and output its results to the console (that is, output
       is sent to standard out and standard error, to be more precise).</p>
