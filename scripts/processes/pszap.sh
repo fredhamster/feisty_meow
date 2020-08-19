@@ -6,7 +6,9 @@ fi
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-PIDLIST=$(psfind $1)
+SCRIPT_NAME="pszap.sh"
+
+PIDLIST=$(psfind -x $SCRIPT_NAME $1)
 #echo "PIDS are $PIDLIST"
 if [ -z "$PIDLIST" ]; then
   echo "Your process name was not found in the system."
