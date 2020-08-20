@@ -56,13 +56,13 @@ exit_on_error "doing a careful update on: $tempfile"
 rm "$tempfile"
 
 # seems to be needed to cause a merge to be resolved.
-git pull downstream master
+git pull downstream main
 # -m "unfortunate merge"
-exit_on_error "running the git pull downstream master"
+exit_on_error "running the git pull downstream main"
 
 # send our little boat down the stream to the dependent repository.
-git push --tags downstream master
-exit_on_error "running the git push downstream master"
+git push --tags downstream main
+exit_on_error "running the git push downstream main"
 
 # do our dev branch also.
 git push --tags downstream dev
