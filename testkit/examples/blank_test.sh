@@ -34,8 +34,8 @@ testSanity()
 
 testCleaningPriorTestRun()
 {
-  echo taking steps to clean last test...
-#if any.
+  # take steps to clean last test, if any are needed.
+  true
 }
 
 testDoAThing()
@@ -55,8 +55,8 @@ testDoAnotherThing()
 }
 
 oneTimeTearDown() {
-  echo cleaning up after test now...
-#if anything to do.
+  # cleaning up after test, if needed.
+  true
 }
 
 # load and run shUnit2
