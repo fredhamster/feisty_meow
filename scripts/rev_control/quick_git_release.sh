@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# a simple and quick method for making a new release, merging it into the master branch,
+# a simple and quick method for making a new release, merging it into the main branch,
 # and tagging it with a new tag for the release.
 # currently needs to be told the new release name, which is actually also gotten from
 # the "next_version" script.  if these differ, there will be confusion for users about
@@ -15,7 +15,7 @@ source $FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh
 #  + better if we could get the version automatically, but there is a circular dependency where we want to check out the new branch by version number.
 
 # these are the steps i take on feisty meow when i have a dev branch that is
-# ready to merge in to the master branch as a new release.  the process
+# ready to merge in to the main branch as a new release.  the process
 # includes adding the tag for the new release and such.  there are manual
 # steps for adding the commit comments, including an introspection phase
 # with gitk before the release commit comment is created.
@@ -69,20 +69,20 @@ branch name and release tag name of the new release.
 #read line
   git push --set-upstream origin "$new_release"
 
-  # grab out the master branch as the active one.
-#echo about to check out master--hit enter
+  # grab out the main branch as the active one.
+#echo about to check out main--hit enter
 #read line
-  git checkout master
-  exit_on_error checking out master branch
+  git checkout main
+  exit_on_error checking out main branch
 
   rpuffer
-  exit_on_error running rpuffer on master branch to update it
+  exit_on_error running rpuffer on main branch to update it
 
-  # merge the master branch with the new release.
+  # merge the main branch with the new release.
 #echo about to merge--hit enter
 #read line
   git merge --no-ff $new_release
-  exit_on_error merging in the new release in master
+  exit_on_error merging in the new release in main
 
   # let the committer see the most recent changes.
   echo
@@ -100,11 +100,11 @@ branch name and release tag name of the new release.
   git tag -a $new_version
   exit_on_error tagging new version as $new_version
 
-  # commit the full set of changes for the master branch now, including the tags.
-#echo about to commit master branch with all those changes--hit enter
+  # commit the full set of changes for the main branch now, including the tags.
+#echo about to commit main branch with all those changes--hit enter
 #read line
   rcheckin .
-  exit_on_error checking in the changes in master branch
+  exit_on_error checking in the changes in main branch
 
   # switch back to the dev branch.
 #echo switching to dev branch--hit enter
@@ -112,7 +112,7 @@ branch name and release tag name of the new release.
   git checkout dev
   exit_on_error checking the dev branch out again
 
-  # merge in the latest changes from master, which should only be the revised version really.
+  # merge in the latest changes from main, which should only be the revised version really.
 #echo merging in from release branch to dev--hit enter
 #read line
   git merge --no-ff $new_release
