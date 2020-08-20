@@ -239,25 +239,50 @@ if [ -z "$skip_all" ]; then
   ##############
 
   # locates a process given a search pattern to match in the process list.
-  # supports a single command line flag style parameter of "-u USERNAME";
-  # if the -u flag is found, a username is expected afterwards, and only the
-  # processes of that user are considered.
+  #
+  # + the -u flag specifies a user name, e.g. "-u joe", which causes only
+  #   the processes of that user "joe" to be considered.
+  #
+  # + the -x flag specifies a pattern to exclude from the list, e.g. "-x pszap.sh"
+  #   would ignore any processes that mention the phrase "pszap.sh".
   function psfind() {
+    local user_flag="-e"
+      # default user flag is for all users.
+    local excluder="ScrengeflebbitsAPhraseWeNeverExpecttomatchanythingYO298238"
+      # for our default, pick an exclusion string we would never match.
+
+    local found_flag=1
+    while [ $found_flag -eq 1 ]; do
+      # reset our sentinel now that we're safely in our loop.
+      found_flag=0
+
+      # save the first argument, since we're going to shift the args.
+      local arg1="$1"
+      if [ "$arg1" == "-u" ]; then
+        # handle the user flag.
+        user_flag="-u $2" 
+#echo "found a -u parm and user=$2" 
+        found_flag=1  # signal that we found one.
+        # skip these two arguments, since we've consumed them.
+        shift
+        shift
+      elif [ "$arg1" == "-x" ]; then
+        # handle the exclusion flag.
+        excluder="$2" 
+#echo "found a -x parm and excluder=$excluder" 
+        found_flag=1  # signal that we found one.
+        # skip these two arguments, since we've consumed them.
+        shift
+        shift
+      fi
+    done
+
+    # now that we've yanked any flags out, we can pull the rest of the
+    # arguments in as patterns to seek in the process list.
     local -a patterns=("${@}")
 #echo ====
 #echo patterns list is: "${patterns[@]}"
 #echo ====
-
-    local user_flag
-    if [ "${patterns[0]}" == "-u" ]; then
-      user_flag="-u ${patterns[1]}" 
-#echo "found a -u parm and user=${patterns[1]}" 
-      # void the two elements with that user flag so we don't use them as patterns.
-      unset patterns[0] patterns[1]=
-    else
-      # select all users.
-      user_flag="-e"
-    fi
 
     local PID_DUMP="$(mktemp "$TMP/zz_pidlist.XXXXXX")"
     local -a PIDS_SOUGHT
@@ -287,8 +312,10 @@ if [ -z "$skip_all" ]; then
     # ids out of the results.
     local i
     for i in "${patterns[@]}"; do
+#echo "pattern curr is '$i'"
       PIDS_SOUGHT+=($(cat $PID_DUMP \
         | grep -i "$i" \
+        | grep -v "$excluder" \
         | sed -n -e "$pid_finder_pattern"))
     done
 #echo ====
