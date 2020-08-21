@@ -126,7 +126,7 @@ some assorted other revision control commands:
   pushd $FEISTY_MEOW_APEX; git checkout dev; popd
 
   and this command will get you back onto the mainline branch:
-  pushd $FEISTY_MEOW_APEX; git checkout master; popd
+  pushd $FEISTY_MEOW_APEX; git checkout main; popd
 
 =============================
 the site avenger script suite
