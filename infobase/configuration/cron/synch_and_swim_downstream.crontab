@@ -2,7 +2,7 @@
 ##############
 
 #[synch and swim downstream]
-# updates local code repositories from master versions before uploading any changes to downstream
+# updates local code repositories from main versions before uploading any changes to downstream
 # repositories, such as sourceforge or github.  the uploading process (which we think of as sending
 # those updated items swimming downstream to their dependent repositories) is done automatically in
 # our makefiles.  that's why the code below relies on the top-level makefile in home.

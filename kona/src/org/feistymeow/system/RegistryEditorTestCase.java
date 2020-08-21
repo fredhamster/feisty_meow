@@ -60,7 +60,7 @@ public class RegistryEditorTestCase
 	@Test
 	public void testSetValueAndRemove_AllWork()
 	{
-		String EXAMPLE_KEY_ROOT = "HKCU\\Software\\SpunkMaster5000";
+		String EXAMPLE_KEY_ROOT = "HKCU\\Software\\SpunkBaster5000";
 		String EXAMPLE_KEY = EXAMPLE_KEY_ROOT + "\\traumix";
 		String EXAMPLE_VALUE = "glonkish";
 		String EXAMPLE_CONTENTS1 = "ralphWiggum!";
