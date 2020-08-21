@@ -9,7 +9,6 @@ git remote add github https://github.com/fredhamster/feisty_meow.git
 git remote -v
 
 # stuff the repository contents up to the target.
-git push github master
-
+git push github main
 
 
