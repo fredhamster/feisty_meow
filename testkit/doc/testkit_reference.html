@@ -6,7 +6,7 @@
   <body vlink="purple" link="blue" lang="EN-US">
     <h1 style=" text-align:center">Feisty Meow® TestKit Reference Manual</h1>
     <h3 style=" text-align:center">Author: Chris Koeritz</h3>
-    <address style=" text-align:center"> Version 1.0 ― Updated August 14 2020</address>
+    <address style=" text-align:center"> Version 1.0 ― Updated September 23 2020</address>
     <h1>The Feisty Meow® TestKit</h1>
     <p>The TestKit is a collection of scripts that leverages the ShUnit unit
       testing environment.&nbsp; The TestKit provides a pattern for creating
@@ -14,12 +14,16 @@
       reporting on test runs is provided in a convenient tabular format.</p>
     <p>Generally, writing a test script using the TestKit is a matter of
       minutes.&nbsp; A blank test is provided as a template, and that can be
-      expanded with whatever test steps are needed.</p>
+      expanded with whatever test steps are needed.&nbsp; (See
+      examples/blank_test.sh)</p>
     <p>TestKit (and ShUnit) are implemented in the GNU Bash script language, but
       a TestKit test script can invoke external applications, written in
       whatever programming language or scripting tool is desired, using the
-      standard POSIX interfaces.<br>
-    </p>
+      standard POSIX interfaces.</p>
+    <h2>License</h2>
+    <p>The testkit is provided under the Apache License, version 2.0 (the
+      "License").&nbsp; The license is available at: <a href="http://www.apache.org/licenses/LICENSE-2.0"
+        title="Apache License 2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
     <h2> Getting the TestKit</h2>
     <p>Follow these steps to download and install a new "vanilla" version of the
       TestKit:<br>
@@ -36,13 +40,16 @@ margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courie
           elsewhere for use.</span><span style="font-family: monospace;"><br>
         </span></p>
     </div>
-    <p>The above steps were used to kick-start the local version of the TestKit.</p>
-    <p>It is possible to check out the TestKit within one's own code base (by
-      adding the Feisty Meow® Codebase that was retrieved above).&nbsp; Then one
-      can retrieve an updated Feisty Meow® TestKit by running "git pull" on the
-      "feisty_meow" folder.&nbsp; This will get the latest version of TestKit
-      without disturbing whatever project's revision control repository contains
-      the TestKit for testing.</p>
+    <p>The above steps may have been used to kick-start the local version of the
+      TestKit.&nbsp; It is perfectly valid to download the testkit and then copy
+      it into one's own source code for use; this is enabled under the Apache
+      License.</p>
+    <p>It is also possible to check out the TestKit within one's own code base
+      (by adding the Feisty Meow® Codebase that was retrieved above).&nbsp; Then
+      one can retrieve an updated Feisty Meow® TestKit by running "git pull" on
+      the "feisty_meow" folder.&nbsp; This will get the latest version of
+      TestKit without disturbing whatever project's revision control repository
+      contains the TestKit for testing.</p>
     <h3>Preparing the TestKit on Linux</h3>
     <p>Linux is the easiest environment for running the TestKit, given that the
       tests were built using the bash shell within a Linux environment.&nbsp; If
@@ -273,6 +280,20 @@ margin-left:0in;background:#DDD9C3"><span style="font-family: Courier New,Courie
     </div>
     <p>The test will run and output its results to the console (that is, output
       is sent to standard out and standard error, to be more precise).</p>
+    <h2>Learning the ShUnit Testing Methods</h2>
+    <p>The ShUnit test environment provides several functions that can be used
+      to evaluate whether a test was successful or whether a result was the
+      expected value.</p>
+    <p>The blank test (in examples/blank_test.sh) shows off every method that
+      exists in our version of ShUnit and describes how the functions can be
+      used for testing.&nbsp; Please refer to that for a good set of
+      examples.&nbsp; This test is also semi-canonical, in that it implements
+      every phase of testing, including setup and tear down methods.</p>
+    <p>For more details on ShUnit in general or to get a later version, this is
+      the official website: <a href="https://github.com/kward/shunit2" title="shunit site">https://github.com/kward/shunit2</a></p>
+    <p>Note however that we have made some customizations in reporting in the
+      version stored with the testkit, so some features may be missed if a newer
+      version is placed in the testkit's "shunit" folder.</p>
     <p><br>
     </p>
     <h3></h3>
