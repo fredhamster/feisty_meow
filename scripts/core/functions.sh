@@ -225,7 +225,8 @@ if [ -z "$skip_all" ]; then
 #    local oldterm="$TERM"
 #    export TERM=linux
 
-    /usr/bin/ssh -Y -C "${args[@]}"
+    /usr/bin/ssh -C "${args[@]}"
+# removed -Y flag because considered dangerous to trust remote hosts to not abuse our X session.
 
 #    # restore the terminal variable also.
 #    TERM="$oldterm"
