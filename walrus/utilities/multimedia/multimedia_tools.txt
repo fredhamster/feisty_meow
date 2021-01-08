@@ -68,6 +68,14 @@ another useful tool for finding duplicate tracks in a music collection, but reli
 matches in the names(?).  was not so powerful as dupeguru, but still useful.
 
 
+-----------------------------
+picture collection management
+-----------------------------
+
+shotwell:
+currently the top picture manipulation and manager tool i use at home.
+the imaginations folder is based on the date management in shotwell.
+
 
 
 
