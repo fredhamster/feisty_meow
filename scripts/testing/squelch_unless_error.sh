@@ -1,11 +1,13 @@
 #!/bin/bash
 
-# redirects standard out and standard error output to temp files and runs all the parameters to this script as a command.
+# redirects standard out and standard error output to temp files and runs all
+# the parameters to this script as a command.
 # if there is no error, then the files are just deleted.
-# if there was an error, then the two output file are sent to standard out and standard error.
-# an additional error message is sent to standard error.
+# if there was an error, then the two output files are sent to standard out
+# and standard error, and an additional explanatory error message is sent to
+# standard error about the command that failed.
 
-#  echo "squelch args: $(printf -- "[%s] " "${@}")"
+#echo "squelch args: $(printf -- "[%s] " "${@}")"
 
 newout="$(mktemp /tmp/squelch.out.XXXXXX)"
 newerr="$(mktemp /tmp/squelch.err.XXXXXX)"
