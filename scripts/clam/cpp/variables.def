@@ -928,7 +928,12 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
   DEPENDENCY_DEFINITIONS += NO_VERSION
   DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(COMPILER_VERSION) -X/usr/include/c++/$(COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(COMPILER_VERSION)/include
 
-  COMPILER_HEADER_DIR := /usr/local/include /usr/include /System/Library/Frameworks/Foundation.framework/Versions/C/Headers
+  COMPILER_HEADER_DIR := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+#/usr/local/include /usr/include 
+#  export CPATH := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+#/System/Library/Frameworks/Foundation.framework/Versions/C/Headers
+#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+#/Library/Developer/CommandLineTools/usr/include
 
   # "USE_XWIN" specifies that this project needs X window system support.
   #USE_XWIN =
@@ -941,7 +946,8 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
 #/lib 
 
 #  endif
-  DEFINITIONS += __LINUX__ linux __linux__ UNIX unix __UNIX__ __USE_GNU 
+#  DEFINITIONS += __LINUX__ linux __linux__ UNIX unix __UNIX__ __USE_GNU 
+  DEFINITIONS += UNIX unix __UNIX__ __USE_GNU 
   # X Window System not enabled by default.
   #DEFINITIONS += __XWINDOWS__ 
 
