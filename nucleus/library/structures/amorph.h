@@ -55,7 +55,7 @@
 namespace structures {
 
 template <class contents>
-class amorph : private basis::array<contents *>
+class amorph : protected basis::array<contents *>
 {
 public:
   amorph(int elements = 0);
