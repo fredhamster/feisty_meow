@@ -54,7 +54,7 @@ int test_directory_tree::execute()
 {
   FUNCDEF("execute");
 
-  astring path = "/usr/include";
+  astring path = "/usr/lib";
 #ifdef __WIN32__
   // default path for windoze uses an area that should always exist.
   path = environment::get("COMMONPROGRAMFILES");
