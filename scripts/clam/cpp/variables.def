@@ -955,6 +955,8 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
 #  LOAD_FLAG_PREFIX += -Xlinker 
 #mac has no o3???
 #-O3 
+  # special flags for getting rid of warnings on fd_set.
+  LOAD_FLAG_PREFIX=-Wl,-U,___darwin_check_fd_set_overflow
 
 # -Xlinker --print-map : shows what went in and why.
 # -Xlinker -O3 : linker optimization
