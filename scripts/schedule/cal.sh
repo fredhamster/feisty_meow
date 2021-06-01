@@ -12,7 +12,7 @@ case $# in
 	*)	m=$1; y=$2 ;;			# 2 arguments; month and year
 esac
 
-echo would run, after first case: "/usr/bin/cal $m $y"
+#echo would run, after first case: "/usr/bin/cal $m $y"
 
 case $m in
 	jan*|Jan*|JAN*)	m=1 ;;
@@ -31,5 +31,5 @@ case $m in
 	*)			y=$m; m="" ;;		# just a year
 esac
 
-echo running: "/usr/bin/cal $m $y"
+#echo running: "/usr/bin/cal $m $y"
 /usr/bin/cal $m $y				# run the real one
