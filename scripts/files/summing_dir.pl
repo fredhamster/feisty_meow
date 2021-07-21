@@ -40,6 +40,7 @@ if ($#ARGV < 0) {
 # add parameters to our chewed_line, but skip items if they are flags we don't
 # implement.
 foreach $dir (@arg_list) {
+#hmmm: fix this by using a pattern, to exclude cmd line parms, but recognize some of them, like recursive?  hmmm.
   if ($dir eq "-al") { next; }  # skip ls directives.
   if ($dir eq "-l") { next; }  # skip ls directives.
   $chewed_line = $chewed_line . " \"$dir\"";
