@@ -1,6 +1,7 @@
 
 
 for dir in "${@}"; do
+  echo -n "files in '$dir':"
   /bin/ls -1fR "$dir" | grep -v "^$" | grep -v "^\.$" | grep -v "^\.\.$" | grep -v ".*:$" | wc -l
 
     # patterns that remove files from being counted, above:
