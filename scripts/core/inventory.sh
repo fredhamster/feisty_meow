@@ -7,11 +7,32 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 unset -v codename osname osver
 if [ $OPERATING_SYSTEM == "UNIX" ]; then
-  which lsb_release &>/dev/null
-  if [ $? -eq 0 ]; then
-    codename="$(lsb_release -cs 2>/dev/null)"
-    osname="$(lsb_release -is 2>/dev/null)"
-    osver="$(lsb_release -rs 2>/dev/null)"
+  if [ -z "$IS_DARWIN" ]; then
+    # we only try running lsb_release if not on a mac.
+    which lsb_release &>/dev/null
+    if [ $? -eq 0 ]; then
+      codename="$(lsb_release -cs 2>/dev/null)"
+      osname="$(lsb_release -is 2>/dev/null)"
+      osver="$(lsb_release -rs 2>/dev/null)"
+    fi
+  else
+    # darwin / mac doesn't have lsb since not linux.
+#Usage: sw_vers [-productName|-productVersion|-buildVersion]
+    osname="$(sw_vers -productName 2>/dev/null)"
+    osver="$(sw_vers -productVersion 2>/dev/null)"
+    if [[ "$osver" =~ ^10\.15.*$ ]]; then
+      codename="Catalina"
+    elif [[ "$osver" =~ ^10\.14.*$ ]]; then
+      codename="Mojave"
+    elif [[ "$osver" =~ ^10\.13.*$ ]]; then
+      codename="High Sierra"
+    elif [[ "$osver" =~ ^11\.*$ ]]; then
+      codename="Big Sur"
+    elif [[ "$osver" =~ ^12\.*$ ]]; then
+      codename="Monterey"
+    else
+      codename="$(sw_vers -buildVersion 2>/dev/null)"
+    fi
   fi
 fi
 if [ -z "$codename" ]; then
