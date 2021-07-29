@@ -8,7 +8,7 @@ if [ -z "$*" ]; then
 else
   # we know the parameters are not empty, so we don't go with our
   # wildcard approach for listing the package names.
-  SEEK_PIECE=' grep $* '
+  SEEK_PIECE=' grep -i $* '
 fi
 
 if debian_like; then
