@@ -19,7 +19,7 @@
 #include <textual/parser_bits.h>
 #include <textual/string_manipulation.h>
 
-//#define DEBUG_SYMBOL_TREE
+#define DEBUG_SYMBOL_TREE
   // uncomment for totally noisy version.
 
 #include <loggers/program_wide_logger.h>
