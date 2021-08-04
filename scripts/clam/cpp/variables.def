@@ -919,7 +919,6 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
   COMPILER_ROOT_DIR = /
   PLATFORM_ADD_IN = darwin
   ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
-#  COMPILER_FLAGS += -fgnu-runtime
 
   export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
 
@@ -977,6 +976,11 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
      # dl=dynamic library.
      # pthread=thread libraries.
      # rt=real time libraries for shared memory.
+
+  # mac specific flags
+  COMPILER_FLAGS += -Wno-nullability-completeness
+#trying this one again, which had been turned off.
+  COMPILER_FLAGS += -fgnu-runtime
 
   ifneq "$(DEBUG)" ""
     # add in debugging flags.

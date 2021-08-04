@@ -306,7 +306,7 @@ tree::~tree()
     // or there are no kids at all.
     curr_node = curr_node->branch(0);
 
-    if (curr_node = NULL_POINTER) {
+    if (curr_node == NULL_POINTER) {
       // wayback has no children, so we can take action.
 
       // if wayback is the same as "this", then we exit from iterations since
