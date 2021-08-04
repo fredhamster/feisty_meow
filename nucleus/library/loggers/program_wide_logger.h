@@ -72,8 +72,8 @@ class null_logger : public virtual standard_log_base
 public:
   virtual ~null_logger() {}
   DEFINE_CLASS_NAME("null_logger");
-  virtual basis::outcome log(const basis::base_string &info, int filter) {
-    if (filter || !(&info)) {}
+  virtual basis::outcome log(const basis::base_string &formal(info), int formal(filter)) {
+    /* if (filter || !(&info)) {} */
     return basis::common::OKAY;
   }
 };
