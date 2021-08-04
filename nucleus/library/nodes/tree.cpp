@@ -18,7 +18,7 @@
 #include <basis/functions.h>
 #include <basis/guards.h>
 
-//#define DEBUG_TREE
+#define DEBUG_TREE
   // uncomment if you want lots of debugging info.
 
 #undef LOG
@@ -274,6 +274,7 @@ tree::tree()
 
 tree::~tree()
 {
+  FUNCDEF("destructor");
   // must at least unhook ourselves from the parent so we don't become a lost
   // cousin.
   tree *my_parent = parent();
@@ -306,8 +307,11 @@ tree::~tree()
     // or there are no kids at all.
     curr_node = curr_node->branch(0);
 
+LOG(a_sprintf("loop traverse on %p", curr_node));
+
     if (curr_node == NULL_POINTER) {
       // wayback has no children, so we can take action.
+LOG(a_sprintf("inside null condition, loop traverse on %p", curr_node));
 
       // if wayback is the same as "this", then we exit from iterations since
       // we've cleaned all the kids out.

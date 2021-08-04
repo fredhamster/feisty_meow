@@ -124,7 +124,7 @@ blowfish_crypto::blowfish_crypto(const blowfish_crypto &to_copy)
 
 blowfish_crypto::~blowfish_crypto()
 {
-  FUNCDEF("dtor");
+  FUNCDEF("destructor");
   LOG("prior to key whack");
   WHACK(_key);
   LOG("after key whack");
