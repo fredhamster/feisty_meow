@@ -17,6 +17,7 @@
 #include <basis/common_outcomes.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
+#include <loggers/program_wide_logger.h>
 
 #define DEBUG_TREE
   // uncomment if you want lots of debugging info.
@@ -25,6 +26,7 @@
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 using namespace basis;
+using namespace loggers;
 
 namespace nodes {
 
