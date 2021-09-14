@@ -950,7 +950,9 @@ return 0
 
     local charnfile="$(mktemp $TMP/zz_charn.XXXXXX)"
 #hmmm: any way to do the below more nicely or reusably?
-    find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f | \
+#hmmm: yes!  a variable with a list of files that are considered TEXT_FILE_EXTENSIONS or something like that.
+#hmmm: yes continued!  also a variable for BINARY_FILE_EXTENSIONS to avoid those, where we need to in other scripts.
+    find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f -and -not -iname ".[a-zA-Z0-9]*" | \
         grep -i \
 "csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|xls\|xlsx\|xml\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
