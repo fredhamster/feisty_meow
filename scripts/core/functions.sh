@@ -466,9 +466,9 @@ if [ -z "$skip_all" ]; then
 
     # launch sudo with just the variables we want to reach the other side.
     local varmods=
-#    varmods+="PATH= "
+    varmods+="OLD_HOME=$HOME "
     if [ ! -z "$IMPORTED_XAUTH" ]; then varmods+="IMPORTED_XAUTH=$IMPORTED_XAUTH "; fi
-    if [ ! -z "$SSH_AUTH_SOCK" ]; then varmods+="SSH_AUTH_SOCK=$SSH_AUTH_SOCK"; fi
+    if [ ! -z "$SSH_AUTH_SOCK" ]; then varmods+="SSH_AUTH_SOCK=$SSH_AUTH_SOCK "; fi
     /usr/bin/sudo $varmods "$@"
     retval=$?
 
