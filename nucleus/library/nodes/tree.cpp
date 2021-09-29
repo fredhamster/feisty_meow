@@ -19,7 +19,7 @@
 #include <basis/guards.h>
 #include <loggers/program_wide_logger.h>
 
-#define DEBUG_TREE
+//#define DEBUG_TREE
   // uncomment if you want lots of debugging info.
 
 #undef LOG
@@ -56,8 +56,8 @@ bool tree::iterator::next_node(tree *&to_return)
 #ifdef DEBUG_TREE
   if ( (_order != to_branches)
       && (_order != reverse_branches) ) {
-    if (_aim == AWAY_FROM_ROOT) LOG("going down")
-    else LOG("going up");
+    if (_aim == AWAY_FROM_ROOT) LOG("going down...")
+    else LOG("going up...");
   }
 #endif
   switch (_order) {
@@ -284,6 +284,7 @@ tree::~tree()
   my_parent = NULL_POINTER;  // disavow since we are loose now.
 
 #if 0
+  //hmmm: clean this code when it's been examined long enough.  maybe already.
 
   //original version suffers from being too recursive on windoze,
   //which blows out the stack.  linux never showed this problem.  so, i
@@ -301,6 +302,7 @@ tree::~tree()
   // newer version of delete doesn't recurse; it just iterates instead,
   // which avoids the massive recursive depth of the original approach.
   tree *curr_node = this;
+  tree *stop_node = this;  // don't whack self.
   while (curr_node != NULL_POINTER) {
     // make a breadcrumb for getting back to 'here' in the tree.
     tree *way_back = curr_node;
@@ -309,11 +311,8 @@ tree::~tree()
     // or there are no kids at all.
     curr_node = curr_node->branch(0);
 
-LOG(a_sprintf("loop traverse on %p", curr_node));
-
     if (curr_node == NULL_POINTER) {
       // wayback has no children, so we can take action.
-LOG(a_sprintf("inside null condition, loop traverse on %p", curr_node));
 
       // if wayback is the same as "this", then we exit from iterations since
       // we've cleaned all the kids out.
@@ -326,19 +325,14 @@ LOG(a_sprintf("inside null condition, loop traverse on %p", curr_node));
       // our remit, since wayback is not the same node as the top level one
       // in the destructor (as long as there are no cycles in the tree...).
       curr_node = way_back->parent();  // go up in tree on next iteration.
-      delete way_back;  // whack a node, finally.
-
+      WHACK(way_back);  // whack a node, finally.
     } else {
       // okay, there's a node below here.  we will spider down to it.
       continue;
     }
-
-
   }
 
 #endif
-
-
 }
 
 tree *tree::parent() const { return (tree *)get_link(BACKWARDS_BRANCH); }
