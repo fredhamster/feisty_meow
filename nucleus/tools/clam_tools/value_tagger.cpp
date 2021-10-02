@@ -166,6 +166,8 @@ public:
   simple_sorter(int index = 0, int value = 0) : _index(index), _value(value) {}
   bool operator < (const simple_sorter &to_compare) const
     { return _value < to_compare._value; }
+  bool operator > (const simple_sorter &to_compare) const
+    { return _value > to_compare._value; }
   bool operator == (const simple_sorter &to_compare) const
     { return _value == to_compare._value; }
 };

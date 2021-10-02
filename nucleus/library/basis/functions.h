@@ -67,7 +67,7 @@ bool operator >= (const T1 &x, const T2 &y) { return !(x < y); }
 template <class target_type, class source_type>
 target_type *cast_or_throw(source_type &to_cast, const target_type &ignored)
 {
-  if (!&ignored) {}  // do nothing.
+//  if (!&ignored) {}  // do nothing.
   target_type *cast = dynamic_cast<target_type *>(&to_cast);
   if (!cast) throw "error: casting problem, unknown RTTI cast.";
   return cast;
@@ -77,7 +77,7 @@ target_type *cast_or_throw(source_type &to_cast, const target_type &ignored)
 template <class target_type, class source_type>
 const target_type *cast_or_throw(const source_type &to_cast, const target_type &ignored)
 {
-  if (!&ignored) {}  // do nothing.
+// if (!&ignored) {}  // do nothing.
   const target_type *cast = dynamic_cast<const target_type *>(&to_cast);
   if (!cast) throw "error: casting problem, unknown RTTI cast.";
   return cast;

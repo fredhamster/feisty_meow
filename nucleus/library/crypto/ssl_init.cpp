@@ -67,7 +67,7 @@ ssl_init::ssl_init()
 
 ssl_init::~ssl_init()
 {
-  FUNCDEF("dtor");
+  FUNCDEF("destructor");
   LOG("prior to crypto cleanup");
   CRYPTO_cleanup_all_ex_data();
 

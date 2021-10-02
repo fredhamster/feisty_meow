@@ -3,7 +3,7 @@
 
 Quick Start Guide for the Feisty Meow Codebase
 
-Commands that can be typed in a console or terminal are are prefixed with "$".
+Commands that can be typed in a console or terminal are prefixed with "$".
 (Do not include the dollar sign when copying and pasting commands.)
 Information that varies by platform is prefixed with a '|' character.
 

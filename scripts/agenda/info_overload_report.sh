@@ -115,7 +115,7 @@ full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 #hmmm: don't fail if the hierarchy doesn't exist.
 
 # high priority stuff would be called urgent.
-analyze_hierarchy_and_report $CLOUD_BASE/urgent "high priority (aieeee!)"
+analyze_hierarchy_and_report $CLOUD_BASE/aaa_priority "high priority (aieeee!)"
 
 # notes are individual files of tasks, usually, although some are combined.
 analyze_hierarchy_and_report $CLOUD_BASE/grunty* "grunty (external facing) notes"
@@ -146,16 +146,16 @@ analyze_hierarchy_and_report $CLOUD_BASE/reading "reading list (for a quiet afte
 analyze_by_dir_patterns "life's work and other oddities" $CLOUD_BASE/vocation*
 
 # scan all the items declared as active projects.
-analyze_by_dir_patterns "active issues" $CLOUD_BASE/active*
+analyze_by_dir_patterns "active issues" $CLOUD_BASE/*active* 
 
 # rub alongside all the travel notes to see if any have interesting burrs.
 analyze_by_dir_patterns "travel plans" $CLOUD_BASE/walkabout*
 
 # scan across all appropriately named project or research folders.
-analyze_by_dir_patterns "running projects" $CLOUD_BASE/project* $CLOUD_BASE/research*
+analyze_by_dir_patterns "running projects" $CLOUD_BASE/*project* $CLOUD_BASE/*research*
 
 # look for our mad scientist style efforts.
-analyze_by_dir_patterns "lab experiments" $CLOUD_BASE/experiment*
+analyze_by_dir_patterns "lab experiments" $CLOUD_BASE/*experiment*
 
 # snag any work related items for that category.
 analyze_by_dir_patterns "jobby work tasks" $CLOUD_BASE/job* 

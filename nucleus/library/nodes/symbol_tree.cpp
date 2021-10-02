@@ -33,12 +33,14 @@ using namespace textual;
 
 namespace nodes {
 
+//hmmm: used for... explain please.
 class symbol_tree_associations : public symbol_table<symbol_tree *>
 {
 public:
   symbol_tree_associations(int estimated_elements)
       :  symbol_table<symbol_tree *>(estimated_elements) {}
   virtual ~symbol_tree_associations() {
+//hmmm: why was this here?  was it ever needed?
 //    for (int i = 0; i < symbols(); i++) {
 //      WHACK(use(i));
 //    }
@@ -91,8 +93,12 @@ outcome symbol_tree::prune(tree *to_zap_in)
   FUNCDEF("prune");
 #endif
   symbol_tree *to_zap = dynamic_cast<symbol_tree *>(to_zap_in);
-  if (!to_zap)
+  if (!to_zap) {
+#ifdef DEBUG_SYMBOL_TREE
+    LOG("about to barf due to null symtree after dynamic cast.");
+#endif
     throw("error: symbol_tree::prune: wrong type of node in prune");
+  }
 #ifdef DEBUG_SYMBOL_TREE
   LOG(astring("zapping node for ") + to_zap->name());
 #endif

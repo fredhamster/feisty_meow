@@ -225,7 +225,8 @@ if [ -z "$skip_all" ]; then
 #    local oldterm="$TERM"
 #    export TERM=linux
 
-    /usr/bin/ssh -Y -C "${args[@]}"
+    /usr/bin/ssh -C "${args[@]}"
+# removed -Y flag because considered dangerous to trust remote hosts to not abuse our X session.
 
 #    # restore the terminal variable also.
 #    TERM="$oldterm"
@@ -465,9 +466,9 @@ if [ -z "$skip_all" ]; then
 
     # launch sudo with just the variables we want to reach the other side.
     local varmods=
-#    varmods+="PATH= "
+    varmods+="OLD_HOME=$HOME "
     if [ ! -z "$IMPORTED_XAUTH" ]; then varmods+="IMPORTED_XAUTH=$IMPORTED_XAUTH "; fi
-    if [ ! -z "$SSH_AUTH_SOCK" ]; then varmods+="SSH_AUTH_SOCK=$SSH_AUTH_SOCK"; fi
+    if [ ! -z "$SSH_AUTH_SOCK" ]; then varmods+="SSH_AUTH_SOCK=$SSH_AUTH_SOCK "; fi
     /usr/bin/sudo $varmods "$@"
     retval=$?
 
@@ -949,9 +950,11 @@ return 0
 
     local charnfile="$(mktemp $TMP/zz_charn.XXXXXX)"
 #hmmm: any way to do the below more nicely or reusably?
-    find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f | \
+#hmmm: yes!  a variable with a list of files that are considered TEXT_FILE_EXTENSIONS or something like that.
+#hmmm: yes continued!  also a variable for BINARY_FILE_EXTENSIONS to avoid those, where we need to in other scripts.
+    find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f -and -not -iname ".[a-zA-Z0-9]*" | \
         grep -i \
-"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|txt\|vsd\|vsdx\|xls\|xlsx\|xml\|zip" | \
+"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|xls\|xlsx\|xml\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.
