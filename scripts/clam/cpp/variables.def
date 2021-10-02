@@ -914,21 +914,25 @@ endif
 ############################################################################
 
 ifeq "$(COMPILER)" "GNU_DARWIN"
-  # Darwin kernel GNU compiler...
+  # Darwin kernel GNU compiler...  really more general macos (MacOS) here these days.
   CC = g++
   COMPILER_ROOT_DIR = /
   PLATFORM_ADD_IN = darwin
   ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
-#  COMPILER_FLAGS += -fgnu-runtime
 
   export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
 
   DEFINITIONS += _FILE_OFFSET_BITS=64 
 
   DEPENDENCY_DEFINITIONS += NO_VERSION
-  DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(COMPILER_VERSION) -X/usr/include/c++/$(COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(COMPILER_VERSION)/include
+#  DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(COMPILER_VERSION) -X/usr/include/c++/$(COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(COMPILER_VERSION)/include
+  DEPENDENCY_ADDITIONS = -X/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 
-  COMPILER_HEADER_DIR := /usr/local/include /usr/include /System/Library/Frameworks/Foundation.framework/Versions/C/Headers
+  COMPILER_HEADER_DIR := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+#/usr/local/include /usr/include 
+#old /System/Library/Frameworks/Foundation.framework/Versions/C/Headers
+#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+#/Library/Developer/CommandLineTools/usr/include
 
   # "USE_XWIN" specifies that this project needs X window system support.
   #USE_XWIN =
@@ -936,12 +940,12 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
 #  ifeq "x86_64" "$(ARCHITECTURE)"
 #    COMPILER_LIBRARY_DIR = /lib64 /usr/lib64 /usr/local/lib64
 #  else
-
-    COMPILER_LIBRARY_DIR = /usr/lib /usr/local/lib
-#/lib 
-
+    COMPILER_LIBRARY_DIR = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib
+#/usr/lib /usr/local/lib
 #  endif
-  DEFINITIONS += __LINUX__ linux __linux__ UNIX unix __UNIX__ __USE_GNU 
+
+#  DEFINITIONS += __LINUX__ linux __linux__ UNIX unix __UNIX__ __USE_GNU 
+  DEFINITIONS += UNIX unix __UNIX__ __USE_GNU 
   # X Window System not enabled by default.
   #DEFINITIONS += __XWINDOWS__ 
 
@@ -950,6 +954,8 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
 #  LOAD_FLAG_PREFIX += -Xlinker 
 #mac has no o3???
 #-O3 
+  # special flags for getting rid of warnings on fd_set.
+  LOAD_FLAG_PREFIX=-Wl,-U,___darwin_check_fd_set_overflow
 
 # -Xlinker --print-map : shows what went in and why.
 # -Xlinker -O3 : linker optimization
@@ -970,6 +976,11 @@ ifeq "$(COMPILER)" "GNU_DARWIN"
      # dl=dynamic library.
      # pthread=thread libraries.
      # rt=real time libraries for shared memory.
+
+  # mac specific flags
+  COMPILER_FLAGS += -Wno-nullability-completeness
+#trying this one again, which had been turned off.
+  COMPILER_FLAGS += -fgnu-runtime
 
   ifneq "$(DEBUG)" ""
     # add in debugging flags.

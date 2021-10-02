@@ -98,7 +98,7 @@ rsa_crypto::rsa_crypto(const rsa_crypto &to_copy)
 
 rsa_crypto::~rsa_crypto()
 {
-  FUNCDEF("dtor");
+  FUNCDEF("destructor");
   LOG("prior to rsa free");
   auto_synchronizer mutt(__single_stepper());
   RSA_free(_key);

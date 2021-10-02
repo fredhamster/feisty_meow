@@ -28,9 +28,6 @@
 #include <textual/string_manipulation.h>
 #include <unit_test/unit_base.h>
 
-//#include <stdio.h>
-//#include <stdlib.h>
-
 using namespace application;
 using namespace basis;
 using namespace filesystem;
@@ -60,12 +57,11 @@ public:
 int test_symbol_tree::execute()
 {
   FUNCDEF("execute");
-  LOG("please check memory usage and record it, then hit a key to start testing.");
 
   try {
-    // creates a crazy tree with only one branch per node, but 40,000 deep.
-    symbol_tree t("blork");
-    symbol_tree *curr = &t;
+    // creates a crazy tree with only one branch per node, but hugely deep.
+    symbol_tree *t = new symbol_tree("blork");
+    symbol_tree *curr = t;
     for (int i = 0; i < MAX_NODES_TESTED; i++) {
       // if the current node has any branches, we'll jump on one as the next
       // place.
@@ -77,17 +73,16 @@ int test_symbol_tree::execute()
       astring rando = string_manipulation::make_random_name(1, 10);
       curr->add(new symbol_tree(rando));
     }
-    LOG("check memory usage now with full size.  then hit a key.");
+LOG("about to whack dynamic tree...");
+    WHACK(t);
+LOG("dynamic tree whacked.");
   } catch (...) {
     LOG("crashed during tree stuffing.");
     return 1;
   }
 
-  LOG("check memory usage after the run.  then hit a key to end "
-      "the program.");
-
-//create a more balanced tree structure...
-//perform known operations and validate shape of tree.
+//hmmm: create a more balanced tree structure...
+//      perform known operations and validate shape of tree.
 
   return final_report();
 }

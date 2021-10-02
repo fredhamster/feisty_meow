@@ -81,14 +81,14 @@ public:
     //!< method can be exported for use by shared libs.
 
   static basis::outcome copy_file(const basis::astring &source, const basis::astring &destination,
-          int copy_chunk_factor = copy_chunk_factor());
+          int copy_chunk_factor = heavy_file_operations::copy_chunk_factor());
     //!< copies a file from the "source" location to the "destination".
     /*!< the outcomes could be from this class or from common::outcomes.
     the "copy_chunk_factor" is the read buffer size to use while copying. */
 
   static basis::outcome write_file_chunk(const basis::astring &target, double byte_start,
           const basis::byte_array &chunk, bool truncate = true,
-          int copy_chunk_factor = copy_chunk_factor());
+          int copy_chunk_factor = heavy_file_operations::copy_chunk_factor());
     //!< stores a chunk of bytes into the "target" file.
     /*!< writes the content stored in "chunk" into the file "target" at the
     position "byte_start".  the entire "chunk" will be used, which means the
