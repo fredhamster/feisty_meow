@@ -41,12 +41,10 @@ using namespace unit_test;
 
 #define LOG(to_print) EMERGENCY_LOG(program_wide_logger().get(), astring(to_print))
 
-#define DEBUG_SYMBOL_TREE
+//#define DEBUG_TEST_SYMBOL_TREE
 
 // how many nodes we add to the tree.
-//const int MAX_NODES_TESTED = 40000;
-//hmmm: TEMPORARY!!!
-const int MAX_NODES_TESTED = 2;
+const int MAX_NODES_TESTED = 40000;
 
 class test_symbol_tree : public unit_base, public application_shell
 {
@@ -75,15 +73,26 @@ int test_symbol_tree::execute()
       astring rando = string_manipulation::make_random_name(1, 10);
       curr->add(new symbol_tree(rando));
     }
-LOG("about to whack dynamic tree...");
+#ifdef DEBUG_TEST_SYMBOL_TREE
+    LOG("about to whack dynamic tree...");
+#endif
     WHACK(t);
-LOG("dynamic tree whacked.");
+    ASSERT_EQUAL(t, NULL_POINTER, "ensure pointer cleaned up");
+#ifdef DEBUG_TEST_SYMBOL_TREE
+    LOG("dynamic tree whacked.");
+#endif
   } catch (...) {
+#ifdef DEBUG_TEST_SYMBOL_TREE
     LOG("crashed during tree stuffing.");
+#endif
     return 1;
   }
 
-//hmmm: create a more balanced tree structure...
+  ASSERT_TRUE(true, "testing succeeded without cleanup crashes");
+
+
+
+//hmmm: need more tests, like where we create a more balanced tree structure...
 //      perform known operations and validate shape of tree.
 
   return final_report();
