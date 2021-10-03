@@ -23,7 +23,8 @@
   // uncomment if you want lots of debugging info.
 
 #undef LOG
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+///#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s) + a_sprintf(" [obj=%p]", this))
 
 using namespace basis;
 using namespace loggers;
@@ -277,14 +278,16 @@ tree::tree()
 tree::~tree()
 {
   FUNCDEF("destructor");
+LOG("entry to tree destructor");
   // must at least unhook ourselves from the parent so we don't become a lost
   // cousin.
   tree *my_parent = parent();
   if (my_parent) my_parent->prune(this);
   my_parent = NULL_POINTER;  // disavow since we are loose now.
 
-#if 0
+#if 1
   //hmmm: clean this code when it's been examined long enough.  maybe already.
+LOG("old code for tree destructor activating...");
 
   //original version suffers from being too recursive on windoze,
   //which blows out the stack.  linux never showed this problem.  so, i
@@ -298,6 +301,7 @@ tree::~tree()
   while (branches()) delete branch(0);
     // this relies on the child getting out of our branch list.
 #else
+LOG("new code for tree destructor activating...");
 
   // newer version of delete doesn't recurse; it just iterates instead,
   // which avoids the massive recursive depth of the original approach.
@@ -313,10 +317,12 @@ tree::~tree()
 
     if (curr_node == NULL_POINTER) {
       // wayback has no children, so we can take action.
+LOG("tree dtor: can take action on childless node...");
 
       // if wayback is the same as "this", then we exit from iterations since
       // we've cleaned all the kids out.
       if (way_back == this) {
+LOG("tree dtor: breaking out since at wayback node...");
         break;
       }
 
@@ -325,9 +331,12 @@ tree::~tree()
       // our remit, since wayback is not the same node as the top level one
       // in the destructor (as long as there are no cycles in the tree...).
       curr_node = way_back->parent();  // go up in tree on next iteration.
+LOG("tree dtor: reset currnode, about to whack wayback...");
       WHACK(way_back);  // whack a node, finally.
+LOG("tree dtor: after whacking wayback...");
     } else {
       // okay, there's a node below here.  we will spider down to it.
+LOG("tree dtor: spidering to node below...");
       continue;
     }
   }
