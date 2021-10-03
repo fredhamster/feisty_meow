@@ -18,15 +18,17 @@
 #include <basis/functions.h>
 #include <basis/guards.h>
 #include <loggers/program_wide_logger.h>
+#include <structures/stack.h>
 
 //#define DEBUG_TREE
   // uncomment if you want lots of debugging info.
 
 #undef LOG
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s) + a_sprintf(" [obj=%p]", this))
 
 using namespace basis;
 using namespace loggers;
+using namespace structures;
 
 namespace nodes {
 
@@ -277,14 +279,19 @@ tree::tree()
 tree::~tree()
 {
   FUNCDEF("destructor");
-  // must at least unhook ourselves from the parent so we don't become a lost
-  // cousin.
-  tree *my_parent = parent();
-  if (my_parent) my_parent->prune(this);
-  my_parent = NULL_POINTER;  // disavow since we are loose now.
+#ifdef DEBUG_TREE
+  LOG("entry to tree destructor");
+#endif
+  {
+    // must at least unhook ourselves from the parent so we don't become a lost
+    // cousin.
+    tree *my_parent = parent();
+    if (my_parent) my_parent->prune(this);
+  }
 
 #if 0
   //hmmm: clean this code when it's been examined long enough.  maybe already.
+LOG("old code for tree destructor activating...");
 
   //original version suffers from being too recursive on windoze,
   //which blows out the stack.  linux never showed this problem.  so, i
@@ -297,41 +304,125 @@ tree::~tree()
   // iterate over the child nodes and whack each individually.
   while (branches()) delete branch(0);
     // this relies on the child getting out of our branch list.
-#else
+#endif
+
+#if 0
+  LOG("new code for tree destructor activating...");
+
+//hmmm: this new code stinks on ice.  keeps doing something awful, either double deleting or deleting wrong thing.
+//      why didn't we just use our own iterator to traverse the tree depth first and clean that way??
 
   // newer version of delete doesn't recurse; it just iterates instead,
   // which avoids the massive recursive depth of the original approach.
-  tree *curr_node = this;
-  tree *stop_node = this;  // don't whack self.
-  while (curr_node != NULL_POINTER) {
-    // make a breadcrumb for getting back to 'here' in the tree.
-    tree *way_back = curr_node;
-    // our main operation here is to go down a node without using any
-    // stack frames.  so we just pick the first kid; it's either valid
-    // or there are no kids at all.
-    curr_node = curr_node->branch(0);
+  while (branches()) {
+    // we know we have a branch to work on, due to conditional above.
+    tree *stop_node = branch(0);  // don't whack the node we're at until we're done with its kids.
+    tree *curr_node = stop_node;
+    while (curr_node != NULL_POINTER) {
+      // make a breadcrumb for getting back to 'here' in the tree.
+      tree *way_back = curr_node;
+      // our main operation here is to go down a node without using any
+      // stack frames.  so we just pick the first kid; it's either valid
+      // or there are no kids at all.
+      curr_node = curr_node->branch(0);
 
-    if (curr_node == NULL_POINTER) {
-      // wayback has no children, so we can take action.
+      if (curr_node == NULL_POINTER) {
+        // wayback has no children, so we can take action.
+LOG("tree dtor: can take action on childless node...");
 
-      // if wayback is the same as "this", then we exit from iterations since
-      // we've cleaned all the kids out.
-      if (way_back == this) {
-        break;
+        // if wayback is the same as stop_node, then we exit from iterations since
+        // we've cleaned all the kids out.
+        if (way_back == stop_node) {
+LOG("tree dtor: stopping since at wayback node...");
+          // we can actually delete wayback here, because we are at the stopping point.
+          // and since a tree node whack removes it from its parent, we are clean one branch now.
+          WHACK(way_back);
+LOG("tree dtor: whacked wayback before inner break.");
+          break;
+        }
+
+        // we want to whack the wayback node at this point, since it's a parent
+        // with no kids, i.e. a leaf.  we've guaranteed we're not going beyond
+        // our remit, since wayback is not the same node as the top level one
+        // in the destructor (as long as there are no cycles in the tree...).
+        curr_node = way_back->parent();  // go up in tree on next iteration.
+
+LOG("tree dtor: reset currnode, about to whack wayback...");
+
+        if (curr_node == stop_node) {
+LOG("tree dtor: seeing curr_node hits our stop_node!");
+///          break;
+        } else if (curr_node == stop_node->parent()) {
+LOG("tree dtor: seeing curr_node ABOVE our stop_node!");
+        }
+
+        WHACK(way_back);  // whack a node, finally.
+
+LOG("tree dtor: after whacking wayback...");
+      } else {
+        // okay, there's a node below here.  we will spider down to it.
+LOG("tree dtor: spidering to node below...");
+        continue;
       }
-
-      // we want to whack the wayback node at this point, since it's a parent
-      // with no kids, i.e. a leaf.  we've guaranteed we're not going beyond
-      // our remit, since wayback is not the same node as the top level one
-      // in the destructor (as long as there are no cycles in the tree...).
-      curr_node = way_back->parent();  // go up in tree on next iteration.
-      WHACK(way_back);  // whack a node, finally.
-    } else {
-      // okay, there's a node below here.  we will spider down to it.
-      continue;
     }
   }
+#endif
 
+#if 1
+#ifdef DEBUG_TREE
+  LOG("newest code for tree destructor (stack based) activating...");
+#endif
+
+  // this version of delete doesn't recurse; it just iterates instead,
+  // which avoids the massive recursive depth of the original approach.
+  // it does use a stack object however, but that will use main memory,
+  // which is usually in greater supply than stack/heap space.
+
+  stack<tree *> sleestak;  // accumulates nodes that we still need to clean up.
+
+  // iterate across this node first, to feed the stack.
+  // we feed it in reverse branch order, so that the first branch will be dealt with first (popped off stack first).
+  while (branches()) {
+    // get our current last branch...
+    tree *bran = branch(branches() - 1);
+    // pull that branch off the tree (non-destructively)...
+    prune(bran);
+    // and add that branch to the stack.
+#ifdef DEBUG_TREE
+    LOG(a_sprintf("tree dtor: adding child %p on stack.", bran));
+#endif
+    sleestak.push(bran);
+  }
+
+  // now iterate across our stack until we have dealt with every node in it.
+  while (sleestak.size()) {
+
+    tree *popper = NULL_POINTER;
+    sleestak.acquire_pop(popper);
+#ifdef DEBUG_TREE
+    LOG(a_sprintf("tree dtor: popped a tree %p off stack.", popper));
+#endif
+    
+    // familiar scheme below; push last branch first, then we'll pop first branch first.
+    while (popper->branches()) {
+      tree *bran = popper->branch(popper->branches() - 1);
+      popper->prune(bran);
+#ifdef DEBUG_TREE
+    LOG(a_sprintf("tree dtor: inner, adding child %p on stack.", bran));
+#endif
+      sleestak.push(bran);
+    }
+
+    // now the popper gets cleaned up; this should be totally safe since all its kids
+    // have been pruned and put into the stack.
+#ifdef DEBUG_TREE
+    LOG(a_sprintf("tree dtor: about to zap a tree %p.", popper));
+#endif
+    WHACK(popper);
+#ifdef DEBUG_TREE
+    LOG("tree dtor: whacked that tree.");
+#endif
+  }
 #endif
 }
 
@@ -387,11 +478,24 @@ outcome tree::prune(tree *branch_to_cut)
 
 outcome tree::prune_index(int branch_to_cut)
 {
+  FUNCDEF("prune_index");
   branch_to_cut++;
   bounds_return(branch_to_cut, 1, branches(), basis::common::NOT_FOUND);
+#ifdef DEBUG_TREE
+  LOG(a_sprintf("got legit branch %d to cut", branch_to_cut));
+#endif
   tree *that_branch = (tree *)get_link(branch_to_cut);
+#ifdef DEBUG_TREE
+  LOG(a_sprintf("whacking off branch %p", that_branch));
+#endif
   that_branch->set_link(BACKWARDS_BRANCH, NULL_POINTER);
+#ifdef DEBUG_TREE
+  LOG(a_sprintf("zapping link branch %d", branch_to_cut));
+#endif
   zap_link(branch_to_cut);
+#ifdef DEBUG_TREE
+  LOG("returning, finished.");
+#endif
   return basis::common::OKAY;
 }
 

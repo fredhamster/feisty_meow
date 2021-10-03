@@ -140,6 +140,9 @@ analyze_hierarchy_and_report $CLOUD_BASE/disordered "disordered and maybe derang
 # up our weight accounting considerably.
 analyze_hierarchy_and_report $CLOUD_BASE/reading "reading list (for a quiet afternoon)"
 
+# bluesky is our brainstorming and wunderthinking area for new things.
+analyze_hierarchy_and_report $CLOUD_BASE/blue_sky "blue sky is the limit ideas"
+
 ####
 
 # vocation is a prefix for anything i consider part of my life's work.

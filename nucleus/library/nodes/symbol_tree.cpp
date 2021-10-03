@@ -24,7 +24,7 @@
 
 #include <loggers/program_wide_logger.h>
 #undef LOG
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s) + a_sprintf(" [obj=%p]", this))
 using namespace loggers;
 
 using namespace basis;
@@ -40,7 +40,7 @@ public:
   symbol_tree_associations(int estimated_elements)
       :  symbol_table<symbol_tree *>(estimated_elements) {}
   virtual ~symbol_tree_associations() {
-//hmmm: why was this here?  was it ever needed?
+//probably we don't actually want to whack here???
 //    for (int i = 0; i < symbols(); i++) {
 //      WHACK(use(i));
 //    }
@@ -54,15 +54,23 @@ symbol_tree::symbol_tree(const astring &node_name, int estimated_elements)
   _associations(new symbol_tree_associations(estimated_elements)),
   _name(new astring(node_name))
 {
+  FUNCDEF("constructor")
 }
 
 symbol_tree::~symbol_tree()
 {
   FUNCDEF("destructor");
-LOG("prior to whacks");
+#ifdef DEBUG_SYMBOL_TREE
+  LOG("symtree dtor: prior to whacks");
+#endif
   WHACK(_associations);
+#ifdef DEBUG_SYMBOL_TREE
+  LOG("symtree dtor: after whacking associations");
+#endif
   WHACK(_name);
-LOG("after whacks");
+#ifdef DEBUG_SYMBOL_TREE
+  LOG("symtree dtor: after all whacks");
+#endif
 }
 
 int symbol_tree::children() const { return _associations->symbols(); }
@@ -93,26 +101,33 @@ outcome symbol_tree::prune(tree *to_zap_in)
   FUNCDEF("prune");
 #endif
   symbol_tree *to_zap = dynamic_cast<symbol_tree *>(to_zap_in);
-  if (!to_zap) {
+  if (to_zap) {
 #ifdef DEBUG_SYMBOL_TREE
-    LOG("about to barf due to null symtree after dynamic cast.");
+    LOG(astring("zapping node for ") + to_zap->name());
 #endif
-    throw("error: symbol_tree::prune: wrong type of node in prune");
+    int found = which(to_zap);  // find the node in the tree.
+    if (negative(found)) return common::NOT_FOUND;  // not found.
+#ifdef DEBUG_SYMBOL_TREE
+    int kids = _associations->symbols();
+#endif
+    _associations->whack(to_zap->name());  // remove from associations.
+#ifdef DEBUG_SYMBOL_TREE
+    if (kids - 1 != _associations->symbols())
+      throw("error: symbol_tree::prune: failed to crop kid in symtab");
+#endif
+  } else { 
+#ifdef DEBUG_SYMBOL_TREE
+    LOG("skip symtree prune steps due to null symtree after dynamic cast.");
+#endif
+///hmmm: how about not?    throw("error: symbol_tree::prune: wrong type of node in prune");
   }
 #ifdef DEBUG_SYMBOL_TREE
-  LOG(astring("zapping node for ") + to_zap->name());
-#endif
-  int found = which(to_zap);  // find the node in the tree.
-  if (negative(found)) return common::NOT_FOUND;  // not found.
-#ifdef DEBUG_SYMBOL_TREE
-  int kids = _associations->symbols();
-#endif
-  _associations->whack(to_zap->name());  // remove from associations.
-#ifdef DEBUG_SYMBOL_TREE
-  if (kids - 1 != _associations->symbols())
-    throw("error: symbol_tree::prune: failed to crop kid in symtab");
+  LOG("about to call base tree::prune...");
 #endif
   tree::prune(to_zap);  // remove from tree.
+#ifdef DEBUG_SYMBOL_TREE
+  LOG("after called base tree::prune.");
+#endif
   return common::OKAY;
 }
 
