@@ -46,5 +46,4 @@ if [ $? != 0 ]; then
 fi
 
 \mv -f $genlinx $genlinx_moz $genlinx_js $GRUNTOSE_DIR/Info/Twain
-\mv -f $newmarx $HOME
 

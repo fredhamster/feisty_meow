@@ -80,6 +80,8 @@ int test_node::execute()
   george.set_link(0, &g_end1);
   george.set_link(1, &g_end2);
 
+//do some testing on those results!!!
+
   return final_report();
 }
 
