@@ -19,12 +19,12 @@
 #include <textual/parser_bits.h>
 #include <textual/string_manipulation.h>
 
-//#define DEBUG_SYMBOL_TREE
+#define DEBUG_SYMBOL_TREE
   // uncomment for totally noisy version.
 
 #include <loggers/program_wide_logger.h>
 #undef LOG
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s) + a_sprintf(" [obj=%p]", this))
 using namespace loggers;
 
 using namespace basis;
@@ -40,7 +40,16 @@ public:
   symbol_tree_associations(int estimated_elements)
       :  symbol_table<symbol_tree *>(estimated_elements) {}
   virtual ~symbol_tree_associations() {
+
+//hmmm: below was really wrong and things are still wrong because we're letting the symtab destruct our trees?
+//      real thing would be to just toss any pointers referenced in the sym tab here.
+//      OR... not at all because sym tab stores objects, and expects objects, and since a pointer isn't an object it will not auto-delete?
+
+
 //hmmm: why was this here?  was it ever needed?
+//hmmm: maybe it's the missing link?
+
+//probably we don't actually want to whack here???
 //    for (int i = 0; i < symbols(); i++) {
 //      WHACK(use(i));
 //    }
@@ -59,10 +68,11 @@ symbol_tree::symbol_tree(const astring &node_name, int estimated_elements)
 symbol_tree::~symbol_tree()
 {
   FUNCDEF("destructor");
-LOG("prior to whacks");
+LOG("symtree dtor: prior to whacks");
   WHACK(_associations);
+LOG("symtree dtor: after whacking associations");
   WHACK(_name);
-LOG("after whacks");
+LOG("symtree dtor: after all whacks");
 }
 
 int symbol_tree::children() const { return _associations->symbols(); }
