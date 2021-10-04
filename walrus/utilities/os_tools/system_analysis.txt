@@ -1,5 +1,11 @@
 
 
+(for what?)
 dstat looks pretty useful, e.g.
  dstat -f
+
+
+gsmartcontrol:
+this is a nice GUI for managing SMART information for drives and running tests.
+
 
