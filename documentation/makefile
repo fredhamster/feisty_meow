@@ -14,13 +14,15 @@ build_docs:
 #	@echo the defs are $(DEFINITIONS)
 	@echo Regenerating documentation for feisty meow with doxygen.  This could take a while...
 	$(HIDESH) -c '\
-doxygen $(wildcard *.config) &> "$$TEMPORARIES_PILE/doxygen_run_$$(date +"%Y%m%d%H%M%S").log"; \
+outfile="$$TEMPORARIES_PILE/doxygen_run_$$(date +"%Y%m%d%H%M%S").log"; \
+doxygen $(wildcard *.config) &> "$$outfile"; \
 if [ $$? -ne 0 ]; then \
   echo failed to run doxygen on our configuration file.; \
   echo perhaps doxygen is not properly installed?; \
   echo these are the ubuntu install steps:; \
   echo   sudo apt install doxygen graphviz; \
-fi \
+fi; \
+\rm -f "$$outfile" \
 '
 	@echo ...done regenerating the feisty meow docs.
 
