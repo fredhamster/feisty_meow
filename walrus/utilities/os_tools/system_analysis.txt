@@ -1,8 +1,9 @@
 
 
-(for what?)
-dstat looks pretty useful, e.g.
- dstat -f
+dstat
+this looks pretty useful for showing active network usage (?)
+for example:
+  dstat -f
 
 
 gsmartcontrol:
