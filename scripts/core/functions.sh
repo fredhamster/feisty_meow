@@ -509,9 +509,16 @@ if [ -z "$skip_all" ]; then
     bash $FEISTY_MEOW_SCRIPTS/core/reconfigure_feisty_meow.sh
     echo
     # force a full reload by turning off sentinel variables and methods.
-    unset -v CORE_VARIABLES_LOADED FEISTY_MEOW_LOADING_DOCK USER_CUSTOMIZATIONS_LOADED
+    unset -v CORE_VARIABLES_LOADED FEISTY_MEOW_LOADING_DOCK USER_CUSTOMIZATIONS_LOADED \
+        BUILD_VARS_LOADED
     unalias CORE_ALIASES_LOADED &>/dev/null
     unset -f function_sentinel 
+
+    # reuse the original path if we can.
+    if [ ! -z "$FEISTY_MEOW_ORIGINAL_PATH" ]; then
+      export PATH="$FEISTY_MEOW_ORIGINAL_PATH"
+    fi
+
     # reload feisty meow environment in current shell.
     log_feisty_meow_event "reloading the feisty meow scripts for $USER in current shell."
     source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
