@@ -39,7 +39,7 @@ using namespace textual;
 
 namespace sockets {
 
-#define DEBUG_TCPIP_STACK
+//#define DEBUG_TCPIP_STACK
   // turn on for clamor.
 
 #undef LOG
