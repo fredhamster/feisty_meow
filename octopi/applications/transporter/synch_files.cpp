@@ -32,6 +32,9 @@ using namespace timely;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
+#define DEBUG_SYNCH_FILES
+//hmmm: not used yet, but should be.
+
 class synch_files_tentacle : public application_shell
 {
 public:

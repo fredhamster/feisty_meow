@@ -4,12 +4,12 @@
 *  Purpose:
 *    Tests the directory_tree object on some well-known directories.
 **
-* Copyright (c) 2001-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
+* Copyright (c) 2001-$now By Author.  This program is free software; you can
+* redistribute it and/or modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either version 2 of
+* the License or (at your option) any later version.  This is online at:
+*     http://www.fsf.org/copyleft/gpl.html
+* Please send any updates to: fred@gruntose.com
 */
 
 #include <application/hoople_main.h>
@@ -40,6 +40,9 @@ using namespace unit_test;
 const bool JUST_SIZES = false;
   // determines if we'll only compare file size and time.
 
+#define DEBUG_TEST_DIRECTORY_TREE
+  // uncomment if you want noisy logging.
+
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 class test_directory_tree : public virtual unit_base, virtual public application_shell
@@ -54,11 +57,24 @@ int test_directory_tree::execute()
 {
   FUNCDEF("execute");
 
+/* old approach.
   astring path = "/usr/lib";
 #ifdef __WIN32__
   // default path for windoze uses an area that should always exist.
   path = environment::get("COMMONPROGRAMFILES");
 #endif
+*/
+
+/*
+hmmm: this test shows that our algorithms are poor; the tree traversal on feisty meow apex
+should not take as long as it does.
+get some timing around this, comparing it with other linux tools, like ls -R and find.
+see if we have some ugly bottlenecks, or where they are, and fix them.
+*/
+
+  // new approach for where to look is at feisty meow itself.
+  // some type of introspection to be sure.
+  astring path = environment::get("FEISTY_MEOW_APEX");
 
   // process the command line parameters, which are optionally a directory name and
   // a pattern to use when scanning.
@@ -70,8 +86,10 @@ int test_directory_tree::execute()
     pattern = _global_argv[2];
 
   {
-//    log(astring("Scanning directory tree at \"") + path + "\"");
-//    log(astring("Using pattern-match \"") + pattern + "\"");
+#ifdef DEBUG_TEST_DIRECTORY_TREE
+    log(astring("Scanning directory tree at \"") + path + "\"");
+    log(astring("Using pattern-match \"") + pattern + "\"");
+#endif
 
     directory_tree dir(path, pattern.s());
     ASSERT_TRUE(dir.good(), "directory_tree construction should succeed and be readable.");
@@ -86,14 +104,18 @@ int test_directory_tree::execute()
     while (directory_tree::current(*ted, curr, files)) {
       // we have a good directory to show.
       directory_tree::depth(*ted, depth);
-//      log(string_manipulation::indentation(depth * 2) + astring("[")
-//          + curr.raw() + "]");
+#ifdef DEBUG_TEST_DIRECTORY_TREE
+      log(string_manipulation::indentation(depth * 2) + astring("[") + curr.raw() + "]");
+#endif
+
       astring names;
       for (int i = 0; i < files.length(); i++) names += files[i] + " ";
       if (names.length()) {
         astring split;
         string_manipulation::split_lines(names, split, depth * 2 + 2);
-//        log(split);
+#ifdef DEBUG_TEST_DIRECTORY_TREE
+        log(split);
+#endif
       }
 
       // go to the next place.
@@ -202,8 +224,7 @@ LOG("reading tree to recreate");
     basis::outcome result = dir.make_directories(tmpdir.raw());
     ASSERT_EQUAL(result.value(), common::OKAY, "makedirs should succeed");
     
-
-LOG("what happened with that?  did it work?");
+LOG("what happened with that?  did it work?  merely rhetorical, since we need more code here.");
 
 //hmmm: compare the directories with what we expect to be made;
 //      do a dirtree iterator on the path, and make sure each of those exists in the target place.
@@ -236,4 +257,5 @@ ASSERT_FALSE(kid, "removing temporary files after test");
 }
 
 HOOPLE_MAIN(test_directory_tree, )
+
 

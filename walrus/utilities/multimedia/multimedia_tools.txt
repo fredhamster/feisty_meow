@@ -13,9 +13,20 @@ very nice.  there are some canonical tools for each platform for these.
 gnome tool called 'soundconverter'.
 
 
--------------------------
-burner and player support
--------------------------
+--------------------------------
+music library manager and player
+--------------------------------
+
++ lollypop is our current choice for managing a large music library and
+playing back songs in it.
+
++ banshee used to be our app of choice for managing our music library, but it
+seems to no longer be updated.
+
+
+---------------------------------
+dvd burner and dvd player support
+---------------------------------
 
 + k3b is a pretty great and versatile cd and dvd burner.
 
