@@ -35,10 +35,11 @@
 using namespace basis;
 using namespace loggers;
 using namespace structures;
+using namespace textual;
 
 namespace sockets {
 
-//#define DEBUG_TCPIP_STACK
+#define DEBUG_TCPIP_STACK
   // turn on for clamor.
 
 #undef LOG
