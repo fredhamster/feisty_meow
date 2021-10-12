@@ -214,27 +214,19 @@ if [ -z "$skip_all" ]; then
   function ssh()
   {
     local args=($@)
-    # we remember the old terminal title, then force the TERM variable to a more generic
-    # version for the other side (just 'linux'); we don't want the remote side still
-    # thinking it's running xterm.
-    save_terminal_title
-
-#hmmm: why were we doing this?  it scorches the user's logged in session, leaving it without proper terminal handling.
-#    # we save the value of TERM; we don't want to leave the user's terminal
-#    # brain dead once we come back from this function.
-#    local oldterm="$TERM"
-#    export TERM=linux
-
+    save_terminal_title  # remember the current terminal title.
     /usr/bin/ssh -C "${args[@]}"
-# removed -Y flag because considered dangerous to trust remote hosts to not abuse our X session.
-
-#    # restore the terminal variable also.
-#    TERM="$oldterm"
-
+#hmmm: removed -Y flag because considered dangerous to trust remote hosts to not abuse our X session.
     restore_terminal_title
-    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-      echo TERM title restored to prior value
-    fi
+  }
+
+  # this version of ssh preserves the use of the -Y flag for when X forwarding is needed.
+  function yssh()
+  {
+    local args=($@)
+    save_terminal_title  # remember the current terminal title.
+    /usr/bin/ssh -Y "${args[@]}"
+    restore_terminal_title
   }
 
   ##############
