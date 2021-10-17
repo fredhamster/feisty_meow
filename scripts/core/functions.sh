@@ -768,11 +768,11 @@ return 0
   {
     count=$1; shift
     if [ -z "$count" ]; then
-      count=79
+      count=$(($COLUMNS - 1))
     fi
     echo
     local i
-    for ((i=0; i < $count - 1; i++)); do
+    for ((i=0; i < $count; i++)); do
       echo -n "="
     done
     echo
