@@ -6,12 +6,18 @@ audio tools
 
 + k3b is good for ripping+converting cd audio to mp3 or other formats.
 
++ asunder is a great ripper for CDs and supports a lot of output formats.
+
 + for lossless music compression, the flac and shorten (shn) formats are
 very nice.  there are some canonical tools for each platform for these.
 
 + for converting from ogg and such to mp3 and m4a and such, use the
 gnome tool called 'soundconverter'.
 
++ musicbrainz provides a freedb style gateway for looking up albums, artists and songs...
+  https://wiki.musicbrainz.org/History:FreeDB_Gateway
+  use this instead of the old freedb URL:
+    http://freedb.musicbrainz.org:80/~cddb/cddb.cgi
 
 --------------------------------
 music library manager and player
