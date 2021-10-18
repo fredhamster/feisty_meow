@@ -9,25 +9,28 @@ audio tools
 + asunder is a great ripper for CDs and supports a lot of output formats.
 
 + for lossless music compression, the flac and shorten (shn) formats are
-very nice.  there are some canonical tools for each platform for these.
+  very nice.  there are some canonical tools for each platform for these.
 
 + for converting from ogg and such to mp3 and m4a and such, use the
-gnome tool called 'soundconverter'.
+  gnome tool called 'soundconverter'.
 
 + musicbrainz provides a freedb style gateway for looking up albums, artists and songs...
   https://wiki.musicbrainz.org/History:FreeDB_Gateway
   use this instead of the old freedb URL:
     http://freedb.musicbrainz.org:80/~cddb/cddb.cgi
++ gnudb: works in apps that need exact old freedb format, had more success
+    in asunder with gnudb
+    => gnudb.gnudb.org 8880
 
 --------------------------------
 music library manager and player
 --------------------------------
 
 + lollypop is our current choice for managing a large music library and
-playing back songs in it.
+  playing back songs in it.
 
 + banshee used to be our app of choice for managing our music library, but it
-seems to no longer be updated.
+  seems to no longer be updated.
 
 
 ---------------------------------
@@ -41,8 +44,8 @@ dvd burner and dvd player support
 + for dvd processing, vobcopy is a must.
 
 + for dvd playing and ripping in general, decss is needed.
-it's available in the restricted packages on ubuntu.
-lots of articles describe how to set that up.
+  it's available in the restricted packages on ubuntu.
+  lots of articles describe how to set that up.
 
 + vlc is a good player for dvds.
 
@@ -52,10 +55,10 @@ ripping music using a turntable
 
 audacity is the go-to tool for ripping music from vinyl records
 and many other audio toaster processes:
-http://www.audacityteam.org/
+  http://www.audacityteam.org/
 
 this article helps a lot to get the music off of vinyl records using a usb turntable:
-https://www.linux.com/news/using-usb-turntable-linux
+  https://www.linux.com/news/using-usb-turntable-linux
 
 
 ----------------
@@ -63,26 +66,26 @@ movie processing
 ----------------
 
 avidemux:
-if you need to manipulate a video, for example to rotate it or transcode it to a different
-format, then avidemux works great.
+  if you need to manipulate a video, for example to rotate it or transcode it to a different
+  format, then avidemux works great.
 
 openshot:
-if you need to jam a bunch of videos together, crossfade them, and that kind of stuff,
-then try openshot.  it also supports simple saving with different quality levels, which
-lets you drop a bunch of size at the expense of the picture.  sometimes needed.
+  if you need to jam a bunch of videos together, crossfade them, and that kind of stuff,
+  then try openshot.  it also supports simple saving with different quality levels, which
+  lets you drop a bunch of size at the expense of the picture.  sometimes needed.
 
 ---------------------------
 music collection management
 ---------------------------
 
 dupeguru:
-found this to be pretty helpful in finding my duplicate songs.  it is able to analyze
-when the files are the same, even if their names don't match.
-check: did it even compare by metadata?  not remembering currently.
+  found this to be pretty helpful in finding my duplicate songs.  it is able to analyze
+  when the files are the same, even if their names don't match.
+  check: did it even compare by metadata?  not remembering currently.
 
 fdupes:
-another useful tool for finding duplicate tracks in a music collection, but relies on exact
-matches in the names(?).  was not so powerful as dupeguru, but still useful.
+  another useful tool for finding duplicate tracks in a music collection, but relies on exact
+  matches in the names(?).  was not so powerful as dupeguru, but still useful.
 
 
 -----------------------------
@@ -90,8 +93,8 @@ picture collection management
 -----------------------------
 
 shotwell:
-currently the top picture manipulation and manager tool i use at home.
-the imaginations folder is based on the date management in shotwell.
+  currently the top picture manipulation and manager tool i use at home.
+  the imaginations folder is based on the date management in shotwell.
 
 
 
