@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# make a dvd data disc image suitable for burning on bluray.
+
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
 function show_usage()
 {
   echo "This script needs two parameters, (1) an ISO file to create, and"
@@ -28,4 +32,6 @@ if [ ! -d "$folder_name" ]; then
 fi
 
 genisoimage -r -J -joliet-long -o "$iso_name" "$folder_name"
+
+exit_on_error generating ISO image from folder ${folder_name}
 
