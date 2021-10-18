@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# makes a playable dvd movie disc image from a folder.
+# the folder has to contain a ripped and decrypted DVD.
+
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
 function show_usage()
 {
   echo "This script needs two parameters, (1) an ISO file to create, and"
@@ -30,4 +35,5 @@ fi
 
 mkisofs -dvd-video -o "$iso_name" "$folder_name"
 
+exit_on_error making ISO filesystem from folder ${folder_name}
 

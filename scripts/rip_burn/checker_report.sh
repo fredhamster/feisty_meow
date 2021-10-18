@@ -32,4 +32,3 @@ done <"$temp_file_list"
 
 rm "$temp_file_list"
 
-
