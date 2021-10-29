@@ -1,6 +1,15 @@
 
 how to clean whiteboard snapshots in general:
+
   http://matthew.mceachen.us/blog/how-to-clean-up-photos-of-whiteboards-with-gimp-403.html
+  apparently the URL above is defunct.
+
+  new URL on this topic: https://gist.github.com/adsr303/74b044534914cc9b3345920e8b8234f4
+  requires a bit of gimp knowledge.
+
+====
+
+[untested]
 
 script for whiteboard cleaning in batch can be found in this folder also.
 the batch-whiteboard-clean.scm script should go in: ~/.gimp-2.6/scripts
