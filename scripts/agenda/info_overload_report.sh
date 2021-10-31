@@ -151,6 +151,9 @@ analyze_by_dir_patterns "life's work and other oddities" $CLOUD_BASE/vocation*
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active issues" $CLOUD_BASE/*active* 
 
+# find any charity actions that need to be taken.
+analyze_by_dir_patterns "charitable" $CLOUD_BASE/*charit* 
+
 # rub alongside all the travel notes to see if any have interesting burrs.
 analyze_by_dir_patterns "travel plans" $CLOUD_BASE/walkabout*
 
