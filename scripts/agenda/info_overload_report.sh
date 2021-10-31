@@ -112,6 +112,10 @@ full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 ================================================================\n\
 "
 
+####
+
+# this group is for hierarchies which we expect to have a stable name.
+
 #hmmm: don't fail if the hierarchy doesn't exist.
 
 # high priority stuff would be called urgent.
@@ -145,17 +149,14 @@ analyze_hierarchy_and_report $CLOUD_BASE/blue_sky "blue sky is the limit ideas"
 
 ####
 
-# vocation is a prefix for anything i consider part of my life's work.
-analyze_by_dir_patterns "life's work and other oddities" $CLOUD_BASE/vocation*
+# this group is found based on matching a pattern, since we may not use a single
+# standardized name for it, or maybe there are prefixes for similar items (like project-).
 
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active issues" $CLOUD_BASE/*active* 
 
-# find any charity actions that need to be taken.
-analyze_by_dir_patterns "charitable" $CLOUD_BASE/*charit* 
-
-# rub alongside all the travel notes to see if any have interesting burrs.
-analyze_by_dir_patterns "travel plans" $CLOUD_BASE/*travel*
+# vocation is a prefix for anything i consider part of my life's work.
+analyze_by_dir_patterns "life's work and other oddities" $CLOUD_BASE/vocation*
 
 # scan across all appropriately named project or research folders.
 analyze_by_dir_patterns "running projects" $CLOUD_BASE/*project* $CLOUD_BASE/*research*
@@ -163,11 +164,22 @@ analyze_by_dir_patterns "running projects" $CLOUD_BASE/*project* $CLOUD_BASE/*re
 # look for our mad scientist style efforts.
 analyze_by_dir_patterns "lab experiments" $CLOUD_BASE/*experiment*
 
+# we also are running some businesses.  get those notes in.
+analyze_by_dir_patterns "business ops" $CLOUD_BASE/*business*
+
+# find any charity actions that need to be taken.
+analyze_by_dir_patterns "charitable" $CLOUD_BASE/*charit* 
+
+# rub alongside all the travel notes to see if any have interesting burrs.
+analyze_by_dir_patterns "travel plans" $CLOUD_BASE/*travel*
+
 # snag any work related items for that category.
 analyze_by_dir_patterns "jobby work tasks" $CLOUD_BASE/job* 
 
 # scan all the trivial project folders.
 analyze_by_dir_patterns "trivialities and back burner items" $CLOUD_BASE/trivia* $CLOUD_BASE/backburn*
+
+####
 
 full_report+="================================================================\n\
 "
