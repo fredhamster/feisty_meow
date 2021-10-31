@@ -15,6 +15,8 @@ If you have stored it elsewhere, then please adapt the commands accordingly.
 
 How to get the feisty meow codebase
 
+These steps assume that you have the "git" tool available.
+
 | On Microsoft Windows, install the Cygwin tools as documented here:
 | /opt/feistymeow.org/feisty_meow/documentation/cygwin_install_list.txt (local file) or
 | https://feistymeow.org/feisty_meow/documentation/cygwin_install_list.txt (web)
@@ -25,6 +27,11 @@ $ git clone git://feistymeow.org/feisty_meow
 ==============
 
 How to load the feisty meow script environment
+
+Prepare your host by installing the packages needed to bootstrap feisty meow.
+If this fails, then you may need the manual installation steps at the end of
+this file.
+$ bash /opt/feistymeow.org/feisty_meow/scripts/core/prep_feisty_host.sh
 
 Set up the feisty_meow scripts; this is only needed once, when you first get
 the codebase.
@@ -52,26 +59,6 @@ https://feistymeow.org/feisty_meow/documentation/feisty_meow_command_reference.t
 
 ==============
 
-How to install the feisty meow script dependencies
-
-A couple of perl modules are required by some of the scripts (including the
-differ utility and the feisty meow customization system).  They can be
-installed with either apt or CPAN.
-
-Install using apt (on Ubuntu or Debian-based OS):
-$ sudo apt install libfile-which-perl libtext-diff-perl
-
-Install using yum (on Centos or similar distros):
-$ yum install perl-File-Which perl-Text-Diff
-
-or Install using perl's CPAN:
-$ sudo cpan install Text::Diff File::Which
-
-or on Cygwin (MS-Windows), install with apt-cyg:
-$ apt-cyg install perl-File-Which perl-Text-Diff
-
-==============
-
 How to update the feisty meow codebase to the latest online version
 
 This assumes that a somewhat current version of feisty meow is already
@@ -81,25 +68,6 @@ The command below retrieves the latest version of feisty meow codebase
 from the online repository and regenerates the scripts.
 
 $ rpuffer $FEISTY_MEOW_APEX ; regenerate
-
-==============
-
-How to install the build dependencies for feisty meow
-
-These dependencies are used for building the applications, tools and tests
-in the "nucleus", "octopi", "graphiq" and other C++ collections.
-
-| Ubuntu / Debian:
-| $ sudo apt install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
-
-| Centos / Redhat / Fedora:
-| $ sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel
-
-The "kona" collection depends on Java version 8 or better.
-
-| Ubuntu:
-| Set up the java PPA archive as described here:
-| https://launchpad.net/~webupd8team/+archive/ubuntu/java
 
 ==============
 
@@ -152,6 +120,45 @@ The github repository will accept bug reports without an authorization process.
 ==============
 
 More information is available at the official site: https://feistymeow.org
+
+==============
+
+Manual Installation Steps:
+
+How to install the feisty meow script dependencies...
+
+A couple of perl modules are required by some of the scripts (including the
+differ utility and the feisty meow customization system).  They can be
+installed with either apt or CPAN.
+
+Install using apt (on Ubuntu or Debian-based OS):
+$ sudo apt install libfile-which-perl libtext-diff-perl
+
+Install using yum (on Centos or similar distros):
+$ yum install perl-File-Which perl-Text-Diff
+
+or Install using perl's CPAN:
+$ sudo cpan install Text::Diff File::Which
+
+or on Cygwin (MS-Windows), install with apt-cyg:
+$ apt-cyg install perl-File-Which perl-Text-Diff
+
+How to install the build dependencies for feisty meow...
+
+These dependencies are used for building the applications, tools and tests
+in the "nucleus", "octopi", "graphiq" and other C++ collections.
+
+| Ubuntu / Debian:
+| $ sudo apt install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
+
+| Centos / Redhat / Fedora:
+| $ sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel
+
+The "kona" collection depends on Java version 8 or better.
+
+| Ubuntu:
+| Set up the java PPA archive as described here:
+| https://launchpad.net/~webupd8team/+archive/ubuntu/java
 
 ==============
 

@@ -40,11 +40,19 @@ if [ -z "$skip_all" ]; then
   {
     to_find="$1"; shift
     local WHICHER="$(\which which 2>/dev/null)"
+#>&2 echo "got whicher as: $WHICHER"
     if [ $? -ne 0 ]; then
       # there is no which command here.  we produce nothing due to this.
       echo
+      return 2
     fi
-    echo $($WHICHER $to_find 2>/dev/null)
+    local sporkenz  # must be defined local here, before call, or we don't get exit value?!
+    sporkenz=$($WHICHER "$to_find" 2>/dev/null)
+#>&2 echo "broken with this line, but here is exit val: $?"
+    local err=$?
+#>&2 echo "got whicher as: $WHICHER"
+    echo $sporkenz
+    return $err
   }
 
   # makes a directory of the name specified and then tries to change the
