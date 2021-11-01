@@ -179,6 +179,9 @@ analyze_by_dir_patterns "jobby work tasks" $CLOUD_BASE/job*
 # scan all the trivial project folders.
 analyze_by_dir_patterns "trivialities and back burner items" $CLOUD_BASE/trivia* $CLOUD_BASE/backburn*
 
+# okay, fudge.  if there are game tasks, then count them too.  what are they, nothing?  not so.
+analyze_by_dir_patterns "play time and games" $CLOUD_BASE/*gaming* $CLOUD_BASE/*game* 
+
 ####
 
 full_report+="================================================================\n\
