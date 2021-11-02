@@ -948,7 +948,10 @@ return 0
   ##############
 
   # space 'em all: fixes naming for all of the files of the appropriate types
-  # in the directories specified.
+  # in the directories specified.  we skip any file with a dot in front, to
+  # respect their hidden nature.  currently the set of files we'll rename is
+  # very boutique; it's in this function, and just happens to be the types of
+  # files we work with a lot.
   function spacemall() {
     local -a dirs=("${@}")
     if [ ${#dirs[@]} -eq 0 ]; then
@@ -959,9 +962,11 @@ return 0
 #hmmm: any way to do the below more nicely or reusably?
 #hmmm: yes!  a variable with a list of files that are considered TEXT_FILE_EXTENSIONS or something like that.
 #hmmm: yes continued!  also a variable for BINARY_FILE_EXTENSIONS to avoid those, where we need to in other scripts.
+#hmmm: wait, we actually have a mix here, since this is a renaming function and not a searching function; get it straight!
+#hmmm: would the composition of those two types of extensions cover all the files i want to rename?  they have to be "important".
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f -and -not -iname ".[a-zA-Z0-9]*" | \
         grep -i \
-"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|xls\|xlsx\|xml\|zip" | \
+"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|xls\|xlsx\|xml\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.
