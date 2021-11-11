@@ -1,0 +1,6 @@
+
+A typical "user story" in Scrum goes like this...
+
+As user/role X, I want feature/item Y, because of business purpose Z.
+
+
