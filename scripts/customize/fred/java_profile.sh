@@ -135,6 +135,10 @@ if [ ! -z "$ECLIPSE_DIR" ]; then
   fi
   export PATH=$e:$PATH
 fi
+# add in our personal bin path.
+if [ -d "/usr/local/fred/bin" ]; then
+  export PATH=/usr/local/fred/bin:$PATH
+fi
 
 ############################
 
