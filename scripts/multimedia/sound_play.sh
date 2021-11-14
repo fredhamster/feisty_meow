@@ -11,20 +11,23 @@ fi
 
 export PLAYCMD=/usr/bin/play
 if [ ! -f "$PLAYCMD" ]; then
-  PLAYCMD=echo
+  PLAYCMD='echo Unknown sound player...'
 fi
 
-if [ ! -z "$(psfind artsd)" ]; then
-  # we see artsd running...
+if [ ! -z "$(which afplay)" ]; then
+#echo we see afplay available...
+  PLAYCMD=afplay
+elif [ ! -z "$(psfind artsd)" ]; then
+#echo we see artsd running...
   PLAYCMD=artsplay
 elif [ ! -z "$(psfind esd)" ]; then
-  # we see esd running...
+#echo  we see esd running...
   PLAYCMD=esdplay
 elif [ ! -z "$(psfind pulseaudio)" ]; then
-  # we see pulse running...
+#echo we see pulse running...
   PLAYCMD="padsp aplay"
 elif [ ! -z "$WINDIR" ]; then
-  # kludge for win32; we provide our own sound player.
+#echo kludge for win32; we provide our own sound player.
   PLAYCMD=playsound
 else
   echo "I don't know how to play sounds for this OS and sound system."

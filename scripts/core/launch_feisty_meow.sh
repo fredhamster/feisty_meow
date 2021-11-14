@@ -18,6 +18,13 @@
 
 ##############
 
+# first step--capture the current path if we haven't already.
+if [ -z "$FEISTY_MEOW_ORIGINAL_PATH" ]; then
+  export FEISTY_MEOW_ORIGINAL_PATH="$PATH"
+fi
+
+##############
+
 # this script cannot handle figuring out where it lives, so approaches that
 # get the THISDIR will fail.  this is a consequence of this always being used
 # in bash's 'source' directive, which does not pass the script name as
@@ -118,7 +125,7 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     # this is our single entry point we can use without knowing any variables
     # yet in the initialization process.
     export FEISTY_MEOW_LOADING_DOCK="$HOME/.zz_feisty_loading"
-  #hmmm: the above is kind of a constant.  that's not so great.
+#hmmm: the above is kind of a constant.  that's not so great.
   
     # make sure our main variables are established.
     FEISTY_MEOW_VARIABLES_LOADING_FILE="$FEISTY_MEOW_LOADING_DOCK/fmc_variables.sh"

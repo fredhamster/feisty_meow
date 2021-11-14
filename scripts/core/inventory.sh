@@ -20,15 +20,16 @@ if [ $OPERATING_SYSTEM == "UNIX" ]; then
 #Usage: sw_vers [-productName|-productVersion|-buildVersion]
     osname="$(sw_vers -productName 2>/dev/null)"
     osver="$(sw_vers -productVersion 2>/dev/null)"
+#echo "osname = '$osname' and osver = '$osver'"
     if [[ "$osver" =~ ^10\.15.*$ ]]; then
       codename="Catalina"
     elif [[ "$osver" =~ ^10\.14.*$ ]]; then
       codename="Mojave"
     elif [[ "$osver" =~ ^10\.13.*$ ]]; then
       codename="High Sierra"
-    elif [[ "$osver" =~ ^11\.*$ ]]; then
+    elif [[ "$osver" =~ ^11\..*$ ]]; then
       codename="Big Sur"
-    elif [[ "$osver" =~ ^12\.*$ ]]; then
+    elif [[ "$osver" =~ ^12\..*$ ]]; then
       codename="Monterey"
     else
       codename="$(sw_vers -buildVersion 2>/dev/null)"
