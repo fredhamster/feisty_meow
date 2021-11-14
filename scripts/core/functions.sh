@@ -40,11 +40,19 @@ if [ -z "$skip_all" ]; then
   {
     to_find="$1"; shift
     local WHICHER="$(\which which 2>/dev/null)"
+#>&2 echo "got whicher as: $WHICHER"
     if [ $? -ne 0 ]; then
       # there is no which command here.  we produce nothing due to this.
       echo
+      return 2
     fi
-    echo $($WHICHER $to_find 2>/dev/null)
+    local sporkenz  # must be defined local here, before call, or we don't get exit value?!
+    sporkenz=$($WHICHER "$to_find" 2>/dev/null)
+#>&2 echo "broken with this line, but here is exit val: $?"
+    local err=$?
+#>&2 echo "got whicher as: $WHICHER"
+    echo $sporkenz
+    return $err
   }
 
   # makes a directory of the name specified and then tries to change the
@@ -214,27 +222,19 @@ if [ -z "$skip_all" ]; then
   function ssh()
   {
     local args=($@)
-    # we remember the old terminal title, then force the TERM variable to a more generic
-    # version for the other side (just 'linux'); we don't want the remote side still
-    # thinking it's running xterm.
-    save_terminal_title
-
-#hmmm: why were we doing this?  it scorches the user's logged in session, leaving it without proper terminal handling.
-#    # we save the value of TERM; we don't want to leave the user's terminal
-#    # brain dead once we come back from this function.
-#    local oldterm="$TERM"
-#    export TERM=linux
-
+    save_terminal_title  # remember the current terminal title.
     /usr/bin/ssh -C "${args[@]}"
-# removed -Y flag because considered dangerous to trust remote hosts to not abuse our X session.
-
-#    # restore the terminal variable also.
-#    TERM="$oldterm"
-
+#hmmm: removed -Y flag because considered dangerous to trust remote hosts to not abuse our X session.
     restore_terminal_title
-    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-      echo TERM title restored to prior value
-    fi
+  }
+
+  # this version of ssh preserves the use of the -Y flag for when X forwarding is needed.
+  function yssh()
+  {
+    local args=($@)
+    save_terminal_title  # remember the current terminal title.
+    /usr/bin/ssh -Y "${args[@]}"
+    restore_terminal_title
   }
 
   ##############
@@ -509,9 +509,16 @@ if [ -z "$skip_all" ]; then
     bash $FEISTY_MEOW_SCRIPTS/core/reconfigure_feisty_meow.sh
     echo
     # force a full reload by turning off sentinel variables and methods.
-    unset -v CORE_VARIABLES_LOADED FEISTY_MEOW_LOADING_DOCK USER_CUSTOMIZATIONS_LOADED
+    unset -v CORE_VARIABLES_LOADED FEISTY_MEOW_LOADING_DOCK USER_CUSTOMIZATIONS_LOADED \
+        BUILD_VARS_LOADED
     unalias CORE_ALIASES_LOADED &>/dev/null
     unset -f function_sentinel 
+
+    # reuse the original path if we can.
+    if [ ! -z "$FEISTY_MEOW_ORIGINAL_PATH" ]; then
+      export PATH="$FEISTY_MEOW_ORIGINAL_PATH"
+    fi
+
     # reload feisty meow environment in current shell.
     log_feisty_meow_event "reloading the feisty meow scripts for $USER in current shell."
     source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
@@ -769,11 +776,11 @@ return 0
   {
     count=$1; shift
     if [ -z "$count" ]; then
-      count=79
+      count=$(($COLUMNS - 1))
     fi
     echo
     local i
-    for ((i=0; i < $count - 1; i++)); do
+    for ((i=0; i < $count; i++)); do
       echo -n "="
     done
     echo
@@ -941,7 +948,10 @@ return 0
   ##############
 
   # space 'em all: fixes naming for all of the files of the appropriate types
-  # in the directories specified.
+  # in the directories specified.  we skip any file with a dot in front, to
+  # respect their hidden nature.  currently the set of files we'll rename is
+  # very boutique; it's in this function, and just happens to be the types of
+  # files we work with a lot.
   function spacemall() {
     local -a dirs=("${@}")
     if [ ${#dirs[@]} -eq 0 ]; then
@@ -952,9 +962,11 @@ return 0
 #hmmm: any way to do the below more nicely or reusably?
 #hmmm: yes!  a variable with a list of files that are considered TEXT_FILE_EXTENSIONS or something like that.
 #hmmm: yes continued!  also a variable for BINARY_FILE_EXTENSIONS to avoid those, where we need to in other scripts.
+#hmmm: wait, we actually have a mix here, since this is a renaming function and not a searching function; get it straight!
+#hmmm: would the composition of those two types of extensions cover all the files i want to rename?  they have to be "important".
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f -and -not -iname ".[a-zA-Z0-9]*" | \
         grep -i \
-"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|xls\|xlsx\|xml\|zip" | \
+"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|xls\|xlsx\|xml\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.

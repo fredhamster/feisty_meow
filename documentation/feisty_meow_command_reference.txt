@@ -179,8 +179,8 @@ the powerup command, but is not ready yet.)
   avcoreup:
   updates the avcore portion of a site avenger application.  this command can
   accept an application name within which to update, or it can auto-pick the
-  applicatin for you from the available checked out ones in ~/apps (the default
-  storage folder for all site avenger style sites).
+  application for you from the available checked out ones in ~/apps (the
+  default storage folder for all site avenger style sites).
 
   siteup:
   updates the entire checked out repository for a site avenger application.

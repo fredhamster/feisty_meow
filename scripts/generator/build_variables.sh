@@ -181,7 +181,7 @@ if [ -z "$got_bad" ]; then
 
   # where we store the binaries used for building the rest of the code base.
   export CLAM_BINARIES="$RUNTIME_PATH/clam_bin"
-    # the final destination for the new binaries which provide the hoople
+    # the final destination for the new binaries which provide the
     # build with all the applications it needs to get going.
   export TARGETS_STORE="$RUNTIME_PATH/binaries"
     # targets directory is meaningful to clam, which will use it for output.

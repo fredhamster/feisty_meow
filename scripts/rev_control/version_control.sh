@@ -14,6 +14,9 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 # the maximum depth that the recursive functions will try to go below the starting directory.
 export MAX_DEPTH=5
 
+# the name of our "don't check this stuff in" file.
+export NO_CHECKIN=".no-checkin"
+
 # use our splitter tool for lengthy output if it's available.
 if [ ! -z "$(whichable splitter)" ]; then
   TO_SPLITTER="$(whichable splitter)"
@@ -61,7 +64,7 @@ function do_revctrl_checkin()
     nicedir=$(\pwd)
   fi
   local blatt_report="echo -ne \nchecking in '$nicedir'...  "
-  local tell_no_checkin="echo -ne \nskipping check-in due to presence of .no-checkin sentinel file: $nicedir"
+  local tell_no_checkin="echo -ne \nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
 
   pushd "$directory" &>/dev/null
 #hmmm: overly elaborate sections below here, but we do want precise handling for git case.
@@ -69,8 +72,8 @@ function do_revctrl_checkin()
     if test_writeable "CVS"; then
       do_revctrl_simple_update "$directory"
       exit_on_error "updating repository; this issue should be fixed before check-in."
-      if [ -f ".no-checkin" ]; then
-#        echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
+      if [ -f "$NO_CHECKIN" ]; then
+#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $directory"
         $tell_no_checkin
       else
         $blatt_report
@@ -82,8 +85,8 @@ function do_revctrl_checkin()
     if test_writeable ".svn"; then
       do_revctrl_simple_update "$directory"
       exit_on_error "updating repository; this issue should be fixed before check-in."
-      if [ -f ".no-checkin" ]; then
-#        echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
+      if [ -f "$NO_CHECKIN" ]; then
+#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $directory"
         $tell_no_checkin
       else
         $blatt_report
@@ -97,8 +100,8 @@ function do_revctrl_checkin()
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
       do_revctrl_careful_update "$(\pwd)"
 
-      if [ -f ".no-checkin" ]; then
-#        echo -ne "\nskipping check-in due to presence of .no-checkin sentinel file: $directory"
+      if [ -f "$NO_CHECKIN" ]; then
+#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $directory"
         $tell_no_checkin
       else
         $blatt_report
@@ -176,8 +179,8 @@ function do_revctrl_report_new
   pushd "$directory" &>/dev/null
 
   # only update if we see a repository living there.
-  if [ -f ".no-checkin" ]; then
-    echo -ne "\nskipping reporting due to presence of .no-checkin sentinel file: $directory"
+  if [ -f "$NO_CHECKIN" ]; then
+    echo -ne "\nskipping reporting due to presence of $NO_CHECKIN sentinel file: $directory"
   elif [ -d ".svn" ]; then
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo

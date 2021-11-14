@@ -2,7 +2,10 @@
 # these are my personal overrides.  --fred.
 
 if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
-  # if we don't see the nethack variable defined, this probably hasn't run yet.
+  # if we don't see the customizations variable defined, this probably hasn't run yet.
+
+  # stuff our special bins in front of the other bin paths.
+  export PATH=/usr/local/fred/bin:$PATH
 
   # The nuage directory is a cloud-like repository of our personal data, managed as a git repo.
   export CLOUD_BASE=$HOME/nuage

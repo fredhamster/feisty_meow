@@ -35,6 +35,7 @@
 using namespace basis;
 using namespace loggers;
 using namespace structures;
+using namespace textual;
 
 namespace sockets {
 
