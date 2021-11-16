@@ -14,7 +14,7 @@ if [ ! -f "$PLAYCMD" ]; then
   PLAYCMD='echo Unknown sound player...'
 fi
 
-if [ ! -z "$(which afplay)" ]; then
+if [ ! -z "$(whichable afplay)" ]; then
 #echo we see afplay available...
   PLAYCMD=afplay
 elif [ ! -z "$(psfind artsd)" ]; then
