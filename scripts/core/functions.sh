@@ -76,6 +76,7 @@ if [ -z "$skip_all" ]; then
   # makes the status of pipe number N (passed as first parameter) into the
   # main return value (i.e., the value for $?).  this is super handy to avoid
   # repeating the awkward looking code below in multiple places.
+  # the numbering starts at zero, for the first item at the head of the pipe.
   function promote_pipe_return()
   {
     ( exit ${PIPESTATUS[$1]} )
