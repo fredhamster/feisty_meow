@@ -89,7 +89,7 @@ branch name and release tag name of the new release.
   echo "=> launching gitk to show you the full set of changes;"
   echo "=> please prepare an excellent commit comment."
   gitk
-  exit_on_error launching gitk
+  continue_on_error launching gitk
 
   # now make a tag for the new release, which is where we should go crazy with the detailed
   # and useful comments for what has changed in this release, gathered from the gitk that
