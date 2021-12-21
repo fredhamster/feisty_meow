@@ -76,6 +76,7 @@ if [ -z "$skip_all" ]; then
   # makes the status of pipe number N (passed as first parameter) into the
   # main return value (i.e., the value for $?).  this is super handy to avoid
   # repeating the awkward looking code below in multiple places.
+  # the numbering starts at zero, for the first item at the head of the pipe.
   function promote_pipe_return()
   {
     ( exit ${PIPESTATUS[$1]} )
@@ -966,7 +967,7 @@ return 0
 #hmmm: would the composition of those two types of extensions cover all the files i want to rename?  they have to be "important".
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f -and -not -iname ".[a-zA-Z0-9]*" | \
         grep -i \
-"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|xls\|xlsx\|xml\|zip" | \
+"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|xls\|xlsx\|xml\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.

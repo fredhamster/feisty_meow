@@ -65,6 +65,10 @@ this article helps a lot to get the music off of vinyl records using a usb turnt
 movie processing
 ----------------
 
+kdenlive:
+  this is an awesome tool that lets you manage multiple tracks of audio and video, apply
+  effects to both, edit and remove pieces, insert tracks, etc.  it's great.
+
 avidemux:
   if you need to manipulate a video, for example to rotate it or transcode it to a different
   format, then avidemux works great.
