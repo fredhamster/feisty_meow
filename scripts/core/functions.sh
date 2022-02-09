@@ -39,7 +39,7 @@ if [ -z "$skip_all" ]; then
   function whichable()
   {
     to_find="$1"; shift
-    local WHICHER="$(\which which 2>/dev/null)"
+    local WHICHER="$(/usr/bin/which which 2>/dev/null)"
 #>&2 echo "got whicher as: $WHICHER"
     if [ $? -ne 0 ]; then
       # there is no which command here.  we produce nothing due to this.
