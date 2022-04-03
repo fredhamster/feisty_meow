@@ -79,7 +79,8 @@ for ($i = 0; $i < 24; $i += 2) {
 #print "got days wik @days\n";
 #print "got next mon wik @next_month\n";
 
-local(@date_as_array) = split(' ', `date`);
+local(@date_as_array) = split(' ', `date '+%a %b %d %Y'`);
+#print( "date as array: @date_as_array\n");
 
 ##############
 

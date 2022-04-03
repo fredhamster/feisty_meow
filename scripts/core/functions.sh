@@ -39,7 +39,7 @@ if [ -z "$skip_all" ]; then
   function whichable()
   {
     to_find="$1"; shift
-    local WHICHER="$(\which which 2>/dev/null)"
+    local WHICHER="$(/usr/bin/which which 2>/dev/null)"
 #>&2 echo "got whicher as: $WHICHER"
     if [ $? -ne 0 ]; then
       # there is no which command here.  we produce nothing due to this.
@@ -967,7 +967,7 @@ return 0
 #hmmm: would the composition of those two types of extensions cover all the files i want to rename?  they have to be "important".
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f -and -not -iname ".[a-zA-Z0-9]*" | \
         grep -i \
-"csv\|doc\|docx\|eml\|html\|jpeg\|jpg\|m4a\|mov\|mp3\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|xls\|xlsx\|xml\|zip" | \
+"csv\|doc\|docx\|eml\|html\|ics\|jpeg\|jpg\|m4a\|mov\|mp3\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|xls\|xlsx\|xml\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.
