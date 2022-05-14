@@ -17,7 +17,7 @@ else
   exit 1
 fi
 
-src_dir="$HOME/linx/wind_goods/My Games/Fallout 76/Photos/${identity}"
+src_dir="$HOME/data/wind_goods/My Games/Fallout 76/Photos/${identity}"
 dest_dir="/z/walrus/media/pictures/metaverse/fallout_76/${character}"
 
 #echo "src is: '$src_dir'"
