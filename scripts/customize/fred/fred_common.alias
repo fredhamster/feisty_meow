@@ -4,8 +4,6 @@
 
 # updates the mounted barkuptree drive with stuff on wildmutt.
 define_yeti_alias update_barkuptree='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/barkuptreedrive"'
-# updates the mounted bittybarky drive (barkuptree's successor) with stuff on wildmutt.
-define_yeti_alias update_bittybarky='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/bittybarky"'
 # updates buffalonious when mounted.
 define_yeti_alias update_buffalonious='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/z/buffalonious"'
 
@@ -23,6 +21,12 @@ define_yeti_alias update_slimpickenz='source "$FEISTY_MEOW_SCRIPTS/archival/gene
 
 # another drive to update; this is a salvaged 5 tb drive.
 define_yeti_alias update_flabtastic='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/flabtastic"'
+
+# updates the bittybarky drive with the prime assortment.
+define_yeti_alias update_bittybarky='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/bittybarky"'
+
+# synch up the new fairly large seagate drive named swirler.
+define_yeti_alias update_swirler='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/swirler"'
 
 # moo and unmoo mount the local folders i use most.
 #no longer used.  we are doing mostly full directory stores without nfs mounts these days.
