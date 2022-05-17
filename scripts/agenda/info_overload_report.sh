@@ -118,9 +118,6 @@ full_report+="count\tcomplexity\tweight (kb)\tcategory\n\
 
 #hmmm: don't fail if the hierarchy doesn't exist.
 
-# high priority stuff would be called urgent.
-analyze_hierarchy_and_report $CLOUD_BASE/aaa_priority "high priority (aieeee!)"
-
 # notes are individual files of tasks, usually, although some are combined.
 analyze_hierarchy_and_report $CLOUD_BASE/grunty* "grunty (external facing) notes"
 
@@ -151,6 +148,9 @@ analyze_hierarchy_and_report $CLOUD_BASE/blue_sky "blue sky is the limit ideas"
 
 # this group is found based on matching a pattern, since we may not use a single
 # standardized name for it, or maybe there are prefixes for similar items (like project-).
+
+# high priority stuff would be called urgent.
+analyze_by_dir_patterns "high priority (aieeee!)" $CLOUD_BASE/*priority*
 
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active issues" $CLOUD_BASE/*active* 
