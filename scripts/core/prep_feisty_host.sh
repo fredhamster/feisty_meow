@@ -55,23 +55,20 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 PHASE_MESSAGE="installing perl file and diff modules"
 
-# ubuntu or debian or other apt-based OSes...
 if whichable apt; then
+  # ubuntu or debian or other apt-based OSes...
   sudo apt install libfile-which-perl libtext-diff-perl
   exit_on_error $PHASE_MESSAGE
-# rpm based with yum available...
 elif whichable yum; then  
+  # rpm based with yum available...
   sudo yum install perl-File-Which perl-Text-Diff
   exit_on_error $PHASE_MESSAGE
-# macos based...
 elif [ ! -z "$IS_DARWIN" ]; then
-
-#hmmm: not quite right yet...
-  brew install blah blah? lots?
+  # macos based...
+  brew install dos2unix openssl
   exit_on_error $PHASE_MESSAGE
-
-# windows-based with cygwin (or we'll fail out).
 elif [ "$OS" == "Windows_NT" ]; then
+  # windows-based with cygwin (or we'll fail out).
  
 #hmmm: install apt-cyg!
 # we need this to do the following step, so why not automate that?
@@ -92,23 +89,21 @@ fi
 
 PHASE_MESSAGE="installing code builder packages"
 
-# ubuntu or debian or other apt-based OSes...
 if whichable apt; then
+  # ubuntu or debian or other apt-based OSes...
   sudo apt install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
   exit_on_error $PHASE_MESSAGE
-# rpm based with yum available...
 elif whichable yum; then  
+  # rpm based with yum available...
   sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel
   exit_on_error $PHASE_MESSAGE
-# macos based...
 elif [ ! -z "$IS_DARWIN" ]; then
-
-#hmmm: not quite right yet...
-  brew install blork blork? lots?
+  # macos based...
+#hmmm: still working on these...
+  brew install gpg meld openjdk 
   exit_on_error $PHASE_MESSAGE
-
-# windows-based with cygwin (or we'll fail out).
 elif [ "$OS" == "Windows_NT" ]; then
+  # windows-based with cygwin (or we'll fail out).
  
 #hmmm: unknown list needed still...
   apt-cyg install fugazi combustinatorinibasil scampnific
