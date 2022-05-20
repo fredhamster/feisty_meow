@@ -5,14 +5,16 @@
 
 LOCAL_TIME_SERVER=greendragon
 
-# standard version synchs to a local machine.  can be used on a network
-# to get time from central host.
-*/4 * * * * /usr/sbin/ntpdate $LOCAL_TIME_SERVER &>>/tmp/${CRONUSER}-cron-time_synch.log
-
 ##############
 
+# note: uncomment one of the below (client or server).
+
+# standard version synchs to a local machine.  can be used on a network
+# to get time from central host.
+#*/4 * * * * /usr/sbin/ntpdate $LOCAL_TIME_SERVER &>>/tmp/${CRONUSER}-cron-time_synch.log
+
 # the central host machine uses this version, to synch time externally.
-0 0,4,8,12,16,20 * * * /usr/bin/rdate -s time.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
+#0 0,4,8,12,16,20 * * * /usr/bin/rdate -s time.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
 
 ##############
 
