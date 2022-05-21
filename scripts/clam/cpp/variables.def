@@ -60,7 +60,8 @@ endif
 # code.  It is mainly used within CLAM itself for determining the proper
 # compiler flags.
 export COMPILER
-#COMPILER := GNU_LINUX | GNU_ARM_LINUX | GNU_DARWIN | GNU_WINDOWS | VISUAL_CPP
+#COMPILER := GNU_LINUX | GNU_ARM_LINUX | GNU_DARWIN | GNU_WINDOWS 
+##| VISUAL_CPP
 
 # choose a default compiler if none was specified.
 ifeq "$(COMPILER)" ""
@@ -72,8 +73,8 @@ ifeq "$(COMPILER)" ""
     endif
   endif
   ifeq "$(OP_SYSTEM)" "WIN32"
-#    COMPILER := GNU_WINDOWS
-    COMPILER := VISUAL_CPP
+    COMPILER := GNU_WINDOWS
+#    COMPILER := VISUAL_CPP
   endif
   ifeq "$(COMPILER)" ""
     # if we get into this case, we have no idea how to set the default
@@ -462,7 +463,9 @@ endif
 # compiler specific section below.
 ############################################################################
 
-ifeq "$(COMPILER)" "GNU_LINUX"
+# wide open match of any compiler besides gnu darwin.
+#hmmm: this will erroneously match the arm one.  but have we used that in a while?
+ifneq "$(COMPILER)" "GNU_DARWIN"
   # Unix GNU compiler...
   CC = g++
   COMPILER_ROOT_DIR = /
@@ -634,6 +637,8 @@ endif
 
 ifeq "$(COMPILER)" "VISUAL_CPP"
   # microsoft visual c++ 4.x, 5.x or 6.x.
+
+bork bork should not be here.
 
   PLATFORM_ADD_IN = w32_
 
