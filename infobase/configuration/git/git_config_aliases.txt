@@ -1,9 +1,0 @@
-
-
-# this command should go into ~/.gitconfig to enable the hist alias:
-
-[alias]
-	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
-
-
-### (add more awesome aliases here as we find them)

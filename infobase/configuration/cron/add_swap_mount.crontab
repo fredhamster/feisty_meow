@@ -1,0 +1,9 @@
+
+##############
+
+#[hamstertronic_swap_enable]
+# turns on some swap space to allow the machine to temporarily go over memory limits.
+@reboot bash $FEISTY_MEOW_APEX/scripts/system/add_swap_mount.sh 
+
+##############
+
