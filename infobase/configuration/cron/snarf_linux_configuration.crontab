@@ -1,7 +1,7 @@
 
 ##############
 
-#[snarf linux configuration]
+#[snarf_linux_configuration]
 # do a backup of the linux configuration files once a week.
 28 7 * * 4 (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; cd /z/stuffing/archives; perl $FEISTY_MEOW_SCRIPTS/archival/snarf_linux_config.pl) &>>/tmp/${CRONUSER}-cron-snarf_linux_configuration.log
 

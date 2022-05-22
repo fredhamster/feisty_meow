@@ -1,5 +1,5 @@
 
-#[aa cron defaults]
+#[aa_cron_defaults]
 #
 # cron default bits to add at top of crontab...
 # by fred t. hamster, GNU GPL v3 license.
