@@ -12,17 +12,6 @@ ifeq "$(OMIT_VERSIONS)" ""
 endif
 DEFINITIONS += __BUILD_STATIC_APPLICATION__
 UNDEFINITIONS += ENABLE_MEMORY_HOOK ENABLE_CALLSTACK_TRACKING
-ifeq "$(COMPILER)" "VISUAL_CPP"
-  # static C runtime support...
-#hmmm: resurrect this as a particular build type, so makefiles don't need to know this...
-  COMPILER_FLAGS += -MT
-  LIBS_USED += netapi32.lib
-  ifeq "$(DEBUG)" ""
-    LIBS_USED += libcmt.lib
-  else
-    LIBS_USED += libcmtd.lib
-  endif
-endif
 
 include cpp/rules.def
 

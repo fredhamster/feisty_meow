@@ -14,17 +14,7 @@ TARGETS = unpacker_stub.exe
 LAST_TARGETS = show_makefilename
 OTHER_CLEANS = mocko
 
-#hmmm: why on earth is this gunk not already available
-#  in some specialized vcpp variable?  yuck!
-ifeq "$(COMPILER)" "VISUAL_CPP"
-  LIBS_USED += libcmt.lib shlwapi.lib zlib.lib
-  LOAD_FLAG_PREFIX += -nodefaultlib:msvcrt.lib 
-  COMPILER_FLAGS += -MT
-  LOCAL_HEADERS += $(THIRD_PARTY_DIR)/zlib/include
-  LOCAL_LIBRARIES += $(THIRD_PARTY_DIR)/zlib/lib
-else
-  LIBS_USED += z
-endif
+LIBS_USED += z
 
 include cpp/rules.def
 

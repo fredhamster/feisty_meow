@@ -11,14 +11,7 @@ endif
 DEFINITIONS += __BUILD_STATIC_APPLICATION__=t
 TARGETS = bundle_creator.exe
 
-#hmmm: these should be done with a USE_ZLIB macro.
-ifeq "$(COMPILER)" "VISUAL_CPP"
-  LOCAL_HEADERS += $(THIRD_PARTY_DIR)/zlib/include
-  LOCAL_LIBRARIES += $(THIRD_PARTY_DIR)/zlib/lib
-  LIBS_USED += zlib.lib
-else
-  LIBS_USED += z
-endif
+LIBS_USED += z
 
 include cpp/rules.def
 
