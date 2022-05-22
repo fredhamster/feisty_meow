@@ -1,0 +1,10 @@
+
+##############
+
+#[service_key_updater]
+# updates the exim4 certificate and key file once a week, which is faster
+# than needed to stay up to date with the automated certificate renewals.
+34 19 * * 1 (cd /etc/exim4 ; bash key_copier.sh; cd /etc/courier ; bash key_maker.sh ) &>> /tmp/${CRONUSER}-cron-service_key_updater.txt
+
+##############
+

@@ -1,7 +1,7 @@
 
 ##############
 
-#[random sound]
+#[random_sound]
 * * * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_SCRIPTS/multimedia/randomly_play.sh) &>>/tmp/${CRONUSER}-cron-random_sound.log
 
 ##############

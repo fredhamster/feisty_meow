@@ -1,0 +1,16 @@
+
+
+[user]
+	email = me@mymail.com
+	name = Programmatic Coder
+
+[pack]
+	windowMemory = 100m
+	SizeLimit = 100m
+	threads = 1
+
+[alias]
+	# show a beautiful view of the history of this git repository.
+	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+
+

@@ -1,7 +1,7 @@
 
 ##############
 
-#[nechung fortune]
+#[nechung_fortune]
 # runs every minute and recreates a fortune for thunderbird signature.
 # a lot of the detail below is to get the feisty meow environment loaded for
 # the new_sig command.
