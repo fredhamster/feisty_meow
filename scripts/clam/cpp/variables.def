@@ -21,16 +21,6 @@ include variables.def
 
 ###############################################################################
 
-#no # set the repository directory if it is still set to the base version.
-#ifeq "$(FEISTY_MEOW_APEX)" ""
-#  ifeq "$(OP_SYSTEM)" "UNIX"
-#    export FEISTY_MEOW_APEX = $(HOME)/hoople
-#  endif
-#  ifeq "$(OP_SYSTEM)" "WIN32"
-#    export FEISTY_MEOW_APEX = l:
-#  endif
-#endif
-
 #export CLAM_BINARIES = $(CLAM_SCRIPTS)/../bin
 
 ###############################################################################
@@ -42,18 +32,7 @@ export BASE_CPU
 
 # set the CPU to a default if it has not been set previously.
 ifeq "$(BASE_CPU)" ""
-#  ifneq "$(OP_SYSTEM)" "WIN32"
-    BASE_CPU := $(shell machine 2>/dev/null || arch 2>/dev/null || uname -m 2>/dev/null || echo i686)
-#  endif
-
-#  ifeq "$(BASE_CPU)" ""
-#    BASE_CPU := $(shell uname -m)
-#    BASE_CPU := $(shell arch)
-#    ifeq "$(BASE_CPU)" ""
-#      # failed to get the cpu type.
-#      BASE_CPU := x86
-#    endif
-#  endif
+  BASE_CPU := $(shell machine 2>/dev/null || arch 2>/dev/null || uname -m 2>/dev/null || echo i686)
 endif
 
 # COMPILER is a flag that specifies the compiler that will be used to build
@@ -61,7 +40,6 @@ endif
 # compiler flags.
 export COMPILER
 #COMPILER := GNU_LINUX | GNU_ARM_LINUX | GNU_DARWIN | GNU_WINDOWS 
-##| VISUAL_CPP
 
 # choose a default compiler if none was specified.
 ifeq "$(COMPILER)" ""
@@ -74,7 +52,6 @@ ifeq "$(COMPILER)" ""
   endif
   ifeq "$(OP_SYSTEM)" "WIN32"
     COMPILER := GNU_WINDOWS
-#    COMPILER := VISUAL_CPP
   endif
   ifeq "$(COMPILER)" ""
     # if we get into this case, we have no idea how to set the default
@@ -424,13 +401,13 @@ ifeq "$(OP_SYSTEM)" "UNIX"
   DYNLIB_ENDING = .so
 endif
 ifeq "$(OP_SYSTEM)" "WIN32"
-  ifeq "$(COMPILER)" "VISUAL_CPP"
-    LIB_ENDING = .lib
-    DYNLIB_ENDING = .dll
-  else
+#hmmm: question here about what we build for dynamic, which is currently broken.
+#    LIB_ENDING = .lib
+#    DYNLIB_ENDING = .dll
+#  else
     LIB_ENDING = .a
     DYNLIB_ENDING = .so
-  endif
+#  endif
 endif
 
 ###############################################################################
@@ -463,9 +440,7 @@ endif
 # compiler specific section below.
 ############################################################################
 
-# wide open match of any compiler besides gnu darwin.
-#hmmm: this will erroneously match the arm one.  but have we used that in a while?
-ifneq "$(COMPILER)" "GNU_DARWIN"
+ifeq "$(COMPILER)" "GNU_LINUX"
   # Unix GNU compiler...
   CC = g++
   COMPILER_ROOT_DIR = /
@@ -630,289 +605,6 @@ ifeq "$(COMPILER)" "GNU_WINDOWS"
   MIDL_DEFS = -no_robust
   # some lovely definitions used by some of the mfc and other ms code.
   DEPENDENCY_DEFINITIONS += __cplusplus __MINGW32__ _WIN32 _CHAR_UNSIGNED M_I86 _M_I86 _M_IX86=500 _WIN32_WINNT=0x501 __RPC_WIN32__ __RPCNDR_H_VERSION__ __RPCPROXY_H_VERSION__ TARGET_IS_NT40_OR_LATER PGM_SETCHILD _MFC_VER=0x0600
-
-endif
-
-############################################################################
-
-ifeq "$(COMPILER)" "VISUAL_CPP"
-  # microsoft visual c++ 4.x, 5.x or 6.x.
-
-bork bork should not be here.
-
-  PLATFORM_ADD_IN = w32_
-
-  TRIPART_VERSION =
-
-  CLEANUPS += $(PDB_DIR)/$(PROJECT)_bookkeeping.pdb 
-#hmmm: import libs for dynamic libraries on ms-win32 do not currently get
-#      cleaned up nicely.
-
-  # ensure that any setting for this is seen by sub-shells.
-  export WIN32_MANIFEST_FILE
-
-  # these define special characteristics for a program being built.
-  #   BASE is almost always defined and pulls in fundamental w32 support.
-  #   RPC supplies the remote procedure call libraries.
-  #   SECURITY links with the w32 security APIs.
-  #   CLR sets options that are appropriate for managed code.
-  VCPP_USE_BASE=true
-  VCPP_USE_RPC=
-  VCPP_USE_OLE=
-  VCPP_USE_SECURITY=
-  VCPP_USE_CLR=
-  VCPP_VISTA_ICON=
-
-  # the framework dir points at the .net framework to be used for compilation.
-  ifeq "$(FRAMEWORK_VERSION)" ""
-
-    # older .net 1.1.
-#    SHORT_FRAMEWORK_VERSION = 1.1
-#    FRAMEWORK_VERSION = $(SHORT_FRAMEWORK_VERSION).4322
-
-    # current .net 2.0.
-    SHORT_FRAMEWORK_VERSION = 2.0
-    FRAMEWORK_VERSION = $(SHORT_FRAMEWORK_VERSION).50727
-  endif
-  ifeq "$(FRAMEWORK_DIR)" ""
-    FRAMEWORK_DIR = $(subst \,/,$(WINDIR))/Microsoft.NET/Framework/v$(FRAMEWORK_VERSION)
-  endif
-
-  # calculate the visual studio root directory.
-  ifeq "$(VIS_STU_ROOT)" ""
-    export VIS_STU_ROOT := $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/ms_root_dir.sh )
-  endif
-  ifneq "$(VIS_STU_ROOT)" ""
-    export COMPILER_ROOT_DIR = $(VIS_STU_ROOT)/VC
-  endif
-  ifeq "$(COMPILER_ROOT_DIR)" ""
-    HOSEUP = $(shell echo The compiler directory is not set.  Please define the environment variable)
-    HOSEUP = $(shell echo VSxCOMNTOOLS (x=80, 90 or 100) to point at the folder where visual )
-    HOSEUP = $(shell echo Studio is installed.)
-    HOSEUP =
-  endif
-
-  # redo the compiler version with our new info.
-  export COMPILER_VERSION := $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
-
-  # set up a directory for debugging files to be stored.  these are not
-  # moved with the postconditions--they are generated in place.
-  export PDB_DIR = $(TARGETS_STORE)
-
-  # set these way up here so we can override them later.
-  CC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/cl.exe
-  LINK_TOOL = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/link.exe
-  LIBRARY_TOOL = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/lib
-
-  # This is needed to protect against the use of 64-bit time_t structure
-  # on windows.  We are casting to time_t from a 32-bit structure.
-  DEFINITIONS += _USE_32BIT_TIME_T
-
-  # vary the locations for compiler files based on the version.
-  ifeq "$(COMPILER_VERSION)" "6"
-    COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atl/include
-    COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atl/lib
-    RC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/../common/msdev98/bin/rc
-  endif
-  ifeq "$(COMPILER_VERSION)" "7"
-    COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atlmfc/include $(COMPILER_ROOT_DIR)/platformsdk/include $(FRAMEWORK_DIR)
-    COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atlmfc/lib $(COMPILER_ROOT_DIR)/platformsdk/lib
-    RC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/rc
-    COMPILER_FLAGS += -Zc:forScope
-      # turn on proper loop scoping.
-  endif
-  ifeq "$(COMPILER_VERSION)" "8"
-    COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atlmfc/include $(COMPILER_ROOT_DIR)/platformsdk/include $(FRAMEWORK_DIR)
-    COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atlmfc/lib $(COMPILER_ROOT_DIR)/platformsdk/lib
-    RC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(COMPILER_ROOT_DIR)/bin/rc
-    COMPILER_FLAGS += -Zc:forScope
-      # turn on proper loop scoping.
-    DEFINITIONS += _WIN32_WINNT=0x501 
-    DEPENDENCY_DEFINITIONS += _WIN32_WINNT=0x501 
-  endif
-#
-# ver 9 (vis stu 2008) is not in here but is probably similar to 8 or 10.
-#
-  ifeq "$(COMPILER_VERSION)" "10"
-    export PLATYPUS = $(WindowsSdkDir)
-    COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/atlmfc/include $(PLATYPUS)/include
-## $(FRAMEWORK_DIR)
-    COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/atlmfc/lib $(PLATYPUS)/lib
-    DEFINITIONS += _WIN32_WINNT=0x501 
-    DEPENDENCY_DEFINITIONS += _WIN32_WINNT=0x501 
-    RC = $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(PLATYPUS)/bin/rc
-    COMPILER_FLAGS += -Zc:forScope
-      # turn on proper loop scoping.
-  endif
-  ifeq "$(COMPILER_HEADER_DIR)" ""
-    HOSEUP = $(shell echo The compiler version is not set.  Please define COMPILER_VERSION.)
-  endif
-  ifeq "$(COMPILER_HEADER_DIR)" ""
-    HOSEUP = $(shell echo The compiler version is not set.  Please define COMPILER_VERSION.)
-  endif
-  ifeq "$(COMPILER_HEADER_DIR)" "0"
-    HOSEUP = $(shell echo The compiler version is not set.  Please define COMPILER_VERSION.)
-  endif
-
-  # add in the mfc directories.
-  COMPILER_HEADER_DIR += $(COMPILER_ROOT_DIR)/mfc/include
-  COMPILER_LIBRARY_DIR += $(COMPILER_ROOT_DIR)/mfc/lib
-
-  DEFINITIONS += _Windows _WINDOWS WIN32 __WIN32__ __FLAT__ VC_EXTRALEAN WIN32_LEAN_AND_MEAN ATL_NO_LEAN_AND_MEAN 
-  DEF_FILE =
-  LOAD_FLAG_PREFIX = -subsystem:windows -machine:X86 -nologo
-  LOAD_FLAG_SUFFIX =
-
-  MIDL = "$(COMPILER_ROOT_DIR)/../Common7/Tools/Bin"/midl.exe -Oicf $(MIDL_DEFS) $(HEADER_SEARCH_PATH:%=-I% ) $(DEFINITIONS:%=-D% )
-  MIDL_DEFS = -no_robust
-
-  # additional definitions that get put on the command line for makedep.  these
-  # are needed since visual c++ defines them automatically.
-  DEPENDENCY_DEFINITIONS += __cplusplus _WIN32 _CHAR_UNSIGNED M_I86 _M_I86 _MSC_VER=1200 _M_IX86=500 __RPC_WIN32__ __RPCNDR_H_VERSION__ __RPCPROXY_H_VERSION__ TARGET_IS_NT40_OR_LATER PGM_SETCHILD _MFC_VER=0x0600
-
-  # set the flags used by visual c++.
-  CREATE_LIBRARY_FLAG = -out:
-  LIBRARY_NAME_FLAG =
-  LIBRARY_PATH_FLAG = -libpath:
-  LINKER_OPTION_SEPARATOR = -link
-  LINKER_OUTPUT_FLAG = -out:
-  OBJECT_NAME_FLAG = -Fo
-
-  # Add the extra files created by visual c++.
-#is this needed now that we whack whole output path?  CLEANUPS += $(OUTPUT_PATH)/*.*db
-
-  # compilation parameters for microsoft.
-  #   -c specifies compilation without linking.
-  #   -EHsc is the flag for turning on exception handling.
-  #   -FD is for getting the best dependency checking in visual studio.
-  #   -Fd[filename] names the program database (PDB) file used for debugging.
-  #   -Fp[filename] names the precompiled header file name.
-  #   -FR[filename] names the browser output path used for source analysis.
-  #   -Gd calling convention is cdecl.
-  #   -Gm enables minimal rebuild (only if source files changed).
-  #       Note!  as of Visual Studio 6 SP 3, minimal rebuild does not work
-  #       properly.  Do not use it unless you want inconsistent builds!
-  #   -GR enables run-time type identification (RTTI).
-  #   -GS enables buffer checking.
-  #   -GX turns on synchronous exception handling. (deprecated)
-  #   -Gz uses __stdcall calling convention.
-  #   -MD specifies multi-threaded DLL (MDd means debug).
-  #   -ML signifies uni-threaded executable (MLd means debug).
-  #   -MT indicates multi-threaded executable (MTd means debug)
-  #   -O is for optimization (1 small code, 2 fast code, d disabled).
-  #     do not use 1 or 2 though; they both include "global optimization",
-  #     which seems plagued with problems.  the specific optimizations are:
-  #       -Oa  assume no aliasing
-  #       -Obn  inline function expansion, where n is 1 (enable) or 0 (disable)
-  #       -Od  disable (for debug)
-  #       -Oi  generate intrinsic functions
-  #       -Og  global optimizations (flawed)
-  #       -Op  improve float consistency
-  #       -Os  favor small code
-  #       -Ot  favor fast code
-  #       -Ow  assume aliasing across function calls
-  #       -Ox  full optimization
-  #       -Oy  frame pointer optimization
-  #     -O1 has g s y b1 Gs Gf Gy
-  #     -O2 has g i t y b1 Gs Gf Gy
-  #   -TP C++ compilation.
-  #   -W sets the warning level (from 0 (least warnings) through 4 (loudest)).
-  #       -WX turns all warnings into errors.
-  #   -Yu[filename] uses a precompiled header file.
-  #   -YX turns on precompiled headers.  not used due to poor implementation.
-  #   -Zi generates debugging information into the PDB file.
-
-  # put the common flags into the compiler flags.
-  COMPILER_FLAGS += -nologo -Fd$(PDB_DIR)/$(PROJECT)_bookkeeping.pdb -GR -W3 -Zi -EHsc -GS -Gd 
-#-Wp64 
-
-  ifneq "$(DEBUG)" ""
-    # disable function inlining and optimizations for debug.
-    COMPILER_FLAGS += -Ob0 -Od
-  else
-    # enable function inlining for release only.
-    COMPILER_FLAGS += -Ob1
-
-    ifneq "$(OPTIMIZE)" ""
-      # add in fast code optimization.
-      COMPILER_FLAGS += -O2
-    else
-      # no optimizations.
-    endif
-
-  endif
-
-  # linking parameters for microsoft.
-  #   -dll specifies that a dynamic library is to be created.
-  #   -debug specifies that debugging information is to be included.
-  #   -map turns on the map file.
-  #   -warn sets the warning level, from 0 to 3, where 3 is the most verbose.
-  #   kernel32.lib is the kernel support.
-  #   user32.lib is the user level support.
-  #   gdi32.lib is the graphical device interface? support.
-  #   winspool.lib contains printer support.
-  #   comdlg32.lib provides the common dialogs.
-  #   advapi32.lib provides deeper win32 features, like registry, services, etc.
-  #   shell32.lib is ?
-  #   ole32.lib supplies OLE support.
-  #   oleaut32.lib is the OLE automation library.
-  #   uuid.lib has unique id management?
-  #   odbc32.lib provides ODBC data source functionality.
-  #   odbccp32.lib is something?
-  #   winmm.lib has the win32 multimedia support.
-  #   version.lib offers up splendid version services.
-
-  # check if profiling is to be enabled.
-  PROFILER_FLAG =
-  ifneq "$(PROFILE)" ""
-    PROFILER_FLAG = -profile
-  endif
-
-  LIBS_USED += htmlhelp.lib
-
-  # add the common linker flags.  the debugging flag is added because we
-  # want to be able to debug into release code, but since the pdb files
-  # are separate, we are not exposing ourselves when we do not include them.
-  LOAD_FLAG_PREFIX += $(PROFILER_FLAG) -debug -opt:ref -opt:icf 
-#-warn:3
-
-  # "USE_MFC" dictates whether mfc should be allowed in the application.
-  # the default is not to use MFC extension style dlls.  this can be turned
-  # on in the individual makefiles that require MFC.
-  #USE_MFC =
-
-  # the library creator gets a couple of flags.
-  LIBRARIAN_FLAGS += -nologo -machine:X86 -subsystem:windows
-
-  # now, vary the flag configuration based on the flags that have been set.
-
-####override for windows since things are broken with WinMain
-###export CONSOLE_MODE = true
-
-  ifneq "$(CONSOLE_MODE)" ""
-    # console type of applications are built using the static flag so that
-    # they are more redistributable.
-    DEFINITIONS += _CONSOLE
-    LOAD_FLAG_SUFFIX += -subsystem:console
-    LIBRARIAN_FLAGS += -subsystem:console
-  endif
-
-  # dynamically linked library or application flags.
-  ifneq "$(DEBUG)" ""
-    # debug.
-    DEFINITIONS += _DEBUG
-    COMPILER_FLAGS += -MDd
-  else
-    # release.
-    DEFINITIONS += NDEBUG
-    COMPILER_FLAGS += -MD
-    LOAD_FLAG_PREFIX += -map
-  endif
-
-  ifneq "$(STRICT_WARNINGS)" ""
-    COMPILER_FLAGS += -WX
-#would like to add W4 but that triggers warnings in microsoft headers.
-  endif
 
 endif
 
