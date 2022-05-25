@@ -30,6 +30,8 @@ fi
 
 ##############
 
+define_yeti_alias garp='echo "i hear you garpy!!!"'
+
 # repurposes certain commands that feisty meow does a little differently.
 define_yeti_alias cls='clear_colormap; clear'
 define_yeti_alias copy='\cp -i -v'
