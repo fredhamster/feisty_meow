@@ -208,10 +208,7 @@ if [ -z "$got_bad" ]; then
   
   # load up the helper variables for visual studio on winders.
   if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
-#no.    source "$BUILD_SCRIPTS_PATH/vis_stu_vars.sh"
-    # we are trying to move back to our good path of using gcc, not visual studio.
-    # the visual studio rig was for version 6?  a long time ago, and has withered
-    # on the vine.  meanwhile gnu cc is still cooking along and available.
+    # moved back to the good path of using gcc, not visual studio.
 #what vars needed?
 #trying just unixy ones, since we're doing cygwin on doze.
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$TARGETS_STORE"

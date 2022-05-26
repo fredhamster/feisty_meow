@@ -382,7 +382,7 @@ LIBRARY_PATH_FLAG = -L
 #LIBRARY_TOOL =
 
 # the root name of the version file.  This is currently irrelevant on
-# non-win32 platforms.
+# non-windoze platforms.
 VERSION_RC_ROOT = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/rc_name.sh)
 
 ifneq "$(CONSOLE_MODE)" ""
@@ -395,20 +395,10 @@ endif
 ###############################################################################
 
 # Operating system dependent flags.
+# (not so OS dependent with move to only gnu compilation...)
 
-ifeq "$(OP_SYSTEM)" "UNIX"
-  LIB_ENDING = .a
-  DYNLIB_ENDING = .so
-endif
-ifeq "$(OP_SYSTEM)" "WIN32"
-#hmmm: question here about what we build for dynamic, which is currently broken.
-#    LIB_ENDING = .lib
-#    DYNLIB_ENDING = .dll
-#  else
-    LIB_ENDING = .a
-    DYNLIB_ENDING = .so
-#  endif
-endif
+LIB_ENDING = .a
+DYNLIB_ENDING = .so
 
 ###############################################################################
 
@@ -573,13 +563,14 @@ endif
 ifeq "$(COMPILER)" "GNU_WINDOWS"
   # GNU compiler for MS Windoze...
   CC = g++
-  ifeq "$(COMPILER_ROOT_DIR)" ""
-    COMPILER_ROOT_DIR = $(CYGROOT)
-  endif
+  COMPILER_ROOT_DIR = /
+  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
+#hmmm: below fixes nothing!  argh!
+#  ARCHITECTURE = i386
 
   export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
 
-  RC := $(COMPILER_ROOT_DIR)/bin/windres
+#  RC := $(COMPILER_ROOT_DIR)/bin/windres
   PLATFORM_ADD_IN = w32_
 
   COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/include/c++/3.4.2 
