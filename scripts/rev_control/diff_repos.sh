@@ -27,5 +27,7 @@ exit_on_error "performing revision control action do_revctrl_diff on: $tempfile"
 
 rm "$tempfile"
 
+##############
+
 restore_terminal_title
 

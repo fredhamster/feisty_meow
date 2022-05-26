@@ -63,7 +63,7 @@ exit 0;
 sub safedel {
   # get the list of files and directories to whack.
   local(@to_delete) = &glob_list(@_);
-#  print "final list of whackees: @to_delete\n";
+print "list of whackees: @to_delete\n";
 
   # we store the deleted files in a directory under the temporary directory.
   if (! -d $TMP) { 
