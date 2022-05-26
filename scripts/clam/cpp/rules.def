@@ -92,7 +92,7 @@ ifeq "$(COMPILER)" "GNU_WINDOWS"
     LOAD_FLAG_PREFIX += $(shell wx-config --libs $(UNICODE_FLAG_ADD) )
   endif
 
-LOAD_FLAG_PREFIX += -lwsock32 -lmswsock -shared
+#hmmm: LOAD_FLAG_PREFIX += -lwsock32 -lmswsock -shared
 
   ifneq "$(USE_CURL)" ""
     COMPILER_FLAGS += `curl-config --cflags`
@@ -234,34 +234,13 @@ endif
 ACTUAL_FIRST_TARGETS = check_requirements $(EXTRA_FIRST_TARGETS) $(VERSION_TARGET) $(FIRST_TARGETS) pre_compilation
 
 # Adds the primary targets to the list of products to create.
-#ifeq "$(NO_COMPILE)" ""
+ACTUAL_TARGETS1 = $(TARGETS:%.exe=$(EXECUTABLE_DIR)/%)
+ACTUAL_TARGETS2 = $(ACTUAL_TARGETS1:%.dll=%.so)
+ACTUAL_TARGETS3 = $(ACTUAL_TARGETS2:%.so=$(DYNAMIC_LIBRARY_DIR)/%$(TRIPART_VERSION).so)
+ACTUAL_TARGETS4 = $(ACTUAL_TARGETS3:%.lib=$(STATIC_LIBRARY_DIR)/%$(TRIPART_VERSION).library)
+ACTUAL_TARGETS = $(ACTUAL_TARGETS4:%.elf=$(EXECUTABLE_DIR)/%.elf)
 
-  ifneq "$(OP_SYSTEM)" "WIN32"
-    ACTUAL_TARGETS1 = $(TARGETS:%.exe=$(EXECUTABLE_DIR)/%)
-  else
-    ACTUAL_TARGETS1 = $(TARGETS:%.exe=$(EXECUTABLE_DIR)/%.exe)
-  endif
-
-  ifneq "$(OP_SYSTEM)" "WIN32"
-    ACTUAL_TARGETS2 = $(ACTUAL_TARGETS1:%.dll=%.so)
-    ACTUAL_TARGETS3 = $(ACTUAL_TARGETS2:%.so=$(DYNAMIC_LIBRARY_DIR)/%$(TRIPART_VERSION).so)
-  else
-    ACTUAL_TARGETS2 = $(ACTUAL_TARGETS1:%.so=%.dll)
-    ACTUAL_TARGETS3 = $(ACTUAL_TARGETS2:%.dll=$(DYNAMIC_LIBRARY_DIR)/%$(TRIPART_VERSION).dll)
-  endif
-
-  ACTUAL_TARGETS4 = $(ACTUAL_TARGETS3:%.lib=$(STATIC_LIBRARY_DIR)/%$(TRIPART_VERSION).library)
-  ACTUAL_TARGETS = $(ACTUAL_TARGETS4:%.elf=$(EXECUTABLE_DIR)/%.elf)
-
-#else #is no_compile
-#  ACTUAL_TARGETS1 = $(TARGETS:%.exe=)
-#  ACTUAL_TARGETS2 = $(ACTUAL_TARGETS1:%.dll=)
-#  ACTUAL_TARGETS3 = $(ACTUAL_TARGETS2:%.so=)
-#  ACTUAL_TARGETS4 = $(ACTUAL_TARGETS3:%.lib=)
-#  ACTUAL_TARGETS = $(ACTUAL_TARGETS4:%.elf=)
-#endif
-
-# Adds the last few targets for CLAM to do.
+# Adds the last few targets that CLAM works on.
 ACTUAL_LAST_TARGETS = post_compilation $(LAST_TARGETS)
 
 ############################################################################
@@ -338,6 +317,7 @@ cpp_add_to_cleanups_variable:
 $(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.cpp
 ifeq "$(NO_COMPILE)" ""
 	@echo Compiling Object [$(notdir $@)]
+	@echo cmd: $(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
 endif
@@ -355,7 +335,7 @@ endif
 
 ############################################################################
 
-# resource compiler for win32.
+# resource compiler for windoze.
 
 # we currently do not use rc files.
 $(OBJECT_DIR)/%.res: %.rc

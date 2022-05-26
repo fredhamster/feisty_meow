@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-mkdir -p $HOME/disco
+mkdir $HOME/disco
 pushd $HOME/disco &>/dev/null
-mkdir -p burn converted grind rip workshop
+mkdir -p burn converted grind rip
 popd &>/dev/null
 
