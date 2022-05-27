@@ -31,9 +31,14 @@ print FILE "\n";
 close(FILE);
 local($bindir) = $ENV{'FEISTY_MEOW_BINARIES'};
 $bindir = &sanitize_name($bindir);
-system("$bindir/nechung >>$temp_filename");
-###always hits this.  nechung gives an error? || die "couldn't run nechung.";
-open(FILE, ">>" . $temp_filename) || die "couldn't open $temp_filename for writing.";
+$app_path = "$bindir/nechung";
+if (-e $app_path) {
+  system("$app_path >>$temp_filename");
+  open(FILE, ">>" . $temp_filename) || die "couldn't open $temp_filename for writing.";
+} else {
+  open(FILE, ">>" . $temp_filename) || die "couldn't open $temp_filename for writing.";
+  print FILE "nechung oracle program (NOP) could not be found.\n";
+}
 print FILE "\n";
 print FILE "_____________ not necessarily my opinions, not necessarily not. _____________\n";
 close(FILE);

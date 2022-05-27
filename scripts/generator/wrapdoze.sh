@@ -1,5 +1,13 @@
 #!/bin/bash
 
+eval "$@"
+
+exit $?
+
+
+#old below, we hope.
+
+
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 #hmmm: make this support multiple vars as parameters.
