@@ -290,6 +290,34 @@ const astring &application_configuration::GLOBAL_SECTION_NAME() { STATIC_STRING(
 
 const astring &application_configuration::LOGGING_FOLDER_NAME() { STATIC_STRING("LogPath"); }
 
+const astring &application_configuration::WINDOZE_VIRTUAL_ROOT_NAME()
+{ STATIC_STRING("VirtualUnixRoot"); }
+
+const astring &application_configuration::DEFAULT_VIRTUAL_UNIX_ROOT()
+{ STATIC_STRING("c:/cygwin"); }
+
+//////////////
+
+astring application_configuration::get_virtual_unix_root()
+{
+#ifdef __UNIX__
+  // simple implementation for unix/linux; just tell the truth about the real root.
+  return "/";
+#endif
+#ifdef __WIN32__
+  /*
+   read the path out of the config file, which should have been set during the
+   build process if this is really windows.
+  */
+  astring virtual_root = read_item(WINDOZE_VIRTUAL_ROOT_NAME());
+  if (!virtual_root) {
+    // if it has no length, we didn't get our setting!  we'll limp along with a guess.
+    return DEFAULT_VIRTUAL_UNIX_ROOT;
+  }
+
+#endif
+}
+
 //////////////
 
 ////const int MAX_LOG_PATH = 512;
