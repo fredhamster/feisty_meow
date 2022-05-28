@@ -227,6 +227,20 @@ void filename::canonicalize()
 //LOG(astring("turned msys string into: ") + *this);
     }
   } 
+
+  // if no specialized path specifications were seen, and we have a unix style path
+  // here, then there will be trouble when we pass that to windows.
+//if first character is a slash, and second char is alphanumeric, then we check...
+//can we find a cygwin root dir stored in our config stuff?
+//  maybe in the build version file?  ugh, yuck.
+//  what about in generated files, created at build time?  --> yes, nice option.
+//
+//hmmm: we need the capability to re-create the config file that tells us
+// where cyg root is, but how can we, aside from guessing at where to find
+// cygwin (c:/cygwin c:/cygwin64 etc).
+//
+//hmmm: 
+
 #endif
 
   // we don't crop the last separator if the name's too small.  for msdos

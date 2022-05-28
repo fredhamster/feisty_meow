@@ -33,6 +33,7 @@ export INCLUDED_FROM_BOOTSTRAP=true
 export BUILD_SCRIPTS_PATH="$( \cd "$(\dirname "$0")" && /bin/pwd )"
 #echo build scripts dir initial value: $BUILD_SCRIPTS_PATH
 BUILD_SCRIPTS_PATH="$(echo $BUILD_SCRIPTS_PATH | tr '\\\\' '/' )"
+#hmmm: why four backslashes above?  trying two in our unix virtual root code below.
 #echo build scripts dir after chewing: $BUILD_SCRIPTS_PATH
 
 # load in feisty meow basic scripts, if not already loaded.
@@ -61,8 +62,26 @@ function prepare_binaries_dir()
     mkdir -p "$CLAM_BINARIES"
   fi
   if [ ! -f "$CLAM_BINARIES/paths.ini" ]; then
-    echo "copied paths.ini to binary dir."
     cp "$PRODUCTION_STORE/paths.ini" "$CLAM_BINARIES"
+    echo "copied paths.ini to binary dir."
+  fi
+  # set the cygwin root path if we're on cygwin.
+  whichable cygpath
+  if [ $? -eq 0 ]; then
+    # found cygpath, so run it now to get the dossy path of the root ('/' folder).
+    found_root=$(cygpath -w -m /)
+    if [ $? -ne 0 ]; then
+      echo "Failure to find virtual Unix root folder with cygpath."
+      exit 1322
+    fi
+echo "found root as '$found_root'"
+    # translate any backslashes to forward thinking slashes.    
+    found_root=$(echo $found_root | tr '\\' '/')
+echo "processed root is now: '$found_root'"
+    # edit the entry in place to correct the default path.
+    sed -i -e "s/VirtualUnixRoot=.*/VirtualUnixRoot=$found_root/" "$CLAM_BINARIES/paths.ini" 
+echo "paths file now has:"
+cat "$CLAM_BINARIES/paths.ini" 
   fi
 }
 
