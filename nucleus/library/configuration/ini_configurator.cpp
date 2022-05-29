@@ -30,6 +30,8 @@
 #include <structures/string_table.h>
 #include <structures/symbol_table.h>
 
+#include <stdio.h>
+
 #undef LOG
 #define LOG(to_print) printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
 
@@ -57,7 +59,9 @@ ini_configurator::ini_configurator(const astring &ini_filename,
   _where(where),
   _add_spaces(false)
 {
+  FUNCDEF("constructor");
   name(ini_filename);  // set name properly.
+LOG(astring("calculated ini name as: '") + _ini_name->raw() + "'");
 }
 
 ini_configurator::~ini_configurator()
