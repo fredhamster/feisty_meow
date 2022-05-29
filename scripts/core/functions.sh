@@ -293,15 +293,18 @@ if [ -z "$skip_all" ]; then
       # gets cygwin's (god awful) ps to show windoze processes also.
       local EXTRA_DOZER_FLAGS="-W"
       # pattern to use for peeling off the process numbers.
-      local pid_finder_pattern='s/ *\([0-9][0-9]*\) *.*$/\1/p'
-
+#      local pid_finder_cmd="awk -- '{ print \$4; }'"
+      local field_number=4
     else
       # flags which clean up the process listing output on unixes.
       # apparently cygwin doesn't count as a type of unix, because their
       # crummy specialized ps command doesn't support normal ps flags.
       local EXTRA_UNIX_FLAGS="-o pid,args"
       # pattern to use for peeling off the process numbers.
-      local pid_finder_pattern='s/^[[:space:]]*\([0-9][0-9]*\).*$/\1/p'
+#      local pid_finder_cmd="sed -n -e \\'s/^[[:space:]]*\([0-9][0-9]*\).*$/\\\\1/p\\'"
+#echo pidfinder: $pid_finder_cmd
+#      local pid_finder_cmd="awk -- '{ print \$1; }'"
+      local field_number=1
     fi
 
     /bin/ps $EXTRA_DOZER_FLAGS $EXTRA_UNIX_FLAGS $user_flag | tail -n +2 >$PID_DUMP
@@ -318,7 +321,7 @@ if [ -z "$skip_all" ]; then
       PIDS_SOUGHT+=($(cat $PID_DUMP \
         | grep -i "$i" \
         | grep -v "$excluder" \
-        | sed -n -e "$pid_finder_pattern"))
+        | awk -- "{ print \$${field_number}; }" ))
     done
 #echo ====
 #echo pids sought list became:
@@ -373,6 +376,11 @@ if [ -z "$skip_all" ]; then
         # special case for windows.
         ps | head -1
         for curr in $p; do
+#hmmm: currently not working right for windows cygwin.  we're getting proper
+#      winpids out of the list now, but not able to use them in ps?
+#      should i be keeping the weirdo pid that we were getting in column 1 and
+#      use that, except when talking to taskkill?
+#      need further research.
           ps -W -p $curr | tail -n +2
         done
       else
