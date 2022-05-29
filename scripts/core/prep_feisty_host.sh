@@ -91,22 +91,25 @@ PHASE_MESSAGE="installing code builder packages"
 
 if whichable apt; then
   # ubuntu or debian or other apt-based OSes...
-  sudo apt install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
+  sudo apt install mawk build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
   exit_on_error $PHASE_MESSAGE
 elif whichable yum; then  
   # rpm based with yum available...
-  sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel
+  sudo yum install mawk gcc gcc-c++ openssl-devel.x86_64 curl-devel
   exit_on_error $PHASE_MESSAGE
 elif [ ! -z "$IS_DARWIN" ]; then
   # macos based...
 #hmmm: still working on these...
-  brew install gpg meld openjdk 
+  brew install mawk gpg meld openjdk 
   exit_on_error $PHASE_MESSAGE
 elif [ "$OS" == "Windows_NT" ]; then
   # windows-based with cygwin (or we'll fail out).
  
+echo need to fix apt cyg install list.
 #hmmm: unknown list needed still...
-  apt-cyg install fugazi combustinatorinibasil scampnific
+#      actually it's not unknown; it's in our docs as a separate file for cygwin.
+#      plug those packages into here please.
+  apt-cyg install mawk 
   exit_on_error $PHASE_MESSAGE
 fi
 
