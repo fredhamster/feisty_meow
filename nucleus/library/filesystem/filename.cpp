@@ -19,18 +19,8 @@
 
 #include <basis/byte_array.h>
 #include <basis/functions.h>
-#include <configuration/application_configuration.h>
-/*
- hmmm: note that we are relying on forward declared code here.
- the canonical ordering for feisty's nucleus has the filesystem code come before
- the configuration code, because the configuratin library uses filesystem features.
- not sure i want to resolve this bizarritude at this time, but it points to the
- need for a virtual interface at lower level than either filesystem or configuration
- libraries, so we can emplace the need for the virtual unix root as a low-level
- dependency to be implemented later.
- */
-
 #include <textual/parser_bits.h>
+#include <system_helper.h>
 
 #include <stdio.h>
 #include <sys/stat.h>
@@ -265,13 +255,14 @@ if (inject_root) LOG("decided to inject root since path is '/'.");
 if (inject_root) LOG(astring("decided to inject root since path is compatible: ") + *this);
   }
 
-LOG(astring("after second phase root injection: ") + *this);
+LOG(astring("after second phase root injection: ") + raw());
 
   if (inject_root) {
     // inject the actual path to the unix root in front, if we know it.
     // if we don't know it, then a default path that's unlikely to work is idiotically plugged in.
-    insert(0, configuration::application_configuration::get_virtual_unix_root());
-LOG(astring("turned cygdrive path string into: ") + *this);
+    insert(0, FEISTY_MEOW_VIRTUAL_UNIX_ROOT);
+///nope configuration::application_configuration::get_virtual_unix_root());
+LOG(astring("turned cygdrive path string into: ") + raw());
   }
 #endif
 

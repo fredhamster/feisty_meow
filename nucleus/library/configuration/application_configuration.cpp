@@ -24,6 +24,7 @@
 #include <mathematics/chaos.h>
 #include <structures/static_memory_gremlin.h>
 #include <textual/parser_bits.h>
+#include <system_helper.h>
 
 #ifdef __APPLE__
   #include <mach-o/dyld.h>
@@ -290,18 +291,19 @@ const astring &application_configuration::GLOBAL_SECTION_NAME() { STATIC_STRING(
 
 const astring &application_configuration::LOGGING_FOLDER_NAME() { STATIC_STRING("LogPath"); }
 
-const astring &application_configuration::WINDOZE_VIRTUAL_ROOT_NAME()
-{ STATIC_STRING("VirtualUnixRoot"); }
+//const astring &application_configuration::WINDOZE_VIRTUAL_ROOT_NAME()
+//{ STATIC_STRING("VirtualUnixRoot"); }
 
 const astring &application_configuration::DEFAULT_VIRTUAL_UNIX_ROOT()
 { STATIC_STRING("c:/cygwin"); }
 
 //////////////
 
-// static storage for virtual unix root, if used.
+// static storage for virtual unix root, if it's used.
+// we don't expect it to change during runtime, right?  that would be fubar.
+// so we cache it once we retrieve it.
 SAFE_STATIC(astring, static_root_holder, )
 
-//  we don't expect it to change during runtime, right?  that would be fubar.
 astring application_configuration::get_virtual_unix_root()
 {
 #ifdef __UNIX__
@@ -315,13 +317,13 @@ astring application_configuration::get_virtual_unix_root()
   }
 
   /*
-   read the path out of the config file, which should have been set during the
+   use the path in our system helpers header, which should have been set during the
    build process if this is really windows.
   */
-  astring virtual_root = read_item(WINDOZE_VIRTUAL_ROOT_NAME());
+///  astring virtual_root = read_item(WINDOZE_VIRTUAL_ROOT_NAME());
+  astring virtual_root = FEISTY_MEOW_VIRTUAL_UNIX_ROOT;
   if (!virtual_root) {
     // if it has no length, we didn't get our setting!  we'll limp along with a guess.
-    // also don't cache the failure value.  maybe it will wake up later!
     return DEFAULT_VIRTUAL_UNIX_ROOT();
   } else {
     static_root_holder() = virtual_root;
