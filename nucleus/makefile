@@ -41,12 +41,12 @@ if [ $$? -ne 0 ]; then \
   echo build failure while copying paths initialization file.; \
   exit 1; \
 fi; \
-bash $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(CLAM_BINARIES)/value_tagger$(EXE_END) $(PRODUCTION_STORE)/codescan.ini; \
+$(CLAM_BINARIES)/value_tagger$(EXE_END) $(PRODUCTION_STORE)/codescan.ini; \
 if [ $$? -ne 0 ]; then \
   echo build failure during value tagging.; \
   exit 1; \
 fi; \
-bash $(BUILD_SCRIPTS_PATH)/wrapdoze.sh $(CLAM_BINARIES)/write_build_config$(EXE_END); \
+$(CLAM_BINARIES)/write_build_config$(EXE_END); \
 if [ $$? -ne 0 ]; then \
   echo build failure while writing config.; \
   exit 1; \

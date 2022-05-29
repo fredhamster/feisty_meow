@@ -69,7 +69,7 @@ function prepare_binaries_dir()
   whichable cygpath
   if [ $? -eq 0 ]; then
     # found cygpath, so run it now to get the dossy path of the root ('/' folder).
-    found_root=$(cygpath -w -m /)
+    found_root="$(cygpath -w -m /)"
     if [ $? -ne 0 ]; then
       echo "Failure to find virtual Unix root folder with cygpath."
       exit 1322
@@ -79,7 +79,7 @@ echo "found root as '$found_root'"
     found_root=$(echo $found_root | tr '\\' '/')
 echo "processed root is now: '$found_root'"
     # edit the entry in place to correct the default path.
-    sed -i -e "s/VirtualUnixRoot=.*/VirtualUnixRoot=$found_root/" "$CLAM_BINARIES/paths.ini" 
+    sed -i -e "s%VirtualUnixRoot=.*%VirtualUnixRoot=$found_root%" "$CLAM_BINARIES/paths.ini" 
 echo "paths file now has:"
 cat "$CLAM_BINARIES/paths.ini" 
   fi
@@ -197,14 +197,6 @@ if [ -z "$SAVE_BINARIES" ]; then
     rm -f "$whack_name"
   done
 fi
-
-# make the clam shell scripts executable.
-#hmmm: why?  this should no longer be needed.
-#      and even if it's needed, the perms should be stored in the repo.
-#chmod 755 "$CLAM_SCRIPTS"/*.sh
-#chmod 755 "$CLAM_SCRIPTS"/cpp/*.sh
-#chmod 755 "$CLAM_SCRIPTS"/csharp/*.sh
-#chmod 755 "$FEISTY_MEOW_SCRIPTS/generator/wrapdoze.sh"
 
 # rebuild the dependency tool.  needed by everything, pretty much, but
 # since it's from the xfree project, it doesn't need any of our libraries.

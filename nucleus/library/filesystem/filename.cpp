@@ -19,6 +19,17 @@
 
 #include <basis/byte_array.h>
 #include <basis/functions.h>
+#include <configuration/application_configuration.h>
+/*
+ hmmm: note that we are relying on forward declared code here.
+ the canonical ordering for feisty's nucleus has the filesystem code come before
+ the configuration code, because the configuratin library uses filesystem features.
+ not sure i want to resolve this bizarritude at this time, but it points to the
+ need for a virtual interface at lower level than either filesystem or configuration
+ libraries, so we can emplace the need for the virtual unix root as a low-level
+ dependency to be implemented later.
+ */
+
 #include <textual/parser_bits.h>
 
 #include <stdio.h>
@@ -42,13 +53,13 @@ class status_info : public stat
 
 namespace filesystem {
 
-#if defined(__WIN32__) || defined(__VMS__)
-  const char DEFAULT_SEPARATOR = '\\';
-#elif defined(__UNIX__)
+//#if defined(__WIN32__) || defined(__VMS__)
+//  const char DEFAULT_SEPARATOR = '\\';
+//#elif defined(__UNIX__)
   const char DEFAULT_SEPARATOR = '/';
-#else
-  #error "We have no idea what the default path separator is."
-#endif
+//#else
+//  #error "We have no idea what the default path separator is."
+//#endif
 
 const char *NO_PARENT_DEFAULT = ".";
   // used when no directory name can be popped off.
@@ -207,6 +218,7 @@ void filename::canonicalize()
   } else {
 //LOG(astring("path didn't match so left as: ") + *this);
   }
+
   // now we convert msys...
   if ( (length() >= 2) && (get(0) == DEFAULT_SEPARATOR)
         && textual::parser_bits::is_alpha(get(1)) ) {
@@ -228,19 +240,39 @@ void filename::canonicalize()
     }
   } 
 
-  // if no specialized path specifications were seen, and we have a unix style path
-  // here, then there will be trouble when we pass that to windows.
-//if first character is a slash, and second char is alphanumeric, then we check...
-//can we find a cygwin root dir stored in our config stuff?
-//  maybe in the build version file?  ugh, yuck.
-//  what about in generated files, created at build time?  --> yes, nice option.
-//
-//hmmm: we need the capability to re-create the config file that tells us
-// where cyg root is, but how can we, aside from guessing at where to find
-// cygwin (c:/cygwin c:/cygwin64 etc).
-//
-//hmmm: 
+  // if we still have a unix style path here on windows, then there will be
+  // trouble when we pass that to the OS.  we are not using any cygwin or
+  // other virtualization libraries directly, so we can't rely on those to
+  // fix the path.  but if we built under something like cygwin, we should
+  // have stored the real dos-style location of the virtual unix root.  we
+  // will use that to replace the root '/' and this should fix most of that
+  // style of path.
+  bool inject_root = false;  // assume we don't need to do anything.
 
+LOG(astring("before root injection: ") + raw());
+
+  // condition here just checks if the path is only the root.
+  if ( (length() == 1) && separator(get(0)) ) { inject_root = true; }
+
+if (inject_root) LOG("decided to inject root since path is '/'.");
+
+  // condition is looking for first character being a slash, and second char as alphanumeric or dash or underscore.
+  // we will currently fail detecting freaky paths that don't start off with alphanumeric or one of that small set of special chars.
+  if ( (length() >= 2)
+      && separator(get(0)) 
+      && ( textual::parser_bits::is_alphanumeric(get(1)) || ('-' == get(1)) || ('_' == get(1)) ) ) { 
+    inject_root = true;
+if (inject_root) LOG(astring("decided to inject root since path is compatible: ") + *this);
+  }
+
+LOG(astring("after second phase root injection: ") + *this);
+
+  if (inject_root) {
+    // inject the actual path to the unix root in front, if we know it.
+    // if we don't know it, then a default path that's unlikely to work is idiotically plugged in.
+    insert(0, configuration::application_configuration::get_virtual_unix_root());
+LOG(astring("turned cygdrive path string into: ") + *this);
+  }
 #endif
 
   // we don't crop the last separator if the name's too small.  for msdos

@@ -298,6 +298,10 @@ const astring &application_configuration::DEFAULT_VIRTUAL_UNIX_ROOT()
 
 //////////////
 
+// static storage for virtual unix root, if used.
+SAFE_STATIC(astring, static_root_holder, )
+
+//  we don't expect it to change during runtime, right?  that would be fubar.
 astring application_configuration::get_virtual_unix_root()
 {
 #ifdef __UNIX__
@@ -305,6 +309,11 @@ astring application_configuration::get_virtual_unix_root()
   return "/";
 #endif
 #ifdef __WIN32__
+  // see if we already cached the root.  it shouldn't change during runtime.
+  if (static_root_holder().length()) {
+    return static_root_holder();
+  }
+
   /*
    read the path out of the config file, which should have been set during the
    build process if this is really windows.
@@ -312,7 +321,11 @@ astring application_configuration::get_virtual_unix_root()
   astring virtual_root = read_item(WINDOZE_VIRTUAL_ROOT_NAME());
   if (!virtual_root) {
     // if it has no length, we didn't get our setting!  we'll limp along with a guess.
-    return DEFAULT_VIRTUAL_UNIX_ROOT;
+    // also don't cache the failure value.  maybe it will wake up later!
+    return DEFAULT_VIRTUAL_UNIX_ROOT();
+  } else {
+    static_root_holder() = virtual_root;
+    return static_root_holder();
   }
 
 #endif
