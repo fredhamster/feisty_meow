@@ -376,6 +376,11 @@ if [ -z "$skip_all" ]; then
         # special case for windows.
         ps | head -1
         for curr in $p; do
+#hmmm: currently not working right for windows cygwin.  we're getting proper
+#      winpids out of the list now, but not able to use them in ps?
+#      should i be keeping the weirdo pid that we were getting in column 1 and
+#      use that, except when talking to taskkill?
+#      need further research.
           ps -W -p $curr | tail -n +2
         done
       else
