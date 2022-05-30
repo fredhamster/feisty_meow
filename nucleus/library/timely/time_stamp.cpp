@@ -15,15 +15,16 @@
 #include "earth_time.h"
 #include "time_stamp.h"
 
+#include <application/windoze_helper.h>
 #include <basis/environment.h>
 #include <basis/mutex.h>
 #include <loggers/program_wide_logger.h>
 
 #include <stdlib.h>
-#ifdef __WIN32__
-  #define _WINSOCKAPI_  // make windows.h happy about winsock.
-  #include <winsock2.h>  // timeval.
-#endif
+//#ifdef __WIN32__
+//  #define _WINSOCKAPI_  // make windows.h happy about winsock.
+//  #include <winsock2.h>  // timeval.
+//#endif
 
 //#define DEBUG_TIME_STAMP
 

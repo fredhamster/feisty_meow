@@ -19,7 +19,7 @@
 #include <loggers/program_wide_logger.h>
 #include <structures/string_array.h>
 
-#ifdef __UNIX__
+//#ifdef __UNIX__
   #include <arpa/inet.h>
   #include <errno.h>
   #include <memory.h>
@@ -30,7 +30,7 @@
   #include <sys/types.h>
   #include <termios.h>
   #include <unistd.h>
-#endif
+//#endif
 
 using namespace basis;
 using namespace loggers;
@@ -47,10 +47,12 @@ namespace sockets {
 
 //////////////
 
+	/*
 #ifdef __WIN32__
   const WORD WINSOCK_VERSION_REQUIRED = 0x0101;
     // 1.1 version is used by this version of tcp/ip transport.
 #endif
+*/
 
 //////////////
 
@@ -87,6 +89,7 @@ tcpip_stack::~tcpip_stack()
 
 bool tcpip_stack::initialize_tcpip()
 {
+	/*
 #ifdef __WIN32__
   FUNCDEF("initialize_tcpip");
   // make sure we have the right version of WinSock available.
@@ -98,14 +101,15 @@ bool tcpip_stack::initialize_tcpip()
     return false;
   }
 #endif
+*/
   return true;
 }
 
 void tcpip_stack::deinitialize_tcpip()
 {
-#ifdef __WIN32__
+/*#ifdef __WIN32__
   WSACleanup();
-#endif
+#endif*/
 }
 
 astring tcpip_stack::hostname() const
@@ -168,7 +172,7 @@ astring tcpip_stack::tcpip_error_name(int error_value)
     case SOCK_EDQUOT: return "EDQUOT";
     case SOCK_ESTALE: return "ESTALE";
     case SOCK_EREMOTE: return "EREMOTE";
-#ifdef __WIN32__
+/* #ifdef __WIN32__
     case SOCK_EPROCLIM: return "EPROCLIM";
     case SOCK_SYSNOTREADY: return "SYSNOTREADY";
     case SOCK_VERNOTSUPPORTED: return "VERNOTSUPPORTED";
@@ -178,6 +182,7 @@ astring tcpip_stack::tcpip_error_name(int error_value)
     case SOCK_NO_DATA: return "NO_DATA";  // or NO_ADDRESS.
     case SOCK_NOTINITIALISED: return "NOTINITIALISED";
 #endif
+*/
   }
 
   // return a standard OS error...

@@ -45,9 +45,10 @@
 //  #undef FD_SETSIZE
 //  #define FD_SETSIZE 1000
     // if you don't set this, you can only select on a default of 64 sockets.
-  #include <winsock2.h>
+//  #include <winsock2.h>
+
   // windows headers...
-  #define _WINSOCKAPI_  // make windows.h happy about winsock.
+//noooo  #define _WINSOCKAPI_  // make windows.h happy about winsock.
   #ifndef _AFXDLL
     // include ms-windows headers only if we're not doing mfc; mfc has its own
     // special way of including the headers.

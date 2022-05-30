@@ -239,12 +239,12 @@ void filename::canonicalize()
   // style of path.
   bool inject_root = false;  // assume we don't need to do anything.
 
-LOG(astring("before root injection: ") + raw());
+//LOG(astring("before root injection: ") + raw());
 
   // condition here just checks if the path is only the root.
   if ( (length() == 1) && separator(get(0)) ) { inject_root = true; }
 
-if (inject_root) LOG("decided to inject root since path is '/'.");
+//if (inject_root) LOG("decided to inject root since path is '/'.");
 
   // condition is looking for first character being a slash, and second char as alphanumeric or dash or underscore.
   // we will currently fail detecting freaky paths that don't start off with alphanumeric or one of that small set of special chars.
@@ -252,17 +252,16 @@ if (inject_root) LOG("decided to inject root since path is '/'.");
       && separator(get(0)) 
       && ( textual::parser_bits::is_alphanumeric(get(1)) || ('-' == get(1)) || ('_' == get(1)) ) ) { 
     inject_root = true;
-if (inject_root) LOG(astring("decided to inject root since path is compatible: ") + *this);
+//if (inject_root) LOG(astring("decided to inject root since path is compatible: ") + *this);
   }
 
-LOG(astring("after second phase root injection: ") + raw());
+//LOG(astring("after second phase root injection: ") + raw());
 
   if (inject_root) {
     // inject the actual path to the unix root in front, if we know it.
     // if we don't know it, then a default path that's unlikely to work is idiotically plugged in.
     insert(0, FEISTY_MEOW_VIRTUAL_UNIX_ROOT);
-///nope configuration::application_configuration::get_virtual_unix_root());
-LOG(astring("turned cygdrive path string into: ") + raw());
+//LOG(astring("turned cygdrive path string into: ") + raw());
   }
 #endif
 

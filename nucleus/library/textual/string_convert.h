@@ -18,6 +18,7 @@
 #include <basis/astring.h>
 #include <basis/utf_conversion.h>
 
+/*
 #ifdef __WIN32__
   #ifndef _MANAGED
       #define _WINSOCKAPI_  // the dance of the windows headers.
@@ -32,6 +33,7 @@
   #endif
   #endif
 #endif
+*/
 
 // forward.
 class _bstr_t;  // ATL (Active Template Library) string type.

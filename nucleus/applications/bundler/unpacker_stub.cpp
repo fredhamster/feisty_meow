@@ -40,15 +40,17 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <zlib.h>
-#ifdef __UNIX__
+//#ifdef __UNIX__
   #include <utime.h>
-#endif
+//#endif
+/*
 #ifdef _MSC_VER
   #include <direct.h>
   #include <io.h>
   #include <shlobj.h>
   #include <sys/utime.h>
 #endif
+*/
 
 using namespace application;
 using namespace basis;

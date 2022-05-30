@@ -18,13 +18,14 @@
 #include <basis/byte_array.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
+#include <application/windoze_helper.h>
 
 #include <stdio.h>
-#ifndef __WIN32__
-  #include <sys/time.h>
-#else
-  #include <time.h>
-#endif
+//#ifndef __WIN32__
+#include <sys/time.h>
+//#else
+//  #include <time.h>
+//#endif
 
 #undef LOG
 #define LOG(to_print) printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())

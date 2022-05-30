@@ -317,7 +317,6 @@ cpp_add_to_cleanups_variable:
 $(OBJECT_DIR)/%.obj: $(CURRENT_DIR)/%.cpp
 ifeq "$(NO_COMPILE)" ""
 	@echo Compiling Object [$(notdir $@)]
-	@echo cmd: $(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
 	$(HIDESH)-c 'if [ ! -d $(@D) ]; then mkdir $(@D); fi'
 	$(CATCHER)$(CC) $(COMPILER_FLAGS) -c $< $(OBJECT_NAME_FLAG)$@
 endif
@@ -357,9 +356,11 @@ $(STATIC_LIBRARY_DIR)/%.library: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LO
 	@echo $@ >$(DIRTY_FILE)
 	$(CATCHER)$(LIBRARY_TOOL) $(LIBRARIAN_FLAGS) $(CREATE_LIBRARY_FLAG)$@ $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%)
   ifneq "$(OP_SYSTEM)" "UNIX"
-	$(HIDER)mv $@ $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
-	$(HIDER)echo nil >$@
+	$(HIDER)ranlib $@ 
+	$(HIDER)rm -f $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
+	$(HIDER)ln -s $@ $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
   else
+#copied from unix above, not right yet, was not right before either though.
 	$(HIDER)ranlib $@ 
 	$(HIDER)rm -f $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
 	$(HIDER)ln -s $@ $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)

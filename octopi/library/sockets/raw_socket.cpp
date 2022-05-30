@@ -24,7 +24,7 @@
 #ifdef __APPLE__
   #include <fcntl.h>
 #endif
-#ifdef __UNIX__
+//#ifdef __UNIX__
   #include <arpa/inet.h>
   #include <errno.h>
   #include <netinet/tcp.h>
@@ -32,10 +32,10 @@
   #include <sys/socket.h>
   #include <unistd.h>
   #define OPTYPE (void *)
-#endif
-#ifdef __WIN32__
-  #define OPTYPE (char *)
-#endif
+//#endif
+//#ifdef __WIN32__
+//  #define OPTYPE (char *)
+//#endif
 
 using namespace basis;
 using namespace loggers;
@@ -61,8 +61,8 @@ class fd_set_wrapper : public fd_set {};
 const basis::un_int NON_BLOCKING = FIONBIO;
 const basis::un_int IOCTL_READ = FIONREAD;
 
-#ifdef __WIN32__
 /*
+#ifdef __WIN32__
 // defined by winsock header but not present in the winsock dll.
 int PASCAL FAR __WSAFDIsSet(SOCKET fd, fd_set FAR *the_set)
 {
@@ -72,8 +72,8 @@ int PASCAL FAR __WSAFDIsSet(SOCKET fd, fd_set FAR *the_set)
       return true;
   return false;
 }
-*/
 #endif
+*/
 
 //////////////
 
@@ -89,12 +89,12 @@ raw_socket::~raw_socket()
 int raw_socket::close(basis::un_int &socket)
 {
   int to_return = 0;
-#ifdef __WIN32__
-  to_return = closesocket(socket);
-#endif
-#ifdef __UNIX__
+//#ifdef __WIN32__
+//  to_return = closesocket(socket);
+//#endif
+//#ifdef __UNIX__
   to_return = ::close(socket);
-#endif
+//#endif
   socket = 0;
   return to_return;
 }
@@ -122,8 +122,9 @@ astring raw_socket::interest_name(int interest)
 
 int raw_socket::ioctl(basis::un_int socket, int request, void *argp) const
 {
-#ifdef __UNIX__
+//#ifdef __UNIX__
   return ::ioctl(socket, request, argp);
+  /*
 #endif
 #ifdef __WIN32__
   #ifdef _MSC_VER
@@ -132,6 +133,7 @@ int raw_socket::ioctl(basis::un_int socket, int request, void *argp) const
     return ioctlsocket(socket, request, (un_int *)argp);
   #endif
 #endif
+*/
 }
 
 bool raw_socket::set_non_blocking(basis::un_int socket, bool non_blocking)
@@ -224,14 +226,16 @@ int raw_socket::inner_select(basis::un_int socket, int mode, int timeout,
   timeval base_time_out;
   time_stamp::fill_timeval_ms(base_time_out, timeout);
     // timeval has tv_sec=seconds, tv_usec=microseconds.
-#if !defined(__GNU_WINDOWS__)
+//#if !defined(__GNU_WINDOWS__)
   timeval *time_out = &base_time_out;
+  /*
 #elif defined(__GNU_WINDOWS__)
   __ms_timeval win_time_out;
   win_time_out.tv_sec = base_time_out.tv_sec;
   win_time_out.tv_usec = base_time_out.tv_usec;
   __ms_timeval *time_out = &win_time_out;
 #endif
+*/
 
   // select will tell us about the socket.
   int ret = ::select(socket + 1,
@@ -248,9 +252,9 @@ int raw_socket::inner_select(basis::un_int socket, int mode, int timeout,
       case SOCK_ENETDOWN:  // intentional fall-through.
       case SOCK_EINVAL:  // intentional fall-through.
       case SOCK_EINTR:  // intentional fall-through.
-#ifdef __WIN32__
+/* #ifdef __WIN32__
       case SOCK_NOTINITIALISED:  // intentional fall-through.
-#endif
+#endif */
       case SOCK_ENOTSOCK:
         break;
 
@@ -404,14 +408,15 @@ int raw_socket::select(int_array &read_sox, int_array &write_sox,
   timeval base_time_out;
   time_stamp::fill_timeval_ms(base_time_out, timeout);
     // timeval has tv_sec=seconds, tv_usec=microseconds.
-#if !defined(__GNU_WINDOWS__)
+//#if !defined(__GNU_WINDOWS__)
   timeval *time_out = &base_time_out;
-#elif defined(__GNU_WINDOWS__)
+/*#elif defined(__GNU_WINDOWS__)
   __ms_timeval win_time_out;
   win_time_out.tv_sec = base_time_out.tv_sec;
   win_time_out.tv_usec = base_time_out.tv_usec;
   __ms_timeval *time_out = &win_time_out;
 #endif
+*/
 
   // select will tell us about the socket.
   int ret = ::select(highest + 1,
@@ -427,9 +432,9 @@ int raw_socket::select(int_array &read_sox, int_array &write_sox,
       case SOCK_ENETDOWN:  // intentional fall-through.
       case SOCK_EINVAL:  // intentional fall-through.
       case SOCK_EINTR:  // intentional fall-through.
-#ifdef __WIN32__
+/*#ifdef __WIN32__
       case SOCK_NOTINITIALISED:  // intentional fall-through.
-#endif
+#endif*/
       case SOCK_ENOTSOCK:
         break;
 

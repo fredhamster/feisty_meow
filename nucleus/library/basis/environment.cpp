@@ -21,6 +21,7 @@
   #include <unistd.h>
   #include <sys/times.h>
 #endif
+/*
 #ifdef _MSC_VER
   #define _WINSOCKAPI_  // make windows.h happy about winsock.
   // winsock support...
@@ -31,6 +32,7 @@
   #include <windows.h>
   #include <mmsystem.h>
 #endif
+*/
 
 namespace basis {
 
