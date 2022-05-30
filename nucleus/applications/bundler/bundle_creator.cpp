@@ -45,9 +45,9 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <zlib.h>
-#ifdef __WIN32__
-  #include <io.h>
-#endif
+//#ifdef __WIN32__
+  //#include <io.h>
+//#endif
 
 using namespace application;
 using namespace basis;

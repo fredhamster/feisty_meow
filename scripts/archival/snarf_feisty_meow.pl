@@ -53,7 +53,7 @@ local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 &backup_hierarchy($snarf_file_base, $number, $root, "walrus");
 
 # grab the production assets.
-&backup_files($snarf_file_base, $number, $root, "production", ("*.ini", "make*", ".gitignore"));
+&backup_files($snarf_file_base, $number, $root, "production", ("*.ini", "make*", ".gitignore", "*.h"));
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/3rdparty");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/assign_bases");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/check_versions");

@@ -12,6 +12,7 @@
 
 #include "registry_config.h"
 
+#include <application/windoze_helper.h>
 #include <basis/astring.h>
 #include <basis/functions.h>
 #include <basis/utf_conversion.h>

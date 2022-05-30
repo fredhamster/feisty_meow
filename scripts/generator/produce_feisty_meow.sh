@@ -98,7 +98,7 @@ function update_system_helper_header()
     fi
 echo "found root as '$found_root'"
     # translate any backslashes to forward thinking slashes.    
-    found_root=$(echo $found_root | tr '\\' '/')
+    found_root="$(echo $found_root | tr '\\' '/')"
 echo "processed root is now: '$found_root'"
     # edit the entry in place to correct the default path.
     sed -i \
@@ -109,39 +109,6 @@ echo "system helper file now has:"
 cat "$FEISTY_MEOW_BINARIES/system_helper.h"
   fi
 }
-
-##############
-
-# turn off sounds to avoid running the sound player that's not been built yet.
-unset CLAM_ERROR_SOUND
-unset CLAM_FINISH_SOUND
-
-##############
-
-echo "Build bootstrap process has started."
-
-# preconditions for the build process...
-
-# set up our output directories etc.
-prepare_clam_binaries_dir
-
-# set a flag for this process so we can omit certain compilations as necessary.
-export BOOT_STRAPPING=true
-
-# enable this macro to get a much noisier build.
-#export BE_NOISY=NOISY=t
-
-##############
-
-# these default flags turn off unnecessary support when we're rebuilding the
-# minimal toolset needed for a successful build of hoople.
-declare -a BUILD_DEFAULTS=( "BOOT_STRAPPING=t" "OPTIMIZE=t" "REBUILD=t" "DEBUG=" )
-  # bootstrapping is always turned on for this particular script.
-  # we also always optimize these builds and turn off the debug flag.
-  # rebuild ensures that the new applications are made fresh: "REBUILD=t"
-  #   it can be turned off when the build bootstrapper is being tested.
-  # noisy can be added to spew lots of text: "NOISY=t"
-  #   this can help with compilation issues by showing all the flags.
 
 function make_code {
   make $* $BE_NOISY ${BUILD_DEFAULTS[@]}
@@ -166,6 +133,36 @@ function strip_cr {
     rm "$tempgrep"
   done
 }
+
+##############
+
+# turn off sounds to avoid running the sound player that's not been built yet.
+unset CLAM_ERROR_SOUND
+unset CLAM_FINISH_SOUND
+
+##############
+
+echo "Build bootstrap process has started."
+
+# preconditions for the build process...
+
+# set a flag for this process so we can omit certain compilations as necessary.
+export BOOT_STRAPPING=true
+
+# enable this macro to get a much noisier build.
+#export BE_NOISY=NOISY=t
+
+##############
+
+# these default flags turn off unnecessary support when we're rebuilding the
+# minimal toolset needed for a successful build of hoople.
+declare -a BUILD_DEFAULTS=( "BOOT_STRAPPING=t" "OPTIMIZE=t" "REBUILD=t" "DEBUG=" )
+  # bootstrapping is always turned on for this particular script.
+  # we also always optimize these builds and turn off the debug flag.
+  # rebuild ensures that the new applications are made fresh: "REBUILD=t"
+  #   it can be turned off when the build bootstrapper is being tested.
+  # noisy can be added to spew lots of text: "NOISY=t"
+  #   this can help with compilation issues by showing all the flags.
 
 # the promote function moves a file from the exe directory into the build's
 # bin directory.  it performs the copy step and makes the file executable.
@@ -209,6 +206,9 @@ source "$BUILD_SCRIPTS_PATH/build_variables.sh" "$BUILD_SCRIPTS_PATH/build_varia
 
 # clean out any current contents.
 bash "$BUILD_SCRIPTS_PATH/whack_build.sh" clean
+
+# set up our output directories etc.
+prepare_clam_binaries_dir
 
 # make this again so no one gets cranky.
 mkdir -p "$FEISTY_MEOW_LOGS"

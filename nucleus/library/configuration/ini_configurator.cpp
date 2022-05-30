@@ -61,7 +61,7 @@ ini_configurator::ini_configurator(const astring &ini_filename,
 {
   FUNCDEF("constructor");
   name(ini_filename);  // set name properly.
-LOG(astring("calculated ini name as: '") + _ini_name->raw() + "'");
+//LOG(astring("calculated ini name as: '") + _ini_name->raw() + "'");
 }
 
 ini_configurator::~ini_configurator()
