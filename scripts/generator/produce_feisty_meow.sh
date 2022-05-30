@@ -54,17 +54,39 @@ source "$BUILD_SCRIPTS_PATH/build_variables.sh" "$BUILD_SCRIPTS_PATH/build_varia
 ##############
 
 # creates the directory for our binaries and gives it a reasonable paths configuration.
-function prepare_binaries_dir()
+function prepare_clam_binaries_dir()
 {
   # we'll store binaries here from the bootstrap process.
   if [ ! -d "$CLAM_BINARIES" ]; then
-    echo "creating binary dir now in $CLAM_BINARIES"
+    echo "creating clam binary dir now in $CLAM_BINARIES"
     mkdir -p "$CLAM_BINARIES"
+    exit_on_error "creating clam binary directory in $CLAM_BINARIES"
   fi
   if [ ! -f "$CLAM_BINARIES/paths.ini" ]; then
     cp "$PRODUCTION_STORE/paths.ini" "$CLAM_BINARIES"
-    echo "copied paths.ini to binary dir."
+    exit_on_error "copying paths.ini to $CLAM_BINARIES"
+    echo "copied paths.ini to clam binary dir."
   fi
+}
+
+# fix the system helper header up by calling cygpath to determine the cygwin
+# root, if we are on windoze and cygwin.
+function update_system_helper_header()
+{
+  # create our main binaries directory if needed.
+  if [ ! -d "$FEISTY_MEOW_BINARIES" ]; then
+    echo "creating feisty meow binary folder now in $FEISTY_MEOW_BINARIES"
+    mkdir -p "$FEISTY_MEOW_BINARIES"
+    exit_on_error "creating feisty meow binary folder in $FEISTY_MEOW_BINARIES"
+  fi
+
+  # copy up the system helper template version into the binaries directory.
+  if [ ! -f "$FEISTY_MEOW_BINARIES/system_helper.h" ]; then
+    cp "$PRODUCTION_STORE/system_helper_template.h" "$FEISTY_MEOW_BINARIES/system_helper.h"
+    exit_on_error "creating system_helper header in $FEISTY_MEOW_BINARIES"
+    echo "copied system_helper header to feisty meow binary dir."
+  fi
+
   # set the cygwin root path if we're on cygwin.
   whichable cygpath
   if [ $? -eq 0 ]; then
@@ -79,9 +101,12 @@ echo "found root as '$found_root'"
     found_root=$(echo $found_root | tr '\\' '/')
 echo "processed root is now: '$found_root'"
     # edit the entry in place to correct the default path.
-    sed -i -e "s%VirtualUnixRoot=.*%VirtualUnixRoot=$found_root%" "$CLAM_BINARIES/paths.ini" 
-echo "paths file now has:"
-cat "$CLAM_BINARIES/paths.ini" 
+    sed -i \
+        -e "s% *#define FEISTY_MEOW_VIRTUAL_UNIX_ROOT \".*$%#define FEISTY_MEOW_VIRTUAL_UNIX_ROOT \"$found_root\"%" \
+        "$CLAM_BINARIES/paths.ini" 
+    exit_on_error "updating system_helper header in $FEISTY_MEOW_BINARIES"
+echo "system helper file now has:"
+cat "$FEISTY_MEOW_BINARIES/system_helper.h"
   fi
 }
 
@@ -98,7 +123,7 @@ echo "Build bootstrap process has started."
 # preconditions for the build process...
 
 # set up our output directories etc.
-prepare_binaries_dir
+prepare_clam_binaries_dir
 
 # set a flag for this process so we can omit certain compilations as necessary.
 export BOOT_STRAPPING=true
@@ -149,7 +174,7 @@ function strip_cr {
 # NOTE: this depends on the operating system having been chosen above!
 if [ "$OPERATING_SYSTEM" = "UNIX" ]; then
   function promote {
-    prepare_binaries_dir
+    prepare_clam_binaries_dir
 
     if [ ! -f "$INTERMEDIATE_STORE/$1" ]; then
       echo "Failed to build the application $1--quitting now."
@@ -161,7 +186,7 @@ if [ "$OPERATING_SYSTEM" = "UNIX" ]; then
   }
 elif [ "$OPERATING_SYSTEM" = "WIN32" ]; then
   function promote {
-    prepare_binaries_dir
+    prepare_clam_binaries_dir
 
     if [ ! -f "$INTERMEDIATE_STORE/$1.exe" ]; then
       echo "Failed to build the application $1.exe--quitting now."
@@ -197,6 +222,9 @@ if [ -z "$SAVE_BINARIES" ]; then
     rm -f "$whack_name"
   done
 fi
+
+# copy the system helper header.
+update_system_helper_header
 
 # rebuild the dependency tool.  needed by everything, pretty much, but
 # since it's from the xfree project, it doesn't need any of our libraries.
@@ -268,12 +296,14 @@ echo "The build binaries have been re-created (or were already present)."
 if [ -z "$JUST_BOOTSTRAP_APPS" ]; then
   echo Cleaning up the temporary files that were built.
   bash "$BUILD_SCRIPTS_PATH/whack_build.sh" 
-#wrong!  we don't want to whack it all. clean
 
   # recreate our useful junk directories...
   mkdir -p "$FEISTY_MEOW_GENERATED_STORE"
   mkdir -p "$TEMPORARIES_PILE"
   mkdir -p "$FEISTY_MEOW_LOGS"
+
+  # re-copy the system helper header.
+  update_system_helper_header
 
   echo Now starting a normal build of the repository source code.
   pushd "$FEISTY_MEOW_APEX" &>/dev/null

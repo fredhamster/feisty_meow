@@ -104,7 +104,7 @@ public:
   static const basis::astring &LOGGING_FOLDER_NAME();
     //!< the tag used for finding our logging path in the paths config file.
 
-  static const basis::astring &WINDOZE_VIRTUAL_ROOT_NAME();
+//  static const basis::astring &WINDOZE_VIRTUAL_ROOT_NAME();
     //!< the tag used for looking up the virtual windows path in the paths config file.
 
   static const basis::astring &DEFAULT_VIRTUAL_UNIX_ROOT();

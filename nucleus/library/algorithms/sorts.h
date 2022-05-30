@@ -18,6 +18,8 @@
 
 #include <mathematics/chaos.h>
 
+#include <system_helper.h>
+
 namespace algorithms {
 
 	/*
