@@ -79,7 +79,7 @@ public:
     unless there are special purposes for those log files.  but logs from general
     operation of feisty meow should be written in this directory. */
 
-  static basis::astring get_virtual_unix_root();
+  static const basis::astring &virtual_unix_root();
     //!< returns the path to the unix root, which may be simulated.
     /*!< on unix, this will just return '/'.  on win32 with cygwin installed,
     this will return the cygwin path for '/' that was detected at build time.
@@ -97,15 +97,8 @@ public:
     to particular programs or subsystems should be contained in their own
     section. */
 
-///  static const basis::astring &LOCAL_FOLDER_NAME();
-    //!< entry name in the config file that points at the installation root.
-    /*!< this is where all files for this product are stored on "this" machine. */
-
   static const basis::astring &LOGGING_FOLDER_NAME();
     //!< the tag used for finding our logging path in the paths config file.
-
-//  static const basis::astring &WINDOZE_VIRTUAL_ROOT_NAME();
-    //!< the tag used for looking up the virtual windows path in the paths config file.
 
   static const basis::astring &DEFAULT_VIRTUAL_UNIX_ROOT();
     //!< default value if we don't find our setting for virtual root.

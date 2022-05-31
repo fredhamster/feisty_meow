@@ -16,15 +16,19 @@
 #include <basis/functions.h>
 #include <basis/guards.h>
 #include <basis/astring.h>
+#include <configuration/application_configuration.h>
 #include <loggers/critical_events.h>
+#include <loggers/logging_macros.h>
 #include <loggers/program_wide_logger.h>
 #include <filesystem/filename.h>
 #include <structures/static_memory_gremlin.h>
 #include <structures/string_array.h>
+#include <textual/parser_bits.h>
 #include <unit_test/unit_base.h>
 
 using namespace application;
 using namespace basis;
+using namespace configuration;
 using namespace mathematics;
 using namespace filesystem;
 using namespace loggers;
@@ -33,6 +37,8 @@ using namespace textual;
 using namespace timely;
 using namespace unit_test;
 
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+
 class test_filename : virtual public unit_base, public virtual application_shell
 {
 public:
@@ -40,10 +46,102 @@ public:
   DEFINE_CLASS_NAME("test_filename");
   virtual int execute();
   void clean_sequel(astring &sequel);
+  astring virtual_root();
+  void dump_string_array(const astring &title, const string_array &to_dump);
+  bool verify_equal_string_array(const astring &group, const string_array &exemplar, const string_array &acolyte);
+  bool prepare_string_arrays_for_filenames(const astring &common_bit, const astring &group,
+      bool &exemplar_rooted, string_array &exemplar_pieces, bool &acolyte_rooted,
+      string_array &acolyte_pieces);
 };
 
 void test_filename::clean_sequel(astring &sequel)
 { sequel.replace_all('\\', '/'); }
+
+astring test_filename::virtual_root()
+{
+  astring virt_root = application_configuration::virtual_unix_root();
+  if (!!virt_root && !filename::separator(virt_root[virt_root.length() - 1])) {
+    // this is not terminated with a slash, which is possible for dosdows.
+    // we'll make it a reliable directory component by adding a slash.
+    virt_root += astring("/");
+  }
+  return virt_root;
+}
+
+void test_filename::dump_string_array(const astring &title, const string_array &to_dump)
+{
+  FUNCDEF("dump_string_array");
+  LOG(title);
+  for (int i = 0; i < to_dump.length(); i++) {
+    LOG(a_sprintf("%d: '", i) + to_dump[i] + "'");
+  }
+}
+
+/*
+  due to some difference in behavior between the platforms, we need to turn
+  rooted paths that work perfectly find on unix systems into a bizarre messed
+  up c drive version for windows (based on the virtual unix system in place,
+  although only cygwin is currently supported).  this assumes the virtual root
+  is available...  we accomplish our testing a platform invariant way by by
+  simulating the same operations filename does, but using our exemplar paths
+  as the starting point.
+*/
+
+bool test_filename::verify_equal_string_array(const astring &group, const string_array &exemplar, const string_array &acolyte)
+{
+  FUNCDEF("verify_equal_string_array");
+
+//temp debug
+dump_string_array("exemplar", exemplar);
+dump_string_array("acolyte", acolyte);
+
+  // doing some extra assertions in here, to complain about what went wrong, but then we still need to return a success value.
+  ASSERT_EQUAL(exemplar.length(), acolyte.length(), group + "the list was the wrong length");
+  if (exemplar.length() != acolyte.length()) { return false; }
+
+  for (int indy = 0; indy < exemplar.length(); indy++) {
+    bool success = acolyte[indy].equal_to(exemplar[indy]);
+    ASSERT_TRUE(success, group + a_sprintf("piece %d did not match: ", indy) + "'" 
+        + acolyte[indy] + "' vs expected '" + exemplar[indy] + "'");
+    if (!success) { return false; }  // fail fast.
+  }
+  return true;
+}
+
+/*
+  helper method constructs string arrays for the filename with common_bit as
+  the portion after the root ('/').  the exemplar array is generated
+  independently from the acolyte string array to ensure that it is correctly
+  constructed (with a virtual root and then a non-rooted chunk).
+*/
+bool test_filename::prepare_string_arrays_for_filenames(const astring &common_bit, const astring &group,
+    bool &exemplar_rooted, string_array &exemplar_pieces,
+    bool &acolyte_rooted, string_array &acolyte_pieces)
+{
+  FUNCDEF("prepare_string_arrays_for_filenames")
+  bool to_return = true;  // success until we learn otherwise.
+
+  // generate the acolyte, which will be tested again, very straightforwardly.
+  // it is a non-rooted string, so we just slap the virtual root in front.
+  filename acolyte_fn(virtual_root() + common_bit);
+  acolyte_fn.separate(acolyte_rooted, acolyte_pieces);
+
+  // generate the exemplar without allowing filename to operate on the whole
+  // string.  we get the virtual root first and operate on it as a filename,
+  // then we slap on the unrooted portion to get the unmanipulated form.
+  filename(virtual_root()).separate(exemplar_rooted, exemplar_pieces);
+  {
+    string_array common_pieces;
+    bool common_rooted;
+    filename(common_bit).separate(common_rooted, common_pieces);
+    ASSERT_FALSE(common_rooted, group + "the common_rooted value is erreonous");
+    if (common_rooted) { to_return = false; }
+    // conjoin the rooty pieces with the common bits, hopefully hitting both platforms' sweet spots.
+    exemplar_pieces += common_pieces;
+  }
+
+  return to_return;
+}
 
 int test_filename::execute()
 {
@@ -55,40 +153,34 @@ int test_filename::execute()
   }
 
 
-//hmmm: totally hosed here due to differences on win32.
-//  we need to start in a proper state:
-//  the test strings should all be constructed using the virtual unix root!  then the results will match.
-//
-//  until we can fix this, gotta bail on running these.
-/*
-
   {
     // second test group.
-    astring GROUP = "separate-- ";
-    filename turkey("/omega/ralph/turkey/buzzard.txt");
-    string_array pieces;
-    bool rooted;
-    turkey.separate(rooted, pieces);
-    ASSERT_TRUE(rooted, GROUP + "the rooted value is erreonous.");
-    ASSERT_TRUE(pieces[0].equal_to("omega"), GROUP + "the first piece didn't match.");
-    ASSERT_TRUE(pieces[1].equal_to("ralph"), GROUP + "the second piece didn't match.");
-    ASSERT_TRUE(pieces[2].equal_to("turkey"), GROUP + "the third piece didn't match.");
-    ASSERT_TRUE(pieces[3].equal_to("buzzard.txt"), GROUP + "the fourth piece didn't match.");
-    ASSERT_EQUAL(pieces.length(), 4, GROUP + "the list was the wrong length");
+
+    astring GROUP = "testing separate() ";
+    astring common_bit = "omega/ralph/turkey/buzzard.txt";
+    string_array turkey_pieces;
+    bool turkey_rooted;
+    string_array exemplar_pieces;
+    bool exemplar_rooted;
+    bool worked = test_filename::prepare_string_arrays_for_filenames(common_bit, GROUP,
+        exemplar_rooted, exemplar_pieces, turkey_rooted, turkey_pieces);
+
+    ASSERT_EQUAL(turkey_rooted, exemplar_rooted, GROUP + "the turkey_rooted value is erreonous.");
+    ASSERT_TRUE(verify_equal_string_array(GROUP, exemplar_pieces, turkey_pieces), "the turkey array differs from exemplar");
   }
 
   {
     // third test group.
     astring GROUP = "third: test compare_prefix ";
-    filename turkey("/omega/ralph/turkey/buzzard.txt");
-    filename murpin1("/omega");
-    filename murpin2("/omega/ralph");
-    filename murpin3("/omega/ralph/turkey");
-    filename murpin4("/omega/ralph/turkey/buzzard.txt");
+    filename turkey(virtual_root() + "omega/ralph/turkey/buzzard.txt");
+    filename murpin1(virtual_root() + "omega");
+    filename murpin2(virtual_root() + "omega/ralph");
+    filename murpin3(virtual_root() + "omega/ralph/turkey");
+    filename murpin4(virtual_root() + "omega/ralph/turkey/buzzard.txt");
     filename murpin_x1("ralph/turkey/buzzard.txt");
-    filename murpin_x2("/omega/ralph/turkey/buzzard.txt2");
-    filename murpin_x3("/omega/turkey/buzzard.txt");
-    filename murpin_x4("/omega/ralph/turkey/b0/buzzard.txt");
+    filename murpin_x2(virtual_root() + "omega/ralph/turkey/buzzard.txt2");
+    filename murpin_x3(virtual_root() + "omega/turkey/buzzard.txt");
+    filename murpin_x4(virtual_root() + "omega/ralph/turkey/b0/buzzard.txt");
     filename murpin_x5("moomega/ralph/turkey");
 
     astring sequel;
@@ -133,12 +225,12 @@ int test_filename::execute()
   {
     // fourth test group.
     astring GROUP = "fourth: test compare_suffix ";
-    filename turkey("/omega/ralph/turkey/buzzard.txt");
+    filename turkey(virtual_root() + "omega/ralph/turkey/buzzard.txt");
     filename murpin1("turkey\\buzzard.txt");
     filename murpin2("turkey/buzzard.txt");
     filename murpin3("ralph/turkey/buzzard.txt");
     filename murpin4("omega/ralph/turkey/buzzard.txt");
-    filename murpin5("/omega/ralph/turkey/buzzard.txt");
+    filename murpin5(virtual_root() + "omega/ralph/turkey/buzzard.txt");
 
     ASSERT_TRUE(murpin1.compare_suffix(turkey), GROUP + "compare 1 failed");
     ASSERT_TRUE(murpin2.compare_suffix(turkey), GROUP + "compare 2 failed");
@@ -195,31 +287,34 @@ int test_filename::execute()
     test2.push("klemper");
     ASSERT_EQUAL(test2, filename("c:/flug/blumen/klemper"), GROUP + "dpush 1 failed");
     // test unix paths.
-    filename test3("/flug/blumen/klemper/smooden");
+    filename test3(virtual_root() + "flug/blumen/klemper/smooden");
     ASSERT_EQUAL(test3.basename(), astring("smooden"), GROUP + "basename 1 failed");
-    ASSERT_EQUAL(test3.dirname(), filename("/flug/blumen/klemper"),
+    ASSERT_EQUAL(test3.dirname(), filename(virtual_root() + "flug/blumen/klemper"),
         GROUP + "u-dirname 1 failed");
     filename test4 = test3;
     popped = test4.pop();
     ASSERT_EQUAL(popped, astring("smooden"), GROUP + "upop 1 return failed");
-    ASSERT_EQUAL(test4, filename("/flug/blumen/klemper"), GROUP + "upop 1 failed");
+    ASSERT_EQUAL(test4, filename(virtual_root() + "flug/blumen/klemper"), GROUP + "upop 1 failed");
     test4.pop();
     test4.pop();
-    ASSERT_EQUAL(test4, filename("/flug"), GROUP + "upop 2 failed");
+    ASSERT_EQUAL(test4, filename(virtual_root() + "flug"), GROUP + "upop 2 failed");
     popped = test4.pop();
-    ASSERT_EQUAL(popped, astring("flug"), GROUP + "upop 1 return failed");
-    ASSERT_EQUAL(test4, filename("/"), GROUP + "upop 3 failed");
+    ASSERT_EQUAL(popped, astring("flug"), GROUP + "upop 2 return failed");
+    ASSERT_EQUAL(test4, filename(virtual_root()), GROUP + "upop 3 failed");
     test4.pop();
-    ASSERT_EQUAL(test4, filename("/"), GROUP + "upop 3 failed");
+    filename special_popped = filename(virtual_root());
+    special_popped.pop();
+    ASSERT_EQUAL(test4, special_popped, GROUP + "upop 4 failed");
+    test4 = filename(virtual_root());
     test4.push("flug");
     test4.push("blumen");
     test4.push("klemper");
-    ASSERT_EQUAL(test4, filename("/flug/blumen/klemper"), GROUP + "upush 1 failed");
+    ASSERT_EQUAL(test4, filename(virtual_root() + "flug/blumen/klemper"), GROUP + "upush 1 failed");
   }
   {
     // seventh test group.
     astring GROUP = "seventh: testing pack and unpack ";
-    filename test1("/usr/local/athabasca");
+    filename test1(virtual_root() + "usr/local/athabasca");
     byte_array packed;
     int size_guess = test1.packed_size();
     test1.pack(packed);
@@ -238,14 +333,17 @@ int test_filename::execute()
     ASSERT_EQUAL(test2, astring("r:/"), GROUP + "test 2 failed");
     filename test3("/cygdrive/r/");
     ASSERT_EQUAL(test3, astring("r:/"), GROUP + "test 3 failed");
+    // this is a broken pattern, which we don't expect to resolve to a drive.
     filename test4("/cygdrive//");
-    ASSERT_EQUAL(test4, astring("/cygdrive"), GROUP + "test 4 failed");
+    ASSERT_EQUAL(test4, virtual_root() + "cygdrive", GROUP + "test 4 failed");
+    // another broken pattern.
     filename test5("/cygdrive/");
-    ASSERT_EQUAL(test5, astring("/cygdrive"), GROUP + "test 5 failed");
+    ASSERT_EQUAL(test5, virtual_root() + "cygdrive", GROUP + "test 5 failed");
+    // and one more.  not great tests, but whatever.
     filename test6("/cygdrive");
-    ASSERT_EQUAL(test6, astring("/cygdrive"), GROUP + "test 6 failed");
-    filename test7("/klaunspendle");
-    ASSERT_EQUAL(test7, astring("/klaunspendle"), GROUP + "test 7 failed");
+    ASSERT_EQUAL(test6, virtual_root() + "cygdrive", GROUP + "test 6 failed");
+    filename test7(virtual_root() + "klaunspendle");
+    ASSERT_EQUAL(test7, astring(virtual_root() + "klaunspendle"), GROUP + "test 7 failed");
     filename test8("z:/klaunspendle");
     ASSERT_EQUAL(test8, astring("z:/klaunspendle"), GROUP + "test 8 failed");
 
@@ -261,16 +359,19 @@ int test_filename::execute()
     ASSERT_EQUAL(test14, astring("r:/"), GROUP + "test 14 failed");
     filename test15("/r");
     ASSERT_EQUAL(test15, astring("r:/"), GROUP + "test 15 failed");
-    filename test16("/");
-    ASSERT_EQUAL(test16, astring("/"), GROUP + "test 16 failed");
+
+    bool ex_rooted, ac_rooted;
+    string_array exemplar, acolyte;
+    ASSERT_TRUE(prepare_string_arrays_for_filenames(astring(""), GROUP,
+        ex_rooted, exemplar, ac_rooted, acolyte), GROUP + "test 16 failed prep");
+    ASSERT_TRUE(verify_equal_string_array(GROUP, exemplar, acolyte), GROUP + "test 16 failed compare");
+
     filename test17("r/");
     ASSERT_EQUAL(test17, astring("r/"), GROUP + "test 17 failed");
-    filename test18("/kr/soop");
-    ASSERT_EQUAL(test18, astring("/kr/soop"), GROUP + "test 18 failed");
+    filename test18(virtual_root() + "kr/soop");
+    ASSERT_EQUAL(test18, astring(virtual_root() + "kr/soop"), GROUP + "test 18 failed");
   }
 #endif
-
-  */
 
   return final_report();
 }

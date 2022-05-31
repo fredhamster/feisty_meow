@@ -304,23 +304,22 @@ const astring &application_configuration::DEFAULT_VIRTUAL_UNIX_ROOT()
 // so we cache it once we retrieve it.
 SAFE_STATIC(astring, static_root_holder, )
 
-astring application_configuration::get_virtual_unix_root()
+const astring &application_configuration::virtual_unix_root()
 {
-#ifdef __UNIX__
-  // simple implementation for unix/linux; just tell the truth about the real root.
-  return "/";
-#endif
-#ifdef __WIN32__
   // see if we already cached the root.  it shouldn't change during runtime.
   if (static_root_holder().length()) {
     return static_root_holder();
   }
-
+#ifdef __UNIX__
+  // simple implementation for unix/linux; just tell the truth about the real root.
+  static_root_holder() = astring("/");
+  return static_root_holder();
+#endif
+#ifdef __WIN32__
   /*
    use the path in our system helpers header, which should have been set during the
    build process if this is really windows.
   */
-///  astring virtual_root = read_item(WINDOZE_VIRTUAL_ROOT_NAME());
   astring virtual_root = FEISTY_MEOW_VIRTUAL_UNIX_ROOT;
   if (!virtual_root) {
     // if it has no length, we didn't get our setting!  we'll limp along with a guess.
