@@ -29,6 +29,11 @@ class status_info;
   #ifdef __WIN32__
     #define MAX_ABS_PATH MAX_PATH
   #else
+    #ifdef __APPLE__
+      #include <sys/syslimits.h>
+    #else
+      #include <limits.h>
+    #endif
     #define MAX_ABS_PATH PATH_MAX
   #endif
 /*

@@ -21,6 +21,23 @@ function exit_on_error() {
 
 ####
 
+function apt_cyg_finder()
+{
+  if whichable apt-cyg; then
+    return 0  # success.
+#hmmm: is that the right syntax for bash?
+  else
+    echo "
+The apt-cyg tool does not seem to be available for cygwin.
+Please follow the install instructions at:
+    https://github.com/transcode-open/apt-cyg
+"
+    return 13  # not found.
+  fi
+}
+
+####
+
 # load feisty meow environment here, but first test that we *can* load it.
 
 #hmmm: currently, this script needs the system to have already been configured?
@@ -51,6 +68,8 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 ####
 
+#hmmm: why two phases?
+
 # first the crucial bits for scripts to work...
 
 PHASE_MESSAGE="installing perl file and diff modules"
@@ -68,19 +87,11 @@ elif [ ! -z "$IS_DARWIN" ]; then
   brew install dos2unix openssl
   exit_on_error $PHASE_MESSAGE
 elif [ "$OS" == "Windows_NT" ]; then
-  # windows-based with cygwin (or we'll fail out).
- 
-#hmmm: install apt-cyg!
-# we need this to do the following step, so why not automate that?
-# can we at least check for the packages we absolutely need?
-
-#hmmm: can we bootstrap and still survive on the basic cygwin modules if already installed?
-#  then we could use our huge list to get the rest!
-
-#hmmm: is there any other way to get the missing ones, that we need for apt-cyg?
-
-  apt-cyg install perl-File-Which perl-Text-Diff
-  exit_on_error $PHASE_MESSAGE
+  # windows-based with cygwin (or we'll fail out currently).
+  if apt_cyg_finder; then
+    apt-cyg install perl-File-Which perl-Text-Diff
+    exit_on_error $PHASE_MESSAGE
+  fi
 fi
 
 ####
@@ -104,13 +115,14 @@ elif [ ! -z "$IS_DARWIN" ]; then
   exit_on_error $PHASE_MESSAGE
 elif [ "$OS" == "Windows_NT" ]; then
   # windows-based with cygwin (or we'll fail out).
- 
-echo need to fix apt cyg install list.
-#hmmm: unknown list needed still...
-#      actually it's not unknown; it's in our docs as a separate file for cygwin.
+
+  if apt_cyg_finder; then
+echo need to fix apt cyg install list somewhat.
+#hmmm: list is in our docs as a separate file for cygwin.
 #      plug those packages into here please.
-  apt-cyg install mawk 
-  exit_on_error $PHASE_MESSAGE
+    apt-cyg install mawk openssl-devel libz-devel curl-devel 
+    exit_on_error $PHASE_MESSAGE
+  fi
 fi
 
 ####
