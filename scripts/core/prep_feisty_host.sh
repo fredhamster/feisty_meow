@@ -120,8 +120,12 @@ elif [ "$OS" == "Windows_NT" ]; then
 echo need to fix apt cyg install list somewhat.
 #hmmm: list is in our docs as a separate file for cygwin.
 #      plug those packages into here please.
-    apt-cyg install mawk openssl-devel libz-devel curl-devel 
+    apt-cyg install gawk libcurl-devel openssl-devel zlib-devel
     exit_on_error $PHASE_MESSAGE
+
+#extended set.  just add them?
+# xorg-server xorg-docs xlaunch 
+
   fi
 fi
 
