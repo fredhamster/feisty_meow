@@ -96,17 +96,17 @@ function update_system_helper_header()
       echo "Failure to find virtual Unix root folder with cygpath."
       exit 1322
     fi
-echo "found root as '$found_root'"
+#echo "found root as '$found_root'"
     # translate any backslashes to forward thinking slashes.    
     found_root="$(echo $found_root | tr '\\' '/')"
-echo "processed root is now: '$found_root'"
+#echo "processed root is now: '$found_root'"
     # edit the entry in place to correct the default path.
     sed -i \
         -e "s% *#define FEISTY_MEOW_VIRTUAL_UNIX_ROOT \".*$%#define FEISTY_MEOW_VIRTUAL_UNIX_ROOT \"$found_root\"%" \
         "$FEISTY_MEOW_BINARIES/system_helper.h"
     exit_on_error "updating system_helper header in $FEISTY_MEOW_BINARIES"
-echo "system helper file now has:"
-cat "$FEISTY_MEOW_BINARIES/system_helper.h"
+#echo "system helper file now has:"
+#cat "$FEISTY_MEOW_BINARIES/system_helper.h"
   fi
 }
 

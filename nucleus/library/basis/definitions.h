@@ -64,6 +64,10 @@ typedef unsigned int un_int;
 typedef unsigned short un_short;
 //! Abbreviated name for unsigned long integers.
 typedef unsigned long un_long;
+//! Abbreviated name for signed long integers.
+typedef long int signed_long;
+//! Abbreviated name for signed long long integers.
+typedef long long signed_long_long;
 
 // some maximum and minimum values that are helpful.
 #ifndef MAXINT32

@@ -17,7 +17,9 @@ function compare_to_curie()
   echo
   echo "comparing $dir"
   echo
-  compare_dirs "/z/$dir" "fred@${DATA_SOURCE_HOST}:/z/$dir"
+  echo "'<' will be remote, '>' will be local."
+  echo
+  compare_dirs "fred@${DATA_SOURCE_HOST}:/z/$dir" "/z/$dir"
   retval=$?
   s
   echo
