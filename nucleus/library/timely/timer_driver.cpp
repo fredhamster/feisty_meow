@@ -32,11 +32,11 @@ using namespace processes;
 using namespace structures;
 using namespace timely;
 
-//#define DEBUG_TIMER_DRIVER
+#define DEBUG_TIMER_DRIVER
   // uncomment for noisy code.
 
 #undef LOG
-#define LOG(tpr) printf( (time_stamp::notarize() + "timer_driver::" + func + tpr).s() )
+#define LOG(tpr) printf("%s", (time_stamp::notarize() + "timer_driver::" + func + tpr).s() )
 
 namespace timely {
 
@@ -102,7 +102,7 @@ void __stdcall timer_driver_private_handler(window_handle hwnd, basis::un_int ms
   if (true) {  // unknown OS.
 #endif
 #ifdef DEBUG_TIMER_DRIVER
-    LOG(a_sprintf("unknown signal/message %x caught.", (void *)seen));
+    LOG(a_sprintf("unknown signal/message %d caught.", seen));
 #endif
     return;
   }

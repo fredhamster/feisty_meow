@@ -59,6 +59,7 @@ public:
 
   void run_test_01();
   void run_test_02();
+  void run_test_03();
 };
 
 //////////////
@@ -120,12 +121,29 @@ void test_earth_time::run_test_02()
 
 }
 
+void test_earth_time::run_test_03()
+{
+  FUNCDEF("run_test_03");
+  // test out the now and greenwich_now methods.
+
+//hmmm: what are some ways to test this?
+
+  time_locus curr_now = now();
+LOG(astring("now() returned locus: ") + curr_now.text_form_long(clock_time::MILITARY, day_in_year::LONG_MONTH | day_in_year::INCLUDE_DAY, time_locus::LONG_YEAR));
+
+  time_locus curr_green = greenwich_now();
+LOG(astring("greenwich_now() returned locus: ") + curr_green.text_form_long(clock_time::MILITARY, day_in_year::LONG_MONTH | day_in_year::INCLUDE_DAY, time_locus::LONG_YEAR));
+
+
+}
+
 int test_earth_time::execute()
 {
   FUNCDEF("execute");
 
   run_test_01();
   run_test_02(); 
+  run_test_03(); 
 
   return final_report();
 }

@@ -110,6 +110,12 @@ void attach(byte_array &packed_form, int to_attach)
 bool detach(byte_array &packed_form, int &to_detach)
 { return detach(packed_form, (basis::un_int &)to_detach); }
 
+void attach(byte_array &packed_form, signed_long to_attach)
+{ attach(packed_form, basis::signed_long(to_attach)); }
+
+bool detach(byte_array &packed_form, signed_long &to_detach)
+{ return detach(packed_form, (basis::signed_long &)to_detach); }
+
 //void attach(byte_array &packed_form, basis::un_long to_attach)
 //{ attach(packed_form, basis::un_int(to_attach)); }
 

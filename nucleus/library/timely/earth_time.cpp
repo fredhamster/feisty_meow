@@ -13,31 +13,49 @@
 \*****************************************************************************/
 
 #include "earth_time.h"
+#include "time_stamp.h"
 
 #include <basis/astring.h>
 #include <basis/utf_conversion.h>
+#include <textual/parser_bits.h>
 
 #include <time.h>
+#include <sys/time.h>
 #if defined(__WIN32__) || defined(__UNIX__)
-  #include <sys/timeb.h>
+//  #include <sys/timeb.h>
 #endif
+
+#include <stdio.h>
+
+// uncomment for noisy code.
+//#define DEBUG_EARTH_TIME
 
 using namespace basis;
 using namespace structures;
+using namespace textual;
 
 namespace timely {
 
-const int days_in_month[12]
+#undef LOG
+#ifdef DEBUG_EARTH_TIME
+  #define LOG(tpr) printf("%s", (astring("earth_time::") + func + ": " + tpr + parser_bits::platform_eol_to_chars()).s())
+#else
+  #define LOG(tpr) 
+#endif
+
+//////////////
+
+const time_number days_in_month[12]
     = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-const int leap_days_in_month[12]
+const time_number leap_days_in_month[12]
     = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-const int julian_days_in_month[12]
+const time_number julian_days_in_month[12]
     = { 31, 29, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30 };
 //hmmm: is this right?
 
-const int julian_leap_days_in_month[12]
+const time_number julian_leap_days_in_month[12]
     = { 31, 30, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30 };
 
 //////////////
@@ -95,16 +113,16 @@ void clock_time::text_form(astring &to_return, int how) const
 {
   if (!how) return;  // enforce use of the default.
   if (how & MILITARY)
-    to_return += a_sprintf("%02d:%02d", hour, minute);
+    to_return += a_sprintf("%02ld:%02ld", hour, minute);
   else {
-    int uhr = hour;
+    time_number uhr = hour;
     if (uhr > 12) uhr -= 12;
-    to_return += a_sprintf("%2d:%02d", uhr, minute);
+    to_return += a_sprintf("%2ld:%02ld", uhr, minute);
   }
   if ( (how & SECONDS) || (how & MILLISECONDS) )
-    to_return += a_sprintf(":%02d", second);
+    to_return += a_sprintf(":%02ld", second);
   if (how & MILLISECONDS)
-    to_return += a_sprintf(":%03d", millisecond);
+    to_return += a_sprintf(":%03ld", millisecond);
   if (how & MERIDIAN) {
     if (hour >= 12) to_return += "PM";
     else to_return += "AM";
@@ -123,9 +141,9 @@ void clock_time::text_form(astring &to_return, int how) const
     val -= max * rolls; \
   } else { rolls = 0; }
 
-int clock_time::normalize(clock_time &to_fix)
+time_number clock_time::normalize(clock_time &to_fix)
 {
-  int rolls = 0;  // rollover counter.
+  time_number rolls = 0;  // rollover counter.
   limit_value(to_fix.microsecond, 1000);
   to_fix.millisecond += rolls;
   limit_value(to_fix.millisecond, 1000);
@@ -192,11 +210,11 @@ void day_in_year::text_form(astring &to_stuff, int how) const
     monat = month_name(month);
 //hmmm: more formatting, like euro?
   to_stuff += monat;
-  to_stuff += a_sprintf(" %02d", day_in_month);
+  to_stuff += a_sprintf(" %02ld", day_in_month);
 }
 
 // note: this only works when adjusting across one month, not multiples.
-int limit_day_of_month(int &day, int days_in_month, int days_in_prev_month)
+time_number limit_day_of_month(time_number &day, time_number days_in_month, time_number days_in_prev_month)
 {
   if (day > days_in_month) {
     day -= days_in_month;
@@ -208,17 +226,17 @@ int limit_day_of_month(int &day, int days_in_month, int days_in_prev_month)
   return 0;  // no rolling.
 }
 
-int day_in_year::normalize(day_in_year &to_fix, bool leap_year)
+time_number day_in_year::normalize(day_in_year &to_fix, bool leap_year)
 {
-  int rolls = 0;  // rollover counter.
-  int daysinm = leap_year?
+  time_number rolls = 0;  // rollover counter.
+  time_number daysinm = leap_year?
       leap_days_in_month[to_fix.month] : days_in_month[to_fix.month];
-  int prev_month = to_fix.month - 1;
+  time_number prev_month = to_fix.month - 1;
   if (prev_month < 0) prev_month = 11;
-  int daysinpm = leap_year?
+  time_number daysinpm = leap_year?
       leap_days_in_month[prev_month] : days_in_month[prev_month];
   rolls = limit_day_of_month(to_fix.day_in_month, daysinm, daysinpm);
-  int monat = to_fix.month + rolls;
+  time_number monat = to_fix.month + rolls;
   limit_value(monat, 12);  // months are zero based.
   to_fix.month = months(monat);
   return rolls;
@@ -278,17 +296,17 @@ void time_locus::text_form_long(astring &to_stuff, int t, int d, int y) const
   to_stuff += " ";
   // add the year.
   if (y & SHORT_YEAR)
-    to_stuff += a_sprintf("%2d", year % 100);
+    to_stuff += a_sprintf("%2ld", year % 100);
   else
-    to_stuff += a_sprintf("%4d", year);
+    to_stuff += a_sprintf("%4ld", year);
   // add the time.
   to_stuff += " ";
   clock_time::text_form(to_stuff, t);
 }
 
-int time_locus::normalize(time_locus &to_fix)
+time_number time_locus::normalize(time_locus &to_fix)
 {
-  int rolls = clock_time::normalize(to_fix);
+  time_number rolls = clock_time::normalize(to_fix);
   to_fix.day_in_month += rolls;
 
 //hmmm: this little gem should be abstracted to a method.
@@ -305,39 +323,64 @@ int time_locus::normalize(time_locus &to_fix)
 
 //////////////
 
-time_locus convert(const tm &to_convert, int ms)
+time_locus convert(time_number seconds, time_number useconds,
+    const tm &cal_values)
 {
+  FUNCDEF("convert");
   time_locus r;
 
-  // we lack the resolution for this, currently.
-  r.microsecond = 0;
+  r.millisecond = useconds / 1000;
+  r.microsecond = useconds % 1000;
 
-  r.second = to_convert.tm_sec;
-  r.minute = to_convert.tm_min;
-  r.hour = to_convert.tm_hour;
-  r.day_in_month = to_convert.tm_mday;
-  r.month = months(to_convert.tm_mon);
-  r.year = to_convert.tm_year + 1900;
-  r.day_of_week = days(to_convert.tm_wday);
-  r.day_of_year = to_convert.tm_yday;
-  r.millisecond = ms;
+  r.hour = cal_values.tm_hour;
+  r.minute = cal_values.tm_min;
+  r.second = cal_values.tm_sec;
+  r.day_in_month = cal_values.tm_mday;
+  r.month = months(cal_values.tm_mon);
+  r.year = cal_values.tm_year + 1900;
+  r.day_of_week = days(cal_values.tm_wday);
+  r.day_of_year = cal_values.tm_yday;
+
+  LOG(a_sprintf("convert() returning: %s\n",
+      r.text_form_long(clock_time::MILITARY,
+      day_in_year::LONG_MONTH | day_in_year::INCLUDE_DAY,
+      time_locus::LONG_YEAR).s()));
+
   return r;
 }
 
 time_locus now()
 {
-  timeb current;
-  ftime(&current);
-  tm split_time(*localtime(&current.time));
-  return convert(split_time, current.millitm);
+  FUNCDEF("now")
+  timeval currtime;
+  int okay = gettimeofday(&currtime, NULL_POINTER);
+  if (okay != 0) {
+    LOG("failed to gettimeofday!?");
+  }
+  time_t currtime_secs = currtime.tv_sec;
+  struct tm result;
+  tm *tz_ptr = localtime_r(&currtime_secs, &result);
+  if (tz_ptr != &result) {
+    LOG("failed to get time for local area with localtime_r");
+  }
+  return convert(currtime.tv_sec, currtime.tv_usec, result);
 }
 
 time_locus greenwich_now()
 {
-  timeb current;
-  ftime(&current);
-  tm split_time(*gmtime(&current.time));
-  return convert(split_time, current.millitm);
+  FUNCDEF("greenwich_now")
+  timeval currtime;
+  int okay = gettimeofday(&currtime, NULL_POINTER);
+  if (okay != 0) {
+    LOG("failed to gettimeofday!?");
+  }
+  time_t currtime_secs = currtime.tv_sec;
+  tm result;
+  tm *tz_ptr = gmtime_r(&currtime_secs, &result);
+  if (tz_ptr != &result) {
+    LOG("failed to get time for local area with gmtime_r");
+  }
+  return convert(currtime.tv_sec, currtime.tv_usec, result);
 }
 
 clock_time time_now() { return now(); }
@@ -346,7 +389,7 @@ days day_now() { return now().day_of_week; }
 
 months month_now() { return now().month; }
 
-int year_now() { return now().year; }
+time_number year_now() { return now().year; }
 
 day_in_year date_now() { return now(); }
 
