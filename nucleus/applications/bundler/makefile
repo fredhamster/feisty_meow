@@ -12,6 +12,7 @@ include variables.def
 # hopefully this approach of having a neutral outer
 # maker will get rid of that broken behavior.
 
+PROJECT = bundler_app
 LAST_TARGETS = maker
 OTHER_CLEANS = breaker
 
