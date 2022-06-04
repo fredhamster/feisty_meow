@@ -103,7 +103,7 @@ echo "processed root is now: '$found_root'"
     # edit the entry in place to correct the default path.
     sed -i \
         -e "s% *#define FEISTY_MEOW_VIRTUAL_UNIX_ROOT \".*$%#define FEISTY_MEOW_VIRTUAL_UNIX_ROOT \"$found_root\"%" \
-        "$CLAM_BINARIES/paths.ini" 
+        "$FEISTY_MEOW_BINARIES/system_helper.h"
     exit_on_error "updating system_helper header in $FEISTY_MEOW_BINARIES"
 echo "system helper file now has:"
 cat "$FEISTY_MEOW_BINARIES/system_helper.h"
