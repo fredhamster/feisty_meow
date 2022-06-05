@@ -43,7 +43,7 @@ using namespace unit_test;
 
 #define LOG(to_print) EMERGENCY_LOG(program_wide_logger::get(), to_print)
 
-//#define DEBUG_BLOWFISH
+#define DEBUG_BLOWFISH
   // uncomment for noisier run.
 
 const int TEST_RUNS_PER_KEY = 5;  // encryption test cycles done on each key.
