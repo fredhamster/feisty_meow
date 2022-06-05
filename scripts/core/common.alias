@@ -76,6 +76,7 @@ define_yeti_alias md='mkdir'
 define_yeti_alias move='mv -i -v'
 define_yeti_alias mv='\mv -i -v'
 define_yeti_alias netcp='rsync -avz'
+define_yeti_alias netcpl='rsync -av'
 define_yeti_alias notepad='gedit'
 define_yeti_alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
 define_yeti_alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
