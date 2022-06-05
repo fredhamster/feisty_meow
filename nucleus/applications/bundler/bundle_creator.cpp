@@ -192,6 +192,9 @@ int bundle_creator::execute()
   BASE_LOG(astring("starting file bundling at ") + time_stamp::notarize(false));
 
   command_line cmds(_global_argc, _global_argv);
+
+//BASE_LOG(astring("before starting, cmds has: ") + parser_bits::platform_eol_to_chars() + cmds.text_form());
+
   astring temp;
   if (cmds.get_value('?', temp)) return print_instructions();
   if (cmds.get_value("?", temp)) return print_instructions();
