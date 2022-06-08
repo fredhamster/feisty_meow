@@ -65,6 +65,9 @@ this article helps a lot to get the music off of vinyl records using a usb turnt
 movie processing
 ----------------
 
+devede:
+  super great dvd creator for playable dvds.
+
 kdenlive:
   this is an awesome tool that lets you manage multiple tracks of audio and video, apply
   effects to both, edit and remove pieces, insert tracks, etc.  it's great.
@@ -91,7 +94,6 @@ fdupes:
   another useful tool for finding duplicate tracks in a music collection, but relies on exact
   matches in the names(?).  was not so powerful as dupeguru, but still useful.
 
-
 -----------------------------
 picture collection management
 -----------------------------
@@ -99,7 +101,4 @@ picture collection management
 shotwell:
   currently the top picture manipulation and manager tool i use at home.
   the imaginations folder is based on the date management in shotwell.
-
-
-
 
