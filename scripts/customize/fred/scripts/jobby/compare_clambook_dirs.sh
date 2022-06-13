@@ -26,7 +26,6 @@ function compare_to_curie()
   return $retval
 }
 
-compare_to_curie basement
 compare_to_curie musix
 compare_to_curie walrus
 
