@@ -90,10 +90,67 @@ if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
   echo "[FEISTY_MEOW_APEX is $FEISTY_MEOW_APEX]"
 fi
 
-#if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
-#  # harsh on the paths and make them use backwards slashes.
-#  export SERIOUS_SLASH_TREATMENT=true
-#fi
+# set some extra variables that clam uses.
+
+# CLAM_ON_UNIX or CLAM_ON_DOS might get defined here.
+# we also can set OS_SUBCLASS if we detect darwin.
+if [ $OPERATING_SYSTEM == UNIX ]; then
+  export CLAM_ON_UNIX=$(uname)
+  if [[ $CLAM_ON_UNIX =~ .*[Dd]arwin.* ]]; then
+    # pick the subclass now that we know this is darwin.
+    export CLAM_OS_SUBCLASS=darwin
+  fi
+elif [ $OPERATING_SYSTEM == WIN32 ]; then
+  export CLAM_ON_DOS=$(uname)
+else
+  echo "Unknown operating system--clam will not build well here."
+fi
+
+# CLAM_BASE_CPU is a flag that distinguishes the type of processor, if necessary.
+export CLAM_BASE_CPU="$(machine 2>/dev/null || arch 2>/dev/null || uname -m 2>/dev/null || echo i686)"
+
+# "FEISTY_MEOW_CPP_HEADERS" are folders where our C and C++ header files can be found.
+# we'll compute the set of folders as best we can below.
+if [ -d "$FEISTY_MEOW_APEX/nucleus" ]; then
+  # just assumes we're at home and know our header locations under the feisty meow hierarchy.
+  export LOCUS_LIBRARY_HEADERS="$FEISTY_MEOW_APEX/nucleus $FEISTY_MEOW_APEX/octopi $FEISTY_MEOW_APEX/graphiq"
+else
+  export LOCUS_LIBRARY_HEADERS=
+fi 
+   ####blech!  maybe not needed now?  was involved above.  | tr "\\\\" / | sed -e "s/\([a-zA-Z]\):\/\([^ ]*\)/\/cygdrive\/\1\/\2/g" ')
+export FEISTY_MEOW_CPP_HEADERS=$(find $LOCUS_LIBRARY_HEADERS -mindepth 1 -maxdepth 1 -type d | grep -v "\.settings" )
+
+# the root name of the version file.  This is currently irrelevant on
+# non-windoze platforms.
+export CLAM_VERSION_RC_ROOT=$(bash $CLAM_SCRIPTS/cpp/rc_name.sh)
+
+# CLAM_COMPILER is the C/C++ compiler application that builds our code.
+# The variable is mainly used within CLAM itself for determining the proper
+# compiler flags.
+export CLAM_COMPILER
+if [ "$OPERATING_SYSTEM" == UNIX ]; then
+  if [ "$CLAM_OS_SUBCLASS" == darwin ]; then
+    CLAM_COMPILER=GNU_DARWIN
+  else
+    CLAM_COMPILER=GNU_LINUX
+  fi
+elif [ "$OPERATING_SYSTEM" == WIN32 ]; then
+  CLAM_COMPILER=GNU_WINDOWS
+fi
+if [ -z "$CLAM_COMPILER" ]; then
+  # if we get into this case, we have no idea how to set the default compiler.
+  # so... pick a fun default.
+  CLAM_COMPILER=GNU_LINUX
+fi
+
+# "CLAM_COMPILER_ROOT_DIR" is the top-level for the C++ compiler location.
+# it is generally the top of the OS, although some variants may need this
+# modified (e.g., gnu arm linux, but we haven't built on that in a bit).
+export CLAM_COMPILER_ROOT_DIR="/"
+
+# CLAM_COMPILER_VERSION specifies the version of the particular compiler we're using.
+# this is sometimes needed to distinguish how the code is built or where headers/libraries are found.
+export CLAM_COMPILER_VERSION=$(bash $CLAM_SCRIPTS/cpp/get_version.sh $CLAM_COMPILER $CLAM_COMPILER_ROOT_DIR )
 
 # new BUILD_TOP variable points at the utter top-most level of any files
 # in the building hierarchy.

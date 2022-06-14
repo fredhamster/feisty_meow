@@ -88,7 +88,7 @@ function update_system_helper_header()
   fi
 
   # set the cygwin root path if we're on cygwin.
-  whichable cygpath
+  whichable cygpath &>/dev/null
   if [ $? -eq 0 ]; then
     # found cygpath, so run it now to get the dossy path of the root ('/' folder).
     found_root="$(cygpath -w -m /)"

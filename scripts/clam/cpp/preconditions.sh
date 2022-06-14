@@ -33,7 +33,7 @@ if [ ! -d $STATIC_LIBRARY_DIR ]; then mkdir -p $STATIC_LIBRARY_DIR; fi
 # set versions on any extras that were specified in the makefile.
 if [ ! -z "$EXTRA_VERSIONS" ]; then
   for i in $EXTRA_VERSIONS; do
-    $CLAM_BINARIES/version_stamper$EXE_END $i $PARAMETER_FILE
+    $CLAM_BINARIES/version_stamper$EXE_ENDING $i $PARAMETER_FILE
   done
 fi
 
@@ -54,8 +54,8 @@ if [ ! -z "$TEST_MAKEFILE" ]; then
 
 #??, STATIC_LIBRARY_DIR
 
-  #echo "compiler=$COMPILER"
-  #echo "OP_SYSTEM=$OP_SYSTEM"
+  #echo "compiler=$CLAM_COMPILER"
+  #echo "OPERATING_SYSTEM=$OPERATING_SYSTEM"
 
   #echo "checking for all local libs: $LOCAL_LIBS_USED"
   failed_check=
