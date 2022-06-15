@@ -25,45 +25,45 @@ include variables.def
 
 ###############################################################################
 
-# BASE_CPU is a flag that distinguishes the type of processor, if necessary.
-export BASE_CPU
-#BASE_CPU := m68k = motorola 68000 series | m68340 = motorola 68340
-#    | x86 = intel x86 | ppc = power pc | arm = ARM core
+## # CLAM_BASE_CPU is a flag that distinguishes the type of processor, if necessary.
+## export CLAM_BASE_CPU
+## #CLAM_BASE_CPU := m68k = motorola 68000 series | m68340 = motorola 68340
+## #    | x86 = intel x86 | ppc = power pc | arm = ARM core
+## 
+## # set the CPU to a default if it has not been set previously.
+## ifeq "$(CLAM_BASE_CPU)" ""
+##   CLAM_BASE_CPU := $(shell machine 2>/dev/null || arch 2>/dev/null || uname -m 2>/dev/null || echo i686)
+## endif
 
-# set the CPU to a default if it has not been set previously.
-ifeq "$(BASE_CPU)" ""
-  BASE_CPU := $(shell machine 2>/dev/null || arch 2>/dev/null || uname -m 2>/dev/null || echo i686)
-endif
+## # CLAM_COMPILER is a flag that specifies the compiler that will be used to build
+## # code.  It is mainly used within CLAM itself for determining the proper
+## # compiler flags.
+## export CLAM_COMPILER
+## #CLAM_COMPILER := GNU_LINUX | GNU_ARM_LINUX | GNU_DARWIN | GNU_WINDOWS 
+## 
+## # choose a default compiler if none was specified.
+## ifeq "$(CLAM_COMPILER)" ""
+##   ifeq "$(OPERATING_SYSTEM)" "UNIX"
+##     ifeq "$(CLAM_OS_SUBCLASS)" "darwin"
+##       CLAM_COMPILER := GNU_DARWIN
+##     else
+##       CLAM_COMPILER := GNU_LINUX
+##     endif
+##   endif
+##   ifeq "$(OPERATING_SYSTEM)" "WIN32"
+##     CLAM_COMPILER := GNU_WINDOWS
+##   endif
+##   ifeq "$(CLAM_COMPILER)" ""
+##     # if we get into this case, we have no idea how to set the default
+##     # compiler.  you may need to change the above logic for guessing it
+##     # anyhow.  but we will go with our favorite default.
+##     CLAM_COMPILER := GNU_LINUX
+##   endif
+## endif
 
-# COMPILER is a flag that specifies the compiler that will be used to build
-# code.  It is mainly used within CLAM itself for determining the proper
-# compiler flags.
-export COMPILER
-#COMPILER := GNU_LINUX | GNU_ARM_LINUX | GNU_DARWIN | GNU_WINDOWS 
-
-# choose a default compiler if none was specified.
-ifeq "$(COMPILER)" ""
-  ifeq "$(OP_SYSTEM)" "UNIX"
-    ifeq "$(OS_SUBCLASS)" "darwin"
-      COMPILER := GNU_DARWIN
-    else
-      COMPILER := GNU_LINUX
-    endif
-  endif
-  ifeq "$(OP_SYSTEM)" "WIN32"
-    COMPILER := GNU_WINDOWS
-  endif
-  ifeq "$(COMPILER)" ""
-    # if we get into this case, we have no idea how to set the default
-    # compiler.  you may need to change the above logic for guessing it
-    # anyhow.  but we will go with our favorite default.
-    COMPILER := GNU_LINUX
-  endif
-endif
-
-# COMPILER_VERSION specifies the version of a particular compiler, if this is
+# CLAM_COMPILER_VERSION specifies the version of a particular compiler, if this is
 # needed to distinguish how the code is built.
-export COMPILER_VERSION
+export CLAM_COMPILER_VERSION
 
 ###############################################################################
 
@@ -176,9 +176,9 @@ export OUTPUT_ROOT = $(CLAM_TMP)/objects
 # "CPU_BUILD_DIR" distinguishes object directories by including the CPU
 # name and the type of build.
 ifneq "$(DEBUG)" ""
-  CPU_BUILD_DIR = $(BASE_CPU)_$(PLATFORM_ADD_IN)dbg
+  CPU_BUILD_DIR = $(CLAM_BASE_CPU)_$(PLATFORM_ADD_IN)dbg
 else
-  CPU_BUILD_DIR = $(BASE_CPU)_$(PLATFORM_ADD_IN)rel
+  CPU_BUILD_DIR = $(CLAM_BASE_CPU)_$(PLATFORM_ADD_IN)rel
 endif
 
 # "BASE_OUTPUT_PATH" is the parent directory of objects for this type of
@@ -186,7 +186,7 @@ endif
 export BASE_OUTPUT_PATH = $(OUTPUT_ROOT)/$(CPU_BUILD_DIR)
 
 # special case when doing arm-linux builds
-ifeq "$(COMPILER)" "GNU_ARM_LINUX"
+ifeq "$(CLAM_COMPILER)" "GNU_ARM_LINUX"
   export TARGETS_STORE = $(FEISTY_MEOW_APEX)/$(CPU_BUILD_DIR)
   # special output directory for firmware does not include CPU name because
   #  the repository already include the CPU name
@@ -210,18 +210,18 @@ export STATIC_LIBRARY_DIR = $(TARGETS_STORE)
 # the binaries are added to access the system_helper.h file.
 HEADER_SEARCH_PATH = $(FEISTY_MEOW_GENERATED_STORE)/versions $(FEISTY_MEOW_BINARIES)
 
-# "HOOPLE_HEADERS" are locations where the HOOPLE headers can be found.
-ifeq "$(HOOPLE_HEADERS)" ""
-#seems like some of this is redundant with earlier 3rdparty exploring.
-  LOCUS_LIBRARY_HEADERS = $(shell bash -c '\
-    if [ -d "$(FEISTY_MEOW_APEX)/nucleus" ]; then \
-      echo "$(FEISTY_MEOW_APEX)/nucleus" "$(FEISTY_MEOW_APEX)/octopi" "$(FEISTY_MEOW_APEX)/graphiq" ; \
-    else \
-      echo ""; \
-    fi | tr "\\\\" / | sed -e "s/\([a-zA-Z]\):\/\([^ ]*\)/\/cygdrive\/\1\/\2/g" ')
-    # above assumes cygwin support for windows!  was assuming msys support.
-  HOOPLE_HEADERS := $(shell $(FIND) $(LOCUS_LIBRARY_HEADERS) -mindepth 1 -maxdepth 1 -type d )
-endif
+## # "FEISTY_MEOW_CPP_HEADERS" are locations where the HOOPLE headers can be found.
+## ifeq "$(FEISTY_MEOW_CPP_HEADERS)" ""
+## #seems like some of this is redundant with earlier 3rdparty exploring.
+##   LOCUS_LIBRARY_HEADERS = $(shell bash -c '\
+##     if [ -d "$(FEISTY_MEOW_APEX)/nucleus" ]; then \
+##       echo "$(FEISTY_MEOW_APEX)/nucleus" "$(FEISTY_MEOW_APEX)/octopi" "$(FEISTY_MEOW_APEX)/graphiq" ; \
+##     else \
+##       echo ""; \
+##     fi | tr "\\\\" / | sed -e "s/\([a-zA-Z]\):\/\([^ ]*\)/\/cygdrive\/\1\/\2/g" ')
+##     # above assumes cygwin support for windows!  was assuming msys support.
+##   FEISTY_MEOW_CPP_HEADERS := $(shell $(FIND) $(LOCUS_LIBRARY_HEADERS) -mindepth 1 -maxdepth 1 -type d )
+## endif
 
 # "LOCAL_HEADERS" are overrides that go first in the header search path.
 LOCAL_HEADERS = $(THIRD_PARTY_DIR)
@@ -382,9 +382,12 @@ LIBRARY_PATH_FLAG = -L
 # The name of the library creator tool.
 #LIBRARY_TOOL =
 
-# the root name of the version file.  This is currently irrelevant on
-# non-windoze platforms.
-VERSION_RC_ROOT = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/rc_name.sh)
+ifeq "$(OPERATING_SYSTEM)" "WIN32"
+  # the root name of the version file.  This is currently irrelevant on
+  # non-windoze platforms.
+  #CLAM_VERSION_RC_ROOT = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/rc_name.sh)
+  #hmmm: also currently irrelevant since we are only doing static builds.
+endif
 
 ifneq "$(CONSOLE_MODE)" ""
   # this definition can be used to signal different behavior when the app is
@@ -405,8 +408,8 @@ DYNLIB_ENDING = .so
 
 # Compiler Dependent Flags
 #
-# "COMPILER_ROOT_DIR" is the top-level for the C++ compiler location.
-export COMPILER_ROOT_DIR
+## # "CLAM_COMPILER_ROOT_DIR" is the top-level for the C++ compiler location.
+## export CLAM_COMPILER_ROOT_DIR
 # "COMPILER_HEADER_DIR" is where the compiler headers are.
 export COMPILER_HEADER_DIR
 # "COMPILER_LIBRARY_DIR" is where archived libraries are.
@@ -431,24 +434,24 @@ endif
 # compiler specific section below.
 ############################################################################
 
-ifeq "$(COMPILER)" "GNU_LINUX"
+ifeq "$(CLAM_COMPILER)" "GNU_LINUX"
   # Unix GNU compiler...
   CC = g++
-  COMPILER_ROOT_DIR = /
+#  CLAM_COMPILER_ROOT_DIR = /
   PLATFORM_ADD_IN = linux_
-  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
+#  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
 
-  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
 
   DEFINITIONS += _FILE_OFFSET_BITS=64 
 
   DEPENDENCY_DEFINITIONS += NO_VERSION
-  DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(COMPILER_VERSION) -X/usr/include/c++/$(COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i686-linux-gnu/$(COMPILER_VERSION)/include -X/usr/lib/gcc/x86_64-linux-gnu/$(COMPILER_VERION)/include -X/usr/include/x86_64-linux-gnu -X/usr/include/i386-linux-gnu
+  DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(CLAM_COMPILER_VERSION) -X/usr/include/c++/$(CLAM_COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(CLAM_COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(CLAM_COMPILER_VERSION)/include -X/usr/lib/gcc/i686-linux-gnu/$(CLAM_COMPILER_VERSION)/include -X/usr/lib/gcc/x86_64-linux-gnu/$(COMPILER_VERION)/include -X/usr/include/x86_64-linux-gnu -X/usr/include/i386-linux-gnu
 
   # "USE_XWIN" specifies that this project needs X window system support.
   #USE_XWIN =
 
-  ifeq "x86_64" "$(ARCHITECTURE)"
+  ifeq "x86_64" "$(CLAM_BASE_CPU)"
     COMPILER_LIBRARY_DIR = /lib64 /usr/lib64 /usr/local/lib64
   else
     COMPILER_LIBRARY_DIR = /lib /usr/lib /usr/local/lib
@@ -515,13 +518,16 @@ endif
 
 ############################################################################
 
-ifeq "$(COMPILER)" "GNU_ARM_LINUX"
+ifeq "$(CLAM_COMPILER)" "GNU_ARM_LINUX"
   # ARM-linux GNU compiler...
-  COMPILER_ROOT_DIR = /usr/local/arm-linux
-  CC = $(COMPILER_ROOT_DIR)/bin/g++
+
+##  CLAM_COMPILER_ROOT_DIR = /usr/local/arm-linux
+#hmmm: the above is the one we may need to integrate into build_variables.sh
+
+  CC = $(CLAM_COMPILER_ROOT_DIR)/bin/g++
   PLATFORM_ADD_IN = linux_
 
-  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
 
   SNAPGEAR_ROOT_DIR = $(HOME)/snapgear
 
@@ -529,10 +535,10 @@ ifeq "$(COMPILER)" "GNU_ARM_LINUX"
 
   COMPILER_HEADER_DIR = $(SNAPGEAR_ROOT_DIR)/linux-2.4.x/include
 #  COMPILER_HEADER_DIR += $(SNAPGEAR_ROOT_DIR)/include 
-  COMPILER_HEADER_DIR += $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/lib 
+  COMPILER_HEADER_DIR += $(CLAM_COMPILER_ROOT_DIR)/include $(CLAM_COMPILER_ROOT_DIR)/lib 
   COMPILER_HEADER_DIR += /usr/local/lib/gcc-lib/arm-linux/3.3.2/include
   
-  COMPILER_LIBRARY_DIR = $(SNAPGEAR_ROOT_DIR)/lib $(COMPILER_ROOT_DIR)/lib/be
+  COMPILER_LIBRARY_DIR = $(SNAPGEAR_ROOT_DIR)/lib $(CLAM_COMPILER_ROOT_DIR)/lib/be
 
   DEFINITIONS += linux __linux__ unix UNIX __UNIX__ __LINUX__ 
 
@@ -541,12 +547,12 @@ ifeq "$(COMPILER)" "GNU_ARM_LINUX"
     COMPILER_FLAGS += -Wall -Werror
   endif
 
-  LIBRARY_TOOL = $(COMPILER_ROOT_DIR)/bin/ar
+  LIBRARY_TOOL = $(CLAM_COMPILER_ROOT_DIR)/bin/ar
   LIB_PREFIX = lib
   CREATE_LIBRARY_FLAG += -r 
     # space on end is significant.
   
-  LINK_TOOL = $(COMPILER_ROOT_DIR)/bin/g++
+  LINK_TOOL = $(CLAM_COMPILER_ROOT_DIR)/bin/g++
   LINKER_OUTPUT_FLAG = -o
   EXE_FLAGS = -mbig-endian
   LOAD_FLAG_PREFIX += -v -mbig-endian
@@ -561,24 +567,25 @@ endif
 
 ############################################################################
 
-ifeq "$(COMPILER)" "GNU_WINDOWS"
+ifeq "$(CLAM_COMPILER)" "GNU_WINDOWS"
   # GNU compiler for MS Windoze...
   CC = g++
-  COMPILER_ROOT_DIR = /
-  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
-#hmmm: below fixes nothing!  argh!
-#  ARCHITECTURE = i386
+##  CLAM_COMPILER_ROOT_DIR = /
 
-  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+##  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
+##hmmm: below fixes nothing!  argh!
+##  ARCHITECTURE = i386
 
-#  RC := $(COMPILER_ROOT_DIR)/bin/windres
+  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
+
+#  RC := $(CLAM_COMPILER_ROOT_DIR)/bin/windres
   PLATFORM_ADD_IN = w32_
 
-  COMPILER_HEADER_DIR = $(COMPILER_ROOT_DIR)/include $(COMPILER_ROOT_DIR)/include/c++/3.4.2 
-#$(COMPILER_ROOT_DIR)/lib/gcc/mingw32/3.4.2/include 
-###$(COMPILER_ROOT_DIR)/usr/include/mingw $(COMPILER_ROOT_DIR)/usr/include $(COMPILER_ROOT_DIR)/usr/include/w32api $(COMPILER_ROOT_DIR)/usr/include/extras
+  COMPILER_HEADER_DIR = $(CLAM_COMPILER_ROOT_DIR)/include $(CLAM_COMPILER_ROOT_DIR)/include/c++/3.4.2 
+#$(CLAM_COMPILER_ROOT_DIR)/lib/gcc/mingw32/3.4.2/include 
+###$(CLAM_COMPILER_ROOT_DIR)/usr/include/mingw $(CLAM_COMPILER_ROOT_DIR)/usr/include $(CLAM_COMPILER_ROOT_DIR)/usr/include/w32api $(CLAM_COMPILER_ROOT_DIR)/usr/include/extras
 
-  COMPILER_LIBRARY_DIR = $(COMPILER_ROOT_DIR)/lib
+  COMPILER_LIBRARY_DIR = $(CLAM_COMPILER_ROOT_DIR)/lib
   DEFINITIONS += __GNU_WINDOWS__ _Windows _WINDOWS WIN32 __WIN32__ __FLAT__ VC_EXTRALEAN WIN32_LEAN_AND_MEAN ATL_NO_LEAN_AND_MEAN _WIN32 
 ###NOOOOOO   __USE_W32_SOCKETS
 #__cplusplus 
@@ -603,19 +610,19 @@ endif
 
 ############################################################################
 
-ifeq "$(COMPILER)" "GNU_DARWIN"
+ifeq "$(CLAM_COMPILER)" "GNU_DARWIN"
   # Darwin kernel GNU compiler...  really more general macos (MacOS) here these days.
   CC = g++
-  COMPILER_ROOT_DIR = /
+##  CLAM_COMPILER_ROOT_DIR = /
   PLATFORM_ADD_IN = darwin
-  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
+##  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
 
-  export COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(COMPILER) $(COMPILER_ROOT_DIR) )
+  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
 
   DEFINITIONS += _FILE_OFFSET_BITS=64 
 
   DEPENDENCY_DEFINITIONS += NO_VERSION
-#  DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(COMPILER_VERSION) -X/usr/include/c++/$(COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(COMPILER_VERSION)/include
+#  DEPENDENCY_ADDITIONS = -X/usr/include -X/usr/include/c++/$(CLAM_COMPILER_VERSION) -X/usr/include/c++/$(CLAM_COMPILER_VERSION)/tr1 -X/usr/local/include -X/usr/include/linux -X/usr/include/wx-2.8 -X/usr/lib/gcc/i586-suse-linux/$(CLAM_COMPILER_VERSION)/include -X/usr/lib/gcc/i486-linux-gnu/$(CLAM_COMPILER_VERSION)/include
   DEPENDENCY_ADDITIONS = -X/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 
   COMPILER_HEADER_DIR := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
@@ -683,7 +690,7 @@ endif
 # these activities are done after the compiler specific stuff.
 
 # add a definition for programs to be able to differentiate the versions.
-DEFINITIONS += COMPILER_VERSION=$(COMPILER_VERSION)
+DEFINITIONS += CLAM_COMPILER_VERSION=$(CLAM_COMPILER_VERSION)
 
 # set a variable that scripts can use to get most of the definitions.
 export VARIABLE_DEFINITION_SET := $(DEFINITIONS)

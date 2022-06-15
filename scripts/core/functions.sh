@@ -427,12 +427,12 @@ if [ -z "$skip_all" ]; then
       DOSSYHOME="$(cygpath -am "$HOME")"
     fi
 
-    if [ ! -z "$SERIOUS_SLASH_TREATMENT" ]; then
-      # unless this flag is set, in which case we force dos slashes.
-      echo "$1" | sed -e "s?^$HOME?$DOSSYHOME?g" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/' | sed -e 's/\//\\/g'
-    else
+#    if [ ! -z "$SERIOUS_SLASH_TREATMENT" ]; then
+#      # unless this flag is set, in which case we force dos slashes.
+#      echo "$1" | sed -e "s?^$HOME?$DOSSYHOME?g" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/' | sed -e 's/\//\\/g'
+#    else
       echo "$1" | sed -e "s?^$HOME?$DOSSYHOME?g" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
-    fi
+#    fi
   }
   
 #  # switches from an X:/ form to a /cygdrive/X/path form.  this is only useful

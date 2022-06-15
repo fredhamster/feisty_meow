@@ -11,53 +11,53 @@
 
 ###############################################################################
 
-# OP_SYSTEM is a flag that specifies the operating system under which
-# the makefile system is executing.
-export OP_SYSTEM
-#OP_SYSTEM := UNIX = unix | OS2 = ibm os/2 | SYSV = v unix | DOS = pc dos
-#    | WIN32 = ms-win32 / NT.
+## # OPERATING_SYSTEM is a flag that specifies the operating system under which
+## # the makefile system is executing.
+## export OPERATING_SYSTEM
+## #OPERATING_SYSTEM := UNIX = unix | OS2 = ibm os/2 | SYSV = v unix | DOS = pc dos
+## #    | WIN32 = ms-win32 / NT.
 
-# OS_SUBCLASS is a finer differentiation of the OP_SYSTEM.  currently only
-# the darwin subclass for unix is considered.
-export OS_SUBCLASS
-#OS_SUBCLASS := darwin | 
+## # CLAM_OS_SUBCLASS is a finer differentiation of the OPERATING_SYSTEM.  currently only
+## # the darwin subclass for unix is considered.
+## export CLAM_OS_SUBCLASS
+## #CLAM_OS_SUBCLASS := darwin | 
 
-# set the default operating system when none is specified.
-ifeq "$(OP_SYSTEM)" ""
-#is there a nice way to join the greps?
-  IS_UNIX := $(shell uname | grep -i linux)
-  ifeq "$(IS_UNIX)" ""
-    IS_UNIX := $(shell uname | grep -i unix)
-    ifeq "$(IS_UNIX)" "" 
-      IS_UNIX := $(shell uname | grep -i darwin)
-      ifneq "$(IS_UNIX)" ""
-        # pick the subclass now that we know this is darwin.
-        OS_SUBCLASS := darwin
-      endif
-    endif
-  endif
-  IS_DOS := $(shell uname | grep -i cygwin)
-  ifeq "$(IS_DOS)" ""
-    IS_DOS := $(shell uname | grep -i ming)
-  endif
-  ifneq "$(IS_UNIX)" ""
-    OP_SYSTEM := UNIX
-  else
-    ifneq "$(IS_DOS)" ""
-      OP_SYSTEM := WIN32
-    else
-      # we do not have other comparisons yet, so we will assume unix.  fix this
-      # if it is not your default operating system.
-      OP_SYSTEM := UNIX
-    endif
-  endif
-endif
+## # set the default operating system when none is specified.
+## ifeq "$(OPERATING_SYSTEM)" ""
+## #is there a nice way to join the greps?
+##  CLAM_ON_UNIX := $(shell uname | grep -i linux)
+##  ifeq "$(CLAM_ON_UNIX)" ""
+##    CLAM_ON_UNIX := $(shell uname | grep -i unix)
+##    ifeq "$(CLAM_ON_UNIX)" "" 
+##      CLAM_ON_UNIX := $(shell uname | grep -i darwin)
+##      ifneq "$(CLAM_ON_UNIX)" ""
+##        # pick the subclass now that we know this is darwin.
+##        CLAM_OS_SUBCLASS := darwin
+##      endif
+##    endif
+##  endif
+##  CLAM_ON_DOS := $(shell uname | grep -i cygwin)
+##  ifeq "$(CLAM_ON_DOS)" ""
+##    CLAM_ON_DOS := $(shell uname | grep -i ming)
+##  endif
+##  ifneq "$(CLAM_ON_UNIX)" ""
+##    OPERATING_SYSTEM := UNIX
+##  else
+##    ifneq "$(CLAM_ON_DOS)" ""
+##      OPERATING_SYSTEM := WIN32
+##    else
+##      # we do not have other comparisons yet, so we will assume unix.  fix this
+##      # if it is not your default operating system.
+##      OPERATING_SYSTEM := UNIX
+##    endif
+##  endif
+##endif
 
-# now set a special ending for EXE files, which differs between the OSes.
-export EXE_END
-ifeq "$(OP_SYSTEM)" "WIN32"
-  EXE_END := .exe
-endif
+## # now set a special ending for EXE files, which differs between the OSes.
+## export EXE_ENDING
+## ifeq "$(OPERATING_SYSTEM)" "WIN32"
+##   EXE_ENDING := .exe
+## endif
 
 ###############################################################################
 

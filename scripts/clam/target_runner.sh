@@ -23,7 +23,7 @@ if [ ! -z "${RUN_TARGETS}" -a ! -z "${RUN_ALL_TESTS}" ]; then
     total_exitval=0;
     for program_name in ${RUN_TARGETS}; do
       base=$(basename $program_name);
-      if [ "$OP_SYSTEM" == "WIN32" ]; then
+      if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
         # extra step to force win32 applications to stay held in our grip,
         # since they will float off and appear to have stopped when
         # run by cygwin.  but by grabbing the i/o stream, we know it's

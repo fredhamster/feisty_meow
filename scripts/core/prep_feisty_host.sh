@@ -80,7 +80,7 @@ if whichable apt; then
   exit_on_error $PHASE_MESSAGE
 elif whichable yum; then  
   # rpm based with yum available...
-  sudo yum install perl-File-Which perl-Text-Diff
+  sudo yum install perl-Env perl-File-Which perl-Text-Diff
   exit_on_error $PHASE_MESSAGE
 elif [ ! -z "$IS_DARWIN" ]; then
   # macos based...
@@ -106,7 +106,7 @@ if whichable apt; then
   exit_on_error $PHASE_MESSAGE
 elif whichable yum; then  
   # rpm based with yum available...
-  sudo yum install mawk gcc gcc-c++ openssl-devel.x86_64 curl-devel
+  sudo yum install curl-devel gcc gcc-c++ mawk openssl-devel.x86_64 zlib-devel
   exit_on_error $PHASE_MESSAGE
 elif [ ! -z "$IS_DARWIN" ]; then
   # macos based...

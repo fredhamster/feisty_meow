@@ -25,7 +25,7 @@ ifneq "$(NO_COMPILE)" ""
 endif
 
 # implement special bits for gnu on unix.
-ifeq "$(COMPILER)" "GNU_LINUX"
+ifeq "$(CLAM_COMPILER)" "GNU_LINUX"
   ifneq "$(USE_XWIN)" ""
     DEFINITIONS += __XWINDOWS__ __X__
     LIBS_USED += Xm Xt X11 Xft Xp 
@@ -66,7 +66,7 @@ LIBS_USED += Xmu
 endif
 
 # some special code for gnu compiler on windows.
-ifeq "$(COMPILER)" "GNU_WINDOWS"
+ifeq "$(CLAM_COMPILER)" "GNU_WINDOWS"
 
   ifneq "$(USE_SSL)" ""
     LIBS_USED += ssl crypto
@@ -103,7 +103,7 @@ endif
 
 ###############################################################################
 
-ifeq "$(COMPILER)" "GNU_DARWIN"
+ifeq "$(CLAM_COMPILER)" "GNU_DARWIN"
   # finds the crypto code on macos.
   HEADER_SEARCH_PATH += /usr/local/opt/openssl/include
   LIBRARY_SEARCH_PATH += /usr/local/opt/openssl/lib/
@@ -174,7 +174,7 @@ OBJECTS = $(TEMP_OBJ4)
 ACTUAL_OBJECTS = $(OBJECTS) $(EXTRA_OBJECTS)
 
 # Updates the search path for the compiler and local libraries.
-BASE_HEADER_PATH = $(CODEBASE_HEADERS) $(LOCAL_HEADERS) $(HOOPLE_HEADERS) $(SEARCH_DIRS)
+BASE_HEADER_PATH = $(CODEBASE_HEADERS) $(LOCAL_HEADERS) $(FEISTY_MEOW_CPP_HEADERS) $(SEARCH_DIRS)
 HEADER_SEARCH_PATH += $(BASE_HEADER_PATH) $(COMPILER_HEADER_DIR)
 
 LIBRARY_SEARCH_PATH += $(LOCAL_LIBRARIES) $(HOOPLE_LIBRARIES) \
@@ -187,8 +187,8 @@ COMPILER_FLAGS += $(HEADER_SEARCH_PATH:%=-I%) $(DEFINITIONS:%=-D%) $(UNDEFINITIO
 # The load flags are updated by looking for code libraries in the directories
 # to search and by adding all of the code libraries that are used.
 LOAD_FLAG_PREFIX += $(LIBRARY_SEARCH_PATH:%=$(LIBRARY_PATH_FLAG)%)
-ifeq "$(OP_SYSTEM)" "UNIX"
-  ifneq "$(COMPILER)" "GNU_DARWIN"
+ifeq "$(OPERATING_SYSTEM)" "UNIX"
+  ifneq "$(CLAM_COMPILER)" "GNU_DARWIN"
     LOAD_FLAG_PREFIX += -Xlinker --start-group
     LOAD_FLAG_SUFFIX += -Xlinker --end-group
   endif
@@ -209,8 +209,8 @@ EXE_CPPS   = $(EXE_TEMP_3:%.exe=%.cpp)
 MULTI_BUILD_CMD = $(CC) $(COMPILER_FLAGS) -c `cat $(BUILD_LIST_FILE)` $(OBJECT_NAME_FLAG)$(OBJECT_DIR)/
 
 ifeq "$(OMIT_VERSIONS)" ""
-  ifneq "$(VERSION_RC_ROOT)" ""
-    VERSION_TARGET = $(VERSION_RC_ROOT)_version.rc
+  ifneq "$(CLAM_VERSION_RC_ROOT)" ""
+    VERSION_TARGET = $(CLAM_VERSION_RC_ROOT)_version.rc
   endif
 endif
 
@@ -355,7 +355,7 @@ $(STATIC_LIBRARY_DIR)/%.library: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LO
 	$(HIDER)echo Building Static Library [$(notdir $@)]
 	@echo $@ >$(DIRTY_FILE)
 	$(CATCHER)$(LIBRARY_TOOL) $(LIBRARIAN_FLAGS) $(CREATE_LIBRARY_FLAG)$@ $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%)
-  ifneq "$(OP_SYSTEM)" "UNIX"
+  ifneq "$(OPERATING_SYSTEM)" "UNIX"
 	$(HIDER)ranlib $@ 
 	$(HIDER)rm -f $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
 	$(HIDER)ln -s $@ $(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)$*$(LIB_ENDING)
@@ -388,10 +388,10 @@ $(DYNAMIC_LIBRARY_DIR)/%.dll: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL
 	echo about to run link tool.
 	$(CATCHER)$(LINK_TOOL) $(LINKER_OUTPUT_FLAG)$@ -dll $(LOAD_FLAG_PREFIX) $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_RESX_FLAGS) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)$(LIB_PREFIX)%$(LIB_ENDING)) $(LOAD_FLAG_SUFFIX)
 	echo ran link tool.
-  ifeq "$(COMPILER_VERSION)" "8"
+  ifeq "$(CLAM_COMPILER_VERSION)" "8"
 	$(HIDESH)$(CLAM_SCRIPTS)/cpp/ms_manifest.sh "$@" "2"
   endif
-  ifeq "$(COMPILER_VERSION)" "10"
+  ifeq "$(CLAM_COMPILER_VERSION)" "10"
 	$(HIDESH)$(CLAM_SCRIPTS)/cpp/ms_manifest.sh "$@" "2"
   endif
   ifneq "$(VCPP_VISTA_ICON)" ""
@@ -405,7 +405,7 @@ endif
 
 ifeq "$(NO_COMPILE)" ""
 $(DYNAMIC_LIBRARY_DIR)/%.so: $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(STATIC_LIBRARY_DIR)/$(LIB_PREFIX)%$(LIB_ENDING)) $(PARAMETER_FILE)
-  ifeq "$(COMPILER:%_LINUX=LINUX)" "LINUX"
+  ifeq "$(CLAM_COMPILER:%_LINUX=LINUX)" "LINUX"
 	$(HIDER)echo Shared [$@]
 	@echo $@ >$(DIRTY_FILE)
 	$(CATCHER)$(LINK_TOOL) $(LINKER_OUTPUT_FLAG)$@ $(LOAD_FLAG_PREFIX) -shared -Wl,-soname,$*.so $(ACTUAL_OBJECTS:%=$(OBJECT_DIR)/%) $(ACTUAL_LOCAL_LIBS:%=$(LIBRARY_NAME_FLAG)%) $(LOAD_FLAG_SUFFIX) 
@@ -456,10 +456,10 @@ endif #no_compile
 # handles creating version resource files if this project has a version.ini.
 
 ifeq "$(OMIT_VERSIONS)" ""
-  ifneq "$(VERSION_RC_ROOT)" ""
+  ifneq "$(CLAM_VERSION_RC_ROOT)" ""
 # only redo the version resource if it or version.ini is out of date.
 %_version.rc: version.ini $(PARAMETER_FILE)
-	$(CATCHER)$(CLAM_BINARIES)/version_stamper$(EXE_END) . $(FEISTY_MEOW_GENERATED_STORE)/versions $(PARAMETER_FILE)
+	$(CATCHER)$(CLAM_BINARIES)/version_stamper$(EXE_ENDING) . $(FEISTY_MEOW_GENERATED_STORE)/versions $(PARAMETER_FILE)
   endif
 endif
 
@@ -474,8 +474,6 @@ ifeq "$(TYPE)" "hierarchy"
 endif
 ifneq "$(CLEAN)" ""
   NO_DEPS = t
-  # no dependencies get left when we are cleaning up.
-#  $(shell rm -f $(DEPS_FILE))
 endif
 ifneq "$(NO_COMPILE)" ""
   # non compiling projects do not need dependencies.
@@ -527,17 +525,17 @@ else
     else  # lax dependencies means create if missing or if parm file changed.
       $(DEPS_FILE): $(PARAMETER_FILE)
     endif # !lax dependencies.
-    ifneq "$(VERSION_RC_ROOT)" ""
+    ifneq "$(CLAM_VERSION_RC_ROOT)" ""
       ifeq "$(OMIT_VERSIONS)" ""
-        $(DEPS_FILE): $(VERSION_RC_ROOT)_version.rc
+        $(DEPS_FILE): $(CLAM_VERSION_RC_ROOT)_version.rc
       endif
     endif
 	@echo Dependencies [$(notdir $@)]
 	-$(HIDESH)$(CLAM_SCRIPTS)/cpp/preconditions.sh
 	@touch $@
 #	@echo dep adds: $(DEPENDENCY_ADDITIONS)
-	@$(CLAM_BINARIES)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
-#	$(CATCHER)$(CLAM_BINARIES)/makedep$(EXE_END) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
+	@$(CLAM_BINARIES)/makedep$(EXE_ENDING) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
+#	$(CATCHER)$(CLAM_BINARIES)/makedep$(EXE_ENDING) $(DEPENDENCY_DEFINITIONS:%=-D%) $(DEPENDENCY_ADDITIONS) -f$@ -o.obj -p$(OBJECT_DIR)/ -w 420 $(COMPILER_HEADER_DIR:%=-X%) $(THIRD_PARTY_DIR:%=-X%) -- $(COMPILER_FLAGS) $(SOURCE) $(EXE_CPPS)
 	@echo $@ >$(SUBMAKE_FLAG)
   endif # non-compile.
  else # cleaning.
@@ -581,7 +579,7 @@ pre_compilation:
 ############################################################################
 
 # calls the script for copying the final products to the library directory.
-# we don't bother reporting errors from touch since there will sometimes
+# we do not bother reporting errors from touch since there will sometimes
 # not be any objects in the final directory.
 post_compilation:
 	$(HIDESH)$(CLAM_SCRIPTS)/cpp/postconditions.sh
