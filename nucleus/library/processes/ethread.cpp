@@ -23,13 +23,13 @@
 #include <structures/static_memory_gremlin.h>
 #include <timely/time_control.h>
 
-#ifdef _MSC_VER
-  #include <process.h>
-#elif defined(__UNIX__) || defined(__GNU_WINDOWS__)
+//#ifdef _MSC_VER
+//  #include <process.h>
+//#elif defined(__UNIX__) || defined(__GNU_WINDOWS__)
   #include <pthread.h>
-#else
-  #error unknown OS for thread support.
-#endif
+//#else
+  //#error unknown OS for thread support.
+//#endif
 
 using namespace basis;
 using namespace loggers;
@@ -89,11 +89,11 @@ ethread::ethread()
   _thread_active(false),
   _stop_thread(false),
   _data(NULL_POINTER),
-#ifdef _MSC_VER
-  _handle(0),
-#else
+//#ifdef _MSC_VER
+//  _handle(0),
+//#else
   _handle(new pthread_t),
-#endif
+//#endif
   _sleep_time(0),
   _periodic(false),
   _next_activation(new time_stamp),
@@ -107,11 +107,11 @@ ethread::ethread(int sleep_timer, timed_thread_types how)
   _thread_active(false),
   _stop_thread(false),
   _data(NULL_POINTER),
-#ifdef _MSC_VER
-  _handle(0),
-#else
+//#ifdef _MSC_VER
+//  _handle(0),
+//#else
   _handle(new pthread_t),
-#endif
+//#endif
   _sleep_time(sleep_timer),
   _periodic(true),
   _next_activation(new time_stamp),
@@ -127,9 +127,9 @@ ethread::~ethread()
 {
   stop();
   WHACK(_next_activation);
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   WHACK(_handle);
-#endif
+//#endif
 }
 
 ///void ethread::pre_thread() {}
@@ -155,7 +155,7 @@ bool ethread::start(void *thread_data)
   int error = 0;
   int attempts = 0;
   while (attempts++ < MAXIMUM_CREATE_ATTEMPTS) {
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
     pthread_attr_t attribs;  // special flags for creation of thread.
     int aret = pthread_attr_init(&attribs);
     if (aret) LOG("failed to init attribs.");
@@ -170,6 +170,7 @@ bool ethread::start(void *thread_data)
           (void *)this);
     if (!ret) success = true;
     else error = ret;
+/*
 #else
     if (_periodic)
       _handle = _beginthread(periodic_thread_driver, 0, (void *)this);
@@ -178,6 +179,7 @@ bool ethread::start(void *thread_data)
     if (_handle != -1) success = true;
     else error = critical_events::system_error();
 #endif
+*/
     if (success) break;  // got it created.
     LOG("failed to create thread; trying again...");
     time_control::sleep_ms(SNOOZE_FOR_RETRY);
@@ -197,6 +199,7 @@ void ethread::stop()
   cancel();  // tell thread to leave.
   if (!thread_started()) return;  // not running.
   while (!thread_finished()) {
+/*
 #ifdef _MSC_VER
     int result = 0;
     if (!GetExitCodeThread((HANDLE)_handle, (LPDWORD)&result)
@@ -205,6 +208,7 @@ void ethread::stop()
       break;
     }
 #endif
+*/
     time_control::sleep_ms(10);  // wait for thread to leave.
   }
 }
@@ -213,26 +217,26 @@ void ethread::exempt_stop()
 {
   _thread_active = false;
   _thread_ready = false;
-#ifdef _MSC_VER
-  _handle = 0;
-#endif
+//#ifdef _MSC_VER
+//  _handle = 0;
+//#endif
 }
 
-#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
+//#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 void *ethread::one_shot_thread_driver(void *hidden_pointer)
-#elif defined(_MSC_VER)
-void ethread::one_shot_thread_driver(void *hidden_pointer)
-#else
-#error unknown thread signature.
-#endif
+//#elif defined(_MSC_VER)
+//void ethread::one_shot_thread_driver(void *hidden_pointer)
+//#else
+//#error unknown thread signature.
+//#endif
 {
   FUNCDEF("one_shot_thread_driver");
   ethread *manager = (ethread *)hidden_pointer;
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   if (!manager) return NULL_POINTER;
-#else
-  if (!manager) return;
-#endif
+//#else
+  //if (!manager) return;
+//#endif
 #ifdef COUNT_THREADS
   _current_threads().increment();
 #endif
@@ -244,29 +248,29 @@ void ethread::one_shot_thread_driver(void *hidden_pointer)
 #ifdef COUNT_THREADS
   _current_threads().decrement();
 #endif
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   pthread_exit(NULL_POINTER);
   return NULL_POINTER;
-#else
-  _endthread();
-#endif
+//#else
+  //_endthread();
+//#endif
 }
 
-#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
+//#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
 void *ethread::periodic_thread_driver(void *hidden_pointer)
-#elif defined(_MSC_VER)
-void ethread::periodic_thread_driver(void *hidden_pointer)
-#else
-#error unknown thread signature.
-#endif
+//#elif defined(_MSC_VER)
+//void ethread::periodic_thread_driver(void *hidden_pointer)
+//#else
+//#error unknown thread signature.
+//#endif
 {
   FUNCDEF("periodic_thread_driver");
   ethread *manager = (ethread *)hidden_pointer;
-#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
+//#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   if (!manager) return NULL_POINTER;
-#elif defined(_MSC_VER)
-  if (!manager) return;
-#endif
+//#elif defined(_MSC_VER)
+//  if (!manager) return;
+//#endif
 #ifdef COUNT_THREADS
   _current_threads().increment();
 #endif
@@ -316,12 +320,12 @@ void ethread::periodic_thread_driver(void *hidden_pointer)
 #ifdef COUNT_THREADS
   _current_threads().decrement();
 #endif
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   pthread_exit(NULL_POINTER);
   return NULL_POINTER;
-#else
-  _endthread();
-#endif
+//#else
+  //_endthread();
+//#endif
 }
 
 } //namespace.

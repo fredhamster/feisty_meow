@@ -116,6 +116,7 @@ private:
   file_location_default _where;  //!< where to find and store the file.
   bool _add_spaces;  //!< tracks whether we're adding spaces around equals.
 
+/*
 #ifdef _MSC_VER
   bool put_profile_string(const basis::astring &section, const basis::astring &entry,
           const basis::astring &to_store);
@@ -125,11 +126,12 @@ private:
           int buffer_size);
     //!< encapsulates windows' ini retrieval method.
 #else
+*/
   void read_ini_file();
     //!< reads the INI file's contents into memory.
   void write_ini_file();
     //!< store the current contents into the INI file.
-#endif
+//#endif
 
   // not to be called.
   ini_configurator(const ini_configurator &);

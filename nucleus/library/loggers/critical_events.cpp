@@ -26,9 +26,7 @@
 #include <timely/time_stamp.h>
 
 #include <stdio.h>
-#ifndef _MSC_VER
-  #include <errno.h>
-#endif
+#include <errno.h>
 
 using namespace basis;
 using namespace structures;
@@ -56,8 +54,8 @@ basis::un_int critical_events::system_error()
 {
 #if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   return errno;
-#elif defined(_MSC_VER)
-  return GetLastError();
+//#elif defined(_MSC_VER)
+//  return GetLastError();
 #else
   #pragma error("hmmm: no code for error number for this operating system")
   return 0;
@@ -68,6 +66,7 @@ astring critical_events::system_error_text(basis::un_int to_name)
 {
 #if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   return strerror(to_name);
+/*
 #elif defined(_MSC_VER)
   char error_text[1000];
   FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL_POINTER, to_name,
@@ -79,6 +78,7 @@ astring critical_events::system_error_text(basis::un_int to_name)
       || (to_return[to_return.end()] == '\n') )
     to_return.zap(to_return.end(), to_return.end());
   return to_return;
+*/
 #else
   #pragma error("hmmm: no code for error text for this operating system")
   return "";

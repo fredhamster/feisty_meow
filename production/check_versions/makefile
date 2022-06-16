@@ -7,7 +7,7 @@ TYPE = test
 #TARGETS = check_versions.exe
 DEFINITIONS += __BUILD_STATIC_APPLICATION__
 
-ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(OPERATING_SYSTEM)" "WIN32"
  ifeq "$(BOOT_STRAPPING)" ""
   LAST_TARGETS = run_checks
  endif

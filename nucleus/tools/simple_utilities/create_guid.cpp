@@ -27,7 +27,12 @@
 #include <structures/static_memory_gremlin.h>
 #include <textual/string_manipulation.h>
 
-#ifdef _MSC_VER
+#ifdef __WIN32__
+//  #define DO_GUIDS
+//hmmm: currently disabled due to problems compiling in cygwin using this header; complains about new.h being missing.
+#endif
+
+#ifdef DO_GUIDS
   #include <comdef.h>
 #endif
 
@@ -59,8 +64,7 @@ int create_guid::execute()
 {
   FUNCDEF("execute");
   SETUP_CONSOLE_LOGGER;
-#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
-
+#ifndef DO_GUIDS
 // this is completely bogus for the time being.  it just produces a random
 // number rather than a guid.
   #define add_random \
@@ -77,7 +81,7 @@ int create_guid::execute()
   for (int i = 0; i < 8; i++) add_random;
   faux_guid += "}";
   BASE_LOG(faux_guid.lower());
-#elif defined (_MSC_VER)
+#elif defined (DO_GUIDS)
   GUID guid;
   CoCreateGuid(&guid);
   const int BUFFER_SIZE = 1024;

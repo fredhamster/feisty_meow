@@ -1,11 +1,11 @@
 #include <CxxToken.hxx>
 #include <stdio.h>
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
 #include <alloca.h>
-#else
-#include <malloc.h>
+//#else
+//#include <malloc.h>
 //#define alloca _alloca
-#endif
+//#endif
 void advance_search();
 void end_search(CxxToken *aToken);
 YACC_MARK_TYPE mark();

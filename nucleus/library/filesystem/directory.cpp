@@ -34,9 +34,9 @@
   #include <string.h>
   #include <unistd.h>
 #endif
-#ifdef _MSC_VER
-  #include <direct.h>
-#endif
+//#ifdef _MSC_VER
+//  #include <direct.h>
+//#endif
 
 /*
 #ifdef __WIN32__
@@ -102,26 +102,26 @@ astring directory::absolute_path(const astring &rel_path)
 {
   char abs_path[MAX_ABS_PATH + 1];
   abs_path[0] = '\0';
-#ifdef _MSC_VER
-  if (!_fullpath(abs_path, rel_path.s(), MAX_ABS_PATH)) return "";
-  return abs_path;
-#else
+//#ifdef _MSC_VER
+//  if (!_fullpath(abs_path, rel_path.s(), MAX_ABS_PATH)) return "";
+//  return abs_path;
+//#else
   if (!realpath(rel_path.s(), abs_path)) return "";
   return abs_path;
-#endif
+//#endif
 }
 
 astring directory::current()
 {
   astring to_return(".");  // failure result.
-#ifdef _MSC_VER
-  flexichar buffer[MAX_ABS_PATH + 1] = { '\0' };
-  GetCurrentDirectory(MAX_ABS_PATH, buffer);
-  to_return = from_unicode_temp(buffer);
-#else
+//#ifdef _MSC_VER
+//  flexichar buffer[MAX_ABS_PATH + 1] = { '\0' };
+//  GetCurrentDirectory(MAX_ABS_PATH, buffer);
+//  to_return = from_unicode_temp(buffer);
+//#else
   char buffer[MAX_ABS_PATH + 1] = { '\0' };
   if (realpath(".", buffer)) to_return = buffer;
-#endif
+//#endif
   return to_return;
 }
 
@@ -152,6 +152,7 @@ bool directory::rescan()
   _folders->reset();
   astring cur_dir = ".";
   astring par_dir = "..";
+/*
 #ifdef _MSC_VER
   // start reading the directory.
   WIN32_FIND_DATA wfd;
@@ -196,6 +197,7 @@ bool directory::rescan()
   } while (FindNextFile(search_handle, &wfd));
   FindClose(search_handle);
 #else
+*/
   DIR *dir = opendir(_path->s());
 //hmmm: could check errno to determine what caused the problem.
   if (!dir) return false;
@@ -224,7 +226,7 @@ bool directory::rescan()
     entry = readdir(dir);
   }
   closedir(dir);
-#endif
+//#endif
   shell_sort(_files->access(), _files->length());
   shell_sort(_folders->access(), _folders->length());
 

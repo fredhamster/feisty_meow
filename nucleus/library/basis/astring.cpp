@@ -19,12 +19,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
 #ifdef _MSC_VER
   #undef strcasecmp 
   #undef strncasecmp 
   #define strcasecmp strcmpi
   #define strncasecmp strnicmp
 #endif
+*/
 
 //#define DEBUG_STRING
   // uncomment for debugging version.

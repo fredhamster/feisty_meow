@@ -124,10 +124,11 @@ export PROJECT
 export TARGETS
 
 # "ACTUAL_TARGETS" is how the targets are expected to be passed to the rules
-# file; this allows rules from a plug-in module to manipulate the TARGETS to make
-# sure that important files do not get deleted by the automatic deletion done
-# with "make clean."  If the real module used does not create a variable called
-# ACTUAL_TARGETS from the TARGETS, then the default specified here is used.
+# file.  This allows rules from a plug-in module to manipulate the TARGETS to
+# make sure that important files do not get deleted by the automatic deletion
+# done with "make clean."  If the real module used does not create a variable
+# called ACTUAL_TARGETS from the TARGETS, then the default specified here is
+# used.
 export ACTUAL_TARGETS = $(TARGETS)
 
 # "FIRST_TARGETS" and "LAST_TARGETS" are targets that need to be processed

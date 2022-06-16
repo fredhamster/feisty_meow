@@ -14,6 +14,9 @@ export BASIC_PLAY_CMD='echo Unknown basic sound player...'
 if [ -f "/usr/bin/play" ]; then
 #echo we see /usr/bin/play available...
   BASIC_PLAY_CMD=/usr/bin/play
+elif [ ! -z "$WINDIR" ]; then
+#echo "kludge for win32; we provide our own sound player."
+  BASIC_PLAY_CMD=playsound
 elif [ ! -z "$(whichable afplay)" ]; then
 #echo we see afplay available...
   BASIC_PLAY_CMD=afplay
@@ -26,9 +29,6 @@ elif [ ! -z "$(psfind esd)" ]; then
 elif [ ! -z "$(psfind pulseaudio)" ]; then
 #echo we see pulse running...
   BASIC_PLAY_CMD="padsp aplay"
-elif [ ! -z "$WINDIR" ]; then
-#echo kludge for win32; we provide our own sound player.
-  BASIC_PLAY_CMD=playsound
 else
   echo "I don't know how to play basic sound files for this OS and sound system."
 fi

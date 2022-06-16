@@ -439,9 +439,9 @@ ifeq "$(CLAM_COMPILER)" "GNU_LINUX"
   CC = g++
 #  CLAM_COMPILER_ROOT_DIR = /
   PLATFORM_ADD_IN = linux_
-#  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
+##  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
 
-  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
+##  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
 
   DEFINITIONS += _FILE_OFFSET_BITS=64 
 
@@ -527,7 +527,7 @@ ifeq "$(CLAM_COMPILER)" "GNU_ARM_LINUX"
   CC = $(CLAM_COMPILER_ROOT_DIR)/bin/g++
   PLATFORM_ADD_IN = linux_
 
-  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
+##  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
 
   SNAPGEAR_ROOT_DIR = $(HOME)/snapgear
 
@@ -576,7 +576,7 @@ ifeq "$(CLAM_COMPILER)" "GNU_WINDOWS"
 ##hmmm: below fixes nothing!  argh!
 ##  ARCHITECTURE = i386
 
-  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
+##  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
 
 #  RC := $(CLAM_COMPILER_ROOT_DIR)/bin/windres
   PLATFORM_ADD_IN = w32_
@@ -617,7 +617,7 @@ ifeq "$(CLAM_COMPILER)" "GNU_DARWIN"
   PLATFORM_ADD_IN = darwin
 ##  ARCHITECTURE = $(shell machine 2>/dev/null || arch 2>/dev/null || echo i686)
 
-  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
+##  export CLAM_COMPILER_VERSION = $(shell $(SHELL) $(CLAM_SCRIPTS)/cpp/get_version.sh $(CLAM_COMPILER) $(CLAM_COMPILER_ROOT_DIR) )
 
   DEFINITIONS += _FILE_OFFSET_BITS=64 
 

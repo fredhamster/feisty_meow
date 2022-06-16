@@ -34,12 +34,12 @@ in this Software without prior written authorization from the X Consortium.
 
 #include <string.h>
 
-#ifdef _MSC_VER
-  #undef strcasecmp
-  #undef strncasecmp
-  #define strcasecmp strcmpi
-  #define strncasecmp strnicmp
-#endif
+//#ifdef _MSC_VER
+//  #undef strcasecmp
+//  #undef strncasecmp
+//  #define strcasecmp strcmpi
+//  #define strncasecmp strnicmp
+//#endif
 
 extern inclist inc_list[MAXFILES], *inclistp;
 extern char *includedirs[ ];

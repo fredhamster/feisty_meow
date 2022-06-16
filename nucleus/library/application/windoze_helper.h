@@ -23,12 +23,12 @@
 // gnarly headers that are needed for certain types of compilation...
 
 //unix headers not needed in here for new purpose of file.
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   #include <unistd.h>
   #ifdef __GNU_WINDOWS__
     #include <sys/unistd.h>
   #endif
-#endif
+//#endif
 #ifndef NO_XWINDOWS
   #ifdef __XWINDOWS__
     #include <Intrinsic.h>

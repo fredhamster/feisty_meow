@@ -81,17 +81,19 @@ public:
     function. */
 
 private:
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   static void exiting_child_signal_handler(int sig_num);
     //!< awaits the child processes rather than leaving process handles willy nilly.
+/*
 #else
   static bool event_poll(tagMSG &message);
     //!< tries to process one win32 event and retrieve the "message" from it.
-    /*!< this is a very general poll and will retrieve any message that's
+    / *!< this is a very general poll and will retrieve any message that's
     available for the current thread.  the message is actually processed
     here also, by calling translate and dispatch.  the returned structure
-    is mainly interesting for knowing what was done. */
+    is mainly interesting for knowing what was done. * /
 #endif
+*/
   
 };
 
