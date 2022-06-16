@@ -156,6 +156,7 @@ public:
 
 // compiler specific dumping ground for global settings...
 
+/*
 #ifdef _MSC_VER
   // turns off annoying complaints from visual c++.
   #pragma warning(disable : 4251 4275 4003 4800 4355 4786 4290 4996 4407)
@@ -180,6 +181,7 @@ public:
 //  typedef long long __int64;
   //#define __SIZE_TYPE__ long unsigned int
 #endif  // ms visual c++.
+*/
 
 //////////////
 

@@ -69,10 +69,12 @@ public:
 
   // internal methods.
 
+/*
 #if defined(_MSC_VER)
   basis::un_int *real_timer_id();
     //!< provides the timer id for comparison on windows platforms.
 #endif
+*/
 
   void handle_system_timer();
     //!< invoked by the OS timer support and must be called by main thread.

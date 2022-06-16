@@ -217,10 +217,10 @@ Booleano isLegalUTF8Sequence(const UTF8 *source, const UTF8 *sourceEnd);
   #define from_unicode_persist(name, s) null_transcoder name(s, true) 
 #endif
 
-#ifdef _MSC_VER
-  //! sends UTF-8 information to the diagnostic view in the IDE.
-  #define TRACE_PRINT(s) TRACE(_T("%s"), to_unicode_temp(s))
-#endif
+//#ifdef _MSC_VER
+//  //! sends UTF-8 information to the diagnostic view in the IDE.
+//  #define TRACE_PRINT(s) TRACE(_T("%s"), to_unicode_temp(s))
+//#endif
 
 //////////////
 
@@ -315,6 +315,9 @@ public:
   int length() const;
   operator char * () { return (char *)_converted; }
   operator const char * () const { return (const char *)_converted; }
+
+  operator astring() const { return astring((const char *)_converted); }
+    //!< converts the char pointer into an astring object.
 
 private:
   bool _make_own_copy;

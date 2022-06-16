@@ -499,7 +499,7 @@ bool process_control::get_processes_with_toolhelp(process_entry_array &to_fill)
 }
 #endif  // __WIN32__
 
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
 
 #define CLOSE_TEMPORARY_FILE { \
 /*  continuable_error("process_control", "get_processes_with_ps", error); */ \
@@ -594,7 +594,7 @@ LOG("failed to open process list file!");
   }
   return true;
 }
-#endif  // __UNIX__
+//#endif  // __UNIX__
 
 } //namespace.
 

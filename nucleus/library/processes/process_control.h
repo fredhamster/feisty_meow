@@ -74,16 +74,17 @@ public:
 
 private:
   process_implementation_hider *_ptrs;  //!< our OS baggage.
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   mathematics::chaos *_rando;  //!< used for process list.
-#else
-  bool _use_psapi;  //!< true if we should be using the PSAPI on NT and family.
-#endif
+//#else
+  //bool _use_psapi;  //!< true if we should be using the PSAPI on NT and family.
+//#endif
   bool _healthy;  //!< true if construction succeeded.
 
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   bool get_processes_with_ps(process_entry_array &to_fill);
     //!< asks the ps program what processes exist.
+/*
 #else
   // fill in our function pointers to access the kernel functions appropriate
   // for either NT (psapi) or 9x (toolhelp).
@@ -95,6 +96,7 @@ private:
   bool get_processes_with_toolhelp(process_entry_array &to_fill);
     //!< uses the toolhelp support for windows 9x, ME, 2000.
 #endif
+*/
 };
 
 } //namespace.

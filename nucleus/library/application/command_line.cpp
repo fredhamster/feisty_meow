@@ -247,6 +247,7 @@ string_array command_line::get_command_line()
     // we don't need a long string to be parsed; the list is ready.
     return listo_cmds;
   }
+/*
 #elif defined(_MSC_VER)
   // we have easy access to the original list of commands.
   for (int i = 0; i < _global_argc; i++) {
@@ -254,6 +255,7 @@ string_array command_line::get_command_line()
     listo_cmds += _global_argv[i];
   }
   return listo_cmds;
+*/
 #else
   COMPLAIN_CMDS("this OS doesn't support getting the command line.");
   return listo_cmds;

@@ -55,6 +55,8 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 # outer check on whether this already was run or not.
 if [ -z "$BUILD_VARS_LOADED" ]; then
 
+echo build variables were not loaded so recalculating.
+
 # perform some calculations to get the right paths from our parameters.
 if [ ! -z "$PARM_1" ]; then
   # use the first real parameter since this is probably the 'source' version.

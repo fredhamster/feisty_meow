@@ -10,6 +10,9 @@ TARGETS = create_guid.exe playsound.exe short_path.exe sleep_ms.exe \
 ifeq "$(OMIT_VERSIONS)" ""
   SOURCE += simple_utils_version.rc
 endif
+ifeq "$(OPERATING_SYSTEM)" "WIN32"
+  LIBS_USED += winmm
+endif
 DEFINITIONS += __BUILD_STATIC_APPLICATION__
 UNDEFINITIONS += ENABLE_MEMORY_HOOK ENABLE_CALLSTACK_TRACKING
 

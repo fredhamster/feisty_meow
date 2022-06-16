@@ -17,10 +17,10 @@
 
 #include <stdlib.h>
 #include <sys/types.h>
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   #include <unistd.h>
   #include <sys/times.h>
-#endif
+//#endif
 /*
 #ifdef _MSC_VER
   #define _WINSOCKAPI_  // make windows.h happy about winsock.
@@ -56,13 +56,13 @@ astring environment::TMP()
 
 astring environment::get(const astring &variable_name)
 {
-#ifdef _MSC_VER
-  char *value = getenv(variable_name.upper().observe());
-    // dos & os/2 require upper case for the name, so we just do it that way.
-#else
+//#ifdef _MSC_VER
+//  char *value = getenv(variable_name.upper().observe());
+//    // dos & os/2 require upper case for the name, so we just do it that way.
+//#else
   char *value = getenv(variable_name.observe());
     // reasonable OSes support mixed-case environment variables.
-#endif
+//#endif
   astring to_return;
   if (value)
     to_return = astring(value);
@@ -72,20 +72,20 @@ astring environment::get(const astring &variable_name)
 bool environment::set(const astring &variable_name, const astring &value)
 {
   int ret = 0;
-#ifdef _MSC_VER
-  astring assignment = variable_name + "=" + value;
-  ret = _putenv(assignment.s());
-#else
+//#ifdef _MSC_VER
+//  astring assignment = variable_name + "=" + value;
+//  ret = _putenv(assignment.s());
+//#else
   ret = setenv(variable_name.s(), value.s(), true);
-#endif
+//#endif
   return !ret;
 }
 
 basis::un_int environment::system_uptime()
 {
-#ifdef _MSC_VER
-  return timeGetTime();
-#else
+//#ifdef _MSC_VER
+//  return timeGetTime();
+//#else
   static clock_t __ctps = sysconf(_SC_CLK_TCK);  // clock ticks per second.
   static const double __multiplier = 1000.0 / double(__ctps);
     // the multiplier gives us our full range for the tick counter.
@@ -105,7 +105,7 @@ basis::un_int environment::system_uptime()
   // emulation) and thus it becomes a bug around 49 days and 17 hours into
   // OS uptime because the value gets stuck at 2^32-1 and never rolls over.
   return basis::un_int(ticks_up);
-#endif
+//#endif
 }
 
 } //namespace.
