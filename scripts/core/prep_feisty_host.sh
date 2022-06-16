@@ -8,15 +8,42 @@
 #   bash
 #   anything else?
 
+#weird approach here man.
+#  why are we assuming any part of feisty meow is set up yet?
+#  the dependencies that the codebase has are why we're installing things below.
+#  so:
+#    + intuit the feisty meow location based on relative dir placement.
+#    + reduce checks to barest presence ones.
+#    + drop any requirements on feisty functions that might require the
+#      very code we're installing.
+
+
 ####
 
-# something borrowed...
+# helper scripts...
+
 function exit_on_error() {
   if [ $? -ne 0 ]; then
     echo -e "\n\nan important action failed and this script will stop:\n\n$*\n\n*** Exiting script..."
-    error_sound
+#    error_sound
     exit 1
   fi
+}
+
+function whichable()
+{
+  to_find="$1";
+  shift;
+  local WHICHER="$(/usr/bin/which which 2>/dev/null)";
+  if [ $? -ne 0 ]; then
+      echo;
+      return 2;
+  fi;
+  local sporkenz;
+  sporkenz=$($WHICHER "$to_find" 2>/dev/null);
+  local err=$?;
+  echo $sporkenz;
+  return $err
 }
 
 ####
@@ -48,23 +75,30 @@ Please follow the install instructions at:
 #    e.g.?? $ bash /opt/feistymeow.org/feisty_meow/scripts/core/reconfigure_feisty_meow.sh
 #    hmmm: above ALSO ESSENTIAL TO GET RIGHT!
 
-PHASE_MESSAGE="Checking integrity of Feisty Meow subsystem"
-if [ -z $FEISTY_MEOW_APEX ]; then
+BASE_PHASE_MESSAGE="Feisty Meow subsystems integrity check: "
+
+# is our main variable set?
+PHASE_MESSAGE="$BASE_PHASE_MESSAGE presence of FEISTY_MEOW_APEX variable"
+if [ -z "$FEISTY_MEOW_APEX" ]; then
   false; exit_on_error $PHASE_MESSAGE
 fi
 
 # simple brute force check.  can we go there?
+PHASE_MESSAGE="$BASE_PHASE_MESSAGE check on directory $FEISTY_MEOW_APEX"
 pushd $FEISTY_MEOW_APEX &> /dev/null
-exit_on_error locating feisty meow top-level folder
+exit_on_error $PHASE_MESSAGE
 popd &> /dev/null
 
 # now ask feisty if it's there; should work as long as our scripts are in place.
-bash $FEISTY_MEOW_APEX/scripts/core/is_feisty_up.sh
-exit_on_error $PHASE_MESSAGE
+#PHASE_MESSAGE="$BASE_PHASE_MESSAGE inquiry is_feisty_up"
+#bash $FEISTY_MEOW_APEX/scripts/core/is_feisty_up.sh
+#exit_on_error $PHASE_MESSAGE
 
 # standard load-up.
 #hmmm: this will currently fail if reconfigure has never been called.
-source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+#NO NO NO. source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+# we are preparing to get feisty running; how can we use feisty during
+# that process?  so bad.
 
 ####
 
