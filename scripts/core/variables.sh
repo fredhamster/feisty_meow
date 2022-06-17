@@ -191,8 +191,9 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   # variables for perl.
   
   if [[ $PERLLIB =~ .*$FEISTY_MEOW_SCRIPTS.* ]]; then
-#if debug!
-    echo skipping PERLLIB since already mentions feisty meow scripts.
+    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+      echo skipping PERLLIB since already mentions feisty meow scripts.
+    fi
   else
     define_yeti_variable PERLLIB+="/usr/lib/perl5"
     if [ "$OS" == "Windows_NT" ]; then
