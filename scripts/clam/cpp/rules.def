@@ -24,129 +24,70 @@ ifneq "$(NO_COMPILE)" ""
   QUIET = t
 endif
 
-# implement special bits for gnu on unix.
-ifeq "$(CLAM_COMPILER)" "GNU_LINUX"
-  ifneq "$(USE_XWIN)" ""
-    DEFINITIONS += __XWINDOWS__ __X__
-    LIBS_USED += Xm Xt X11 Xft Xp 
+# add-ins for packages we use.
+
+# secure socket and crypto libraries.
+ifneq "$(USE_SSL)" ""
+  LIBS_USED += ssl crypto
+endif
+
+# pull in the curl configuration using their tool.
+ifneq "$(USE_CURL)" ""
+  COMPILER_FLAGS += `curl-config --cflags`
+  LOAD_FLAG_SUFFIX += `curl-config --libs`
+endif
+
+# x window system.
+ifneq "$(USE_XWIN)" ""
+  DEFINITIONS += __XWINDOWS__ __X__
+  LIBS_USED += 
+#Xm Xt X11 Xft Xp 
 #need to separate out with a USE_MOTIF kind of thing.
-LIBS_USED += Xmu
-    HEADER_SEARCH_PATH += /usr/include/X11 /usr/X11R6/include /usr/include/g++
-    LIBRARY_SEARCH_PATH += /usr/X11R6/lib 
+#LIBS_USED += Xmu
+  HEADER_SEARCH_PATH += /usr/include/X11 /usr/X11R6/include 
+#/usr/include/g++
+  LIBRARY_SEARCH_PATH += /usr/X11R6/lib
+endif
+
+# generalized wxwidgets toolkit configuration.
+ifneq "$(USE_WXWIDGETS)" ""
+  DEFINITIONS += __WXWIDGETS__ 
+  use_unicode =
+  ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
+    use_unicode = true
   endif
 
-  ifneq "$(USE_SSL)" ""
-    LIBS_USED += ssl crypto
-  endif
-  
-  ifneq "$(USE_WXWIDGETS)" ""
-    DEFINITIONS += __WXWIDGETS__ 
-    use_unicode =
-    ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
-      use_unicode = true
-    endif
-
-    # decide whether to turn on the unicode flag or not.
-    ifneq "$(use_unicode)" ""
-      DEFINITIONS += wxUSE_UNICODE
-      UNICODE_FLAG_ADD = --unicode=yes
-    else
-      UNICODE_FLAG_ADD = --unicode=no
-    endif
-    # could add for debugging: --debug=yes 
-    COMPILER_FLAGS += $(shell wx-config --cxxflags $(UNICODE_FLAG_ADD) )
-
-    LOAD_FLAG_PREFIX += $(shell wx-config --libs $(UNICODE_FLAG_ADD) )
+  # decide whether to turn on the unicode flag or not.
+###    ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
+  ifneq "$(use_unicode)" ""
+    UNICODE_FLAG_ADD = --unicode=yes
+    DEFINITIONS += wxUSE_UNICODE
+  else
+    UNICODE_FLAG_ADD = --unicode=no
   endif
 
-  ifneq "$(USE_CURL)" ""
-    COMPILER_FLAGS += `curl-config --cflags`
-    LOAD_FLAG_SUFFIX += `curl-config --libs`
-  endif
+  COMPILER_FLAGS += $(shell wx-config --cxxflags $(UNICODE_FLAG_ADD) )
+  LOAD_FLAG_PREFIX += $(shell wx-config --libs $(UNICODE_FLAG_ADD) )
+endif
+
+# add special bits for gnu on unix.
+ifeq "$(CLAM_COMPILER)" "GNU_LINUX"
+
 endif
 
 # some special code for gnu compiler on windows.
 ifeq "$(CLAM_COMPILER)" "GNU_WINDOWS"
 
-  ifneq "$(USE_SSL)" ""
-    LIBS_USED += ssl crypto
-  endif
-  
-  ifneq "$(USE_WXWIDGETS)" ""
-    DEFINITIONS += __WXWIDGETS__ 
-    use_unicode =
-    ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
-      use_unicode = true
-    endif
-
-    # decide whether to turn on the unicode flag or not.
-    ifneq "$(use_unicode)" ""
-      DEFINITIONS += wxUSE_UNICODE
-      UNICODE_FLAG_ADD = --unicode=yes
-    else
-      UNICODE_FLAG_ADD = --unicode=no
-    endif
-    # could add for debugging: --debug=yes 
-    COMPILER_FLAGS += $(shell wx-config --cxxflags $(UNICODE_FLAG_ADD) )
-
-    LOAD_FLAG_PREFIX += $(shell wx-config --libs $(UNICODE_FLAG_ADD) )
-  endif
-
 #hmmm: LOAD_FLAG_PREFIX += -lwsock32 -lmswsock -shared
-
-  ifneq "$(USE_CURL)" ""
-    COMPILER_FLAGS += `curl-config --cflags`
-    LOAD_FLAG_SUFFIX += `curl-config --libs`
-  endif
-
 endif
 
 ###############################################################################
 
 ifeq "$(CLAM_COMPILER)" "GNU_DARWIN"
+
   # finds the crypto code on macos.
-  HEADER_SEARCH_PATH += /usr/local/opt/openssl/include
-  LIBRARY_SEARCH_PATH += /usr/local/opt/openssl/lib/
-
-  ifneq "$(USE_XWIN)" ""
-    DEFINITIONS += __XWINDOWS__ __X__
-    LIBS_USED += 
-#Xm Xt X11 Xft Xp 
-#need to separate out with a USE_MOTIF kind of thing.
-#LIBS_USED += Xmu
-    HEADER_SEARCH_PATH += /usr/include/X11 /usr/X11R6/include /usr/include/g++
-    LIBRARY_SEARCH_PATH += /usr/X11R6/lib
-  endif
-
-  ifneq "$(USE_SSL)" ""
-    LIBS_USED += crypto ssl
-  endif
-  
-  ifneq "$(USE_WXWIDGETS)" ""
-    DEFINITIONS += __WXWIDGETS__ 
-    use_unicode =
-    ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
-        use_unicode = true
-    endif
-
-    # decide whether to turn on the unicode flag or not.
-###    ifneq "$(findstring UNICODE, $(DEFINITIONS))" ""
-    ifneq "$(use_unicode)" ""
-      UNICODE_FLAG_ADD = --unicode=yes
-      DEFINITIONS += wxUSE_UNICODE
-    else
-      UNICODE_FLAG_ADD = --unicode=no
-    endif
-
-    COMPILER_FLAGS += $(shell wx-config --cxxflags $(UNICODE_FLAG_ADD) )
-    LOAD_FLAG_PREFIX += $(shell wx-config --libs $(UNICODE_FLAG_ADD) )
-  endif
-
-  ifneq "$(USE_CURL)" ""
-    COMPILER_FLAGS += `curl-config --cflags`
-    LOAD_FLAG_SUFFIX += `curl-config --libs`
-  endif
-
+#  HEADER_SEARCH_PATH += /usr/local/opt/openssl/include
+#  LIBRARY_SEARCH_PATH += /usr/local/opt/openssl/lib/
 endif
 
 ###############################################################################
@@ -174,7 +115,8 @@ OBJECTS = $(TEMP_OBJ4)
 ACTUAL_OBJECTS = $(OBJECTS) $(EXTRA_OBJECTS)
 
 # Updates the search path for the compiler and local libraries.
-BASE_HEADER_PATH = $(CODEBASE_HEADERS) $(LOCAL_HEADERS) $(FEISTY_MEOW_CPP_HEADERS) $(SEARCH_DIRS)
+BASE_HEADER_PATH := $(CODEBASE_HEADERS) $(LOCAL_HEADERS) bork1 $(FEISTY_MEOW_CPP_HEADERS) bork2 $(SEARCH_DIRS)
+
 HEADER_SEARCH_PATH += $(BASE_HEADER_PATH) $(COMPILER_HEADER_DIR)
 
 LIBRARY_SEARCH_PATH += $(LOCAL_LIBRARIES) $(HOOPLE_LIBRARIES) \

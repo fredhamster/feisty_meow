@@ -55,7 +55,9 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 # outer check on whether this already was run or not.
 if [ -z "$BUILD_VARS_LOADED" ]; then
 
-echo build variables were not loaded so recalculating.
+#hmmm: make print only in debug mode
+echo recalculating feisty meow build variables.
+echo
 
 # perform some calculations to get the right paths from our parameters.
 if [ ! -z "$PARM_1" ]; then
@@ -109,7 +111,8 @@ else
 fi
 
 # CLAM_BASE_CPU is a flag that distinguishes the type of processor, if necessary.
-export CLAM_BASE_CPU="$(machine 2>/dev/null || arch 2>/dev/null || uname -m 2>/dev/null || echo i686)"
+export CLAM_BASE_CPU="$(uname -m 2>/dev/null || arch 2>/dev/null || echo i686)"
+#ugh, machine gives us an odd answer on macos.  machine 2>/dev/null || 
 
 # "FEISTY_MEOW_CPP_HEADERS" are folders where our C and C++ header files can be found.
 # we'll compute the set of folders as best we can below.

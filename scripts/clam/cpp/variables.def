@@ -634,12 +634,12 @@ ifeq "$(CLAM_COMPILER)" "GNU_DARWIN"
   # "USE_XWIN" specifies that this project needs X window system support.
   #USE_XWIN =
 
-#  ifeq "x86_64" "$(ARCHITECTURE)"
-#    COMPILER_LIBRARY_DIR = /lib64 /usr/lib64 /usr/local/lib64
-#  else
+  ifeq "x86_64" "$(CLAM_BASE_CPU)"
+    COMPILER_LIBRARY_DIR = /lib64 /usr/lib64 /usr/local/lib64
+  else
     COMPILER_LIBRARY_DIR = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib
 #/usr/lib /usr/local/lib
-#  endif
+  endif
 
 #  DEFINITIONS += __LINUX__ linux __linux__ UNIX unix __UNIX__ __USE_GNU 
   DEFINITIONS += UNIX unix __UNIX__ __USE_GNU 
