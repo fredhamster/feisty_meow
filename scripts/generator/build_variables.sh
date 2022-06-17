@@ -123,8 +123,7 @@ if [ -d "$FEISTY_MEOW_APEX/nucleus" ]; then
 else
   export LOCUS_LIBRARY_HEADERS=
 fi 
-   ####blech!  maybe not needed now?  was involved above.  | tr "\\\\" / | sed -e "s/\([a-zA-Z]\):\/\([^ ]*\)/\/cygdrive\/\1\/\2/g" ')
-export FEISTY_MEOW_CPP_HEADERS=$(find $LOCUS_LIBRARY_HEADERS -mindepth 1 -maxdepth 1 -type d | grep -v "\.settings" )
+export FEISTY_MEOW_CPP_HEADERS=$(find $LOCUS_LIBRARY_HEADERS -mindepth 1 -maxdepth 1 -type d | grep -v "\.settings")
 
 # the root name of the version file.  This is currently irrelevant on
 # non-windoze platforms.
@@ -165,17 +164,6 @@ export BUILD_TOP="$FEISTY_MEOW_APEX"
 # the production directory is the location for all the scripts and setup
 # code needed to produce the executables for feisty meow.
 export PRODUCTION_STORE="$BUILD_TOP/production"
-
-## set up the top-level for all build creations and logs and such.
-#export FEISTY_MEOW_GENERATED_STORE="$TMP/generated-feisty_meow"
-#if [ ! -d "$FEISTY_MEOW_GENERATED_STORE" ]; then
-#  mkdir -p "$FEISTY_MEOW_GENERATED_STORE"
-#fi
-## set up our effluent outsourcing valves.
-#export TEMPORARIES_PILE="$FEISTY_MEOW_GENERATED_STORE/temporaries"
-#if [ ! -d "$TEMPORARIES_PILE" ]; then
-#  mkdir -p "$TEMPORARIES_PILE"
-#fi
 
 # this variable points at a folder where we store the generated products of
 # the build, such as the binaries and installer packages.
@@ -259,8 +247,10 @@ if [ -z "$got_bad" ]; then
   fi
   
   # pick the executable's file ending based on the platform.
-  if [ "$OPERATING_SYSTEM" == "UNIX" ]; then export EXE_ENDING=;
-  elif [ "$OPERATING_SYSTEM" == "WIN32" ]; then export EXE_ENDING=.exe;
+  if [ "$OPERATING_SYSTEM" == "UNIX" ]; then
+    export EXE_ENDING=""
+  elif [ "$OPERATING_SYSTEM" == "WIN32" ]; then
+    export EXE_ENDING=".exe"
   else
     echo "The OPERATING_SYSTEM variable is unset or unknown.  Bailing out."
   fi

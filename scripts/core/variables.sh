@@ -190,24 +190,30 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   
   # variables for perl.
   
-  define_yeti_variable PERLLIB+="/usr/lib/perl5"
-  if [ "$OS" == "Windows_NT" ]; then
-    define_yeti_variable PERLIO=:perlio
-      # choose perl's IO over the ms-windows version so we can handle file
-      # bytes properly.
+  if [[ $PERLLIB =~ .*$FEISTY_MEOW_SCRIPTS.* ]]; then
+#if debug!
+    echo skipping PERLLIB since already mentions feisty meow scripts.
+  else
+    define_yeti_variable PERLLIB+="/usr/lib/perl5"
+    if [ "$OS" == "Windows_NT" ]; then
+      define_yeti_variable PERLIO=:perlio
+        # choose perl's IO over the ms-windows version so we can handle file
+        # bytes properly.
+    fi
+
+    # iterate across our sub-directories and find the perl scripts.
+    # this currently only looks one level down.
+    for i in $FEISTY_MEOW_SCRIPTS/*; do
+      if [ -d "$i" ]; then
+        # check if there is a perl file present; add the folder to PERLLIB if so.
+        ls $i/*.pl &>/dev/null
+        if [ $? -eq 0 ]; then
+          PERLLIB+=":$(dos_to_unix_path $i)"
+        fi
+      fi
+    done
   fi
 
-  # iterate across our sub-directories and find the perl scripts.
-  # this currently only looks one level down.
-  for i in $FEISTY_MEOW_SCRIPTS/*; do
-    if [ -d "$i" ]; then
-      # check if there is a perl file present; add the folder to PERLLIB if so.
-      ls $i/*.pl &>/dev/null
-      if [ $? -eq 0 ]; then
-        PERLLIB+=":$(dos_to_unix_path $i)"
-      fi
-    fi
-  done
   define_yeti_variable PERL5LIB=$PERLLIB
   #echo PERLLIB is now $PERLLIB
   
