@@ -55,9 +55,10 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 # outer check on whether this already was run or not.
 if [ -z "$BUILD_VARS_LOADED" ]; then
 
-#hmmm: make print only in debug mode
-echo recalculating feisty meow build variables.
-echo
+if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+  echo recalculating feisty meow build variables.
+  echo
+fi
 
 # perform some calculations to get the right paths from our parameters.
 if [ ! -z "$PARM_1" ]; then
