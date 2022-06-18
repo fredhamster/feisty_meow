@@ -85,8 +85,8 @@ endif
 
 ifeq "$(CLAM_COMPILER)" "GNU_DARWIN"
   # finds the crypto code on macos.
-#  HEADER_SEARCH_PATH += /usr/local/opt/openssl/include
-#  LIBRARY_SEARCH_PATH += /usr/local/opt/openssl/lib/
+  HEADER_SEARCH_PATH += /usr/local/opt/openssl/include
+  LIBRARY_SEARCH_PATH += /usr/local/opt/openssl/lib/
 endif
 
 ###############################################################################
