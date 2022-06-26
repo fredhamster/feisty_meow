@@ -57,7 +57,12 @@ for (local($i) = 0; $i < scalar(@junk_file_list); $i++) {
 
 # generic versions work on sane OSes.
 $find_tool = which('find');
-$tar_tool = which('tar');
+# for mac, try to match gnu tar first.
+$tar_tool = which('gtar');
+if ( ! -f "$tar_tool" ) {
+  # fall back to regular tar.
+  $tar_tool = which('tar');
+}
 #print "find tool: $find_tool\n";
 #print "tar tool: $tar_tool\n";
 
