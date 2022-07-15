@@ -295,7 +295,7 @@ function show_active_branch()
 #echo "calculated directory as '$directory'"
     fi
 
-    echo -n -e "$(basename $directory)\n\t=> branch "
+    echo -n -e "$(basename $directory)\t=> branch "
     pushd "$directory" &>/dev/null
 
 #hmmm: if git...
