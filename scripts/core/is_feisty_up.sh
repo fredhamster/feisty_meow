@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # tells the caller if the feisty_meow scripts have been initialized
 # successfully or not, as far as we can tell.

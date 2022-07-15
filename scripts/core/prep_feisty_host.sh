@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this is the feisty meow host preparation script.  it installs all the packages required to run and build feisty meow scripts and applications.
 # this script may still be a bit incomplete; we definitely use a lot of unix and linux tools in different scripts.
