@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a break out of the popular replace_pattern_in_file function that
 # can work with multiple files.

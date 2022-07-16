@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a frivolous but useful script that shows information about the local
 # computer in terms of an adventure game inventory listing.
