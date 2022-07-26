@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 
 # this is the feisty meow host preparation script.  it installs all the packages required to run and build feisty meow scripts and applications.
-# this script may still be a bit incomplete; we definitely use a lot of unix and linux tools in different scripts.
+
+# hmmm: this script may still be a bit incomplete; we definitely use a lot of unix and linux tools in different scripts.
 
 # preconditions and dependencies--this script itself depends on:
 #   feisty meow
 #   bash
 #   anything else?
 
-#weird approach here man.
-#  why are we assuming any part of feisty meow is set up yet?
-#  the dependencies that the codebase has are why we're installing things below.
-#  so:
-#    + intuit the feisty meow location based on relative dir placement.
-#    + reduce checks to barest presence ones.
-#    + drop any requirements on feisty functions that might require the
-#      very code we're installing.
+####
 
+ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && /bin/pwd )"
+CORE_SCRIPTS_DIR="$(echo "$ORIGINATING_FOLDER" | tr '\\\\' '/' )"
+THIS_TOOL_NAME="$(basename "$0")"
+
+# set up the feisty_meow dir.
+pushd "$CORE_SCRIPTS_DIR/../.." &>/dev/null
+#source "$CORE_SCRIPTS_DIR/functions.sh"
+echo originating folder is $ORIGINATING_FOLDER
+export FEISTY_MEOW_APEX="$(/bin/pwd)"
+echo feisty now apex is FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX
 
 ####
 
