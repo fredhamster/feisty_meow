@@ -284,7 +284,7 @@ function check_branch_state()
   return $to_return
 }
 
-# showes the branch currently active in the repository.
+# shows the branch currently active in the repository.
 function show_active_branch()
 {
 #hmmm: if no args, assume current dir!?
@@ -295,12 +295,14 @@ function show_active_branch()
 #echo "calculated directory as '$directory'"
     fi
 
-    echo -n -e "$(basename $directory)\t=> branch "
+    echo -n -e "$(basename $directory) => branch "
     pushd "$directory" &>/dev/null
 
 #hmmm: if git...
     git rev-parse --abbrev-ref HEAD
 #hmmm: else OTHERS!!!
+
+    echo
 
     popd &>/dev/null
   done
@@ -541,7 +543,7 @@ function perform_revctrl_action_on_file()
     fi
     did_anything=yes
     pushd "$dirname" &>/dev/null
-    echo "[$(pwd)]"
+    echo -n "[$(pwd)]  "
     # pass the current directory plus the remaining parameters from function invocation.
     $action . 
     exit_on_error "performing action $action on: $(pwd)"
