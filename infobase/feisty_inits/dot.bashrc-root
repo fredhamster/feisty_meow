@@ -27,10 +27,9 @@ export HISTFILESIZE=8000000
 # system-wide install (will be fixed by connect_feisty_meow script):
 export FEISTY_MEOW_APEX="/opt/feistymeow.org/feisty_meow"
 
-# the "fredme" macro enables the feisty_meow environment.
-alias fredme='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'
-# synonym for fredme which makes more sense to most people.
-alias feistyme='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'
+# the "gofeisty" macro enables the feisty_meow environment.  this can be used
+# after logging in, and avoids loading the feisty meow environment automatically.
+alias gofeisty='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'
 
 # if not commented out, then feisty meow will run all the unit tests during builds.
 #export RUN_ALL_TESTS=true
