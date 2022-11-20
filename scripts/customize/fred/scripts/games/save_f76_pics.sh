@@ -17,20 +17,20 @@ else
   exit 1
 fi
 
-src_dir="$HOME/data/wind_goods/My Games/Fallout 76/Photos/${identity}"
-dest_dir="/z/walrus/media/pictures/metaverse/fallout_76/${character}"
+src_dir="fred@orpheus:./data/wind_goods/My Games/Fallout 76/Photos/${identity}"
+dest_dir="fred@curie:/z/walrus/media/pictures/metaverse/fallout_76/${character}"
 
 #echo "src is: '$src_dir'"
 #echo "dest is: '$dest_dir'"
 
-if [ ! -d "$src_dir" ]; then
-  echo "Could not find the source directory: $src_dir"
-  exit 1
-fi
-if [ ! -d "$dest_dir" ]; then
-  echo "Could not find the destination directory: $dest_dir"
-  exit 1
-fi
+#if [ ! -d "$src_dir" ]; then
+#  echo "Could not find the source directory: $src_dir"
+#  exit 1
+#fi
+#if [ ! -d "$dest_dir" ]; then
+#  echo "Could not find the destination directory: $dest_dir"
+#  exit 1
+#fi
 
 netcp "$src_dir"/*[0-9].png "$dest_dir"/
 
