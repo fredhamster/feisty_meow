@@ -17,8 +17,8 @@ else
   exit 1
 fi
 
-src_dir="$HOME/data/wind_goods/My Games/Fallout 76/Photos/${identity}"
-dest_dir="/z/walrus/media/pictures/metaverse/fallout_76/${character}"
+src_dir="fred@orpheus:data/wind_goods/My Games/Fallout 76/Photos/${identity}"
+dest_dir="fred@curie:/z/walrus/media/pictures/metaverse/fallout_76/${character}"
 
 #echo "src is: '$src_dir'"
 #echo "dest is: '$dest_dir'"
