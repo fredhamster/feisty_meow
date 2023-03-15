@@ -1,7 +1,11 @@
 
 ##############
 
-# provides a macro to initialize the feisty meow environment for the "root" user.
+# sets an alias to initialize the feisty meow environment for the "root" user.
+# this is safe for root to use, since nothing drastic is modified in the
+# environment.  one additional alias should not cripple anything.  plus we are
+# updating the history size to ensure long histories to enable consulting old
+# commands.
 
 ##############
 
@@ -16,9 +20,7 @@ fi
 
 ##############
 
-# set the history sizes to be much larger, and do this whether we load the
-# feisty meow environment or not.
-
+# set the history sizes to be much larger; important to have good history.
 export HISTSIZE=1000000
 export HISTFILESIZE=8000000
 
