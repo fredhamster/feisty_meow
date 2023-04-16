@@ -51,6 +51,7 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 &snarf_by_pattern($snarf_file_base, "$root", "nuage");
 &snarf_by_pattern($snarf_file_base, "$root", "project");
 &snarf_by_pattern($snarf_file_base, "$root", "proj_");
+&snarf_by_pattern($snarf_file_base, "$root", "Sync");
 &snarf_by_pattern($snarf_file_base, "$root", "task");
 &snarf_by_pattern($snarf_file_base, "$root", "invention");
 &snarf_by_pattern($snarf_file_base, "$root", "transitory");
