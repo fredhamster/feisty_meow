@@ -1,7 +1,9 @@
 
 ##############
 
-# initializes the feisty meow environment for "normal" users (not intended for the root user).
+# initialize the feisty meow environment for "normal" users.
+# this is not intended for the root user, because having a bunch of extra
+# scripts automatically loaded into root's environment is not a good idea.
 
 ##############
 
@@ -16,9 +18,7 @@ fi
 
 ##############
 
-# set the history sizes to be much larger, and do this whether we load the
-# feisty meow environment or not.
-
+# set the history sizes to be much larger; important to have good history.
 export HISTSIZE=1000000
 export HISTFILESIZE=8000000
 
