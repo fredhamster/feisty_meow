@@ -19,8 +19,10 @@
 
 #include "bookmark_tree.h"
 
-#include <application/hoople_main.h>
+#include <algorithms/sorts.h>
 #include <application/command_line.h>
+#include <application/hoople_main.h>
+#include <application/windoze_helper.h>
 #include <basis/astring.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
@@ -39,7 +41,6 @@
 #include <curl/curl.h>
 #include <signal.h>
 #include <stdlib.h>
-#include "../../library/algorithms/sorts.h"
 
 using namespace algorithms;
 using namespace application;

@@ -27,7 +27,8 @@
 #include <timely/time_control.h>
 #include <timely/time_stamp.h>
 
-#ifdef __UNIX__
+//hmmm: put this bag o headers into a similar thing to windoze helper.  maybe just have an os_helper file that combines both?
+//#ifdef __UNIX__
   #include <arpa/inet.h>
   #include <errno.h>
   #include <netdb.h>
@@ -38,7 +39,7 @@
   #include <sys/types.h>
   #include <termios.h>
   #include <unistd.h>
-#endif
+//#endif
 
 using namespace basis;
 using namespace loggers;
@@ -76,6 +77,7 @@ const int RESOLVE_INTERVAL = 300;
 #define CHECK_BOGUS(retval) \
   if (is_bogus()) { return retval;  /* this spocket is junk. */ }
 
+/*
 #undef GRAB_LOCK
 #ifdef __WIN32__
   // win32 seems to trip over selects unless we protect them.
@@ -86,10 +88,13 @@ const int RESOLVE_INTERVAL = 300;
 #else
   #define GRAB_LOCK 
 #endif
+*/
+  #define GRAB_LOCK 
 
-#ifdef __UNIX__
+
+//#ifdef __UNIX__
   SAFE_STATIC(mutex, __broken_pipe_synch, )
-#endif
+//#endif
 
 spocket::spocket(const internet_address &where, sock_types type)
 : _type(type),

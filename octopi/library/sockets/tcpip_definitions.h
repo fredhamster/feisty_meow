@@ -19,12 +19,18 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-///#include "sockets_dll.h"
+#include <application/windoze_helper.h>
 
-#ifdef __UNIX__
-  // provide some unifying definitions.
-  #define INVALID_SOCKET -1
+#ifndef SOCKET_ERROR 
   #define SOCKET_ERROR -1
+#endif
+
+#ifndef INVALID_SOCKET 
+  #define INVALID_SOCKET -1
+#endif
+
+//#ifdef __UNIX__
+  // provide some unifying definitions.
   typedef void sock_hop;
 
   // provide synonyms for errors so we don't conflict with the windows
@@ -73,8 +79,9 @@
   #define SOCK_ETOOMANYREFS ETOOMANYREFS
   #define SOCK_EWOULDBLOCK EWOULDBLOCK
   #define SOCK_EUSERS EUSERS
-#endif
+//#endif
 
+  /*
 #ifdef __WIN32__
   #include <application/windoze_helper.h>
 
@@ -139,6 +146,7 @@
   #define SOCK_TRY_AGAIN WSATRY_AGAIN
   #define SOCK_VERNOTSUPPORTED WSAVERNOTSUPPORTED
 #endif
+*/
 
 #endif
 

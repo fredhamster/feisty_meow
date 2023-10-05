@@ -28,13 +28,14 @@
 #include <textual/parser_bits.h>
 
 #include <errno.h>
-#ifdef __WIN32__
+/*#ifdef __WIN32__
   #include <ws2tcpip.h>
 #endif
 #ifdef __UNIX__
+*/
   #include <arpa/inet.h>
   #include <sys/socket.h>
-#endif
+//#endif
 
 using namespace basis;
 using namespace loggers;

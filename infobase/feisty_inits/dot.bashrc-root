@@ -1,7 +1,11 @@
 
 ##############
 
-# provides a macro to initialize the feisty meow environment for the "root" user.
+# sets an alias to initialize the feisty meow environment for the "root" user.
+# this is safe for root to use, since nothing drastic is modified in the
+# environment.  one additional alias should not cripple anything.  plus we are
+# updating the history size to ensure long histories to enable consulting old
+# commands.
 
 ##############
 
@@ -16,9 +20,7 @@ fi
 
 ##############
 
-# set the history sizes to be much larger, and do this whether we load the
-# feisty meow environment or not.
-
+# set the history sizes to be much larger; important to have good history.
 export HISTSIZE=1000000
 export HISTFILESIZE=8000000
 
@@ -27,10 +29,9 @@ export HISTFILESIZE=8000000
 # system-wide install (will be fixed by connect_feisty_meow script):
 export FEISTY_MEOW_APEX="/opt/feistymeow.org/feisty_meow"
 
-# the "fredme" macro enables the feisty_meow environment.
-alias fredme='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'
-# synonym for fredme which makes more sense to most people.
-alias feistyme='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'
+# the "gofeisty" macro enables the feisty_meow environment.  this can be used
+# after logging in, and avoids loading the feisty meow environment automatically.
+alias gofeisty='source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"'
 
 # if not commented out, then feisty meow will run all the unit tests during builds.
 #export RUN_ALL_TESTS=true

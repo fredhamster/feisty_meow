@@ -23,12 +23,12 @@
 // gnarly headers that are needed for certain types of compilation...
 
 //unix headers not needed in here for new purpose of file.
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   #include <unistd.h>
   #ifdef __GNU_WINDOWS__
     #include <sys/unistd.h>
   #endif
-#endif
+//#endif
 #ifndef NO_XWINDOWS
   #ifdef __XWINDOWS__
     #include <Intrinsic.h>
@@ -45,9 +45,10 @@
 //  #undef FD_SETSIZE
 //  #define FD_SETSIZE 1000
     // if you don't set this, you can only select on a default of 64 sockets.
-  #include <winsock2.h>
+//  #include <winsock2.h>
+
   // windows headers...
-  #define _WINSOCKAPI_  // make windows.h happy about winsock.
+//noooo  #define _WINSOCKAPI_  // make windows.h happy about winsock.
   #ifndef _AFXDLL
     // include ms-windows headers only if we're not doing mfc; mfc has its own
     // special way of including the headers.

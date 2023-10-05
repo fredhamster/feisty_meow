@@ -35,7 +35,7 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 
 # grab the top level stuff.
-&backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore", "*.yml"));
+&backup_files($snarf_file_base, $number, $root, ".", ("*.txt", "make*", ".gitignore", ".mailmap", "*.yml"));
 
 # snarf up all the important directories.
 # CAK: current as of 2012-05-05.
@@ -49,10 +49,11 @@ local($root) = &canonicalize("$FEISTY_MEOW_APEX");
 &backup_hierarchy($snarf_file_base, $number, $root, "octopi");
 &backup_hierarchy($snarf_file_base, $number, $root, "scripts");
 &backup_hierarchy($snarf_file_base, $number, $root, "hypermedia");
+&backup_hierarchy($snarf_file_base, $number, $root, "testkit");
 &backup_hierarchy($snarf_file_base, $number, $root, "walrus");
 
 # grab the production assets.
-&backup_files($snarf_file_base, $number, $root, "production", ("*.ini", "make*", ".gitignore"));
+&backup_files($snarf_file_base, $number, $root, "production", ("*.ini", "make*", ".gitignore", "*.h"));
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/3rdparty");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/assign_bases");
 &backup_hierarchy($snarf_file_base, $number, "$root", "production/check_versions");

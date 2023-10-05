@@ -514,6 +514,7 @@ int test_amorph_of(const contents &bogus)
       }
     }
   }
+  return 0;
 }
 
 int t_amorph::execute()

@@ -63,7 +63,8 @@ exit 0;
 sub safedel {
   # get the list of files and directories to whack.
   local(@to_delete) = &glob_list(@_);
-#  print "final list of whackees: @to_delete\n";
+#hmmm: make this into a debug option. 
+#print "list of whackees: @to_delete\n";
 
   # we store the deleted files in a directory under the temporary directory.
   if (! -d $TMP) { 
@@ -147,7 +148,11 @@ sub safedel {
     print REPORT $printable_date . " -- from [@deleted]\n";
     close(REPORT);
   } else {
-    print "No files were deleted.\n";
+#hmmm: oh good, and we should always bug people about nothing having been done?
+#      this is especially tiresome when our own scripts cause safedel to be invoked,
+#      since then they are automatically noisy and blathery.
+#hmmm: make this into a debug option. 
+#    print "No files were deleted.\n";
   }
 }
 

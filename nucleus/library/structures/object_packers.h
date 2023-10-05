@@ -25,6 +25,7 @@ namespace structures {
 const int PACKED_SIZE_BYTE = 1;
 const int PACKED_SIZE_INT16 = 2;
 const int PACKED_SIZE_INT32 = 4;
+const int PACKED_SIZE_INT64 = 8;
 
 // these functions pack and unpack popular data types.
 
@@ -68,6 +69,14 @@ void attach(basis::byte_array &packed_form, int to_attach);
   endian ordering of the bytes.  They are platform independent with respect to
   endianness and will reassemble the number properly on any platform. */
 bool detach(basis::byte_array &packed_form, int &to_detach);
+  //!< Unpacks an integer "to_attach" from "packed_form".
+
+void attach(basis::byte_array &packed_form, long int to_attach);
+  //!< Packs an integer "to_attach" into "packed_form".
+  /*!< This method and the other simple numerical storage methods use a little
+  endian ordering of the bytes.  They are platform independent with respect to
+  endianness and will reassemble the number properly on any platform. */
+bool detach(basis::byte_array &packed_form, long int &to_detach);
   //!< Unpacks an integer "to_attach" from "packed_form".
 
 void obscure_attach(basis::byte_array &packed_form, basis::un_int to_attach);

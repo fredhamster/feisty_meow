@@ -25,9 +25,6 @@
 #include <textual/parser_bits.h>
 #include <loggers/program_wide_logger.h>
 
-#include <stdio.h>
-//temp
-
 #undef LOG
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
@@ -70,17 +67,9 @@ command_parameter &command_parameter::operator =
 //////////////
 
 // option_prefixes: the list of valid prefixes for options on a command line.
-// these are the characters that precede command line arguments.  For Unix,
-// the default is a dash (-), while for DOS most programs use forward-slash
-// (/).  Adding more characters is trivial; just add a character to the list
-// before the sentinel of '\0'.
-#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__WIN32__)
-  static char option_prefixes[] = { '-', '/', '\0' };
-#elif defined(__UNIX__)
-  static char option_prefixes[] = { '-', '\0' };
-#else
-  #error "I don't know what kind of operating system this is."
-#endif
+// these are the characters that precede command line arguments.  we have
+// dropped any but the linux default of dash ('-').
+static char option_prefixes[] = { '-', '\0' };
 
 bool it_is_a_prefix_char(char to_test)
 {
@@ -121,10 +110,11 @@ command_line::command_line(const astring &full_line)
   astring accumulator;
   string_array string_list;
   bool in_quote = false;
-//hmmm: this is not quote right yet.
+//hmmm: this is not quite right yet.
 //      use the separate command line method, but get it to run iteratively
 //      so we can keep pulling them apart?  maybe it already does!
 //      separate is better because it handles escaped quotes.
+//hmmm: does above complaint parse?  what's not right yet?
   for (int i = 0; i < full_line.length(); i++) {
     char to_examine = full_line.get(i);
     if (to_examine == '"') {
@@ -257,6 +247,7 @@ string_array command_line::get_command_line()
     // we don't need a long string to be parsed; the list is ready.
     return listo_cmds;
   }
+/*
 #elif defined(_MSC_VER)
   // we have easy access to the original list of commands.
   for (int i = 0; i < _global_argc; i++) {
@@ -264,6 +255,7 @@ string_array command_line::get_command_line()
     listo_cmds += _global_argv[i];
   }
   return listo_cmds;
+*/
 #else
   COMPLAIN_CMDS("this OS doesn't support getting the command line.");
   return listo_cmds;

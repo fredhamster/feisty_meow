@@ -294,12 +294,12 @@ function test_fuse_mount()
   # switches from a /X/path form to an X:/ form.  this also processes cygwin paths.
   function unix_to_dos_path() {
     # we usually remove dos slashes in favor of forward slashes.
-    if [ ! -z "$SERIOUS_SLASH_TREATMENT" ]; then
-      # unless this flag is set, in which case we force dos slashes.
-      echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/' | sed -e 's/\//\\/g'
-    else
+#    if [ ! -z "$SERIOUS_SLASH_TREATMENT" ]; then
+#      # unless this flag is set, in which case we force dos slashes.
+#      echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/' | sed -e 's/\//\\/g'
+#    else
       echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
-    fi
+#    fi
   }
   
   # switches from an X:/ form to an /X/path form.

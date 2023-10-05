@@ -25,11 +25,11 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   SOURCECODE_HIERARCHY_LIST="codebarn extra_brain interbrane"
 
   # point to our local certificate for ssh usage.
-  export SVN_SSH="ssh -i $HOME/.ssh/id_dsa_sourceforge"
+  export SVN_SSH="ssh -i $HOME/.ssh/others/id_dsa_sourceforge"
 
   # Error and success noises for CLAM.
-  export CLAM_ERROR_SOUND='/z/walrus/media/sounds/effects/bwaaang.wav /z/walrus/media/sounds/cartoons/doh4.wav'
-  export CLAM_FINISH_SOUND='/z/walrus/media/sounds/cartoons/meepmeep.wav'
+  export CLAM_ERROR_SOUND='/z/walrus/media/sounds/effects/bwaaang.mp3 /z/walrus/media/sounds/cartoons/doh4.mp3'
+  export CLAM_FINISH_SOUND='/z/walrus/media/sounds/cartoons/meepmeep.mp3'
 
   # Setup for nethack adventure.
   export NETHACKOPTIONS="name:Manjusri-W,dogname:Fred,catname:Zonker"

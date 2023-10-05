@@ -1,7 +1,7 @@
 
 ##############
 
-#[backup photo albums]
+#[backup_photo_albums]
 # back up the pictures in coppermine gallery every month.
 34 6 4 * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; tar -czf /z/stuffing/archives/photo_albums_backup_$(date_stringer).tar.gz /home/albums ; refred) &>>/tmp/${CRONUSER}-cron-backup_photo_albums.log
 

@@ -22,16 +22,18 @@
 #include <timely/time_control.h>
 
 #include <stdlib.h>
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   #include <signal.h>
   #include <sys/types.h>
   #include <sys/wait.h>
   #include <unistd.h>
-#else
+/*
+ * #else
   #include <process.h>
   #include <shellapi.h>
   #include <shlobj.h>
 #endif
+*/
 
 //#define DEBUG_LAUNCH_PROCESS
   // uncomment for noisier debugging info.
@@ -59,6 +61,7 @@ int_set __our_kids() {
   return __hidden_kids;
 }
 
+/*
 #ifdef _MSC_VER
 bool launch_process::event_poll(MSG &message)
 {
@@ -73,6 +76,7 @@ bool launch_process::event_poll(MSG &message)
   return true;
 }
 #endif
+*/
 
 #define SUPPORT_SHELL_EXECUTE
   // if this is not commented out, then the ShellExecute version of launch_
@@ -86,7 +90,7 @@ bool launch_process::event_poll(MSG &message)
 //const int MAXIMUM_COMMAND_LINE = 32 * KILOBYTE;
   // maximum command line that we'll deal with here.
 
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
 void launch_process::exiting_child_signal_handler(int sig_num)
 {
   FUNCDEF("exiting_child_signal_handler");
@@ -111,7 +115,7 @@ void launch_process::exiting_child_signal_handler(int sig_num)
     }
   }
 }
-#endif
+//#endif
 
 //hmmm: this doesn't seem to account for quoting properly at all?
 char_star_array launch_process::break_line(astring &app, const astring &parameters)
@@ -171,7 +175,7 @@ basis::un_int launch_process::run(const astring &app_name_in, const astring &com
     app_name.insert(0, "\"");
   if (app_name[app_name.end()] != '"')
     app_name += "\"";
-#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
+//#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   // unix / linux implementation.
   if (flag & RETURN_IMMEDIATELY) {
     // they want to get back right away.
@@ -229,6 +233,7 @@ basis::un_int launch_process::run(const astring &app_name_in, const astring &com
     // assume they want to wait.
     return system((app_name + " " + command_line).s());
   }
+/*
 #elif defined(_MSC_VER)
 
 //checking on whether we have admin rights for the launch.
@@ -337,6 +342,7 @@ basis::un_int launch_process::run(const astring &app_name_in, const astring &com
 #else
   #pragma error("hmmm: launch_process: no implementation for this OS.")
 #endif
+*/
   return 0;
 }
 

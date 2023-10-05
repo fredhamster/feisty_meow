@@ -24,19 +24,20 @@
 #include <mathematics/chaos.h>
 #include <structures/static_memory_gremlin.h>
 #include <textual/parser_bits.h>
+#include <system_helper.h>
 
 #ifdef __APPLE__
   #include <mach-o/dyld.h>
   #include <limits.h>
 #endif
-#ifdef _MSC_VER
-  #include <direct.h>
-  #include <process.h>
-#else
+//#ifdef _MSC_VER
+//  #include <direct.h>
+//  #include <process.h>
+//#else
   #include <dirent.h>
   #include <sys/utsname.h>
   #include <unistd.h>
-#endif
+//#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -205,12 +206,14 @@ astring application_configuration::application_name()
   to_return = (char *)buffer;
 #elif defined(__UNIX__) || defined(__GNU_WINDOWS__)
   to_return = get_cmdline_from_proc();
+/*
 #elif defined(_MSC_VER)
   flexichar low_buff[MAX_ABS_PATH + 1];
   GetModuleFileName(NULL_POINTER, low_buff, MAX_ABS_PATH - 1);
   astring buff = from_unicode_temp(low_buff);
   buff.to_lower();  // we lower-case the name since windows seems to UC it.
   to_return = buff;
+*/
 #else
   #pragma error("hmmm: no means of finding app name is implemented.")
   SET_BOGUS_NAME("not_implemented_for_this_OS");
@@ -218,7 +221,8 @@ astring application_configuration::application_name()
   return to_return;
 }
 
-#if defined(__UNIX__) || defined(_MSC_VER) || defined(__GNU_WINDOWS__)
+#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
+//defined(_MSC_VER) || 
   basis::un_int application_configuration::process_id() { return getpid(); }
 #else
   #pragma error("hmmm: need process id implementation for this OS!")
@@ -232,10 +236,10 @@ astring application_configuration::current_directory()
   char buff[MAX_ABS_PATH];
   getcwd(buff, MAX_ABS_PATH - 1);
   to_return = buff;
-#elif defined(_MSC_VER)
-  flexichar low_buff[MAX_ABS_PATH + 1];
-  GetCurrentDirectory(MAX_ABS_PATH, low_buff);
-  to_return = from_unicode_temp(low_buff);
+//#elif defined(_MSC_VER)
+//  flexichar low_buff[MAX_ABS_PATH + 1];
+//  GetCurrentDirectory(MAX_ABS_PATH, low_buff);
+//  to_return = from_unicode_temp(low_buff);
 #else
   #pragma error("hmmm: need support for current directory on this OS.")
   to_return = ".";
@@ -263,13 +267,13 @@ structures::version application_configuration::get_OS_version()
   utsname kernel_parms;
   uname(&kernel_parms);
   to_return = version(kernel_parms.release);
-#elif defined(_MSC_VER)
-  OSVERSIONINFO info;
-  info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  ::GetVersionEx(&info);
-  to_return = version(a_sprintf("%u.%u.%u.%u", basis::un_short(info.dwMajorVersion),
-      basis::un_short(info.dwMinorVersion), basis::un_short(info.dwPlatformId),
-      basis::un_short(info.dwBuildNumber)));
+//#elif defined(_MSC_VER)
+//  OSVERSIONINFO info;
+//  info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+//  ::GetVersionEx(&info);
+//  to_return = version(a_sprintf("%u.%u.%u.%u", basis::un_short(info.dwMajorVersion),
+//      basis::un_short(info.dwMinorVersion), basis::un_short(info.dwPlatformId),
+//      basis::un_short(info.dwBuildNumber)));
 #else
   #pragma error("hmmm: need version info for this OS!")
 #endif
@@ -289,6 +293,47 @@ astring application_configuration::application_configuration_file()
 const astring &application_configuration::GLOBAL_SECTION_NAME() { STATIC_STRING("Common"); }
 
 const astring &application_configuration::LOGGING_FOLDER_NAME() { STATIC_STRING("LogPath"); }
+
+//const astring &application_configuration::WINDOZE_VIRTUAL_ROOT_NAME()
+//{ STATIC_STRING("VirtualUnixRoot"); }
+
+const astring &application_configuration::DEFAULT_VIRTUAL_UNIX_ROOT()
+{ STATIC_STRING("c:/cygwin"); }
+
+//////////////
+
+// static storage for virtual unix root, if it's used.
+// we don't expect it to change during runtime, right?  that would be fubar.
+// so we cache it once we retrieve it.
+SAFE_STATIC(astring, static_root_holder, )
+
+const astring &application_configuration::virtual_unix_root()
+{
+  // see if we already cached the root.  it shouldn't change during runtime.
+  if (static_root_holder().length()) {
+    return static_root_holder();
+  }
+#ifdef __UNIX__
+  // simple implementation for unix/linux; just tell the truth about the real root.
+  static_root_holder() = astring("/");
+  return static_root_holder();
+#endif
+#ifdef __WIN32__
+  /*
+   use the path in our system helpers header, which should have been set during the
+   build process if this is really windows.
+  */
+  astring virtual_root = FEISTY_MEOW_VIRTUAL_UNIX_ROOT;
+  if (!virtual_root) {
+    // if it has no length, we didn't get our setting!  we'll limp along with a guess.
+    return DEFAULT_VIRTUAL_UNIX_ROOT();
+  } else {
+    static_root_holder() = virtual_root;
+    return static_root_holder();
+  }
+
+#endif
+}
 
 //////////////
 

@@ -64,6 +64,10 @@ typedef unsigned int un_int;
 typedef unsigned short un_short;
 //! Abbreviated name for unsigned long integers.
 typedef unsigned long un_long;
+//! Abbreviated name for signed long integers.
+typedef long int signed_long;
+//! Abbreviated name for signed long long integers.
+typedef long long signed_long_long;
 
 // some maximum and minimum values that are helpful.
 #ifndef MAXINT32
@@ -152,6 +156,7 @@ public:
 
 // compiler specific dumping ground for global settings...
 
+/*
 #ifdef _MSC_VER
   // turns off annoying complaints from visual c++.
   #pragma warning(disable : 4251 4275 4003 4800 4355 4786 4290 4996 4407)
@@ -176,6 +181,7 @@ public:
 //  typedef long long __int64;
   //#define __SIZE_TYPE__ long unsigned int
 #endif  // ms visual c++.
+*/
 
 //////////////
 

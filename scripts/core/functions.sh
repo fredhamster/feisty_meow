@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This defines some general, useful functions.
 
@@ -293,15 +293,18 @@ if [ -z "$skip_all" ]; then
       # gets cygwin's (god awful) ps to show windoze processes also.
       local EXTRA_DOZER_FLAGS="-W"
       # pattern to use for peeling off the process numbers.
-      local pid_finder_pattern='s/ *\([0-9][0-9]*\) *.*$/\1/p'
-
+#      local pid_finder_cmd="awk -- '{ print \$4; }'"
+      local field_number=4
     else
       # flags which clean up the process listing output on unixes.
       # apparently cygwin doesn't count as a type of unix, because their
       # crummy specialized ps command doesn't support normal ps flags.
       local EXTRA_UNIX_FLAGS="-o pid,args"
       # pattern to use for peeling off the process numbers.
-      local pid_finder_pattern='s/^[[:space:]]*\([0-9][0-9]*\).*$/\1/p'
+#      local pid_finder_cmd="sed -n -e \\'s/^[[:space:]]*\([0-9][0-9]*\).*$/\\\\1/p\\'"
+#echo pidfinder: $pid_finder_cmd
+#      local pid_finder_cmd="awk -- '{ print \$1; }'"
+      local field_number=1
     fi
 
     /bin/ps $EXTRA_DOZER_FLAGS $EXTRA_UNIX_FLAGS $user_flag | tail -n +2 >$PID_DUMP
@@ -318,7 +321,7 @@ if [ -z "$skip_all" ]; then
       PIDS_SOUGHT+=($(cat $PID_DUMP \
         | grep -i "$i" \
         | grep -v "$excluder" \
-        | sed -n -e "$pid_finder_pattern"))
+        | awk -- "{ print \$${field_number}; }" ))
     done
 #echo ====
 #echo pids sought list became:
@@ -373,6 +376,11 @@ if [ -z "$skip_all" ]; then
         # special case for windows.
         ps | head -1
         for curr in $p; do
+#hmmm: currently not working right for windows cygwin.  we're getting proper
+#      winpids out of the list now, but not able to use them in ps?
+#      should i be keeping the weirdo pid that we were getting in column 1 and
+#      use that, except when talking to taskkill?
+#      need further research.
           ps -W -p $curr | tail -n +2
         done
       else
@@ -419,12 +427,12 @@ if [ -z "$skip_all" ]; then
       DOSSYHOME="$(cygpath -am "$HOME")"
     fi
 
-    if [ ! -z "$SERIOUS_SLASH_TREATMENT" ]; then
-      # unless this flag is set, in which case we force dos slashes.
-      echo "$1" | sed -e "s?^$HOME?$DOSSYHOME?g" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/' | sed -e 's/\//\\/g'
-    else
+#    if [ ! -z "$SERIOUS_SLASH_TREATMENT" ]; then
+#      # unless this flag is set, in which case we force dos slashes.
+#      echo "$1" | sed -e "s?^$HOME?$DOSSYHOME?g" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/' | sed -e 's/\//\\/g'
+#    else
       echo "$1" | sed -e "s?^$HOME?$DOSSYHOME?g" | sed -e 's/\\/\//g' | sed -e 's/\/cygdrive//' | sed -e 's/\/\([a-zA-Z]\)\/\(.*\)/\1:\/\2/'
-    fi
+#    fi
   }
   
 #  # switches from an X:/ form to a /cygdrive/X/path form.  this is only useful
@@ -967,7 +975,7 @@ return 0
 #hmmm: would the composition of those two types of extensions cover all the files i want to rename?  they have to be "important".
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f -and -not -iname ".[a-zA-Z0-9]*" | \
         grep -i \
-"csv\|doc\|docx\|eml\|html\|ics\|jpeg\|jpg\|m4a\|mov\|mp3\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|xls\|xlsx\|xml\|zip" | \
+"csv\|doc\|docx\|eml\|html\|ics\|jpeg\|jpg\|m4a\|mov\|mp3\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|webp\|xls\|xlsx\|xml\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.

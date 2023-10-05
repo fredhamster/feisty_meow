@@ -61,7 +61,8 @@ function do_revctrl_checkin()
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
   if [ $nicedir == "." ]; then
-    nicedir=$(\pwd)
+    nicedir="$( \cd . && /bin/pwd )"
+#echo "calculated nicedir as '$nicedir'"
   fi
   local blatt_report="echo -ne \nchecking in '$nicedir'...  "
   local tell_no_checkin="echo -ne \nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
@@ -283,18 +284,25 @@ function check_branch_state()
   return $to_return
 }
 
-# showes the branch currently active in the repository.
+# shows the branch currently active in the repository.
 function show_active_branch()
 {
-#hmmm: if no args, assume current dir!
+#hmmm: if no args, assume current dir!?
 
   for directory in "$@"; do
-    echo -n "active branch for '$directory': "
+    if [ $directory == "." ]; then
+      directory="$( \cd . && /bin/pwd )"
+#echo "calculated directory as '$directory'"
+    fi
+
+    echo -n -e "$(basename $directory) => branch "
     pushd "$directory" &>/dev/null
 
 #hmmm: if git...
     git rev-parse --abbrev-ref HEAD
 #hmmm: else OTHERS!!!
+
+    echo
 
     popd &>/dev/null
   done
@@ -535,7 +543,7 @@ function perform_revctrl_action_on_file()
     fi
     did_anything=yes
     pushd "$dirname" &>/dev/null
-    echo "[$(pwd)]"
+    echo -n "[$(pwd)]  "
     # pass the current directory plus the remaining parameters from function invocation.
     $action . 
     exit_on_error "performing action $action on: $(pwd)"

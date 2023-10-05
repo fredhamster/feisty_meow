@@ -27,6 +27,17 @@ class status_info;
 // define useful constant for filesystem path length.
 #ifndef MAX_ABS_PATH 
   #ifdef __WIN32__
+    #define MAX_ABS_PATH MAX_PATH
+  #else
+    #ifdef __APPLE__
+      #include <sys/syslimits.h>
+    #else
+      #include <limits.h>
+    #endif
+    #define MAX_ABS_PATH PATH_MAX
+  #endif
+/*
+  #ifdef __WIN32__
   // winsock support...
 //  #undef FD_SETSIZE
 //  #define FD_SETSIZE 1000
@@ -42,8 +53,8 @@ class status_info;
     #endif
     #define MAX_ABS_PATH PATH_MAX
   #endif
+*/
 #endif
-
 
 namespace filesystem {
 

@@ -69,6 +69,8 @@ namespace application {
 
 //////////////
 
+/*
+ * deprecated.
 #elif defined(_MSC_VER)
   // for win32 we need to support four different environments--console mode,
   // borland compilation, MFC programs and regular windows programs.
@@ -102,6 +104,7 @@ namespace application {
         return to_run_obj.execute_application(); \
       }
   #endif
+*/
 
 //////////////
 

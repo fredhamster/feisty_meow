@@ -1,29 +1,34 @@
 #ifndef EARTH_TIME_GROUP
 #define EARTH_TIME_GROUP
 
-// Name   : earth_time
-// Author : Chris Koeritz
-/******************************************************************************
-* Copyright (c) 1999-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
-\*****************************************************************************/
+/*
+  Name   : earth_time
+  Author : Chris Koeritz
+
+  Copyright (c) 1999-$now By Author.  This program is free software; you can
+  redistribute it and/or modify it under the terms of the GNU General Public
+  License as published by the Free Software Foundation; either version 2 of
+  the License or (at your option) any later version.  This is online at:
+      http://www.fsf.org/copyleft/gpl.html
+  Please send any updates to: fred@gruntose.com
+*/
 
 #include <basis/astring.h>
 #include <basis/byte_array.h>
 #include <basis/contracts.h>
+//#include <basis/definitions.h>
 #include <structures/object_packers.h>
+
+///#include <time.h>
 
 //! A set of methods for rendering calendrical and clock times.
 /*!
   It is based on the Gregorian calendar currently in use by the USA and other
   countries.
 */
-
 namespace timely {
+
+  typedef basis::signed_long time_number;
 
   enum days { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY };
     //!< The names of the days of the week.
@@ -44,21 +49,24 @@ namespace timely {
   const char *short_month_name(months to_name);
     //!< Returns a shorter, constant-length (3 characters) month name.
 
-  extern const int days_in_month[12];
+  extern const time_number days_in_month[12];
     //!< The number of days in each month in the standard year.
-  extern const int leap_days_in_month[12];
+  extern const time_number leap_days_in_month[12];
     //!< The number of days in each month in a leap year.
 
-  extern const int julian_days_in_month[12];
+  extern const time_number julian_days_in_month[12];
     //!< Number of days in each month based on the julian calendar.
-  extern const int julian_leap_days_in_month[12];
+  extern const time_number julian_leap_days_in_month[12];
     //!< Number of days in each month of a leap year in the julian calendar.
 
-  const int SECONDS_IN_MINUTE = 60;  //!< Number of seconds in one minute.
-  const int MINUTES_IN_HOUR = 60;  //!< Number of minutes in an hour.
-  const int HOURS_IN_DAY = 24;  //!< Number of hours in a day.
-  const int DAYS_IN_YEAR = 365;  //!< Number of days in a standard year.
-  const int LEAP_DAYS_IN_YEAR = 366;  //!< Number of days in a leap year.
+  const time_number SECONDS_IN_MINUTE = 60;  //!< Number of seconds in one minute.
+  const time_number MINUTES_IN_HOUR = 60;  //!< Number of minutes in an hour.
+  const time_number SECONDS_IN_HOUR = 3600;  //!< Number of seconds in an hour.
+  const time_number HOURS_IN_DAY = 24;  //!< Number of hours in a day.
+  const time_number MINUTES_IN_DAY = 1440;  //!< Number of minutes in a day.
+  const time_number SECONDS_IN_DAY = 86400;  //!< Number of seconds in a day.
+  const time_number DAYS_IN_YEAR = 365;  //!< Number of days in a standard year.
+  const time_number LEAP_DAYS_IN_YEAR = 366;  //!< Number of days in a leap year.
   const double APPROX_DAYS_IN_YEAR = 365.2424;
     //!< A more accurate measure of the number of days in a year.
     /*!< This is the more accurate mean length of time in 24 hour days between
@@ -76,14 +84,14 @@ namespace timely {
   class clock_time : public virtual basis::packable
   {
   public:
-    int hour;  //!< The hour represented in military time: 0 through 23.
-    int minute;  //!< The number of minutes after the hour.
-    int second;  //!< The number of seconds after the current minute.
-    int millisecond;  //!< The number of milliseconds elapsed in this second.
-    int microsecond;  //!< Number of microseconds elapsed in this millisecond.
+    time_number hour;  //!< The hour represented in military time: 0 through 23.
+    time_number minute;  //!< The number of minutes after the hour.
+    time_number second;  //!< The number of seconds after the current minute.
+    time_number millisecond;  //!< The number of milliseconds elapsed in this second.
+    time_number microsecond;  //!< Number of microseconds elapsed in this millisecond.
 
     //! Constructs a clock_time object given all the parts.
-    clock_time(int h = 0, int m = 0, int s = 0, int ms = 0, int us = 0)
+    clock_time(time_number h = 0, time_number m = 0, time_number s = 0, time_number ms = 0, time_number us = 0)
              : hour(h), minute(m), second(s), millisecond(ms),
                microsecond(us) {}
     ~clock_time() {}
@@ -117,7 +125,7 @@ namespace timely {
       /*!< note that "to_stuff" will be appended to; the existing contents
       are retained. */
 
-    static int normalize(clock_time &to_fix);
+    static time_number normalize(clock_time &to_fix);
       // ensures that the units in each field are in the proper range by
       // promoting them upwards.  if the clock_time goes above the maximum hour,
       // then it rolls around.  zero is returned for no rollover or a positive
@@ -131,15 +139,15 @@ namespace timely {
   {
   public:
     months month;  //!< The current month.
-    int day_in_month;  //!< The day number within the month (starting at one).
+    time_number day_in_month;  //!< The day number within the month (starting at one).
     days day_of_week;  //!< The day of the week.
-    int day_of_year;  //!< Numerical day, where January 1st is equal to zero.
+    time_number day_of_year;  //!< Numerical day, where January 1st is equal to zero.
 
-    int packed_size() const { return 4 * structures::PACKED_SIZE_INT32; }
+    int packed_size() const { return 4 * structures::PACKED_SIZE_INT64; }
 
     //! Constructs a representation of the day specified.
-    day_in_year(months m = JANUARY, int dim = 1, days dow = SUNDAY,
-            int day_o_year = 1) : month(m), day_in_month(dim),
+    day_in_year(months m = JANUARY, time_number dim = 1, days dow = SUNDAY,
+            time_number day_o_year = 1) : month(m), day_in_month(dim),
             day_of_week(dow), day_of_year(day_o_year) {}
 
     virtual void pack(basis::byte_array &packed_form) const;
@@ -167,7 +175,7 @@ namespace timely {
     void text_form(basis::astring &to_stuff, int how = SHORT_MONTH) const;
       //!< Prints the day according to "how" and stores it in "to_stuff".
 
-    static int normalize(day_in_year &to_fix, bool leap_year = false);
+    static time_number normalize(day_in_year &to_fix, bool leap_year = false);
       //!< normalizes the day as needed and returns the adjustment in years.
       /*!< note that this only adjusts the day_in_month and month members
       currently.  the other counters are not changed. */
@@ -179,14 +187,14 @@ namespace timely {
       public virtual basis::hoople_standard
   {
   public:
-    int year;  //!< The year, using the gregorian calendar.
+    time_number year;  //!< The year, using the gregorian calendar.
 
     time_locus() : clock_time(), day_in_year(), year() {}
 
     DEFINE_CLASS_NAME("time_locus");
 
     //! Constructs a location in time given its components.
-    time_locus(const clock_time &ct, const day_in_year &ytd, int year_in)
+    time_locus(const clock_time &ct, const day_in_year &ytd, time_number year_in)
             : clock_time(ct), day_in_year(ytd), year(year_in) {}
 
     int packed_size() const { return clock_time::packed_size()
@@ -225,12 +233,12 @@ namespace timely {
             int d = day_in_year::SHORT_MONTH, int y = LONG_YEAR) const;
       //! Same as text_form() above, but stores into "to_stuff".
 
-    static int normalize(time_locus &to_fix);
+    static time_number normalize(time_locus &to_fix);
       //!< normalizes the time_locus for its clock time and date.
 //hmmm: what are rollovers measured in?
   };
 
-  int year_now();  //!< what year is it?
+  time_number year_now();  //!< what year is it?
   clock_time time_now();  //!< what time is it?
   day_in_year date_now();  //!< what day on the calendar is it?
   time_locus now();  //!< returns our current locus in the time continuum.

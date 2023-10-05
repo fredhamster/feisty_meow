@@ -26,7 +26,7 @@
 #include <loggers/console_logger.h>
 #include <structures/static_memory_gremlin.h>
 
-#ifdef _MSC_VER
+#ifdef __WIN32__
   #include <mmsystem.h>
 #endif
 
@@ -47,12 +47,17 @@ int main(int argc, char *argv[])
     return 12;
   }
   for (int i = 1; i < argc; i++) {
-//    out.log(astring(astring::SPRINTF, "soundfile %d: %s", i, argv[i]));
-#ifdef _MSC_VER
-    if (!PlaySound(to_unicode_temp(argv[i]), NULL_POINTER, SND_FILENAME))
-      out.log(astring("failed to play ") + argv[i], ALWAYS_PRINT);
+    astring sound_file = argv[i];
+out.log(a_sprintf("soundfile %d: %s", i, sound_file.s()), ALWAYS_PRINT);
+    if (sound_file.ends(".mp3")) {
+      out.log(astring("skipping MP3 file ") + sound_file, ALWAYS_PRINT);
+      continue;
+    }
+#ifdef __WIN32__
+    if (!PlaySound(to_unicode_temp(sound_file), NULL_POINTER, SND_FILENAME))
+      out.log(astring("failed to play ") + sound_file, ALWAYS_PRINT);
 #else
-    out.log(astring("this program is a NO-OP, ignoring ") + argv[i], ALWAYS_PRINT);
+    out.log(astring("this program is a NO-OP, ignoring ") + sound_file, ALWAYS_PRINT);
 #endif
   }
   return 0;

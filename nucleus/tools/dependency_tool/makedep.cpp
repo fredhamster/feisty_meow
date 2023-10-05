@@ -33,11 +33,11 @@ in this Software without prior written authorization from the X Consortium.
 
 #include "def.h"
 
-#ifdef _MSC_VER
-#include <io.h>
-#else
+//#ifdef _MSC_VER
+//#include <io.h>
+//#else
 #include <unistd.h>
-#endif
+//#endif
 #include <stdio.h>
 #include <string.h>
 

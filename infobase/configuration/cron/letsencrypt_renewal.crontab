@@ -1,7 +1,7 @@
 
 ##############
 
-#[letsencrypt renewal]
+#[letsencrypt_renewal]
 # run the letsencrypt certificate renewal process every 4 hours.
 # fixing issues in renewal by setting PATH.
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

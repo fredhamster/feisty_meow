@@ -148,6 +148,7 @@ private:
 
 //////////////
 
+/* wow, an ancient screw-up, leaving these in here after they were abstracted to tcpip_definitions.h; yargh.
 #ifdef __UNIX__
   // provide some unifying definitions.
   #define INVALID_SOCKET -1
@@ -262,6 +263,7 @@ private:
   #define SOCK_TRY_AGAIN WSATRY_AGAIN
   #define SOCK_VERNOTSUPPORTED WSAVERNOTSUPPORTED
 #endif //win32.
+*/
 
 //////////////
 

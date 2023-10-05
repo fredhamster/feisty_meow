@@ -1,18 +1,32 @@
 
 ##############
 
-#[time synch]
+#[time_synch_suite]
 
 LOCAL_TIME_SERVER=greendragon
 
-# standard version synchs to a local machine.  can be used on a network
-# to get time from central host.
-*/4 * * * * /usr/sbin/ntpdate $LOCAL_TIME_SERVER &>>/tmp/${CRONUSER}-cron-time_synch.log
+##############
+
+# note: uncomment only one of the below (local client, local server, or remote client).
 
 ##############
 
+#[update_system_time_local_client]
+# standard version synchs to a local machine.  can be used on a network
+# to get time from central host.
+#*/4 * * * * /usr/sbin/ntpdate $LOCAL_TIME_SERVER &>>/tmp/${CRONUSER}-cron-time_synch.log
+
+##############
+
+#[update_system_time_local_server]
 # the central host machine uses this version, to synch time externally.
-0 0,4,8,12,16,20 * * * /usr/bin/rdate -s time.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
+#0 0,4,8,12,16,20 * * * /usr/bin/rdate -s time.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
+
+##############
+
+#[update_system_time_remote_client]
+# synchronize the time with a real ntp server.
+#42 0,4,8,12,16,20 * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; bash $FEISTY_MEOW_APEX/scripts/system/update_system_time.sh ) &>/tmp/${CRONUSER}-cron-update_system_time.log
 
 ##############
 

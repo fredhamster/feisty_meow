@@ -30,6 +30,8 @@
 #include <structures/string_table.h>
 #include <structures/symbol_table.h>
 
+#include <stdio.h>
+
 #undef LOG
 #define LOG(to_print) printf("%s::%s: %s\n", static_class_name(), func, astring(to_print).s())
 
@@ -57,7 +59,9 @@ ini_configurator::ini_configurator(const astring &ini_filename,
   _where(where),
   _add_spaces(false)
 {
+  FUNCDEF("constructor");
   name(ini_filename);  // set name properly.
+//LOG(astring("calculated ini name as: '") + _ini_name->raw() + "'");
 }
 
 ini_configurator::~ini_configurator()
@@ -88,9 +92,9 @@ void ini_configurator::name(const astring &name)
     // that don't include a directory name.
   if (_where == OS_DIRECTORY) use_appdir = false;
   if (_where == ALL_USERS_DIRECTORY) use_appdir = false;
-#ifdef _MSC_VER
-  use_appdir = true;
-#endif
+//#ifdef _MSC_VER
+//  use_appdir = true;
+//#endif
   // we must create the filename if they specified no directory at all.
   if (!_ini_name->had_directory()) {
     if (use_appdir) {
@@ -139,13 +143,13 @@ void ini_configurator::sections(string_array &list)
 //hmmm: refactor section_exists to use the sections call, if it's faser?
 bool ini_configurator::section_exists(const astring &section)
 {
-#ifdef _MSC_VER
-  string_table infos;
-  // heavy-weight call here...
-  return get_section(section, infos);
-#else
+//#ifdef _MSC_VER
+//  string_table infos;
+//  // heavy-weight call here...
+//  return get_section(section, infos);
+//#else
   return _parser->section_exists(section);
-#endif
+//#endif
 }
 
 #if defined(__UNIX__) || defined(__GNU_WINDOWS__)
@@ -200,28 +204,28 @@ void ini_configurator::write_ini_file()
 
 bool ini_configurator::delete_section(const astring &section)
 {
-#ifdef _MSC_VER
-  return put_profile_string(section, "", ""); 
-#else
+//#ifdef _MSC_VER
+//  return put_profile_string(section, "", ""); 
+//#else
   // zap the section.
   bool to_return = _parser->delete_section(section);
   // schedule the file to write.
   write_ini_file();
   return to_return;
-#endif
+//#endif
 }
 
 bool ini_configurator::delete_entry(const astring &section, const astring &ent)
 {
-#ifdef _MSC_VER
-  return put_profile_string(section, ent, "");
-#else
+//#ifdef _MSC_VER
+//  return put_profile_string(section, ent, "");
+//#else
   // zap the entry.
   bool to_return = _parser->delete_entry(section, ent);
   // schedule the file to write.
   write_ini_file();
   return to_return;
-#endif
+//#endif
 }
 
 bool ini_configurator::put(const astring &section, const astring &entry,
@@ -231,15 +235,15 @@ bool ini_configurator::put(const astring &section, const astring &entry,
   if (!to_store.length()) return delete_entry(section, entry);
   else if (!entry.length()) return delete_section(section);
   else if (!section.length()) return false;
-#ifdef _MSC_VER
-  return put_profile_string(section, entry, to_store);
-#else
+//#ifdef _MSC_VER
+//  return put_profile_string(section, entry, to_store);
+//#else
   // write the entry.
   bool to_return = _parser->put(section, entry, to_store);
   // schedule file write.
   write_ini_file();
   return to_return;
-#endif
+//#endif
 }
 
 bool ini_configurator::get(const astring &section, const astring &entry,
@@ -302,6 +306,7 @@ bool ini_configurator::get_section(const astring &section, string_table &info)
 bool ini_configurator::put_section(const astring &section,
     const string_table &info)
 {
+/*
 #ifdef _MSC_VER
   variable_tokenizer parser("\1", "=");
   parser.table() = info;
@@ -322,14 +327,16 @@ bool ini_configurator::put_section(const astring &section,
   return WritePrivateProfileSection(to_unicode_temp(section),
       to_unicode_temp(flat), to_unicode_temp(name()));
 #else
+*/
   // write the section.
   bool to_return = _parser->put_section(section, info);
   // schedule file write.
   write_ini_file();
   return to_return;
-#endif
+//#endif
 }
 
+/*
 #ifdef _MSC_VER
 bool ini_configurator::put_profile_string(const astring &section,
     const astring &entry, const astring &to_store)
@@ -351,6 +358,7 @@ void ini_configurator::get_profile_string(const astring &section,
       return_buffer, buffer_size, to_unicode_temp(name()));
 }
 #endif
+*/
 
 } //namespace.
 

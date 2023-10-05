@@ -32,11 +32,11 @@ using namespace processes;
 using namespace structures;
 using namespace timely;
 
-//#define DEBUG_TIMER_DRIVER
+#define DEBUG_TIMER_DRIVER
   // uncomment for noisy code.
 
 #undef LOG
-#define LOG(tpr) printf( (time_stamp::notarize() + "timer_driver::" + func + tpr).s() )
+#define LOG(tpr) printf("%s", (time_stamp::notarize() + "timer_driver::" + func + tpr).s() )
 
 namespace timely {
 
@@ -102,7 +102,7 @@ void __stdcall timer_driver_private_handler(window_handle hwnd, basis::un_int ms
   if (true) {  // unknown OS.
 #endif
 #ifdef DEBUG_TIMER_DRIVER
-    LOG(a_sprintf("unknown signal/message %x caught.", (void *)seen));
+    LOG(a_sprintf("unknown signal/message %d caught.", seen));
 #endif
     return;
   }
@@ -214,9 +214,9 @@ timer_driver::~timer_driver()
 #endif
 }
 
-#ifdef _MSC_VER
-basis::un_int *timer_driver::real_timer_id() { return _real_timer_id; }
-#endif
+//#ifdef _MSC_VER
+//basis::un_int *timer_driver::real_timer_id() { return _real_timer_id; }
+//#endif
 
 bool timer_driver::zap_timer(timeable *to_remove)
 {
@@ -404,10 +404,10 @@ void timer_driver::hookup_OS_timer(int duration)
 #ifdef DEBUG_TIMER_DRIVER
   LOG(a_sprintf("hooking next OS timer in %d ms.", duration));
 #endif
-#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
+//#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   // just make our thread hit after the duration specified.
   _prompter->reschedule(duration);
-#elif defined(_MSC_VER)
+/*#elif defined(_MSC_VER)
   int max_tries_left = 100;
   while (max_tries_left-- >= 0) {
     _real_timer_id = (basis::un_int *)SetTimer(NULL_POINTER, 0, duration,
@@ -421,6 +421,7 @@ void timer_driver::hookup_OS_timer(int duration)
       break;  // success hooking timer.
   }
 #endif
+*/
 }
 
 void timer_driver::unhook_OS_timer()
@@ -428,12 +429,12 @@ void timer_driver::unhook_OS_timer()
 #ifdef DEBUG_TIMER_DRIVER
   FUNCDEF("unhook_OS_timer");
 #endif
-#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
+//#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   // postpone the thread for quite a while so we can take care of business.
   _prompter->reschedule(LONG_TIME);
-#elif defined(_MSC_VER)
-  if (_real_timer_id) KillTimer(NULL_POINTER, (UINT_PTR)_real_timer_id);
-#endif
+//#elif defined(_MSC_VER)
+//  if (_real_timer_id) KillTimer(NULL_POINTER, (UINT_PTR)_real_timer_id);
+//#endif
 #ifdef DEBUG_TIMER_DRIVER
   LOG("unhooked OS timer.");
 #endif

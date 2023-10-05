@@ -12,6 +12,7 @@
 
 #include "registry_config.h"
 
+#include <application/windoze_helper.h>
 #include <basis/astring.h>
 #include <basis/functions.h>
 #include <basis/utf_conversion.h>
@@ -23,7 +24,7 @@ using namespace basis;
 using namespace filesystem;
 using namespace structures;
 
-#ifdef _MSC_VER
+#ifdef __WIN32__
 
   // this implementation only works on windows currently.
 //hmmm: i suppose we could fake it with an ini file.
@@ -50,8 +51,6 @@ const int MAXIMUM_NAME_SIZE = 16384;
   // the longest that value names can be in the registry.
 
 // a default we hope never to see in the registry.
-//SAFE_STATIC_CONST(astring, registry_configurator::reg_str_fake_default,
- //   ("bogus_never_should_see"));
 const astring &registry_configurator::reg_str_fake_default()
 {
   static astring _hidden = "bogus_never_should_see";
@@ -106,7 +105,7 @@ bool registry_configurator::put(const astring &section_in, const astring &entry,
   if (!to_store.length()) return delete_entry(section, entry);
   else if (!section.length()) return false;
 
-#ifdef _MSC_VER
+#ifdef __WIN32__
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_WRITE, &key);
@@ -145,7 +144,7 @@ bool registry_configurator::get(const astring &section_in, const astring &entry,
   if (!section_in) return false;
   if (!entry) {}  // not a problem.
   astring section = fix_section(section_in);
-#ifdef _MSC_VER
+#ifdef __WIN32__
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_QUERY_VALUE, &key);
@@ -190,7 +189,7 @@ bool registry_configurator::get_section(const astring &section_in,
   info.reset();
   if (!section_in.length()) return false;
   astring section = fix_section(section_in);
-#ifdef _MSC_VER
+#ifdef __WIN32__
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_QUERY_VALUE, &key);
@@ -233,7 +232,7 @@ bool registry_configurator::section_exists(const astring &section_in)
   FUNCDEF("section_exists");
   if (!section_in.length()) return false;
   astring section = fix_section(section_in);
-#ifdef _MSC_VER
+#ifdef __WIN32__
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_QUERY_VALUE, &key);
@@ -254,7 +253,7 @@ bool registry_configurator::delete_section(const astring &section_in)
   if (!section_in.length()) return false;
   astring section = fix_section(section_in);
 //if the key doesn't exist, should that be a failure?
-#ifdef _MSC_VER
+#ifdef __WIN32__
   long ret = SHDeleteKey((HKEY)translate_hive(_hive),
       to_unicode_temp(section));
   if (ret != ERROR_SUCCESS) {
@@ -275,7 +274,7 @@ bool registry_configurator::delete_entry(const astring &section_in,
   astring section = fix_section(section_in);
   if (!entry) {}  // no problem.
 
-#ifdef _MSC_VER
+#ifdef __WIN32__
   HKEY key;
   long ret = RegOpenKeyEx((HKEY)translate_hive(_hive),
       to_unicode_temp(section), 0, KEY_SET_VALUE, &key);

@@ -135,7 +135,7 @@ Install using apt (on Ubuntu or Debian-based OS):
 $ sudo apt install libfile-which-perl libtext-diff-perl
 
 Install using yum (on Centos or similar distros):
-$ yum install perl-File-Which perl-Text-Diff
+$ sudo yum install perl-File-Which perl-Text-Diff
 
 or Install using perl's CPAN:
 $ sudo cpan install Text::Diff File::Which

@@ -148,24 +148,24 @@ private:
   bool _thread_active;  //!< is the thread currently performing?
   bool _stop_thread;  //!< true if the thread should stop now.
   void *_data;  //!< holds the thread's link back to whatever.
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   pthread_t *_handle;  //!< thread structure for our thread.
-#else
-  uintptr_t _handle;  //!< thread handle for the active thread, or zero.
-#endif
+//#else
+  //uintptr_t _handle;  //!< thread handle for the active thread, or zero.
+//#endif
   int _sleep_time;  //!< threads perform at roughly this interval.
   bool _periodic;  //!< true if this thread should run repeatedly.
   timely::time_stamp *_next_activation;  //!< the next time perform_activity is called.
   timed_thread_types _how;  //!< how is the period evaluated?
 
   // the OS level thread functions.
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   static void *periodic_thread_driver(void *hidden_pointer);
   static void *one_shot_thread_driver(void *hidden_pointer);
-#else
-  static void periodic_thread_driver(void *hidden_pointer);
-  static void one_shot_thread_driver(void *hidden_pointer);
-#endif
+//#else
+  //static void periodic_thread_driver(void *hidden_pointer);
+  //static void one_shot_thread_driver(void *hidden_pointer);
+//#endif
 
   // forbidden.
   ethread(const ethread &);

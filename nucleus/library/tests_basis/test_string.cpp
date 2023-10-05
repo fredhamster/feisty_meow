@@ -33,9 +33,9 @@
 #include <timely/time_stamp.h>
 #include <unit_test/unit_base.h>
 
-#ifdef _MSC_VER
-  #include <comdef.h>
-#endif
+//#ifdef _MSC_VER
+//  #include <comdef.h>
+//#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

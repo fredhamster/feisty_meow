@@ -8,7 +8,7 @@ PROJECT = dependency_tool
 TYPE = application
 SOURCE = cppsetup.cpp ifparser.cpp include.cpp parse.cpp pr.cpp
 #DEFINITIONS += __BUILD_STATIC_APPLICATION__
-ifeq "$(OP_SYSTEM)" "WIN32"
+ifeq "$(OPERATING_SYSTEM)" "WIN32"
   SOURCE += makedep_version.rc 
 endif
 TARGETS = makedep.exe

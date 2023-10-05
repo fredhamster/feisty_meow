@@ -20,9 +20,10 @@
 namespace loggers {
 
 //! This macro wraps the notion of stopping in the debugger.
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
   #define CAUSE_BREAKPOINT
-//hmmm: need a unix equivalent for this.  supporting gcc might be enough.
+//hmmm: need a unix equivalent for this, see old below for doze?
+/*
 #else
   #ifdef __MINGW32__
     extern "C" {
@@ -35,6 +36,7 @@ namespace loggers {
     #define CAUSE_BREAKPOINT __debugbreak()
   #endif
 #endif
+*/
 
 //! Tests the value "check" to ensure that it's not zero.
 /*! This can be used instead of an ASSERT macro to check conditions in

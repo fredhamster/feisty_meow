@@ -9,33 +9,53 @@ if [ $# -lt 1 ]; then
   exit 0;
 fi
 
-export PLAYCMD=/usr/bin/play
-if [ ! -f "$PLAYCMD" ]; then
-  PLAYCMD='echo Unknown sound player...'
-fi
+export BASIC_PLAY_CMD='echo Unknown basic sound player...'
 
-if [ ! -z "$(whichable afplay)" ]; then
+if [ -f "/usr/bin/play" ]; then
+#echo we see /usr/bin/play available...
+  BASIC_PLAY_CMD=/usr/bin/play
+elif [ ! -z "$WINDIR" ]; then
+#echo "kludge for win32; we provide our own sound player."
+  BASIC_PLAY_CMD=playsound
+elif [ ! -z "$(whichable afplay)" ]; then
 #echo we see afplay available...
-  PLAYCMD=afplay
+  BASIC_PLAY_CMD=afplay
 elif [ ! -z "$(psfind artsd)" ]; then
 #echo we see artsd running...
-  PLAYCMD=artsplay
+  BASIC_PLAY_CMD=artsplay
 elif [ ! -z "$(psfind esd)" ]; then
 #echo  we see esd running...
-  PLAYCMD=esdplay
+  BASIC_PLAY_CMD=esdplay
 elif [ ! -z "$(psfind pulseaudio)" ]; then
 #echo we see pulse running...
-  PLAYCMD="padsp aplay"
-elif [ ! -z "$WINDIR" ]; then
-#echo kludge for win32; we provide our own sound player.
-  PLAYCMD=playsound
+  BASIC_PLAY_CMD="padsp aplay"
 else
-  echo "I don't know how to play sounds for this OS and sound system."
+  echo "I don't know how to play basic sound files for this OS and sound system."
 fi
 
-# play the sounds individually; playsound can handle multiple files, but
-# "play" doesn't want to on some systems.
-for i in $*; do $PLAYCMD $i >/dev/null 2>&1; done
+export MP3_PLAY_CMD='echo Unknown mp3 player...'
+
+if [ ! -z "$(whichable mplayer)" ]; then
+  MP3_PLAY_CMD=mplayer
+else
+  echo "I don't know how to play mp3 files for this OS and sound system."
+fi
+
+# play the sounds individually; some apps like playsound can handle multiple
+# files, but "/usr/bin/play" doesn't want to on some systems.
+for filename in $*; do 
+  case "$filename" in
+    *wav)
+    $BASIC_PLAY_CMD $filename >/dev/null 2>&1;
+    ;;
+    *mp3)
+    $MP3_PLAY_CMD $filename >/dev/null 2>&1;
+    ;;
+    *)
+    echo "I don't know the file extension here: $filename"
+    ;;
+  esac
+done
 
 exit 0
 

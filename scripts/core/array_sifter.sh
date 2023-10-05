@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Provides functions for checking and sorting the contents of arrays.
 

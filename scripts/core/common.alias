@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ##############
 # Name   : common.alias
 # Author : Chris Koeritz
@@ -76,6 +76,7 @@ define_yeti_alias md='mkdir'
 define_yeti_alias move='mv -i -v'
 define_yeti_alias mv='\mv -i -v'
 define_yeti_alias netcp='rsync -avz'
+define_yeti_alias netcpl='rsync -av'
 define_yeti_alias notepad='gedit'
 define_yeti_alias pwd="/bin/pwd|sed -e 's/^\/home\/$USER/~/'"
 define_yeti_alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
@@ -152,10 +153,10 @@ define_yeti_alias why='echo We all wonder what the point of the universe is at t
 
 ##############
 
-# remove the "fredization" or "feistymeowization" macros if they're defined,
-# which reduces the chance of loading the shell environment twice for users
-# like root that don't load feisty meow automatically.
-unalias fredme feistyme &>/dev/null
+# remove the "feistymeowization" macro if defined, which reduces the chance of
+# loading the shell environment twice for users like root who don't load
+# feisty meow automatically.
+unalias gofeisty &>/dev/null
 
 ##############
 

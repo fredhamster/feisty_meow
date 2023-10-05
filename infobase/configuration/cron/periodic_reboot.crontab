@@ -1,7 +1,7 @@
 
 ##############
 
-# [periodic reboot]
+# [periodic_reboot]
 # invigorates a shaky machine that cannot run longer than a certain time period.
 # version below reboots every two days, somewhat.
 20 4 * * 0,2,4,6 (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; sep; echo periodic reboot running at $(date) ; sep; sync; sleep 2; /sbin/reboot) &>>$HOME/${CRONUSER}-cron-periodic_reboot.log

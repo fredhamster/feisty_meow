@@ -20,6 +20,7 @@
 #include <basis/byte_array.h>
 #include <basis/functions.h>
 #include <textual/parser_bits.h>
+#include <system_helper.h>
 
 #include <stdio.h>
 #include <sys/stat.h>
@@ -42,13 +43,13 @@ class status_info : public stat
 
 namespace filesystem {
 
-#if defined(__WIN32__) || defined(__VMS__)
-  const char DEFAULT_SEPARATOR = '\\';
-#elif defined(__UNIX__)
+//#if defined(__WIN32__) || defined(__VMS__)
+//  const char DEFAULT_SEPARATOR = '\\';
+//#elif defined(__UNIX__)
   const char DEFAULT_SEPARATOR = '/';
-#else
-  #error "We have no idea what the default path separator is."
-#endif
+//#else
+//  #error "We have no idea what the default path separator is."
+//#endif
 
 const char *NO_PARENT_DEFAULT = ".";
   // used when no directory name can be popped off.
@@ -207,6 +208,7 @@ void filename::canonicalize()
   } else {
 //LOG(astring("path didn't match so left as: ") + *this);
   }
+
   // now we convert msys...
   if ( (length() >= 2) && (get(0) == DEFAULT_SEPARATOR)
         && textual::parser_bits::is_alpha(get(1)) ) {
@@ -227,6 +229,40 @@ void filename::canonicalize()
 //LOG(astring("turned msys string into: ") + *this);
     }
   } 
+
+  // if we still have a unix style path here on windows, then there will be
+  // trouble when we pass that to the OS.  we are not using any cygwin or
+  // other virtualization libraries directly, so we can't rely on those to
+  // fix the path.  but if we built under something like cygwin, we should
+  // have stored the real dos-style location of the virtual unix root.  we
+  // will use that to replace the root '/' and this should fix most of that
+  // style of path.
+  bool inject_root = false;  // assume we don't need to do anything.
+
+//LOG(astring("before root injection: ") + raw());
+
+  // condition here just checks if the path is only the root.
+  if ( (length() == 1) && separator(get(0)) ) { inject_root = true; }
+
+//if (inject_root) LOG("decided to inject root since path is '/'.");
+
+  // condition is looking for first character being a slash, and second char as alphanumeric or dash or underscore.
+  // we will currently fail detecting freaky paths that don't start off with alphanumeric or one of that small set of special chars.
+  if ( (length() >= 2)
+      && separator(get(0)) 
+      && ( textual::parser_bits::is_alphanumeric(get(1)) || ('-' == get(1)) || ('_' == get(1)) ) ) { 
+    inject_root = true;
+//if (inject_root) LOG(astring("decided to inject root since path is compatible: ") + *this);
+  }
+
+//LOG(astring("after second phase root injection: ") + raw());
+
+  if (inject_root) {
+    // inject the actual path to the unix root in front, if we know it.
+    // if we don't know it, then a default path that's unlikely to work is idiotically plugged in.
+    insert(0, FEISTY_MEOW_VIRTUAL_UNIX_ROOT);
+//LOG(astring("turned cygdrive path string into: ") + raw());
+  }
 #endif
 
   // we don't crop the last separator if the name's too small.  for msdos

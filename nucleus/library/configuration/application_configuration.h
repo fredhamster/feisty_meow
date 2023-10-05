@@ -74,9 +74,20 @@ public:
     //!< retrieves the core binary directory location from paths.ini.
 
   static basis::astring get_logging_directory();
-    //!< returns the directory where log files will be stored.
+    //!< returns the folder where the log files for the feisty meow system are stored.
+    /*!< any log files should be written to this folder by the rest of the codebase,
+    unless there are special purposes for those log files.  but logs from general
+    operation of feisty meow should be written in this directory. */
+
+  static const basis::astring &virtual_unix_root();
+    //!< returns the path to the unix root, which may be simulated.
+    /*!< on unix, this will just return '/'.  on win32 with cygwin installed,
+    this will return the cygwin path for '/' that was detected at build time.
+    this is often "c:/cygwin", which we use as a default if the path isn't
+    detected properly. */ 
 
   // the following are key names within the main configuration file.
+  // not generally for external use.
 
   static const basis::astring &GLOBAL_SECTION_NAME();
     //!< the root section name for our configuration items in the main ini file.
@@ -86,15 +97,18 @@ public:
     to particular programs or subsystems should be contained in their own
     section. */
 
-///  static const basis::astring &LOCAL_FOLDER_NAME();
-    //!< entry name in the config file that points at the installation root.
-    /*!< this is where all files for this product are stored on "this" machine. */
-
   static const basis::astring &LOGGING_FOLDER_NAME();
-    //!< the location where the log files for the system are stored.
-    /*!< this is always considered to be a directory under the local folder.
-    the make_logfile_name() function (see below) can be used to create a
-    properly formed filename for logging. */
+    //!< the tag used for finding our logging path in the paths config file.
+
+  static const basis::astring &DEFAULT_VIRTUAL_UNIX_ROOT();
+    //!< default value if we don't find our setting for virtual root.
+    /*!< this is bound to fail on many occasions if it's actually used on
+    windoze for the default, but if we don't have good information ready,
+    we can't just intuit the virtual unix root; we are not kreskin.  the
+    virtual unix environment could be MSYS, Cygwin, or others.  Currently,
+    if Cygwin is used during the build process, then the default should
+    never be needed.  support for other systems will be added as time
+    permits and users clamor for them. */
 
   // helper methods.
 

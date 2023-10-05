@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this is the feisty meow host preparation script.  it installs all the packages required to run and build feisty meow scripts and applications.
-# this script may still be a bit incomplete; we definitely use a lot of unix and linux tools in different scripts.
+
+# hmmm: this script may still be a bit incomplete; we definitely use a lot of unix and linux tools in different scripts.
 
 # preconditions and dependencies--this script itself depends on:
 #   feisty meow
@@ -10,12 +11,59 @@
 
 ####
 
-# something borrowed...
+ORIGINATING_FOLDER="$( \cd "$(\dirname "$0")" && /bin/pwd )"
+CORE_SCRIPTS_DIR="$(echo "$ORIGINATING_FOLDER" | tr '\\\\' '/' )"
+THIS_TOOL_NAME="$(basename "$0")"
+
+# set up the feisty_meow dir.
+pushd "$CORE_SCRIPTS_DIR/../.." &>/dev/null
+#source "$CORE_SCRIPTS_DIR/functions.sh"
+echo originating folder is $ORIGINATING_FOLDER
+export FEISTY_MEOW_APEX="$(/bin/pwd)"
+echo feisty now apex is FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX
+
+####
+
+# helper scripts...
+
 function exit_on_error() {
   if [ $? -ne 0 ]; then
     echo -e "\n\nan important action failed and this script will stop:\n\n$*\n\n*** Exiting script..."
-    error_sound
+#    error_sound
     exit 1
+  fi
+}
+
+function whichable()
+{
+  to_find="$1";
+  shift;
+  local WHICHER="$(/usr/bin/which which 2>/dev/null)";
+  if [ $? -ne 0 ]; then
+      echo;
+      return 2;
+  fi;
+  local sporkenz;
+  sporkenz=$($WHICHER "$to_find" 2>/dev/null);
+  local err=$?;
+  echo $sporkenz;
+  return $err
+}
+
+####
+
+function apt_cyg_finder()
+{
+  if whichable apt-cyg; then
+    return 0  # success.
+#hmmm: is that the right syntax for bash?
+  else
+    echo "
+The apt-cyg tool does not seem to be available for cygwin.
+Please follow the install instructions at:
+    https://github.com/transcode-open/apt-cyg
+"
+    return 13  # not found.
   fi
 }
 
@@ -31,59 +79,57 @@ function exit_on_error() {
 #    e.g.?? $ bash /opt/feistymeow.org/feisty_meow/scripts/core/reconfigure_feisty_meow.sh
 #    hmmm: above ALSO ESSENTIAL TO GET RIGHT!
 
-PHASE_MESSAGE="Checking integrity of Feisty Meow subsystem"
-if [ -z $FEISTY_MEOW_APEX ]; then
+BASE_PHASE_MESSAGE="Feisty Meow subsystems integrity check: "
+
+# is our main variable set?
+PHASE_MESSAGE="$BASE_PHASE_MESSAGE presence of FEISTY_MEOW_APEX variable"
+if [ -z "$FEISTY_MEOW_APEX" ]; then
   false; exit_on_error $PHASE_MESSAGE
 fi
 
 # simple brute force check.  can we go there?
+PHASE_MESSAGE="$BASE_PHASE_MESSAGE check on directory $FEISTY_MEOW_APEX"
 pushd $FEISTY_MEOW_APEX &> /dev/null
-exit_on_error locating feisty meow top-level folder
+exit_on_error $PHASE_MESSAGE
 popd &> /dev/null
 
 # now ask feisty if it's there; should work as long as our scripts are in place.
-bash $FEISTY_MEOW_APEX/scripts/core/is_feisty_up.sh
-exit_on_error $PHASE_MESSAGE
+#PHASE_MESSAGE="$BASE_PHASE_MESSAGE inquiry is_feisty_up"
+#bash $FEISTY_MEOW_APEX/scripts/core/is_feisty_up.sh
+#exit_on_error $PHASE_MESSAGE
 
 # standard load-up.
 #hmmm: this will currently fail if reconfigure has never been called.
-source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+#NO NO NO. source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+# we are preparing to get feisty running; how can we use feisty during
+# that process?  so bad.
 
 ####
+
+#hmmm: why two phases?
 
 # first the crucial bits for scripts to work...
 
 PHASE_MESSAGE="installing perl file and diff modules"
 
-# ubuntu or debian or other apt-based OSes...
 if whichable apt; then
+  # ubuntu or debian or other apt-based OSes...
   sudo apt install libfile-which-perl libtext-diff-perl
   exit_on_error $PHASE_MESSAGE
-# rpm based with yum available...
 elif whichable yum; then  
-  sudo yum install perl-File-Which perl-Text-Diff
+  # rpm based with yum available...
+  sudo yum install perl-Env perl-File-Which perl-Text-Diff
   exit_on_error $PHASE_MESSAGE
-# macos based...
 elif [ ! -z "$IS_DARWIN" ]; then
-
-#hmmm: not quite right yet...
-  brew install blah blah? lots?
+  # macos based...
+  brew install dos2unix openssl
   exit_on_error $PHASE_MESSAGE
-
-# windows-based with cygwin (or we'll fail out).
 elif [ "$OS" == "Windows_NT" ]; then
- 
-#hmmm: install apt-cyg!
-# we need this to do the following step, so why not automate that?
-# can we at least check for the packages we absolutely need?
-
-#hmmm: can we bootstrap and still survive on the basic cygwin modules if already installed?
-#  then we could use our huge list to get the rest!
-
-#hmmm: is there any other way to get the missing ones, that we need for apt-cyg?
-
-  apt-cyg install perl-File-Which perl-Text-Diff
-  exit_on_error $PHASE_MESSAGE
+  # windows-based with cygwin (or we'll fail out currently).
+  if apt_cyg_finder; then
+    apt-cyg install perl-File-Which perl-Text-Diff
+    exit_on_error $PHASE_MESSAGE
+  fi
 fi
 
 ####
@@ -92,27 +138,33 @@ fi
 
 PHASE_MESSAGE="installing code builder packages"
 
-# ubuntu or debian or other apt-based OSes...
 if whichable apt; then
-  sudo apt install build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
+  # ubuntu or debian or other apt-based OSes...
+  sudo apt install mawk build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
   exit_on_error $PHASE_MESSAGE
-# rpm based with yum available...
 elif whichable yum; then  
-  sudo yum install gcc gcc-c++ openssl-devel.x86_64 curl-devel
+  # rpm based with yum available...
+  sudo yum install curl-devel gcc gcc-c++ make mawk openssl-devel.x86_64 zlib-devel
   exit_on_error $PHASE_MESSAGE
-# macos based...
 elif [ ! -z "$IS_DARWIN" ]; then
-
-#hmmm: not quite right yet...
-  brew install blork blork? lots?
+  # macos based...
+#hmmm: still working on these...
+  brew install mawk gpg meld openjdk 
   exit_on_error $PHASE_MESSAGE
-
-# windows-based with cygwin (or we'll fail out).
 elif [ "$OS" == "Windows_NT" ]; then
- 
-#hmmm: unknown list needed still...
-  apt-cyg install fugazi combustinatorinibasil scampnific
-  exit_on_error $PHASE_MESSAGE
+  # windows-based with cygwin (or we'll fail out).
+
+  if apt_cyg_finder; then
+echo need to fix apt cyg install list somewhat.
+#hmmm: list is in our docs as a separate file for cygwin.
+#      plug those packages into here please.
+    apt-cyg install gawk libcurl-devel meld mingw64-i686-openssl openssl openssl-devel libssl-devel zlib-devel
+    exit_on_error $PHASE_MESSAGE
+
+#extended set.  just add them?
+# xorg-server xorg-docs xlaunch 
+
+  fi
 fi
 
 ####
