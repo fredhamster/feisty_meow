@@ -144,7 +144,7 @@ if whichable apt; then
   exit_on_error $PHASE_MESSAGE
 elif whichable yum; then  
   # rpm based with yum available...
-  sudo yum install curl-devel gcc gcc-c++ make mawk openssl-devel.x86_64 zlib-devel
+  sudo yum install curl-devel gcc gcc-c++ make gawk openssl-devel.x86_64 zlib-devel
   exit_on_error $PHASE_MESSAGE
 elif [ ! -z "$IS_DARWIN" ]; then
   # macos based...
