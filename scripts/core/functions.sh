@@ -446,8 +446,12 @@ if [ -z "$skip_all" ]; then
   # returns a successful value (0) if this system is debian or ubuntu.
   function debian_like() {
     # decide if we think this is debian or ubuntu or a variant.
-    DEBIAN_LIKE=$(if [ ! -z "$(grep -i debian /etc/issue)" \
-        -o ! -z "$(grep -i ubuntu /etc/issue)" ]; then echo 1; else echo 0; fi)
+    DEBIAN_LIKE=$( \
+      if [ \
+        ! -z "$(grep -i debian /etc/issue)" -o \
+        ! -z "$(grep -i ubuntu /etc/issue)" -o \
+        ! -z "$(grep -i 'Pop._OS' /etc/issue)" \
+      ]; then echo 1; else echo 0; fi)
     if [ $DEBIAN_LIKE -eq 1 ]; then
       # success; this is debianish.
       return 0
