@@ -8,7 +8,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   export PATH=/usr/local/fred/bin:$PATH
 
   # The nuage directory is a cloud-like repository of our personal data, managed as a git repo.
-  export CLOUD_BASE=$HOME/nuage
+  export CLOUD_BASE=$FEISTY_MEOW_PERSONAL_HOME/nuage
 
   # The gruntose web site is expected to reside below, if it exists at all.
   export WEBBED_SITES=$HOME/web
@@ -17,7 +17,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   fi
 
   # add a bunch of personal folders to the list for checkin & checkout.
-  REPOSITORY_LIST=" nuage ebooks web ${REPOSITORY_LIST} "
+  REPOSITORY_LIST=" $CLOUD_BASE $FEISTY_MEOW_PERSONAL_HOME/ebooks $FEISTY_MEOW_PERSONAL_HOME/web ${REPOSITORY_LIST} "
 
   # adds our locally relevant archive folders into the list to be synched.
   MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus $HOME/brobdingnag"
