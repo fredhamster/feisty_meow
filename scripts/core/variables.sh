@@ -222,6 +222,12 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   
   # set this so nechung can find its data.
   define_yeti_variable NECHUNG=$FEISTY_MEOW_APEX/infobase/fortunes.dat
+
+  # set a personal home directory that can be overridden.
+  define_yeti_variable FEISTY_MEOW_PERSONAL_HOME
+  if [ -z "$FEISTY_MEOW_PERSONAL_HOME" ]; then
+    define_yeti_variable FEISTY_MEOW_PERSONAL_HOME="$HOME"
+  fi
   
 ##  # establish a pipe for less to see our beloved syntax highlighting.
 ##  define_yeti_variable LESSOPEN="| source-highlight -f esc -o STDOUT -i %s"
