@@ -241,15 +241,15 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
 
   # add in any active projects to the repository list.
 #hmmm: resolve if still using this folder.
-  if [ -d "$HOME/active" ]; then
-    REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
+  if [ -d "$FEISTY_MEOW_PERSONAL_HOME/active" ]; then
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_PERSONAL_HOME/active" -maxdepth 1 -mindepth 1 -type d) "
   fi
 
   # add in any folders that are under the feisty meow applications folder.
   define_yeti_variable FEISTY_MEOW_REPOS_SCAN
   if [ -z "$FEISTY_MEOW_REPOS_SCAN" ]; then
-    if [ -d "$HOME/apps" ]; then
-      define_yeti_variable FEISTY_MEOW_REPOS_SCAN="$HOME/apps"
+    if [ -d "$FEISTY_MEOW_PERSONAL_HOME/apps" ]; then
+      define_yeti_variable FEISTY_MEOW_REPOS_SCAN="$FEISTY_MEOW_PERSONAL_HOME/apps"
     else
 #      echo "No value set for FEISTY_MEOW_REPOS_SCAN and no default apps folder found in home."
       true
