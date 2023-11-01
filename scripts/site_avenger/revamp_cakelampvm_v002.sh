@@ -112,8 +112,10 @@ exit_on_error "group perms on feisty meow"
 # fix perms for fred user.
 chown -R fred:fred /home/fred /home/archives/stuffing /home/fred/.[a-zA-Z0-9]*
 exit_on_error "chown fred home"
-if [ -d "$FEISTY_MEOW_APPS_DIR" ]; then
-  group_perm $FEISTY_MEOW_APPS_DIR
+
+#hmmm: argh, wrong check!  can't check a multi-value if it's a directory or not!!!
+if [ -d "$FEISTY_MEOW_SCAN_REPOS" ]; then
+  group_perm $FEISTY_MEOW_SCAN_REPOS
   exit_on_error "group perms on fred's apps"
 fi
 harsh_perm /home/fred/.ssh
