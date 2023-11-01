@@ -246,23 +246,23 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   fi
 
   # add in any folders that are under the feisty meow applications folder.
-  define_yeti_variable FEISTY_MEOW_SCAN_REPOS
-  if [ -z "$FEISTY_MEOW_SCAN_REPOS" ]; then
+  define_yeti_variable FEISTY_MEOW_REPOS_SCAN
+  if [ -z "$FEISTY_MEOW_REPOS_SCAN" ]; then
     if [ -d "$HOME/apps" ]; then
-      define_yeti_variable FEISTY_MEOW_SCAN_REPOS="$HOME/apps"
+      define_yeti_variable FEISTY_MEOW_REPOS_SCAN="$HOME/apps"
     else
-#      echo "No value set for FEISTY_MEOW_SCAN_REPOS and no default apps folder found in home."
+#      echo "No value set for FEISTY_MEOW_REPOS_SCAN and no default apps folder found in home."
       true
     fi
   fi
-  if [ -d "$FEISTY_MEOW_SCAN_REPOS" ]; then
+  if [ -d "$FEISTY_MEOW_REPOS_SCAN" ]; then
 #hmmm: handle the repos as if they are multi value!!!
     # general search for normal project folders in apps.
-    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_SCAN_REPOS" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
-    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_SCAN_REPOS" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
 
     # special search for site avenger directories; they have avenger5 as second level.
-    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_SCAN_REPOS" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
   
   # the archive list is a set of directories that are major repositories of

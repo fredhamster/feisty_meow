@@ -13,7 +13,7 @@
 
 # the top level of the user's application storage.
 if [ -z "$BASE_APPLICATION_PATH" ]; then
-  export BASE_APPLICATION_PATH="$FEISTY_MEOW_SCAN_REPOS"
+  export BASE_APPLICATION_PATH="$FEISTY_MEOW_REPOS_SCAN"
 #hmmm: fix for multivalue usage!
 fi
 # where the code should come from.

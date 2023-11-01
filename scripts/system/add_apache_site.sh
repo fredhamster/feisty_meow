@@ -12,7 +12,7 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 # some convenient defaults for our current usage.
 
 if [ -z "$BASE_APPLICATION_PATH" ]; then
-  BASE_APPLICATION_PATH="$FEISTY_MEOW_SCAN_REPOS"
+  BASE_APPLICATION_PATH="$FEISTY_MEOW_REPOS_SCAN"
 #hmmm: take just first item from the repos list!
 fi
 if [ -z "$STORAGE_SUFFIX" ]; then
