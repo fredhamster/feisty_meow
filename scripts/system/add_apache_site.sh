@@ -12,7 +12,7 @@ source "$FEISTY_MEOW_SCRIPTS/system/common_sysadmin.sh"
 # some convenient defaults for our current usage.
 
 if [ -z "$BASE_APPLICATION_PATH" ]; then
-  BASE_APPLICATION_PATH="$HOME/apps"
+  BASE_APPLICATION_PATH="$FEISTY_MEOW_APPS_DIR"
 fi
 if [ -z "$STORAGE_SUFFIX" ]; then
   STORAGE_SUFFIX="/public"

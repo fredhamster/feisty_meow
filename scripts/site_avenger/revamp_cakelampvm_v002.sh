@@ -112,8 +112,10 @@ exit_on_error "group perms on feisty meow"
 # fix perms for fred user.
 chown -R fred:fred /home/fred /home/archives/stuffing /home/fred/.[a-zA-Z0-9]*
 exit_on_error "chown fred home"
-group_perm $HOME/apps
-exit_on_error "group perms on fred's apps"
+if [ -d "$FEISTY_MEOW_APPS_DIR" ]; then
+  group_perm $FEISTY_MEOW_APPS_DIR
+  exit_on_error "group perms on fred's apps"
+fi
 harsh_perm /home/fred/.ssh
 exit_on_error "harsh_perm setting on fred .ssh"
 group_perm /home/fred/apps/mapsdemo

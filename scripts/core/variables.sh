@@ -234,17 +234,28 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   define_yeti_variable REPOSITORY_LIST="$FEISTY_MEOW_APEX "
 
   # add in any active projects to the repository list.
+#hmmm: resolve if still using this folder.
   if [ -d "$HOME/active" ]; then
     REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
   fi
-  # add in any site avenger applications that are in the applications folder.
-  if [ -d "$HOME/apps" ]; then
+
+  # add in any folders that are under the feisty meow applications folder.
+  define_yeti_variable FEISTY_MEOW_APPS_DIR
+  if [ -z "$FEISTY_MEOW_APPS_DIR" ]; then
+    if [ -d "$HOME/apps" ]; then
+      define_yeti_variable FEISTY_MEOW_APPS_DIR="$HOME/apps"
+    else
+#      echo "No value set for FEISTY_MEOW_APPS_DIR and no default apps folder found in home."
+      true
+    fi
+  fi
+  if [ -d "$FEISTY_MEOW_APPS_DIR" ]; then
     # general search for normal project folders in apps.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_APPS_DIR" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_APPS_DIR" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
 
     # special search for site avenger directories; they have avenger5 as second level.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_APPS_DIR" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
   
   # the archive list is a set of directories that are major repositories of
