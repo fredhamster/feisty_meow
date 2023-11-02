@@ -30,12 +30,15 @@ use Env qw(FEISTY_MEOW_BINARIES BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_D
 # directory where that file resides.
 sub make_alias {
   local($file, $dir) = @_;
-  if ($file =~ /\.[pP][lL]$/) { 
-    local($aliasname) = $file; $aliasname =~ s/\.[Pp][lL]$//;
-    &make_perl_alias($aliasname, "$dir");
+  if ($file =~ /\.[pP][yY]$/) { 
+    local($aliasname) = $file; $aliasname =~ s/\.[Pp][yY]$//;
+    &make_python_alias($aliasname, "$dir");
   } elsif ($file =~ /\.[sS][hH]$/) { 
     local($aliasname) = $file; $aliasname =~ s/\.[Ss][Hh]$//;
     &make_bash_alias($aliasname, "$dir");
+  } elsif ($file =~ /\.[pP][lL]$/) { 
+    local($aliasname) = $file; $aliasname =~ s/\.[Pp][lL]$//;
+    &make_perl_alias($aliasname, "$dir");
   }
 }
 
@@ -47,6 +50,16 @@ sub make_bash_alias {
   $aliasname =~ s/^.*\/([^\/]*)/\1/;
 #print "alias became $aliasname\n";
   print she "define_yeti_alias $aliasname=\"bash $full_alias.sh\"\n";
+}
+
+# makes an alias for a python script given the alias name.
+#hmmm: don't love that we're hardcoding python3 in here, but apparently some systems don't have a 'python' command despite having python installed.
+sub make_python_alias {
+  local($aliasname) = shift(@_);
+  local($full_alias) = $aliasname;
+  $aliasname =~ s/^.*\/([^\/]*)/\1/;
+#print "alias became $aliasname\n";
+  print she "define_yeti_alias $aliasname=\"python3 $full_alias.py\"\n";
 }
 
 # makes an alias for a perl script given the alias name.
