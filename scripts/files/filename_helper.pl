@@ -75,7 +75,7 @@ sub glob_list {
       $match =~ s/\*/.*/g;  # replace asterisks with dot star.
       $match =~ s/\+/\\+/g;  # escape plusses.
       $match =~ s/\?/\\?/g;  # escape question marks.
-      $match =~ s/\|/\\?/g;  # escape pipe char.
+      $match =~ s/\|/\\|/g;  # escape pipe char.
       $match =~ s/\$/\\\$/g;  # escape dollar sign.
       $match =~ s/\[/\\[/g;  # escape open bracket.
       $match =~ s/\]/\\]/g;  # escape close bracket.
@@ -89,6 +89,7 @@ sub glob_list {
       if ($possible_name =~ /$match/) {
         # this one matches so add it.
         push @to_return, $chopped_filename[0] . $possible_name;
+#print "a match on: $chopped_filename\n";
       }
     }
   }
