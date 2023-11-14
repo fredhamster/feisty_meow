@@ -74,7 +74,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   if [ -z "$OS" ]; then
     define_yeti_variable OS=UNIX
   fi
-  define_yeti_variable IS_DARWIN=$(echo $OSTYPE | grep -i darwin)
+  define_yeti_variable IS_DARWIN="$(echo $OSTYPE | grep -i darwin)"
   
   ##############
 

@@ -25,6 +25,9 @@ echo originating folder is $ORIGINATING_FOLDER
 export FEISTY_MEOW_APEX="$(/bin/pwd)"
 echo feisty now apex is FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX
 
+# establish whether this is darwin (MacOS) or not.
+export IS_DARWIN="$(echo $OSTYPE | grep -i darwin)"
+
 ####
 
 # helper scripts...
