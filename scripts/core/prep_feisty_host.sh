@@ -91,20 +91,29 @@ function install_system_package()
 {
   local packages=("${@}")
     # pull out the array of packages from the command line.
-  if whichable apt; then
+  if [ ! -z "$IS_DARWIN" ]; then
+    # macos based...
+echo "installing for darwin"
+    if ! whichable brew; then
+      echo "Could not locate the brew installation system."
+      echo "Please install brew, which is required for MacOS feisty meow installs."
+      return 1
+    fi
+    brew install "${packages[@]}"
+    return $?
+  elif whichable apt; then
     # ubuntu or debian or other apt-based OSes...
+echo "installing for apt"
     sudo apt install "${packages[@]}"
     return $?
   elif whichable yum; then  
     # rpm based with yum available...
+echo "installing for yum"
     sudo yum install "${packages[@]}"
-    return $?
-  elif [ ! -z "$IS_DARWIN" ]; then
-    # macos based...
-    brew install "${packages[@]}"
     return $?
   elif [ "$OS" == "Windows_NT" ]; then
     # windows-based with cygwin (or we'll fail out currently).
+echo "installing for apt-cyg"
     if apt_cyg_finder; then
       apt-cyg install perl-File-Which perl-Text-Diff
       return $?
@@ -162,19 +171,20 @@ popd &> /dev/null
 
 opsystem_here=unknown
 
-if whichable apt; then
+if [ ! -z "$IS_DARWIN" ]; then
+  # macos based...
+  opsystem_here=macos
+elif whichable apt; then
   # ubuntu or debian or other apt-based OSes...
   opsystem_here=debianesque
 elif whichable yum; then  
   # rpm based with yum available...
   opsystem_here=redhatty
-elif [ ! -z "$IS_DARWIN" ]; then
-  # macos based...
-  opsystem_here=macos
 elif [ "$OS" == "Windows_NT" ]; then
   # windows-based with cygwin (or we'll fail out currently).
   opsystem_here=windoze
 fi
+echo decided OS is $opsystem_here
 
 ####
 
@@ -231,9 +241,9 @@ if [ "$opsystem_here" == "debianesque" ]; then
 elif [ "$opsystem_here" == "redhatty" ]; then
   PAX=(screen python3 python3-pip xserver-xorg xorg-docs)
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(screen python3 pip xserver-xorg xorg-docs)
+  PAX=(screen python3 xquartz xorg-docs)
 elif [ "$opsystem_here" == "windoze" ]; then
-  PAX=(screen python3 pip3 xserver-xorg xorg-docs)
+  PAX=(screen python3 python3-pip xserver-xorg xorg-docs)
 fi
 
 install_system_package "${PAX[@]}"
