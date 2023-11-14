@@ -241,7 +241,7 @@ if [ "$opsystem_here" == "debianesque" ]; then
 elif [ "$opsystem_here" == "redhatty" ]; then
   PAX=(screen python3 python3-pip xserver-xorg xorg-docs)
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(screen python3 xquartz xorg-docs)
+  PAX=(screen python3 xquartz linuxbrew/xorg/xorg-docs)
 elif [ "$opsystem_here" == "windoze" ]; then
   PAX=(screen python3 python3-pip xserver-xorg xorg-docs)
 fi
