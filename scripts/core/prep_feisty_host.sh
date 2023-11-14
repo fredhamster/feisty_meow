@@ -153,16 +153,13 @@ elif [ ! -z "$IS_DARWIN" ]; then
   exit_on_error $PHASE_MESSAGE
 elif [ "$OS" == "Windows_NT" ]; then
   # windows-based with cygwin (or we'll fail out).
-
   if apt_cyg_finder; then
-echo need to fix apt cyg install list somewhat.
+echo need to fix apt cyg install list for build apps somewhat.
 #hmmm: list is in our docs as a separate file for cygwin.
 #      plug those packages into here please.
-    apt-cyg install gawk libcurl-devel meld mingw64-i686-openssl openssl openssl-devel libssl-devel zlib-devel
+#      and separate out the build vs. handy packages.
+    apt-cyg install gawk libcurl-devel meld mingw64-i686-openssl openssl openssl-devel libssl-devel zlib-devel 
     exit_on_error $PHASE_MESSAGE
-
-#extended set.  just add them?
-# xorg-server xorg-docs xlaunch 
 
   fi
 fi
@@ -171,11 +168,31 @@ fi
 
 # install other external packages and whatnot.
 
-#hmmm: anything else to get installed?
-  #hmmm: java?
-  #hmmm: python?
-  #hmmm: perl itself!?
+PHASE_MESSAGE="installing additional helper packages"
 
+if whichable apt; then
+  # ubuntu or debian or other apt-based OSes...
+  sudo apt install screen python3 python3-pip xserver-xorg xorg-docs 
+  exit_on_error $PHASE_MESSAGE
+elif whichable yum; then  
+  # rpm based with yum available...
+#new yums unvetted
+  sudo yum install screen python3 python3-pip xserver-xorg xorg-docs 
+  exit_on_error $PHASE_MESSAGE
+elif [ ! -z "$IS_DARWIN" ]; then
+  # macos based...
+#hmmm: still working on these...
+  brew install screen python3 pip xserver-xorg xorg-docs 
+  exit_on_error $PHASE_MESSAGE
+elif [ "$OS" == "Windows_NT" ]; then
+  # windows-based with cygwin (or we'll fail out).
+
+  if apt_cyg_finder; then
+echo need to fix apt cyg install list for extended apps somewhat.
+    apt-cyg install screen python3 pip3 xserver-xorg xorg-docs 
+    exit_on_error $PHASE_MESSAGE
+  fi
+fi
 
 ####
 
@@ -193,10 +210,10 @@ exit 0
 #scav line
 #############################
 
-The "kona" collection depends on Java version 8 or better.
-| Ubuntu:
-| Set up the java PPA archive as described here:
-| https://launchpad.net/~webupd8team/+archive/ubuntu/java
+#The "kona" collection depends on Java version 8 or better.
+#| Ubuntu:
+#| Set up the java PPA archive as described here:
+#| https://launchpad.net/~webupd8team/+archive/ubuntu/java
 
 #not needed at the moment.
 #echo "bailing because script is immature.  farts!"
