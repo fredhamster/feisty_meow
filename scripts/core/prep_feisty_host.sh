@@ -2,12 +2,15 @@
 
 # this is the feisty meow host preparation script.  it installs all the packages required to run and build feisty meow scripts and applications.
 
-# hmmm: this script may still be a bit incomplete; we definitely use a lot of unix and linux tools in different scripts.
-
 # preconditions and dependencies--this script itself depends on:
 #   feisty meow
 #   bash
 #   anything else?
+
+# note that this list of items is never totally complete, since feisty meow keeps expanding and mutating.  for example, we now have a few
+# python scripts starting to sneak in.  there are assuredly lots of python packages we should be installing in here now, but we aren't yet.
+# this is a best effort script, to at least get feisty meow able to run its core scripts and to build.  although it's always appreciated
+# when things we rely on get installed too...
 
 ####
 
@@ -25,6 +28,11 @@ echo feisty now apex is FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX
 ####
 
 # helper scripts...
+#
+# these come from other places in the feisty meow ecosystem, but they are here
+# because this script is kind of a bootstrapping process for our scripts and code.
+# we don't want to assume anything about the presence of the rest of feisty meow
+# at this point in the process.
 
 function exit_on_error() {
   if [ $? -ne 0 ]; then
@@ -34,9 +42,11 @@ function exit_on_error() {
   fi
 }
 
+####
+
 function whichable()
 {
-  to_find="$1";
+  local to_find="$1";
   shift;
   local WHICHER="$(/usr/bin/which which 2>/dev/null)";
   if [ $? -ne 0 ]; then
@@ -52,6 +62,7 @@ function whichable()
 
 ####
 
+#hmmm: copy to mainline scripts.
 function apt_cyg_finder()
 {
   if whichable apt-cyg; then
@@ -64,6 +75,43 @@ Please follow the install instructions at:
     https://github.com/transcode-open/apt-cyg
 "
     return 13  # not found.
+  fi
+}
+
+####
+
+#hmmm: copy to mainline scripts also.
+# figures out what kind of installation packager application is
+# used on this machine and invokes it to install the list of
+# packages provided as parameters.
+function install_system_package()
+{
+  local packages=("${@}")
+    # pull out the array of packages from the command line.
+  if whichable apt; then
+    # ubuntu or debian or other apt-based OSes...
+    sudo apt install "${packages[@]}"
+    return $?
+  elif whichable yum; then  
+    # rpm based with yum available...
+    sudo yum install "${packages[@]}"
+    return $?
+  elif [ ! -z "$IS_DARWIN" ]; then
+    # macos based...
+    brew install "${packages[@]}"
+    return $?
+  elif [ "$OS" == "Windows_NT" ]; then
+    # windows-based with cygwin (or we'll fail out currently).
+    if apt_cyg_finder; then
+      apt-cyg install perl-File-Which perl-Text-Diff
+      return $?
+    else
+      echo "apt-cyg is not currently available on this system.  please install cygwin and apt-cyg."
+      return 1
+    fi
+  else
+    echo "Unknown installer application for this platform."
+    return 1
   fi
 }
 
@@ -106,31 +154,49 @@ popd &> /dev/null
 
 ####
 
-#hmmm: why two phases?
+# figure out which kind of OS we're on first, from ground up by seeing
+# how this system can install things.
 
-# first the crucial bits for scripts to work...
-
-PHASE_MESSAGE="installing perl file and diff modules"
+opsystem_here=unknown
 
 if whichable apt; then
   # ubuntu or debian or other apt-based OSes...
-  sudo apt install libfile-which-perl libtext-diff-perl
-  exit_on_error $PHASE_MESSAGE
+  opsystem_here=debianesque
 elif whichable yum; then  
   # rpm based with yum available...
-  sudo yum install perl-Env perl-File-Which perl-Text-Diff
-  exit_on_error $PHASE_MESSAGE
+  opsystem_here=redhatty
 elif [ ! -z "$IS_DARWIN" ]; then
   # macos based...
-  brew install dos2unix openssl
-  exit_on_error $PHASE_MESSAGE
+  opsystem_here=macos
 elif [ "$OS" == "Windows_NT" ]; then
   # windows-based with cygwin (or we'll fail out currently).
-  if apt_cyg_finder; then
-    apt-cyg install perl-File-Which perl-Text-Diff
-    exit_on_error $PHASE_MESSAGE
-  fi
+  opsystem_here=windoze
 fi
+
+####
+
+# default value of our package list is to fail out, since we
+# may not be able to determine what OS this is running on.
+PAX=(noop)
+
+####
+
+# first we install the low-level crucial bits for scripts to work...
+
+PHASE_MESSAGE="installing script modules"
+
+if [ "$opsystem_here" == "debianesque" ]; then
+  PAX=(libfile-which-perl libtext-diff-perl)
+elif [ "$opsystem_here" == "redhatty" ]; then
+  PAX=(perl-Env perl-File-Which perl-Text-Diff)
+elif [ "$opsystem_here" == "macos" ]; then
+  PAX=(dos2unix openssl)
+elif [ "$opsystem_here" == "windoze" ]; then
+  PAX=(perl-File-Which perl-Text-Diff)
+fi
+
+install_system_package "${PAX[@]}"
+exit_on_error $PHASE_MESSAGE
 
 ####
 
@@ -138,31 +204,18 @@ fi
 
 PHASE_MESSAGE="installing code builder packages"
 
-if whichable apt; then
-  # ubuntu or debian or other apt-based OSes...
-  sudo apt install mawk build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
-  exit_on_error $PHASE_MESSAGE
-elif whichable yum; then  
-  # rpm based with yum available...
-  sudo yum install curl-devel gcc gcc-c++ make gawk openssl-devel.x86_64 zlib-devel
-  exit_on_error $PHASE_MESSAGE
-elif [ ! -z "$IS_DARWIN" ]; then
-  # macos based...
-#hmmm: still working on these...
-  brew install mawk gpg meld openjdk 
-  exit_on_error $PHASE_MESSAGE
-elif [ "$OS" == "Windows_NT" ]; then
-  # windows-based with cygwin (or we'll fail out).
-  if apt_cyg_finder; then
-echo need to fix apt cyg install list for build apps somewhat.
-#hmmm: list is in our docs as a separate file for cygwin.
-#      plug those packages into here please.
-#      and separate out the build vs. handy packages.
-    apt-cyg install gawk libcurl-devel meld mingw64-i686-openssl openssl openssl-devel libssl-devel zlib-devel 
-    exit_on_error $PHASE_MESSAGE
-
-  fi
+if [ "$opsystem_here" == "debianesque" ]; then
+  PAX=(mawk build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev)
+elif [ "$opsystem_here" == "redhatty" ]; then
+  PAX=(curl-devel gcc gcc-c++ make gawk openssl-devel.x86_64 zlib-devel)
+elif [ "$opsystem_here" == "macos" ]; then
+  PAX=(mawk gpg meld openjdk)
+elif [ "$opsystem_here" == "windoze" ]; then
+  PAX=(gawk libcurl-devel meld mingw64-i686-openssl openssl openssl-devel libssl-devel zlib-devel)
 fi
+
+install_system_package "${PAX[@]}"
+exit_on_error $PHASE_MESSAGE
 
 ####
 
@@ -170,29 +223,18 @@ fi
 
 PHASE_MESSAGE="installing additional helper packages"
 
-if whichable apt; then
-  # ubuntu or debian or other apt-based OSes...
-  sudo apt install screen python3 python3-pip xserver-xorg xorg-docs 
-  exit_on_error $PHASE_MESSAGE
-elif whichable yum; then  
-  # rpm based with yum available...
-#new yums unvetted
-  sudo yum install screen python3 python3-pip xserver-xorg xorg-docs 
-  exit_on_error $PHASE_MESSAGE
-elif [ ! -z "$IS_DARWIN" ]; then
-  # macos based...
-#hmmm: still working on these...
-  brew install screen python3 pip xserver-xorg xorg-docs 
-  exit_on_error $PHASE_MESSAGE
-elif [ "$OS" == "Windows_NT" ]; then
-  # windows-based with cygwin (or we'll fail out).
-
-  if apt_cyg_finder; then
-echo need to fix apt cyg install list for extended apps somewhat.
-    apt-cyg install screen python3 pip3 xserver-xorg xorg-docs 
-    exit_on_error $PHASE_MESSAGE
-  fi
+if [ "$opsystem_here" == "debianesque" ]; then
+  PAX=(screen python3 python3-pip xserver-xorg xorg-docs)
+elif [ "$opsystem_here" == "redhatty" ]; then
+  PAX=(screen python3 python3-pip xserver-xorg xorg-docs)
+elif [ "$opsystem_here" == "macos" ]; then
+  PAX=(screen python3 pip xserver-xorg xorg-docs)
+elif [ "$opsystem_here" == "windoze" ]; then
+  PAX=(screen python3 pip3 xserver-xorg xorg-docs)
 fi
+
+install_system_package "${PAX[@]}"
+exit_on_error $PHASE_MESSAGE
 
 ####
 
@@ -207,7 +249,7 @@ exit 0
 
 
 #############################
-#scav line
+#scavenging line
 #############################
 
 #The "kona" collection depends on Java version 8 or better.
