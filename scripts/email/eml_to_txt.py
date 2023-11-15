@@ -52,10 +52,25 @@ def pullout (m, key):
             return Text, Html, Files, 1
         cp = m.get_content_type()
         if cp=="text/plain":
-            Text += m.get_payload(decode=True).decode("utf-8")
+            try:
+                Text += m.get_payload(decode=True).decode("utf-8")
+            except:
+                try:
+                    Text += m.get_payload(decode=True).decode("cp437")
+                except:
+                    print("failed to process text attachment with either utf-8 or cp437 code pages.")
+                    exit(1)
         elif cp=="text/html":
-            soup = BeautifulSoup(m.get_payload(decode=True).decode("utf-8"), features="html.parser")
-            Html += soup.get_text('\n', strip=True)
+            try:
+                soup = BeautifulSoup(m.get_payload(decode=True).decode("utf-8"), features="html.parser")
+                Html += soup.get_text('\n', strip=True)
+            except:
+                try:
+                    soup = BeautifulSoup(m.get_payload(decode=True).decode("cp437"), features="html.parser")
+                    Html += soup.get_text('\n', strip=True)
+                except:
+                    print("failed to process html attachment with either utf-8 or cp437 code pages.")
+                    exit(1)
         else:
             cp = m.get("content-type")
             try: id = disgra(m.get("content-id"))
