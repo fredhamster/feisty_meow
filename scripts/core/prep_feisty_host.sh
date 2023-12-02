@@ -203,7 +203,7 @@ if [ "$opsystem_here" == "debianesque" ]; then
 elif [ "$opsystem_here" == "redhatty" ]; then
   PAX=(perl-Env perl-File-Which perl-Text-Diff)
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(dos2unix openssl)
+  PAX=(openssl)
 elif [ "$opsystem_here" == "windoze" ]; then
   PAX=(perl-File-Which perl-Text-Diff)
 fi
@@ -237,13 +237,13 @@ exit_on_error $PHASE_MESSAGE
 PHASE_MESSAGE="installing additional helper packages"
 
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(screen python3 python3-pip xserver-xorg xorg-docs)
+  PAX=(screen python3 python3-pip xserver-xorg xorg-docs dos2unix)
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(screen python3 python3-pip xserver-xorg xorg-docs)
+  PAX=(screen python3 python3-pip xserver-xorg xorg-docs dos2unix)
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(screen python3 xquartz linuxbrew/xorg/xorg-docs)
+  PAX=(screen python3 xquartz linuxbrew/xorg/xorg-docs dos2unix)
 elif [ "$opsystem_here" == "windoze" ]; then
-  PAX=(screen python3 python3-pip xserver-xorg xorg-docs)
+  PAX=(screen python3 python3-pip xserver-xorg xorg-docs dos2unix)
 fi
 
 install_system_package "${PAX[@]}"
