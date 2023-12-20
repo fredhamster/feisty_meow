@@ -157,6 +157,7 @@ define_yeti_alias why='echo We all wonder what the point of the universe is at t
 # loading the shell environment twice for users like root who don't load
 # feisty meow automatically.
 unalias gofeisty &>/dev/null
+unalias fredme &>/dev/null
 
 ##############
 
