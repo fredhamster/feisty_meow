@@ -29,6 +29,8 @@ elif [ ! -z "$(psfind esd)" ]; then
 elif [ ! -z "$(psfind pulseaudio)" ]; then
 #echo we see pulse running...
   BASIC_PLAY_CMD="padsp aplay"
+elif [ ! -z "$(whichable pw-cat)" ]; then
+  BASIC_PLAY_CMD="pw-cat -p"
 else
   echo "I don't know how to play basic sound files for this OS and sound system."
 fi
