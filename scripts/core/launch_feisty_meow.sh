@@ -101,6 +101,9 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   # solve that problem by running bash with the "-O expand_aliases" flags to
   # stop the expansion for the next subshell.
   shopt -s expand_aliases
+  # set the directory tab completion to behave properly and not start escaping
+  # the dollar signs in variable names.
+  shopt -u progcomp
   
   # patch the user variable if we were launched by one of our cron jobs.
   if [ -z "$USER" -a ! -z "$CRONUSER" ]; then

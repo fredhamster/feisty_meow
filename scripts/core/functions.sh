@@ -32,6 +32,13 @@ if [ -z "$skip_all" ]; then
     if [ -z "$sep" ]; then sep='_'; fi
     date +"%Y$sep%m$sep%d$sep%H%M$sep%S" | tr -d '/\n/'
   }
+
+  # a slightly different but also handy time and date function.  this is
+  # intended for prefixing on log lines, so that each line has the time it
+  # occurred as the first element.
+  function timestamper() {
+    date +"[%Y-%m-%d %H:%M:%S] " | tr -d '/\n/'
+  }
   
   # a wrapper for the which command that finds items on the path.  some OSes
   # do not provide which, so we want to not be spewing errors when that
@@ -214,7 +221,7 @@ if [ -z "$skip_all" ]; then
   # accepts any number of arguments and outputs them to the feisty meow event log.
   function log_feisty_meow_event()
   {
-    echo -e "$(date_stringer) -- ${USER}@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
+    echo -e "$(timestamper)-- ${USER}@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
   }
 
   ##############
@@ -518,7 +525,7 @@ if [ -z "$skip_all" ]; then
   function regenerate() {
     # do the bootstrapping process again.
     save_terminal_title
-    echo "regenerating feisty meow script environment."
+    echo "$(timestamper)regenerating feisty meow script environment."
     bash $FEISTY_MEOW_SCRIPTS/core/reconfigure_feisty_meow.sh
     echo
     # force a full reload by turning off sentinel variables and methods.
