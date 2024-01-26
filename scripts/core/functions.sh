@@ -221,7 +221,7 @@ if [ -z "$skip_all" ]; then
   # accepts any number of arguments and outputs them to the feisty meow event log.
   function log_feisty_meow_event()
   {
-    echo -e "$(date_stringer) -- ${USER}@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
+    echo -e "$(timestamper)-- ${USER}@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
   }
 
   ##############
@@ -525,7 +525,7 @@ if [ -z "$skip_all" ]; then
   function regenerate() {
     # do the bootstrapping process again.
     save_terminal_title
-    echo "regenerating feisty meow script environment."
+    echo "$(timestamper)regenerating feisty meow script environment."
     bash $FEISTY_MEOW_SCRIPTS/core/reconfigure_feisty_meow.sh
     echo
     # force a full reload by turning off sentinel variables and methods.
