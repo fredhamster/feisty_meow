@@ -28,6 +28,9 @@ define_yeti_alias update_bittybarky='source "$FEISTY_MEOW_SCRIPTS/archival/gener
 # synch up the new fairly large seagate drive named swirler.
 define_yeti_alias update_swirler='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/swirler"'
 
+# updates local archive drive called craftsman.
+define_yeti_alias update_craftsman='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/craftsman"'
+
 # moo and unmoo mount the local folders i use most.
 #no longer used.  we are doing mostly full directory stores without nfs mounts these days.
 #define_yeti_alias moo='check_mount /z/stuffing ; check_mount /z/walrus ; check_mount /z/chunky ; check_mount /z/fredgrid'
