@@ -244,7 +244,7 @@ function all_branch_names()
 # git repository.
 function my_branch_name()
 {
-  echo "$(git branch -vv | grep '\*' | cut -d ' ' -f2)"
+  echo "$(git branch -vv | grep '^\*' | cut -d ' ' -f2)"
 }
 
 # reports the status of the branch by echoing one of these values:
@@ -509,7 +509,7 @@ function generate_rev_ctrl_filelist()
   pushd "$dir" &>/dev/null
   local dirhere="$( \cd "$(\dirname "$dir")" && /bin/pwd )"
   local tempfile=$(mktemp /tmp/zz_checkins.XXXXXX)
-  echo >$tempfile
+  echo -n >$tempfile
   local additional_filter
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
