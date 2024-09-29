@@ -218,9 +218,9 @@ exit_on_error $PHASE_MESSAGE
 PHASE_MESSAGE="installing code builder packages"
 
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(mawk build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev)
+  PAX=(mawk build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev meld)
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(curl-devel gcc gcc-c++ make gawk openssl-devel.x86_64 zlib-devel)
+  PAX=(curl-devel gawk gcc gcc-c++ make meld openssl-devel.x86_64 zlib-devel)
 elif [ "$opsystem_here" == "macos" ]; then
   PAX=(mawk gpg meld openjdk)
 elif [ "$opsystem_here" == "windoze" ]; then
