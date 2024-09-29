@@ -237,7 +237,7 @@ exit_on_error $PHASE_MESSAGE
 PHASE_MESSAGE="installing additional helper packages"
 
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(dos2unix imagemagick ncal screen python3 python3-pip xserver-xorg xorg-docs )
+  PAX=(dos2unix imagemagick iputils-ping ncal screen python3 python3-pip xserver-xorg xorg-docs )
 elif [ "$opsystem_here" == "redhatty" ]; then
   PAX=(dos2unix imagemagick ncal screen python3 python3-pip xserver-xorg xorg-docs )
 elif [ "$opsystem_here" == "macos" ]; then
