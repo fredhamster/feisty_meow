@@ -39,8 +39,12 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
 # backup all the config info for kde.
 &backup_hierarchy($snarf_file_base, $number, "$root", ".kde");
-# and get the config for gnome.
-&backup_hierarchy($snarf_file_base, $number, "$root", ".local");
+
+#hmmm: these get too much stuff, including all the steam binaries.
+#hmmm: make it more specific.
+#ARGH # and get the config for gnome.
+#ARGH &backup_hierarchy($snarf_file_base, $number, "$root", ".local");
+
 &backup_hierarchy($snarf_file_base, $number, "$root", ".gnome*");
 # and assorted config things for various apps.
 &backup_hierarchy($snarf_file_base, $number, "$root", ".config/syncthing");

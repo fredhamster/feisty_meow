@@ -189,8 +189,8 @@ sub snarfer {
   }
 
   local($outcome) = 0xff & system $tar_tool, 
-#hmmm: trying to dereference symbolic links and stop missing stuff.
-"-h",
+#hmmm: trying to tame symbolic links; just recording them as links.
+      "--keep-directory-symlink",
       "-rf", &canonicalize($target_file), @excludes,
       "--files-from=" . &canonicalize($temp_file);
   if ($outcome) {
