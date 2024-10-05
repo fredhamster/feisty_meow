@@ -74,7 +74,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   if [ -z "$OS" ]; then
     define_yeti_variable OS=UNIX
   fi
-  define_yeti_variable IS_DARWIN=$(echo $OSTYPE | grep -i darwin)
+  define_yeti_variable IS_DARWIN="$(echo $OSTYPE | grep -i darwin)"
   
   ##############
 
@@ -222,6 +222,12 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   
   # set this so nechung can find its data.
   define_yeti_variable NECHUNG=$FEISTY_MEOW_APEX/infobase/fortunes.dat
+
+  # set a personal home directory that can be overridden.
+  define_yeti_variable FEISTY_MEOW_PERSONAL_HOME
+  if [ -z "$FEISTY_MEOW_PERSONAL_HOME" ]; then
+    define_yeti_variable FEISTY_MEOW_PERSONAL_HOME="$HOME"
+  fi
   
 ##  # establish a pipe for less to see our beloved syntax highlighting.
 ##  define_yeti_variable LESSOPEN="| source-highlight -f esc -o STDOUT -i %s"
@@ -234,17 +240,29 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   define_yeti_variable REPOSITORY_LIST="$FEISTY_MEOW_APEX "
 
   # add in any active projects to the repository list.
-  if [ -d "$HOME/active" ]; then
-    REPOSITORY_LIST+="$(find "$HOME/active" -maxdepth 1 -mindepth 1 -type d) "
+#hmmm: resolve if still using this folder.
+  if [ -d "$FEISTY_MEOW_PERSONAL_HOME/active" ]; then
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_PERSONAL_HOME/active" -maxdepth 1 -mindepth 1 -type d) "
   fi
-  # add in any site avenger applications that are in the applications folder.
-  if [ -d "$HOME/apps" ]; then
+
+  # add in any folders that are under the feisty meow applications folder.
+  define_yeti_variable FEISTY_MEOW_REPOS_SCAN
+  if [ -z "$FEISTY_MEOW_REPOS_SCAN" ]; then
+    if [ -d "$FEISTY_MEOW_PERSONAL_HOME/apps" ]; then
+      define_yeti_variable FEISTY_MEOW_REPOS_SCAN="$FEISTY_MEOW_PERSONAL_HOME/apps"
+    else
+#      echo "No value set for FEISTY_MEOW_REPOS_SCAN and no default apps folder found in home."
+      true
+    fi
+  fi
+  if [ -d "$FEISTY_MEOW_REPOS_SCAN" ]; then
+#hmmm: handle the repos as if they are multi value!!!
     # general search for normal project folders in apps.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
 
     # special search for site avenger directories; they have avenger5 as second level.
-    REPOSITORY_LIST+="$(find "$HOME/apps" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
+    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
   
   # the archive list is a set of directories that are major repositories of
