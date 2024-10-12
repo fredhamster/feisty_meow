@@ -25,6 +25,7 @@ function update_source_folders()
   bash "$FEISTY_MEOW_SCRIPTS/rev_control/rcheckin.sh"
   if [ $? -ne 0 ]; then
     echo Checking out the latest codes has failed somehow for $folder.
+    popd
     return 1
   fi
   popd
