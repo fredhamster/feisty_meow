@@ -28,7 +28,7 @@ use Env qw(HOME);
 local($number) = &retrieve_number("aa_backup");
 
 # variables for directory location to backup and the file to dump it in.
-local($root) = "$HOME";
+local($root) = $ENV{FEISTY_MEOW_PERSONAL_HOME};
 local($snarf_file_base) = &snarf_prefix("notes");
 local($snarf_file) = &snarf_name($snarf_file_base, $number);
 
@@ -38,7 +38,7 @@ local($snarf_file) = &snarf_name($snarf_file_base, $number);
 ############################################################################
 
 # get top level text files and other potentially important items...
-&backup_files($snarf_file_base, $number, $root, ".", ("*.html", "*.txt", "makefile*"));
+&backup_files($snarf_file_base, $number, $root, ".", ("*.html", "*.txt", "makefile*", ".bashrc", ".bash_history"));
 
 # gather any directories in our home that match these often recurring patterns.
 &snarf_by_pattern($snarf_file_base, "$root", "crucial");

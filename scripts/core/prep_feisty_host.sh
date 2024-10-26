@@ -2,12 +2,15 @@
 
 # this is the feisty meow host preparation script.  it installs all the packages required to run and build feisty meow scripts and applications.
 
-# hmmm: this script may still be a bit incomplete; we definitely use a lot of unix and linux tools in different scripts.
-
 # preconditions and dependencies--this script itself depends on:
 #   feisty meow
 #   bash
 #   anything else?
+
+# note that this list of items is never totally complete, since feisty meow keeps expanding and mutating.  for example, we now have a few
+# python scripts starting to sneak in.  there are assuredly lots of python packages we should be installing in here now, but we aren't yet.
+# this is a best effort script, to at least get feisty meow able to run its core scripts and to build.  although it's always appreciated
+# when things we rely on get installed too...
 
 ####
 
@@ -22,9 +25,17 @@ echo originating folder is $ORIGINATING_FOLDER
 export FEISTY_MEOW_APEX="$(/bin/pwd)"
 echo feisty now apex is FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX
 
+# establish whether this is darwin (MacOS) or not.
+export IS_DARWIN="$(echo $OSTYPE | grep -i darwin)"
+
 ####
 
 # helper scripts...
+#
+# these come from other places in the feisty meow ecosystem, but they are here
+# because this script is kind of a bootstrapping process for our scripts and code.
+# we don't want to assume anything about the presence of the rest of feisty meow
+# at this point in the process.
 
 function exit_on_error() {
   if [ $? -ne 0 ]; then
@@ -34,9 +45,11 @@ function exit_on_error() {
   fi
 }
 
+####
+
 function whichable()
 {
-  to_find="$1";
+  local to_find="$1";
   shift;
   local WHICHER="$(/usr/bin/which which 2>/dev/null)";
   if [ $? -ne 0 ]; then
@@ -52,6 +65,7 @@ function whichable()
 
 ####
 
+#hmmm: copy to mainline scripts.
 function apt_cyg_finder()
 {
   if whichable apt-cyg; then
@@ -64,6 +78,52 @@ Please follow the install instructions at:
     https://github.com/transcode-open/apt-cyg
 "
     return 13  # not found.
+  fi
+}
+
+####
+
+#hmmm: copy to mainline scripts also.
+# figures out what kind of installation packager application is
+# used on this machine and invokes it to install the list of
+# packages provided as parameters.
+function install_system_package()
+{
+  local packages=("${@}")
+    # pull out the array of packages from the command line.
+  if [ ! -z "$IS_DARWIN" ]; then
+    # macos based...
+echo "installing for darwin"
+    if ! whichable brew; then
+      echo "Could not locate the brew installation system."
+      echo "Please install brew, which is required for MacOS feisty meow installs."
+      return 1
+    fi
+    brew install "${packages[@]}"
+    return $?
+  elif whichable apt; then
+    # ubuntu or debian or other apt-based OSes...
+echo "installing for apt"
+    sudo apt install "${packages[@]}"
+    return $?
+  elif whichable yum; then  
+    # rpm based with yum available...
+echo "installing for yum"
+    sudo yum install "${packages[@]}"
+    return $?
+  elif [ "$OS" == "Windows_NT" ]; then
+    # windows-based with cygwin (or we'll fail out currently).
+echo "installing for apt-cyg"
+    if apt_cyg_finder; then
+      apt-cyg install perl-File-Which perl-Text-Diff
+      return $?
+    else
+      echo "apt-cyg is not currently available on this system.  please install cygwin and apt-cyg."
+      return 1
+    fi
+  else
+    echo "Unknown installer application for this platform."
+    return 1
   fi
 }
 
@@ -106,31 +166,50 @@ popd &> /dev/null
 
 ####
 
-#hmmm: why two phases?
+# figure out which kind of OS we're on first, from ground up by seeing
+# how this system can install things.
 
-# first the crucial bits for scripts to work...
+opsystem_here=unknown
 
-PHASE_MESSAGE="installing perl file and diff modules"
-
-if whichable apt; then
+if [ ! -z "$IS_DARWIN" ]; then
+  # macos based...
+  opsystem_here=macos
+elif whichable apt; then
   # ubuntu or debian or other apt-based OSes...
-  sudo apt install libfile-which-perl libtext-diff-perl
-  exit_on_error $PHASE_MESSAGE
+  opsystem_here=debianesque
 elif whichable yum; then  
   # rpm based with yum available...
-  sudo yum install perl-Env perl-File-Which perl-Text-Diff
-  exit_on_error $PHASE_MESSAGE
-elif [ ! -z "$IS_DARWIN" ]; then
-  # macos based...
-  brew install dos2unix openssl
-  exit_on_error $PHASE_MESSAGE
+  opsystem_here=redhatty
 elif [ "$OS" == "Windows_NT" ]; then
   # windows-based with cygwin (or we'll fail out currently).
-  if apt_cyg_finder; then
-    apt-cyg install perl-File-Which perl-Text-Diff
-    exit_on_error $PHASE_MESSAGE
-  fi
+  opsystem_here=windoze
 fi
+echo decided OS is $opsystem_here
+
+####
+
+# default value of our package list is to fail out, since we
+# may not be able to determine what OS this is running on.
+PAX=(noop)
+
+####
+
+# first we install the low-level crucial bits for scripts to work...
+
+PHASE_MESSAGE="installing script modules"
+
+if [ "$opsystem_here" == "debianesque" ]; then
+  PAX=(libfile-which-perl libtext-diff-perl)
+elif [ "$opsystem_here" == "redhatty" ]; then
+  PAX=(perl-Env perl-File-Which perl-Text-Diff)
+elif [ "$opsystem_here" == "macos" ]; then
+  PAX=(openssl)
+elif [ "$opsystem_here" == "windoze" ]; then
+  PAX=(perl-File-Which perl-Text-Diff)
+fi
+
+install_system_package "${PAX[@]}"
+exit_on_error $PHASE_MESSAGE
 
 ####
 
@@ -138,44 +217,37 @@ fi
 
 PHASE_MESSAGE="installing code builder packages"
 
-if whichable apt; then
-  # ubuntu or debian or other apt-based OSes...
-  sudo apt install mawk build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev
-  exit_on_error $PHASE_MESSAGE
-elif whichable yum; then  
-  # rpm based with yum available...
-  sudo yum install curl-devel gcc gcc-c++ make mawk openssl-devel.x86_64 zlib-devel
-  exit_on_error $PHASE_MESSAGE
-elif [ ! -z "$IS_DARWIN" ]; then
-  # macos based...
-#hmmm: still working on these...
-  brew install mawk gpg meld openjdk 
-  exit_on_error $PHASE_MESSAGE
-elif [ "$OS" == "Windows_NT" ]; then
-  # windows-based with cygwin (or we'll fail out).
-
-  if apt_cyg_finder; then
-echo need to fix apt cyg install list somewhat.
-#hmmm: list is in our docs as a separate file for cygwin.
-#      plug those packages into here please.
-    apt-cyg install gawk libcurl-devel meld mingw64-i686-openssl openssl openssl-devel libssl-devel zlib-devel
-    exit_on_error $PHASE_MESSAGE
-
-#extended set.  just add them?
-# xorg-server xorg-docs xlaunch 
-
-  fi
+if [ "$opsystem_here" == "debianesque" ]; then
+  PAX=(mawk build-essential librtmp-dev libcurl4-gnutls-dev libssl-dev meld)
+elif [ "$opsystem_here" == "redhatty" ]; then
+  PAX=(curl-devel gawk gcc gcc-c++ make meld openssl-devel.x86_64 zlib-devel)
+elif [ "$opsystem_here" == "macos" ]; then
+  PAX=(mawk gpg meld openjdk)
+elif [ "$opsystem_here" == "windoze" ]; then
+  PAX=(gawk libcurl-devel meld mingw64-i686-openssl openssl openssl-devel libssl-devel zlib-devel)
 fi
+
+install_system_package "${PAX[@]}"
+exit_on_error $PHASE_MESSAGE
 
 ####
 
 # install other external packages and whatnot.
 
-#hmmm: anything else to get installed?
-  #hmmm: java?
-  #hmmm: python?
-  #hmmm: perl itself!?
+PHASE_MESSAGE="installing additional helper packages"
 
+if [ "$opsystem_here" == "debianesque" ]; then
+  PAX=(dos2unix imagemagick iputils-ping ncal screen python3 python3-pip xserver-xorg xorg-docs )
+elif [ "$opsystem_here" == "redhatty" ]; then
+  PAX=(dos2unix imagemagick ncal screen python3 python3-pip xserver-xorg xorg-docs )
+elif [ "$opsystem_here" == "macos" ]; then
+  PAX=(dos2unix imagemagick ncal screen python3 xquartz linuxbrew/xorg/xorg-docs )
+elif [ "$opsystem_here" == "windoze" ]; then
+  PAX=(dos2unix imagemagick ncal screen python3 python3-pip xserver-xorg xorg-docs )
+fi
+
+install_system_package "${PAX[@]}"
+exit_on_error $PHASE_MESSAGE
 
 ####
 
@@ -190,13 +262,13 @@ exit 0
 
 
 #############################
-#scav line
+#scavenging line
 #############################
 
-The "kona" collection depends on Java version 8 or better.
-| Ubuntu:
-| Set up the java PPA archive as described here:
-| https://launchpad.net/~webupd8team/+archive/ubuntu/java
+#The "kona" collection depends on Java version 8 or better.
+#| Ubuntu:
+#| Set up the java PPA archive as described here:
+#| https://launchpad.net/~webupd8team/+archive/ubuntu/java
 
 #not needed at the moment.
 #echo "bailing because script is immature.  farts!"

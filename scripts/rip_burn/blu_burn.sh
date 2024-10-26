@@ -31,11 +31,16 @@ if [ ! -b "$device_name" ]; then
   exit 3
 fi
 
-echo iso "$iso_name" dev "$device_name"
+echo "burning disk from image '$iso_name' on device '$device_name'..."
+#echo iso "$iso_name" dev "$device_name"
 
-growisofs -dvd-compat -Z ${device_name}=${iso_name}
-#used to be appended to above line: -speed=2 
-#trying with letting it go default speed.  has been working for us recently.
+growisofs -dvd-compat -speed=2 -Z ${device_name}=${iso_name}
+#hmmm:
+#  1) trying with letting it go default speed.  has been working for us recently.
+#  2) lots of failures on bluray burns recently; trying dropping the speed back to 2.
+#     2024-01-14
 
 exit_on_error growing ISO FS from image ${iso_name}
+
+echo "success burning '$iso_name' onto device '$device_name' !"
 
