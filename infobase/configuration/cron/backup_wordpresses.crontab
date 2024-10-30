@@ -1,0 +1,9 @@
+
+##############
+
+# back up the wordpress sites, which are no longer revision controlled.
+0 7 * * 2 (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; zip -r "/z/stuffing/archives/wordpresses_$(date_stringer).zip" "$HOME/wordpresses") &>>$TMP/$CRONUSER-backup_wordpresses.log
+
+##############
+
+
