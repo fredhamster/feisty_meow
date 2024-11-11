@@ -102,6 +102,7 @@ define_yeti_alias cd...='\cd ../..'
 define_yeti_alias cd....='\cd ../../..'
 define_yeti_alias cd.....='\cd ../../../..'
 define_yeti_alias np='gvim'
+define_yeti_alias retval='errval=$?; if [ $errval -ne 0 ]; then echo "error code $errval occurred for last command."; else echo "all was well with last command."; fi'
 define_yeti_alias up='cd ..'
 
 ##############
