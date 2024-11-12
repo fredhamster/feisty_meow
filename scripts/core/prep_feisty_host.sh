@@ -250,15 +250,15 @@ exit_on_error $PHASE_MESSAGE
 PHASE_MESSAGE="installing flavor bits"
 
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(cowsay lolcat meld )
+  PAX=(cowsay lolcat )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(cowsay lolcat meld )
+  PAX=(cowsay lolcat )
   #hmmm: untested!
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(cowsay lolcat meld )
+  PAX=(cowsay lolcat )
   #hmmm: untested!
 elif [ "$opsystem_here" == "windoze" ]; then
-  PAX=(cowsay lolcat meld )
+  PAX=(cowsay lolcat )
   #hmmm: untested!
 fi
 
