@@ -158,15 +158,9 @@ popd &> /dev/null
 #bash $FEISTY_MEOW_APEX/scripts/core/is_feisty_up.sh
 #exit_on_error $PHASE_MESSAGE
 
-# standard load-up.
-#hmmm: this will currently fail if reconfigure has never been called.
-#NO NO NO. source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
-# we are preparing to get feisty running; how can we use feisty during
-# that process?  so bad.
-
 ####
 
-# figure out which kind of OS we're on first, from ground up by seeing
+# figure out which kind of OS we're on first, from ground up, by seeing
 # how this system can install things.
 
 opsystem_here=unknown
@@ -244,6 +238,28 @@ elif [ "$opsystem_here" == "macos" ]; then
   PAX=(dos2unix imagemagick ncal screen python3 xquartz linuxbrew/xorg/xorg-docs )
 elif [ "$opsystem_here" == "windoze" ]; then
   PAX=(dos2unix imagemagick ncal screen python3 python3-pip xserver-xorg xorg-docs )
+fi
+
+install_system_package "${PAX[@]}"
+exit_on_error $PHASE_MESSAGE
+
+####
+
+# install feisty meow flavor bits...
+
+PHASE_MESSAGE="installing flavor bits"
+
+if [ "$opsystem_here" == "debianesque" ]; then
+  PAX=(cowsay lolcat )
+elif [ "$opsystem_here" == "redhatty" ]; then
+  PAX=(cowsay lolcat )
+  #hmmm: untested!
+elif [ "$opsystem_here" == "macos" ]; then
+  PAX=(cowsay lolcat )
+  #hmmm: untested!
+elif [ "$opsystem_here" == "windoze" ]; then
+  PAX=(cowsay lolcat )
+  #hmmm: untested!
 fi
 
 install_system_package "${PAX[@]}"
