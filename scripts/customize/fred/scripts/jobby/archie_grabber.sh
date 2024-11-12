@@ -5,6 +5,9 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
+# the archive directories will be known by their odd naming, which starts with the below.
+ARCHIVE_DIR_PREFIX="z_arch"
+
 function grab_archies()
 {
   local domain_piece="$1"; shift
@@ -12,12 +15,18 @@ function grab_archies()
   for host in $host_list; do
     mkdir -p ${host}.${domain_piece}
     pushd ${host}.${domain_piece}
-    netcp ${host}.${domain_piece}:z_arch* . 
+    netcp ${host}.${domain_piece}:${ARCHIVE_DIR_PREFIX}* . 
     retval=$?
     if [ $retval -ne 0 ]; then
-      echo Error $retval returned from copying z_arch* from ${host}.${domain_piece}
-      exit 1 
+      echo "Error $retval returned from copying ${ARCHIVE_DIR_PREFIX}* from ${host}.${domain_piece}"
+      popd 
+      continue
     fi
+    ssh ${host}.${domain_piece} '{ \
+echo hello; \
+echo "howdy ho!"; \
+echo more stuff here.; \
+}'
     popd 
   done
 }
@@ -26,18 +35,18 @@ mkdir -p $HOME/grabbing_archies
 pushd $HOME/grabbing_archies
 
 domain="its.virginia.edu"
-hostlist="idpprod01 idpprod02 idpprod03 idpprod04"
-grab_archies "$domain" "$hostlist"
+#hostlist="idpprod01 idpprod02 idpprod03 idpprod04"
+#grab_archies "$domain" "$hostlist"
 hostlist="idpdev01 idpdev02"
 grab_archies "$domain" "$hostlist"
-hostlist="idptest01 idptest02"
-grab_archies "$domain" "$hostlist"
-hostlist="idpsistest01 idpsistest02"
-grab_archies "$domain" "$hostlist"
+#hostlist="idptest01 idptest02"
+#grab_archies "$domain" "$hostlist"
+#hostlist="idpsistest01 idpsistest02"
+#grab_archies "$domain" "$hostlist"
 
-domain="storage.virginia.edu"
-hostlist="manage-s admin02 admin-hsz-s"
-grab_archies "$domain" "$hostlist"
+#domain="storage.virginia.edu"
+#hostlist="manage-s admin02 admin-hsz-s"
+#grab_archies "$domain" "$hostlist"
 
 popd
 
