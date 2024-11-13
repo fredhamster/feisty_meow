@@ -15,18 +15,26 @@ function grab_archies()
   for host in $host_list; do
     mkdir -p ${host}.${domain_piece}
     pushd ${host}.${domain_piece}
-    netcp ${host}.${domain_piece}:${ARCHIVE_DIR_PREFIX}* . 
+    local cp_outfile="$(mktemp /tmp/archie_grabber.XXXXXX)"
+    netcp ${host}.${domain_piece}:${ARCHIVE_DIR_PREFIX}* . &> "$cp_outfile"
     retval=$?
+#hmmm: could display output on error.
+    rm "$cp_outfile"
     if [ $retval -ne 0 ]; then
-      echo "Error $retval returned from copying ${ARCHIVE_DIR_PREFIX}* from ${host}.${domain_piece}"
+      echo "got return value $retval from copying ${ARCHIVE_DIR_PREFIX}* from ${host}.${domain_piece}; skipping it."
       popd 
       continue
     fi
-    ssh ${host}.${domain_piece} '{ \
-echo hello; \
-echo "howdy ho!"; \
-echo more stuff here.; \
-}'
+    # the tricky code below just cleans up any archive dirs on the host by hiding them
+    # under an old junk folder.  that can be cleaned up later as desired.
+    ssh ${host}.${domain_piece} bash <<EOF
+{ \
+DATA_GRAVE="\$(mktemp -d \$HOME/old_junk.XXXXXX)"; \
+mkdir -p \$DATA_GRAVE; \
+echo "moving old $ARCHIVE_DIR_PREFIX* folders into \$DATA_GRAVE"; \
+mv $ARCHIVE_DIR_PREFIX* \$DATA_GRAVE; \
+}
+EOF
     popd 
   done
 }
@@ -35,18 +43,24 @@ mkdir -p $HOME/grabbing_archies
 pushd $HOME/grabbing_archies
 
 domain="its.virginia.edu"
-#hostlist="idpprod01 idpprod02 idpprod03 idpprod04"
-#grab_archies "$domain" "$hostlist"
-hostlist="idpdev01 idpdev02"
+hostlist="idpprod01 idpprod02 idpprod03 idpprod04 idpprod05 "
 grab_archies "$domain" "$hostlist"
-#hostlist="idptest01 idptest02"
-#grab_archies "$domain" "$hostlist"
-#hostlist="idpsistest01 idpsistest02"
-#grab_archies "$domain" "$hostlist"
+hostlist="idpdev01 idpdev02 "
+grab_archies "$domain" "$hostlist"
+hostlist="idptest01 idptest02 "
+grab_archies "$domain" "$hostlist"
+hostlist="idpsistest01 idpsistest02 "
+grab_archies "$domain" "$hostlist"
 
-#domain="storage.virginia.edu"
-#hostlist="manage-s admin02 admin-hsz-s"
-#grab_archies "$domain" "$hostlist"
+hostlist="test-shibboleth-sp02 "
+grab_archies "$domain" "$hostlist"
+
+hostlist="tower "
+grab_archies "$domain" "$hostlist"
+
+domain="storage.virginia.edu"
+hostlist="admin03 admin-hsz02-s admin-lab nasman02-s "
+grab_archies "$domain" "$hostlist"
 
 popd
 
