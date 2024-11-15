@@ -252,8 +252,8 @@ PHASE_MESSAGE="installing flavor bits"
 if [ "$opsystem_here" == "debianesque" ]; then
   PAX=(cowsay lolcat )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(cowsay lolcat-rs )
-  #hmmm: untested!
+  PAX=(cowsay )
+#should exist, but doesn't? lolcat-rs 
 elif [ "$opsystem_here" == "macos" ]; then
   PAX=(cowsay lolcat )
   #hmmm: untested!
