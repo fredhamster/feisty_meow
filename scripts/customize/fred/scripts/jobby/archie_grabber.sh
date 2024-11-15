@@ -39,8 +39,18 @@ EOF
   done
 }
 
+####
+
+# active part of the script, where we go out to a bunch of machines
+# to grab the archive folders.
+
+# we'll store the copied archives here.
 mkdir -p $HOME/grabbing_archies
 pushd $HOME/grabbing_archies
+
+####
+
+# these hosts are all in the ITS domain...
 
 domain="its.virginia.edu"
 hostlist="idpprod01 idpprod02 idpprod03 idpprod04 idpprod05 "
@@ -58,9 +68,15 @@ grab_archies "$domain" "$hostlist"
 hostlist="tower "
 grab_archies "$domain" "$hostlist"
 
+####
+
+# these hosts are in the storage domain...
+
 domain="storage.virginia.edu"
 hostlist="admin03 admin-hsz02-s admin-lab nasman02-s "
 grab_archies "$domain" "$hostlist"
+
+####
 
 popd
 
