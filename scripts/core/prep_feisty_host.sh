@@ -233,7 +233,7 @@ PHASE_MESSAGE="installing additional helper packages"
 if [ "$opsystem_here" == "debianesque" ]; then
   PAX=(dos2unix imagemagick iputils-ping ncal screen python3 python3-pip xserver-xorg xorg-docs )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(dos2unix imagemagick ncal screen python3 python3-pip xserver-xorg xorg-docs )
+  PAX=(dos2unix ImageMagick screen python3 python3-pip xorg-x11-server-Xwayland xorg-x11-docs )
 elif [ "$opsystem_here" == "macos" ]; then
   PAX=(dos2unix imagemagick ncal screen python3 xquartz linuxbrew/xorg/xorg-docs )
 elif [ "$opsystem_here" == "windoze" ]; then
@@ -252,8 +252,8 @@ PHASE_MESSAGE="installing flavor bits"
 if [ "$opsystem_here" == "debianesque" ]; then
   PAX=(cowsay lolcat )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(cowsay lolcat )
-  #hmmm: untested!
+  PAX=(cowsay )
+#should exist, but doesn't? lolcat-rs 
 elif [ "$opsystem_here" == "macos" ]; then
   PAX=(cowsay lolcat )
   #hmmm: untested!
