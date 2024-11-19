@@ -1,9 +1,0 @@
-
-##############
-
-#[serene_root_crontab]
-# update the stored crontab for the root user, using a cron job!
-14 */8 * * * (crontab -l >/home/www-data/web/root.crontab ; chown www-data:www-data /home/www-data/web/root.crontab)
-
-##############
-
