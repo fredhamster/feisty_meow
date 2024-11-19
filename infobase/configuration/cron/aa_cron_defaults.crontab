@@ -24,7 +24,7 @@ SHELL=/bin/bash
 # for your own particular install location.
 FEISTY_MEOW_APEX=/opt/feistymeow.org/feisty_meow
 
-# crontab miniature docs:
+# miniature docs for crontab:
 #
 # below is the short form key to the crontab positional entries for times:
 #     m h dom mon dow command
