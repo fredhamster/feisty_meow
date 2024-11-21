@@ -19,6 +19,9 @@ if [[ "$source_host" =~ clemens* ]]; then
 elif [[ "$source_host" =~ orpheus* ]]; then
   character="spoonburg_pc"
   identity="8f99c06443f04f6f8270604369bb78eb"
+elif [[ "$source_host" =~ cuboid* ]]; then
+  character="spoonburg_pc"
+  identity="8f99c06443f04f6f8270604369bb78eb"
 else
   echo "
 Could not determine the proper character name for the fallout 76 images based
@@ -29,7 +32,11 @@ to this script?
   exit 1
 fi
 
-src_dir="$HOME/data/wind_goods/My Games/Fallout 76/Photos/${identity}"
+if [ "$OS" != "Windows_NT" ]; then
+  src_dir="$HOME/data/photos_fallout76/${identity}"
+else
+  src_dir="$HOME/data/wind_goods/My Games/Fallout 76/Photos/${identity}"
+fi
 dest_dir="fred@${DESTINATION_HOST}:/z/walrus/media/pictures/metaverse/fallout_76/${character}"
 
 echo "src is: '$src_dir'"
