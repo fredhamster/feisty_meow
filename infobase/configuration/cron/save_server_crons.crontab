@@ -1,9 +1,0 @@
-
-##############
-
-#[server crontab saver]
-# record the crontab for the root user, using a cron job!
-14 */8 * * * (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; crontab -l >/z/stuffing/archives/root-$(hostname)-$(date_stringer).crontab ; chown -R fred:fred /z/stuffing/archives )
-
-##############
-

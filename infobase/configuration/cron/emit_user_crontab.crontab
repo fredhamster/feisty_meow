@@ -1,9 +1,9 @@
 
 ##############
 
-#[emit_crontab]
+#[emit user crontab]
 # meta-operation to backup the crontab file using cron itself.
-28 */8 * * * crontab -l >$HOME/$(hostname).$CRONUSER.crontab
+28 */8 * * * crontab -l &> $HOME/$(hostname).$CRONUSER.crontab
 
 ##############
 
