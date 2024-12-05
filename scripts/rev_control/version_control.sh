@@ -524,7 +524,7 @@ function generate_rev_ctrl_filelist()
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
   echo "$sortfile"
-  \rm "$tempfile" "$sortfile"
+  \rm "$tempfile"
 }
 
 # iterates across a list of directories contained in a file (first parameter).
@@ -546,7 +546,12 @@ function perform_revctrl_action_on_file()
     echo -n "[$(pwd)]  "
     # pass the current directory plus the remaining parameters from function invocation.
     $action . 
-    exit_on_error "performing action $action on: $(pwd)"
+    local retval=$?
+    if [ $retval -ne 0 ]; then
+      rm "$tempfile"
+      (exit $retval)  # re-assert the return value as our exit value.
+      exit_on_error "performing action $action on: $(pwd)"
+    fi
     popd &>/dev/null
   done 3<"$tempfile"
 
