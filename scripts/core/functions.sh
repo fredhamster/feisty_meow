@@ -790,22 +790,32 @@ return 0
 
   ##############
 
-  # just shows a separator line for an 80 column console, or uses the first
-  # parameter as the number of columns to expect.
+  # just shows a separator line for the current console size, or uses the first
+  # parameter as the number of columns to expect.  if a second parameter is provided,
+  # then that is used as the separator character(s).
   function separator()
   {
     count=$1; shift
     if [ -z "$count" ]; then
       count=$(($COLUMNS - 1))
     fi
-    echo
-    local i
-    for ((i=0; i < $count; i++)); do
-      echo -n "="
-    done
-    echo
-    echo
+
+    # snag remaining paramters into the characters to show.
+    characters="${@}"
+    if [ -z "$characters" ]; then
+      characters="="
+    fi
+
+#hmmm: works, but has flaw of disallowing spaces within the characters variable.
+#    local garptemp="$(printf '%*s' "$count")"
+#    local emission="${garptemp// /${characters}}"
+
+    local garptemp="$(dd if=/dev/zero bs="$count" count=1 2>/dev/null | tr '\0' 'Q')"
+    local emission="${garptemp//Q/${characters}}"
+
+    echo "$emission"
   }
+
   # alias for separator.
   function sep()
   {
