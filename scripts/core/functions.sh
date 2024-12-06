@@ -80,6 +80,8 @@ if [ -z "$skip_all" ]; then
     return $?
   }
 
+  ####
+
   # makes the status of pipe number N (passed as first parameter) into the
   # main return value (i.e., the value for $?).  this is super handy to avoid
   # repeating the awkward looking code below in multiple places.
@@ -89,6 +91,47 @@ if [ -z "$skip_all" ]; then
     ( exit ${PIPESTATUS[$1]} )
   }
 
+  ####
+
+  # sets the main exit value with the pipe status from a smooshed combination
+  # of the top N pipe statuses.
+  # zero from all becomes zero, but any pipe status being non-zero will yield
+  # a non-zero exit status.  note that the exit values involved are not
+  # preserved intact--only the fact of a bad, non-zero exit is signalled.
+  function combine_pipe_returns()
+  {
+    local preserved_statuses=( ${PIPESTATUS[@]} )
+    # we are told how many pipe statuses to consider...
+    local n=$1
+    # or if we are not told, then we make up a highest pipe status to consider.
+    if [ -z "$n" ]; then n=1; fi
+    # we always incorporate the highest level pipe status requested.
+    local accumulator=${preserved_statuses[$n]}
+    for (( looper = $n - 1; looper >= 0; looper-- )); do
+#echo accumulator has $accumulator 
+#echo "loop at index [$looper]"
+      # math exercise below is to ensure that we won't overflow 255 limit on
+      # return values.  we add about half of each return value being considered
+      # (accumulator and current pipe return) to make the "real" return value.
+      # this of course blows away mathematical comparisons for the return value
+      # in the future (unless all but one pipe status is zero).
+      # also, below, the addition of 1 below ensures that an error value of
+      # 1 cannot turn into a 0 when we do integer math division by 2.
+      combined=$(( (accumulator + ${preserved_statuses[$looper]} + 1) / 2 ))
+#echo combined calced as $combined
+  
+      # now push our new smooshed result into the accumulator.  we'll merge it
+      # again if we have to keep looping.
+      accumulator=$combined
+    done
+    # signal the exit value.
+    ( exit $accumulator )
+  }
+  
+  #hmmm: pretty handy general function, but horrible name here.
+  # ploop: sets the highest non-zero exit value possible.
+  function ploop() { (exit 255); return $?; }
+  
   ##############
 
   function fm_username()
@@ -1062,9 +1105,12 @@ return 0
 
   ##############
 
-  # test code for set_var_if_undefined.
-  run_test=0
-  if [ $run_test != 0 ]; then
+  # tests for our functions defined above.
+
+  # change this to '1' to run the tests.
+  run_tests=0
+
+  if [ $run_tests != 0 ]; then
     echo running tests on set_var_if_undefined.
     flagrant=petunia
     set_var_if_undefined flagrant forknordle
@@ -1079,7 +1125,58 @@ return 0
       echo set_var_if_undefined failed to set a variable that was not defined yet
       exit 1
     fi
-  fi
 
+#ploop
+#echo exit value after ploop is $?
+#ploop | ploop | ploop | ploop
+#echo pipes after plooping: 0=${PIPESTATUS[0]} 1=${PIPESTATUS[1]} 2=${PIPESTATUS[2]} 3=${PIPESTATUS[3]}
+
+    function test_combine_pipe_returns()
+    {
+      sep 14 '-'
+      CALL=(combine_pipe_returns 1)
+      duckit | arghmore
+      ${CALL[@]}
+      retval=$?
+      echo "call '${CALL[@]}' => $retval"
+  
+      sep 14 '-'
+      CALL=(combine_pipe_returns 0)
+      duckit | arghmore
+      ${CALL[@]}
+      retval=$?
+      echo "call '${CALL[@]}' => $retval"
+  
+      sep 14 '-'
+      CALL=(combine_pipe_returns 2)
+      duckit | arghmore | grubblez
+      ${CALL[@]}
+      retval=$?
+      echo "call '${CALL[@]}' => $retval"
+    
+      sep 14 '-'
+      CALL=(combine_pipe_returns 3)
+      ploop | ploop | ploop | ploop
+      ${CALL[@]}
+      retval=$?
+      echo "call '${CALL[@]}' => $retval"
+    
+      sep 14 '-'
+      CALL=(combine_pipe_returns 3)
+      flarkas=$(ploop | ploop | ploop | ploop)
+      ${CALL[@]}
+      retval=$?
+      echo "embedded quoted call '${CALL[@]}' => $retval"
+      echo "and the flarkas string got: '$flarkas'"
+    
+      sep 14 '-'
+    }
+    
+    # now run the fancy pipe tests.  hope they do not leak.
+    echo running tests on combine_pipe_returns.
+    test_combine_pipe_returns
+
+# more tests go here...
+  fi
 fi
 
