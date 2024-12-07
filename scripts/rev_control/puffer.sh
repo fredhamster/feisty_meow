@@ -6,6 +6,9 @@
 # upstream changes that could mess up the git push (svn and cvs are not
 # supported in this script, since they branch differently than git).
 
+# safety net for when we are called without full initialization.
+if [ -z "$FEISTY_MEOW_SCRIPTS" ]; then FEISTY_MEOW_SCRIPTS="$FEISTY_MEOW_APEX/scripts"; fi
+
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 source "$FEISTY_MEOW_SCRIPTS/rev_control/version_control.sh"
 

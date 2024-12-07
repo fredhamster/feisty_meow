@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # iterates across a set of hosts to remotely execute a given bash script on them.
 #
@@ -114,19 +114,23 @@ function emit_environment_scavenger_prefix()
 {
   # this one doesn't get curly braces around it, since we want it embedded inline same as rest of target script.
   local emission='
-    user_startup_file="$HOME/.profile"
-    if [ ! -f "$user_startup_file" ]; then user_startup_file="$HOME/.bash_profile"; fi
-    if [ ! -f "$user_startup_file" ]; then user_startup_file="$HOME/.bashrc"; fi
-    if [ ! -f "$user_startup_file" ]; then 
+#!/usr/bin/env bash
+#echo BASH_VERSION is set to: $BASH_VERSION
+user_startup_file="$HOME/.profile"
+if [ ! -f "$user_startup_file" ]; then user_startup_file="$HOME/.bash_profile"; fi
+if [ ! -f "$user_startup_file" ]; then user_startup_file="$HOME/.bashrc"; fi
+if [ ! -f "$user_startup_file" ]; then 
 #hmmm: quiet the debug here?
-      echo "user startup file not found--script had better be environment independent."
-    else
-      # pull their startup code in, so their expectations are met.
-      # and hope this does not nuke our session.
+  echo "user startup file not found--script had better be environment independent."
+else
+  # pull their startup code in, so their expectations are met.
+  # and hope this does not nuke our session.
 #echo sourcing user startup file: ${user_startup_file}
-      source "$user_startup_file"
+  source "$user_startup_file"
 #echo after startup file sourced: ${user_startup_file}
-    fi
+fi
+
+#original script is included below...
 '
   echo "$emission"
 }
@@ -172,6 +176,9 @@ function run_function_remotely()
 
 ####
 
+function notify_enter_host() { echo -e "\n==> starting on: $*"; }
+function notify_exit_host() { echo -e "<== finished on: $*\n"; }
+
 # goes out to the hosts specified and executes a bash script while embedded in an ssh call.
 function sozzle_hosts()
 {
@@ -190,13 +197,14 @@ function sozzle_hosts()
     # to: get the remote host prepared for the script, to run the script remotely,
     # and then to clean up the script again.
 
-    separator 14 '#'
-    echo "==> starting on: $external_host"
+    #separator 14 '#'
+    notify_enter_host $external_host
     # create a directory on the remote host and get its name.
     remote_storage_dir="$(run_function_remotely emit_directory_creator "${external_host}" )"
     retval=$?
     if [ $retval -ne 0 ]; then
       echo "warning: initial connection and temporary directory creation failed on host '$external_host' with exit code $retval."
+      notify_exit_host $external_host
       continue
     fi
 
@@ -206,6 +214,7 @@ function sozzle_hosts()
     retval=$?
     if [ $retval -ne 0 ]; then
       echo "warning: unique script filename creation failed on host '$external_host' with exit code $retval."
+      notify_exit_host $external_host
       continue
     fi
 
@@ -225,6 +234,7 @@ function sozzle_hosts()
     rm "$combined_script_file"
     if [ $retval -ne 0 ]; then
       echo "warning: copying script '$script_file' to host '$external_host' failed with exit code $retval.  file name on target was '$remote_script_name'."
+      notify_exit_host $external_host
       continue
     fi
 
@@ -233,6 +243,7 @@ function sozzle_hosts()
     retval=$?
     if [ $retval -ne 0 ]; then
       echo "warning: executing script '$script_file' failed on host '$external_host' with exit code $retval."
+      notify_exit_host $external_host
       continue
     fi
     
@@ -241,15 +252,15 @@ function sozzle_hosts()
     retval=$?
     if [ $retval -ne 0 ]; then
       echo "warning: cleaning up storage dir '$remote_storage_dir' failed on host '$external_host' with exit code $retval."
+      notify_exit_host $external_host
       continue
     fi
 
-    echo "<== finished on: $external_host"
-
+    notify_exit_host $external_host
   done
 
   # drop a final separator line.
-  separator 14 '#'
+  #separator 14 '#'
 }
 
 ####
