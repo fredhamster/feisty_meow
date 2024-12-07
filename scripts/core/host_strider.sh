@@ -96,13 +96,13 @@ function emit_script_execution_stanzas()
     pushd $storage_dir &> /dev/null
     #hmmm: pretty ugly quoting below (source side) to get the output to have proper double and single quotes in it.
     delineator_line=$(dd if=/dev/zero bs=42 count=1 2>/dev/null | tr '\''\0'\'' '\''#'\'')
-    echo "$delineator_line"
+    echo "$delineator_line $(date +"[%Y-%m-%d %H:%M:%S]")"
     #echo "output will be stored in \"$tempfile\" also."
     bash "$script_to_run" >"$tempfile" 2>&1 
     exitval=$?
     popd &> /dev/null
     cat "$tempfile"
-    echo "$delineator_line"
+    echo "$delineator_line $(date +"[%Y-%m-%d %H:%M:%S]")"
     exit $exitval
   }'
   echo "$emission"
@@ -197,7 +197,6 @@ function sozzle_hosts()
     # to: get the remote host prepared for the script, to run the script remotely,
     # and then to clean up the script again.
 
-    #separator 14 '#'
     notify_enter_host $external_host
     # create a directory on the remote host and get its name.
     remote_storage_dir="$(run_function_remotely emit_directory_creator "${external_host}" )"
@@ -258,9 +257,6 @@ function sozzle_hosts()
 
     notify_exit_host $external_host
   done
-
-  # drop a final separator line.
-  #separator 14 '#'
 }
 
 ####
