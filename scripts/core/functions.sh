@@ -232,7 +232,7 @@ if [ -z "$skip_all" ]; then
   function get_maxcols()
   {
     # calculate the number of columsn in the terminal.
-    local cols=$(stty size | awk '{print $2}')
+    local cols=$(stty size 2>/dev/null | awk '{print $2}')
     echo $cols
   }
 

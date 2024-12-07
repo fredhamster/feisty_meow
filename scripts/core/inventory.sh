@@ -3,7 +3,7 @@
 # a frivolous but useful script that shows information about the local
 # computer in terms of an adventure game inventory listing.
 
-source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 
 unset -v codename osname osver
 if [ $OPERATING_SYSTEM == "UNIX" ]; then
