@@ -3,6 +3,8 @@
 # grabs a set of archives from a set of machines.
 # not tuned for re-use very much yet.
 
+#hmmm: could re-base this script on the newly available host_strider, which offers services this could really use.
+
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 # the archive directories will be known by their odd naming, which starts with the below.
