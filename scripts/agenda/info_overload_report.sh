@@ -137,10 +137,6 @@ analyze_hierarchy_and_report $CLOUD_BASE/branch_road "hearth and home notes (bra
 # unsorted files haven't been categorized yet.
 analyze_hierarchy_and_report $CLOUD_BASE/disordered "disordered and maybe deranged files"
 
-# we now consider the backlog of things to read to be a relevant fact.  this is going to hose
-# up our weight accounting considerably.
-analyze_hierarchy_and_report $CLOUD_BASE/reading "reading list (for a quiet afternoon)"
-
 # bluesky is our brainstorming and wunderthinking area for new things.
 analyze_hierarchy_and_report $CLOUD_BASE/blue_sky "blue sky is the limit ideas"
 
