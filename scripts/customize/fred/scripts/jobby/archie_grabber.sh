@@ -27,16 +27,25 @@ function grab_archies()
       popd 
       continue
     fi
-    # the tricky code below just cleans up any archive dirs on the host by hiding them
-    # under an old junk folder.  that can be cleaned up later as desired.
-    ssh ${host}.${domain_piece} bash <<EOF
-{ \
-DATA_GRAVE="\$(mktemp -d \$HOME/old_junk.XXXXXX)"; \
-mkdir -p \$DATA_GRAVE; \
-echo "moving old $ARCHIVE_DIR_PREFIX* folders into \$DATA_GRAVE"; \
-mv $ARCHIVE_DIR_PREFIX* \$DATA_GRAVE; \
-}
-EOF
+
+    # code below cleans up any archive dirs on the host by hiding them in an
+    # old junk folder.  the junk folder can be cleaned up later as desired.
+    # the impact is that the archives will only be backed up once, and then
+    # moved out of the way before the next run.
+    host_strider $DATA_GRAVE_SHUFFLE_COMMAND ${domain_piece} ${host}
+
+#old code
+#    # the tricky code below just cleans up any archive dirs on the host by hiding them
+#    # under an old junk folder.  that can be cleaned up later as desired.
+#    ssh ${host}.${domain_piece} bash <<EOF
+#{ \
+#DATA_GRAVE="\$(mktemp -d \$HOME/old_junk.XXXXXX)"; \
+#mkdir -p \$DATA_GRAVE; \
+#echo "moving old $ARCHIVE_DIR_PREFIX* folders into \$DATA_GRAVE"; \
+#mv $ARCHIVE_DIR_PREFIX* \$DATA_GRAVE; \
+#}
+#EOF
+
     popd 
   done
 }
