@@ -50,6 +50,19 @@ EOF
 mkdir -p $HOME/grabbing_archies
 pushd $HOME/grabbing_archies
 
+export DATA_GRAVE_SHUFFLE_COMMAND="$(mktemp "$TMP/data_engraver-XXXXXX.sh")"
+echo '\
+#!/usr/bin/env bash
+# moves the newly copied archives into a junk folder.
+ARCHIVE_DIR_PREFIX="'$ARCHIVE_DIR_PREFIX'"
+DATA_GRAVE="$(mktemp -d $HOME/old_junk.XXXXXX)"
+mkdir -p $DATA_GRAVE
+echo "moving old $ARCHIVE_DIR_PREFIX* folders into $DATA_GRAVE"
+mv $ARCHIVE_DIR_PREFIX* $DATA_GRAVE
+' > $DATA_GRAVE_SHUFFLE_COMMAND
+
+#hmmm: got the script done above.  need to start calling the host strider for this.
+
 ####
 
 # these hosts are all in the ITS domain...
