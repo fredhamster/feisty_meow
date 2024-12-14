@@ -107,12 +107,12 @@ echo "installing for darwin"
   elif whichable apt; then
     # ubuntu or debian or other apt-based OSes...
 echo "installing for apt"
-    sudo apt install "${packages[@]}"
+    sudo apt -y install "${packages[@]}"
     return $?
   elif whichable yum; then  
     # rpm based with yum available...
 echo "installing for yum"
-    sudo yum install "${packages[@]}"
+    sudo yum -y install "${packages[@]}"
     return $?
   elif [ "$OS" == "Windows_NT" ]; then
     # windows-based with cygwin (or we'll fail out currently).
@@ -196,13 +196,13 @@ PAX=(noop)
 PHASE_MESSAGE="installing crucial OS packages"
 
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(openssh-server )
+  PAX=(gparted openssh-server )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(openssh-server )
+  PAX=(gparted openssh-server )
 elif [ "$opsystem_here" == "macos" ]; then
   PAX=(openssh-server )
 elif [ "$opsystem_here" == "windoze" ]; then
-  PAX=(openssh-server )
+  PAX=(gparted openssh-server )
 fi
 
 install_system_package "${PAX[@]}"
