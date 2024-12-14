@@ -59,7 +59,7 @@ function grab_archies()
 mkdir -p $HOME/grabbing_archies
 pushd $HOME/grabbing_archies
 
-export DATA_GRAVE_SHUFFLE_COMMAND="$(mktemp "$TMP/data_engraver-XXXXXX.sh")"
+export DATA_GRAVE_SHUFFLE_COMMAND="$(mktemp "$TMP/data_engraver.sh.XXXXXX")"
 echo '\
 #!/usr/bin/env bash
 # moves the newly copied archives into a junk folder.
