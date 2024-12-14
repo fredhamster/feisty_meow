@@ -26,13 +26,14 @@ function grab_archies()
     local cp_outfile="$(mktemp /tmp/archie_grabber.XXXXXX)"
     netcp ${host}.${domain_piece}:${ARCHIVE_DIR_PREFIX}* . &> "$cp_outfile"
     retval=$?
-#hmmm: could display the output on error.  and we have a function for that...
-    rm "$cp_outfile"
     if [ $retval -ne 0 ]; then
+      cat "$cp_outfile"
+      rm "$cp_outfile"
       echo "got return value $retval from copying ${ARCHIVE_DIR_PREFIX}* from ${host}.${domain_piece}; skipping it."
       popd 
       continue
     fi
+    rm "$cp_outfile"
 
     # code below cleans up any archive dirs on the host by hiding them in an
     # old junk folder.  the junk folder can be cleaned up later as desired.
