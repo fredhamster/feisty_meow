@@ -123,7 +123,7 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
 
   # patch the user variable if we were launched by one of our cron jobs.
   # first we set USER to not use the full email style version, if that's what already exists.
-  if [ ! -z "$USER" -a ! -z "$(echo "${USER/.*@.*/yeps}")" ]; then
+  if [ ! -z "$USER" -a "$(echo "${USER/*@*/yeps}")" == "yeps" ]; then
     USER="$(sanitized_username)"
   fi
   # then we check if the USER variable isn't set, and use CRONUSER from the cron templates, if defined.
