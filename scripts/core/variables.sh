@@ -42,10 +42,9 @@ return 0
   # a nice clean one (by removing email domains).
   export SANITIZED_USER
   function sanitized_username() {
-    if [ ! -z "$SANITIZED_USER" ]; then
-      echo -n "$SANITIZED_USER"
+    if [ -z "$SANITIZED_USER" ]; then
+      export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
     fi
-    export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
     echo -n "$SANITIZED_USER"
   }
   # call the method to ensure the variable gets loaded.

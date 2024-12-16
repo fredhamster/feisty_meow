@@ -105,32 +105,6 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   # the dollar signs in variable names.
   shopt -u progcomp
 
-  ####
-  # (function borrowed from our own variables.sh)
-  # a handy helper method that turns a potentially gross USER variable into
-  # a nice clean one (by removing email domains).
-  export SANITIZED_USER
-  function sanitized_username() {
-    if [ ! -z "$SANITIZED_USER" ]; then
-      echo -n "$SANITIZED_USER"
-    fi
-    export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
-    echo -n "$SANITIZED_USER"
-  }
-  # call the method to ensure the variable gets loaded.
-  sanitized_username &> /dev/null
-  #####
-
-  # patch the user variable if we were launched by one of our cron jobs.
-  # first we set USER to not use the full email style version, if that's what already exists.
-  if [ ! -z "$USER" -a "$(echo "${USER/*@*/yeps}")" == "yeps" ]; then
-    USER="$(sanitized_username)"
-  fi
-  # then we check if the USER variable isn't set, and use CRONUSER from the cron templates, if defined.
-  if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
-    export USER="$CRONUSER"
-  fi
-
   # use the xauth info if we were given one in the environment.
   # this allows root or other su'd identities to create windows with same
   # display variable.
@@ -186,6 +160,16 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     # meow variables into the environment.  we actually want this to always run also;
     # it will decide what variables need to be set again.
     source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
+
+    # patch the user variable if we were launched by one of our cron jobs.
+    # first we set USER to not use the full email style version, if that's what already exists.
+    if [ ! -z "$USER" -a "$(echo "${USER/*@*/yeps}")" == "yeps" ]; then
+      USER="$(sanitized_username)"
+    fi
+    # then we check if the USER variable isn't set, and use CRONUSER from the cron templates, if defined.
+    if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
+      export USER="$CRONUSER"
+    fi
 
     ##############
 
