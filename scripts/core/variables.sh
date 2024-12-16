@@ -43,7 +43,8 @@ return 0
   export SANITIZED_USER
   function sanitized_username() {
     if [ -z "$SANITIZED_USER" ]; then
-      export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
+#old inefficient...      export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
+      export SANITIZED_USER="${USER//@*/}"
     fi
     echo -n "$SANITIZED_USER"
   }
