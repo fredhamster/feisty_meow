@@ -40,8 +40,13 @@ return 0
 
   # a handy helper method that turns a potentially gross USER variable into
   # a nice clean one (by removing email domains).
+  export SANITIZED_USER=""
   function sanitized_username() {
-    echo $USER | sed -e 's/@[a-zA-Z0-9_.]*//'
+    if [ ! -z "$SANITIZED_USER" ]; then
+      echo -n "$SANITIZED_USER"
+    fi
+    export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
+    echo -n "$SANITIZED_USER"
   }
 
 ##############
