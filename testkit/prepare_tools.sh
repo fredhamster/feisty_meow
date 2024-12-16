@@ -82,7 +82,7 @@ fi
 # commonly used environment variables...
 
 # TEST_TEMP is a folder where we can generate a collection of junk files.
-export TEST_TEMP="$TMP/testkit_logs_${USER}"
+export TEST_TEMP="$TMP/testkit_logs_$(sanitized_username)"
 if [ ! -d "$TEST_TEMP" ]; then
   mkdir -p "$TEST_TEMP"
 fi

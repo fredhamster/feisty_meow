@@ -22,6 +22,6 @@ fi
 
 sep='_'
 
-tar -czf "${archive_storage_path}/${archive_tag}_bkup_$(date +"%Y$sep%m$sep%d$sep%H%M$sep%S" | tr -d '/\n/').tar.gz" "$target_asset_path" &>>$TMP/${USER}.scripts.backup_arbitrary.log
+tar -czf "${archive_storage_path}/${archive_tag}_bkup_$(date +"%Y$sep%m$sep%d$sep%H%M$sep%S" | tr -d '/\n/').tar.gz" "$target_asset_path" &>>$TMP/$(sanitized_username).scripts.backup_arbitrary.log
 
 

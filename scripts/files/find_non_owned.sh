@@ -6,9 +6,9 @@ if test $# = 0; then
 fi;
 export outfile="$(mktemp "$TMP/zz_findertmp.XXXXXX")"
 # check for files not owned by the user.
-echo "These files are not self-owned by $USER:" >$outfile
+echo "These files are not self-owned by $(sanitized_username):" >$outfile
 for i; do
-  find $i ! -user $USER >>$outfile
+  find $i ! -user $(sanitized_username) >>$outfile
 done
 # check for files not in same group as the user.
 GROUP="$(groups | awk '{print $1}')"

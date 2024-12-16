@@ -92,7 +92,7 @@ if [[ $0 =~ .*cool_permissionator\.sh.* ]]; then
   export FEISTY_MEOW_APEX="$( \cd "$THISDIR/../.." && \pwd )"
   source "$THISDIR/../core/launch_feisty_meow.sh"
   continue_on_error "sourcing the feisty meow launcher"
-  coolio="$USER"
+  coolio="$(sanitized_username)"
   reapply_cool_permissions "$coolio"
   continue_on_error "reapplying cool permissions on $coolio"
 fi

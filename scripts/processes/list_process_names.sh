@@ -5,7 +5,7 @@
 
 user="$1"
 if [ -z "$user" ]; then
-  user="$USER"
+  user="$(sanitized_username)"
 fi
 
 ps wuax | grep $user | awk '{ print $11; }'

@@ -34,7 +34,7 @@ fi
 # to get past this, TMP gets changed below to a hopefully generic and safe place.
 if [[ "$TMP" =~ .:.* ]]; then
   log_feisty_meow_event "making weirdo temporary directory for PCDOS-style path."
-  export TMP=/tmp/rev_control_$USER
+  export TMP=/tmp/rev_control_$(sanitized_username)
 fi
 if [ ! -d "$TMP" ]; then
   mkdir -p $TMP

@@ -16,7 +16,7 @@ function assemble_log_file()
     exit 1
   fi
 
-  logdump="$(mktemp /tmp/$USER_logdump.XXXXXX)"
+  logdump="$(mktemp /tmp/$(sanitized_username)_logdump.XXXXXX)"
 
   for logy in ${full_set[*]}; do
 #echo logy is $logy

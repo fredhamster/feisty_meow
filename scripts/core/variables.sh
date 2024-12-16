@@ -40,7 +40,7 @@ return 0
 
   # a handy helper method that turns a potentially gross USER variable into
   # a nice clean one (by removing email domains).
-  export SANITIZED_USER=""
+  export SANITIZED_USER
   function sanitized_username() {
     if [ ! -z "$SANITIZED_USER" ]; then
       echo -n "$SANITIZED_USER"
@@ -48,6 +48,8 @@ return 0
     export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
     echo -n "$SANITIZED_USER"
   }
+  # call the method to ensure the variable gets loaded.
+  sanitized_username &> /dev/null
 
 ##############
 
@@ -130,7 +132,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
 
   # set up our event logging file for any notable situation to be recorded in.
   if [ -z "$FEISTY_MEOW_EVENT_LOG" ]; then
-    define_yeti_variable FEISTY_MEOW_EVENT_LOG="$TMP/$USER-feisty_meow-events.log"
+    define_yeti_variable FEISTY_MEOW_EVENT_LOG="$TMP/$(sanitized_username)-feisty_meow-events.log"
   fi
 
   # set up the top-level for all build creations and logs and such.

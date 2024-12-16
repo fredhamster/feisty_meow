@@ -104,8 +104,25 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   # set the directory tab completion to behave properly and not start escaping
   # the dollar signs in variable names.
   shopt -u progcomp
-  
+
+  ####
+  # (function borrowed from our own variables.sh)
+  # a handy helper method that turns a potentially gross USER variable into
+  # a nice clean one (by removing email domains).
+  export SANITIZED_USER
+  function sanitized_username() {
+    if [ ! -z "$SANITIZED_USER" ]; then
+      echo -n "$SANITIZED_USER"
+    fi
+    export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
+    echo -n "$SANITIZED_USER"
+  }
+  # call the method to ensure the variable gets loaded.
+  sanitized_username &> /dev/null
+  #####
+
   # patch the user variable if we were launched by one of our cron jobs.
+  USER="$(sanitized_username)"
   if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
     export USER="$CRONUSER"
   fi

@@ -3,7 +3,7 @@
 # user, in order to run something from within their context.  this is one way to do it
 # with a semi-interactive set of steps...
 sudo -u chronical bash <<eof
-echo hello this is \$USER
+echo hello this is \$(sanitized_username)
 echo we be in \$(pwd)
 echo "where you at?"
 eof

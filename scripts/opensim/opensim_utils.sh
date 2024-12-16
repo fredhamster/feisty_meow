@@ -61,7 +61,7 @@ function find_opensim_process()
   if [ -z "$process_name" ]; then
     return 1  # failure in call.
   fi
-  OS_PROC_ID=$(ps wuax | grep "[0-9] mono $process_name" | grep -vi screen | sed -e "s/$USER  *\([0-9][0-9]*\).*/\1/" | head -n 1)
+  OS_PROC_ID=$(ps wuax | grep "[0-9] mono $process_name" | grep -vi screen | sed -e "s/$(sanitized_username)  *\([0-9][0-9]*\).*/\1/" | head -n 1)
 }
 
 # takes a screen name for the detached screen session and a process name that

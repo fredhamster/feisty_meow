@@ -140,7 +140,7 @@ if [ -z "$skip_all" ]; then
     local custom_user="$(logname 2>/dev/null)"
     if [ -z "$custom_user" ]; then
       # try the normal unix user variable.
-      custom_user="$USER"
+      custom_user="$(sanitized_username)"
     fi
     if [ -z "$custom_user" ]; then
       # try the windows user variable.
@@ -264,7 +264,7 @@ if [ -z "$skip_all" ]; then
   # accepts any number of arguments and outputs them to the feisty meow event log.
   function log_feisty_meow_event()
   {
-    echo -e "$(timestamper)-- ${USER}@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
+    echo -e "$(timestamper)-- $(sanitized_username)@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
   }
 
   ##############
@@ -583,7 +583,7 @@ if [ -z "$skip_all" ]; then
     fi
 
     # reload feisty meow environment in current shell.
-    log_feisty_meow_event "reloading the feisty meow scripts for $USER in current shell."
+    log_feisty_meow_event "reloading the feisty meow scripts for $(sanitized_username) in current shell."
     source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
     # run nechung oracle to give user a new fortune.
     nechung

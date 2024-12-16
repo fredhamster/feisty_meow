@@ -517,7 +517,7 @@ function fix_appdir_ownership()
   local combo="$appsdir/$dir"
 
   # go with the default user running the script.
-  user_name="$USER"
+  user_name="$(sanitized_username)"
   if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
     echo "$(date_stringer): Chowning the app folder to be owned by: $user_name" >> "$SSM_LOG_FILE"
 #hmmm: have to hope for now for standard group named after user 

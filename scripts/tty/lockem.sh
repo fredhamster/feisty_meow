@@ -50,7 +50,7 @@ echo "$(date_stringer): successful login" >>$LOG_FILE
 echo "$(date_stringer): --- terminal unlocked" >>$LOG_FILE
 
 clear
-echo "hi $USER, your password has been accepted.  enjoy your computer."
+echo "hi $(sanitized_username), your password has been accepted.  enjoy your computer."
 echo
 
 
