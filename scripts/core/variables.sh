@@ -38,7 +38,11 @@ return 0
          echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/cygdrive\/\1\/\2/'
   }
 
-
+  # a handy helper method that turns a potentially gross USER variable into
+  # a nice clean one (by removing email domains).
+  function sanitized_username() {
+    echo $USER | sed -e 's/@[a-zA-Z0-9_.]*//'
+  }
 
 ##############
 
