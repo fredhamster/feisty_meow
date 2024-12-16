@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # dumps out the log files according to the provided pattern, but makes sure that
 # each one is dumped in chronological order, and any compressed logs are unpacked

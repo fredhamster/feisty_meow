@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this finds any one-word commented items, which are often a sign of a formal
 # parameter that was commented out because it's unused.  that's a suboptimal
 # way to fix the compiler warning for some people, and so this will find any

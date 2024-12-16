@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # badness_catcher: runs the command line passed in and catches error conditions.
 
 if [ ! -z "$NOISY" ]; then

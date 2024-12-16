@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this is a library of functions shared by scripts in the system folder.
 #

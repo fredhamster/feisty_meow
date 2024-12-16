@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # updates the moodle install, assuming all paths are at the default.
 

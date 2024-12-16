@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # does differences on a set of folders checked out from subversion or git.
 # this can take a directory as parameter, but will default to the current

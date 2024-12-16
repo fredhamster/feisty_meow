@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # checks in the updated files in a set of folders checked out from subversion
 # or git.  this can take a directory as parameter, but will default to the
 # current working directory.  all the directories under the passed directory

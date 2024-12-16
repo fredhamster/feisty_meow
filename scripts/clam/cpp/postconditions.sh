@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # copies the final products of the current project into the repository.
 
 # promote nothing from the built objects if this is a cleanup.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 source "$FEISTY_MEOW_SCRIPTS/core/common.alias"

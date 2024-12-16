@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # these are helper functions for doing localized revision control.
 # this script should be sourced into other scripts that use it.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ -z "$1" -o -z "$2" ]; then
   echo "This program accepts a file name with CSV formatted movie database"
   echo "information and extracts a particular show's episodes.  You need to"

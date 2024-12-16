@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a helpful script that scrapes any active game saves from wine's storage
 # area into a spooling saves folder for archiving.

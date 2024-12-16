@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # shows the directory passed as the first parameter.
 # if there's a second parameter, it's used for a filtering pattern.

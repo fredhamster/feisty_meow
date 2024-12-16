@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # compares the soapbox with the real archive to see if any older stuff might be
 # left behind.  if it's got a less than in front, then it's only on the soapbox drive

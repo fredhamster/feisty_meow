@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # gets any updates for the repository folders present in the REPOSITORY_LIST variable.
 

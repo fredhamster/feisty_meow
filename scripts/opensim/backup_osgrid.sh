@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # a simple script that backs up the opensim database assets.
 
 #hmmm: need to parameterize for the database name and secrets file and all that.

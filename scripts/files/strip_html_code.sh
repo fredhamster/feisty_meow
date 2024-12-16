@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # strips out html tags and sends results to standard input.
 function strip_html_code()

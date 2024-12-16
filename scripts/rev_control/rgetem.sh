@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # a simple script for updating a set of folders from subversion or git.
 # this can take a directory as parameter, but will default to the current
 # working directory.  all the directories under the passed directory will

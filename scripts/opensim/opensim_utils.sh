@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this is a collection of scripts that assist in managing an opensim server.
 # it uses the "screen" utility to manage opensimulator instances.
 

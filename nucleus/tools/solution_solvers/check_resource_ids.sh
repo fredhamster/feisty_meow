@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # finds all the resource ids in resource headers (only those named the
 # canonical resource.h name) and discovers any duplicates.  the duplicates

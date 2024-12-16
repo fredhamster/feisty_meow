@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 main_pid=$( ps wuax | grep "[0-9] mono OpenSim.exe" | grep -vi screen | sed -e "s/$USER  *\([0-9][0-9]*\).*/\1/" )
 

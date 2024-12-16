@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # looks for occurrences of getting a Log from the log factory.  when we find
 # one, we make sure it is using the same class name as the compilation unit.

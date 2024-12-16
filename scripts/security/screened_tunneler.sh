@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script manages one ssh tunnel inside a named 'screen' session.
 
 ##############

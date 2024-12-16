@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # branchy: lists the branches active on all of the paths provided on the command line.
 # if no directory is specified, this defaults to operating on the current directory.

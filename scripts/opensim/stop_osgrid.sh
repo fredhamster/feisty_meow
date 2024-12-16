@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script stops a 0.6.9 era opensimulator system that was started by
 # the run_opensim or run_osgrid script.  this will work for either case.
 

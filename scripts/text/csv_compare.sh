@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script takes two CSV files and ensures that they have the same
 # contents, regardless of the order.

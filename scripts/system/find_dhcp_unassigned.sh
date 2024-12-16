@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # note that this will only work on the machine with the dhcp server, and
 # it only works with our range for unassigned, unknown machines, which is

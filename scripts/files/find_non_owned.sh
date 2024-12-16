@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if test $# = 0; then
   echo $(basename $0): needs at least one directory name as a parameter.
 #hmmm: set the first parm to . instead.

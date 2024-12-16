@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # backs up the uva onedrive folder (which itself is fed from the cloud).
 

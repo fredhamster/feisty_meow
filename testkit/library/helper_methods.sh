@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # useful functions that are somewhat general.  these are not needed for
 # the basic setup of the test environment, but they are used by other

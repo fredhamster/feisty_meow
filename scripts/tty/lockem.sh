@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Can be used to lock up a terminal screen until the user enters the correct
 # password.  Pretty sturdy.  Store your password in the file "PASSWORD_FILE",

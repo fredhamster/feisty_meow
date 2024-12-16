@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This program is meant to be started by the program keep_awake and has
 # the guts that are meant to execute inside of a semi-perpetual loop.

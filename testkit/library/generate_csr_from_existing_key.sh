@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 privkey="$1"; shift
 subject="$1"; shift

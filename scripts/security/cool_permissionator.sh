@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a library file for redoing file ownership and permissions as we feel is
 # appropriate.  this approach is a little bit specific to our way of doing

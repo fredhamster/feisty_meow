@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # compares the files and directory names in two different top-level directories
 # and prints a report of the differences.

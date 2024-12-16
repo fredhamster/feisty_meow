@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 hostfile=/etc/HOSTNAME
 if [ ! -f "$hostfile" ]; then
   hostfile=/etc/hostname

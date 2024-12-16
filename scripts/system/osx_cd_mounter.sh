@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # keeps trying to mount the cd on a mac mini to overcome
 # a new bug in itunes seen as of osx leopard upgrade.

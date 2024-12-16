@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a little helper script for clambook,
 # which is uva's mac and which doesn't share syncthing.

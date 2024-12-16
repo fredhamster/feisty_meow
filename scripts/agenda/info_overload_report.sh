@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # these metrics are how bogged down we are in to-do type items.
 

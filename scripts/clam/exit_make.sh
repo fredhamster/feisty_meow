@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # clean out temporary files that might make clam think the state is other
 # than a fresh build next time.
 rm -f $FLAG_FILES $SUB_FLAG_FILES

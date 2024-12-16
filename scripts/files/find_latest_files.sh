@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # find last written files, made friendly for dell by avoiding the .clusterConfig directory.
 

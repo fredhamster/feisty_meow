@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # find the most recently updated files in a folder.
 # made friendlier for dell by avoiding the .clusterConfig directory and for

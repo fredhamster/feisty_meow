@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script traverses the directories passed as its parameters and locates
 # any files that we consider to possibly be source code.
 # a new variable called "SOURCES_FOUND_LIST" will be declared and will point at

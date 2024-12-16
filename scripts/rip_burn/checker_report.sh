@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # checker_report: runs the checker utility against all files in a directory,
 # in such a way that the file count can be very high without blowing its

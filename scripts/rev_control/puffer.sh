@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # puffer: "puffs out" all of the folders present in the REPOSITORY_LIST
 # variable, which causes the repo to be merged with its remote versions.

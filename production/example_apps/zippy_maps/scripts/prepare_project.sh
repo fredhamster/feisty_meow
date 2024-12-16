@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #hmmm: test this and make sure it's still right.
 #hmmm: also test that it's inclusive of all the necessary steps for success.

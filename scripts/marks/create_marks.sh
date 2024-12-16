@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script rebuilds the bookmarks files.  it requires the variables:
 #     WEBBED_SITES: points at the root of the web hierarchy.

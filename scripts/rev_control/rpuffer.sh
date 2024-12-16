@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this "puffs out" the repositories that it finds.  what this means is that
 # any git repositories found will have all of their remote state updated (by

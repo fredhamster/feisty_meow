@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script makes a tunnel for SMTP traffic and others.  a remote ssh server
 # is required.  this is especially useful for routing around firewalls using
 # a web proxy like squid.  when used for SMTP, it ensures that none of the

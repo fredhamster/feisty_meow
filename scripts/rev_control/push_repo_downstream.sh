@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script works on a specialized type of git checkout that has been configured
 # to push to a "downstream" repository, while still pulling from its normal origin.

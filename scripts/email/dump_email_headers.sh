@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 export OUTF=$HOME/email_headers.txt
 

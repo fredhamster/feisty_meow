@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # tunnels to the khandroma machine for vnc access to the win7 box and for the jenkins
 # server.
 

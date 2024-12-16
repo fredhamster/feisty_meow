@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Author: Chris Koeritz
 # Author: Kevin Wentworth

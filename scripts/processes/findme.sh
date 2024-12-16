@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # finds the current user's processes in the process list.
 snuser=$USER
 # if the unix variable for the user is not set, try the dos variable.

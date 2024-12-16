@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # get the uva codes.
 mkdir -p ~/data/code_depot/uva_codes/

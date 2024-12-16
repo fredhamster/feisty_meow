@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # checks the rootkit report file to see if anything is listed.
 

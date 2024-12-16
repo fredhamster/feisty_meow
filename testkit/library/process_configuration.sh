@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Processes the XSEDE tools config file to turn variables listed in the
 # file into exported variables in the environment.

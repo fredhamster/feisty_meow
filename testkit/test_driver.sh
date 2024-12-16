@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script runs through all the known tests by performing a test sweep.
 # It should claim that all tests succeeded for a new build/configuration/etc.

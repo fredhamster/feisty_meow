@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # finds all files that contain any one of the members of a list of patterns.
 

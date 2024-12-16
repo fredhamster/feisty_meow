@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Runs the trac server startup if it's not already going.
 # This is a lighter-weight solution than adding trac to init scripts,

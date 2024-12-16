@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a script that handles synchronization of important assets from the MAJOR_ARCHIVE_SOURCES
 # and the SOURCECODE_HIERARCHY_LIST onto a backup drive of some sort.  it will only copy folders

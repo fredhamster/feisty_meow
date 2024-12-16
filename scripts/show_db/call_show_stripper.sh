@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # processes cgi request and passes it on to the real script.
 
 show_name="$(echo $QUERY_STRING | sed -e "s/^[^=][^=]*=\(.*\)$/\1/" | sed -e "s/\+/ /g")"

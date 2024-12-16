@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script reports files that are not checked in yet in a set of folders.
 # it works with subversion only, since git handles new files well whereas
 # subversion ignores them until you tell it about them.  this script can take

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # archives the files / directories passed on the command line into an archive
 # file tagged with a datestamp, and removes the original files / directories.

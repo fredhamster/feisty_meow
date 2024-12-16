@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # redirects standard out and standard error output to temp files and runs all
 # the parameters to this script as a command.

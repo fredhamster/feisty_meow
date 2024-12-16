@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # queries the cpu temperature using the sensors system (must be installed) and writes the
 # results to an ongoing log file as well as standard output.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this decides randomly whether to invoke the play_random script or not.
 
 NOISE_IT_UP=$(expr $RANDOM / 91)

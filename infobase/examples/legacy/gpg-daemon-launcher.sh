@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ##############
 # Name   : gpg-daemon-launcher
 # Author : Chris Koeritz

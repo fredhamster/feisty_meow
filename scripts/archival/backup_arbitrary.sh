@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # backs up a specific single directory by making an archive of it (tar.gz).
 # the storage location for the created archive is also specified.

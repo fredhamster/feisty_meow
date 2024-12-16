@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a simple unit test component that takes three parameters: the test to run, the
 # input file to give that test, and the expected correct output file from the test.

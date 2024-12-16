@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # cleans up the generated files that most people don't use.
 # this includes some static libraries and all of the tests, as well as

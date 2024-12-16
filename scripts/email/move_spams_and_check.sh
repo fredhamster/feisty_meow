@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # retrieves the system's spam pile from sa-exim's spool folder and
 # moves it to the user's home directory.  sudo access is required

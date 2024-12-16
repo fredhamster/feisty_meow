@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # some code i wrote to add to revamp that turned out to be unsuitable.
 # but it corrects a problem in cakelampvm v002 release that i find annoying,

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # provides the default values for the variables used in our site management scripts.
 

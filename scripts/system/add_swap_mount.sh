@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # auto-find the scripts, since we might want to run this as sudo.
 export THISDIR="$( \cd "$(\dirname "$0")" && /bin/pwd )"  # obtain the script's working directory.

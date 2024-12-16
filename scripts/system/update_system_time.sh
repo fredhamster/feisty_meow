@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # a simple time update script that traps output from rdate, since we
 # get a lot of noise even when a successful update occurs, to whit:

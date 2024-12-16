@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # these great examples of handy unix tidbits were donated by "q. black".

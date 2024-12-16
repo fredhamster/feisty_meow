@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a simple and quick method for making a new release, merging it into the main branch,
 # and tagging it with a new tag for the release.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ##############
 # Name   : find_in_arch
 # Author : Chris Koeritz

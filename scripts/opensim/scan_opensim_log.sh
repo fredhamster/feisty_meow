@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # an example for windows with the log located under program files.
 #PROGFILES="c:/Program Files"
