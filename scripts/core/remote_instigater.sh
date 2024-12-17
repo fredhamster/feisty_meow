@@ -1,9 +1,44 @@
 #!/usr/bin/env bash
 
-# iterates across the set of machines we use in UVa ITS all the time and
-# performs a set of actions per host.
+# implements an approach for striding a set of hosts with a local init
+# method, a remote action method, and a local clean-up method.
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
+# documentation...
+function print_instructions()
+{
+  echo "
+$(basename $0 .sh): runs a remote action on a set of hosts.
+
+This script needs at least four parameters:
+
+1) The initialization script, which will run locally before each host action.
+This script must take at least a single parameter, which is the hostname,
+although it does not need to do anything with that if it's not useful for
+initialization.
+2) The actual remote action script, which will run on the remote hosts.
+This script needs to be self-contained enough to handle doing its job on the
+remote side with a minimum of setup--only what's already configured on the
+remote host will be available to the script.
+3) The clean-up script, which will run locally after a successful remote
+action.  This script also needs to accept at least a hostname parameter.
+4) The hostname to run the script on, or a domain name when used with a set
+of hosts.
+5) The set of hosts, if a domain name is provided.  Otherwise, there are only
+four parameters.  Note that if this parameter is provided, it may contain
+multiple hosts, but they must be included in this single parameter.  See the
+examples below for more info.
+
+Examples:
+
+$(basename $0 .sh) \$HOME/my_init.sh \$HOME/my_remote_actor.sh \$HOME/my_cleaner.sh singlehost.mydomain.org
+   # invokes the remote script on a single host.
+
+$(basename $0 .sh) \$HOME/my_init.sh \$HOME/my_remote_actor.sh \$HOME/my_cleaner.sh mydomain.org \"thathost1 thathost2 thathost3\"
+   # invokes the remote script on multiple hosts.
+"
+}
 
 # takes a triplet of script names and runs them on local and remote hosts...
 # first the initialization operation is run locally, then the actual remote
@@ -61,51 +96,18 @@ function instigate_remote_calls()
 init_op="$1"; shift
 remote_op="$1"; shift
 cleanup_op="$1"; shift
+domain_piece="$1"; shift
+host_piece="$1"; shift
 
-if [ -z "$init_op" -o -z "$remote_op" -o -z "$cleanup_op" ]; then
-  echo "$0: runs an action on all of our ITS machines.
-This script needs three parameters:
-1) The initialization script, which will run locally before each host action.
-This script must take at least a single parameter, which is the hostname,
-although it does not need to do anything with that if it's not useful for
-initialization.
-2) The actual remote action script, which will run on the remote hosts.
-This script needs to be self-contained enough to handle doing its job on the
-remote side with a minimum of setup--only what's already configured on the
-remote host will be available to the script.
-3) The clean-up script, which will run locally after a successful remote
-action.  This script also needs to accept at least a hostname parameter.
-"
+if [ -z "$init_op" -o -z "$remote_op" -o -z "$cleanup_op" -o -z "$domain_piece" ]; then
+  print_instructions
   exit 1
 fi
 
 ################
 
-# these hosts are all in the ITS domain...
-
-domain="its.virginia.edu"
-hostlist="idpprod01 idpprod02 idpprod03 idpprod04 idpprod05 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
-hostlist="idpdev01 idpdev02 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
-hostlist="idptest01 idptest02 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
-hostlist="idpsistest01 idpsistest02 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
-
-hostlist="test-shibboleth-sp02 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
-
-hostlist="tower "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
-
-################
-
-# these hosts are in the storage domain...
-
-domain="storage.virginia.edu"
-hostlist="admin03 admin-hsz02-s admin-lab nasman02-s "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+# if we made it to here, let's try doing their action on all those hosts they provided...
+instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain_piece" "$host_piece"
 
 ################
 
