@@ -24,7 +24,7 @@ function instigate_remote_calls()
 
     # first we call our initialization process.
     echo "invoking local initialization operation '$init_op'..."
-    squelch_unless_error bash "$init_op"
+    squelch_unless_error bash "$init_op" "${host}.${domain_piece}"
     retval=$?
     if [ $retval -ne 0 ]; then
       echo "got return value $retval from initialization script '$init_op' for ${host}.${domain_piece}; skipping it."
@@ -33,7 +33,7 @@ function instigate_remote_calls()
 
     # now we make the remote call by relying on the host strider.
     echo "invoking remote action operation '$remote_op'..."
-    squelch_unless_error host_strider "${remote_op}" "${domain_piece}" "${host}"
+    squelch_unless_error bash $FEISTY_MEOW_SCRIPTS/core/host_strider.sh "${remote_op}" "${domain_piece}" "${host}"
     retval=$?
     if [ $retval -ne 0 ]; then
       echo "got return value $retval from remote action script '$remote_op' on ${host}.${domain_piece}; skipping it."
@@ -42,7 +42,7 @@ function instigate_remote_calls()
 
     # then invoke the clean-up call to get things right again on the local host.
     echo "invoking local clean-up operation '$cleanup_op'..."
-    squelch_unless_error bash "$cleanup_op"
+    squelch_unless_error bash "$cleanup_op" "${host}.${domain_piece}"
     retval=$?
     if [ $retval -ne 0 ]; then
       echo "got return value $retval from clean-up script '$cleanup_op' for ${host}.${domain_piece}; skipping it."
@@ -80,13 +80,6 @@ action.  This script also needs to accept at least a hostname parameter.
 fi
 
 ################
-
-#while testing, we limit the blast zone...
-domain="its.virginia.edu"
-hostlist="idpdev01 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
-echo BAILING
-exit 1
 
 # these hosts are all in the ITS domain...
 
