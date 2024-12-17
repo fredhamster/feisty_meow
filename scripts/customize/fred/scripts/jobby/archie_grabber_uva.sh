@@ -43,7 +43,8 @@ popd &>/dev/null
 popd &>/dev/null
 #nope.  we do not want to signal an error when we have already caught it.
 #exit $retval
-exit 0
+# special exit value means "show the output but there was no error".
+exit $MAGICAL_FEISTY_MEOW_OKAY_RETURN_VALUE
 ' > $ARCHIVE_SNAGGER_COMMAND
 
 #s

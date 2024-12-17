@@ -75,6 +75,11 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   ##############
   
   # start with some simpler things.
+
+  # special protocol for return values--if we see this, it means we should still show
+  # the standard output and there was no actual error.  implemented in
+  # squelch_unless_error.
+  define_yeti_variable MAGICAL_FEISTY_MEOW_OKAY_RETURN_VALUE=242
   
 #hmmm: this needs to come from some configuration item.  especially for installs.
 define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org

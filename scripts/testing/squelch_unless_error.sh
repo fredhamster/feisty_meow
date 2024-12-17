@@ -16,10 +16,17 @@ eval "${@}" >"$newout" 2>"$newerr"
 retval=$?
 
 if [ $retval != 0 ]; then
-  # there was an error during the execution of the command.
-  cat "$newout"
-  cat "$newerr" >&2
-  echo "An error was returned during execution of: ${@}" >&2
+  if [ $retval -eq $MAGICAL_FEISTY_MEOW_OKAY_RETURN_VALUE ]; then
+    # special standard here means that we will still show the output, but there was no actual error.
+    cat "$newout"
+    # reset to a non-error for our special case.
+    retval=0
+  else
+    # there was an actual error during the execution of the command.
+    cat "$newout"
+    cat "$newerr" >&2
+    echo "An error was returned during execution of: ${@}" >&2
+  fi
 fi
 
 # clean up.
