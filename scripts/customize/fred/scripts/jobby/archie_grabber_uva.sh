@@ -27,9 +27,9 @@ echo '#!/usr/bin/env bash
 remote_hostname="$1"; shift
 ARCHIVE_DIR_PREFIX="'$ARCHIVE_DIR_PREFIX'"
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
-pushd "$COPY_TARGET_TOP"
+pushd "$COPY_TARGET_TOP" &>/dev/null
 mkdir -p "${remote_hostname}"
-pushd "${remote_hostname}"
+pushd "${remote_hostname}" &>/dev/null
 cp_outfile="$(mktemp /tmp/archie_grabber_copying.XXXXXX)"
 netcp ${remote_hostname}:${ARCHIVE_DIR_PREFIX}* . &> "$cp_outfile"
 retval=$?
@@ -39,8 +39,8 @@ if [ $retval -ne 0 ]; then
   echo "Did not find any archives on \"$remote_hostname\"."
 fi
 rm "$cp_outfile"
-popd
-popd
+popd &>/dev/null
+popd &>/dev/null
 exit $retval
 ' > $ARCHIVE_SNAGGER_COMMAND
 
