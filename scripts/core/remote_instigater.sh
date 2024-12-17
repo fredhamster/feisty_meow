@@ -57,6 +57,8 @@ function instigate_remote_calls()
 
   for host in $host_list; do
 
+    echo -e "\nInstigating remote activity on host: ${host}.${domain_piece}"
+
     # first we call our initialization process.
     echo "invoking local initialization operation '$init_op'..."
     squelch_unless_error bash "$init_op" "${host}.${domain_piece}"
