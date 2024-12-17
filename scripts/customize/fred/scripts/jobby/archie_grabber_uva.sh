@@ -24,17 +24,19 @@ mkdir -p "$COPY_TARGET_TOP"
 export ARCHIVE_SNAGGER_COMMAND="$(mktemp "$TMP/archive_snagger.sh.XXXXXX")"
 echo '#!/usr/bin/env bash
 # copies the archives we find in the remote home for the user which start with the expected prefix.
-hostname="$1"; shift
+remote_hostname="$1"; shift
 ARCHIVE_DIR_PREFIX="'$ARCHIVE_DIR_PREFIX'"
 source "$FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh"
 pushd "$COPY_TARGET_TOP"
-mkdir -p "${hostname}"
-pushd "${hostname}"
+mkdir -p "${remote_hostname}"
+pushd "${remote_hostname}"
 cp_outfile="$(mktemp /tmp/archie_grabber_copying.XXXXXX)"
-netcp ${hostname}:${ARCHIVE_DIR_PREFIX}* . &> "$cp_outfile"
+netcp ${remote_hostname}:${ARCHIVE_DIR_PREFIX}* . &> "$cp_outfile"
 retval=$?
 if [ $retval -ne 0 ]; then
-  cat "$cp_outfile"
+#currently not being noisy here...
+#  cat "$cp_outfile"
+  echo "Did not find any archives on \"$remote_hostname\"."
 fi
 rm "$cp_outfile"
 popd
@@ -67,9 +69,9 @@ mv $ARCHIVE_DIR_PREFIX* $DATA_GRAVE
 export LOCAL_CLEANER_COMMAND="$(mktemp "$TMP/post_copy_local_cleaner.sh.XXXXXX")"
 echo '#!/usr/bin/env bash
 # the last step is to clean up anything for this transfer that we want to dump.
-hostname="$1"; shift
+remote_hostname="$1"; shift
 ARCHIVE_DIR_PREFIX="'$ARCHIVE_DIR_PREFIX'"
-echo "no steps for cleanup yet..."
+echo "no current steps needed for cleanup on \"$remote_hostname\"."
 ' > $LOCAL_CLEANER_COMMAND
 
 #s
