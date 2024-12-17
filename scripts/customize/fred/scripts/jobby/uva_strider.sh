@@ -5,12 +5,13 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
+#REMOVE, now elsewhere
 # takes a triplet of script names and runs them on local and remote hosts...
 # first the initialization operation is run locally, then the actual remote
 # operation is invoked (remotely), then the clean-up operation is run locally.
 # the initialization and clean-up operations are expected to take a hostname,
 # and they will each be run for each remote host.
-function instigate_remote_calls()
+function OLD_instigate_remote_calls()
 {
   local init_op="$1"; shift
   local remote_op="$1"; shift
@@ -62,9 +63,12 @@ init_op="$1"; shift
 remote_op="$1"; shift
 cleanup_op="$1"; shift
 
+#hmmm: fix the docs here.  basename of app, e.g.
 if [ -z "$init_op" -o -z "$remote_op" -o -z "$cleanup_op" ]; then
   echo "$0: runs an action on all of our ITS machines.
+
 This script needs three parameters:
+
 1) The initialization script, which will run locally before each host action.
 This script must take at least a single parameter, which is the hostname,
 although it does not need to do anything with that if it's not useful for
@@ -85,19 +89,19 @@ fi
 
 domain="its.virginia.edu"
 hostlist="idpprod01 idpprod02 idpprod03 idpprod04 idpprod05 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 hostlist="idpdev01 idpdev02 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 hostlist="idptest01 idptest02 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 hostlist="idpsistest01 idpsistest02 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 hostlist="test-shibboleth-sp02 "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 hostlist="tower "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 ################
 
@@ -105,7 +109,7 @@ instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlis
 
 domain="storage.virginia.edu"
 hostlist="admin03 admin-hsz02-s admin-lab nasman02-s "
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 ################
 
