@@ -85,7 +85,7 @@ fi
 
 ################
 
-# these hosts are all in the ITS domain...
+# these hosts are all in the "its" domain...
 
 domain="its.virginia.edu"
 hostlist="idpprod01 idpprod02 idpprod03 idpprod04 idpprod05 "
@@ -105,7 +105,7 @@ remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 ################
 
-# these hosts are in the storage domain...
+# these hosts are in the "storage" domain...
 
 domain="storage.virginia.edu"
 hostlist="admin03 admin-hsz02-s admin-lab nasman02-s "
