@@ -19,7 +19,7 @@ fi
 
 pushd "$dir" &>/dev/null
 exit_on_error "changing to directory: $dir"
-tempfile=$(generate_rev_ctrl_filelist)
+tempfile="$(generate_rev_ctrl_filelist)"
 popd &>/dev/null
 
 perform_revctrl_action_on_file "$tempfile" do_revctrl_diff

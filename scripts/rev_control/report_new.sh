@@ -19,7 +19,7 @@ fi
 
 pushd "$dir" &>/dev/null
 exit_on_error "changing directory to: $dir"
-tempfile=$(generate_rev_ctrl_filelist)
+tempfile="$(generate_rev_ctrl_filelist)"
 exit_on_error "generating revision control file list"
 popd &>/dev/null
 
