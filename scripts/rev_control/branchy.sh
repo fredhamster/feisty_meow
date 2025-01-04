@@ -32,7 +32,7 @@ popd &>/dev/null
 perform_revctrl_action_on_file "$tempfile" show_active_branch
 exit_on_error "performing revision control action show_active_branch on: $tempfile"
 
-rm "$tempfile"
+#rm "$tempfile"
 
 ##############
 

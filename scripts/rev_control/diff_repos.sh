@@ -25,7 +25,7 @@ popd &>/dev/null
 perform_revctrl_action_on_file "$tempfile" do_revctrl_diff
 exit_on_error "performing revision control action do_revctrl_diff on: $tempfile"
 
-rm "$tempfile"
+#rm "$tempfile"
 
 ##############
 

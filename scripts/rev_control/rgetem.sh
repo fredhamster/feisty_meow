@@ -25,7 +25,7 @@ popd &>/dev/null
 perform_revctrl_action_on_file "$tempfile" do_revctrl_simple_update
 exit_on_error "running revision control update"
 
-rm "$tempfile"
+#rm "$tempfile"
 
 restore_terminal_title
 
