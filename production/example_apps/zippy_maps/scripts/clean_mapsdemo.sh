@@ -18,11 +18,11 @@ rpuffer . &>/dev/null
 if [ $? -ne 0 ]; then
   # it seems our old files are still conflicting this.
   if [ -f config/config_google.php ]; then
-    \rm -f config/config_google.php
+    rm -f config/config_google.php
     exit_on_error "removing old config for google"
   fi
   if [ -f config/app.php ]; then
-    \rm -f config/app.php
+    rm -f config/app.php
     exit_on_error "removing old config for app"
   fi
 

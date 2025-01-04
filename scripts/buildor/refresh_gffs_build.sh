@@ -9,7 +9,7 @@ bash $GFFS_TOOLKIT_ROOT/library/zap_genesis_javas.sh
 export GFFS_LOGS="$HOME/.GenesisII"
 
 echo cleaning out the logs directory...
-\rm -f "$GFFS_LOGS"/*log*
+rm -f "$GFFS_LOGS"/*log*
 
 echo making a simple starting log file for container...
 if [ ! -d "$GFFS_LOGS" ]; then

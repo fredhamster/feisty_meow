@@ -42,8 +42,8 @@ if [ ! -d "$FEISTY_MEOW_APEX" ]; then
   # wipe out the offending variable(s).
   unset FEISTY_MEOW_SCRIPTS FEISTY_MEOW_APEX
   # clean out any unfortunate wrongness that may exist in our generated areas.
-  if [ -d "$FEISTY_MEOW_LOADING_DOCK" ]; then \rm -rf "$FEISTY_MEOW_LOADING_DOCK"; fi
-  if [ -d "$FEISTY_MEOW_GENERATED_STORE" ]; then \rm -rf "$FEISTY_MEOW_GENERATED_STORE"; fi
+  if [ -d "$FEISTY_MEOW_LOADING_DOCK" ]; then rm -rf "$FEISTY_MEOW_LOADING_DOCK"; fi
+  if [ -d "$FEISTY_MEOW_GENERATED_STORE" ]; then rm -rf "$FEISTY_MEOW_GENERATED_STORE"; fi
   # also wipe any values from the variables pointing at generated stuff.
   unset FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_GENERATED_STORE
   echo "

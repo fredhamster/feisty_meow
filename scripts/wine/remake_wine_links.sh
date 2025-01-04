@@ -13,7 +13,7 @@ if [ ! -L "My Documents" -o ! -L "Desktop" ]; then
   exit 1
 fi
 
-\rm "Desktop" "My Documents" "My Pictures" "My Videos" "My Music"
+rm "Desktop" "My Documents" "My Pictures" "My Videos" "My Music"
 
 if [ ! -d ~/linx/wine_goods ]; then
   mkdir ~/linx/wine_goods

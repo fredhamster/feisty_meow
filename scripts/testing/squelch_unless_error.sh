@@ -30,7 +30,7 @@ if [ $retval != 0 ]; then
 fi
 
 # clean up.
-\rm "$newout" "$newerr"
+rm "$newout" "$newerr"
 
 # pass along the error code we saw, whether success or failure, so that this command has same
 # exit result as the original would have.

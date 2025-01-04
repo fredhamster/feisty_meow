@@ -405,7 +405,7 @@ function composer_repuff()
       echo "** FAILED: Database migrations for avcore.  Check log file in: $logfile"
       # we keep going, because some sites aren't ready for this yet.
     else
-      \rm "$logfile"
+      rm "$logfile"
       echo "Database for avcore migrated."
     fi
   fi
@@ -465,12 +465,12 @@ function create_site_links()
     # link 'public' to webroot.
     if [ -L public ]; then
       # public is a symlink.
-      \rm public
+      rm public
       exit_on_error "Removing public directory symlink"
     elif [ -d public ]; then
       # public is a folder with default files.
 #hmmm: is that safe?
-      \rm -rf public
+      rm -rf public
       exit_on_error "Removing public directory and contents"
     fi
 

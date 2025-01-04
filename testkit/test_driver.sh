@@ -44,7 +44,7 @@ fi
 ##############
 
 # clean up any conglomerated log file.
-\rm -f "$CONGLOMERATED_TESTKIT_OUTPUT"
+rm -f "$CONGLOMERATED_TESTKIT_OUTPUT"
 
 ##############
 

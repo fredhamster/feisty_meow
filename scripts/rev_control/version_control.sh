@@ -524,7 +524,7 @@ function generate_rev_ctrl_filelist()
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
   echo "$sortfile"
-  \rm "$tempfile"
+  rm "$tempfile"
 }
 
 # iterates across a list of directories contained in a file (first parameter).

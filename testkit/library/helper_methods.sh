@@ -45,7 +45,7 @@ function readable_date_string()
         local tmpfile="$(mktemp $TMP/aliasout.XXXXXX)"
         alias $varname | sed -e 's/.*=//' >$tmpfile
         echo "alias $varname=$(cat $tmpfile)"
-        \rm $tmpfile
+        rm $tmpfile
       elif [ -z "${!varname}" ]; then
         echo "$varname undefined"
       else
@@ -135,7 +135,7 @@ function run_any_command()
   cat "$my_output" >> "$CONGLOMERATED_TESTKIT_OUTPUT"
   echo "=======" >> "$CONGLOMERATED_TESTKIT_OUTPUT"
   # and now remove the tiny individual log file so we don't litter.
-  \rm -f "$my_output"
+  rm -f "$my_output"
   return $retval
 }
 

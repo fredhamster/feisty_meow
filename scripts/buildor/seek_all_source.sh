@@ -19,7 +19,7 @@ if [ -z "$SOURCES_FOUND_LIST" ]; then
   export SOURCES_FOUND_LIST="$(mktemp "$TMP/zz_temp_find_srcs.XXXXXX")"
 fi
 # clean up the file to start with.
-\rm $SOURCES_FOUND_LIST &>/dev/null
+rm $SOURCES_FOUND_LIST &>/dev/null
 
 for i in $find_src_parms; do
 #echo current dir is $i

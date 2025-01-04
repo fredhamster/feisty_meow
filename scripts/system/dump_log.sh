@@ -28,7 +28,7 @@ function assemble_log_file()
   done
 
   cat "$logdump"
-  \rm -f "$logdump"
+  rm -f "$logdump"
 }
 
 

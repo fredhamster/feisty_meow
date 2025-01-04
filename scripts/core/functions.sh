@@ -166,7 +166,7 @@ if [ -z "$skip_all" ]; then
         local tmpfile="$(mktemp $TMP/aliasout.XXXXXX)"
         alias $varname | sed -e 's/.*=//' >$tmpfile
         echo "alias $varname=$(cat $tmpfile)"
-        \rm $tmpfile
+        rm $tmpfile
       elif [ -z "${!varname}" ]; then
         echo "$varname undefined"
       else
@@ -632,7 +632,7 @@ we will skip recustomization, but these other customizations are available:
     pushd "$FEISTY_MEOW_LOADING_DOCK" &>/dev/null
     if [ -h custom ]; then
       # there's an existing link, so remove it.
-      \rm custom
+      rm custom
     fi
     # make sure we cleaned up the area before we re-link.
     if [ -h custom -o -d custom -o -f custom ]; then
@@ -975,7 +975,7 @@ return 0
 
     # make a temp file to write to before we move file into place in bind.
     local new_version="/tmp/$(basename ${filename}).bkup-${RANDOM}" 
-    \rm -f "$new_version"
+    rm -f "$new_version"
     exit_on_error "cleaning out new version of file from: $new_version"
 
     local line

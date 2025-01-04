@@ -36,6 +36,6 @@ while read input_text; do
   if [ $? -eq 0 ]; then echo ==== Found pattern in $input_text ====; fi
 done <"$TMPFILE"
 
-\rm -f "$TMPFILE"
+rm -f "$TMPFILE"
 
 

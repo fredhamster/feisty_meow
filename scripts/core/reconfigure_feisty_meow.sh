@@ -53,7 +53,7 @@ PERL5LIB=$PERLLIB
 #echo PERLLIB after modification is $PERLLIB
 
 # make toast out of generated files right away, but leave any custom scripts.
-\rm -f "$FEISTY_MEOW_LOADING_DOCK"/fmc_*
+rm -f "$FEISTY_MEOW_LOADING_DOCK"/fmc_*
 
 ## #no, old:
 ## if [ ! -d "$FEISTY_MEOW_LOADING_DOCK/custom" ]; then

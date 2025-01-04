@@ -22,7 +22,7 @@ if [ ${#dirs[@]} -eq 0 ]; then
   find $dir -mindepth 1 -maxdepth 1 -type d -exec echo "dirs+=(\"{}\");" ';' >$tempfile
   source "$tempfile"
 #echo dirs default to: ${dirs[@]}
-  \rm -f $tempfile
+  rm -f $tempfile
 fi
 
 # takes a directory name as an argument and sucks the directory
