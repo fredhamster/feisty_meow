@@ -5,6 +5,9 @@
 # logged historical file where we append our latest report.
 REPORT_FILE="$CLOUD_BASE/stats/overload_history.txt"
 
+# hierarchies that we look inside of:
+POWER_BRAIN_HIERARCHY="power_brain"
+
 #hmmm: check path validity?
 
 # given a path, this will find how many items are under it, ignoring svn and git files, plus
@@ -176,7 +179,7 @@ analyze_by_dir_patterns "jobby work tasks" $CLOUD_BASE/job*
 analyze_by_dir_patterns "trivialities and back burner items" $CLOUD_BASE/trivia* $CLOUD_BASE/backburn*
 
 # okay, fudge.  if there are game tasks, then count them too.  what are they, nothing?  not so.
-analyze_by_dir_patterns "play time and games" $CLOUD_BASE/*gaming* $CLOUD_BASE/*game* 
+analyze_by_dir_patterns "play time and games" $CLOUD_BASE/*gam* $CLOUD_BASE/$POWER_BRAIN_HIERARCHY/*gam*
 
 ####
 
