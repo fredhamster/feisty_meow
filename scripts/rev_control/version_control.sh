@@ -549,6 +549,7 @@ function perform_revctrl_action_on_file()
     pushd "$dirname" &>/dev/null
     echo -n "[$(pwd)]  "
     # pass the current directory plus the remaining parameters from function invocation.
+echo "about to get active with: '$action .'"
     $action . 
     local retval=$?
     if [ $retval -ne 0 ]; then
