@@ -955,6 +955,97 @@ return 0
     return 0
   }
 
+  # seek_writeable:
+  # examines the provided "folder" name to test whether it is a directory
+  # and is writable.  zero (success) is returned if the folder is found.
+  # if the folder is not found, and the second parameter passed is "up",
+  # then the folder is sought recursively in higher directory levels.
+  # if the directory is found anywhere below the root of the filesystem,
+  # then zero (success) is returned.
+  # in either case of the directory being found, the successful path location
+  # is emitted to stdout.  (note that this may emit a relative path, if the
+  # "folder" is a relative path.)
+  # if the directory is not found by any means, then a non-zero failure
+  # code is returned.
+  # if the "folder" is a slash-less string, then it is treated as a simple
+  # directory name to be sought in the current directory or above.  but if the
+  # folder has a full path with slashes, then the most basenamey directory
+  # component is considered the directory to locate.
+  function seek_writeable()
+  {
+#hmmm: ever any use to search downwards?  sure there is. ==> currently not supported, but should be.
+    local folder="$1"; shift
+    local recurse_up="$1"; shift
+
+    # handle a folder with no path elements by jamming current dir into it.
+    if [[ $string != *"/"* ]]; then
+      local curdir="$( \cd "$(\dirname ".")" && /bin/pwd )"
+#echo "curdir is '$curdir'"
+      folder="${curdir}/${folder}"
+#echo "folder is now '$folder'"
+    fi
+#hmmm what to do here?
+#if no slashes at all, do we need to do anything???
+#yes, because it will just say there is no dir here and exit!
+
+    # default for us is to not do any directory recursion...
+    local loop_up=""
+
+    # magical conversion to lower case in bash.
+    recurse_up="${recurse_up,,}"
+
+    # check if they actually wanted recursion.
+    if [ "$recurse_up" == "up" ]; then
+      # yes, they do want to loop upwards if the relevant revision control
+      # folder is not present right here.
+      loop_up=yup
+    fi
+
+#hmmm: recursion bit below maybe has some useful reusable code, should be its own func,
+
+    # pessimistic default assumes that we will not find it...
+    # (here, zero means false, so this is not a bash return value.)
+    local directory_present=0
+
+    local mod_folder="$folder"
+#echo "mod folder before loop is '$mod_folder'"
+
+    while [ ! -z "$mod_folder" ]; do
+
+      # check for existence and writeability of the folder.
+      if [ ! -d "$mod_folder" -o ! -w "$mod_folder" ]; then
+        # evidence suggests the desired folder really isn't here at this location.
+        directory_present=0
+#echo "mod folder does not exist at this level."
+      else
+        directory_present=1
+#echo "mod folder DOES exist at this level."
+      fi
+
+      # check if we should be looping at all; if we are not going recursive,
+      # then it's time to produce an exit value.
+      if [ -z "$loop_up" -o $directory_present -eq 1 ]; then
+#echo "exiting now since not looping or found dir"
+        # let them know where we found the file.
+        echo "$mod_folder"
+        # invert the sense of the directory presence to provide a bash return value.
+        return $(( ! directory_present ))
+      fi
+
+      local base="$(basename "$mod_folder")"
+      local parent="$(dirname "$mod_folder")"
+      local parents_parent="$(dirname "$parent")"
+
+      # reconstruct the path without the current unsuccessful parent directory.
+      # basically, if mom says no, ask grandma.
+      mod_folder="${parents_parent}/${base}"
+#echo "mod folder after reconstruction is '$mod_folder'"
+    done
+
+    # if we got out of the loop to here, then this is a lack of success.
+    return 1
+  }
+
   ##############
 
   # given a filename and a string to seek and a number of lines, then this

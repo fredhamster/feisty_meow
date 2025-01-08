@@ -52,7 +52,8 @@ fi
 
 ##############
 
-# checks the directory provided into the revision control system repository it belongs to.
+# does a revision control check-in for the directory provided.
+# this uses the currently configured repository as the target for storage.
 function do_revctrl_checkin()
 {
   local directory="$1"; shift
@@ -95,11 +96,14 @@ function do_revctrl_checkin()
         exit_on_error "svn checkin"
       fi
     fi
-  elif [ -d ".git" ]; then
-    if test_writeable ".git"; then
+  elif [ ! -z "$(seek_writeable ".git" "up")" ]; then
+#-d ".git" ]; then
+echo into git case.
+    topdir="$(seek_writeable ".git" "up")"
+    if [ ! -z "$topdir" ]; then
 
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
-      do_revctrl_careful_update "$(\pwd)"
+      do_revctrl_careful_update "$topdir"
 
       if [ -f "$NO_CHECKIN" ]; then
 #        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $directory"
