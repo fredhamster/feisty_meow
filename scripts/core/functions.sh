@@ -948,14 +948,14 @@ return 0
   }
 
   # makes sure that the provided "folder" is a directory and is writable.
-  function test_writeable()
+  function test_writable()
   {
     local folder="$1"; shift
     if [ ! -d "$folder" -o ! -w "$folder" ]; then return 1; fi
     return 0
   }
 
-  # seek_writeable:
+  # seek_writable:
   # examines the provided "folder" name to test whether it is a directory
   # and is writable.  zero (success) is returned if the folder is found.
   # if the folder is not found, and the second parameter passed is "up",
@@ -971,7 +971,7 @@ return 0
   # directory name to be sought in the current directory or above.  but if the
   # folder has a full path with slashes, then the most basenamey directory
   # component is considered the directory to locate.
-  function seek_writeable()
+  function seek_writable()
   {
 #hmmm: ever any use to search downwards?  sure there is. ==> currently not supported, but should be.
     local folder="$1"; shift

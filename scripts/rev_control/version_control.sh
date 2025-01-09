@@ -74,7 +74,7 @@ function do_revctrl_checkin()
 
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
-    if test_writeable "CVS"; then
+    if test_writable "CVS"; then
       do_revctrl_simple_update "$directory"
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f "$NO_CHECKIN" ]; then
@@ -87,7 +87,7 @@ function do_revctrl_checkin()
       fi
     fi
   elif [ -d ".svn" ]; then
-    if test_writeable ".svn"; then
+    if test_writable ".svn"; then
       do_revctrl_simple_update "$directory"
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f "$NO_CHECKIN" ]; then
@@ -99,10 +99,10 @@ function do_revctrl_checkin()
         exit_on_error "svn checkin"
       fi
     fi
-  elif [ ! -z "$(seek_writeable ".git" "up")" ]; then
+  elif [ ! -z "$(seek_writable ".git" "up")" ]; then
 #-d ".git" ]; then
 echo into git case.
-    topdir="$(seek_writeable ".git" "up")"
+    topdir="$(seek_writable ".git" "up")"
 echo "got topdir from seeking of '$topdir'"
     if [ ! -z "$topdir" ]; then
 
@@ -417,21 +417,21 @@ function do_revctrl_simple_update()
 
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
-    if test_writeable "CVS"; then
+    if test_writable "CVS"; then
       $blatt_report
       cvs update . | $TO_SPLITTER
       promote_pipe_return 0
       exit_on_error "cvs update"
     fi
   elif [ -d ".svn" ]; then
-    if test_writeable ".svn"; then
+    if test_writable ".svn"; then
       $blatt_report
       svn update . | $TO_SPLITTER
       promote_pipe_return 0
       exit_on_error "svn update"
     fi
   elif [ -d ".git" ]; then
-    if test_writeable ".git"; then
+    if test_writable ".git"; then
       $blatt_report
       git pull --tags 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       promote_pipe_return 0
