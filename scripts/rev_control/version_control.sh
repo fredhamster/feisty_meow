@@ -100,11 +100,12 @@ function do_revctrl_checkin()
       fi
     fi
   elif [ ! -z "$(seek_writable ".git" "up")" ]; then
-#-d ".git" ]; then
-echo into git case.
     topdir="$(seek_writable ".git" "up")"
 echo "got topdir from seeking of '$topdir'"
     if [ ! -z "$topdir" ]; then
+
+      # jump to the directory above the .git directory, to make git happy.
+      pushd "$topdir/.." &>/dev/null
 
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
       do_revctrl_careful_update "$topdir"
@@ -145,7 +146,10 @@ echo "got topdir from seeking of '$topdir'"
         git push --tags origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
         promote_pipe_return 0
         exit_on_error "git push"
+
       fi
+      # unwind the pushed directory again.
+      popd &>/dev/null
     fi
   else
     # nothing there.  it's not an error though.
@@ -520,7 +524,13 @@ function generate_rev_ctrl_filelist()
   echo -n >$tempfile
   local additional_filter
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+
+#hmmm: how to get the report of things ABOVE here, which we need.
+#  can we do an exec using the seek writable?
+
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+
+
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
 
