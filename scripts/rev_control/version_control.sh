@@ -15,13 +15,16 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 export MAX_DEPTH=5
 
 # the name of our "don't check this stuff in" file.
+#hmmm: name this better for the variable name, like FEISTY_MEOW_REV_CONTROL_NO_CHECKIN_FILENAME or something.
 export NO_CHECKIN=".no-checkin"
+#hmmm: move to a global repository of variables perhaps?
 
 # use our splitter tool for lengthy output if it's available.
 if [ ! -z "$(whichable splitter)" ]; then
   TO_SPLITTER="$(whichable splitter)"
-  # calculate the number of columsn in the terminal.
+  # calculate the number of columns in the terminal.
   cols=$(get_maxcols)
+#hmmm: can the get_maxcols throw any errors, such that it gives a bad value?
   TO_SPLITTER+=" --maxcol $(($cols - 1))"
 else
   TO_SPLITTER=cat
@@ -52,24 +55,24 @@ fi
 
 ##############
 
-# does a revision control check-in for the directory provided.
-# this uses the currently configured repository as the target for storage.
+# performs a generalized revision control check-in operation for the directory provided.
+# this uses the directory's currently configured repository and branch as the target for storage.
 function do_revctrl_checkin()
 {
   local directory="$1"; shift
-
-#hmmm: another piece of reusable code, to process the directory for printing.
+#hmmm: abstract reusable code below that processes the directory name for printing.
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
   if [ $nicedir == "." ]; then
     nicedir="$( \cd . && /bin/pwd )"
 #echo "calculated nicedir as '$nicedir'"
   fi
+
+  # prepare some reporting variables ahead of time.
   local blatt_report="echo -ne \nchecking in '$nicedir'...  "
   local tell_no_checkin="echo -ne \nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
 
   pushd "$directory" &>/dev/null
-#hmmm: overly elaborate sections below here, but we do want precise handling for git case.
   if [ -d "CVS" ]; then
     if test_writeable "CVS"; then
       do_revctrl_simple_update "$directory"
@@ -100,6 +103,7 @@ function do_revctrl_checkin()
 #-d ".git" ]; then
 echo into git case.
     topdir="$(seek_writeable ".git" "up")"
+echo "got topdir from seeking of '$topdir'"
     if [ ! -z "$topdir" ]; then
 
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
