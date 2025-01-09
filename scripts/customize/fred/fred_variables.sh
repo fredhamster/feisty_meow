@@ -16,13 +16,17 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
     export WEBBED_SITES=/var/www
   fi
 
+#hmmm: ebooks is not useful any more...
   # add a bunch of personal folders to the list for checkin & checkout.
-  REPOSITORY_LIST=" $CLOUD_BASE $FEISTY_MEOW_PERSONAL_HOME/ebooks $FEISTY_MEOW_PERSONAL_HOME/web ${REPOSITORY_LIST} "
+  REPOSITORY_LIST=" $CLOUD_BASE \
+    $FEISTY_MEOW_PERSONAL_HOME/ebooks \
+    $FEISTY_MEOW_PERSONAL_HOME/web \
+    ${REPOSITORY_LIST} "
 
   # adds our locally relevant archive folders into the list to be synched.
   MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus $HOME/brobdingnag"
   # our set of known source hierarchy folder names.
-  SOURCECODE_HIERARCHY_LIST="codebarn extra_brain interbrane"
+  SOURCECODE_HIERARCHY_LIST=" codebarn extra_brain interbrane hypermind "
 
   # point to our local certificate for ssh usage.
   export SVN_SSH="ssh -i $HOME/.ssh/others/id_dsa_sourceforge"
