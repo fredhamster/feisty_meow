@@ -515,6 +515,8 @@ function puff_out_list()
 
 # provides a list of absolute paths of revision control directories
 # that are located under the directory passed as the first parameter.
+# if this does not result in any directories being found, then a recursive
+# upwards search is done for git repos, which wants the .git directory.
 function generate_rev_ctrl_filelist()
 {
   local dir="$1"; shift
@@ -530,13 +532,18 @@ function generate_rev_ctrl_filelist()
 
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
 
-
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
 
   # see if they've warned us not to try checking in within vendor hierarchies.
   if [ ! -z "NO_CHECKIN_VENDOR" ]; then
     sed -i -e '/.*\/vendor\/.*/d' "$tempfile"
+  fi
+
+  # check if we got any matches.  if this is empty, we'll try our last ditch approach
+  # of searching above here for .git directories.
+  if [ ! -s "$tempfile" ]; then
+    seek_writable ".git" "up" >>$tempfile 2>/dev/null
   fi
 
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
