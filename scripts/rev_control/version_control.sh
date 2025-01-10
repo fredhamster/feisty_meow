@@ -101,7 +101,7 @@ function do_revctrl_checkin()
     fi
   elif [ ! -z "$(seek_writable ".git" "up")" ]; then
     topdir="$(seek_writable ".git" "up")"
-echo "got topdir from seeking of '$topdir'"
+#echo "got topdir from seeking of '$topdir'"
     if [ ! -z "$topdir" ]; then
 
       # jump to the directory above the .git directory, to make git happy.
@@ -570,7 +570,7 @@ function perform_revctrl_action_on_file()
     pushd "$dirname" &>/dev/null
     echo -n "[$(pwd)]  "
     # pass the current directory plus the remaining parameters from function invocation.
-echo "about to get active with: '$action .'"
+#echo "about to get active with: '$action .'"
     $action . 
     local retval=$?
     if [ $retval -ne 0 ]; then
