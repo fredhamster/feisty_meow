@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script looks for any files containing offensive language, but one must
 # fill out the list of inappropriate language to censor.  this list is stored

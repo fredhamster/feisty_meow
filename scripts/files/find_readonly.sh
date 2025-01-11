@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # locates read only files in the directories specified.
 # this is a much simpler and more efficient command than some i've seen

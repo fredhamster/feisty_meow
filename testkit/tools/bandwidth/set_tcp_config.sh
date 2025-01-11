@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script modifies the linux kernel for maximum tcp buffer size, which can
 # improve long-haul transfers over a wan.

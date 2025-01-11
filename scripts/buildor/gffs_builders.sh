@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
@@ -30,7 +30,7 @@ function build_gffs()
   echo "Build starting at: $(date)"
 
   # clean up some things.
-  \rm -rf unit-test-reports
+  rm -rf unit-test-reports
 
   # build the trunk.
   ant -Dbuild.targetArch=64 build

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # performs the inverse function of add_domain by deconfiguring a domain
 # in bind.  the domain needs to have been set up by add_domain, or this will

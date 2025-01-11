@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # compresses the git archive in the folder specified.
 
@@ -16,7 +16,7 @@ fi
 pushd "$prune_dir" &>/dev/null
 exit_on_error "changing to directory: $prune_dir"
 
-echo "cleaning git repo in directory $(pwd)"
+echo "cleaning git repo in directory '$prune_dir'"
 
 git fsck --full
 exit_on_error "git fsck"

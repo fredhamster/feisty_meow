@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # finds the same file name within a hierarchy, if possible.
 

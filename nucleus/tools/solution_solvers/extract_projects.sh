@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this is a simple script that finds the project files listed in a solution file.
 

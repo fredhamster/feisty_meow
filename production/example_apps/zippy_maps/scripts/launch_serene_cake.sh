@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 THIS_FOLDER="$( \cd "$(\dirname "$0")" && /bin/pwd )"
 pushd $THIS_FOLDER/..

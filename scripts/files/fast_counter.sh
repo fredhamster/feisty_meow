@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # an attempt to have a "fast" counter of the number of files in a folder, or folders, which will not stray into any snapshot directories present in the filesystem.
 

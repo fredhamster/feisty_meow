@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script connects to a remote machine and records the IP address of the
 # local machine there.  this enables the machine's owner to connect back to
 # the system even if the IP address floats around (changes).

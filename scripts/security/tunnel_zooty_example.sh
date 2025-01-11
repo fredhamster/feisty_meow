@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script makes a tunnel for fred's SMTP traffic.
 
 #hmmm: move this script to fred's custom stuff

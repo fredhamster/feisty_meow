@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 DA_DIR="$RUNTIME_PATH/binaries"
 

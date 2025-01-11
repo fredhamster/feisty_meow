@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this set of functions serve the main purpose of adding new domains or
 # subdomains to the bind9 DNS server on the current host.  it is currently

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ -z "$1" ]; then
   echo "Did not find a parameter to seek out and whack from the process list."
   exit 2

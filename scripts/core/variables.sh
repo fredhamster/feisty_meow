@@ -38,7 +38,18 @@ return 0
          echo "$1" | sed -e 's/\\/\//g' | sed -e 's/\([a-zA-Z]\):\/\(.*\)/\/cygdrive\/\1\/\2/'
   }
 
-
+  # a handy helper method that turns a potentially gross USER variable into
+  # a nice clean one (by removing email domains).
+  export SANITIZED_USER
+  function sanitized_username() {
+    if [ -z "$SANITIZED_USER" ]; then
+#old inefficient...      export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
+      export SANITIZED_USER="${USER//@*/}"
+    fi
+    echo -n "$SANITIZED_USER"
+  }
+  # call the method to ensure the variable gets loaded.
+  sanitized_username &> /dev/null
 
 ##############
 
@@ -64,6 +75,11 @@ if [ -z "$CORE_VARIABLES_LOADED" ]; then
   ##############
   
   # start with some simpler things.
+
+  # special protocol for return values--if we see this, it means we should still show
+  # the standard output and there was no actual error.  implemented in
+  # squelch_unless_error.
+  define_yeti_variable MAGICAL_FEISTY_MEOW_OKAY_RETURN_VALUE=242
   
 #hmmm: this needs to come from some configuration item.  especially for installs.
 define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
@@ -121,7 +137,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
 
   # set up our event logging file for any notable situation to be recorded in.
   if [ -z "$FEISTY_MEOW_EVENT_LOG" ]; then
-    define_yeti_variable FEISTY_MEOW_EVENT_LOG="$TMP/$USER-feisty_meow-events.log"
+    define_yeti_variable FEISTY_MEOW_EVENT_LOG="$TMP/$(sanitized_username)-feisty_meow-events.log"
   fi
 
   # set up the top-level for all build creations and logs and such.

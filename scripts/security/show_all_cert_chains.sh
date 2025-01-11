@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # displays every certificate in a PEM file that has a whole certificate chain.
 # this is surprisingly annoying to get anything to output, so we codified it.

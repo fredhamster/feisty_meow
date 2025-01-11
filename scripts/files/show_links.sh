@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ -z "$1" ]; then
   echo You must supply a file name to strip out just the links from...
   exit 2

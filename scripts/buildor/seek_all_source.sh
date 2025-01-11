@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script traverses the directories passed as its parameters and locates
 # any files that we consider to possibly be source code.
 # a new variable called "SOURCES_FOUND_LIST" will be declared and will point at
@@ -19,7 +19,7 @@ if [ -z "$SOURCES_FOUND_LIST" ]; then
   export SOURCES_FOUND_LIST="$(mktemp "$TMP/zz_temp_find_srcs.XXXXXX")"
 fi
 # clean up the file to start with.
-\rm $SOURCES_FOUND_LIST &>/dev/null
+rm $SOURCES_FOUND_LIST &>/dev/null
 
 for i in $find_src_parms; do
 #echo current dir is $i

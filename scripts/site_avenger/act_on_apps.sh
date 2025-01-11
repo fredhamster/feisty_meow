@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # run a command on all of the existing apps folders, but only if they appear to have site avenger projects in them.
 

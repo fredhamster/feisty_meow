@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # resolves a tree conflict by accepting the "working" version,
 # which effectively makes your current change the accepted one.

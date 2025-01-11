@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # copies the fallout 76 screenshots and images into our walrus metaverse hierarchy.
 

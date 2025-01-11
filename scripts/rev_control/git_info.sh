@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
  
 # author: Duane Johnson
 # email: duane.johnson@gmail.com

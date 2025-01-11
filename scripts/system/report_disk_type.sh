@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # reports whether a disk is spinning physical media or solid state.
 # if no drive is specified, then /dev/sda is the default.

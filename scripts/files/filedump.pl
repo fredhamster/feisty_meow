@@ -64,7 +64,8 @@ sub do_dump {
 
   $header_copy = $header;
   $shorter_name = $to_dump;
-  $shorter_name =~ s/^\.\///;
+  $shorter_name =~ s/^.*\/(.*)/\1/;
+#  $shorter_name =~ s/^\.\///;
   $shorter_name =~ s/\.txt$//;
   $shorter_name =~ s/_/ /g;
 

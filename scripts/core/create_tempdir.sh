@@ -16,11 +16,11 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 if [ ! -d "$TMP" ]; then
   mkdir -p $TMP
-  chown $USER $TMP
+  chown $(sanitized_username) $TMP
   if [ $? -ne 0 ]; then
     echo "failed to chown $TMP to user's ownership."
   fi
-  log_feisty_meow_event "created transient area \"$TMP\" for $USER on $(date_stringer)." 
+  log_feisty_meow_event "created transient area \"$TMP\" for $(sanitized_username) on $(date_stringer)." 
 fi
 
 # set other temporary variables to the same place as TMP.

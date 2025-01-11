@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # locates any #include declarations inside the files provided as parameters.
 # all the includes are turned into their bare file names and sent to standard

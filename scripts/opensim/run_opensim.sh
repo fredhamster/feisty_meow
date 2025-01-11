@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script starts up all the opensim processes (0.6.9 era) using the screen
 # utility.  then the processes can all be accessed when desired, rather than
 # needing to be started in 5 or so separate windows.

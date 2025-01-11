@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a special override for the mapsdemo site, which we want to put in as
 # a subdomain of the cakelampvm domain.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # snags my two email accounts' mail filters into a nice storage location.
 

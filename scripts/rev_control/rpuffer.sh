@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this "puffs out" the repositories that it finds.  what this means is that
 # any git repositories found will have all of their remote state updated (by
@@ -22,14 +22,14 @@ fi
 
 pushd "$dir" &>/dev/null
 exit_on_error "changing to directory: $dir"
-tempfile=$(generate_rev_ctrl_filelist)
+tempfile="$(generate_rev_ctrl_filelist)"
 exit_on_error "generating revision control file list"
 popd &>/dev/null
 
 perform_revctrl_action_on_file "$tempfile" do_revctrl_careful_update
 exit_on_error "puffing out repository at: $tempfile"
 
-rm "$tempfile"
+#rm "$tempfile"
 
 restore_terminal_title
 

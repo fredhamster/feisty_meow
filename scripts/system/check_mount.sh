@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # check_mount: tests a mount point to see if it is already mounted, and if
 # it is not, mounts it.
 if [ -z "$1" ]; then

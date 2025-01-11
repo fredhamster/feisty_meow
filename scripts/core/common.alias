@@ -83,7 +83,7 @@ define_yeti_alias rd='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
 define_yeti_alias ren='\mv -v -i'
 define_yeti_alias rm='perl $FEISTY_MEOW_SCRIPTS/files/safedel.pl'
 define_yeti_alias rmdir='perl $FEISTY_MEOW_SCRIPTS/files/zapdirs.pl'
-define_yeti_alias s='echo "##############"'
+define_yeti_alias s='sep 14 "#"'
 define_yeti_alias path='echo $PATH'
 define_yeti_alias whence=which
 

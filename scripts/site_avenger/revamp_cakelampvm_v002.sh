@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # fixes the cakelampvm permissions according to the way.
 

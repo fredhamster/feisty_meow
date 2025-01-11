@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # exeperm sets the permissions to an executable value, as for a directory of
 # binary files.  (rwxr-xr-x for both directories and files)
 

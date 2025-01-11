@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # travels down each subdirectory and builds using make.
 function make_subdirectories()

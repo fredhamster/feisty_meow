@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #list schmoover?
 #smoove_lists source target
 

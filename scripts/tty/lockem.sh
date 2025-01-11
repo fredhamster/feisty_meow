@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Can be used to lock up a terminal screen until the user enters the correct
 # password.  Pretty sturdy.  Store your password in the file "PASSWORD_FILE",
@@ -50,7 +50,7 @@ echo "$(date_stringer): successful login" >>$LOG_FILE
 echo "$(date_stringer): --- terminal unlocked" >>$LOG_FILE
 
 clear
-echo "hi $USER, your password has been accepted.  enjoy your computer."
+echo "hi $(sanitized_username), your password has been accepted.  enjoy your computer."
 echo
 
 

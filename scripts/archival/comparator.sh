@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # compares this machine's local archives against an exemplar set.
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Author: Chris Koeritz
 # Author: Kevin Wentworth
@@ -405,7 +405,7 @@ function composer_repuff()
       echo "** FAILED: Database migrations for avcore.  Check log file in: $logfile"
       # we keep going, because some sites aren't ready for this yet.
     else
-      \rm "$logfile"
+      rm "$logfile"
       echo "Database for avcore migrated."
     fi
   fi
@@ -465,12 +465,12 @@ function create_site_links()
     # link 'public' to webroot.
     if [ -L public ]; then
       # public is a symlink.
-      \rm public
+      rm public
       exit_on_error "Removing public directory symlink"
     elif [ -d public ]; then
       # public is a folder with default files.
 #hmmm: is that safe?
-      \rm -rf public
+      rm -rf public
       exit_on_error "Removing public directory and contents"
     fi
 
@@ -517,7 +517,7 @@ function fix_appdir_ownership()
   local combo="$appsdir/$dir"
 
   # go with the default user running the script.
-  user_name="$USER"
+  user_name="$(sanitized_username)"
   if [ ! -z "$user_name" -a "$user_name" != "root" ]; then
     echo "$(date_stringer): Chowning the app folder to be owned by: $user_name" >> "$SSM_LOG_FILE"
 #hmmm: have to hope for now for standard group named after user 

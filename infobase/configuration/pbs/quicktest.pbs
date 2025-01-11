@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #PBS -l nodes=1,mem=20m
 #PBS -M my-email@whereiwork.com
 

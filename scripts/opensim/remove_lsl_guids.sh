@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a handy script for fixing file names imported using second inventory.
 # the names have a hideous long guid as part of them by default.

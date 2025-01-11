@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 source "$FEISTY_MEOW_SCRIPTS/core/common.alias"
@@ -19,14 +19,22 @@ function apply_title_to_terminal()
     title="$(hostname)"
   fi
   
-  if [ "${TERM}" != "dumb" -a -z "$PBS_ENVIRONMENT" -a \
-        ! -z "$PS1" -a "${TERM}" != "linux" ]; then
-    echo -n -e "\033]0;${title}\007"
-  else
-    # not running interactively, so just echo the title.
-    sep
-    echo "${title}"
-    sep
+  # first check if we're in an interactive shell, according to bash voodoo.
+  if [[ $- == *i* ]]; then
+    if [ "${TERM}" != "dumb" \
+        -a -z "$PBS_ENVIRONMENT" \
+        -a ! -z "$PS1" \
+        -a "${TERM}" != "linux" \
+      ]; then
+      echo -n -e "\033]0;${title}\007"
+###  else
+###    # not running interactively, so just echo the title.
+#hmmm: oh hell no!  what were you thinking?  so non-interactive scripts get all sorts of terminal label goo injected into them?
+#      what a freaking nightmare.  of course this is not okay to do!!!
+###    sep
+###    echo "${title}"
+###    sep
+    fi
   fi
 }
 

@@ -1,9 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # these metrics are how bogged down we are in to-do type items.
 
 # logged historical file where we append our latest report.
 REPORT_FILE="$CLOUD_BASE/stats/overload_history.txt"
+
+# hierarchies that we look inside of:
+POWER_BRAIN_HIERARCHY="power_brain"
 
 #hmmm: check path validity?
 
@@ -137,10 +140,6 @@ analyze_hierarchy_and_report $CLOUD_BASE/branch_road "hearth and home notes (bra
 # unsorted files haven't been categorized yet.
 analyze_hierarchy_and_report $CLOUD_BASE/disordered "disordered and maybe deranged files"
 
-# we now consider the backlog of things to read to be a relevant fact.  this is going to hose
-# up our weight accounting considerably.
-analyze_hierarchy_and_report $CLOUD_BASE/reading "reading list (for a quiet afternoon)"
-
 # bluesky is our brainstorming and wunderthinking area for new things.
 analyze_hierarchy_and_report $CLOUD_BASE/blue_sky "blue sky is the limit ideas"
 
@@ -180,7 +179,7 @@ analyze_by_dir_patterns "jobby work tasks" $CLOUD_BASE/job*
 analyze_by_dir_patterns "trivialities and back burner items" $CLOUD_BASE/trivia* $CLOUD_BASE/backburn*
 
 # okay, fudge.  if there are game tasks, then count them too.  what are they, nothing?  not so.
-analyze_by_dir_patterns "play time and games" $CLOUD_BASE/*gaming* $CLOUD_BASE/*game* 
+analyze_by_dir_patterns "play time and games" $CLOUD_BASE/*gam* $CLOUD_BASE/$POWER_BRAIN_HIERARCHY/*gam*
 
 ####
 

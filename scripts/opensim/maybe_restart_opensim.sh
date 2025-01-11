@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this locates the main opensim process if possible.  if we cannot find it,
 # then the process is restarted.
 

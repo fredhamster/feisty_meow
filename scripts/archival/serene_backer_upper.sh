@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # backs up crucial directories on my server into the allotted backup area.
 #

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # cal: a nicer interface to the unix cal program.
 
 function our_date()

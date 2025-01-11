@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # these are helper functions for doing localized revision control.
 # this script should be sourced into other scripts that use it.
@@ -15,13 +15,16 @@ source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 export MAX_DEPTH=5
 
 # the name of our "don't check this stuff in" file.
+#hmmm: name this better for the variable name, like FEISTY_MEOW_REV_CONTROL_NO_CHECKIN_FILENAME or something.
 export NO_CHECKIN=".no-checkin"
+#hmmm: move to a global repository of variables perhaps?
 
 # use our splitter tool for lengthy output if it's available.
 if [ ! -z "$(whichable splitter)" ]; then
   TO_SPLITTER="$(whichable splitter)"
-  # calculate the number of columsn in the terminal.
+  # calculate the number of columns in the terminal.
   cols=$(get_maxcols)
+#hmmm: can the get_maxcols throw any errors, such that it gives a bad value?
   TO_SPLITTER+=" --maxcol $(($cols - 1))"
 else
   TO_SPLITTER=cat
@@ -34,7 +37,7 @@ fi
 # to get past this, TMP gets changed below to a hopefully generic and safe place.
 if [[ "$TMP" =~ .:.* ]]; then
   log_feisty_meow_event "making weirdo temporary directory for PCDOS-style path."
-  export TMP=/tmp/rev_control_$USER
+  export TMP=/tmp/rev_control_$(sanitized_username)
 fi
 if [ ! -d "$TMP" ]; then
   mkdir -p $TMP
@@ -52,25 +55,26 @@ fi
 
 ##############
 
-# checks the directory provided into the revision control system repository it belongs to.
+# performs a generalized revision control check-in operation for the directory provided.
+# this uses the directory's currently configured repository and branch as the target for storage.
 function do_revctrl_checkin()
 {
   local directory="$1"; shift
-
-#hmmm: another piece of reusable code, to process the directory for printing.
+#hmmm: abstract reusable code below that processes the directory name for printing.
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
   if [ $nicedir == "." ]; then
     nicedir="$( \cd . && /bin/pwd )"
 #echo "calculated nicedir as '$nicedir'"
   fi
+
+  # prepare some reporting variables ahead of time.
   local blatt_report="echo -ne \nchecking in '$nicedir'...  "
   local tell_no_checkin="echo -ne \nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
 
   pushd "$directory" &>/dev/null
-#hmmm: overly elaborate sections below here, but we do want precise handling for git case.
   if [ -d "CVS" ]; then
-    if test_writeable "CVS"; then
+    if test_writable "CVS"; then
       do_revctrl_simple_update "$directory"
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f "$NO_CHECKIN" ]; then
@@ -83,7 +87,7 @@ function do_revctrl_checkin()
       fi
     fi
   elif [ -d ".svn" ]; then
-    if test_writeable ".svn"; then
+    if test_writable ".svn"; then
       do_revctrl_simple_update "$directory"
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f "$NO_CHECKIN" ]; then
@@ -95,11 +99,16 @@ function do_revctrl_checkin()
         exit_on_error "svn checkin"
       fi
     fi
-  elif [ -d ".git" ]; then
-    if test_writeable ".git"; then
+  elif [ ! -z "$(seek_writable ".git" "up")" ]; then
+    topdir="$(seek_writable ".git" "up")"
+#echo "got topdir from seeking of '$topdir'"
+    if [ ! -z "$topdir" ]; then
+
+      # jump to the directory above the .git directory, to make git happy.
+      pushd "$topdir/.." &>/dev/null
 
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
-      do_revctrl_careful_update "$(\pwd)"
+      do_revctrl_careful_update "$topdir"
 
       if [ -f "$NO_CHECKIN" ]; then
 #        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $directory"
@@ -137,7 +146,10 @@ function do_revctrl_checkin()
         git push --tags origin "$(my_branch_name)" 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
         promote_pipe_return 0
         exit_on_error "git push"
+
       fi
+      # unwind the pushed directory again.
+      popd &>/dev/null
     fi
   else
     # nothing there.  it's not an error though.
@@ -409,21 +421,21 @@ function do_revctrl_simple_update()
 
   pushd "$directory" &>/dev/null
   if [ -d "CVS" ]; then
-    if test_writeable "CVS"; then
+    if test_writable "CVS"; then
       $blatt_report
       cvs update . | $TO_SPLITTER
       promote_pipe_return 0
       exit_on_error "cvs update"
     fi
   elif [ -d ".svn" ]; then
-    if test_writeable ".svn"; then
+    if test_writable ".svn"; then
       $blatt_report
       svn update . | $TO_SPLITTER
       promote_pipe_return 0
       exit_on_error "svn update"
     fi
   elif [ -d ".git" ]; then
-    if test_writeable ".git"; then
+    if test_writable ".git"; then
       $blatt_report
       git pull --tags 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
       promote_pipe_return 0
@@ -503,6 +515,8 @@ function puff_out_list()
 
 # provides a list of absolute paths of revision control directories
 # that are located under the directory passed as the first parameter.
+# if this does not result in any directories being found, then a recursive
+# upwards search is done for git repos, which wants the .git directory.
 function generate_rev_ctrl_filelist()
 {
   local dir="$1"; shift
@@ -512,7 +526,12 @@ function generate_rev_ctrl_filelist()
   echo -n >$tempfile
   local additional_filter
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+
+#hmmm: how to get the report of things ABOVE here, which we need.
+#  can we do an exec using the seek writable?
+
   find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
   popd &>/dev/null
 
@@ -521,10 +540,16 @@ function generate_rev_ctrl_filelist()
     sed -i -e '/.*\/vendor\/.*/d' "$tempfile"
   fi
 
+  # check if we got any matches.  if this is empty, we'll try our last ditch approach
+  # of searching above here for .git directories.
+  if [ ! -s "$tempfile" ]; then
+    seek_writable ".git" "up" >>$tempfile 2>/dev/null
+  fi
+
   local sortfile=$(mktemp /tmp/zz_checkin_sort.XXXXXX)
   sort <"$tempfile" >"$sortfile"
   echo "$sortfile"
-  \rm "$tempfile"
+  rm "$tempfile"
 }
 
 # iterates across a list of directories contained in a file (first parameter).
@@ -545,8 +570,14 @@ function perform_revctrl_action_on_file()
     pushd "$dirname" &>/dev/null
     echo -n "[$(pwd)]  "
     # pass the current directory plus the remaining parameters from function invocation.
+#echo "about to get active with: '$action .'"
     $action . 
-    exit_on_error "performing action $action on: $(pwd)"
+    local retval=$?
+    if [ $retval -ne 0 ]; then
+      rm "$tempfile"
+      (exit $retval)  # re-assert the return value as our exit value.
+      exit_on_error "performing action $action on: $(pwd)"
+    fi
     popd &>/dev/null
   done 3<"$tempfile"
 

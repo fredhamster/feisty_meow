@@ -42,8 +42,8 @@ if [ ! -d "$FEISTY_MEOW_APEX" ]; then
   # wipe out the offending variable(s).
   unset FEISTY_MEOW_SCRIPTS FEISTY_MEOW_APEX
   # clean out any unfortunate wrongness that may exist in our generated areas.
-  if [ -d "$FEISTY_MEOW_LOADING_DOCK" ]; then \rm -rf "$FEISTY_MEOW_LOADING_DOCK"; fi
-  if [ -d "$FEISTY_MEOW_GENERATED_STORE" ]; then \rm -rf "$FEISTY_MEOW_GENERATED_STORE"; fi
+  if [ -d "$FEISTY_MEOW_LOADING_DOCK" ]; then rm -rf "$FEISTY_MEOW_LOADING_DOCK"; fi
+  if [ -d "$FEISTY_MEOW_GENERATED_STORE" ]; then rm -rf "$FEISTY_MEOW_GENERATED_STORE"; fi
   # also wipe any values from the variables pointing at generated stuff.
   unset FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_GENERATED_STORE
   echo "
@@ -104,11 +104,6 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
   # set the directory tab completion to behave properly and not start escaping
   # the dollar signs in variable names.
   shopt -u progcomp
-  
-  # patch the user variable if we were launched by one of our cron jobs.
-  if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
-    export USER="$CRONUSER"
-  fi
 
   # use the xauth info if we were given one in the environment.
   # this allows root or other su'd identities to create windows with same
@@ -165,6 +160,16 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     # meow variables into the environment.  we actually want this to always run also;
     # it will decide what variables need to be set again.
     source "$FEISTY_MEOW_SCRIPTS/core/variables.sh"
+
+    # patch the user variable if we were launched by one of our cron jobs.
+    # first we set USER to not use the full email style version, if that's what already exists.
+    if [ ! -z "$USER" -a "$(echo "${USER/*@*/yeps}")" == "yeps" ]; then
+      USER="$(sanitized_username)"
+    fi
+    # then we check if the USER variable isn't set, and use CRONUSER from the cron templates, if defined.
+    if [ -z "$USER" -a ! -z "$CRONUSER" ]; then
+      export USER="$CRONUSER"
+    fi
 
     ##############
 

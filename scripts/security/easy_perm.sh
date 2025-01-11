@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # easyperm: traverses directory trees and sets the permissions to a completely
 # accessible value (rwxrwxrwx for directories and rw-rw-rw- for files).
 

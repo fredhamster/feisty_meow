@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # finds all the resource ids in resource headers (only those named the
 # canonical resource.h name) and discovers any duplicates.  the duplicates
 # are shown with their symbolic names and file locations.
 
-TEMP_RESOURCE_HEADERS=/tmp/resrc_headers_$USER.txt
+TEMP_RESOURCE_HEADERS=/tmp/resrc_headers_$(sanitized_username).txt
 
 sp='[ 	]'  # space and tab.
 
@@ -16,7 +16,7 @@ find "$BUILD_TOP" -type f -iname "resource.h" | \
 #hmmm: above ignores *anything* with app in the name.
 #  grep -v app_src >"$TEMP_RESOURCE_HEADERS"
 
-FULLDEFS=/tmp/full_definition_list_$USER.txt
+FULLDEFS=/tmp/full_definition_list_$(sanitized_username).txt
 # clean up prior versions.
 rm -f "$FULLDEFS"
 
@@ -57,7 +57,7 @@ done <"$FULLDEFS"
 
 echo done reading all definitions.
 
-JUST_IDS=/tmp/ids_list_$USER.txt
+JUST_IDS=/tmp/ids_list_$(sanitized_username).txt
 rm -f "$JUST_IDS"
 
 i=0
@@ -70,7 +70,7 @@ echo done accumulating list of integer ids.
 
 id_size=$(wc "$JUST_IDS")
 
-JUST_IDS_TEMP=/tmp/ids_list_temp_$USER.txt
+JUST_IDS_TEMP=/tmp/ids_list_temp_$(sanitized_username).txt
 
 sort "$JUST_IDS" | uniq >"$JUST_IDS_TEMP"
 id_temp_size=$(wc "$JUST_IDS_TEMP")

@@ -22,7 +22,6 @@
 #include <unit_test/unit_base.h>
 
 #include <stdio.h>
-//#include <string.h>
 
 using namespace application;
 using namespace basis;
@@ -52,7 +51,7 @@ int test_enum_adapaters::execute()
   string_array ips;
   bool did_it = stack.enumerate_adapters(ips);
   if (!did_it)
-    deadly_error(class_name(), func, "could not enumerate adapters");
+    continuable_error(class_name(), func, "could not enumerate adapters");
 
   for (int i = 0; i < ips.length(); i++) {
     log(a_sprintf("%d: ", i+1) + ips[i]);

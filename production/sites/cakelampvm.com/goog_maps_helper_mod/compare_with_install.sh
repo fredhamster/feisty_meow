@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 
 if [ ! -d "$HOME/apps/mapsdemo/avenger5" ]; then

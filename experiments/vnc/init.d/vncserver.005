@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 PATH="$PATH:/usr/bin/"
 export USER="fredhuff"
 # fredhuff is a different user than my normal user who is logged in on

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # sample the first argument to make sure it's not empty.
 # we can't know if the command is really valid or not, but it at least

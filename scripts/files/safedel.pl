@@ -26,44 +26,11 @@ require "zap_the_dir.pl";
 
 use Env qw(TMP OS DEBUG_FEISTY_MEOW);
 
-#hmmm: need a usage statement.
-
-if ($#ARGV < 0) {
-  die "Too few arguments to command.";
-}
-
-$DEV_NULL = "> /dev/null 2> /dev/null";
-if ($OS eq "UNIX") {
-  $FIND_ENDING = "';'";
-  $zip = "zip -y ";
-} elsif ( ($OS eq "DOS") || ($OS eq "Windows_95")
-    || ($OS eq "Windows_98") || ($OS eq "Windows_NT") ) {
-  $FIND_ENDING = "';'";
-  $zip = "zip ";
-} else {
-  die "The Operating System variable (OS) is not set.\n";
-}
-
-# set the filename used for numbering.
-local($NUMBER_FILE) = "$TMP/aa_safedel.num";
-
-# Retrieve the current deleted file number.
-$number = &get_number($NUMBER_FILE);
-
-# Skip to the next one to ensure we're the only ones that ever have this one.
-&next_number($NUMBER_FILE);
-
-# Chomp on all the files specified.
-&safedel(@ARGV);
-
-exit 0;
-
-# The safedel procedure does most of the work.
-
+# the safedel procedure does most of the work.
 sub safedel {
   # get the list of files and directories to whack.
-  local(@to_delete) = &glob_list(@_);
-#hmmm: make this into a debug option. 
+  local(@save_original_delete_list) = @_;
+  local(@to_delete) = &glob_list(@save_original_delete_list);
 #print "list of whackees: @to_delete\n";
 
   # we store the deleted files in a directory under the temporary directory.
@@ -152,7 +119,47 @@ sub safedel {
 #      this is especially tiresome when our own scripts cause safedel to be invoked,
 #      since then they are automatically noisy and blathery.
 #hmmm: make this into a debug option. 
-#    print "No files were deleted.\n";
+#hmmm: revising this opinion.  the user really does need to know if the action they specified 
+#      causes zero changes, like no files matched.  the hell with extra noise, we need this
+#      feedback for the user.  just need to also figure out where we're actually trying to
+#      delete non-existent files in scripts?  or whatever the noise complaint is based on.
+
+    $complaint_basis = join('", "', @save_original_delete_list), "\n";
+    print "No files found to delete for: \"$complaint_basis\"\n";
   }
 }
+
+
+
+#hmmm: need a usage statement.
+
+if ($#ARGV < 0) {
+  die "Too few arguments to command.";
+}
+
+$DEV_NULL = "> /dev/null 2> /dev/null";
+if ($OS eq "UNIX") {
+  $FIND_ENDING = "';'";
+  $zip = "zip -y ";
+} elsif ( ($OS eq "DOS") || ($OS eq "Windows_95")
+    || ($OS eq "Windows_98") || ($OS eq "Windows_NT") ) {
+  $FIND_ENDING = "';'";
+  $zip = "zip ";
+} else {
+  die "The Operating System variable (OS) is not set.\n";
+}
+
+# set the filename used for numbering.
+local($NUMBER_FILE) = "$TMP/aa_safedel.num";
+
+# Retrieve the current deleted file number.
+$number = &get_number($NUMBER_FILE);
+
+# Skip to the next one to ensure we're the only ones that ever have this one.
+&next_number($NUMBER_FILE);
+
+# Chomp on all the files specified.
+&safedel(@ARGV);
+
+exit 0;
 

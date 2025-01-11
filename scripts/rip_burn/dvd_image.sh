@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # makes a playable dvd movie disc image from a folder.
 # the folder has to contain a ripped and decrypted DVD.

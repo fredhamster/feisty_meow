@@ -6,6 +6,7 @@
 
 for drivename in \
   barkuptree \
+  bartbutt \
   bittybarky \
   buffalonious \
   catfurnose \
@@ -14,6 +15,7 @@ for drivename in \
   flabtastic \
   fredmusicprime \
   slimpickenz \
+  slocums \
   soapbox \
   swirler \
 ; do

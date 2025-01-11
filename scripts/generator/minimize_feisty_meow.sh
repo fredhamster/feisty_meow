@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # cleans up the generated files that most people don't use.
 # this includes some static libraries and all of the tests, as well as
@@ -11,15 +11,15 @@ echo "Cleaning up feisty meow generated files..."
 
 pushd $FEISTY_MEOW_GENERATED_STORE
 
-\rm -rf logs clam_tmp temporaries/*
+rm -rf logs clam_tmp temporaries/*
 
 pushd runtime
 
-\rm -rf install/*
+rm -rf install/*
 
 pushd binaries
 
-\rm -rf *.a *.library test_*
+rm -rf *.a *.library test_*
 
 popd
 popd

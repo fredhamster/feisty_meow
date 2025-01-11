@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ $# -lt 1 ]; then
   echo "$(basename $0) usage: the first parameter should be an"
   echo "LDIF file that this script will extract email addresses from."

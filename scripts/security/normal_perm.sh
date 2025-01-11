@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # normal_perm: traverses directory trees and sets the permissions to a
 # standard accessibility value.  for fred, this is rwxr-xr-x for directories
 # and rw-r--r-- for files.

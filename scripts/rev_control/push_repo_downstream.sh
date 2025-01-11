@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script works on a specialized type of git checkout that has been configured
 # to push to a "downstream" repository, while still pulling from its normal origin.
@@ -47,13 +47,13 @@ fi
 
 pushd "$dir" &>/dev/null
 exit_on_error "changing to directory: $dir"
-tempfile=$(generate_rev_ctrl_filelist)
+tempfile="$(generate_rev_ctrl_filelist)"
 exit_on_error "generating revision control file list"
 
 perform_revctrl_action_on_file "$tempfile" do_revctrl_careful_update
 exit_on_error "doing a careful update on: $tempfile"
 
-rm "$tempfile"
+#rm "$tempfile"
 
 # seems to be needed to cause a merge to be resolved.
 git pull downstream main

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # play the sound files specified.
 
@@ -29,6 +29,9 @@ elif [ ! -z "$(psfind esd)" ]; then
 elif [ ! -z "$(psfind pulseaudio)" ]; then
 #echo we see pulse running...
   BASIC_PLAY_CMD="padsp aplay"
+elif [ ! -z "$(psfind pipewire)" ]; then
+#echo we see pipewire running...
+  BASIC_PLAY_CMD="aplay"
 elif [ ! -z "$(whichable pw-cat)" ]; then
   BASIC_PLAY_CMD="pw-cat -p"
 else

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ ! -d $RUNTIME_PATH/install ]; then mkdir $RUNTIME_PATH/install; fi
 

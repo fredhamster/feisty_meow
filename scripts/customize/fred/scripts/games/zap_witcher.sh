@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # windows compatible process killer for any stray processes started as
 # "witcher" something.

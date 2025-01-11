@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script starts up the opensim process for osgrid (0.6.9 era) using the
 # screen utility.  note that this will only be useful for an osgrid-attached
 # sim server.

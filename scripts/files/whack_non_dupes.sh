@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # whacks the files in the current directory which are NOT duplicates of the
 # files in the directory passed as a parameter.

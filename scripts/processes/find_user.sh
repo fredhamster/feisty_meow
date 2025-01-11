@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if test $# -lt 1; then
   echo $(basename $0): requires a user id for which to search.;
   \exit 1;

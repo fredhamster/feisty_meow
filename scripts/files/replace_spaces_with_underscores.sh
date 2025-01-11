@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # takes names given to it and replaces any spaces or other gnarly characters with underscores.
 

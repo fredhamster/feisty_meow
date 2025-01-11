@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # branchy: lists the branches active on all of the paths provided on the command line.
 # if no directory is specified, this defaults to operating on the current directory.
@@ -26,13 +26,13 @@ fi
 
 pushd "$dir" &>/dev/null
 exit_on_error "changing to directory: $dir"
-tempfile=$(generate_rev_ctrl_filelist)
+tempfile="$(generate_rev_ctrl_filelist)"
 popd &>/dev/null
 
 perform_revctrl_action_on_file "$tempfile" show_active_branch
 exit_on_error "performing revision control action show_active_branch on: $tempfile"
 
-rm "$tempfile"
+#rm "$tempfile"
 
 ##############
 

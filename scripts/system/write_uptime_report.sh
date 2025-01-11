@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # writes an uptime report to a file in the home directory which is named
 # after the current machine's hostname.
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"

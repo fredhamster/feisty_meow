@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #hmmm: NOT ported to testkit yet.
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # just tests whether a linux box can handle 64-bit operating systems.
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this shell file locates a terminal of the user whose
 # login id is specified as the first parameter.

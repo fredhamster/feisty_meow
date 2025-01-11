@@ -3,14 +3,19 @@
 # this is the feisty meow host preparation script.  it installs all the packages required to run and build feisty meow scripts and applications.
 
 # preconditions and dependencies--this script itself depends on:
-#   feisty meow
-#   bash
-#   anything else?
+#   1) feisty meow, which it is part of,
+#   2) bash
+#   ...anything else?
 
-# note that this list of items is never totally complete, since feisty meow keeps expanding and mutating.  for example, we now have a few
-# python scripts starting to sneak in.  there are assuredly lots of python packages we should be installing in here now, but we aren't yet.
-# this is a best effort script, to at least get feisty meow able to run its core scripts and to build.  although it's always appreciated
-# when things we rely on get installed too...
+####
+
+# note that this list of packages to install below is never totally complete,
+# since feisty meow keeps expanding and mutating.  for example, we now have a
+# few python scripts starting to sneak in.  there are assuredly lots of python
+# packages we should be installing in here now, but we aren't yet.  this is a
+# best effort script, to at least get feisty meow able to run its core scripts
+# and to build.  although it's always appreciated when things we rely on get
+# installed too...
 
 ####
 
@@ -20,7 +25,6 @@ THIS_TOOL_NAME="$(basename "$0")"
 
 # set up the feisty_meow dir.
 pushd "$CORE_SCRIPTS_DIR/../.." &>/dev/null
-#source "$CORE_SCRIPTS_DIR/functions.sh"
 echo originating folder is $ORIGINATING_FOLDER
 export FEISTY_MEOW_APEX="$(/bin/pwd)"
 echo feisty now apex is FEISTY_MEOW_APEX=$FEISTY_MEOW_APEX
@@ -40,7 +44,6 @@ export IS_DARWIN="$(echo $OSTYPE | grep -i darwin)"
 function exit_on_error() {
   if [ $? -ne 0 ]; then
     echo -e "\n\nan important action failed and this script will stop:\n\n$*\n\n*** Exiting script..."
-#    error_sound
     exit 1
   fi
 }
@@ -104,12 +107,12 @@ echo "installing for darwin"
   elif whichable apt; then
     # ubuntu or debian or other apt-based OSes...
 echo "installing for apt"
-    sudo apt install "${packages[@]}"
+    sudo apt -y install "${packages[@]}"
     return $?
   elif whichable yum; then  
     # rpm based with yum available...
 echo "installing for yum"
-    sudo yum install "${packages[@]}"
+    sudo yum -y install "${packages[@]}"
     return $?
   elif [ "$OS" == "Windows_NT" ]; then
     # windows-based with cygwin (or we'll fail out currently).
@@ -188,7 +191,26 @@ PAX=(noop)
 
 ####
 
-# first we install the low-level crucial bits for scripts to work...
+# first, make sure the OS itself is prepared for us.
+
+PHASE_MESSAGE="installing crucial OS packages"
+
+if [ "$opsystem_here" == "debianesque" ]; then
+  PAX=(gparted openssh-server )
+elif [ "$opsystem_here" == "redhatty" ]; then
+  PAX=(gparted openssh-server )
+elif [ "$opsystem_here" == "macos" ]; then
+  PAX=(openssh-server )
+elif [ "$opsystem_here" == "windoze" ]; then
+  PAX=(gparted openssh-server )
+fi
+
+install_system_package "${PAX[@]}"
+exit_on_error $PHASE_MESSAGE
+
+####
+
+# next, we install the low-level crucial bits for scripts to work...
 
 PHASE_MESSAGE="installing script modules"
 
@@ -233,14 +255,12 @@ PHASE_MESSAGE="installing additional helper packages"
 if [ "$opsystem_here" == "debianesque" ]; then
   PAX=(dos2unix genisoimage imagemagick iputils-ping ncal screen python3 python3-pip rdate vim-gtk3 xserver-xorg xorg-docs )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(dos2unix genisoimage ImageMagick screen python3 python3-pip rdate vim-gtk3 xorg-x11-server-Xwayland xorg-x11-docs )
-#genisoimage untested
+  PAX=(dos2unix genisoimage ImageMagick screen python3 python3-pip xorg-x11-server-Xwayland xorg-x11-docs )
+#not finding: rdate vim-gtk3 
 elif [ "$opsystem_here" == "macos" ]; then
   PAX=(dos2unix genisoimage imagemagick ncal screen python3 rdate xquartz vim-gtk3 linuxbrew/xorg/xorg-docs )
-#genisoimage untested
 elif [ "$opsystem_here" == "windoze" ]; then
   PAX=(dos2unix genisoimage imagemagick ncal screen python3 python3-pip rdate vim-gtk3 xserver-xorg xorg-docs )
-#genisoimage untested
 fi
 
 install_system_package "${PAX[@]}"
