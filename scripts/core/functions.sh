@@ -136,7 +136,7 @@ if [ -z "$skip_all" ]; then
 
   # attempts to find a script by the name passed in, as either a function or an alias.
   # if the alias points directly at a script file, then that will be printed to stdout.
-  function locate_script()
+  function locater()
   {
     local script_name="$1"; shift
     maybe_found="$(type "$script_name" | sed -n -r -e "s/^.*is aliased to .[^ ]+ (.*).$/\1/p")"
