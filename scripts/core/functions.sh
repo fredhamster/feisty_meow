@@ -134,6 +134,24 @@ if [ -z "$skip_all" ]; then
   
   ##############
 
+  # attempts to find a script by the name passed in, as either a function or an alias.
+  # if the alias points directly at a script file, then that will be printed to stdout.
+  function locate_script()
+  {
+    local script_name="$1"; shift
+    maybe_found="$(type "$script_name" | sed -n -r -e "s/^.*is aliased to .[^ ]+ (.*).$/\1/p")"
+    if [ -z "$maybe_found" ]; then
+      maybe_found="$(alias "$script_name" | sed -n -r -e "s/^.*is aliased to .[^ ]+ (.*).$/\1/p")"
+      if [ -z "$maybe_found" ]; then
+        # last ditch effort is to just show what "type" outputs.
+        maybe_found="$(type "$script_name")"
+      fi
+    fi
+    echo "$maybe_found"
+  }
+
+  ##############
+
   function fm_username()
   {
     # see if we can get the user name from the login name.  oddly this sometimes doesn't work.
