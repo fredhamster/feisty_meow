@@ -63,9 +63,9 @@ function do_revctrl_checkin()
 #hmmm: abstract reusable code below that processes the directory name for printing.
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
-  if [ $nicedir == "." ]; then
+  if [ -z "$nicedir" -o $nicedir == "."  ]; then
     nicedir="$( \cd . && /bin/pwd )"
-#echo "calculated nicedir as '$nicedir'"
+echo "calculated nicedir as '$nicedir'"
   fi
 
   # prepare some reporting variables ahead of time.
@@ -111,7 +111,6 @@ echo "got topdir from seeking of '$topdir'"
       do_revctrl_careful_update "$topdir"
 
       if [ -f "$NO_CHECKIN" ]; then
-#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $directory"
         $tell_no_checkin
       else
         $blatt_report
@@ -124,7 +123,6 @@ echo "got topdir from seeking of '$topdir'"
         # see if there are any changes in the local repository.
         if ! git diff-index --quiet HEAD --; then
           # tell git about all the files and get a check-in comment.
-#hmmm: begins to look like, you guessed it, a reusable bit that all commit actions could enjoy.
           git commit .
           retval=$?
           continue_on_error "git commit"
@@ -171,7 +169,7 @@ function do_revctrl_diff
   if [ -d ".svn" ]; then
     svn diff .
     exit_on_error "subversion diff"
-  elif [ -d ".git" ]; then
+  elif [ -d ".git" -o ! -z "$(seek_writable ".git" "up")" ]; then
     git --no-pager diff 
     exit_on_error "git diff"
   elif [ -d "CVS" ]; then
@@ -198,7 +196,7 @@ function do_revctrl_report_new
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
     exit_on_error "svn diff"
-  elif [ -d ".git" ]; then
+  elif [ -d ".git" -o ! -z "$(seek_writable ".git" "up")" ]; then
     git status -u
     exit_on_error "git status -u"
   fi
@@ -341,7 +339,7 @@ function do_revctrl_careful_update()
   pushd "$directory" &>/dev/null
   exit_on_error "changing to directory: $directory"
 
-  if [ ! -d ".git" ]; then
+  if [ -d ".git" -o ! -z "$(seek_writable ".git" "up")" ]; then
     # not a git project, so just boil this down to a getem action.
     popd &>/dev/null
     log_feisty_meow_event "skipping careful part and doing simple update on non-git repository: $directory"
@@ -352,11 +350,15 @@ function do_revctrl_careful_update()
 #hmmm: another piece of reusable code, to process the directory for printing.
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
-  if [ $nicedir == "." ]; then
+  if [ -z "$nicedir" -o "$nicedir" == "." ]; then
     nicedir=$(\pwd)
   fi
   local blatt_report="echo -e \ncarefully retrieving '$nicedir'..."
   $blatt_report
+
+echo "about to do git checkin magic, and current dir is '$(\pwd)'"
+echo "this is what i see in this directory..."
+ls -al
 
   local this_branch="$(my_branch_name)"
 
@@ -434,7 +436,7 @@ function do_revctrl_simple_update()
       promote_pipe_return 0
       exit_on_error "svn update"
     fi
-  elif [ -d ".git" ]; then
+  elif [ -d ".git" -o ! -z "$(seek_writable ".git" "up")" ]; then
     if test_writable ".git"; then
       $blatt_report
       git pull --tags 2>&1 | grep -v "X11 forwarding request failed" | $TO_SPLITTER
