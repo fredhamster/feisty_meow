@@ -99,9 +99,9 @@ function do_revctrl_checkin()
         exit_on_error "svn checkin"
       fi
     fi
-  elif [ ! -z "$(seek_writable ".git" "up")" ]; then
+  elif [ -d ".git" -o ! -z "$(seek_writable ".git" "up")" ]; then
     topdir="$(seek_writable ".git" "up")"
-#echo "got topdir from seeking of '$topdir'"
+echo "got topdir from seeking of '$topdir'"
     if [ ! -z "$topdir" ]; then
 
       # jump to the directory above the .git directory, to make git happy.
