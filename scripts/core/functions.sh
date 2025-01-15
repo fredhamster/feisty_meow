@@ -134,18 +134,30 @@ if [ -z "$skip_all" ]; then
   
   ##############
 
-  # attempts to find a script by the name passed in, as either a function or an alias.
+  # attempts to find the script file or at least the defition for a command
+  # given the command name.  if it's an alias or a 
   # if the alias points directly at a script file, then that will be printed to stdout.
-  function locate_script()
+  function locater()
   {
-    local script_name="$1"; shift
-    maybe_found="$(type "$script_name" | sed -n -r -e "s/^.*is aliased to .[^ ]+ (.*).$/\1/p")"
+    local command_name="$1"; shift
+    # first test checks whether it's a function or not.  we have a special
+    # check here, since this actually does generate some text using our
+    # alias finding pattern below, but it's gibberish.  better to rule this
+    # case out first.
+    maybe_found="$(type "$command_name" 2>/dev/null | grep -i "is a function")"
+    if [ ! -z "$maybe_found" ]; then
+      # we found a function, so just dump out its definition.
+      echo "$(type "$command_name")"
+      return
+    fi
+    # now try searching for a simple alias.
+    maybe_found="$(type "$command_name" 2>/dev/null | sed -n -r -e "s/^.*is aliased to .[^ ]+ (.*).$/\1/p")"
     if [ -z "$maybe_found" ]; then
-      maybe_found="$(alias "$script_name" | sed -n -r -e "s/^.*is aliased to .[^ ]+ (.*).$/\1/p")"
-      if [ -z "$maybe_found" ]; then
+#wtf?      maybe_found="$(alias "$command_name" 2>/dev/null | sed -n -r -e "s/^.*is aliased to .[^ ]+ (.*).$/\1/p")"
+#wtf2      if [ -z "$maybe_found" ]; then
         # last ditch effort is to just show what "type" outputs.
-        maybe_found="$(type "$script_name")"
-      fi
+        maybe_found="$(type "$command_name")"
+#wtf3      fi
     fi
     echo "$maybe_found"
   }
