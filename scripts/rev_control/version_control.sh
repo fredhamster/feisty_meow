@@ -100,8 +100,16 @@ echo "calculated nicedir as '$nicedir'"
       fi
     fi
   elif [ -d ".git" -o ! -z "$(seek_writable ".git" "up")" ]; then
-    topdir="$(seek_writable ".git" "up")"
+    # if the simple name exists, use that.  otherwise try to seek upwards for .git folder.
+    if [ -d ".git" ]; then
+      topdir=".git"
+    else
+      topdir="$(seek_writable ".git" "up")"
+    fi
 echo "got topdir from seeking of '$topdir'"
+if [ -z "$topdir" ]; then
+echo "hey, topdir is blank!!!! bad news."
+fi
     if [ ! -z "$topdir" ]; then
 
       # jump to the directory above the .git directory, to make git happy.
