@@ -300,7 +300,7 @@ function show_active_branch()
 #hmmm: if no args, assume current dir!?
 
   for directory in "$@"; do
-    if [ $directory == "." ]; then
+    if [ -z "$directory" -o $directory == "."  ]; then
       directory="$( \cd . && /bin/pwd )"
 #echo "calculated directory as '$directory'"
     fi
@@ -416,7 +416,7 @@ function do_revctrl_simple_update()
 #hmmm: another piece of reusable code, to process the directory for printing.
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$directory"
-  if [ $nicedir == "." ]; then
+  if [ -z "$nicedir" -o "$nicedir" == "." ]; then
     nicedir=$(\pwd)
   fi
   local blatt_report="echo -e \nretrieving '$nicedir'..."
