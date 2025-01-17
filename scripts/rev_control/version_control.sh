@@ -62,23 +62,25 @@ function do_revctrl_checkin()
   local directory="$1"; shift
 #hmmm: abstract reusable code below that processes the directory name for printing.
   # make a nice echoer since we want to use it inside conditions below.
-  local nicedir="$directory"
-  if [ -z "$nicedir" -o $nicedir == "."  ]; then
-    nicedir="$( \cd . && /bin/pwd )"
-echo "calculated nicedir as '$nicedir'"
-  fi
+  local nicedir="$( \cd "$directory" && /bin/pwd )"
+#hmmm: this bit should never fire now.
+##  local nicedir="$directory"
+#  if [ -z "$nicedir" -o $nicedir == "."  ]; then
+#    nicedir="$( \cd . && /bin/pwd )"
+#echo "re-calculated nicedir as '$nicedir'"
+#  fi
 
   # prepare some reporting variables ahead of time.
   local blatt_report="echo -ne \nchecking in '$nicedir'...  "
   local tell_no_checkin="echo -ne \nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
 
-  pushd "$directory" &>/dev/null
+  pushd "$nicedir" &>/dev/null
   if [ -d "CVS" ]; then
     if test_writable "CVS"; then
-      do_revctrl_simple_update "$directory"
+      do_revctrl_simple_update "$nicedir"
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f "$NO_CHECKIN" ]; then
-#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $directory"
+#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
         $tell_no_checkin
       else
         $blatt_report
@@ -88,10 +90,10 @@ echo "calculated nicedir as '$nicedir'"
     fi
   elif [ -d ".svn" ]; then
     if test_writable ".svn"; then
-      do_revctrl_simple_update "$directory"
+      do_revctrl_simple_update "$nicedir"
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f "$NO_CHECKIN" ]; then
-#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $directory"
+#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
         $tell_no_checkin
       else
         $blatt_report
@@ -103,7 +105,7 @@ echo "calculated nicedir as '$nicedir'"
     # if the simple name exists, use that.  otherwise try to seek upwards for .git folder.
     if [ -d ".git" ]; then
       directory="$( \cd . && /bin/pwd )"
-      topdir="$directory/.git"
+      topdir="$nicedir/.git"
     else
       topdir="$(seek_writable ".git" "up")"
     fi
@@ -163,7 +165,7 @@ echo "calculated nicedir as '$nicedir'"
     fi
   else
     # nothing there.  it's not an error though.
-    log_feisty_meow_event "no repository in $directory"
+    log_feisty_meow_event "no repository in $nicedir"
   fi
   popd &>/dev/null
 
@@ -175,7 +177,7 @@ function do_revctrl_diff
 {
   local directory="$1"; shift
 
-  pushd "$directory" &>/dev/null
+  pushd "$nicedir" &>/dev/null
 
   # only update if we see a repository living there.
   if [ -d ".svn" ]; then
@@ -198,12 +200,13 @@ function do_revctrl_diff
 function do_revctrl_report_new
 {
   local directory="$1"; shift
+  local nicedir="$( \cd "$directory" && /bin/pwd )"
 
-  pushd "$directory" &>/dev/null
+  pushd "$nicedir" &>/dev/null
 
   # only update if we see a repository living there.
   if [ -f "$NO_CHECKIN" ]; then
-    echo -ne "\nskipping reporting due to presence of $NO_CHECKIN sentinel file: $directory"
+    echo -ne "\nskipping reporting due to presence of $NO_CHECKIN sentinel file: $nicedir"
   elif [ -d ".svn" ]; then
     # this action so far only makes sense and is needed for svn.
     bash $FEISTY_MEOW_SCRIPTS/rev_control/svnapply.sh \? echo
@@ -312,13 +315,16 @@ function show_active_branch()
 #hmmm: if no args, assume current dir!?
 
   for directory in "$@"; do
-    if [ -z "$directory" -o $directory == "."  ]; then
-      directory="$( \cd . && /bin/pwd )"
-#echo "calculated directory as '$directory'"
-    fi
 
-    echo -n -e "$(basename $directory) => branch "
-    pushd "$directory" &>/dev/null
+    local nicedir="$( \cd "$directory" && /bin/pwd )"
+
+#    if [ -z "$nicedir" -o $nicedir == "."  ]; then
+#      directory="$( \cd . && /bin/pwd )"
+##echo "calculated directory as '$nicedir'"
+#    fi
+
+    echo -n -e "$(basename $nicedir) => branch "
+    pushd "$nicedir" &>/dev/null
 
 #hmmm: if git...
     git rev-parse --abbrev-ref HEAD
@@ -348,23 +354,24 @@ function show_branch_conditionally()
 function do_revctrl_careful_update()
 {
   local directory="$1"; shift
-  pushd "$directory" &>/dev/null
-  exit_on_error "changing to directory: $directory"
+  local nicedir="$( \cd "$directory" && /bin/pwd )"
+  pushd "$nicedir" &>/dev/null
+  exit_on_error "changing to directory: $nicedir"
 
   if [ -d ".git" -o ! -z "$(seek_writable ".git" "up")" ]; then
     # not a git project, so just boil this down to a getem action.
     popd &>/dev/null
-    log_feisty_meow_event "skipping careful part and doing simple update on non-git repository: $directory"
-    do_revctrl_simple_update "$directory"
+    log_feisty_meow_event "skipping careful part and doing simple update on non-git repository: $nicedir"
+    do_revctrl_simple_update "$nicedir"
     return $?
   fi
 
-#hmmm: another piece of reusable code, to process the directory for printing.
-  # make a nice echoer since we want to use it inside conditions below.
-  local nicedir="$directory"
-  if [ -z "$nicedir" -o "$nicedir" == "." ]; then
-    nicedir=$(\pwd)
-  fi
+###hmmm: another piece of reusable code, to process the directory for printing.
+##  # make a nice echoer since we want to use it inside conditions below.
+##  local nicedir="$directory"
+##  if [ -z "$nicedir" -o "$nicedir" == "." ]; then
+##    nicedir=$(\pwd)
+##  fi
   local blatt_report="echo -e \ncarefully retrieving '$nicedir'..."
   $blatt_report
 
@@ -427,13 +434,14 @@ function do_revctrl_simple_update()
 
 #hmmm: another piece of reusable code, to process the directory for printing.
   # make a nice echoer since we want to use it inside conditions below.
-  local nicedir="$directory"
-  if [ -z "$nicedir" -o "$nicedir" == "." ]; then
-    nicedir=$(\pwd)
-  fi
+  local nicedir="$( \cd "$directory" && /bin/pwd )"
+#  local nicedir="$directory"
+#  if [ -z "$nicedir" -o "$nicedir" == "." ]; then
+#    nicedir=$(\pwd)
+#  fi
   local blatt_report="echo -e \nretrieving '$nicedir'..."
 
-  pushd "$directory" &>/dev/null
+  pushd "$nicedir" &>/dev/null
   if [ -d "CVS" ]; then
     if test_writable "CVS"; then
       $blatt_report
@@ -457,7 +465,7 @@ function do_revctrl_simple_update()
     fi
   else
     # this is not an error necessarily; we'll just pretend they planned this.
-    log_feisty_meow_event "no repository in $directory"
+    log_feisty_meow_event "no repository in $nicedir"
   fi
   popd &>/dev/null
 
