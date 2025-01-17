@@ -102,21 +102,25 @@ echo "calculated nicedir as '$nicedir'"
   elif [ -d ".git" -o ! -z "$(seek_writable ".git" "up")" ]; then
     # if the simple name exists, use that.  otherwise try to seek upwards for .git folder.
     if [ -d ".git" ]; then
-      topdir=".git"
+      directory="$( \cd . && /bin/pwd )"
+      topdir="$directory/.git"
     else
       topdir="$(seek_writable ".git" "up")"
     fi
-echo "got topdir from seeking of '$topdir'"
-if [ -z "$topdir" ]; then
-echo "hey, topdir is blank!!!! bad news."
-fi
+#echo "got topdir from seeking of '$topdir'"
+#if [ -z "$topdir" ]; then
+#echo "hey, topdir is blank!!!! bad news."
+#fi
     if [ ! -z "$topdir" ]; then
 
-      # jump to the directory above the .git directory, to make git happy.
-      pushd "$topdir/.." &>/dev/null
+#      # jump to the directory above the .git directory, to make git happy.
+#echo "pushing this dir: $topdir/.."
+#      pushd "$topdir/.." &>/dev/null
+#newdir="$( \cd . && /bin/pwd )"
+#echo "now dir is set to $newdir"
 
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
-      do_revctrl_careful_update "$topdir"
+      do_revctrl_careful_update "$topdir/.."
 
       if [ -f "$NO_CHECKIN" ]; then
         $tell_no_checkin
