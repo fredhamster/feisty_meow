@@ -107,19 +107,18 @@ echo "calculated nicedir as '$nicedir'"
     else
       topdir="$(seek_writable ".git" "up")"
     fi
-echo "got topdir from seeking of '$topdir'"
-if [ -z "$topdir" ]; then
-echo "hey, topdir is blank!!!! bad news."
-fi
+#echo "got topdir from seeking of '$topdir'"
+#if [ -z "$topdir" ]; then
+#echo "hey, topdir is blank!!!! bad news."
+#fi
     if [ ! -z "$topdir" ]; then
 
-      # jump to the directory above the .git directory, to make git happy.
-echo "pushing this dir: $topdir/.."
-      pushd "$topdir/.." &>/dev/null
-newdir="$( \cd . && /bin/pwd )"
-echo "now dir is set to $newdir"
+#      # jump to the directory above the .git directory, to make git happy.
+#echo "pushing this dir: $topdir/.."
+#      pushd "$topdir/.." &>/dev/null
+#newdir="$( \cd . && /bin/pwd )"
+#echo "now dir is set to $newdir"
 
-#is this right now?
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
       do_revctrl_careful_update "$topdir/.."
 
