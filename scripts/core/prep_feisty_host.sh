@@ -196,13 +196,16 @@ PAX=(noop)
 PHASE_MESSAGE="installing crucial OS packages"
 
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(gparted openssh-server )
+  PAX=(bind9-dnsutils gparted openssh-server )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(gparted openssh-server )
+  PAX=(bind9-dnsutils gparted openssh-server )
+#untested: bind9-dnsutils
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(openssh-server )
+  PAX=(bind9-dnsutils openssh-server )
+#untested: bind9-dnsutils
 elif [ "$opsystem_here" == "windoze" ]; then
-  PAX=(gparted openssh-server )
+  PAX=(bind9-dnsutils gparted openssh-server )
+#untested: bind9-dnsutils
 fi
 
 install_system_package "${PAX[@]}"
