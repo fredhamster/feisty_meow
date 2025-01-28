@@ -63,12 +63,7 @@ function do_revctrl_checkin()
 #hmmm: abstract reusable code below that processes the directory name for printing.
   # make a nice echoer since we want to use it inside conditions below.
   local nicedir="$( \cd "$directory" && /bin/pwd )"
-#hmmm: this bit should never fire now.
-##  local nicedir="$directory"
-#  if [ -z "$nicedir" -o $nicedir == "."  ]; then
-#    nicedir="$( \cd . && /bin/pwd )"
-#echo "re-calculated nicedir as '$nicedir'"
-#  fi
+#echo "nicedir into revctrl checkin is '$nicedir'"
 
   # prepare some reporting variables ahead of time.
   local blatt_report="echo -ne \nchecking in '$nicedir'...  "
@@ -115,10 +110,10 @@ function do_revctrl_checkin()
 #fi
     if [ ! -z "$topdir" ]; then
 
-#      # jump to the directory above the .git directory, to make git happy.
+      # jump to the directory above the .git directory, to make git happy.
 #echo "pushing this dir: $topdir/.."
-#      pushd "$topdir/.." &>/dev/null
-#newdir="$( \cd . && /bin/pwd )"
+      pushd "$topdir/.." &>/dev/null
+#local newdir="$( \cd . && /bin/pwd )"
 #echo "now dir is set to $newdir"
 
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
@@ -128,6 +123,9 @@ function do_revctrl_checkin()
         $tell_no_checkin
       else
         $blatt_report
+
+#local newdir="$( \cd . && /bin/pwd )"
+#echo "dir before checking in is $topdir"
 
         # put all changed and new files in the commit.  not to everyone's liking.
         git add --all . | $TO_SPLITTER
