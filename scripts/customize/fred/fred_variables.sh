@@ -8,7 +8,10 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   export PATH=/usr/local/fred/bin:$PATH
 
   # The nuage directory is a cloud-like repository of our personal data, managed as a git repo.
-  export CLOUD_BASE=$FEISTY_MEOW_PERSONAL_HOME/nuage
+  define_yeti_variable CLOUD_BASE="$FEISTY_MEOW_PERSONAL_HOME/nuage"
+
+  # logged historical file where we append our latest report.
+  define_yeti_variable FRED_HAMSTER_OVERLOAD_REPORT_FILE="$CLOUD_BASE/stats/overload_history.txt"
 
   # The gruntose web site is expected to reside below, if it exists at all.
   export WEBBED_SITES=$HOME/web
