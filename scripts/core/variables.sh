@@ -334,6 +334,11 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   
   ##############
 
+  # logged historical file where we append our latest report.
+#  define_yeti_variable FRED_HAMSTER_OVERLOAD_REPORT_FILE="$CLOUD_BASE/stats/overload_history.txt"
+
+  ##############
+
   # set the SHUNIT_PATH so our shunit tests can find the codebase.
   define_yeti_variable SHUNIT_PATH="$FEISTY_MEOW_SCRIPTS/testkit/shunit"
   

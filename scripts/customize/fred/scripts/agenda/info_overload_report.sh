@@ -3,12 +3,20 @@
 # these metrics are how bogged down we are in to-do type items.
 
 # logged historical file where we append our latest report.
-REPORT_FILE="$CLOUD_BASE/stats/overload_history.txt"
+#external CLOUD_BASE FRED_HAMSTER_OVERLOAD_REPORT_FILE
+
+#hmmm:: this would be a nifty function, where you can give it a list of variable names to
+#  check and it bails if they are not set!  call it validate_external or something catchier.
+
+if [ -z "$CLOUD_BASE" -o -z "$FRED_HAMSTER_OVERLOAD_REPORT_FILE" ]; then
+  echo "$(basename $0): This script requires the two variables CLOUD_BASE and FRED_HAMSTER_OVERLOAD_REPORT_FILE."
+  exit 1
+fi
+
+#hmmm: check path validity?!
 
 # hierarchies that we look inside of:
 POWER_BRAIN_HIERARCHY="power_brain"
-
-#hmmm: check path validity?
 
 # given a path, this will find how many items are under it, ignoring svn and git files, plus
 # other patterns we happen to notice are not useful.
@@ -192,6 +200,6 @@ full_report+="\n\
 [gathered on $(date)]\n\n\
 ##############"
 
-echo -e "$full_report" | tee -a "$REPORT_FILE"
-echo -e "\n{report stored in $REPORT_FILE}"
+echo -e "$full_report" | tee -a "$FRED_HAMSTER_OVERLOAD_REPORT_FILE"
+echo -e "\n{report stored in $FRED_HAMSTER_OVERLOAD_REPORT_FILE}"
 

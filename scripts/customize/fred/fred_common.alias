@@ -43,6 +43,9 @@ done
 # updates local archive drive called craftsman.
 #define_yeti_alias update_craftsman='source "$FEISTY_MEOW_SCRIPTS/archival/general_updater.sh"; update_archive_drive "/media/fred/craftsman"'
 
+# simple alias to show the current overload status.
+define_yeti_alias overload='less $FRED_HAMSTER_OVERLOAD_REPORT_FILE'
+
 
 ####
 #ANCIENTS ZONE...  to archive or delete or something...
