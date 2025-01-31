@@ -12,9 +12,12 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 SPAM_SPOOL="/var/spool/sa-exim"
 # a temporary directory where we'll move all the spam for analysis.
 SPAM_HOLD="$HOME/spamcrud"
+
 # the white list needs to be a file of good email addresses that will
 # probably never send spam.  it should be formatted one address to a line.
 EMAIL_WHITE_LIST="$CLOUD_BASE/magic_cabinet/lists/email_addresses.txt"
+#hmmm: very personal and specific location for that file!!!
+
 # we'll save a report of the spam checks in the file below.
 REPORT_FILE="$HOME/spam_check_report_$(date_stringer).txt"
 
