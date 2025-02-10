@@ -13,8 +13,9 @@ function reapply_cool_permissions()
 #hmmm: check for non empty name.
   local homebase="/home/$cooluser"
 
-  # first build a list of dirs based on their location in /home/archives.
+  # first build a list of dirs based on their location in the ARCHIVE_TOP.
   local arch_builder="archons basement codebarn games imaginations musix pooling prewar_toaster stuffing toaster walrus"
+#hmmm: yeah, this is totally non-portable.  define this name specification process as a set of variables instead.
   local ARCHIVE_TOP=/home/archives
   local dirname
   local arch_addin
@@ -25,6 +26,8 @@ function reapply_cool_permissions()
 
   # now another round with similar setup, to ensure we get any directories
   # that actually live out in /z but not in /home/archives.
+#hmmm: bizarro.  makes the special case stuff even more unnecessary.
+#      if keeping this extra step, drive the process with a list instead!!!
   ARCHIVE_TOP=/z
   for dirname in $arch_builder; do
     arch_addin+="$ARCHIVE_TOP/$dirname "
@@ -46,6 +49,7 @@ function reapply_cool_permissions()
 #hmmm: consider adding feisty meow apex to the dirname list below.
 
   # iterate across the list of dirs we want cooluser to own and change their ownership.
+#hmmm: below are components of the uber list of things to fix perms on...
   for dirname in $homebase \
         $DEFAULT_FEISTYMEOW_ORG_DIR \
         /usr/local/${cooluser} \
@@ -54,37 +58,20 @@ function reapply_cool_permissions()
     if [ -d "$dirname" -o -L "$dirname" ]; then
       echo "revising ownership on '$dirname'"
       sudo chown -R ${cooluser}:${cooluser} "$dirname"
-      continue_on_error "chowning for ${cooluser}: $dirname"
+      continue_on_error "chowning '$dirname' for ${cooluser}"
+      sudo chmod g+rx,o+rx "$dirname"
+      continue_on_error "chmodding '$dirname' for ${cooluser}"
     fi
   done
-
-  # special case for archives directory in stuffing.
-  if [ -d /z/stuffing -o -L /z/stuffing ]; then
-    sudo chown ${cooluser}:${cooluser} /z/
-    continue_on_error "chowning /z for ${cooluser}"
-    sudo chmod g+rx,o+rx /z
-    continue_on_error "chmodding /z/ for ${cooluser}"
-    sudo chown ${cooluser}:${cooluser} /z/stuffing/
-    continue_on_error "chowning /z/stuffing for ${cooluser}"
-    sudo chmod g+rx,o-rwx /z/stuffing
-    continue_on_error "chmodding /z/stuffing for ${cooluser}"
-    pushd /z/stuffing &>/dev/null
-    if [ -d archives -o -L archives ]; then
-      sudo chown ${cooluser}:${cooluser} archives/
-      continue_on_error "chowning /z/stuffing/archives for ${cooluser}"
-      sudo chmod -R g+rwx archives
-      continue_on_error "chmodding /z/stuffing/archives for ${cooluser}"
-    fi
-    popd &>/dev/null
-  fi
 
   # make the log files readable by normal humans.
   sudo bash $FEISTY_MEOW_SCRIPTS/security/normal_perm.sh /var/log
   continue_on_error "setting normal perms on /var/log"
 }
 
-# this block should execute when the script is actually run, rather
-# than when it's just being sourced.
+####
+
+# this block executes when the script is actually run, rather than when it's just being sourced.
 
 # this runs the cool permission applier on the current user.
 if [[ $0 =~ .*cool_permissionator\.sh.* ]]; then
