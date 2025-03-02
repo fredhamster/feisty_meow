@@ -65,7 +65,7 @@ fi
 define_yeti_alias explorer=exp
 define_yeti_alias fix_ssh_perms='chmod 700 $HOME/.ssh ; chmod 600 $HOME/.ssh/*'
 define_yeti_alias get_feisty='rpuffer $FEISTY_MEOW_APEX; regenerate'
-define_yeti_alias get_nets='ifconfig -s | grep "^e" | awk "{ print \$1 }"'
+define_yeti_alias get_nets='ifconfig | sed -n -e "s/^\(e[a-z0-9]*\):.*$/\1/p" | awk "{ print \$1 }"'
 define_yeti_alias halt='sudo shutdown -h now'
 define_yeti_alias i=inventory
 define_yeti_alias l='perl $FEISTY_MEOW_SCRIPTS/files/summing_dir.pl'
