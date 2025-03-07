@@ -42,8 +42,16 @@ return 0
   # a nice clean one (by removing email domains).
   export SANITIZED_USER
   function sanitized_username() {
+    if [ -z "$USER" ]; then
+      # this isn't quite normal, but maybe we have a cron user variable.
+      USER=$CRONUSER
+      if [ -z "$USER" ]; then
+        # well, now we're just baffled at the lack of a user, but don't want
+        # a blank coming back from this function.
+        USER="unknown-user"
+      fi
+    fi
     if [ -z "$SANITIZED_USER" ]; then
-#old inefficient...      export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
       export SANITIZED_USER="${USER//@*/}"
     fi
     echo -n "$SANITIZED_USER"
