@@ -76,7 +76,10 @@ sub safedel {
 
     if (-d $file) {
       # ensure there aren't any read only files.
-      system("chmod -R u+rw '$file'");
+      system("chmod -R u+rw '$file' 2>/dev/null");
+        # we hide our errors from this, since we cannot do anything about
+	# them in certain scenarios, like when we really don't have
+	# permission on the directory.
       # store the directory in the trash storage.
       system("$zip -rm $archive_file '$file' $DEV_NULL");
         # zip up the files into the safekeeper directory.
@@ -90,7 +93,7 @@ sub safedel {
 #print "about to chmod file\n";
       # make the file writable by our user if possible (which resets any
       # prior permissions as long as we're the owner).
-      system("chmod u+rw '$file'");
+      system("chmod u+rw '$file' 2>/dev/null");
       # store the file in the trash storage.
 #print "about to run: system [$zip -m $archive_file '$file' $DEV_NULL]";
       system("$zip -m $archive_file '$file' $DEV_NULL");

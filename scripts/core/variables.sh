@@ -43,8 +43,17 @@ return 0
   export SANITIZED_USER
   function sanitized_username() {
     if [ -z "$SANITIZED_USER" ]; then
-#old inefficient...      export SANITIZED_USER="$(echo "$USER" | sed -e 's/@[a-zA-Z0-9_.]*//')"
-      export SANITIZED_USER="${USER//@*/}"
+      local ouruser="$USER"
+      if [ -z "$ouruser" ]; then
+        # this isn't quite normal, but maybe we have a cron user variable.
+        ouruser="$CRONUSER"
+        if [ -z "$ouruser" ]; then
+          # well, now we're just baffled at the lack of a user, but don't want
+          # a blank coming back from this function.
+          ouruser="unknown-user"
+        fi
+      fi
+      export SANITIZED_USER="${ouruser//@*/}"
     fi
     echo -n "$SANITIZED_USER"
   }
