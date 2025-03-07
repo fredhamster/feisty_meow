@@ -69,13 +69,14 @@ function do_revctrl_checkin()
   local blatt_report="echo -ne \nchecking in '$nicedir'...  "
   local tell_no_checkin="echo -ne \nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
 
+#echo "do_revctrl_checkin A"
   pushd "$nicedir" &>/dev/null
+#echo "do_revctrl_checkin B"
   if [ -d "CVS" ]; then
     if test_writable "CVS"; then
       do_revctrl_simple_update "$nicedir"
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f "$NO_CHECKIN" ]; then
-#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
         $tell_no_checkin
       else
         $blatt_report
@@ -88,7 +89,6 @@ function do_revctrl_checkin()
       do_revctrl_simple_update "$nicedir"
       exit_on_error "updating repository; this issue should be fixed before check-in."
       if [ -f "$NO_CHECKIN" ]; then
-#        echo -ne "\nskipping check-in due to presence of $NO_CHECKIN sentinel file: $nicedir"
         $tell_no_checkin
       else
         $blatt_report
@@ -97,6 +97,7 @@ function do_revctrl_checkin()
       fi
     fi
   elif [ -d ".git" -o ! -z "$(seek_writable ".git" "up")" ]; then
+#echo "do_revctrl_checkin C"
     # if the simple name exists, use that.  otherwise try to seek upwards for .git folder.
     if [ -d ".git" ]; then
       directory="$( \cd . && /bin/pwd )"
@@ -108,6 +109,7 @@ function do_revctrl_checkin()
 #if [ -z "$topdir" ]; then
 #echo "hey, topdir is blank!!!! bad news."
 #fi
+#echo "do_revctrl_checkin D"
     if [ ! -z "$topdir" ]; then
 
       # jump to the directory above the .git directory, to make git happy.
@@ -116,9 +118,11 @@ function do_revctrl_checkin()
 #local newdir="$( \cd . && /bin/pwd )"
 #echo "now dir is set to $newdir"
 
+#echo "do_revctrl_checkin E"
       # take steps to make sure the branch integrity is good and we're up to date against remote repos.
       do_revctrl_careful_update "$topdir/.."
 
+#echo "do_revctrl_checkin F"
       if [ -f "$NO_CHECKIN" ]; then
         $tell_no_checkin
       else
@@ -127,10 +131,14 @@ function do_revctrl_checkin()
 #local newdir="$( \cd . && /bin/pwd )"
 #echo "dir before checking in is $topdir"
 
+#echo "do_revctrl_checkin G"
+
         # put all changed and new files in the commit.  not to everyone's liking.
         git add --all . | $TO_SPLITTER
         promote_pipe_return 0
         exit_on_error "git add all new files"
+
+#echo "do_revctrl_checkin H"
 
         # see if there are any changes in the local repository.
         if ! git diff-index --quiet HEAD --; then
@@ -231,19 +239,25 @@ function checkin_list()
   local outer inner
 
   for outer in "${repository_list[@]}"; do
+#echo "outer is $outer"
     # check the repository first, since it might be an absolute path.
     if [[ $outer =~ /.* ]]; then
       # yep, this path is absolute.  just handle it directly.
+#echo "decided outer is absolute"
       if [ ! -d "$outer" ]; then continue; fi
       do_revctrl_checkin "$outer"
       exit_on_error "running check-in (absolute) on path: $outer"
+#echo "after revctrl checkin"
     else
       for inner in $list; do
+#echo "inner is $inner"
         # add in the directory component to see if we can find the folder.
         local path="$inner/$outer"
         if [ ! -d "$path" ]; then continue; fi
+#echo "path is now $path"
         do_revctrl_checkin "$path"
         exit_on_error "running check-in (relative) on path: $path"
+#echo "after revctrl on path"
       done
     fi
   done
@@ -373,9 +387,9 @@ function do_revctrl_careful_update()
   local blatt_report="echo -e \ncarefully retrieving '$nicedir'..."
   $blatt_report
 
-echo "about to do git checkin magic, and current dir is '$(\pwd)'"
-echo "this is what i see in this directory..."
-ls -al
+#echo "about to do git checkin magic, and current dir is '$(\pwd)'"
+#echo "this is what i see in this directory..."
+#ls -al
 
   local this_branch="$(my_branch_name)"
 

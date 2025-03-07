@@ -1014,9 +1014,6 @@ return 0
       folder="${curdir}/${folder}"
 #echo "folder is now '$folder'"
     fi
-#hmmm what to do here?
-#if no slashes at all, do we need to do anything???
-#yes, because it will just say there is no dir here and exit!
 
     # default for us is to not do any directory recursion...
     local loop_up=""
@@ -1064,7 +1061,13 @@ return 0
 
       local base="$(basename "$mod_folder")"
       local parent="$(dirname "$mod_folder")"
+#echo parent is $parent
       local parents_parent="$(dirname "$parent")"
+#echo parents_parent is $parents_parent
+      if [ "$parent" == "$parents_parent" ]; then
+        # have to bail now, since we've reached the top of the filesystem.
+        break
+      fi
 
       # reconstruct the path without the current unsuccessful parent directory.
       # basically, if mom says no, ask grandma.
