@@ -1,17 +1,22 @@
 #!/usr/bin/perl
 
 ###############################################################################
-#                                                                             #
-#  Name   : whack_forever                                                     #
-#  Author : Chris Koeritz                                                     #
-#  Rights : Copyright (C) 1992-$now by Author                                 #
-#                                                                             #
-#  Purpose:                                                                   #
-#                                                                             #
-#    Zaps a list of files.  This file exists since the default in the YETI    #
-#  shell environment is to compress files when deletion is attempted.  Only   #
-#  the whack_forever command actually deletes the files for real.             #
-#                                                                             #
+#
+#  Name   : whackem, formerly whack_forever
+#  Author : Chris Koeritz
+#  Rights : Copyright (C) 1992-$now by Author
+#
+#  Purpose:
+#
+#    Zaps a list of files.  This file exists since the default in the YETI
+#  shell environment is to compress files when deletion is attempted.  Only
+#  the whack_forever command actually deletes the files for real.
+#    To provide a safety rail, the script will actually do a short sleep
+#  before beginning to delete any files.  This gives the user a chance to
+#  interrupt the script if they made a mistake.
+#    If the environment variable WHACKEM_NO_SLEEPING is non-empty, then the
+#  script will skip the snoozing before the deletions.
+#
 ###############################################################################
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -21,6 +26,8 @@
 ###############################################################################
 
 require "filename_helper.pl";
+
+use Env qw(WHACKEM_NO_SLEEPING);
 
 sub interrupt_handler {
     # skip doing any deletions.
@@ -46,10 +53,12 @@ while ($whackers[0] =~ /^-/) {
 
 if (scalar(@whackers) > 0) {
   print "ZAPPING FOREVER! @whackers ...\n";
-  system("sleep 4") == 0 || &interrupt_handler;
-  print "\nReally deleting files! => @whackers\n";
+  # if we don't see our no sleeping flag, then we sleep a bit.
+  if ($WHACKEM_NO_SLEEPING eq "") {
+    system("sleep 4") == 0 || &interrupt_handler;
+    print "\nReally deleting files! => @whackers\n";
+  }
 }
-
 
 foreach $i (@whackers) {
   if (-l $i) {
