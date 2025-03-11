@@ -38,6 +38,8 @@ else
   echo "I don't know how to play basic sound files for this OS and sound system."
 fi
 
+echo "basic play cmd is: $BASE_PLAY_CMD"
+
 export MP3_PLAY_CMD='echo Unknown mp3 player...'
 
 if [ ! -z "$(whichable mplayer)" ]; then
