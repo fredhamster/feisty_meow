@@ -62,20 +62,25 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
 
   # our local domain and hosts of interest.
   export GRUNTOSE_DOMAIN="gruntose.blurgh"
+#hmmm: some below need fixinz.
   export GRUNTOSE_HOSTLIST="
     banshee
-clambook
     clemens
     curie
+deckard
     greendragon
     megasloth
     morpheus
     mrowrt
     obsidian
     surya
-traveller
     wildmutt
+exsteammachine
+tabletarasa
+gandalf
+chronicalsteamdeck
 "
+#hmmm: gandalf the android phone?  questioning if that will work.  at least need openssh server running on it.
 
   ##############
 
