@@ -73,7 +73,6 @@ function apt_cyg_finder()
 {
   if whichable apt-cyg; then
     return 0  # success.
-#hmmm: is that the right syntax for bash?
   else
     echo "
 The apt-cyg tool does not seem to be available for cygwin.
@@ -254,16 +253,16 @@ exit_on_error $PHASE_MESSAGE
 # install other external packages and whatnot.
 
 PHASE_MESSAGE="installing additional helper packages"
-#hmmm: untested across these... growisofs 
+#hmmm: untested across these... growisofs etherwake
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(dos2unix genisoimage growisofs imagemagick iputils-ping ncal screen python3 python3-pip rdate vim-gtk3 xserver-xorg xorg-docs )
+  PAX=(dos2unix etherwake genisoimage growisofs imagemagick iputils-ping ncal screen python3 python3-pip rdate vim-gtk3 xserver-xorg xorg-docs )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(dos2unix genisoimage growisofs ImageMagick screen python3 python3-pip xorg-x11-server-Xwayland xorg-x11-docs )
+  PAX=(dos2unix etherwake genisoimage growisofs ImageMagick screen python3 python3-pip xorg-x11-server-Xwayland xorg-x11-docs )
 #not finding: rdate vim-gtk3 
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(dos2unix genisoimage growisofs imagemagick ncal screen python3 rdate xquartz vim-gtk3 linuxbrew/xorg/xorg-docs )
+  PAX=(dos2unix etherwake genisoimage growisofs imagemagick ncal screen python3 rdate xquartz vim-gtk3 linuxbrew/xorg/xorg-docs )
 elif [ "$opsystem_here" == "windoze" ]; then
-  PAX=(dos2unix genisoimage growisofs imagemagick ncal screen python3 python3-pip rdate vim-gtk3 xserver-xorg xorg-docs )
+  PAX=(dos2unix etherwake genisoimage growisofs imagemagick ncal screen python3 python3-pip rdate vim-gtk3 xserver-xorg xorg-docs )
 fi
 
 install_system_package "${PAX[@]}"
