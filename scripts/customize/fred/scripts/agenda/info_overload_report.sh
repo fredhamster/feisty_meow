@@ -185,6 +185,9 @@ analyze_by_dir_patterns "travel plans" $CLOUD_BASE/*travel*
 # snag any work related items for that category.
 analyze_by_dir_patterns "jobby work tasks" $CLOUD_BASE/job* 
 
+# find any social interactive things for me.
+analyze_by_dir_patterns "social being" $CLOUD_BASE/*social* 
+
 # scan all the trivial project folders.
 analyze_by_dir_patterns "trivialities and back burner items" $CLOUD_BASE/trivia* $CLOUD_BASE/backburn*
 
