@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script locates the solution that a project file belongs in and decides whether the
 # project file contains any bad references to projects that are outside of its solution.

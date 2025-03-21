@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this is a library of functions shared by scripts in the system folder.
 #
@@ -304,7 +304,7 @@ function disable_site()
     echo "Please consult the apache error logs for more details."
     exit 1
   fi
-  \rm "$outfile"
+  rm "$outfile"
 }
 
 # turns on the config file we create above for apache.
@@ -324,7 +324,7 @@ function enable_site()
     echo "Please consult the apache error logs for more details."
     exit 1
   fi
-  \rm "$outfile"
+  rm "$outfile"
 }
 
 # restarts the apache2 service.

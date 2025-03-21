@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # gets any updates for the repository folders present in the REPOSITORY_LIST variable.
 
@@ -11,10 +11,10 @@ save_terminal_title
 
 # trickery to ensure we can always update feisty meow, including this specific
 # file, even when the operating system has some rude behavior with regard to
-# file locking (ahem, windoze).  and even more rudeness is that the pwd and
-# $TMP may not always be in the same form, which causes endless confusion and
-# badness.  that's why we get the pwd reading for TMP first so we can do an
-# oranges-to-oranges compare.
+# file locking (ahem, windoze).  and even more rudeness is that the 'pwd'
+# output and $TMP may not always be in the same form, which causes endless
+# confusion and badness.  that's why we get the pwd reading for TMP first
+# so we can do an oranges-to-oranges compare.
 tmpdir="$(cd $TMP; \pwd)"
 if [ "$(\pwd)" != "$tmpdir" ]; then
   if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 nmap -O -sS -F -P0 -T Aggressive $1
 

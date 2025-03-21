@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # updates a vcxproj that had been converted from prior visual studio 2005
 # to the newer 2010.

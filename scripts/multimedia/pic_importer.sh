@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 num=1
 while true; do
   import -silent -window root $HOME/bg_image_$num.jpg

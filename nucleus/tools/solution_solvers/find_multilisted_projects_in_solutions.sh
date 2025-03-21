@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script checks all the known solution files to ensure that no project file is
 # listed more than once in the whole set.

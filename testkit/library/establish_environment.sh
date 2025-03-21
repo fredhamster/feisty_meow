@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Supports the TestKit with a few handy functions and many variables.
 #

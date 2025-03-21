@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # checkin: checks in all the folders present in the REPOSITORY_LIST variable.
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # gets rid of any customized resolv.conf file for the local machine and reinstates the standard link for it.
 

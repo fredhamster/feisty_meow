@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # finds the current user's processes in the process list.
-snuser=$USER
+snuser=$(sanitized_username)
 # if the unix variable for the user is not set, try the dos variable.
 if [ -z "$snuser" ]; then snuser=$USERNAME; fi
 #hmmm: more checks?  what else would we get it from, REPLYTO?

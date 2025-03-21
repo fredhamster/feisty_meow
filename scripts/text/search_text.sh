@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 seek="$1"; shift
 if [ -z "$seek" ]; then
   echo This script needs a pattern to look for in the current directory.

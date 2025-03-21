@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Tears down the demo users previously set up for multi-user testing.
 #

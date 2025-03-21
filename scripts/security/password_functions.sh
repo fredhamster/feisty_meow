@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a set of useful functions for managing operations with passwords.
 # a set of very simple operations, but the file needs to be protected from

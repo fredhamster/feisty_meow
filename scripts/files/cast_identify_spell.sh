@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # calls a verbose identify on each file passed to it.
 # this should shake loose all the metadata and display it.

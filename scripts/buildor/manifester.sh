@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 dir=$1
 if [ -z "$dir" ]; then
   echo this command needs one directory as a parameter.  all the exes in that

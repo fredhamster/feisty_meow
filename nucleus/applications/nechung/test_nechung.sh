@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # prints out the time it takes to run the nechung oracle a thousand times.
 # the number of seconds in the result should be equivalent to the number of

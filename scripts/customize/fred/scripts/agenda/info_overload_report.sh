@@ -1,17 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # these metrics are how bogged down we are in to-do type items.
 
 # logged historical file where we append our latest report.
-REPORT_FILE="$CLOUD_BASE/stats/overload_history.txt"
+#external CLOUD_BASE FRED_HAMSTER_OVERLOAD_REPORT_FILE
 
-#hmmm: check path validity?
+#hmmm:: this would be a nifty function, where you can give it a list of variable names to
+#  check and it bails if they are not set!  call it validate_external or something catchier.
+
+if [ -z "$CLOUD_BASE" -o -z "$FRED_HAMSTER_OVERLOAD_REPORT_FILE" ]; then
+  echo "$(basename $0): This script requires the two variables CLOUD_BASE and FRED_HAMSTER_OVERLOAD_REPORT_FILE."
+  exit 1
+fi
+
+#hmmm: check path validity?!
+
+# hierarchies that we look inside of:
+POWER_BRAIN_HIERARCHY="power_brain"
 
 # given a path, this will find how many items are under it, ignoring svn and git files, plus
 # other patterns we happen to notice are not useful.
 function calculate_count()
 {
   local dir="$1"; shift
+#hmmm: good grief, use an array here.  need some kind of pipe chain array handling.
   local count=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null |  grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | wc -l | tr -d ' ')
   if [ -z "$count" ]; then echo 0; else echo "$count"; fi
 }
@@ -23,6 +35,7 @@ function calculate_count()
 function calculate_weight()
 {
   local dir="$1"; shift
+#hmmm: good grief, use an array here.  need some kind of pipe chain array handling.
   local weight=$(find "$dir" -type f -exec echo \"{}\" ';' 2>/dev/null | grep -v "\.svn" | grep -v "\.git"| grep -v "\.basket" | grep -v "\.version" | grep -v "\.keep" | xargs ls -al | awk '{ print $5 }' | paste -sd+ - | bc 2>/dev/null)
   if [ -z "$weight" ]; then echo 0; else echo "$weight"; fi
 }
@@ -137,10 +150,6 @@ analyze_hierarchy_and_report $CLOUD_BASE/branch_road "hearth and home notes (bra
 # unsorted files haven't been categorized yet.
 analyze_hierarchy_and_report $CLOUD_BASE/disordered "disordered and maybe deranged files"
 
-# we now consider the backlog of things to read to be a relevant fact.  this is going to hose
-# up our weight accounting considerably.
-analyze_hierarchy_and_report $CLOUD_BASE/reading "reading list (for a quiet afternoon)"
-
 # bluesky is our brainstorming and wunderthinking area for new things.
 analyze_hierarchy_and_report $CLOUD_BASE/blue_sky "blue sky is the limit ideas"
 
@@ -176,11 +185,14 @@ analyze_by_dir_patterns "travel plans" $CLOUD_BASE/*travel*
 # snag any work related items for that category.
 analyze_by_dir_patterns "jobby work tasks" $CLOUD_BASE/job* 
 
+# find any social interactive things for me.
+analyze_by_dir_patterns "social being" $CLOUD_BASE/*social* 
+
 # scan all the trivial project folders.
 analyze_by_dir_patterns "trivialities and back burner items" $CLOUD_BASE/trivia* $CLOUD_BASE/backburn*
 
 # okay, fudge.  if there are game tasks, then count them too.  what are they, nothing?  not so.
-analyze_by_dir_patterns "play time and games" $CLOUD_BASE/*gaming* $CLOUD_BASE/*game* 
+analyze_by_dir_patterns "play time and games" $CLOUD_BASE/*gam* $CLOUD_BASE/$POWER_BRAIN_HIERARCHY/*gam*
 
 ####
 
@@ -191,5 +203,6 @@ full_report+="\n\
 [gathered on $(date)]\n\n\
 ##############"
 
-echo -e "$full_report" | tee -a "$REPORT_FILE"
+echo -e "$full_report" | tee -a "$FRED_HAMSTER_OVERLOAD_REPORT_FILE"
+echo -e "\n{report stored in $FRED_HAMSTER_OVERLOAD_REPORT_FILE}"
 

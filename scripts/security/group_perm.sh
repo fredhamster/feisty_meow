@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # group_perm: traverses directory trees and sets the permissions to allow the
 # associated group "rw" on files and "rwx" on directories.
 

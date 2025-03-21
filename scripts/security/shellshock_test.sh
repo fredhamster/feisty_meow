@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 EXITCODE=0
 
 # this file was downloaded with this command:

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # compares the soapbox with the real archive to see if any older stuff might be
 # left behind.  if it's got a less than in front, then it's only on the soapbox drive
@@ -22,7 +22,7 @@ echo would do--    compare_dirs "$target/$(basename $currdir)" "$currdir"
 # decide which drive to compare.
 targets="$1"
 if [ -z "$targets" ]; then
-  targets=($($(whichable ls) -1 /media/$USER/*))
+  targets=($($(whichable ls) -1 /media/$(sanitized_username)/*))
   if [ ${#targets[@]} -gt 1 ]; then
     echo "
 Please provide a media drive name on the command line, because more than
@@ -34,7 +34,7 @@ fi
 
 echo "comparing the media drive '${targets[0]}' against local archives."
 
-compare_archives_with_target "/media/$USER/${targets[0]}"
+compare_archives_with_target "/media/$(sanitized_username)/${targets[0]}"
 
 sep
 

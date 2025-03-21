@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # sets up links to make fallout new vegas work properly under wine.
 # some mods will look for paths that are incorrectly case sensitive, and this

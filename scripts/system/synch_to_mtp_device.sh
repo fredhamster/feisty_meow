@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 sourcedir="$1"; shift
 targetdir="$1"; shift

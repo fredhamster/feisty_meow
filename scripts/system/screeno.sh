@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # screeno: a simple alias for putting something in the background where its logs can be
 # tended by the screen utility.

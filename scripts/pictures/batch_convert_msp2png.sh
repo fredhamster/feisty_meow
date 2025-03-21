@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # converts ancient microsoft paint files to PNG format using recoil.
 # arose from a question on askubuntu: http://askubuntu.com/questions/881412/how-can-i-convert-really-old-files-in-microsoft-paint-format-msp-to-a-usabl

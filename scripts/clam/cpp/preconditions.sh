@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # prepares the project for compilation by creating the appropriate directories.
 
 # make sure our temp directory is there.

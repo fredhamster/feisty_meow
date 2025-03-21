@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # makes a new copy of the testkit reference with branding info installed.
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script adds a sentinel to guard c++ implementation files (*.cpp) from
 # multiple inclusion.  it will only add the guardian markers if the files

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # make a dvd data disc image suitable for burning on bluray.
 

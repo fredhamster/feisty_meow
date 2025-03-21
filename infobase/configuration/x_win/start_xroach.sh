@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this is a simple shell that can be dropped in ~/.kde/Autostart to show a
 # bunch of roaches on the root X window.
 # note: you must enable desktop | behavior | general | allow programs in

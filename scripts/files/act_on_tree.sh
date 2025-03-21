@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # act_on_tree: performs a command on a hierarchy of directories.
 #

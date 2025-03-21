@@ -5,7 +5,7 @@
 
 # use a local temporary directory if possible.
 if [ -d /localtmp ]; then
-  export FAST_LOCAL_STORAGE=/localtmp/$USER
+  export FAST_LOCAL_STORAGE=/localtmp/$(sanitized_username)
   export TMP=$FAST_LOCAL_STORAGE/tempo
   mkdir -p $TMP &>/dev/null
   chmod -R 700 $FAST_LOCAL_STORAGE

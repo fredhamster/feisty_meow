@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # a script that handles synchronization of important assets from the MAJOR_ARCHIVE_SOURCES
 # and the SOURCECODE_HIERARCHY_LIST onto a backup drive of some sort.  it will only copy folders
@@ -25,6 +25,7 @@ function update_source_folders()
   bash "$FEISTY_MEOW_SCRIPTS/rev_control/rcheckin.sh"
   if [ $? -ne 0 ]; then
     echo Checking out the latest codes has failed somehow for $folder.
+    popd
     return 1
   fi
   popd
@@ -38,6 +39,7 @@ function synch_directory_to_target()
 {
   local from="$1"; shift
   local to="$1"; shift
+  local extra_flag="$1"; shift
 
   sep
 
@@ -51,7 +53,7 @@ function synch_directory_to_target()
   fi
 
   echo "synching from $from into $to"
-  netcp "$from"/* "$to"/
+  netcp $extra_flag "$from"/* "$to"/
   if [ $? -ne 0 ]; then
     echo "The synchronization of $from into $to has failed."
     return 1
@@ -65,6 +67,23 @@ function synch_directory_to_target()
 function update_archive_drive()
 {
   local target_folder="$1"; shift  # where we're backing up to.
+
+#echo "remaining parms are: $*"
+  # implement a mirroring feature if they use the flag "--mirror".
+  # this turns on rsync --delete feature to remove things on the destination
+  # that are not on the source.
+  local RSYNC_EXTRAS=""
+  local mirror_parm="$1"; shift
+  if [ "$mirror_parm" == "--mirror" ]; then
+    RSYNC_EXTRAS="--delete"
+    echo "
+NOTE:
+Due to the presence of the '--mirror' flag on the command line, we are
+adding rsync flags to mirror the source, which removes any files that
+are on the destination but not on the source.
+"
+  fi  
+
   local currdir  # loop variable.
 
   sep
@@ -78,7 +97,7 @@ function update_archive_drive()
 
   # synch all our targets.
   for currdir in $MAJOR_ARCHIVE_SOURCES; do
-    synch_directory_to_target "$currdir" "$target_folder/$(basename $currdir)"/
+    synch_directory_to_target "$currdir" "$target_folder/$(basename $currdir)"/ $RSYNC_EXTRAS
   done
 
   sep

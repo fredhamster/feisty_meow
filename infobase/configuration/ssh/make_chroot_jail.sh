@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # (c) Copyright by Wolfgang Fuschlberger
 #
@@ -341,7 +341,7 @@ echo
 fi
 
 # Create /usr/bin/groups in the jail
-echo "#!/bin/bash" > usr/bin/groups
+echo "#!/usr/bin/env bash" > usr/bin/groups
 echo "id -Gn" >> usr/bin/groups
 chmod 755 usr/bin/groups
 

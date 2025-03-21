@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # we guess at some nice values to use in the list.  if these are too small, we'll
 # adjust them before printing anything.

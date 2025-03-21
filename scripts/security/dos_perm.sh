@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # dos_perm: gives a directory the most open set of permissions
 # available to the dos/windoze attrib command.
 

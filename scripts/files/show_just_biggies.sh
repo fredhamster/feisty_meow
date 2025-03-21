@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # iterates through the directories or files passed on the command line and does a summary disk usage, but only the
 # things measurable in gigabytes, terabytes, or larger are shown.  the smaller items are just omitted (so anything

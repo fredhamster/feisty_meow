@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # stdbuild: a build script that applies to most unix make based builds
 # for things that you trust enough to install.  this does the configure
 # phase, then makes the project, then installs it.

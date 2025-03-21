@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 project_name="$1"; shift
 if [ -z "$project_name" ]; then
   echo This script requires an ms project file name to build.

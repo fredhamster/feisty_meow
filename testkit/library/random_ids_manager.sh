@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # an unfinished idea for how to manage identifiers that are randomly
 # generated but are also uniquely identified for later use.

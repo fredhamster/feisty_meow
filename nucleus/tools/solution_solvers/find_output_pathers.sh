@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script locates any project files that mention the output path setting (OutputPath).  
 # these are extra suspicious due to the problems caused for our solutions when files have the

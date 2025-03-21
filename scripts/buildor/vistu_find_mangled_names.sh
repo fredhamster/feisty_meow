@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script takes one microsoft compiler output file and tries to find the
 # mangled C++ function names contained in it.
 file=$1

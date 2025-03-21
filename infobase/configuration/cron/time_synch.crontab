@@ -20,7 +20,7 @@ LOCAL_TIME_SERVER=greendragon
 
 #[update_system_time_local_server]
 # the central host machine uses this version, to synch time externally.
-#0 0,4,8,12,16,20 * * * /usr/bin/rdate -s time.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
+#0 0,4,8,12,16,20 * * * /usr/sbin/rdate -s time.nist.gov &>>/tmp/${CRONUSER}-cron-time_synch.log
 
 ##############
 

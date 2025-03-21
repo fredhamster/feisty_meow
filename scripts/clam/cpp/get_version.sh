@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 COMPILER=$1
 COMPILER_ROOT_DIR=$2
 if [ "$COMPILER" = "GNU_LINUX" \

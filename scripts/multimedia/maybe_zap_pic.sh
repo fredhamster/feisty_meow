@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # goes through a list of pictures, first showing the picture to you,
 # and then nagging you for each one if you want to delete it or not.

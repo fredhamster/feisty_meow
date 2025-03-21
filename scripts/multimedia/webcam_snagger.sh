@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # the file name to be found on the remote site is expected to be named
 # using the prefix and suffix below.

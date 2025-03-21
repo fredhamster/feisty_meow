@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # burns a bluray or dvd data disc image onto a physical medium.
 

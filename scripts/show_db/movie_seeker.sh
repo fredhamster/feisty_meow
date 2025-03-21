@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ -z "$1" -o -z "$2" ]; then
   echo You must supply a file name that has a movie database in it and a movie
   echo or show name to search for.  Example:

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # counts up the files in each maildir 'cur' folder to find out how many messages are
 # held in each subdirectory.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 file="$1"; shift
 if [ ! -f "$file" ]; then

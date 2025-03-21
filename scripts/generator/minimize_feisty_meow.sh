@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # cleans up the generated files that most people don't use.
 # this includes some static libraries and all of the tests, as well as
@@ -9,20 +9,36 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 sep
 echo "Cleaning up feisty meow generated files..."
 
+# first, we check to make sure our expected storage directory exists.
+if [ ! -d $FEISTY_MEOW_GENERATED_STORE ]; then
+  echo "
+Problem seen during minimize--there is no generated store directory.
+\$FEISTY_MEOW_GENERATED_STORE = '$FEISTY_MEOW_GENERATED_STORE'
+"
+  exit 1
+fi
+
 pushd $FEISTY_MEOW_GENERATED_STORE
 
-\rm -rf logs clam_tmp temporaries/*
+# setting this flag to anything skips the sleep in the whackem script.
+export WHACKEM_NO_SLEEPING=stayawake
 
-pushd runtime
+whackem -rf logs clam_tmp temporaries/[a-zA-Z0-9]*
 
-\rm -rf install/*
+if [ -d runtime ]; then
+  pushd runtime
 
-pushd binaries
+  whackem -rf install/[a-zA-Z0-9]*
 
-\rm -rf *.a *.library test_*
+  if [ -d binaries ]; then
+    pushd binaries
+    whackem -rf *.a *.library test_*
+    popd
+  fi
 
-popd
-popd
+  popd
+fi
+
 popd
 
 echo "Finished with feisty meow generated file cleaning."

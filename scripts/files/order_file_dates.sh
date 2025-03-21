@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 for i in $(ls -1 | sort ) ; do 
   touch $i
   sleep 2

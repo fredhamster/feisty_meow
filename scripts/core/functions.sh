@@ -80,6 +80,8 @@ if [ -z "$skip_all" ]; then
     return $?
   }
 
+  ####
+
   # makes the status of pipe number N (passed as first parameter) into the
   # main return value (i.e., the value for $?).  this is super handy to avoid
   # repeating the awkward looking code below in multiple places.
@@ -87,6 +89,77 @@ if [ -z "$skip_all" ]; then
   function promote_pipe_return()
   {
     ( exit ${PIPESTATUS[$1]} )
+  }
+
+  ####
+
+  # sets the main exit value with the pipe status from a smooshed combination
+  # of the top N pipe statuses.
+  # zero from all becomes zero, but any pipe status being non-zero will yield
+  # a non-zero exit status.  note that the exit values involved are not
+  # preserved intact--only the fact of a bad, non-zero exit is signalled.
+  function combine_pipe_returns()
+  {
+    local preserved_statuses=( ${PIPESTATUS[@]} )
+    # we are told how many pipe statuses to consider...
+    local n=$1
+    # or if we are not told, then we make up a highest pipe status to consider.
+    if [ -z "$n" ]; then n=1; fi
+    # we always incorporate the highest level pipe status requested.
+    local accumulator=${preserved_statuses[$n]}
+    for (( looper = $n - 1; looper >= 0; looper-- )); do
+#echo accumulator has $accumulator 
+#echo "loop at index [$looper]"
+      # math exercise below is to ensure that we won't overflow 255 limit on
+      # return values.  we add about half of each return value being considered
+      # (accumulator and current pipe return) to make the "real" return value.
+      # this of course blows away mathematical comparisons for the return value
+      # in the future (unless all but one pipe status is zero).
+      # also, below, the addition of 1 below ensures that an error value of
+      # 1 cannot turn into a 0 when we do integer math division by 2.
+      combined=$(( (accumulator + ${preserved_statuses[$looper]} + 1) / 2 ))
+#echo combined calced as $combined
+  
+      # now push our new smooshed result into the accumulator.  we'll merge it
+      # again if we have to keep looping.
+      accumulator=$combined
+    done
+    # signal the exit value.
+    ( exit $accumulator )
+  }
+  
+  #hmmm: pretty handy general function, but horrible name here.
+  # ploop: sets the highest non-zero exit value possible.
+  function ploop() { (exit 255); return $?; }
+  
+  ##############
+
+  # attempts to find the script file or at least the defition for a command
+  # given the command name.  if it's an alias or a 
+  # if the alias points directly at a script file, then that will be printed to stdout.
+  function locater()
+  {
+    local command_name="$1"; shift
+    # first test checks whether it's a function or not.  we have a special
+    # check here, since this actually does generate some text using our
+    # alias finding pattern below, but it's gibberish.  better to rule this
+    # case out first.
+    maybe_found="$(type "$command_name" 2>/dev/null | grep -i "is a function")"
+    if [ ! -z "$maybe_found" ]; then
+      # we found a function, so just dump out its definition.
+      echo "$(type "$command_name")"
+      return
+    fi
+    # now try searching for a simple alias.
+    maybe_found="$(type "$command_name" 2>/dev/null | sed -n -r -e "s/^.*is aliased to .[^ ]+ (.*).$/\1/p")"
+    if [ -z "$maybe_found" ]; then
+#wtf?      maybe_found="$(alias "$command_name" 2>/dev/null | sed -n -r -e "s/^.*is aliased to .[^ ]+ (.*).$/\1/p")"
+#wtf2      if [ -z "$maybe_found" ]; then
+        # last ditch effort is to just show what "type" outputs.
+        maybe_found="$(type "$command_name")"
+#wtf3      fi
+    fi
+    echo "$maybe_found"
   }
 
   ##############
@@ -97,7 +170,7 @@ if [ -z "$skip_all" ]; then
     local custom_user="$(logname 2>/dev/null)"
     if [ -z "$custom_user" ]; then
       # try the normal unix user variable.
-      custom_user="$USER"
+      custom_user="$(sanitized_username)"
     fi
     if [ -z "$custom_user" ]; then
       # try the windows user variable.
@@ -123,7 +196,7 @@ if [ -z "$skip_all" ]; then
         local tmpfile="$(mktemp $TMP/aliasout.XXXXXX)"
         alias $varname | sed -e 's/.*=//' >$tmpfile
         echo "alias $varname=$(cat $tmpfile)"
-        \rm $tmpfile
+        rm $tmpfile
       elif [ -z "${!varname}" ]; then
         echo "$varname undefined"
       else
@@ -189,7 +262,7 @@ if [ -z "$skip_all" ]; then
   function get_maxcols()
   {
     # calculate the number of columsn in the terminal.
-    local cols=$(stty size | awk '{print $2}')
+    local cols=$(stty size 2>/dev/null | awk '{print $2}')
     echo $cols
   }
 
@@ -221,7 +294,7 @@ if [ -z "$skip_all" ]; then
   # accepts any number of arguments and outputs them to the feisty meow event log.
   function log_feisty_meow_event()
   {
-    echo -e "$(timestamper)-- ${USER}@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
+    echo -e "$(timestamper)-- $(sanitized_username)@$(hostname): $*" >> "$FEISTY_MEOW_EVENT_LOG"
   }
 
   ##############
@@ -540,7 +613,7 @@ if [ -z "$skip_all" ]; then
     fi
 
     # reload feisty meow environment in current shell.
-    log_feisty_meow_event "reloading the feisty meow scripts for $USER in current shell."
+    log_feisty_meow_event "reloading the feisty meow scripts for $(sanitized_username) in current shell."
     source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
     # run nechung oracle to give user a new fortune.
     nechung
@@ -589,7 +662,7 @@ we will skip recustomization, but these other customizations are available:
     pushd "$FEISTY_MEOW_LOADING_DOCK" &>/dev/null
     if [ -h custom ]; then
       # there's an existing link, so remove it.
-      \rm custom
+      rm custom
     fi
     # make sure we cleaned up the area before we re-link.
     if [ -h custom -o -d custom -o -f custom ]; then
@@ -790,22 +863,32 @@ return 0
 
   ##############
 
-  # just shows a separator line for an 80 column console, or uses the first
-  # parameter as the number of columns to expect.
+  # just shows a separator line for the current console size, or uses the first
+  # parameter as the number of columns to expect.  if a second parameter is provided,
+  # then that is used as the separator character(s).
   function separator()
   {
     count=$1; shift
     if [ -z "$count" ]; then
       count=$(($COLUMNS - 1))
     fi
-    echo
-    local i
-    for ((i=0; i < $count; i++)); do
-      echo -n "="
-    done
-    echo
-    echo
+
+    # snag remaining paramters into the characters to show.
+    characters="${@}"
+    if [ -z "$characters" ]; then
+      characters="="
+    fi
+
+#hmmm: works, but has flaw of disallowing spaces within the characters variable.
+#    local garptemp="$(printf '%*s' "$count")"
+#    local emission="${garptemp// /${characters}}"
+
+    local garptemp="$(dd if=/dev/zero bs="$count" count=1 2>/dev/null | tr '\0' 'Q')"
+    local emission="${garptemp//Q/${characters}}"
+
+    echo "$emission"
   }
+
   # alias for separator.
   function sep()
   {
@@ -895,11 +978,105 @@ return 0
   }
 
   # makes sure that the provided "folder" is a directory and is writable.
-  function test_writeable()
+  function test_writable()
   {
     local folder="$1"; shift
     if [ ! -d "$folder" -o ! -w "$folder" ]; then return 1; fi
     return 0
+  }
+
+  # seek_writable:
+  # examines the provided "folder" name to test whether it is a directory
+  # and is writable.  zero (success) is returned if the folder is found.
+  # if the folder is not found, and the second parameter passed is "up",
+  # then the folder is sought recursively in higher directory levels.
+  # if the directory is found anywhere below the root of the filesystem,
+  # then zero (success) is returned.
+  # in either case of the directory being found, the successful path location
+  # is emitted to stdout.  (note that this may emit a relative path, if the
+  # "folder" is a relative path.)
+  # if the directory is not found by any means, then a non-zero failure
+  # code is returned.
+  # if the "folder" is a slash-less string, then it is treated as a simple
+  # directory name to be sought in the current directory or above.  but if the
+  # folder has a full path with slashes, then the most basenamey directory
+  # component is considered the directory to locate.
+  function seek_writable()
+  {
+#hmmm: ever any use to search downwards?  sure there is. ==> currently not supported, but should be.
+    local folder="$1"; shift
+    local recurse_up="$1"; shift
+
+    # handle a folder with no path elements by jamming current dir into it.
+    if [[ $string != *"/"* ]]; then
+      local curdir="$( \cd "$(\dirname ".")" && /bin/pwd )"
+#echo "curdir is '$curdir'"
+      folder="${curdir}/${folder}"
+#echo "folder is now '$folder'"
+    fi
+
+    # default for us is to not do any directory recursion...
+    local loop_up=""
+
+    # magical conversion to lower case in bash.
+    recurse_up="${recurse_up,,}"
+
+    # check if they actually wanted recursion.
+    if [ "$recurse_up" == "up" ]; then
+      # yes, they do want to loop upwards if the relevant revision control
+      # folder is not present right here.
+      loop_up=yup
+    fi
+
+#hmmm: recursion bit below maybe has some useful reusable code, should be its own func,
+
+    # pessimistic default assumes that we will not find it...
+    # (here, zero means false, so this is not a bash return value.)
+    local directory_present=0
+
+    local mod_folder="$folder"
+#echo "mod folder before loop is '$mod_folder'"
+
+    while [ ! -z "$mod_folder" ]; do
+
+      # check for existence and writeability of the folder.
+      if [ ! -d "$mod_folder" -o ! -w "$mod_folder" ]; then
+        # evidence suggests the desired folder really isn't here at this location.
+        directory_present=0
+#echo "mod folder does not exist at this level."
+      else
+        directory_present=1
+#echo "mod folder DOES exist at this level."
+      fi
+
+      # check if we should be looping at all; if we are not going recursive,
+      # then it's time to produce an exit value.
+      if [ -z "$loop_up" -o $directory_present -eq 1 ]; then
+#echo "exiting now since not looping or found dir"
+        # let them know where we found the file.
+        echo "$mod_folder"
+        # invert the sense of the directory presence to provide a bash return value.
+        return $(( ! directory_present ))
+      fi
+
+      local base="$(basename "$mod_folder")"
+      local parent="$(dirname "$mod_folder")"
+#echo parent is $parent
+      local parents_parent="$(dirname "$parent")"
+#echo parents_parent is $parents_parent
+      if [ "$parent" == "$parents_parent" ]; then
+        # have to bail now, since we've reached the top of the filesystem.
+        break
+      fi
+
+      # reconstruct the path without the current unsuccessful parent directory.
+      # basically, if mom says no, ask grandma.
+      mod_folder="${parents_parent}/${base}"
+#echo "mod folder after reconstruction is '$mod_folder'"
+    done
+
+    # if we got out of the loop to here, then this is a lack of success.
+    return 1
   }
 
   ##############
@@ -922,7 +1099,7 @@ return 0
 
     # make a temp file to write to before we move file into place in bind.
     local new_version="/tmp/$(basename ${filename}).bkup-${RANDOM}" 
-    \rm -f "$new_version"
+    rm -f "$new_version"
     exit_on_error "cleaning out new version of file from: $new_version"
 
     local line
@@ -986,7 +1163,7 @@ return 0
 #hmmm: would the composition of those two types of extensions cover all the files i want to rename?  they have to be "important".
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f -and -not -iname ".[a-zA-Z0-9]*" | \
         grep -i \
-"csv\|doc\|docx\|eml\|html\|ics\|jpeg\|jpg\|m4a\|mov\|mp3\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|webp\|xls\|xlsx\|xml\|zip" | \
+"csv\|doc\|docx\|eml\|html\|ics\|jpeg\|jpg\|m4a\|mov\|mp3\|mp4\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|webp\|xls\|xlsx\|xml\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.
@@ -1052,9 +1229,12 @@ return 0
 
   ##############
 
-  # test code for set_var_if_undefined.
-  run_test=0
-  if [ $run_test != 0 ]; then
+  # tests for our functions defined above.
+
+  # change this to '1' to run the tests.
+  run_tests=0
+
+  if [ $run_tests != 0 ]; then
     echo running tests on set_var_if_undefined.
     flagrant=petunia
     set_var_if_undefined flagrant forknordle
@@ -1069,7 +1249,58 @@ return 0
       echo set_var_if_undefined failed to set a variable that was not defined yet
       exit 1
     fi
-  fi
 
+#ploop
+#echo exit value after ploop is $?
+#ploop | ploop | ploop | ploop
+#echo pipes after plooping: 0=${PIPESTATUS[0]} 1=${PIPESTATUS[1]} 2=${PIPESTATUS[2]} 3=${PIPESTATUS[3]}
+
+    function test_combine_pipe_returns()
+    {
+      sep 14 '-'
+      CALL=(combine_pipe_returns 1)
+      duckit | arghmore
+      ${CALL[@]}
+      retval=$?
+      echo "call '${CALL[@]}' => $retval"
+  
+      sep 14 '-'
+      CALL=(combine_pipe_returns 0)
+      duckit | arghmore
+      ${CALL[@]}
+      retval=$?
+      echo "call '${CALL[@]}' => $retval"
+  
+      sep 14 '-'
+      CALL=(combine_pipe_returns 2)
+      duckit | arghmore | grubblez
+      ${CALL[@]}
+      retval=$?
+      echo "call '${CALL[@]}' => $retval"
+    
+      sep 14 '-'
+      CALL=(combine_pipe_returns 3)
+      ploop | ploop | ploop | ploop
+      ${CALL[@]}
+      retval=$?
+      echo "call '${CALL[@]}' => $retval"
+    
+      sep 14 '-'
+      CALL=(combine_pipe_returns 3)
+      flarkas=$(ploop | ploop | ploop | ploop)
+      ${CALL[@]}
+      retval=$?
+      echo "embedded quoted call '${CALL[@]}' => $retval"
+      echo "and the flarkas string got: '$flarkas'"
+    
+      sep 14 '-'
+    }
+    
+    # now run the fancy pipe tests.  hope they do not leak.
+    echo running tests on combine_pipe_returns.
+    test_combine_pipe_returns
+
+# more tests go here...
+  fi
 fi
 

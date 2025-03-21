@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script makes a tunnel for SMTP traffic and others.  a remote ssh server
 # is required.  this is especially useful for routing around firewalls using
 # a web proxy like squid.  when used for SMTP, it ensures that none of the
@@ -11,7 +11,9 @@
 #hmmm:  none of the user info below will work for others: parameterize it.
 
 #ssh_host=khandroma.cs.virginia.edu
-ssh_host=mason.cs.virginia.edu
+#ssh_host=mason.cs.virginia.edu
+ssh_host=clambook.gruntose.blurgh
+username=cak0l
 
 soundfile=$FEISTY_MEOW_APEX/infobase/sounds/woouoo.wav
 if [ ! -z "$1" ]; then
@@ -20,7 +22,7 @@ fi
 
 while true; do
   echo Connecting uva web sites via a machine on site: $ssh_host
-  ssh -i $HOME/.ssh/id_dsa_fred -2 -N -v -D localhost:14420 fred@$ssh_host
+  ssh -2 -N -v -D localhost:14420 ${username}@${ssh_host}
   bash $FEISTY_MEOW_SCRIPTS/multimedia/sound_play.sh $soundfile
   echo "Got dumped from tunnels; re-establishing connection."
   echo "Note: if you're being asked for a password, you haven't set up an RSA key yet."

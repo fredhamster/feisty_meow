@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # got really tired of seeing this as a big long single line in jenkins, plus
 # it kept breaking and was a huge pain to edit.  so now it's in a much more
@@ -15,7 +15,7 @@ fi
 
 export RUN_ALL_TESTS=true
 # clean up any old home storage paths.
-\rm -rf "$feisty_path/home_store".*
+rm -rf "$feisty_path/home_store".*
 # set home folder to a new home_store.random folder, for anything that
 # feisty meow needs to store under $HOME.
 export HOME="$(mktemp -d "$feisty_path/home_store.XXXXXX")"

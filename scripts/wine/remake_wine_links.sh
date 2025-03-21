@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # fixes the links that wine makes to our home folder under linux.  that's a really bad
 # practice that exposes all one's private files to the wine subsystem.  dumb.
@@ -13,7 +13,7 @@ if [ ! -L "My Documents" -o ! -L "Desktop" ]; then
   exit 1
 fi
 
-\rm "Desktop" "My Documents" "My Pictures" "My Videos" "My Music"
+rm "Desktop" "My Documents" "My Pictures" "My Videos" "My Music"
 
 if [ ! -d ~/linx/wine_goods ]; then
   mkdir ~/linx/wine_goods

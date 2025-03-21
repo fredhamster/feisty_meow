@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this performs the inverse operation of standup, by relying on the
 # remove_domain and remove_apache_site scripts.

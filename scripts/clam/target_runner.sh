@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ##############
 # Name   : target_runner.sh
 # Author : Chris Koeritz

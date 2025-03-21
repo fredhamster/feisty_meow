@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # counts the number of files in a set of directories.
 # if no directories are provided, uses the current working directory.

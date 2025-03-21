@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # harshperm traverses directory trees and sets the permissions to a restricted
 # value (rwx------ for directories and rw------- for files).
 

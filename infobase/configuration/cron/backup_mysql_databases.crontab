@@ -3,7 +3,7 @@
 
 #[backup_all_mysql_databases]
 # backs up all of our mysql databases twice a week (as currently configured).
-28 4 * * */3 (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; mysqldump -u root '-pPASSWORD' --all-databases | gzip > /z/stuffing/archives/database_backup_$(hostname)_$(date_stringer).sql.gz) &>>/tmp/${CRONUSER}-cron-backup_mysql_databases.log
+28 4 * * */3 (source $FEISTY_MEOW_APEX/scripts/core/launch_feisty_meow.sh; mysqldump --ssl -u root '-pPASSWORD' --all-databases | gzip > /z/stuffing/archives/database_backup_$(hostname)_$(date_stringer).sql.gz) &>>/tmp/${CRONUSER}-cron-backup_mysql_databases.log
 
 ##############
 
