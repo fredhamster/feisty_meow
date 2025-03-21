@@ -27,8 +27,8 @@ function make_new_feisty_meow_release()
 
   if [ -z "$new_version" ]; then
     echo "\
-$scriptname: this script requires a version number to use for the
-branch name and release tag name of the new release.
+$scriptname: this script requires a version name to use for the new branch
+name.  this version name will become the new tag on the repository.
 "
     return 1
   fi
