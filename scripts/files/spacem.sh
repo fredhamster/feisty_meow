@@ -4,6 +4,12 @@ function spacem_out()
 {
   while [ $# -gt 0 ]; do
     arg="$1"; shift
+
+    if [[ $arg =~ ~* ]]; then
+echo "skipping tilde style name: '$arg'"
+      continue
+    fi
+
     if [ ! -f "$arg" -a ! -d "$arg" ]; then
       echo "=> did not find a file or directory named '$arg'."
       continue
