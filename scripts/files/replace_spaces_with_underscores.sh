@@ -10,6 +10,9 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+# allow error reporting from inside our loop.
+retval=0
+
 while [ $# -gt 0 ]; do
   file="$1"; shift
   # first turn spaces into underscores.  then process characters we don't want
@@ -18,9 +21,15 @@ while [ $# -gt 0 ]; do
   # underscore dash underscore into just dash.
   newname="$(echo "$file" | tr -s ' ' '_' | tr -d "\$\!|@&#%}{)(][\\\~',:?><\"" | sed -e 's/__/_/g' | sed -e 's/\([0-9]\)_\./\1./g' | sed -e 's/_-_/-/' )"
   if [ "$file" != "$newname" ]; then
-    # we've effected a name change, so let's actually do it.
-    echo "'$file' => '$newname'"
-    mv "$file" "$newname"
+    if [ ! -e "$newname" ]; then
+      # we've decided on an effective name change, so let's actually rename.
+      echo "'$file' => '$newname'"
+      mv "$file" "$newname"
+    else
+      echo "error: skipping rename '$file' => '$newname' due to existing file."
+      retval=1
+    fi
   fi
 done
 
+exit $retval

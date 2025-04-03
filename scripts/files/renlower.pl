@@ -33,7 +33,7 @@ exit 0;
 sub rename_lower {
   # go through the list of files passed in.
   foreach $current (&glob_list(@_)) {
-#print "unfiltered: '$current'\n";
+#print "renlower--unfiltered: '$current'\n";
     if ($current =~ /[A-Z]/) {
 #print "current is '$current'\n";
       local $old_name = $current;
@@ -49,10 +49,21 @@ sub rename_lower {
 #print "command A is: rename [$old_name] [$intermediate_name]\n";
 #print "command B is: rename [$intermediate_name] [$new_name]\n";
 #print "\n";
+
+      # safety rails here--we don't want to rename over top of existing files.
+      if (-e "$intermediate_name") {
+        print("error: file called '$intermediate_name' already exists; skipping so we do not overwrite.\n");
+        next;
+      }
+      if (-e "$new_name") {
+        print("error: file called '$new_name' already exists; skipping so we do not overwrite.\n");
+        next;
+      }
+
       rename($old_name, $intermediate_name)
-          || die "failed to do initial rename";
+          || die "error: failed to do initial rename";
       rename($intermediate_name, $new_name)
-          || die "failed to do secondary rename";
+          || die "error: failed to do secondary rename";
       print "'$old_name' => '$new_name'\n";
     }
   }
