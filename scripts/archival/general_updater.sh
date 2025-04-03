@@ -53,6 +53,7 @@ function synch_directory_to_target()
   fi
 
   echo "synching from $from into $to"
+#echo "cmd is: 'netcp $extra_flag "$from"/* "$to"/'"
   netcp $extra_flag "$from"/* "$to"/
   if [ $? -ne 0 ]; then
     echo "The synchronization of $from into $to has failed."
