@@ -10,6 +10,7 @@ This script takes two parameters: (1) the user name for the opensim database
 and (2) the database name.  It will backup that database by logging into
 mysql as the user.  The user's password for mysql must be recorded in a local
 file called: \$HOME/.secrets/opensim_db_password.txt"
+  exit 1
 fi
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
