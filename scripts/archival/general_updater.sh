@@ -168,7 +168,13 @@ function uber_archive_comparator()
   local dir_remote="${remote_arch##*:}"
 
   if [ "$remote_host" == "$dir_remote" ]; then
-    echo "failure in parsing parameters--the remote destination is missing a directory."
+    echo "
+failure in parsing destination--the remote destination is missing the hostname
+component or the directory path.  the parameter should be in the form:
+  myhostname:/path/to/compare/location
+given this path, the script will compare the MAJOR_ARCHIVE_SOURCES against
+the target location on host 'myhostname' under the path '/path/to/...'.
+"
     return 1
   fi
 
