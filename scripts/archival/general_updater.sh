@@ -145,10 +145,11 @@ function do_a_folder_compare()
 }
 
 # runs through all the local archives on this host to make sure nothing is
-# different when compared with the mainline versions on the specified host.
-# the first parameter is the remote version to compare against.  if there is
-# a second parameter, it is used as the path on the local machine where the
-# comparison should be based (e.g. an archive drive rather than /z/).
+# different when compared with the mainline versions on the specified host
+# or target directory.
+# the first parameter is the remote version to compare against.  it needs to
+# include both the host and the directory path for comparison, e.g.:
+#   uber_archive_comparator obsidian.gruntose.blurgh:/z
 function uber_archive_comparator()
 {
   local remote_arch="$1"; shift
@@ -156,24 +157,36 @@ function uber_archive_comparator()
     echo uber_archive_comparator needs the remote archive host to compare with.
     return 1
   fi
-  local local_place="$1"; shift
-  if [ -z "$local_place" ]; then
-    local_place="/z"
-  fi
 
   sep 14
   echo "comparing against host '$remote_arch'"
   sep 14
 
-#hmmm: shouldn't this be a list in a variable someplace?
-  for archicle in \
-    basement \
-    imaginations \
-    musix \
-    toaster \
-    walrus \
-    ; do
-      do_a_folder_compare ${archicle} ${local_place} ${remote_arch} "/z"
+  # remote_host needs just the remote host.
+  local remote_host="${remote_arch%%:*}"
+  # remote_dir needs the hostname portion stripped out.
+  local dir_remote="${remote_arch##*:}"
+
+  if [ "$remote_host" == "$dir_remote" ]; then
+    echo "
+failure in parsing destination--the remote destination is missing the hostname
+component or the directory path.  the parameter should be in the form:
+  myhostname:/path/to/compare/location
+given this path, the script will compare the MAJOR_ARCHIVE_SOURCES against
+the target location on host 'myhostname' under the path '/path/to/...'.
+"
+    return 1
+  fi
+
+#echo "remote arch: '$remote_arch'"
+#echo "remote host: '$remote_host'"
+#echo "dir remote: '$dir_remote'"
+
+  for archicle in $MAJOR_ARCHIVE_SOURCES; do
+    local local_base="$(basename $archicle)"
+    local local_dir="$(dirname $archicle)"
+#echo do_a_folder_compare "${local_base}" "${local_dir}" "${remote_host}" "${dir_remote}" 
+    do_a_folder_compare "${local_base}" "${local_dir}" "${remote_host}" "${dir_remote}"
   done
 }
 

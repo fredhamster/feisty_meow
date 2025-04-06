@@ -51,6 +51,7 @@ if [ -z "$host1" ]; then
   popd &>/dev/null
 else
   # remote compare location for first dir.
+echo will run: ssh $host1 \"cd \$dir1 && find .\"
   ssh "$host1" "cd \"$dir1\" && find ." >"$out1"
   exit_on_error "compare_dirs: listing remote directory $dir1"
 fi
