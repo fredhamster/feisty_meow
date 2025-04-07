@@ -67,17 +67,17 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
     banshee
     clemens
     curie
-deckard
+    deckard
+    gandalf
     greendragon
+    klaatu
     megasloth
     morpheus
     mrowrt
     obsidian
+    rasa
     surya
     wildmutt
-exsteammachine
-tabletarasa
-gandalf
 chronicalsteamdeck
 "
 #hmmm: gandalf the android phone?  questioning if that will work.  at least need openssh server running on it.
