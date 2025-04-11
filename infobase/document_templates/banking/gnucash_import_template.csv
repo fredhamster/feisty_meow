@@ -1,0 +1,4 @@
+Date,CheckNum,Description,Deposit,Withdrawal,AccountName,Category
+2025-04-10,,testing deposit,30,0,checking,income
+2025-04-10,,testing withdrawal,0,30,savings,food
+
