@@ -50,17 +50,21 @@ function reapply_cool_permissions()
 
   # iterate across the list of dirs we want cooluser to own and change their ownership.
 #hmmm: below are components of the uber list of things to fix perms on...
-  for dirname in $homebase \
-        $DEFAULT_FEISTYMEOW_ORG_DIR \
-        /usr/local/${cooluser} \
-        /home/games \
-        $arch_addin; do
-    if [ -d "$dirname" -o -L "$dirname" ]; then
-      echo "revising ownership on '$dirname'"
-      sudo chown -R ${cooluser}:${cooluser} "$dirname"
-      continue_on_error "chowning '$dirname' for ${cooluser}"
-      sudo chmod g+rx,o+rx "$dirname"
-      continue_on_error "chmodding '$dirname' for ${cooluser}"
+  for the_name in \
+      $homebase \
+      $DEFAULT_FEISTYMEOW_ORG_DIR \
+      /usr/local/${cooluser} \
+      /home/games \
+      /var/spool/cron/crontabs/${cooluser} \
+      $arch_addin; do
+    if [ -d "$the_name" -o -L "$the_name" -o -f "$the_name" ]; then
+      echo "revising ownership on '$the_name'"
+      sudo chown -R ${cooluser}:${cooluser} "$the_name"
+      continue_on_error "chowning '$the_name' for ${cooluser}"
+      sudo chmod g+rx,o+rx "$the_name"
+      continue_on_error "chmodding '$the_name' for ${cooluser}"
+#    else
+#      echo "saw no item '$the_name' for $cooluser"
     fi
   done
 
@@ -68,7 +72,6 @@ function reapply_cool_permissions()
   sudo bash $FEISTY_MEOW_SCRIPTS/security/normal_perm.sh /var/log
   continue_on_error "setting normal perms on /var/log"
 }
-
 ####
 
 # this block executes when the script is actually run, rather than when it's just being sourced.
