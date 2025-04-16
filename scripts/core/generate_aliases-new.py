@@ -24,30 +24,49 @@ version of the License.  Please send any updates to "fred@gruntose.com".
 """
 
 import os
+import re
 import sys
 
 import filename_helper
 
+# load some variables from the environment, if we can.
+HOME = os.environ['HOME']
+FEISTY_MEOW_BINARIES = os.environ['FEISTY_MEOW_BINARIES']
+BUILD_TOP = os.environ['BUILD_TOP']
+FEISTY_MEOW_APEX = os.environ['FEISTY_MEOW_APEX']
+FEISTY_MEOW_LOADING_DOCK = os.environ['FEISTY_MEOW_LOADING_DOCK']
+FEISTY_MEOW_SCRIPTS = os.environ['FEISTY_MEOW_SCRIPTS']
+DEBUG_FEISTY_MEOW = os.environ['DEBUG_FEISTY_MEOW']
 
-#unscanned after here...  there be monsters.
+print("home is $HOME")
 
 
 
+print("bailing now...")
+exit(1)
 
-####
 
-require "filename_helper.pl";
 
-use Env qw(FEISTY_MEOW_BINARIES BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS DEBUG_FEISTY_MEOW HOME );
+#hmmm: unscanned after here...  there be monsters.
+
+
 
 # given a possible aliasable filename, this will decide whether to create a perl
 # or bash alias for it.  it needs the filename of the possible alias and the
 # directory where that file resides.
-sub make_alias {
-  local($file, $dir) = @_;
-  if ($file =~ /\.[pP][yY]$/) { 
-    local($aliasname) = $file; $aliasname =~ s/\.[Pp][yY]$//;
-    &make_python_alias($aliasname, "$dir");
+def make_alias(file: str, dir: str) -> None:
+
+  found = re.search("^.*\.[pP][yY]", file)
+  if found:
+    aliasname = re.sub("\.[pP][Yy]", "", file)
+    print("aliasname is " + aliasname)
+    make_python_alias(aliasname, "$dir");
+
+  found = re.search("^.*\.[sS][hH]", file)
+  if found:
+blah
+
+
   } elsif ($file =~ /\.[sS][hH]$/) { 
     local($aliasname) = $file; $aliasname =~ s/\.[Ss][Hh]$//;
     &make_bash_alias($aliasname, "$dir");
