@@ -26,6 +26,8 @@ version of the License.  Please send any updates to "fred@gruntose.com".
 import os
 import sys
 
+import filename_helper
+
 
 #unscanned after here...  there be monsters.
 
@@ -264,4 +266,48 @@ close(she);
 ##############
 
 1;
+
+
+
+
+
+
+
+####
+
+def main() -> None:
+    """ the main driver of activities for this app. """
+
+#hmmm: unchecked below, just copied.
+    # make sure they gave us a filename.
+    args = len(sys.argv)
+    if args < 2:
+        print("\
+This script needs a filename to operate on.  The file is expected to contain\n\
+one line of certificate data, which this script will reformat into a standard\n\
+PEM file format.  The PEM file will be output on the console.")
+        exit(1)
+ 
+    filename = sys.argv[1]
+
+    # make sure the filename is valid.
+    if not os.path.isfile(filename):
+        print("The filename provided does not seem to be a readable file:", filename)
+        exit(1)
+
+    file = open(filename, "r")
+
+    cert_line = file.readline()
+    cert_line = cert_line.strip('\r\n')
+
+    #ugh, no extra noise needed.
+    #print()
+    #print("below is the properly formatted output sourced from:", filename)
+    #print()
+
+####
+
+if __name__ == "__main__":
+    main()
+
 
