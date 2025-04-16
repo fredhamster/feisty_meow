@@ -38,8 +38,7 @@ FEISTY_MEOW_LOADING_DOCK = os.environ['FEISTY_MEOW_LOADING_DOCK']
 FEISTY_MEOW_SCRIPTS = os.environ['FEISTY_MEOW_SCRIPTS']
 DEBUG_FEISTY_MEOW = os.environ['DEBUG_FEISTY_MEOW']
 
-print("home is $HOME")
-
+print("home is " + HOME)
 
 
 print("bailing now...")
@@ -47,7 +46,6 @@ exit(1)
 
 
 
-#hmmm: unscanned after here...  there be monsters.
 
 
 
@@ -55,36 +53,61 @@ exit(1)
 # or bash alias for it.  it needs the filename of the possible alias and the
 # directory where that file resides.
 def make_alias(file: str, dir: str) -> None:
+  # we'll set the shorter alias name if we find a match for the file extension.
+  aliasname = None
 
-  found = re.search("^.*\.[pP][yY]", file)
-  if found:
-    aliasname = re.sub("\.[pP][Yy]", "", file)
-    print("aliasname is " + aliasname)
-    make_python_alias(aliasname, "$dir");
+  alias_handling_methods = {'py':'make_python_alias', 'sh':'make_bash_alias', 'pl':'make_perl_alias'}
 
-  found = re.search("^.*\.[sS][hH]", file)
-  if found:
-blah
+#done#hmmm: could have better connection between our list of methods and the extensions, so we actually use
+##      the extension to chop up the file name and then invoke the right function.
 
+  for extension, method in alias_handling_methods.items():
+    found = re.search("^.*\." + extension, file, re.IGNORECASE)
+    if found:
+      aliasname = re.sub("^.*\." + extension, "", file, re.IGNORECASE)
+      funky = method
+      break
 
-  } elsif ($file =~ /\.[sS][hH]$/) { 
-    local($aliasname) = $file; $aliasname =~ s/\.[Ss][Hh]$//;
-    &make_bash_alias($aliasname, "$dir");
-  } elsif ($file =~ /\.[pP][lL]$/) { 
-    local($aliasname) = $file; $aliasname =~ s/\.[Pp][lL]$//;
-    &make_perl_alias($aliasname, "$dir");
-  }
-}
+#  funky = None
+#  # python scripts with '.py'.
+#  found = re.search("^.*\.[pP][yY]", file)
+#  if found:
+#    aliasname = re.sub("\.[pP][yY]", "", file)
+#    funky = alias_handling_methods['py']
+#  # bash scripts with '.sh'.
+#  found = re.search("^.*\.[sS][hH]", file)
+#  if found:
+#    aliasname = re.sub("\.[sS][hH]", "", file)
+#    funky = alias_handling_methods['sh']
+#  # perl scripts with '.pl'.
+#  found = re.search("^.*\.[pP][lL]", file)
+#  if found:
+#    aliasname = re.sub("\.[pP][lL]", "", file)
+#    funky = alias_handling_methods['pl']
+
+  if aliasname is not None:
+    print("aliasname is " + aliasname + " and funky is " + funky)
+    # evaluate a function call with the chosen method.
+    eval(funky+'(' + aliasname + ',' + dir + ')');
+  else:
+    print("could not find a matching extension for the file: ' + file)
+
+####
 
 # makes an alias for a bash script given the alias name.
-sub make_bash_alias {
-  local($aliasname) = shift(@_);
-  local($full_alias) = $aliasname;
-#print "full alias is $full_alias\n";
-  $aliasname =~ s/^.*\/([^\/]*)/\1/;
-#print "alias became $aliasname\n";
+def make_bash_alias(aliasname: str, dir: str) -> str:
+  full_alias = aliasname
+  print "full alias is " + full_alias
+  aliasname = re.sub(r'^.*/([^/]*)', r'\1')
+#  $aliasname =~ s/^.*\/([^\/]*)/\1/;
+  print "alias became: " + aliasname
+#not ready here yet
   print she "define_yeti_alias $aliasname=\"bash $full_alias.sh\"\n";
 }
+
+#hmmm: unscanned after here...  there be monsters.
+
+
 
 # makes an alias for a python script given the alias name.
 #hmmm: don't love that we're hardcoding python3 in here, but apparently some systems don't have a 'python' command despite having python installed.
