@@ -40,14 +40,9 @@ DEBUG_FEISTY_MEOW = os.environ['DEBUG_FEISTY_MEOW']
 
 print("home is " + HOME)
 
-
-print("bailing now...")
-exit(1)
-
-
-
-
-
+# returns true if the environment variable to enable debugging noise is set.
+def is_debugging():
+  return len(DEBUG_FEISTY_MEOW) > 0
 
 # given a possible aliasable filename, this will decide whether to create a perl
 # or bash alias for it.  it needs the filename of the possible alias and the
@@ -55,78 +50,50 @@ exit(1)
 def make_alias(file: str, dir: str) -> None:
   # we'll set the shorter alias name if we find a match for the file extension.
   aliasname = None
+  # the method we'll call once we figure out what type of alias to build.
+  funky = None
 
   alias_handling_methods = {'py':'make_python_alias', 'sh':'make_bash_alias', 'pl':'make_perl_alias'}
 
-#done#hmmm: could have better connection between our list of methods and the extensions, so we actually use
-##      the extension to chop up the file name and then invoke the right function.
-
   for extension, method in alias_handling_methods.items():
-    found = re.search("^.*\." + extension, file, re.IGNORECASE)
+    found = re.search('^.*\.' + extension, file, re.IGNORECASE)
     if found:
-      aliasname = re.sub("^.*\." + extension, "", file, re.IGNORECASE)
+      aliasname = re.sub('^.*\.' + extension, "", file, re.IGNORECASE)
       funky = method
       break
-
-#  funky = None
-#  # python scripts with '.py'.
-#  found = re.search("^.*\.[pP][yY]", file)
-#  if found:
-#    aliasname = re.sub("\.[pP][yY]", "", file)
-#    funky = alias_handling_methods['py']
-#  # bash scripts with '.sh'.
-#  found = re.search("^.*\.[sS][hH]", file)
-#  if found:
-#    aliasname = re.sub("\.[sS][hH]", "", file)
-#    funky = alias_handling_methods['sh']
-#  # perl scripts with '.pl'.
-#  found = re.search("^.*\.[pP][lL]", file)
-#  if found:
-#    aliasname = re.sub("\.[pP][lL]", "", file)
-#    funky = alias_handling_methods['pl']
 
   if aliasname is not None:
     print("aliasname is " + aliasname + " and funky is " + funky)
     # evaluate a function call with the chosen method.
-    eval(funky+'(' + aliasname + ',' + dir + ')');
+    return eval(funky+'(' + aliasname + ',' + dir + ')');
   else:
-    print("could not find a matching extension for the file: ' + file)
+    print('could not find a matching extension for the file: ' + file)
+    return None
 
 ####
 
 # makes an alias for a bash script given the alias name.
 def make_bash_alias(aliasname: str, dir: str) -> str:
-  full_alias = aliasname
-  print "full alias is " + full_alias
-  aliasname = re.sub(r'^.*/([^/]*)', r'\1')
-#  $aliasname =~ s/^.*\/([^\/]*)/\1/;
-  print "alias became: " + aliasname
-#not ready here yet
-  print she "define_yeti_alias $aliasname=\"bash $full_alias.sh\"\n";
-}
-
-#hmmm: unscanned after here...  there be monsters.
-
-
+  full_alias = dir + "/" + aliasname
+  print "full alias so far is " + full_alias
+#huh?  aliasname = re.sub(r'^.*/([^/]*)', r'\1')
+#from:  $aliasname =~ s/^.*\/([^\/]*)/\1/;
+#  print "alias became: " + aliasname
+  return "define_yeti_alias " + aliasname+ '="bash "' + full_alias + '".sh"';
+#  print she "define_yeti_alias $aliasname=\"bash $full_alias.sh\"\n";
 
 # makes an alias for a python script given the alias name.
+def make_python_alias(aliasname: str, dir: str) -> str:
+  full_alias = dir + "/" + aliasname
+  print "full alias so far is " + full_alias
 #hmmm: don't love that we're hardcoding python3 in here, but apparently some systems don't have a 'python' command despite having python installed.
-sub make_python_alias {
-  local($aliasname) = shift(@_);
-  local($full_alias) = $aliasname;
-  $aliasname =~ s/^.*\/([^\/]*)/\1/;
-#print "alias became $aliasname\n";
-  print she "define_yeti_alias $aliasname=\"python3 $full_alias.py\"\n";
-}
+  return "define_yeti_alias " + aliasname+ '="python3 "' + full_alias + '".py"';
 
 # makes an alias for a perl script given the alias name.
-sub make_perl_alias {
-  local($aliasname) = shift(@_);
-  local($full_alias) = $aliasname;
-  $aliasname =~ s/^.*\/([^\/]*)/\1/;
-#print "alias became $aliasname\n";
-  print she "define_yeti_alias $aliasname=\"perl $full_alias.pl\"\n";
-}
+def make_perl_alias(aliasname: str, dir: str) -> str:
+  full_alias = dir + "/" + aliasname
+  print "full alias so far is " + full_alias
+  return "define_yeti_alias " + aliasname+ '="perl "' + full_alias + '".py"';
 
 ##############
 
@@ -135,16 +102,18 @@ sub make_perl_alias {
 # (perl, bash, python, etc) that we find in the feisty meow script hierarchy.
 # Any *.alias files found in the $FEISTY_MEOW_LOADING_DOCK/custom folder are
 # loaded also.
-sub rebuild_script_aliases {
+def rebuild_script_aliases() -> None:
 
-  if (length($DEBUG_FEISTY_MEOW)) {
+  if is_debugging():
     print "rebuilding generated aliases file...\n";
-  }
+
+#hmmm: unscanned after here...  there be monsters.
+
 
   # create our generated shells directory if it's not already.
   if ( ! -d $FEISTY_MEOW_LOADING_DOCK ) {
     mkdir $FEISTY_MEOW_LOADING_DOCK;
-    if (length($DEBUG_FEISTY_MEOW)) {
+    if (is_debugging()) {
       print "made FEISTY_MEOW_LOADING_DOCK at '$FEISTY_MEOW_LOADING_DOCK'\n";
     }
   }
@@ -160,7 +129,7 @@ sub rebuild_script_aliases {
   foreach $i (&glob_list("$FEISTY_MEOW_LOADING_DOCK/custom/*.alias")) {
     if (-f $i) { push(@ALIAS_DEFINITION_FILES, $i); }
   }
-  if (length($DEBUG_FEISTY_MEOW)) {
+  if (is_debugging()) {
     print "using these alias files:\n";
     foreach $i (@ALIAS_DEFINITION_FILES) {
       local $base_of_dir = &basename(&dirname($i));
@@ -171,7 +140,7 @@ sub rebuild_script_aliases {
 
   # write the aliases for sh and bash scripts.
   local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh";
-  if (length($DEBUG_FEISTY_MEOW)) {
+  if (is_debugging()) {
     print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";
   }
 
@@ -201,7 +170,7 @@ sub rebuild_script_aliases {
 
   close GENOUT;
 
-  if (length($DEBUG_FEISTY_MEOW)) {
+  if (is_debugging()) {
     print("done rebuilding generated aliases file.\n");
   }
 }
@@ -251,7 +220,7 @@ if (-d $FEISTY_MEOW_BINARIES) {
 # trash the old versions.
 unlink("$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 
-if (length($DEBUG_FEISTY_MEOW)) {
+if (is_debugging()) {
   printf "writing $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh...\n";
 }
 

@@ -1,4 +1,10 @@
+#!/usr/bin/env bash
 
-# assumes our file hierarchy on /z, which is where most of our
-# synching is done against.
-find /z/ -follow -iname ".sync-conflict*"
+path="$1"; shift
+if [ -z "$path" ]; then
+  # assumes our file hierarchy on /z, which is where most of our
+  # synching is done against.
+  path="/z/"
+fi
+
+find "$path" -follow -iname ".sync-conflict*"
