@@ -19,17 +19,7 @@ version of the License.  Please send any updates to "fred@gruntose.com".
 
 """
 
-
-
-
-
-
-
-
-
-
-
-#unscanned below here.
+#unscanned below here-- monsters !!!
 
 use Env qw(OS IS_MSYS);
 
