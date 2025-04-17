@@ -69,49 +69,48 @@ def glob_list(original_names: list) -> list:
       to_return.append(chopped_filename[0])
       continue
 
-#hmmm: unscanned below here-- monsters !!!
+    # get all the contents from the directory (both subdirectories and files).
+    files_found = os.listdir(chopped_filename[0])
 
-    opendir WHERE, $chopped_filename[0];  # open the directory up.
-    local(@files_found) = readdir(WHERE);
-    closedir WHERE;
-    foreach $possible_name (@files_found) {
-      # we need to process the pattern a bit; directory patterns are different
-      # from perl regular expression patterns, so we end up massaging any "ls"
-      # wildcards into an equivalent perl-style one below.
-      local($match) = $chopped_filename[1];
-#hmmm: would be nice to combine the replacements into a long batch instead of separate commands, but i do not seem to know how to do that yet in perl.
-      $match =~ s/\./\\./g;  # replace periods with escaped ones.
-      $match =~ s/\*/.*/g;  # replace asterisks with dot star.
-      $match =~ s/\+/\\+/g;  # escape plusses.
-      $match =~ s/\?/\\?/g;  # escape question marks.
-      $match =~ s/\|/\\|/g;  # escape pipe char.
-      $match =~ s/\$/\\\$/g;  # escape dollar sign.
-      $match =~ s/\[/\\[/g;  # escape open bracket.
-      $match =~ s/\]/\\]/g;  # escape close bracket.
-      $match =~ s/\(/\\(/g;  # escape open quote.
-      $match =~ s/\)/\\)/g;  # escape close quote.
-      $match =~ s/\{/\\{/g;  # escape open curly bracket.
-      $match =~ s/\}/\\}/g;  # escape close curly bracket.
+    # a dictionary of patterns to find in filenames and their safer replacements.
+    replacement_patterns = [ 
+      r's/\.': r'\\.',  # replace periods with escaped ones.
+      r's/\*': r'.*',   # replace asterisks with dot star.
+      r's/\+': r'\\+',  # escape plusses.
+      r's/\?': r'\\?',  # escape question marks.
+      r's/\|': r'\\|',  # escape pipe char.
+      r's/\$': r'\\\$', # escape dollar sign.
+      r's/\[': r'\\[',  # escape open bracket.
+      r's/\]': r'\\]',  # escape close bracket.
+      r's/\(': r'\\(',  # escape open quote.
+      r's/\)': r'\\)',  # escape close quote.
+      r's/\{': r'\\{',  # escape open curly bracket.
+      r's/\}': r'\\}'   # escape close curly bracket.
+    ]
 
-      $match = "^" . $match . "\$";  # make sure the whole thing matches.
-#print "possibname is '$possible_name':";
-      if ($possible_name =~ /$match/) {
-        # this one matches so add it.
-        push @to_return, $chopped_filename[0] . $possible_name;
-#print "a match on: $chopped_filename";
-      }
-    }
-  }
-  return @to_return;
-}
+    for possible_name in files_found:
+      match = chopped_filename[1]
+
+      for seek, replacer in replacement_patterns:
+        match = re.sub(seek, replacer, match)
+
+      # make sure that we match against the whole string.
+      match = "^" . match . "\$"
+      print("possibname is '" + possible_name + "':")
+      if re.search(match, possible_name):
+        # this one matches, so add it to our list.
+        to_return.append(chopped_filename[0] + possible_name)
+        print("got a match on:" + chopped_filename)
+
+  return to_return
 
 ############################################################################
 
-# reports if two file names are the same file.
+#hmmm: unscanned below here-- monsters !!!
 
-sub same_file {
-  local($file1, $file2) = @_;
- 
+# reports if two file names are the same file.
+def same_file(file1: str, file2: str):
+uhhhh
   ($dev1, $ino1, $junk1) = stat $file1;
   ($dev2, $ino2, $junk2) = stat $file2;
 
