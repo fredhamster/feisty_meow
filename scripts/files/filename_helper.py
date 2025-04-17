@@ -28,14 +28,14 @@ import path
 ##  #hmmm: make this lower-level, a script that is inherited by all perl scripts.
 ##
 ##sub yeti_interrupt_handler {
-##  die "caught an interrupt; exiting.\n";
+##  die "caught an interrupt; exiting.";
 ##}
 ##
 ### hook in a ctrl-c catcher, since that seems to be universally needed.
 ##sub install_interrupt_catcher {
 ##  $SIG{INT} = 'yeti_interrupt_handler';
 ##  $SIG{QUIT} = 'yeti_interrupt_handler';
-###print "mapped int and quit signals\n";
+###print "mapped int and quit signals";
 ##  return 0
 ##}
 
@@ -48,27 +48,29 @@ def glob_list(original_names: list) -> list:
   takes a set of filenames that may be relative (or really arcane) and globs them into a normal list of filenames.
   """
 
-#hmmm: unscanned below here-- monsters !!!
-
-  local(@to_return) = ();  # the final form of the name list.
-#print "temp list is @original_names\n";
+  to_return = []  # the final form of the name list.
+  print("temp list is: " + original_names)
 
   # scan through the list we're given.
-  foreach $entry (@original_names) {
-#print "entry is $entry\n";
-    local(@chopped_filename) = &split_filename($entry);
-#print "chopped 0=$chopped_filename[0]\n";
-#print "chopped 1=$chopped_filename[1]\n";
-    if ( (@chopped_filename[0] eq ".") || (@chopped_filename[0] eq "..") ) {
+  for entry in original_names:
+    print("entry is: " + entry)
+
+    chopped_filename = split_filename(entry)
+    print("chopped 0=" + chopped_filename[0])
+    print("chopped 1=" + chopped_filename[1])
+
+    if chopped_filename[0] == "." or chopped_filename[0] == "..":
       # add the simple directory name into the list.
-      push @to_return, $chopped_filename[0];
-      next;
-    }
-    if (@chopped_filename[1] eq ".") {
+      to_return.append(chopped_filename[0])
+      continue
+
+    if chopped_filename[1] == ".":
       # add a directory that didn't have more pattern attached.
-      push @to_return, $chopped_filename[0];
-      next;
-    }
+      to_return.append(chopped_filename[0])
+      continue
+
+#hmmm: unscanned below here-- monsters !!!
+
     opendir WHERE, $chopped_filename[0];  # open the directory up.
     local(@files_found) = readdir(WHERE);
     closedir WHERE;
@@ -92,11 +94,11 @@ def glob_list(original_names: list) -> list:
       $match =~ s/\}/\\}/g;  # escape close curly bracket.
 
       $match = "^" . $match . "\$";  # make sure the whole thing matches.
-#print "possibname is '$possible_name':\n";
+#print "possibname is '$possible_name':";
       if ($possible_name =~ /$match/) {
         # this one matches so add it.
         push @to_return, $chopped_filename[0] . $possible_name;
-#print "a match on: $chopped_filename\n";
+#print "a match on: $chopped_filename";
       }
     }
   }
@@ -165,13 +167,13 @@ sub dirname {
 # returns the extension found on the filename, if any.
 sub extension {
   local($base) = &basename(@_);
-#printf "base is $base\n";
+#printf "base is $base";
   local($found) = -1;
   for (local($i) = length($base) - 1; $i >= 0; $i--) {
-#printf "char is " . substr($base, $i, 1) . "\n";
+#printf "char is " . substr($base, $i, 1) . "";
     if (substr($base, $i, 1) eq '.') {
       $found = $i;
-#printf "got period found is $found\n";
+#printf "got period found is $found";
       last;
     }
   }
@@ -253,7 +255,7 @@ sub canonicalizer {
   local($directory_name) = $_[0];
   local($dirsep) = $_[1];
 
-#print "old dir name is \"$directory_name\"\n";
+#print "old dir name is \"$directory_name\"";
   
   if ($OS =~ /win/i) {
 #somewhat abbreviated check; only catches windoze systems, not dos or os2.
@@ -266,7 +268,7 @@ sub canonicalizer {
       # cygwin utilities version (http://www.cygwin.com)
       $directory_name =~ s/^(.):[\\\/](.*)$/\/cygdrive\/\1\/\2/;
     }
-#print "new dir name is \"$directory_name\"\n";
+#print "new dir name is \"$directory_name\"";
   }
 
   # turn all the non-default separators into the default.
@@ -314,16 +316,16 @@ sub canonicalizer {
 
 sub patch_name_for_pc {
   local($name) = @_;
-#print "name=$name\n";
+#print "name=$name";
   if (length($name) != 2) { return $name; }
   local($colon) = substr($name, 1, 1);
-#print "colon=$colon\n";
+#print "colon=$colon";
   # check whether the string needs patching.
   if ($colon eq ":") {
     # name is currently in feeble form of "X:"; fix it.
     $name = $name . '/';
   }
-#print "returning=$name\n";
+#print "returning=$name";
   return $name;
 }
 
@@ -411,7 +413,7 @@ sub recursive_delete {
   my $dir;
   foreach $dir (@_) {
     if ( -f "$dir" ) {
-print "this is not a dir: $dir\nshould whack it here?\n";
+print "this is not a dir: $dir  => should whack it here?";
 return;
     }
 
