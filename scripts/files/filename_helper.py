@@ -28,14 +28,14 @@ import path
 ##  #hmmm: make this lower-level, a script that is inherited by all perl scripts.
 ##
 ##sub yeti_interrupt_handler {
-##  die "caught an interrupt; exiting.\n";
+##  die "caught an interrupt; exiting.";
 ##}
 ##
 ### hook in a ctrl-c catcher, since that seems to be universally needed.
 ##sub install_interrupt_catcher {
 ##  $SIG{INT} = 'yeti_interrupt_handler';
 ##  $SIG{QUIT} = 'yeti_interrupt_handler';
-###print "mapped int and quit signals\n";
+###print "mapped int and quit signals";
 ##  return 0
 ##}
 
@@ -48,68 +48,69 @@ def glob_list(original_names: list) -> list:
   takes a set of filenames that may be relative (or really arcane) and globs them into a normal list of filenames.
   """
 
-#hmmm: unscanned below here-- monsters !!!
-
-  local(@to_return) = ();  # the final form of the name list.
-#print "temp list is @original_names\n";
+  to_return = []  # the final form of the name list.
+  print("temp list is: " + original_names)
 
   # scan through the list we're given.
-  foreach $entry (@original_names) {
-#print "entry is $entry\n";
-    local(@chopped_filename) = &split_filename($entry);
-#print "chopped 0=$chopped_filename[0]\n";
-#print "chopped 1=$chopped_filename[1]\n";
-    if ( (@chopped_filename[0] eq ".") || (@chopped_filename[0] eq "..") ) {
-      # add the simple directory name into the list.
-      push @to_return, $chopped_filename[0];
-      next;
-    }
-    if (@chopped_filename[1] eq ".") {
-      # add a directory that didn't have more pattern attached.
-      push @to_return, $chopped_filename[0];
-      next;
-    }
-    opendir WHERE, $chopped_filename[0];  # open the directory up.
-    local(@files_found) = readdir(WHERE);
-    closedir WHERE;
-    foreach $possible_name (@files_found) {
-      # we need to process the pattern a bit; directory patterns are different
-      # from perl regular expression patterns, so we end up massaging any "ls"
-      # wildcards into an equivalent perl-style one below.
-      local($match) = $chopped_filename[1];
-#hmmm: would be nice to combine the replacements into a long batch instead of separate commands, but i do not seem to know how to do that yet in perl.
-      $match =~ s/\./\\./g;  # replace periods with escaped ones.
-      $match =~ s/\*/.*/g;  # replace asterisks with dot star.
-      $match =~ s/\+/\\+/g;  # escape plusses.
-      $match =~ s/\?/\\?/g;  # escape question marks.
-      $match =~ s/\|/\\|/g;  # escape pipe char.
-      $match =~ s/\$/\\\$/g;  # escape dollar sign.
-      $match =~ s/\[/\\[/g;  # escape open bracket.
-      $match =~ s/\]/\\]/g;  # escape close bracket.
-      $match =~ s/\(/\\(/g;  # escape open quote.
-      $match =~ s/\)/\\)/g;  # escape close quote.
-      $match =~ s/\{/\\{/g;  # escape open curly bracket.
-      $match =~ s/\}/\\}/g;  # escape close curly bracket.
+  for entry in original_names:
+    print("entry is: " + entry)
 
-      $match = "^" . $match . "\$";  # make sure the whole thing matches.
-#print "possibname is '$possible_name':\n";
-      if ($possible_name =~ /$match/) {
-        # this one matches so add it.
-        push @to_return, $chopped_filename[0] . $possible_name;
-#print "a match on: $chopped_filename\n";
-      }
-    }
-  }
-  return @to_return;
-}
+    chopped_filename = split_filename(entry)
+    print("chopped 0=" + chopped_filename[0])
+    print("chopped 1=" + chopped_filename[1])
+
+    if chopped_filename[0] == "." or chopped_filename[0] == "..":
+      # add the simple directory name into the list.
+      to_return.append(chopped_filename[0])
+      continue
+
+    if chopped_filename[1] == ".":
+      # add a directory that didn't have more pattern attached.
+      to_return.append(chopped_filename[0])
+      continue
+
+    # get all the contents from the directory (both subdirectories and files).
+    files_found = os.listdir(chopped_filename[0])
+
+    # a dictionary of patterns to find in filenames and their safer replacements.
+    replacement_patterns = [ 
+      r's/\.': r'\\.',  # replace periods with escaped ones.
+      r's/\*': r'.*',   # replace asterisks with dot star.
+      r's/\+': r'\\+',  # escape plusses.
+      r's/\?': r'\\?',  # escape question marks.
+      r's/\|': r'\\|',  # escape pipe char.
+      r's/\$': r'\\\$', # escape dollar sign.
+      r's/\[': r'\\[',  # escape open bracket.
+      r's/\]': r'\\]',  # escape close bracket.
+      r's/\(': r'\\(',  # escape open quote.
+      r's/\)': r'\\)',  # escape close quote.
+      r's/\{': r'\\{',  # escape open curly bracket.
+      r's/\}': r'\\}'   # escape close curly bracket.
+    ]
+
+    for possible_name in files_found:
+      match = chopped_filename[1]
+
+      for seek, replacer in replacement_patterns:
+        match = re.sub(seek, replacer, match)
+
+      # make sure that we match against the whole string.
+      match = "^" . match . "\$"
+      print("possibname is '" + possible_name + "':")
+      if re.search(match, possible_name):
+        # this one matches, so add it to our list.
+        to_return.append(chopped_filename[0] + possible_name)
+        print("got a match on:" + chopped_filename)
+
+  return to_return
 
 ############################################################################
 
-# reports if two file names are the same file.
 
-sub same_file {
-  local($file1, $file2) = @_;
- 
+# reports if two file names are the same file.
+def same_file(file1: str, file2: str):
+#hmmm: unscanned below here-- monsters !!!
+uhhhh
   ($dev1, $ino1, $junk1) = stat $file1;
   ($dev2, $ino2, $junk2) = stat $file2;
 
@@ -165,13 +166,13 @@ sub dirname {
 # returns the extension found on the filename, if any.
 sub extension {
   local($base) = &basename(@_);
-#printf "base is $base\n";
+#printf "base is $base";
   local($found) = -1;
   for (local($i) = length($base) - 1; $i >= 0; $i--) {
-#printf "char is " . substr($base, $i, 1) . "\n";
+#printf "char is " . substr($base, $i, 1) . "";
     if (substr($base, $i, 1) eq '.') {
       $found = $i;
-#printf "got period found is $found\n";
+#printf "got period found is $found";
       last;
     }
   }
@@ -253,7 +254,7 @@ sub canonicalizer {
   local($directory_name) = $_[0];
   local($dirsep) = $_[1];
 
-#print "old dir name is \"$directory_name\"\n";
+#print "old dir name is \"$directory_name\"";
   
   if ($OS =~ /win/i) {
 #somewhat abbreviated check; only catches windoze systems, not dos or os2.
@@ -266,7 +267,7 @@ sub canonicalizer {
       # cygwin utilities version (http://www.cygwin.com)
       $directory_name =~ s/^(.):[\\\/](.*)$/\/cygdrive\/\1\/\2/;
     }
-#print "new dir name is \"$directory_name\"\n";
+#print "new dir name is \"$directory_name\"";
   }
 
   # turn all the non-default separators into the default.
@@ -314,16 +315,16 @@ sub canonicalizer {
 
 sub patch_name_for_pc {
   local($name) = @_;
-#print "name=$name\n";
+#print "name=$name";
   if (length($name) != 2) { return $name; }
   local($colon) = substr($name, 1, 1);
-#print "colon=$colon\n";
+#print "colon=$colon";
   # check whether the string needs patching.
   if ($colon eq ":") {
     # name is currently in feeble form of "X:"; fix it.
     $name = $name . '/';
   }
-#print "returning=$name\n";
+#print "returning=$name";
   return $name;
 }
 
@@ -411,7 +412,7 @@ sub recursive_delete {
   my $dir;
   foreach $dir (@_) {
     if ( -f "$dir" ) {
-print "this is not a dir: $dir\nshould whack it here?\n";
+print "this is not a dir: $dir  => should whack it here?";
 return;
     }
 
