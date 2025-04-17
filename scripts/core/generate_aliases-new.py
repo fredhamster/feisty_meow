@@ -131,39 +131,44 @@ def rebuild_script_aliases() -> None:
       basename = os.path.basename(filename)
       print "  " + base_of_dir + "/" + basename
 
-#hmmm: unscanned after here...  there be monsters.
-
   # write the aliases for sh and bash scripts.
-  local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh";
-  if (is_debugging()) {
-    print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";
-  }
+  GENERATED_ALIAS_FILE = FEISTY_MEOW_LOADING_DOCK + "/fmc_core_and_custom_aliases.sh"
+  if is_debugging():
+    print("writing generated aliases in " + $GENERATED_ALIAS_FILE + "...")
 
 #hmmm: perhaps a good place for a function to create the header,
 #      given the appropriate comment code.
 
-  open GENOUT, ">$GENERATED_ALIAS_FILE" or die "cannot open $GENERATED_ALIAS_FILE";
+#hmmm: unscanned after here...  there be monsters.
 
-  print GENOUT "##\n";
-  print GENOUT "## generated file: $GENERATED_ALIAS_FILE\n";
-  print GENOUT "## please do not edit.\n";
-  print GENOUT "##\n";
+  try:
+    with open(GENERATED_ALIAS_FILE, "w") as GENOUT:
+    GENOUT.write("##")
+    GENOUT.write("## generated file: " + GENERATED_ALIAS_FILE)
+    GENOUT.write("## please do not edit.")
+    GENOUT.write("##")
 
+#hmmm: old handling for the color addition.
+#      starting to remember that maybe i hated where this code was being added?  and that's why it was removed?  maybe?
 #  if (length($test_color)) {
 #    print GENOUT "export color_add='--color=auto'\n";
 #  } else {
 #    print GENOUT "export color_add=\n";
 #  }
 
-  # plow in the full set of aliases into the file.
-  foreach $i (@ALIAS_DEFINITION_FILES) {
-    open CURR_ALIASER, "<$i" or die "cannot open current alias file $i";
-    foreach $line (<CURR_ALIASER>) {
-      print GENOUT "$line";
-    }
-  }
+    # plow in the full set of aliases into the file.
+    for filename in ALIAS_DEFINITION_FILES:
+      try:
+        with open(filename, "r") as CURR_ALIASER
+        foreach $line (<CURR_ALIASER>) {
+          print GENOUT "$line";
+      except:
+        print("cannot open current alias file: " + filename + "; skipping it.")
 
-  close GENOUT;
+  except:
+    print("cannot open generated aliases in " + GENERATED_ALIAS_FILE")
+    exit(1)
+
 
   if (is_debugging()) {
     print("done rebuilding generated aliases file.\n");
