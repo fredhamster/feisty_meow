@@ -19,19 +19,8 @@ version of the License.  Please send any updates to "fred@gruntose.com".
 
 """
 
-
-
-
-
-
-
-
-
-
-
-#unscanned below here.
-
-use Env qw(OS IS_MSYS);
+import os
+import path
 
 ############################################################################
 
@@ -54,15 +43,12 @@ use Env qw(OS IS_MSYS);
 
 # takes an array of filenames (each possibly containing spaces and/or
 # wildcards) and resolves it to a useful list of actual files.
-
-python function defs anyone?  amazing how fast this stuff vanishes.
-
 def glob_list(original_names: list) -> list:
   """
   takes a set of filenames that may be relative (or really arcane) and globs them into a normal list of filenames.
   """
 
-unchecked below here
+#hmmm: unscanned below here-- monsters !!!
 
   local(@to_return) = ();  # the final form of the name list.
 #print "temp list is @original_names\n";
