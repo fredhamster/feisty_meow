@@ -106,10 +106,10 @@ def glob_list(original_names: list) -> list:
 
 ############################################################################
 
-#hmmm: unscanned below here-- monsters !!!
 
 # reports if two file names are the same file.
 def same_file(file1: str, file2: str):
+#hmmm: unscanned below here-- monsters !!!
 uhhhh
   ($dev1, $ino1, $junk1) = stat $file1;
   ($dev2, $ino2, $junk2) = stat $file2;
