@@ -1,99 +1,75 @@
-#! /usr/bin/env python3
+#!/usr/bin/perl
 
-"""
+##############
+#
+#  Name   : generate_aliases
+#  Author : Chris Koeritz
+#  Rights : Copyright (C) 1996-$now by Author
+#
+#  Purpose:
+#
+#    This script generates feisty meow script alias files.  Alias files
+#  contain a list of definitions for command aliases that are written in the
+#  specified shell dialect (such as bash or perl) and which are additionally
+#  tailored for the operating system to be used.
+#
+##############
+#  This program is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU General Public License as published by the Free
+#  Software Foundation; either version 2 of the License or (at your option)
+#  any later version.  See: "http://www.gruntose.com/Info/GNU/GPL.html" for a
+#  version of the License.  Please send any updates to "fred@gruntose.com".
+##############
 
-Name   : generate_aliases
-Author : Chris Koeritz
-Rights : Copyright (C) 1996-$now by Author
+require "filename_helper.pl";
 
-Purpose:
-
-  This script generates feisty meow script alias files.  Alias files
-contain a list of definitions for command aliases that are written in the
-specified shell dialect (such as bash or perl) and which are additionally
-tailored for the operating system to be used.
-
-author: chris koeritz
-
-####
-This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the Free
-Software Foundation; either version 2 of the License or (at your option)
-any later version.  See: "http://www.gruntose.com/Info/GNU/GPL.html" for a
-version of the License.  Please send any updates to "fred@gruntose.com".
-"""
-
-import os
-import re
-import sys
-
-import filename_helper
-
-# load some variables from the environment, if we can.
-HOME = os.environ['HOME']
-FEISTY_MEOW_BINARIES = os.environ['FEISTY_MEOW_BINARIES']
-BUILD_TOP = os.environ['BUILD_TOP']
-FEISTY_MEOW_APEX = os.environ['FEISTY_MEOW_APEX']
-FEISTY_MEOW_LOADING_DOCK = os.environ['FEISTY_MEOW_LOADING_DOCK']
-FEISTY_MEOW_SCRIPTS = os.environ['FEISTY_MEOW_SCRIPTS']
-DEBUG_FEISTY_MEOW = os.environ['DEBUG_FEISTY_MEOW']
-
-print("home is " + HOME)
-
-# returns true if the environment variable to enable debugging noise is set.
-def is_debugging():
-  return len(DEBUG_FEISTY_MEOW) > 0
+use Env qw(FEISTY_MEOW_BINARIES BUILD_TOP FEISTY_MEOW_APEX FEISTY_MEOW_LOADING_DOCK FEISTY_MEOW_SCRIPTS DEBUG_FEISTY_MEOW HOME );
 
 # given a possible aliasable filename, this will decide whether to create a perl
 # or bash alias for it.  it needs the filename of the possible alias and the
 # directory where that file resides.
-def make_alias(file: str, dir: str) -> None:
-  # we'll set the shorter alias name if we find a match for the file extension.
-  aliasname = None
-  # the method we'll call once we figure out what type of alias to build.
-  funky = None
-
-  alias_handling_methods = {'py':'make_python_alias', 'sh':'make_bash_alias', 'pl':'make_perl_alias'}
-
-  for extension, method in alias_handling_methods.items():
-    found = re.search('^.*\.' + extension, file, re.IGNORECASE)
-    if found:
-      aliasname = re.sub('^.*\.' + extension, "", file, re.IGNORECASE)
-      funky = method
-      break
-
-  if aliasname is not None:
-    print("aliasname is " + aliasname + " and funky is " + funky)
-    # evaluate a function call with the chosen method.
-    return eval(funky+'(' + aliasname + ',' + dir + ')');
-  else:
-    print('could not find a matching extension for the file: ' + file)
-    return None
-
-####
+sub make_alias {
+  local($file, $dir) = @_;
+  if ($file =~ /\.[pP][yY]$/) { 
+    local($aliasname) = $file; $aliasname =~ s/\.[Pp][yY]$//;
+    &make_python_alias($aliasname, "$dir");
+  } elsif ($file =~ /\.[sS][hH]$/) { 
+    local($aliasname) = $file; $aliasname =~ s/\.[Ss][Hh]$//;
+    &make_bash_alias($aliasname, "$dir");
+  } elsif ($file =~ /\.[pP][lL]$/) { 
+    local($aliasname) = $file; $aliasname =~ s/\.[Pp][lL]$//;
+    &make_perl_alias($aliasname, "$dir");
+  }
+}
 
 # makes an alias for a bash script given the alias name.
-def make_bash_alias(aliasname: str, dir: str) -> str:
-  full_alias = dir + "/" + aliasname
-  print "full alias so far is " + full_alias
-#huh?  aliasname = re.sub(r'^.*/([^/]*)', r'\1')
-#from:  $aliasname =~ s/^.*\/([^\/]*)/\1/;
-#  print "alias became: " + aliasname
-  return "define_yeti_alias " + aliasname+ '="bash "' + full_alias + '".sh"';
-#  print she "define_yeti_alias $aliasname=\"bash $full_alias.sh\"\n";
+sub make_bash_alias {
+  local($aliasname) = shift(@_);
+  local($full_alias) = $aliasname;
+#print "full alias is $full_alias\n";
+  $aliasname =~ s/^.*\/([^\/]*)/\1/;
+#print "alias became $aliasname\n";
+  print she "define_yeti_alias $aliasname=\"bash $full_alias.sh\"\n";
+}
 
 # makes an alias for a python script given the alias name.
-def make_python_alias(aliasname: str, dir: str) -> str:
-  full_alias = dir + "/" + aliasname
-  print "full alias so far is " + full_alias
 #hmmm: don't love that we're hardcoding python3 in here, but apparently some systems don't have a 'python' command despite having python installed.
-  return "define_yeti_alias " + aliasname+ '="python3 "' + full_alias + '".py"';
+sub make_python_alias {
+  local($aliasname) = shift(@_);
+  local($full_alias) = $aliasname;
+  $aliasname =~ s/^.*\/([^\/]*)/\1/;
+#print "alias became $aliasname\n";
+  print she "define_yeti_alias $aliasname=\"python3 $full_alias.py\"\n";
+}
 
 # makes an alias for a perl script given the alias name.
-def make_perl_alias(aliasname: str, dir: str) -> str:
-  full_alias = dir + "/" + aliasname
-  print "full alias so far is " + full_alias
-  return "define_yeti_alias " + aliasname+ '="perl "' + full_alias + '".py"';
+sub make_perl_alias {
+  local($aliasname) = shift(@_);
+  local($full_alias) = $aliasname;
+  $aliasname =~ s/^.*\/([^\/]*)/\1/;
+#print "alias became $aliasname\n";
+  print she "define_yeti_alias $aliasname=\"perl $full_alias.pl\"\n";
+}
 
 ##############
 
@@ -102,40 +78,43 @@ def make_perl_alias(aliasname: str, dir: str) -> str:
 # (perl, bash, python, etc) that we find in the feisty meow script hierarchy.
 # Any *.alias files found in the $FEISTY_MEOW_LOADING_DOCK/custom folder are
 # loaded also.
-def rebuild_script_aliases() -> None:
+sub rebuild_script_aliases {
 
-  if is_debugging():
+  if (length($DEBUG_FEISTY_MEOW)) {
     print "rebuilding generated aliases file...\n";
+  }
 
   # create our generated shells directory if it's not already.
-  if not os.path.isdir(FEISTY_MEOW_LOADING_DOCK): 
-    os.mkdirs(FEISTY_MEOW_LOADING_DOCK)
-    if is_debugging():
-      print("made FEISTY_MEOW_LOADING_DOCK at '" + FEISTY_MEOW_LOADING_DOCK + "'";
+  if ( ! -d $FEISTY_MEOW_LOADING_DOCK ) {
+    mkdir $FEISTY_MEOW_LOADING_DOCK;
+    if (length($DEBUG_FEISTY_MEOW)) {
+      print "made FEISTY_MEOW_LOADING_DOCK at '$FEISTY_MEOW_LOADING_DOCK'\n";
+    }
+  }
 
-#hmmm: not sure why this bit was removed from the perl code--maybe it blew up or made noise or didn't work right?
   # test if we can use color in ls...
 #  $test_color=` ls --help 2>&1 | grep -i color `;
 
   # this is an array of files from which to draw alias definitions.
-  ALIAS_DEFINITION_FILES = [ FEISTY_MEOW_SCRIPTS + "/core/common.alias" ];
+  @ALIAS_DEFINITION_FILES = ("$FEISTY_MEOW_SCRIPTS/core/common.alias");
 
   # if custom aliases files exist, add them to the list.
 #hmmm: would be nice to have this name in a symbol somewhere instead of having "custom" or "customize" everywhere.
-  for filename in glob_list(FEISTY_MEOW_LOADING_DOCK + "/custom/*.alias"):
-    if os.path.isfile(filename): ALIAS_DEFINITION_FILES.append(filename)
-  if is_debugging():
-    print("using these alias files:")
-    for filename in ALIAS_DEFINITION_FILES:
-      base_of_dir = os.path.basename(os.path.dirname(filename))
-      basename = os.path.basename(filename)
-      print "  " + base_of_dir + "/" + basename
-
-#hmmm: unscanned after here...  there be monsters.
+  foreach $i (&glob_list("$FEISTY_MEOW_LOADING_DOCK/custom/*.alias")) {
+    if (-f $i) { push(@ALIAS_DEFINITION_FILES, $i); }
+  }
+  if (length($DEBUG_FEISTY_MEOW)) {
+    print "using these alias files:\n";
+    foreach $i (@ALIAS_DEFINITION_FILES) {
+      local $base_of_dir = &basename(&dirname($i));
+      local $basename = &basename($i);
+      print "  $base_of_dir/$basename\n";
+    }
+  }
 
   # write the aliases for sh and bash scripts.
   local $GENERATED_ALIAS_FILE = "$FEISTY_MEOW_LOADING_DOCK/fmc_core_and_custom_aliases.sh";
-  if (is_debugging()) {
+  if (length($DEBUG_FEISTY_MEOW)) {
     print "writing generated aliases in $GENERATED_ALIAS_FILE...\n";
   }
 
@@ -165,7 +144,7 @@ def rebuild_script_aliases() -> None:
 
   close GENOUT;
 
-  if (is_debugging()) {
+  if (length($DEBUG_FEISTY_MEOW)) {
     print("done rebuilding generated aliases file.\n");
   }
 }
@@ -215,7 +194,7 @@ if (-d $FEISTY_MEOW_BINARIES) {
 # trash the old versions.
 unlink("$FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh");
 
-if (is_debugging()) {
+if (length($DEBUG_FEISTY_MEOW)) {
   printf "writing $FEISTY_MEOW_LOADING_DOCK/fmc_aliases_for_scripts.sh...\n";
 }
 
@@ -272,48 +251,4 @@ close(she);
 ##############
 
 1;
-
-
-
-
-
-
-
-####
-
-def main() -> None:
-    """ the main driver of activities for this app. """
-
-#hmmm: unchecked below, just copied.
-    # make sure they gave us a filename.
-    args = len(sys.argv)
-    if args < 2:
-        print("\
-This script needs a filename to operate on.  The file is expected to contain\n\
-one line of certificate data, which this script will reformat into a standard\n\
-PEM file format.  The PEM file will be output on the console.")
-        exit(1)
- 
-    filename = sys.argv[1]
-
-    # make sure the filename is valid.
-    if not os.path.isfile(filename):
-        print("The filename provided does not seem to be a readable file:", filename)
-        exit(1)
-
-    file = open(filename, "r")
-
-    cert_line = file.readline()
-    cert_line = cert_line.strip('\r\n')
-
-    #ugh, no extra noise needed.
-    #print()
-    #print("below is the properly formatted output sourced from:", filename)
-    #print()
-
-####
-
-if __name__ == "__main__":
-    main()
-
 
