@@ -65,6 +65,7 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
 #hmmm: some below need fixinz.
   export GRUNTOSE_HOSTLIST="
     banshee
+    chronicality
     clemens
     curie
     deckard
@@ -78,9 +79,8 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
     rasa
     surya
     wildmutt
-chronicalsteamdeck
 "
-#hmmm: gandalf the android phone?  questioning if that will work.  at least need openssh server running on it.
+#hmmm: gandalf is the android phone...  questioning if that will work.  at least need openssh server running on it.
 
   ##############
 
