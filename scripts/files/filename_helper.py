@@ -109,19 +109,18 @@ def glob_list(original_names: list) -> list:
 
 # reports if two file names are the same file.
 def same_file(file1: str, file2: str):
-#hmmm: unscanned below here-- monsters !!!
-uhhhh
-  ($dev1, $ino1, $junk1) = stat $file1;
-  ($dev2, $ino2, $junk2) = stat $file2;
-
-  return ($dev1 == $dev2) && ($ino1 == $ino2);
-}
+  try:
+    f1_stat = stat(file1)
+    f2_stat = stat(file2)
+    return (f1_stat.ST_INO == f2_stat.ST_INO) && (f1_stat.ST_DEV == f2_stat.ST_DEV)
+  except:
+    return None
 
 ############################################################################
 
 # splits a filename into a directory and file specification.
-
-sub split_filename {
+def split_filename(filename: str):
+#hmmm: unscanned below here-- monsters !!!
   local($chewed_name) = &remove_trailing_slashes(@_);
   $chewed_name = &canonicalize($chewed_name);
   $chewed_name = &patch_name_for_pc($chewed_name);
