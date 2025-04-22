@@ -22,7 +22,7 @@ fi
 if [ -z "$skip_all" ]; then
 
   if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-    echo "feisty meow function definitions beginning now..."
+    echo "establishing feisty meow function definitions..."
   fi
 
   # a handy little method that can be used for date strings.  it was getting
@@ -1225,7 +1225,7 @@ return 0
     return 0; 
   }
   
-  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "feisty meow function definitions done."; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "feisty meow functions are now defined."; fi
 
   ##############
 
