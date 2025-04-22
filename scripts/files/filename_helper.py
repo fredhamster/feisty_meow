@@ -73,7 +73,7 @@ def glob_list(original_names: list) -> list:
     files_found = os.listdir(chopped_filename[0])
 
     # a dictionary of patterns to find in filenames and their safer replacements.
-    replacement_patterns = [ 
+    replacement_patterns = {
       r's/\.': r'\\.',  # replace periods with escaped ones.
       r's/\*': r'.*',   # replace asterisks with dot star.
       r's/\+': r'\\+',  # escape plusses.
@@ -86,7 +86,7 @@ def glob_list(original_names: list) -> list:
       r's/\)': r'\\)',  # escape close quote.
       r's/\{': r'\\{',  # escape open curly bracket.
       r's/\}': r'\\}'   # escape close curly bracket.
-    ]
+    }
 
     for possible_name in files_found:
       match = chopped_filename[1]
@@ -95,7 +95,7 @@ def glob_list(original_names: list) -> list:
         match = re.sub(seek, replacer, match)
 
       # make sure that we match against the whole string.
-      match = "^" . match . "\$"
+      match = "^" + match + "\$"
       print("possibname is '" + possible_name + "':")
       if re.search(match, possible_name):
         # this one matches, so add it to our list.
@@ -112,90 +112,79 @@ def same_file(file1: str, file2: str):
   try:
     f1_stat = stat(file1)
     f2_stat = stat(file2)
-    return (f1_stat.ST_INO == f2_stat.ST_INO) && (f1_stat.ST_DEV == f2_stat.ST_DEV)
+    return (f1_stat.ST_INO == f2_stat.ST_INO) and (f1_stat.ST_DEV == f2_stat.ST_DEV)
   except:
     return None
 
 ############################################################################
 
 # splits a filename into a directory and file specification.
-def split_filename(filename: str):
-#hmmm: unscanned below here-- monsters !!!
-  local($chewed_name) = &remove_trailing_slashes(@_);
-  $chewed_name = &canonicalize($chewed_name);
-  $chewed_name = &patch_name_for_pc($chewed_name);
-  if ($chewed_name =~ /\//) {
+def split_filename(pathname: str):
+  chewed_name = remove_trailing_slashes(pathname)
+  chewed_name = canonicalize(chewed_name)
+  chewed_name = patch_name_for_pc(chewed_name)
+  if re.search(r'/', chewed_name):
     # there's a slash in there.
-    local($directory_part) = $chewed_name;
-    $directory_part =~ s/^(.*\/)[^\/]*$/\1/;
-    local($file_part) = $chewed_name;
-    $file_part =~ s/^.*\/([^\/]*)$/\1/;
-    if ($file_part eq "") {
+    directory_part = os.path.dirname(chewed_name)
+    file_part = os.path.basename(chewed_name)
+    if len(file_part) == 0:
       # if there was no file specification, just add a non-matching spec.
-      $file_part = ".";
-    }
-    return ($directory_part, $file_part);
-  } elsif ($chewed_name eq ".") {
-    return (".", "");
-  } elsif ($chewed_name eq "..") {
-    return ("..", "");
-  } else {
+      file_part = '.'
+    return directory_part, file_part
+  elif chewed_name == '.':
+    # simple comparison to the current directory.
+    return ".", ""
+  elif chewed_name == "..":
+    # simple comparison to the parent directory.
+    return "..", ""
+  else:
     # no slash in this name, so we fix that and also make sure we match
     # the whole name.
-    return ("./", $chewed_name);
-  }
-}
+    return "./", chewed_name
 
 ############################################################################
 
-# returns the base part of the filename; this omits any directories.
-
-sub basename {
-  local(@parts) = &split_filename(@_);
-  return $parts[1];
-}
+#hmmm: kind of legacy to provide our own dirname and basename, but we're
+#      just migrating this code right now, not perfecting it.
 
 # returns the directory part of the filename.
+def dirname(pathname: str):
+  return split_filename(pathname)[0];
 
-sub dirname {
-  local(@parts) = &split_filename(@_);
-  return $parts[0];
-}
+# returns the base part of the filename; this omits any directories.
+def basename(pathname: str):
+  return split_filename(pathname)[1];
 
 # returns the extension found on the filename, if any.
-sub extension {
-  local($base) = &basename(@_);
+def extension(pathname: str):
+  base = basename(str)
 #printf "base is $base";
-  local($found) = -1;
-  for (local($i) = length($base) - 1; $i >= 0; $i--) {
-#printf "char is " . substr($base, $i, 1) . "";
-    if (substr($base, $i, 1) eq '.') {
-      $found = $i;
+  found = -1
+  # work backwards from the end of the base name.
+  for i in range(len(base) - 1, -1, -1):
+#printf "char is " . substr($base, $i, 1) . ""
+    if base[i] == '.':
+      found = i;
 #printf "got period found is $found";
-      last;
-    }
-  }
-  if ($found >=0) {
-    return substr($base, $found, length($base) - $found);
-  }
-  return "";  # no extension seen.
-}
+      break
+  if found >= 0:
+    return base[found : len(base) - found]
+  return ""  # no extension seen.
 
 # returns the portion of the filename without the extension.
-sub non_extension {
-  local($full) = &remove_trailing_slashes(@_);
-  $full = &canonicalize($full);
-  $full = &patch_name_for_pc($full);
-  local($ext) = &extension($full);
-  local($to_remove) = length($ext);
-  return substr($full, 0, length($full) - $to_remove);
-}
+def non_extension(pathname: str):
+  full = remove_trailing_slashes(pathname)
+  full = canonicalize(full)
+  full = patch_name_for_pc(full)
+  ext = extension(full)
+  to_remove = len(ext)
+  return full[0 : len(full) - to_remove
 
 ############################################################################
 
 # removes all directory slashes (either '/' or '\') from the end of a string.
-
-sub remove_trailing_slashes {
+def remove_trailing_slashes(pathname: str):
+#hmmm: unconverted below here--monsters !!!
   local($directory_name) = @_;
   # start looking at the end of the string.
   local($inspection_point) = length($directory_name) - 1;
