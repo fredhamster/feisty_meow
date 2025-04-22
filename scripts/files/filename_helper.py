@@ -108,7 +108,7 @@ def glob_list(original_names: list) -> list:
 
 
 # reports if two file names are the same file.
-def same_file(file1: str, file2: str):
+def same_file(file1: str, file2: str) -> bool:
   try:
     f1_stat = stat(file1)
     f2_stat = stat(file2)
@@ -119,7 +119,7 @@ def same_file(file1: str, file2: str):
 ############################################################################
 
 # splits a filename into a directory and file specification.
-def split_filename(pathname: str):
+def split_filename(pathname: str) -> list:
   chewed_name = remove_trailing_slashes(pathname)
   chewed_name = canonicalize(chewed_name)
   chewed_name = patch_name_for_pc(chewed_name)
@@ -148,15 +148,15 @@ def split_filename(pathname: str):
 #      just migrating this code right now, not perfecting it.
 
 # returns the directory part of the filename.
-def dirname(pathname: str):
+def dirname(pathname: str) -> str:
   return split_filename(pathname)[0];
 
 # returns the base part of the filename; this omits any directories.
-def basename(pathname: str):
+def basename(pathname: str) -> str:
   return split_filename(pathname)[1];
 
 # returns the extension found on the filename, if any.
-def extension(pathname: str):
+def extension(pathname: str) -> str:
   base = basename(str)
 #printf "base is $base";
   found = -1
@@ -172,7 +172,7 @@ def extension(pathname: str):
   return ""  # no extension seen.
 
 # returns the portion of the filename without the extension.
-def non_extension(pathname: str):
+def non_extension(pathname: str) -> str:
   full = remove_trailing_slashes(pathname)
   full = canonicalize(full)
   full = patch_name_for_pc(full)
@@ -183,30 +183,28 @@ def non_extension(pathname: str):
 ############################################################################
 
 # removes all directory slashes (either '/' or '\') from the end of a string.
-def remove_trailing_slashes(pathname: str):
-#hmmm: unconverted below here--monsters !!!
-  local($directory_name) = @_;
+def remove_trailing_slashes(pathname: str) -> str:
+  directory_name = pathname
   # start looking at the end of the string.
-  local($inspection_point) = length($directory_name) - 1;
-  while ($inspection_point > 0) {
+  inspection_point = len(directory_name) - 1;
+  while inspection_point > 0:
     # examine the last character in the string to see if it's a slash.
-    local($final_char) = substr($directory_name, $inspection_point, 1);
+    final_char = directoryname[inspection_point:inspection_point]
     # leave the loop if it's not a slash.
-    if ( ($final_char ne "/") && ($final_char ne "\\") ) { last; }
-    chop($directory_name);  # remove the slash.
-    $inspection_point--;  # check the new last character.
-  }
-
-  return $directory_name;
-}
+    if not final_char == '/' && not final_char == "\\":
+      break
+    directory_name = directory_name[0 : len(directory_name) - 1]  # remove the slash.
+    inspection_point--  # check the new last character.
+  return directory_name
 
 ############################################################################
+
+#hmmm: unconverted below here--monsters !!!
 
 # returns the proper directory separator for this platform.  this requires
 # an environment variable called "OS" for non-Unix operating systems.  the
 # valid values for that are shown below.
-
-sub directory_separator {
+def directory_separator() -> str:
   if ( ($OS eq "Windows_NT") || ($OS eq "Windows_95") 
       || ($OS eq "DOS") || ($OS eq "OS2") ) { return "\\"; }
   else { return "/"; }
