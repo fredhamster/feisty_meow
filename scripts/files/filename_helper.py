@@ -199,21 +199,19 @@ def remove_trailing_slashes(pathname: str) -> str:
 
 ############################################################################
 
-#hmmm: unconverted below here--monsters !!!
-
 # returns the proper directory separator for this platform.  this requires
 # an environment variable called "OS" for non-Unix operating systems.  the
 # valid values for that are shown below.
 def directory_separator() -> str:
-  if ( ($OS eq "Windows_NT") || ($OS eq "Windows_95") 
-      || ($OS eq "DOS") || ($OS eq "OS2") ) { return "\\"; }
-  else { return "/"; }
-}
+  if OS == "Windows_NT" or OS == "Windows_95" or OS == "DOS" or OS == "OS2":
+    return "\\"
+  return "/"
 
 ############################################################################
 
 # these mutate the directory slashes in a directory name.
 
+#hmmm: unconverted below here--monsters !!!
 # the one we use most frequently; it uses the unix slash.
 sub canonicalize {
   return &canonicalizer(@_, "/");
