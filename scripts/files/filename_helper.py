@@ -211,26 +211,23 @@ def directory_separator() -> str:
 
 # these mutate the directory slashes in a directory name.
 
-#hmmm: unconverted below here--monsters !!!
 # the one we use most frequently; it uses the unix slash.
-sub canonicalize {
-  return &canonicalizer(@_, "/");
-}
+def canonicalize(pathname: str):
+  return canonicalizer(pathname, '/')
 
 # one that turns names into the style native on the current platform.
-sub native_canonicalize {
-  return &canonicalizer(@_, &directory_separator());
-}
+def native_canonicalize(pathname: str):
+  return canonicalizer(pathname, &directory_separator())
 
 # one that explicitly uses pc style back-slashes.
-sub pc_canonicalize {
-  return &canonicalizer(@_, "\\");
-}
+def pc_canonicalize(pathname: str):
+  return canonicalizer(pathname, '\\')
 
 # one that explicitly does unix style forward slashes.
-sub unix_canonicalize {
-  return &canonicalizer(@_, "/");
-}
+def unix_canonicalize(pathname: str):
+  return canonicalizer(pathname, '/')
+
+#hmmm: unconverted below here--monsters !!!
 
 # this more general routine gets a directory separator passed in.  it then
 # replaces all the separators with that one.
