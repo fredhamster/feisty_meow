@@ -238,23 +238,22 @@ def canonicalizer(directory_name: str, dirsep: str) -> str:
     # IS_MSYS is calculated by feisty meow scripts startup; it will be
     # non-empty if this is the msys tool kit.
     if len(IS_MSYS) > 0):
-#hmmm: unconverted below here--monsters !!!
       # msys utilities version (http://www.mingw.org)
-      $directory_name =~ s/^(.):[\\\/](.*)$/\/\1\/\2/;
-    } else {
+#      $directory_name =~ s/^(.):[\\\/](.*)$/\/\1\/\2/;
+      directory_name = re.sub('^(.):[\\\/](.*)$', '\/\1\/\2')
+    else:
       # cygwin utilities version (http://www.cygwin.com)
-      $directory_name =~ s/^(.):[\\\/](.*)$/\/cygdrive\/\1\/\2/;
-    }
+#      $directory_name =~ s/^(.):[\\\/](.*)$/\/cygdrive\/\1\/\2/;
+      directory_name = re.sub('^(.):[\\\/](.*)$', '\/cygdrive\/\1\/\2/')
 #print "new dir name is \"$directory_name\"";
-  }
 
   # turn all the non-default separators into the default.
-  for (local($j) = 0; $j < length($directory_name); $j++) {
-    if ( (substr($directory_name, $j, 1) eq "\\") 
-        || (substr($directory_name, $j, 1) eq "/") ) {
-      substr($directory_name, $j, 1) = $dirsep;
-    }
-  }
+  for j in range(0, len(directory_name)):
+#  for (local($j) = 0; $j < length($directory_name); $j++) {
+    if directory_name[j, j+1] == "\\" or directory_name[j, j+1] == "/":
+      directory_name[j] = dirsep
+
+#hmmm: unconverted below here--monsters !!!
   # remove all occurrences of double separators except for the first
   # double set, which could be a UNC filename.
   local($saw_sep) = 0;
