@@ -212,36 +212,33 @@ def directory_separator() -> str:
 # these mutate the directory slashes in a directory name.
 
 # the one we use most frequently; it uses the unix slash.
-def canonicalize(pathname: str):
+def canonicalize(pathname: str) -> str:
   return canonicalizer(pathname, '/')
 
 # one that turns names into the style native on the current platform.
-def native_canonicalize(pathname: str):
+def native_canonicalize(pathname: str) -> str:
   return canonicalizer(pathname, &directory_separator())
 
 # one that explicitly uses pc style back-slashes.
-def pc_canonicalize(pathname: str):
+def pc_canonicalize(pathname: str) -> str:
   return canonicalizer(pathname, '\\')
 
 # one that explicitly does unix style forward slashes.
-def unix_canonicalize(pathname: str):
+def unix_canonicalize(pathname: str) -> str:
   return canonicalizer(pathname, '/')
 
-#hmmm: unconverted below here--monsters !!!
 
 # this more general routine gets a directory separator passed in.  it then
 # replaces all the separators with that one.
-sub canonicalizer {
-  local($directory_name) = $_[0];
-  local($dirsep) = $_[1];
-
-#print "old dir name is \"$directory_name\"";
+def canonicalizer(directory_name: str, dirsep: str) -> str:
+  print("old dir name is " + directory_name)
   
-  if ($OS =~ /win/i) {
-#somewhat abbreviated check; only catches windoze systems, not dos or os2.
+  # somewhat abbreviated check; only catches windoze systems, not dos or os2.
+  if re.search("win", OS, re.IGNORE_CASE):
     # IS_MSYS is calculated by feisty meow scripts startup; it will be
     # non-empty if this is the msys tool kit.
-    if (length($IS_MSYS) > 0) {
+    if len(IS_MSYS) > 0):
+#hmmm: unconverted below here--monsters !!!
       # msys utilities version (http://www.mingw.org)
       $directory_name =~ s/^(.):[\\\/](.*)$/\/\1\/\2/;
     } else {
