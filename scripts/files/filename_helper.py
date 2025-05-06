@@ -178,7 +178,7 @@ def non_extension(pathname: str) -> str:
   full = patch_name_for_pc(full)
   ext = extension(full)
   to_remove = len(ext)
-  return full[0 : len(full) - to_remove
+  return full[0 : len(full) - to_remove]
 
 ############################################################################
 
@@ -237,7 +237,7 @@ def canonicalizer(directory_name: str, dirsep: str) -> str:
   if re.search("win", OS, re.IGNORE_CASE):
     # IS_MSYS is calculated by feisty meow scripts startup; it will be
     # non-empty if this is the msys tool kit.
-    if len(IS_MSYS) > 0):
+    if len(IS_MSYS) > 0:
       # msys utilities version (http://www.mingw.org)
 #      $directory_name =~ s/^(.):[\\\/](.*)$/\/\1\/\2/;
       directory_name = re.sub('^(.):[\\\/](.*)$', '\/\1\/\2')
@@ -253,12 +253,12 @@ def canonicalizer(directory_name: str, dirsep: str) -> str:
     if directory_name[j, j+1] == "\\" or directory_name[j, j+1] == "/":
       directory_name[j] = dirsep
 
-#hmmm: unconverted below here--monsters !!!
   # remove all occurrences of double separators except for the first
   # double set, which could be a UNC filename.
-  local($saw_sep) = 0;
-  for (local($i) = 1; $i < length($directory_name); $i++) {
+  saw_sep = False
+  for i in range(1, len(directory_name)):
     # iterate through the string looking for redundant separators.
+#hmmm: unconverted below here--monsters !!!
     if (substr($directory_name, $i, 1) eq $dirsep) {
       # we found a separator character.
       if ($saw_sep) {
