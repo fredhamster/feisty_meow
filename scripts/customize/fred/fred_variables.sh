@@ -60,6 +60,11 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
 
   ##############
 
+  # settings for xsecurelock to use xscreensaver.
+  define_yeti_variable XSECURELOCK_SAVER=saver_xscreensaver 
+
+  ##############
+
   # our local domain and hosts of interest.
   export GRUNTOSE_DOMAIN="gruntose.blurgh"
 #hmmm: some below need fixinz.
