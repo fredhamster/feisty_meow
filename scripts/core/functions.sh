@@ -299,7 +299,7 @@ if [ -z "$skip_all" ]; then
 
   ##############
 
-  # wraps secure shell with some parameters we like, most importantly to enable X forwarding.
+  # wraps secure shell with some parameters we like.
   function ssh()
   {
     local args=($@)
@@ -316,6 +316,18 @@ if [ -z "$skip_all" ]; then
     save_terminal_title  # remember the current terminal title.
     /usr/bin/ssh -Y "${args[@]}"
     restore_terminal_title
+  }
+
+  # returns zero (success) if the X window system is currently running.
+  function test_for_xwin()
+  {
+    if ! timeout 1s xset q &>/dev/null; then
+#echo "No X server is running on \$DISPLAY [$DISPLAY]" >&2
+      return 1
+    else
+#echo "X server is running on \$DISPLAY [$DISPLAY]" >&2
+      return 0
+    fi
   }
 
   ##############
