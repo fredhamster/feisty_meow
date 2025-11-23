@@ -42,7 +42,9 @@ echo "basic play cmd is: $BASIC_PLAY_CMD"
 
 export MP3_PLAY_CMD='echo Unknown mp3 player...'
 
-if [ ! -z "$(whichable mplayer)" ]; then
+if [ ! -z "$(whichable mpv)" ]; then
+  MP3_PLAY_CMD=mpv
+elif [ ! -z "$(whichable mplayer)" ]; then
   MP3_PLAY_CMD=mplayer
 else
   echo "I don't know how to play mp3 files for this OS and sound system."
