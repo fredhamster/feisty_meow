@@ -48,14 +48,19 @@ else
   echo "I don't know how to play mp3 files for this OS and sound system."
 fi
 
+echo "mp3 play cmd is: $MP3_PLAY_CMD"
+
 # play the sounds individually; some apps like playsound can handle multiple
 # files, but "/usr/bin/play" doesn't want to on some systems.
 for filename in $*; do 
+echo filename is $filename
   case "$filename" in
     *wav)
+echo treating $filename as wav/etc
     $BASIC_PLAY_CMD $filename >/dev/null 2>&1;
     ;;
     *mp3)
+echo treating $filename as mp3/etc
     $MP3_PLAY_CMD $filename >/dev/null 2>&1;
     ;;
     *)
