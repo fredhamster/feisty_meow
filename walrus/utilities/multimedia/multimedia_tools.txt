@@ -22,6 +22,12 @@ audio tools
     in asunder with gnudb
     => gnudb.gnudb.org 8880
 
+-------------------------------------
+volume control and input picker tools
+-------------------------------------
+
++ pavucontrol is awesome for controlling pulse audio driver based systems.
+
 --------------------------------
 music library manager and player
 --------------------------------
