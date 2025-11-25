@@ -5,6 +5,7 @@
 #hmmm: if this loop works, we'll have to fix the drive names to match the commands, since we aren't doing a parallel array of actual drive names.
 
 for drivename in \
+  aristapopper \
   barkuptree \
   bartbutt \
   bittybarky \
