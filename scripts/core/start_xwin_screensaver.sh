@@ -38,14 +38,21 @@ fi
 # need to kill xscreensaver if it's running.
 #  e.g. killall -9 xscreensaver
 
-# need to fix the xsecurelock file for the xscreensaver...
-#  => we have a function that does this kind of replacement editing!
-# in file:
-# /usr/libexec/xsecurelock/saver_xscreensaver
-# modify this line:
-# : ${XSECURELOCK_XSCREENSAVER_PATH:=/usr/lib/xscreensaver}
-# to become this line:
-# : ${XSECURELOCK_XSCREENSAVER_PATH:=/usr/share/xscreensaver}
+# fix the xsecurelock file for the xscreensaver; paths haven't been updated to latest.
+XSECURELOCK_XSCREENSAVER='/usr/libexec/xsecurelock/saver_xscreensaver'
+grep -q '/usr/lib/xscreensaver' $XSECURELOCK_XSCREENSAVER
+#hmmm: also, check that we're using the right path for xscreensaver!  what if old system, where in old place?
+if [ $? -eq 0 ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+    echo "decided that we needed to modify the saver_xscreensaver file for xsecurelock"
+  fi
+  file="$XSECURELOCK_XSCREENSAVER"
+  pattern=': ${XSECURELOCK_XSCREENSAVER_PATH:=/usr/lib/xscreensaver}'
+  replacement=': ${XSECURELOCK_XSCREENSAVER_PATH:=/usr/libexec/xscreensaver}'
+  # code borrowed from replace_pattern_in_file, but we need sudo here.
+  sudo sed -i -e "s%$pattern%$replacement%g" "$file"
+  exit_on_error "editing the xsecurelock saver_xscreensaver file"
+fi
 
 DIMMER="/usr/libexec/xsecurelock/dimmer"
 if [ ! -x "$DIMMER" ]; then
