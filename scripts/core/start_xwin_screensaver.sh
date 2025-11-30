@@ -5,6 +5,7 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 source "$FEISTY_MEOW_SCRIPTS/processes/process_manager.sh"
+source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
 if ! test_for_xwin; then
   if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
@@ -52,6 +53,9 @@ if [ $? -eq 0 ]; then
   # code borrowed from replace_pattern_in_file, but we need sudo here.
   sudo sed -i -e "s%$pattern%$replacement%g" "$file"
   exit_on_error "editing the xsecurelock saver_xscreensaver file"
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+    echo "successfully modified the saver_xscreensaver file for xsecurelock"
+  fi
 fi
 
 DIMMER="/usr/libexec/xsecurelock/dimmer"
@@ -67,7 +71,7 @@ exit_on_error "setting the x window inactivity timeout"
 
 start_background_action \
   "xss-lock -n "$DIMMER" -l -- xsecurelock"
-exit_on_error "installing xsecurelock as the screensaver"
+continue_on_error "starting up xsecurelock as the screensaver"
 
 if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
   echo xsecurelock has been started.
