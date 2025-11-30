@@ -14,30 +14,44 @@ if ! test_for_xwin; then
   exit 1
 fi
 
-# see if xss-lock is already running.
-xss_running="$(psa xss-lock)"
-# clean up CRLF type junk to allow emptiness check.
-xss_running=${xss_running//$'\n'/}
-xss_running=${xss_running//$'\r'/}
+# tests whether the package name provided as a parameter is already installed on the host.
+function check_installed()
+{
+  bash $FEISTY_MEOW_SCRIPTS/system/list_packages.sh "$1" &>/dev/null
+}
 
-if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-  echo -e "check for running xss-lock came up with: '$xss_running'"
-fi
-if [ ! -z "$xss_running" ]; then
-  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-    echo "The xss-lock application is already running, so a screensaver is already hooked in."
+# checks whether the provided package is already present, and if not, installs it.
+#hmmm: only works with apt based systems currently!
+#hmmm: list_packages is an inexact check!  it will match xscreensaver-data for xscreensaver as pattern!!!
+function install_if_missing()
+{
+  packname="$1"; shift
+  if check_installed "$packname"; then
+    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+      echo "'$packname' is already installed."
+    fi
+    # nothing to do.
+    return 0
+  else
+    if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+      echo "'$packname' is not installed; installing now."
+    fi
+    sudo apt install "$packname"
+    exit_on_error "installing '$packname' package on system"
   fi
-  exit 0
-fi
+}
 
-#steps still to take:
-#  install xsecurelock and such if not present yet.
-#  install xscreensaver and packages if not present yet.
-#  use our feisty meow version of sudo grabbing thingy.
-#sudo apt install xsecurelock mpv xscreensaver-data xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra xscreensaver xss-lock
+# install any of the packages we need for xsecurelock and xscreensaver.
+for to_install in xsecurelock \
+    mpv mplayer \
+    xss-lock \
+    xscreensaver xscreensaver-data xscreensaver-data-extra \
+    xscreensaver-gl xscreensaver-gl-extra; do
+  install_if_missing $to_install
+done
 
 # need to kill xscreensaver if it's running.
-#  e.g. killall -9 xscreensaver
+killall -9 xscreensaver &>/dev/null
 
 # fix the xsecurelock file for the xscreensaver; paths haven't been updated to latest.
 XSECURELOCK_XSCREENSAVER='/usr/libexec/xsecurelock/saver_xscreensaver'
@@ -58,6 +72,7 @@ if [ $? -eq 0 ]; then
   fi
 fi
 
+# check whether xsecurelock is actually present now.  it should be...
 DIMMER="/usr/libexec/xsecurelock/dimmer"
 if [ ! -x "$DIMMER" ]; then
   if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
@@ -66,9 +81,27 @@ if [ ! -x "$DIMMER" ]; then
   exit 1
 fi
 
+# see if xss-lock is already running.
+xss_running="$(psa xss-lock)"
+# clean up CRLF type junk to allow emptiness check.
+xss_running=${xss_running//$'\n'/}
+xss_running=${xss_running//$'\r'/}
+
+if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+  echo -e "check for running xss-lock came up with: '$xss_running'"
+fi
+if [ ! -z "$xss_running" ]; then
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
+    echo "The xss-lock application is already running, so a screensaver is already hooked in."
+  fi
+  exit 0
+fi
+
+# set the time-out for inactivity.
 xset s 300 5
 exit_on_error "setting the x window inactivity timeout"
 
+# run the xss-lock program to handle x-window locking.
 start_background_action \
   "xss-lock -n "$DIMMER" -l -- xsecurelock"
 continue_on_error "starting up xsecurelock as the screensaver"
