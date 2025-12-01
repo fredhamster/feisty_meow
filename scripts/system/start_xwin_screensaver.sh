@@ -36,7 +36,7 @@ function install_if_missing()
     if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
       echo "'$packname' is not installed; installing now."
     fi
-    sudo apt install "$packname"
+    sudo apt --assume-yes install "$packname"
     exit_on_error "installing '$packname' package on system"
   fi
 }

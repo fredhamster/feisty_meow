@@ -182,7 +182,7 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     source "$FEISTY_MEOW_SCRIPTS/tty/terminal_titler.sh"
 
     # start up the xsecurelock screen saver if we are running x window system.
-#    bash "$FEISTY_MEOW_SCRIPTS/core/start_xwin_screensaver.sh"
+#    bash "$FEISTY_MEOW_SCRIPTS/system/start_xwin_screensaver.sh"
 
     ##############
 
