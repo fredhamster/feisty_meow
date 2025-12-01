@@ -3,23 +3,23 @@
 source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 if [ -z "$*" ]; then
-  # no parameters, so we do a wildcard style of listing packages.
-  SEEK_PIECE=' cat '
-else
-  # we know the parameters are not empty, so we don't go with our
-  # wildcard approach for listing the package names.
-  SEEK_PIECE=' grep -i $* '
+  echo This script requires a package name to find in the installed list of packages.
+  exit 1
 fi
 
 if debian_like; then
-  dpkg -la | eval $SEEK_PIECE
+  apt -qq list "$1" 2>/dev/null | grep -q '[installed]'
+ret=$?
+echo ret from seeking actual is $ret
+exit $ret
+
   exit $?
 fi
 
 rpm_available="$(whichable rpm)"
 if [ ! -z "$rpm_available" ]; then
-#is that the right phrase for rpm?  somewhat forgotten.
-  rpm -qa | eval $SEEK_PIECE
+  rpm -q --queryformat %{NAME} -p "$1"
+#hmmm: this is probably noisy, but we need an rpm system to test on.
   exit $?
 fi
 

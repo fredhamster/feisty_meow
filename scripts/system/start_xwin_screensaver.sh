@@ -17,12 +17,16 @@ fi
 # tests whether the package name provided as a parameter is already installed on the host.
 function check_installed()
 {
-  bash $FEISTY_MEOW_SCRIPTS/system/list_packages.sh "$1" &>/dev/null
+  bash $FEISTY_MEOW_SCRIPTS/system/seek_package.sh "$1" &>/dev/null
+out=$?
+echo out is $out on the seek
+return $out
+
+  return $?
 }
 
 # checks whether the provided package is already present, and if not, installs it.
-#hmmm: only works with apt based systems currently!
-#hmmm: list_packages is an inexact check!  it will match xscreensaver-data for xscreensaver as pattern!!!
+#hmmm: the below code only works with apt based systems currently!
 function install_if_missing()
 {
   packname="$1"; shift
