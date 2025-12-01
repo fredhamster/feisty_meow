@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 if [ -z "$*" ]; then
   # no parameters, so we do a wildcard style of listing packages.
