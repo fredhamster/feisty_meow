@@ -285,7 +285,7 @@ if [ -z "$skip_all" ]; then
   {
     if [ $? -ne 0 ]; then
       echo -e "\n\na problem occurred, but we can continue:\n\n$*\n\n=> Continuing script..."
-      error_sound
+#hmmm: not an error if continuing?  hmmm....      error_sound
     fi
   }
 

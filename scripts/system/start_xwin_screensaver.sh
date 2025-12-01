@@ -36,7 +36,7 @@ function install_if_missing()
     if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
       echo "'$packname' is not installed; installing now."
     fi
-    sudo apt install "$packname"
+    sudo apt --assume-yes install "$packname"
     exit_on_error "installing '$packname' package on system"
   fi
 }
@@ -87,6 +87,9 @@ xss_running="$(psa xss-lock)"
 xss_running=${xss_running//$'\n'/}
 xss_running=${xss_running//$'\r'/}
 
+# sentinel to track whether we're already running or not.
+skip_startup=
+
 if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
   echo -e "check for running xss-lock came up with: '$xss_running'"
 fi
@@ -94,19 +97,21 @@ if [ ! -z "$xss_running" ]; then
   if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
     echo "The xss-lock application is already running, so a screensaver is already hooked in."
   fi
-  exit 0
+  skip_startup=true
 fi
 
-# set the time-out for inactivity.
-xset s 300 5
-exit_on_error "setting the x window inactivity timeout"
+# only register the screensaver and crank it up if not running already.
+if [ -z "$skip_startup" ]; then
+  # set the time-out for inactivity.
+  xset s 300 5
+  exit_on_error "setting the x window inactivity timeout"
 
-# run the xss-lock program to handle x-window locking.
-start_background_action \
-  "xss-lock -n "$DIMMER" -l -- xsecurelock"
-continue_on_error "starting up xsecurelock as the screensaver"
-
-if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-  echo xsecurelock has been started.
+  # run the xss-lock program to handle x-window locking.
+  start_background_action \
+    "xss-lock -n "$DIMMER" -l -- xsecurelock"
+  continue_on_error "starting up xsecurelock as the screensaver"
 fi
+
+echo "xsecurelock has been started.  to test locking the screen, type:"
+echo "   xset s activate"
 
