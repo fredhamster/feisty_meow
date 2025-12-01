@@ -9,10 +9,6 @@ fi
 
 if debian_like; then
   apt -qq list "$1" 2>/dev/null | grep -q '[installed]'
-ret=$?
-echo ret from seeking actual is $ret
-exit $ret
-
   exit $?
 fi
 
@@ -22,13 +18,6 @@ if [ ! -z "$rpm_available" ]; then
 #hmmm: this is probably noisy, but we need an rpm system to test on.
   exit $?
 fi
-
-# yum should never be available if rpm was not!
-#yum_available="$(whichable yum)"
-#if [ ! -z "$yum_available" ]; then
-#  yum list | eval $SEEK_PIECE
-#  exit $?
-#fi
 
 echo "Could not deduce what type of OS this is; missing package listing commands."
 exit 1

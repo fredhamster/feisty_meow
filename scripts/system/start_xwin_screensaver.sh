@@ -18,10 +18,6 @@ fi
 function check_installed()
 {
   bash $FEISTY_MEOW_SCRIPTS/system/seek_package.sh "$1" &>/dev/null
-out=$?
-echo out is $out on the seek
-return $out
-
   return $?
 }
 
