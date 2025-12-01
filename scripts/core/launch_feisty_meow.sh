@@ -260,7 +260,8 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     export NO_HELLO=true
 
     # start up the xsecurelock screen saver if we are running x window system.
-    bash "$FEISTY_MEOW_SCRIPTS/system/start_xwin_screensaver.sh" &>/dev/null
+#no.  cannot force this.    bash "$FEISTY_MEOW_SCRIPTS/system/start_xwin_screensaver.sh" &>/dev/null
+#no still.  don't want elaborate checks or noise here.    psa uhhh
   fi
 
   # load the last bits we do here.
