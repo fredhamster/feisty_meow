@@ -55,6 +55,13 @@ killall -9 xscreensaver &>/dev/null
 
 # fix the xsecurelock file for the xscreensaver; paths haven't been updated to latest.
 XSECURELOCK_XSCREENSAVER='/usr/libexec/xsecurelock/saver_xscreensaver'
+if [ ! -f "$XSECURELOCK_XSCREENSAVER" ]; then
+  echo "
+An error occurred and the xsecurelock tool was not installed properly.
+This file is missing: $XSECURELOCK_XSCREENSAVER
+Abandoning screensaver setup."
+  exit 1
+fi
 grep -q '/usr/lib/xscreensaver' $XSECURELOCK_XSCREENSAVER
 #hmmm: also, check that we're using the right path for xscreensaver!  what if old system, where in old place?
 if [ $? -eq 0 ]; then
