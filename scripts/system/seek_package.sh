@@ -4,11 +4,11 @@ source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 if [ -z "$*" ]; then
   echo This script requires a package name to find in the installed list of packages.
-  exit 1
+  exit 2
 fi
 
 if debian_like; then
-  apt -qq list "$1" 2>/dev/null | grep -q '[installed]'
+  apt -qq list "$1" 2>/dev/null | grep -q '\[installed\]'
   exit $?
 fi
 
