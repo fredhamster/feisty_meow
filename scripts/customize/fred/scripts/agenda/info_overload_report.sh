@@ -141,10 +141,13 @@ analyze_hierarchy_and_report $CLOUD_BASE/webular "web design (ideas and tasks)"
 analyze_hierarchy_and_report $CLOUD_BASE/feisty_notes "feisty meow notes (mondo coding)"
 
 # metaverse notes are about our ongoing simulator development and LSL scripting.
-analyze_hierarchy_and_report $CLOUD_BASE/metaverse "metaverse in cyberspace design and scripting"
+analyze_hierarchy_and_report $CLOUD_BASE/metaverse "metaverse design and scripting"
 
 # home notes are a new top-level category; used to be under the grunty.
 analyze_hierarchy_and_report $CLOUD_BASE/branch_road "hearth and home notes (branch road)"
+
+# machinarium is another new category, combining our outwards servers with our inwards home hosts.
+analyze_hierarchy_and_report $CLOUD_BASE/machinarium "cybernetic organisms"
 
 # and then count up the things that we think will be cleaned soon, but one thing we have learned
 # unsorted files haven't been categorized yet.
