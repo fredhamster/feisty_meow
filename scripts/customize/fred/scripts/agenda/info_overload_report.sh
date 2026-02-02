@@ -144,7 +144,7 @@ analyze_hierarchy_and_report $CLOUD_BASE/feisty_notes "feisty meow notes (mondo 
 analyze_hierarchy_and_report $CLOUD_BASE/metaverse "metaverse design and scripting"
 
 # home notes are a new top-level category; used to be under the grunty.
-analyze_hierarchy_and_report $CLOUD_BASE/branch_road "hearth and home notes (branch road)"
+analyze_hierarchy_and_report $CLOUD_BASE/hutch "hearth and home notes (branch road)"
 
 # machinarium is another new category, combining our outwards servers with our inwards home hosts.
 analyze_hierarchy_and_report $CLOUD_BASE/machinarium "cybernetic organisms"
