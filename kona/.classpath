@@ -8,5 +8,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/junit-4.5.jar"/>
 	<classpathentry kind="lib" path="lib/SizeOf.jar"/>
+	<classpathentry kind="lib" path="/home/fred/data/code_depot/java_jars/commons-logging-1.3.5/commons-logging-1.3.5.jar"/>
 	<classpathentry kind="output" path="bin-eclipse"/>
 </classpath>
