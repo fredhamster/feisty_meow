@@ -16,43 +16,59 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/function.h>
+#include <basis/functions.h>
 #include <basis/guards.h>
-#include <basis/istring.h>
-#include <basis/portable.h>
-#include <basis/string_array.h>
-#include <opsystem/application_shell.h>
-#include <opsystem/command_line.h>
+#include <basis/astring.h>
+
+#include <structures/string_array.h>
+#include <application/application_shell.h>
+#include <application/command_line.h>
 #include <loggers/console_logger.h>
-#include <opsystem/filename.h>
-#include <data_struct/static_memory_gremlin.h>
+#include <loggers/program_wide_logger.h>
+#include <filesystem/filename.h>
+#include <structures/static_memory_gremlin.h>
+
+using namespace application;
+using namespace basis;
+//using namespace configuration;
+//using namespace mathematics;
+using namespace filesystem;
+using namespace loggers;
+using namespace structures;
+//using namespace textual;
+//using namespace timely;
+//using namespace unit_test;
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 class test_command_line : public application_shell
 {
 public:
-  test_command_line() : application_shell(class_name()) {}
-  IMPLEMENT_CLASS_NAME("test_command_line");
+  test_command_line() : application_shell() {}
+  DEFINE_CLASS_NAME("test_command_line");
   int execute();
 };
 
 int test_command_line::execute()
 {
-  program_wide_logger().log("these are the commands we got passed...");
+  FUNCDEF("execute");
+
+  LOG("these are the commands we got passed...");
   string_array cmds = command_line::get_command_line();
   for (int i = 0; i < cmds.length(); i++) {
-    program_wide_logger().log(isprintf("%02d: cmd=%s", i, cmds[i].s()));
+    LOG(a_sprintf("%02d: cmd=%s", i, cmds[i].s()));
   }
 
   // test 1 is a simple probe on the actual arguments to this program.
   {
     command_line cl1(__argc, __argv);
     filename prog(cl1.program_name());
-    log(istring("got a program name of: [") + prog.dirname() + istring("] ")
+    log(astring("got a program name of: [") + prog.dirname() + astring("] ")
         + prog.basename());
     log("got parms of:");
     for (int i = 0; i < cl1.entries(); i++) {
       command_parameter got = cl1.get(i);
-      log(istring(istring::SPRINTF, "%d: type=%s text=%s", i,
+      log(astring(astring::SPRINTF, "%d: type=%s text=%s", i,
           (got.type()==command_parameter::VALUE)? "VALUE"
               : (got.type()==command_parameter::CHAR_FLAG)? "CHAR_FLAG"
               : (got.type()==command_parameter::STRING_FLAG)? "STRING_FLAG"
@@ -64,11 +80,11 @@ int test_command_line::execute()
   // test 2 ensures that our new special flag ending support (standard unix
   // flag of --) is performing.
   {
-    istring cmd_line = "tossedout spumeco -g -q --fleem -r -- spugnats.txt crumbole.h";
+    astring cmd_line = "tossedout spumeco -g -q --fleem -r -- spugnats.txt crumbole.h";
     command_line cl2(cmd_line);
 
     command_parameter spumeco = cl2.get(0);
-//log(isprintf("parm 0: type=%d text=%s", spumeco.type(), spumeco.text().s()));
+//log(a_sprintf("parm 0: type=%d text=%s", spumeco.type(), spumeco.text().s()));
     if (spumeco.type() != command_parameter::VALUE)
       deadly_error(class_name(), "test 2", "spumeco is wrong type");
     if (spumeco.text() != "spumeco")
