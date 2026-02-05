@@ -116,11 +116,11 @@ exit_on_error "chown fred home"
 #hmmm: argh, wrong check!  can't check a multi-value if it's a directory or not!!!
 if [ -d "$FEISTY_MEOW_REPOS_SCAN" ]; then
   group_perm $FEISTY_MEOW_REPOS_SCAN
-  exit_on_error "group perms on fred's apps"
+  exit_on_error "group perms on fred's source"
 fi
 harsh_perm /home/fred/.ssh
 exit_on_error "harsh_perm setting on fred .ssh"
-group_perm /home/fred/apps/mapsdemo
+group_perm /home/fred/source/mapsdemo
 exit_on_error "group perms on mapsdemo app"
 
 echo "...done with permission changes."

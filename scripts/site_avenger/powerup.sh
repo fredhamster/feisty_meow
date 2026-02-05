@@ -15,7 +15,7 @@
 # application "name" and one or more "themes".  By convention, the name
 # and the theme are often the same, except the theme is capitalized.
 # For example, let's say our app name is "turtle" and our theme name is "box".
-# The repo is checked out to a folder called "~/apps/turtle".
+# The repo is checked out to a folder called "~/source/turtle".
 # This script will want to use "turtle" as the app name.
 # It will have to be told the theme name, but will assume it's 'Turtle' to
 # start with.  The concept of the theme comes from cakephp.
