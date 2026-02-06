@@ -20,13 +20,14 @@
 #include <basis/guards.h>
 #include <basis/astring.h>
 
-#include <structures/string_array.h>
 #include <application/application_shell.h>
 #include <application/command_line.h>
 #include <loggers/console_logger.h>
+#include <loggers/critical_events.h>
 #include <loggers/program_wide_logger.h>
 #include <filesystem/filename.h>
 #include <structures/static_memory_gremlin.h>
+#include <structures/string_array.h>
 
 using namespace application;
 using namespace basis;
@@ -61,11 +62,11 @@ int test_command_line::execute()
 
   // test 1 is a simple probe on the actual arguments to this program.
   {
-    command_line cl1(__argc, __argv);
+    command_line cl1(application::_global_argc, application::_global_argv);
     filename prog(cl1.program_name());
     log(astring("got a program name of: [") + prog.dirname() + astring("] ")
         + prog.basename());
-    log("got parms of:");
+    log(astring("got parms of:"));
     for (int i = 0; i < cl1.entries(); i++) {
       command_parameter got = cl1.get(i);
       log(astring(astring::SPRINTF, "%d: type=%s text=%s", i,
@@ -86,49 +87,49 @@ int test_command_line::execute()
     command_parameter spumeco = cl2.get(0);
 //log(a_sprintf("parm 0: type=%d text=%s", spumeco.type(), spumeco.text().s()));
     if (spumeco.type() != command_parameter::VALUE)
-      deadly_error(class_name(), "test 2", "spumeco is wrong type");
+      non_continuable_error(class_name(), "test 2", "spumeco is wrong type");
     if (spumeco.text() != "spumeco")
-      deadly_error(class_name(), "test 2", "spumeco is erroneous");
+      non_continuable_error(class_name(), "test 2", "spumeco is erroneous");
 
     command_parameter gflag = cl2.get(1);
     if (gflag.type() != command_parameter::CHAR_FLAG)
-      deadly_error(class_name(), "test 2", "G flag had wrong type");
+      non_continuable_error(class_name(), "test 2", "G flag had wrong type");
     if (gflag.text() != "g")
-      deadly_error(class_name(), "test 2", "G flag had wrong value");
+      non_continuable_error(class_name(), "test 2", "G flag had wrong value");
 
     command_parameter qflag = cl2.get(2);
     if (qflag.type() != command_parameter::CHAR_FLAG)
-      deadly_error(class_name(), "test 2", "Q flag had wrong type");
+      non_continuable_error(class_name(), "test 2", "Q flag had wrong type");
     if (qflag.text() != "q")
-      deadly_error(class_name(), "test 2", "Q flag had wrong value");
+      non_continuable_error(class_name(), "test 2", "Q flag had wrong value");
 
     command_parameter fleemflag = cl2.get(3);
     if (fleemflag.type() != command_parameter::STRING_FLAG)
-      deadly_error(class_name(), "test 2", "fleem flag had wrong type");
+      non_continuable_error(class_name(), "test 2", "fleem flag had wrong type");
     if (fleemflag.text() != "fleem")
-      deadly_error(class_name(), "test 2", "fleem flag had wrong value");
+      non_continuable_error(class_name(), "test 2", "fleem flag had wrong value");
 
     command_parameter rflag = cl2.get(4);
     if (rflag.type() != command_parameter::CHAR_FLAG)
-      deadly_error(class_name(), "test 2", "R flag had wrong type");
+      non_continuable_error(class_name(), "test 2", "R flag had wrong type");
     if (rflag.text() != "r")
-      deadly_error(class_name(), "test 2", "R flag had wrong value");
+      non_continuable_error(class_name(), "test 2", "R flag had wrong value");
 
     command_parameter spugval = cl2.get(5);
     if (spugval.type() != command_parameter::VALUE)
-      deadly_error(class_name(), "test 2", "spugval had wrong type");
+      non_continuable_error(class_name(), "test 2", "spugval had wrong type");
     if (spugval.text() != "spugnats.txt")
-      deadly_error(class_name(), "test 2", "spugval had wrong value");
+      non_continuable_error(class_name(), "test 2", "spugval had wrong value");
 
     command_parameter crumval = cl2.get(6);
     if (crumval.type() != command_parameter::VALUE)
-      deadly_error(class_name(), "test 2", "crumval had wrong type");
+      non_continuable_error(class_name(), "test 2", "crumval had wrong type");
     if (crumval.text() != "crumbole.h")
-      deadly_error(class_name(), "test 2", "crumval had wrong value");
+      non_continuable_error(class_name(), "test 2", "crumval had wrong value");
 
     command_parameter bogus = cl2.get(7);
     if (bogus.type() != command_parameter::BOGUS_ITEM)
-      deadly_error(class_name(), "test 2", "bogus parameter had wrong type");
+      non_continuable_error(class_name(), "test 2", "bogus parameter had wrong type");
   }
 
 //more tests!
