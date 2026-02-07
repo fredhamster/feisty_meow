@@ -4,8 +4,9 @@ include cpp/variables.def
 
 PROJECT = tests_application
 TYPE = test
-TARGETS =    test_command_line.exe \
-#test_break_signal.exe test_byte_filer.exe 
+TARGETS = test_break_signal.exe test_command_line.exe 
+
+#test_byte_filer.exe 
 #  test_directory.exe test_directory_tree.exe test_dirtree_fcopy.exe test_filename.exe \
 #  test_huge_file.exe test_ini_configurator.exe test_ini_parser.exe test_logger.exe \
 #  test_path_configuration.exe test_registry_configurator.exe test_redirection.exe \

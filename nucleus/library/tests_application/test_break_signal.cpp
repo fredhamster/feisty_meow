@@ -12,27 +12,45 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/function.h>
+#include <basis/functions.h>
 #include <basis/guards.h>
-#include <basis/istring.h>
-#include <mechanisms/time_stamp.h>
-#include <opsystem/application_shell.h>
+#include <basis/astring.h>
+#include <timely/time_control.h>
+#include <timely/time_stamp.h>
+#include <application/application_shell.h>
+#include <application/hoople_main.h>
 #include <loggers/console_logger.h>
-#include <opsystem/filename.h>
-#include <data_struct/static_memory_gremlin.h>
+#include <loggers/critical_events.h>
+#include <loggers/program_wide_logger.h>
+#include <filesystem/filename.h>
+#include <structures/static_memory_gremlin.h>
+#include <unit_test/unit_base.h>
 
 #include <signal.h>
+//hmmm: much better if we had signal handling wrapped in a class instead of using bare calls to the OS signal library.
 #include <stdio.h>
+//hmmm: also a flush mechanism for i/o being inside feisty code would be better than this call to stdio.
 
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger(), s)
+
+using namespace application;
+using namespace basis;
+//using namespace configuration;
+//using namespace filesystem;
+using namespace loggers;
+//using namespace structures;
+//using namespace textual;
+using namespace timely;
+using namespace unit_test;
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 static bool _leave_now = false;
 
-class test_break_signal : public application_shell
+class test_break_signal : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_break_signal() : application_shell(class_name()) {}
-  IMPLEMENT_CLASS_NAME("test_break_signal");
+  test_break_signal() : application_shell() {}
+  DEFINE_CLASS_NAME("test_break_signal");
   virtual int execute();
 };
 
@@ -53,13 +71,13 @@ int test_break_signal::execute()
   LOG("starting loop--hit ctrl-C to exit or wait for timeout.");
   time_stamp leave_time(20 * SECOND_ms);
   while (!_leave_now && (time_stamp() < leave_time) ) {
-    portable::sleep_ms(20);
+    time_control::sleep_ms(20);
   }
 
   // we jump to here when catching the signal.
-  istring to_print("break_signal:: works for those functions tested.");
-  guards::alert_message(to_print.s());
-  fflush(NIL);
+  astring to_print("break_signal:: works for those functions tested.");
+  critical_events::alert_message(to_print.s());
+  fflush(NULL_POINTER);
   return 0;
 }
 
