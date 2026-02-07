@@ -22,12 +22,14 @@
 
 #include <application/application_shell.h>
 #include <application/command_line.h>
+#include <application/hoople_main.h>
 #include <loggers/console_logger.h>
 #include <loggers/critical_events.h>
 #include <loggers/program_wide_logger.h>
 #include <filesystem/filename.h>
 #include <structures/static_memory_gremlin.h>
 #include <structures/string_array.h>
+#include <unit_test/unit_base.h>
 
 using namespace application;
 using namespace basis;
@@ -38,11 +40,11 @@ using namespace loggers;
 using namespace structures;
 //using namespace textual;
 //using namespace timely;
-//using namespace unit_test;
+using namespace unit_test;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
-class test_command_line : public application_shell
+class test_command_line : virtual public unit_base, virtual public application_shell
 {
 public:
   test_command_line() : application_shell() {}
@@ -88,43 +90,43 @@ int test_command_line::execute()
 //log(a_sprintf("parm 0: type=%d text=%s", spumeco.type(), spumeco.text().s()));
     if (spumeco.type() != command_parameter::VALUE)
       non_continuable_error(class_name(), "test 2", "spumeco is wrong type");
-    if (spumeco.text() != "spumeco")
+    if (spumeco.text() != astring("spumeco"))
       non_continuable_error(class_name(), "test 2", "spumeco is erroneous");
 
     command_parameter gflag = cl2.get(1);
     if (gflag.type() != command_parameter::CHAR_FLAG)
       non_continuable_error(class_name(), "test 2", "G flag had wrong type");
-    if (gflag.text() != "g")
+    if (gflag.text() != astring("g"))
       non_continuable_error(class_name(), "test 2", "G flag had wrong value");
 
     command_parameter qflag = cl2.get(2);
     if (qflag.type() != command_parameter::CHAR_FLAG)
       non_continuable_error(class_name(), "test 2", "Q flag had wrong type");
-    if (qflag.text() != "q")
+    if (qflag.text() != astring("q"))
       non_continuable_error(class_name(), "test 2", "Q flag had wrong value");
 
     command_parameter fleemflag = cl2.get(3);
     if (fleemflag.type() != command_parameter::STRING_FLAG)
       non_continuable_error(class_name(), "test 2", "fleem flag had wrong type");
-    if (fleemflag.text() != "fleem")
+    if (fleemflag.text() != astring("fleem"))
       non_continuable_error(class_name(), "test 2", "fleem flag had wrong value");
 
     command_parameter rflag = cl2.get(4);
     if (rflag.type() != command_parameter::CHAR_FLAG)
       non_continuable_error(class_name(), "test 2", "R flag had wrong type");
-    if (rflag.text() != "r")
+    if (rflag.text() != astring("r"))
       non_continuable_error(class_name(), "test 2", "R flag had wrong value");
 
     command_parameter spugval = cl2.get(5);
     if (spugval.type() != command_parameter::VALUE)
       non_continuable_error(class_name(), "test 2", "spugval had wrong type");
-    if (spugval.text() != "spugnats.txt")
+    if (spugval.text() != astring("spugnats.txt"))
       non_continuable_error(class_name(), "test 2", "spugval had wrong value");
 
     command_parameter crumval = cl2.get(6);
     if (crumval.type() != command_parameter::VALUE)
       non_continuable_error(class_name(), "test 2", "crumval had wrong type");
-    if (crumval.text() != "crumbole.h")
+    if (crumval.text() != astring("crumbole.h"))
       non_continuable_error(class_name(), "test 2", "crumval had wrong value");
 
     command_parameter bogus = cl2.get(7);
@@ -134,7 +136,7 @@ int test_command_line::execute()
 
 //more tests!
 
-  guards::alert_message("command_line:: works for those functions tested.");
+  critical_events::alert_message("command_line:: works for those functions tested.");
   return 0;
 }
 

@@ -15,18 +15,15 @@ TARGETS =    test_command_line.exe \
 #endif
 ##LOCAL_LIBS_USED = basis i_library 
 DEFINITIONS += USE_FEISTY_MEOW_DLLS
-LOCAL_LIBS_USED = unit_test application 
-#configuration filesystem loggers \
-#  mathematics nodes processes structures textual timely structures basis  \
-#loggers 
+LOCAL_LIBS_USED = unit_test application configuration filesystem loggers \
+  mathematics nodes processes structures textual timely structures basis
 
 #VCPP_USE_GUI=t
 #USE_HOOPLE_DLLS=t
 
-#RUN_TARGETS = $(ACTUAL_TARGETS)
+RUN_TARGETS = $(ACTUAL_TARGETS)
 # run every test except test_rendezvous, which waits for a key.
-RUN_TARGETS =    test_command_line.exe \
-
+#RUN_TARGETS =    test_command_line.exe \
 #test_break_signal.exe test_byte_filer.exe 
 #  test_directory.exe test_directory_tree.exe test_filename.exe \
 #  test_huge_file.exe test_ini_configurator.exe test_ini_parser.exe test_logger.exe \
