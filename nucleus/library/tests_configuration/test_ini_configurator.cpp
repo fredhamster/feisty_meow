@@ -17,12 +17,13 @@ const int test_iterations = 10;
 //#define DEBUG_INI_CONFIGURATOR_TEST
   // uncomment for debugging version.
 
+#include <application/hoople_main.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
 #include <basis/astring.h>
 #include <geometric/rectangle.h>
 #include <geometric/screen_rectangle.h>
-#include <mathematics/float_plus.h>
+#include <mathematics/double_plus.h>
 #include <loggers/console_logger.h>
 #include <configuration/ini_configurator.h>
 #include <configuration/application_configuration.h>
@@ -33,9 +34,16 @@ const int test_iterations = 10;
   #include <stdio.h>
 #endif
 
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+
 HOOPLE_STARTUP_CODE;
 
+using namespace basis;
+using namespace configuration;
 using namespace geometric;
+using namespace loggers;
+using namespace mathematics;
+using namespace textual;
 
 typedef double_plus frunkle;
 
@@ -43,14 +51,18 @@ typedef double_plus frunkle;
 
 const char *INI_SECTION = "t_ini_configurator";
 
+//hmmm: ugly old main() without using the hoople machinery.  ack.
+astring static_class_name() { return "test_ini_configurator"; }
+
 int main(int formal(argc), char *formal(argv)[])
 {
+  FUNCDEF("test ini config main")
+
   ini_configurator ini("t_ini_configurator.ini", ini_configurator::AUTO_STORE);
 
-console_logger out;
-out.log(astring("ini file resides in: ") + ini.name());
+LOG(astring("ini file resides in: ") + ini.name());
 
-out.log(astring("exe directory is currently: ") + application_configuration::application_directory());
+LOG(astring("exe directory is currently: ") + application_configuration::application_directory());
 
   for (int i = 0; i < test_iterations; i++) {  // outer loop bracket.
     // beginning of test sets.
@@ -81,7 +93,7 @@ out.log(astring("exe directory is currently: ") + application_configuration::app
       // second test set.
       const char *TEST_NAME = "second test: string";
       astring junk("this is a junky string to be stored as bytes....");
-      byte_array to_store(junk.length() + 1, (byte *)junk.observe());
+      byte_array to_store(junk.length() + 1, (abyte *)junk.observe());
       astring as_bytes;
       byte_formatter::bytes_to_string(to_store, as_bytes);
       ini.store("test_of_byte_store", "test1", as_bytes);
@@ -132,7 +144,7 @@ out.log(astring("exe directory is currently: ") + application_configuration::app
       const char *TEST_NAME = "fifth test: bytes";
       astring urp("urp");
       astring junk("this is a junky string to be stored as bytes....");
-      byte_array default_bytes(urp.length() + 1, (byte *)urp.observe());
+      byte_array default_bytes(urp.length() + 1, (abyte *)urp.observe());
       astring defbytes_string;
       byte_formatter::bytes_to_string(default_bytes, defbytes_string);
       byte_array found;
