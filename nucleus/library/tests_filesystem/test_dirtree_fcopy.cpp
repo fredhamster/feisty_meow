@@ -54,12 +54,21 @@ int test_fcopy::execute()
 {
   FUNCDEF("execute");
 
+/*
   if (application::_global_argc < 3)
     non_continuable_error(class_name(), "command line", "this program needs two "
           "parameters:\na directory for the source and one for the target.");
-
-  astring source_dir = application::_global_argv[1];
-  astring target_dir = application::_global_argv[2];
+*/
+  astring source_dir;
+  astring target_dir;
+  if (application::_global_argc < 3) {
+    // special default for testing--just use part of our own hierarchy to compare.
+    source_dir = environment::get("FEISTY_MEOW_SCRIPTS");
+    target_dir = environment::get("FEISTY_MEOW_SCRIPTS");
+  } else {
+    source_dir = application::_global_argv[1];
+    target_dir = application::_global_argv[2];
+  }
 
   // read the source location.
   log(astring("Scanning source tree at \"") + source_dir + "\"");
@@ -151,7 +160,7 @@ int test_fcopy::execute()
 //
 //compare with source tree read before.
 
-  guards::alert_message("directory_tree file transfer:: works for those functions tested.");
+  critical_events::alert_message("directory_tree file transfer:: works for those functions tested.");
   return 0;
 }
 
