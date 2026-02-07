@@ -16,25 +16,25 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/function.h>
+#include <basis/functions.h>
 #include <basis/guards.h>
-#include <opsystem/application_shell.h>
+#include <application/application_shell.h>
 #include <loggers/console_logger.h>
-#include <opsystem/directory.h>
-#include <opsystem/directory_tree.h>
-#include <opsystem/filename.h>
-#include <opsystem/filename_list.h>
-#include <opsystem/heavy_file_ops.h>
-#include <data_struct/static_memory_gremlin.h>
+#include <filesystem/directory.h>
+#include <filesystem/directory_tree.h>
+#include <filesystem/filename.h>
+#include <filesystem/filename_list.h>
+#include <filesystem/heavy_file_ops.h>
+#include <structures/static_memory_gremlin.h>
 #include <textual/string_manipulation.h>
 
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger(), s)
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 class test_fcopy : public application_shell
 {
 public:
   test_fcopy() : application_shell(static_class_name()) {}
-  IMPLEMENT_CLASS_NAME("test_dirtree_fcopy");
+  DEFINE_CLASS_NAME("test_dirtree_fcopy");
   int execute();
 };
 
@@ -46,18 +46,18 @@ int test_fcopy::execute()
     non_continuable_error(class_name(), "command line", "this program needs two "
           "parameters:\na directory for the source and one for the target.");
 
-  istring source_dir = __argv[1];
-  istring target_dir = __argv[2];
+  astring source_dir = __argv[1];
+  astring target_dir = __argv[2];
 
   // read the source location.
-  log(istring("Scanning source tree at \"") + source_dir + "\"");
+  log(astring("Scanning source tree at \"") + source_dir + "\"");
   directory_tree source(source_dir, "*");
   if (!source.good())
     non_continuable_error(class_name(), "directory_tree construction",
           "the source directory could not be read");
 
   // read the stuff that exists at the target.
-  log(istring("Scanning target tree at \"") + target_dir + "\"");
+  log(astring("Scanning target tree at \"") + target_dir + "\"");
   directory_tree target(target_dir, "*");
   if (!target.good())
     non_continuable_error(class_name(), "directory_tree construction",
@@ -73,8 +73,8 @@ int test_fcopy::execute()
     non_continuable_error(class_name(), "directory_tree calculation",
         "the target tree could not be calculated");
 
-  istring source_start;
-  istring target_start;
+  astring source_start;
+  astring target_start;
   if (__argc > 3)
     source_start = __argv[3];
   if (__argc > 4)
@@ -102,9 +102,9 @@ int test_fcopy::execute()
         "there were a different number of elements in unpacked form");
   for (int i = 0; i < diffs.elements(); i++) {
     if (!regen.member(*diffs[i])) {
-      istring name = diffs[i]->raw();
+      astring name = diffs[i]->raw();
       non_continuable_error(class_name(), "filename_list packing",
-          istring("name from original set was missing in regenerated: ")
+          astring("name from original set was missing in regenerated: ")
               + name);
     }
   }
@@ -115,19 +115,19 @@ int test_fcopy::execute()
         + curr->raw();
     filename target_file = target.path() + filename::default_separator()
         + curr->secondary();
-//LOG(istring("cp source: ") + source_file.raw());
-//LOG(istring("-> target: ") + target_file.raw());
+//LOG(astring("cp source: ") + source_file.raw());
+//LOG(astring("-> target: ") + target_file.raw());
     filename targ_dir = target_file.dirname();
     if (!targ_dir.is_directory()) {
       bool worked = directory::recursive_create(targ_dir);
       if (!worked)
         non_continuable_error(class_name(), "recursive mkdir",
-            istring("failed to create the target directory ") + targ_dir);
+            astring("failed to create the target directory ") + targ_dir);
     }
 
     outcome ret = heavy_file_operations::copy_file(source_file, target_file);
     if (ret != heavy_file_operations::OKAY)
-      non_continuable_error(class_name(), "copying file", istring("there was an error ")
+      non_continuable_error(class_name(), "copying file", astring("there was an error ")
           + heavy_file_operations::outcome_name(ret)
           + " when copying the file.");
   }
