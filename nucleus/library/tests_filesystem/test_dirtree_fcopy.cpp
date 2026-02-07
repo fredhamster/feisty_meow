@@ -42,12 +42,12 @@ int test_fcopy::execute()
 {
   FUNCDEF("execute");
 
-  if (__argc < 3)
+  if (application::_global_argc < 3)
     non_continuable_error(class_name(), "command line", "this program needs two "
           "parameters:\na directory for the source and one for the target.");
 
-  astring source_dir = __argv[1];
-  astring target_dir = __argv[2];
+  astring source_dir = application::_global_argv[1];
+  astring target_dir = application::_global_argv[2];
 
   // read the source location.
   log(astring("Scanning source tree at \"") + source_dir + "\"");
@@ -75,10 +75,10 @@ int test_fcopy::execute()
 
   astring source_start;
   astring target_start;
-  if (__argc > 3)
-    source_start = __argv[3];
-  if (__argc > 4)
-    target_start = __argv[4];
+  if (application::_global_argc > 3)
+    source_start = application::_global_argv[3];
+  if (application::_global_argc > 4)
+    target_start = application::_global_argv[4];
 
   LOG("comparing the two trees.");
   filename_list diffs;
