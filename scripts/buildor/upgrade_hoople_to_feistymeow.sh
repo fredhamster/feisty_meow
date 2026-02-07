@@ -151,6 +151,7 @@ standards and usages."
     | sed -e 's/__argv/application::_global_argv/g' \
     | sed -e 's/__argc/application::_global_argc/g' \
     | sed -e 's/application_shell(static_class_name())/application_shell()/g' \
+    | sed -e 's/guards::alert_message/critical_events::alert_message/g' \
     | sed -e 's/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/[\/]*/\/\/\/\/\/\/\/\/\/\/\/\/\/\//g' \
     >"$tempfile"
   

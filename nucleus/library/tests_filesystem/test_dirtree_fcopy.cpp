@@ -18,6 +18,7 @@
 
 #include <basis/functions.h>
 #include <basis/guards.h>
+#include <application/hoople_main.h>
 #include <application/application_shell.h>
 #include <loggers/console_logger.h>
 #include <filesystem/directory.h>
@@ -27,13 +28,24 @@
 #include <filesystem/heavy_file_ops.h>
 #include <structures/static_memory_gremlin.h>
 #include <textual/string_manipulation.h>
+#include <unit_test/unit_base.h>
+
+using namespace application;
+using namespace basis;
+//using namespace configuration;
+//using namespace filesystem;
+using namespace loggers;
+using namespace filesystem;
+//using namespace textual;
+//using namespace timely;
+using namespace unit_test;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
-class test_fcopy : public application_shell
+class test_fcopy : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_fcopy() : application_shell(static_class_name()) {}
+  test_fcopy() : application_shell() {}
   DEFINE_CLASS_NAME("test_dirtree_fcopy");
   int execute();
 };
@@ -64,12 +76,12 @@ int test_fcopy::execute()
         "the target directory could not be read");
 
   LOG("calculating checksums for source.");
-  if (!source.calculate())
+  if (!source.calculate(true))
     non_continuable_error(class_name(), "directory_tree calculation",
         "the source tree could not be calculated");
 
   LOG("calculating checksums for target.");
-  if (!target.calculate())
+  if (!target.calculate(true))
     non_continuable_error(class_name(), "directory_tree calculation",
         "the target tree could not be calculated");
 
@@ -83,7 +95,7 @@ int test_fcopy::execute()
   LOG("comparing the two trees.");
   filename_list diffs;
   directory_tree::compare_trees(source, source_start, target, target_start,
-      diffs);
+      diffs, file_info::EQUAL_CHECKSUM_TIMESTAMP_FILESIZE);
 //LOG("missing files:");
 //LOG(diffs.text_form());
 
