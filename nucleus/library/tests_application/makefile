@@ -22,14 +22,17 @@ LOCAL_LIBS_USED = unit_test application configuration filesystem loggers \
 #VCPP_USE_GUI=t
 #USE_HOOPLE_DLLS=t
 
-RUN_TARGETS = $(ACTUAL_TARGETS)
-# run every test except test_rendezvous, which waits for a key.
-#RUN_TARGETS =    test_command_line.exe \
-#test_break_signal.exe test_byte_filer.exe 
-#  test_directory.exe test_directory_tree.exe test_filename.exe \
+LAST_TARGETS += test_break_signal_special 
+RUN_TARGETS = $(EXECUTABLE_DIR)/test_command_line 
+
+#  test_filename.exe \
 #  test_huge_file.exe test_ini_configurator.exe test_ini_parser.exe test_logger.exe \
 #  test_path_configuration.exe test_registry_configurator.exe \
 #  test_system_values.exe test_timer_driver.exe
 
 include cpp/rules.def
+
+# run the break signal tester with a short timeout, since generally no one's watching the build to hit break.
+test_break_signal_special:
+	$(EXECUTABLE_DIR)/test_break_signal 1
 

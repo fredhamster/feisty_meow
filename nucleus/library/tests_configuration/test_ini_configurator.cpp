@@ -131,24 +131,14 @@ LOG(astring("exe directory is currently: ") + application_configuration::applica
     {
       // fourth test set.
       const char *TEST_NAME = "fourth test: frunkle";
-      frunkle def_frunkle((double)1487335673.1415926535834985987);
+      frunkle def_frunkle(1487335673.1415926535834985987);
       astring def_text(astring::SPRINTF, "%f", def_frunkle.value());	  
-LOG(astring("def text is ") + def_text);
-double comparator = 1487335673.1415926535834985987;
-LOG(a_sprintf("starting from double gets %f instead", comparator));
-
       ini.store("test", "frunkle_test", def_text);
       astring found_string = ini.load("test", "frunkle_test", MACRO_AS_STRING(UNWANTED_DEFAULT_VALUE));
-	  	  
-LOG(astring("found string is ") + found_string);	  
-
       frunkle found_frunkle = found_string.convert(0.0);
       if (found_frunkle == frunkle(0.0))
         deadly_error(INI_SECTION, TEST_NAME,
            "ini_configurator load failed: float conversion failed--got zero");
-
-LOG(astring("found number ") + a_sprintf("%f", found_frunkle.value()) + " which we want to be " + a_sprintf("%f", def_frunkle.value()));
-
       if (found_frunkle == frunkle(UNWANTED_DEFAULT_VALUE))
         deadly_error(INI_SECTION, TEST_NAME,
            "ini_configurator load failed: wrong unwanted default was used");
