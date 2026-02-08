@@ -24,19 +24,21 @@ namespace mathematics {
 class math_ops
 {
 public:
+  typedef signed long long fat_int;
+
   //! returns the rounded integer value for "to_round".
-  static int round_it(float to_round)
+  static fat_int round_it(float to_round)
   {
-    int to_return = int(to_round);
+    fat_int to_return = fat_int(to_round);
     // this uses a simplistic view of rounding.
     if (to_round - float(to_return) > 0.5) to_return++;
     return to_return;
   }
 
   //! returns the rounded integer value for "to_round".
-  static int round_it(double to_round)
+  static fat_int round_it(double to_round)
   {
-    int to_return = int(to_round);
+    fat_int to_return = fat_int(to_round);
     // this uses a simplistic view of rounding.
     if (to_round - double(to_return) > 0.5) to_return++;
     return to_return;

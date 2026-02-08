@@ -36,6 +36,8 @@ const int test_iterations = 10;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
+#define UNWANTED_DEFAULT_VALUE 9949494.3
+
 HOOPLE_STARTUP_CODE;
 
 using namespace basis;
@@ -53,6 +55,8 @@ const char *INI_SECTION = "t_ini_configurator";
 
 //hmmm: ugly old main() without using the hoople machinery.  ack.
 astring static_class_name() { return "test_ini_configurator"; }
+
+#define MACRO_AS_STRING(s) #s
 
 int main(int formal(argc), char *formal(argv)[])
 {
@@ -115,9 +119,9 @@ LOG(astring("exe directory is currently: ") + application_configuration::applica
       frunkle def_frunkle(3.14159265358);
       astring def_text(astring::SPRINTF, "%f", def_frunkle.value());
       ini.store(INI_SECTION, TEST_NAME, def_text);
-      astring found_string = ini.load(INI_SECTION, TEST_NAME, "9949494.3");
+      astring found_string = ini.load(INI_SECTION, TEST_NAME, MACRO_AS_STRING(UNWANTED_DEFAULT_VALUE));
       frunkle found_frunkle = found_string.convert(0.0);
-      if (found_frunkle == frunkle(9949494.3))
+      if (found_frunkle == frunkle(UNWANTED_DEFAULT_VALUE))
         deadly_error(INI_SECTION, TEST_NAME, 
            "ini_configurator load failed: default was used");
       if (found_frunkle != def_frunkle)
@@ -127,14 +131,27 @@ LOG(astring("exe directory is currently: ") + application_configuration::applica
     {
       // fourth test set.
       const char *TEST_NAME = "fourth test: frunkle";
-      frunkle def_frunkle(1487335673.1415926535834985987);
-      astring def_text(astring::SPRINTF, "%f", def_frunkle.value());
+      frunkle def_frunkle((double)1487335673.1415926535834985987);
+      astring def_text(astring::SPRINTF, "%f", def_frunkle.value());	  
+LOG(astring("def text is ") + def_text);
+double comparator = 1487335673.1415926535834985987;
+LOG(a_sprintf("starting from double gets %f instead", comparator));
+
       ini.store("test", "frunkle_test", def_text);
-      astring found_string = ini.load("test", "frunkle_test", "9949494.3");
+      astring found_string = ini.load("test", "frunkle_test", MACRO_AS_STRING(UNWANTED_DEFAULT_VALUE));
+	  	  
+LOG(astring("found string is ") + found_string);	  
+
       frunkle found_frunkle = found_string.convert(0.0);
-      if (found_frunkle == frunkle(9949494.3))
+      if (found_frunkle == frunkle(0.0))
         deadly_error(INI_SECTION, TEST_NAME,
-           "ini_configurator load failed: wrong default was used");
+           "ini_configurator load failed: float conversion failed--got zero");
+
+LOG(astring("found number ") + a_sprintf("%f", found_frunkle.value()) + " which we want to be " + a_sprintf("%f", def_frunkle.value()));
+
+      if (found_frunkle == frunkle(UNWANTED_DEFAULT_VALUE))
+        deadly_error(INI_SECTION, TEST_NAME,
+           "ini_configurator load failed: wrong unwanted default was used");
       if (found_frunkle != def_frunkle)
         deadly_error(INI_SECTION, TEST_NAME, 
            "ini_configurator load failed: saved value differed");
