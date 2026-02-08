@@ -136,7 +136,8 @@ int test_command_line::execute()
 
 //more tests!
 
-  critical_events::alert_message("command_line:: works for those functions tested.");
+  critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
+
   return 0;
 }
 
