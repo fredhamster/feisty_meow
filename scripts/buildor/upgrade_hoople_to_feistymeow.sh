@@ -151,9 +151,10 @@ standards and usages."
     | sed -e 's/__argv/application::_global_argv/g' \
     | sed -e 's/__argc/application::_global_argc/g' \
     | sed -e 's/application_shell(static_class_name())/application_shell()/g' \
+    | sed -e 's/application_shell(class_name())/application_shell()/g' \
     | sed -e 's/guards::alert_message/critical_events::alert_message/g' \
     | sed -e 's/^#include <mathematics\/float_plus.h> *$/#include <mathematics\/double_plus.h>/g' \
-    | sed -e 's/^#include <opsystem\/ini_parser.h> *$/#include <configuration\/double_plus.h>/g' \
+    | sed -e 's/^#include <opsystem\/ini_parser.h> *$/#include <configuration\/ini_parser.h>/g' \
     | sed -e 's/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/[\/]*/\/\/\/\/\/\/\/\/\/\/\/\/\/\//g' \
     >"$tempfile"
   

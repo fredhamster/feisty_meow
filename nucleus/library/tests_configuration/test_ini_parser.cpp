@@ -19,8 +19,22 @@
 #include <application/application_shell.h>
 #include <filesystem/byte_filer.h>
 #include <loggers/console_logger.h>
-#include <opsystem/ini_parser.h>
+#include <configuration/ini_parser.h>
 #include <structures/static_memory_gremlin.h>
+#include <unit_test/unit_base.h>
+
+using namespace application;
+using namespace basis;
+using namespace configuration;
+//using namespace mathematics;
+//using namespace filesystem;
+using namespace loggers;
+//using namespace structures;
+//using namespace textual;
+//using namespace timely;
+using namespace unit_test;
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 const astring INI_FILE_1 = "\
 [bork]\n\
@@ -36,7 +50,7 @@ dora=34\n\
 //#define READ_FILE_TEST
   // uncomment to read in a file and parse it.
 
-class test_ini_parser : public application_shell
+class test_ini_parser : virtual public unit_base, virtual public application_shell
 {
 public:
   test_ini_parser() : application_shell(class_name()) {}
@@ -52,12 +66,12 @@ int test_ini_parser::execute()
 
 //astring dump;
 //par.restate(dump);
-//log(astring("table has:\n") + dump);
+//LOG(astring("table has:\n") + dump);
 
   string_table twerf;
   if (!par.get_section("twerf", twerf))
     deadly_error(class_name(), "get_section 1", "twerf section was not found");
-//log(astring("twerf section is: ") + twerf.text_form());
+//LOG(astring("twerf section is: ") + twerf.text_form());
   if (!twerf.find("noodles"))
     deadly_error(class_name(), "get_section 1", "item #1 was not found");
   if (*twerf.find("noodles") != "fungus")
@@ -87,21 +101,21 @@ int test_ini_parser::execute()
   par.restate(new_ini);
 
   program_wide_logger::get().eol(log_base::CRLF_AT_END);
-  log("");
+  LOG("");
 
 #ifdef READ_FILE_TEST
   byte_filer input("c:/home/fungal.lld", "rb");
   int len = input.length();
-  log(a_sprintf("fungal len is %d", len));
+  LOG(a_sprintf("fungal len is %d", len));
   astring jojo;
   input.read(jojo, len);
-  //log("whole file is:");
-  //log(jojo);
+  //LOG("whole file is:");
+  //LOG(jojo);
 
   ini_parser klug(jojo);
   astring dump2;
   klug.restate(dump2);
-  log(dump2);
+  LOG(dump2);
 #endif
 
   critical_events::alert_message("ini_parser:: works for those functions tested.\n");
