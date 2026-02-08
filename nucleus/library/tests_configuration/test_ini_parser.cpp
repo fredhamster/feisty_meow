@@ -19,8 +19,11 @@
 #include <application/application_shell.h>
 #include <filesystem/byte_filer.h>
 #include <loggers/console_logger.h>
+#include <loggers/critical_events.h>
+#include <loggers/program_wide_logger.h>
 #include <configuration/ini_parser.h>
 #include <structures/static_memory_gremlin.h>
+#include <textual/parser_bits.h>
 #include <unit_test/unit_base.h>
 
 using namespace application;
@@ -29,8 +32,8 @@ using namespace configuration;
 //using namespace mathematics;
 //using namespace filesystem;
 using namespace loggers;
-//using namespace structures;
-//using namespace textual;
+using namespace structures;
+using namespace textual;
 //using namespace timely;
 using namespace unit_test;
 
@@ -53,14 +56,14 @@ dora=34\n\
 class test_ini_parser : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_ini_parser() : application_shell(class_name()) {}
+  test_ini_parser() : application_shell() {}
   DEFINE_CLASS_NAME("test_ini_parser");
   virtual int execute();
 };
 
 int test_ini_parser::execute()
 {
-  program_wide_logger::get().eol(log_base::NO_ENDING);
+  program_wide_logger::get().eol(parser_bits::NO_ENDING);
 
   ini_parser par(INI_FILE_1);
 
@@ -100,7 +103,7 @@ int test_ini_parser::execute()
   astring new_ini;
   par.restate(new_ini);
 
-  program_wide_logger::get().eol(log_base::CRLF_AT_END);
+  program_wide_logger::get().eol(parser_bits::CRLF_AT_END);
   LOG("");
 
 #ifdef READ_FILE_TEST
