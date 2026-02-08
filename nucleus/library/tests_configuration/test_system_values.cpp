@@ -12,28 +12,37 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/function.h>
+#include <basis/functions.h>
 #include <basis/guards.h>
-#include <basis/istring.h>
-#include <basis/portable.h>
-#include <opsystem/application_shell.h>
+#include <basis/astring.h>
+
+#include <application/application_shell.h>
+#include <application/hoople_main.h>
 #include <loggers/console_logger.h>
-#include <data_struct/static_memory_gremlin.h>
-#include <opsystem/system_values.h>
+#include <structures/static_memory_gremlin.h>
+#include <configuration/system_values.h>
+#include <unit_test/unit_base.h>
 
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger(), s)
+using namespace application;
+using namespace basis;
+using namespace configuration;
+using namespace loggers;
+using namespace textual;
+using namespace unit_test;
 
-class test_system_values : public application_shell
+#define LOG(s) EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+
+class test_system_values : virtual public unit_base, virtual public application_shell
 {
 public:
   test_system_values()
-      : application_shell(class_name()),
+      : application_shell(),
         events(system_values::EVENT_VALUES()),
         filters(system_values::FILTER_VALUES()),
         outcomes(system_values::OUTCOME_VALUES())
   {}
 
-  IMPLEMENT_CLASS_NAME("test_system_values");
+  DEFINE_CLASS_NAME("test_system_values");
   virtual int execute();
 
 private:
@@ -46,17 +55,19 @@ int test_system_values::execute()
 {
   FUNCDEF("execute");
 
-  log("Outcome Values");
-  log("==============");
-  log(outcomes.text_form());
+  LOG("Outcome Values");
+  LOG("==============");
+  LOG(outcomes.text_form());
 
-  log("Filter Values");
-  log("=============");
-  log(filters.text_form());
+  LOG("Filter Values");
+  LOG("=============");
+  LOG(filters.text_form());
 
-  log("Event Values");
-  log("============");
-  log(events.text_form());
+  LOG("Event Values");
+  LOG("============");
+  LOG(events.text_form());
+
+  critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
 
   return 0;
 }

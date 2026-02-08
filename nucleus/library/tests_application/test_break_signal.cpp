@@ -41,7 +41,7 @@ using namespace unit_test;
 
 static bool _leave_now = false;
 
-const int DEFAULT_PAUSE_TIME = 20;  // how long we'll wait, unless told a different time.
+const int DEFAULT_PAUSE_TIME = 1;  // how long we'll wait, unless told a different time.
 
 class test_break_signal : virtual public unit_base, virtual public application_shell
 {
@@ -80,13 +80,12 @@ int test_break_signal::execute()
   }
 
   // we jump to here when catching the signal.
-  astring to_print("break_signal:: works for those functions tested.");
-  critical_events::alert_message(to_print.s());
   fflush(NULL_POINTER);
+
+  critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
+
   return 0;
 }
 
 HOOPLE_MAIN(test_break_signal, )
-
-#undef static_class_name
 

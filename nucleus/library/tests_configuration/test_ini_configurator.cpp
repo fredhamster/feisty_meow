@@ -190,8 +190,8 @@ LOG(astring("exe directory is currently: ") + application_configuration::applica
     }
   }
 
-  astring to_print("ini_configurator:: works for those functions tested.");
-  critical_events::alert_message(to_print.s());
+  critical_events::alert_message(astring(static_class_name()) + ": works for those functions tested.");
+
   return 0;
 }
 

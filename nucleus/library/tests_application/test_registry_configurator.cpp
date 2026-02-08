@@ -17,35 +17,44 @@ const int test_iterations = 10;
 //#define DEBUG_REGISTRY_CONFIGURATOR_TEST
   // uncomment for debugging version.
 
-#include <basis/function.h>
+#include <application/hoople_main.h>
+#include <basis/functions.h>
 #include <basis/guards.h>
-#include <basis/istring.h>
-#include <data_struct/string_table.h>
-#include <data_struct/static_memory_gremlin.h>
+#include <basis/astring.h>
+#include <structures/string_table.h>
+#include <structures/static_memory_gremlin.h>
 #include <geometric/rectangle.h>
 #include <geometric/screen_rectangle.h>
 #include <loggers/console_logger.h>
-#include <mathematics/float_plus.h>
-#include <opsystem/path_configuration.h>
-#include <opsystem/registry_config.h>
-#include <textual/byte_format.h>
+#include <mathematics/double_plus.h>
+#include <configuration/application_configuration.h>
+#include <application/registry_config.h>
+#include <textual/byte_formatter.h>
 
 #include <stdio.h>
 
 HOOPLE_STARTUP_CODE;
 
+using namespace basis;
+using namespace configuration;
 using namespace geometric;
+using namespace loggers;
+using namespace mathematics;
+//using namespace textual;
 
-typedef float_plus<double> frunkle;
+typedef double_plus frunkle;
 
 #define WHERE __WHERE__.s()
+
+//hmmm: ugly old main() without using the hoople machinery.  ack.
+astring static_class_name() { return "test_registry_configurator"; }
 
 const registry_configurator::registry_hives THE_HIVE
     = registry_configurator::hkey_current_user;
 
-const istring REGISTRY_SECTION = "boobo/tahini/nunkshus";
+const astring REGISTRY_SECTION = "boobo/tahini/nunkshus";
 
-#define LOG(s) program_wide_logger().log(s)
+#define LOG(s) program_wide_logger::get().log(s)
 
 int main(int formal(argc), char *formal(argv)[])
 {
@@ -73,7 +82,7 @@ console_logger out;
       screen_rectangle default_rectangle(10, 289, 388, 191);
       ini.delete_entry(REGISTRY_SECTION, "window_size");
       screen_rectangle win_size;
-      istring tmp = ini.load(REGISTRY_SECTION, "window_size",
+      astring tmp = ini.load(REGISTRY_SECTION, "window_size",
           default_rectangle.text_form());
       win_size.from_text(tmp);
       if (win_size != default_rectangle)
@@ -92,17 +101,17 @@ console_logger out;
     {
       // second test set.
       const char *TEST_NAME = "second test: string";
-      istring junk("this is a junky string to be stored as bytes....");
+      astring junk("this is a junky string to be stored as bytes....");
       byte_array to_store(junk.length() + 1, (byte *)junk.observe());
-      istring as_bytes;
-      byte_format::bytes_to_string(to_store, as_bytes);
+      astring as_bytes;
+      byte_formatter::bytes_to_string(to_store, as_bytes);
       ini.store(REGISTRY_SECTION + "/test_of_byte_store", "test1", as_bytes);
-      istring blort = "blort_fest!";
-      istring rettle = ini.load(REGISTRY_SECTION + "/test_of_byte_store",
+      astring blort = "blort_fest!";
+      astring rettle = ini.load(REGISTRY_SECTION + "/test_of_byte_store",
           "test1", blort);
       byte_array found_byte;
-      byte_format::string_to_bytes(rettle, found_byte);
-      istring found_junk((const char *)found_byte.observe());
+      byte_formatter::string_to_bytes(rettle, found_byte);
+      astring found_junk((const char *)found_byte.observe());
       if (rettle == blort)
         deadly_error(REGISTRY_SECTION, TEST_NAME,
            "registry_configurator load failed: default was used");
@@ -114,9 +123,9 @@ console_logger out;
       // third test set.
       const char *TEST_NAME = "third test: frunkle";
       frunkle def_frunkle(3.14159265358);
-      istring def_text(istring::SPRINTF, "%f", def_frunkle.value());
+      astring def_text(astring::SPRINTF, "%f", def_frunkle.value());
       ini.store(REGISTRY_SECTION, TEST_NAME, def_text);
-      istring found_string = ini.load(REGISTRY_SECTION, TEST_NAME, "9949494.3");
+      astring found_string = ini.load(REGISTRY_SECTION, TEST_NAME, "9949494.3");
       frunkle found_frunkle = found_string.convert(0.0);
       if (found_frunkle == frunkle(9949494.3))
         deadly_error(REGISTRY_SECTION, TEST_NAME, 
@@ -129,9 +138,9 @@ console_logger out;
       // fourth test set.
       const char *TEST_NAME = "fourth test: frunkle";
       frunkle def_frunkle(1487335673.1415926535834985987);
-      istring def_text(istring::SPRINTF, "%f", def_frunkle.value());
+      astring def_text(astring::SPRINTF, "%f", def_frunkle.value());
       ini.store(REGISTRY_SECTION + "/test", "frunkle_test", def_text);
-      istring found_string = ini.load(REGISTRY_SECTION + "/test",
+      astring found_string = ini.load(REGISTRY_SECTION + "/test",
           "frunkle_test", "9949494.3");
       frunkle found_frunkle = found_string.convert(0.0);
       if (found_frunkle == frunkle(9949494.3))
@@ -144,15 +153,15 @@ console_logger out;
     {
       // fifth test set.
       const char *TEST_NAME = "fifth test: bytes";
-      istring urp("urp");
-      istring junk("this is a junky string to be stored as bytes....");
+      astring urp("urp");
+      astring junk("this is a junky string to be stored as bytes....");
       byte_array default_bytes(urp.length() + 1, (byte *)urp.observe());
-      istring defbytes_string;
-      byte_format::bytes_to_string(default_bytes, defbytes_string);
+      astring defbytes_string;
+      byte_formatter::bytes_to_string(default_bytes, defbytes_string);
       byte_array found;
-      istring tmp = ini.load(REGISTRY_SECTION + "/test_of_byte_store", "test1", defbytes_string);
-      byte_format::string_to_bytes(tmp, found);
-      istring string_found = (char *)found.observe();
+      astring tmp = ini.load(REGISTRY_SECTION + "/test_of_byte_store", "test1", defbytes_string);
+      byte_formatter::string_to_bytes(tmp, found);
+      astring string_found = (char *)found.observe();
       if (string_found == urp)
         deadly_error(REGISTRY_SECTION, TEST_NAME,
             "registry_configurator load_bytes failed: default was used");
@@ -167,13 +176,13 @@ console_logger out;
       // sixth test set.
       const char *TEST_NAME = "sixth test: blank string";
       ini.delete_entry(REGISTRY_SECTION + "/test_of_blank_string", "test1");
-      istring blank("");
-      istring fund = ini.load(REGISTRY_SECTION + "/test_of_blank_string", "test1", blank);
+      astring blank("");
+      astring fund = ini.load(REGISTRY_SECTION + "/test_of_blank_string", "test1", blank);
       if (fund != blank)
         deadly_error(REGISTRY_SECTION, TEST_NAME, "registry_configurator load string "
                "with blank default failed: didn't return blank");
       ini.delete_entry(REGISTRY_SECTION + "/test_of_blank_string", "test1");
-      istring non_blank("blinkblankblunk");
+      astring non_blank("blinkblankblunk");
       fund = ini.load(REGISTRY_SECTION + "/test_of_blank_string", "test1", non_blank);
       if (fund != non_blank)
         deadly_error(REGISTRY_SECTION, TEST_NAME, "registry_configurator load string "
@@ -193,7 +202,7 @@ console_logger out;
       if (!worked)
         deadly_error(REGISTRY_SECTION, TEST_NAME, "failed to get sample section (environment)");
 //to see if it worked...
-//      LOG(istring("got section:\n") + sect.text_form());
+//      LOG(astring("got section:\n") + sect.text_form());
     }
     {
       // 8th set, test put_section.
@@ -226,8 +235,8 @@ console_logger out;
 
 #endif // win32.
 
-  istring to_print("registry_configurator:: works for those functions tested.");
-  guards::alert_message(to_print.s());
+  critical_events::alert_message(astring(static_class_name()) + ": works for those functions tested.");
+
   return 0;
 }
 

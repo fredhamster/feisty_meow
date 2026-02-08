@@ -1,6 +1,6 @@
 /*****************************************************************************\
 *                                                                             *
-*  Name   : test_path_configuration                                           *
+*  Name   : test_application_configuration                                           *
 *  Author : Chris Koeritz                                                     *
 *                                                                             *
 *******************************************************************************
@@ -12,27 +12,47 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <application/hoople_main.h>
 #include <basis/guards.h>
-#include <basis/istring.h>
+#include <basis/astring.h>
 #include <loggers/console_logger.h>
-#include <opsystem/path_configuration.h>
-#include <data_struct/static_memory_gremlin.h>
+#include <configuration/application_configuration.h>
+#include <structures/static_memory_gremlin.h>
+//#include <unit_test/unit_base.h>
+
+//using namespace application;
+using namespace basis;
+using namespace configuration;
+//using namespace mathematics;
+//using namespace filesystem;
+using namespace loggers;
+//using namespace structures;
+//using namespace textual;
+//using namespace timely;
+//using namespace unit_test;
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+
+//hmmm: ugly old main() without using the hoople machinery.  ack.
+astring static_class_name() { return "test_path_configuration"; }
 
 HOOPLE_STARTUP_CODE;
 
 int main(int argc, char *argv[])
 {
-  console_logger out;
-
-  istring jammed;
+  FUNCDEF("main")
+  astring jammed;
   for (int i = 0; i < argc; i++)
-    jammed += istring(argv[i]) + " ";
-  out.log(istring("command line=") + jammed);
+    jammed += astring(argv[i]) + " ";
+  LOG(astring("command line=") + jammed);
 
-  istring app_dir = path_configuration::application_directory();
-  out.log(istring("app dir is: ") + app_dir);
+  astring app_dir = application_configuration::application_directory();
+  LOG(astring("app dir is: ") + app_dir);
 
-  guards::alert_message("path_configuration:: works for those functions tested.");
+  critical_events::alert_message(astring(static_class_name()) + ": works for those functions tested.");
+
   return 0;
 }
+
+#undef static_class_name
 
