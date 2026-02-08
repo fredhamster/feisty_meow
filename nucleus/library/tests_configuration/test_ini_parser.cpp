@@ -12,29 +12,28 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <application/application_shell.h>
+#include <application/hoople_main.h>
+#include <basis/astring.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
-#include <basis/astring.h>
-#include <structures/string_table.h>
-#include <application/application_shell.h>
+#include <configuration/ini_parser.h>
 #include <filesystem/byte_filer.h>
 #include <loggers/console_logger.h>
 #include <loggers/critical_events.h>
 #include <loggers/program_wide_logger.h>
-#include <configuration/ini_parser.h>
 #include <structures/static_memory_gremlin.h>
+#include <structures/string_table.h>
 #include <textual/parser_bits.h>
 #include <unit_test/unit_base.h>
 
 using namespace application;
 using namespace basis;
 using namespace configuration;
-//using namespace mathematics;
-//using namespace filesystem;
+using namespace filesystem;
 using namespace loggers;
 using namespace structures;
 using namespace textual;
-//using namespace timely;
 using namespace unit_test;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
@@ -50,7 +49,7 @@ noodles=fungus\n\
 dora=34\n\
 ";
 
-//#define READ_FILE_TEST
+//#define RUN_READ_FILE_TEST
   // uncomment to read in a file and parse it.
 
 class test_ini_parser : virtual public unit_base, virtual public application_shell
@@ -63,6 +62,7 @@ public:
 
 int test_ini_parser::execute()
 {
+  FUNCDEF("execute")
   program_wide_logger::get().eol(parser_bits::NO_ENDING);
 
   ini_parser par(INI_FILE_1);
@@ -77,11 +77,11 @@ int test_ini_parser::execute()
 //LOG(astring("twerf section is: ") + twerf.text_form());
   if (!twerf.find("noodles"))
     deadly_error(class_name(), "get_section 1", "item #1 was not found");
-  if (*twerf.find("noodles") != "fungus")
+  if (*twerf.find("noodles") != astring("fungus"))
     deadly_error(class_name(), "get_section 1", "item #1 found is incorrect");
   if (!twerf.find("dora"))
     deadly_error(class_name(), "get_section 1", "item #2 was not found");
-  if (*twerf.find("dora") != "34")
+  if (*twerf.find("dora") != astring("34"))
     deadly_error(class_name(), "get_section 1", "item #2 found is incorrect");
 
   string_table bork;
@@ -89,15 +89,15 @@ int test_ini_parser::execute()
     deadly_error(class_name(), "get_section 2", "bork section was not found");
   if (!bork.find("norple"))
     deadly_error(class_name(), "get_section 2", "item #1 was not found");
-  if (*bork.find("norple") != "1")
+  if (*bork.find("norple") != astring("1"))
     deadly_error(class_name(), "get_section 2", "item #1 found is incorrect");
   if (!bork.find("train"))
     deadly_error(class_name(), "get_section 2", "item #2 was not found");
-  if (*bork.find("train") != "12.5")
+  if (*bork.find("train") != astring("12.5"))
     deadly_error(class_name(), "get_section 2", "item #2 found is incorrect");
   if (!bork.find("singhy"))
     deadly_error(class_name(), "get_section 2", "item #3 was not found");
-  if (*bork.find("singhy") != "9")
+  if (*bork.find("singhy") != astring("9"))
     deadly_error(class_name(), "get_section 2", "item #3 found is incorrect");
 
   astring new_ini;
@@ -106,7 +106,10 @@ int test_ini_parser::execute()
   program_wide_logger::get().eol(parser_bits::CRLF_AT_END);
   LOG("");
 
-#ifdef READ_FILE_TEST
+//hmmm: this could be a useful additional feature if it weren't a hard-coded filename;
+//      make this test take command line parameters which are interpreted as files to process here.
+//      loop over all of them and do the test.
+#ifdef RUN_READ_FILE_TEST
   byte_filer input("c:/home/fungal.lld", "rb");
   int len = input.length();
   LOG(a_sprintf("fungal len is %d", len));
@@ -121,7 +124,7 @@ int test_ini_parser::execute()
   LOG(dump2);
 #endif
 
-  critical_events::alert_message("ini_parser:: works for those functions tested.\n");
+  critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
   return 0;
 }
 

@@ -118,7 +118,9 @@ int test_section_manager::execute()
   }    
   {
 //    astring TEST = "Second Test";
-  }    
+  }
+  
+  critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
 
   return final_report();
 }
