@@ -32,12 +32,8 @@
 
 using namespace application;
 using namespace basis;
-//using namespace configuration;
-//using namespace filesystem;
 using namespace loggers;
 using namespace filesystem;
-//using namespace textual;
-//using namespace timely;
 using namespace unit_test;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
@@ -53,12 +49,10 @@ public:
 int test_fcopy::execute()
 {
   FUNCDEF("execute");
+//old:  if (application::_global_argc < 3)
+//old:    non_continuable_error(class_name(), "command line", "this program needs two "
+//old:          "parameters:\na directory for the source and one for the target.");
 
-/*
-  if (application::_global_argc < 3)
-    non_continuable_error(class_name(), "command line", "this program needs two "
-          "parameters:\na directory for the source and one for the target.");
-*/
   astring source_dir;
   astring target_dir;
   if (application::_global_argc < 3) {
