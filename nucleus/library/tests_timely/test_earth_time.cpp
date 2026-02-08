@@ -145,6 +145,8 @@ int test_earth_time::execute()
   run_test_02(); 
   run_test_03(); 
 
+  critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
+
   return final_report();
 }
 

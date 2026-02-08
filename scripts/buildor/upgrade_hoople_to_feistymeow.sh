@@ -157,6 +157,7 @@ standards and usages."
     | sed -e 's/^#include <opsystem\/ini_parser.h> *$/#include <configuration\/ini_parser.h>/g' \
     | sed -e 's/^#include <opsystem\/system_values.h> *$/#include <configuration\/system_values.h>/g' \
     | sed -e 's/^#include <opsystem\/registry_config.h> *$/#include <application\/registry_config.h>/g' \
+    | sed -e 's/^#include <opsystem\/event_extensions.h> *$/#include <application\/event_extensions.h>/g' \
     | sed -e 's/log_base::NO_ENDING/parser_bits::NO_ENDING/g' \
     | sed -e 's/log_base::CRLF_AT_END/parser_bits::CRLF_AT_END/g' \
     | sed -e 's/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/[\/]*/\/\/\/\/\/\/\/\/\/\/\/\/\/\//g' \

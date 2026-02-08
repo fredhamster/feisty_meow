@@ -199,7 +199,7 @@ namespace application {
   // ms-windows of more modern types, i.e. win32.
   #ifdef __WIN32__
 
-//    bool event_poll(MSG &message);
+    bool event_poll(MSG &message);
       //!< tries to process one win32 event and retrieve the "message" from it.
       /*!< this is a very general poll and will retrieve any message that's
       available for the current thread.  the message is actually processed

@@ -16,36 +16,50 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/chaos.h>
-#include <basis/function.h>
+#include <application/application_shell.h>
+#include <application/event_extensions.h>
+#include <application/hoople_main.h>
+#include <basis/functions.h>
 #include <basis/guards.h>
-#include <basis/istring.h>
-#include <basis/log_base.h>
-#include <basis/set.h>
-#include <data_struct/unique_id.h>
-#include <mechanisms/ithread.h>
-#include <mechanisms/thread_cabinet.h>
-#include <mechanisms/time_stamp.h>
-#include <opsystem/application_shell.h>
-#include <opsystem/event_extensions.h>
+#include <basis/astring.h>
+#include <loggers/critical_events.h>
+#include <loggers/program_wide_logger.h>
 #include <loggers/file_logger.h>
-#include <data_struct/static_memory_gremlin.h>
-#include <opsystem/timer_driver.h>
+#include <mathematics/chaos.h>
+#include <processes/ethread.h>
+#include <processes/thread_cabinet.h>
+#include <structures/set.h>
+#include <structures/unique_id.h>
+#include <structures/static_memory_gremlin.h>
+#include <timely/time_control.h>
+#include <timely/time_stamp.h>
+#include <timely/timer_driver.h>
+#include <unit_test/unit_base.h>
 
-#define LOG(s) STAMPED_EMERGENCY_LOG(program_wide_logger(), s)
+using namespace application;
+using namespace basis;
+using namespace filesystem;
+using namespace loggers;
+using namespace processes;
+using namespace structures;
+using namespace timely;
+using namespace unit_test;
 
-const int TEST_DURATION = 3 * MINUTE_ms;
+#define LOG(s) STAMPED_EMERGENCY_LOG(program_wide_logger::get(), s)
+
+const int DEFAULT_TEST_DURATION = 3 * SECOND_ms;
+  // with no arguments to the test, we'll run timers for this very short duration.
 
 const int MAX_THREADS = 120;
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
-class timer_driver_tester : public application_shell
+class timer_driver_tester : virtual public unit_base, virtual public application_shell
 {
 public:
   timer_driver_tester()
-      : application_shell(static_class_name()), _in_progress(false) {}
-  IMPLEMENT_CLASS_NAME("timer_driver_tester");
+      : application_shell(), _in_progress(false) {}
+  DEFINE_CLASS_NAME("timer_driver_tester");
   virtual ~timer_driver_tester() {}
 
   int execute();
@@ -64,16 +78,16 @@ private:
   thread_cabinet _threads;  // storage for our time_stamp testing threads.
 };
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
-class timer_test_thread : public ithread
+class timer_test_thread : public ethread
 {
 public:
   timer_test_thread(application_shell &parent)
-      : ithread(parent.randomizer().inclusive(20, 480)), _parent(parent)
-  { start(NIL); }
+      : ethread(parent.randomizer().inclusive(8, 25)), _parent(parent)
+  { start(NULL_POINTER); }
 
-  IMPLEMENT_CLASS_NAME("timer_test_thread");
+  DEFINE_CLASS_NAME("timer_test_thread");
   void perform_activity(void *) {
     FUNCDEF("perform_activity");
     if (time_stamp() < _started)
@@ -93,23 +107,23 @@ private:
   time_stamp _last;
 };
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
-class my_timer_handler : public timed_object
+class my_timer_handler : public timeable
 {
 public:
   my_timer_handler(timer_driver_tester &parent, int id) : _id(id), _parent(parent) {}
   virtual ~my_timer_handler() {}
-  IMPLEMENT_CLASS_NAME("my_timer_handler");
+  DEFINE_CLASS_NAME("my_timer_handler");
 
   virtual void handle_timer_callback() {
     FUNCDEF("handle_timer_callback");
     if (_parent.in_progress())
       LOG("saw in progress flag set to true!  we interrupted real "
           "ops, not just sleep!");
-    LOG(isprintf("timer%d hit.", _id));
+    LOG(a_sprintf("timer%d hit.", _id));
     timer_test_thread *new_thread = new timer_test_thread(_parent);
-    unique_int id = _parent.threads().add_thread(new_thread, false, NIL);
+    unique_int id = _parent.threads().add_thread(new_thread, false, NULL_POINTER);
       // the test thread auto-starts, so we don't let the cabinet start it.
     if (!id)
       deadly_error(class_name(), func, "failed to start a new thread.");
@@ -118,11 +132,11 @@ public:
       int gone_index = _parent.randomizer().inclusive(0, _parent.threads().threads() - 1);
       unique_int gone_thread = _parent.threads().thread_ids()[gone_index];
       _parent.threads().cancel_thread(gone_thread);
-      portable::sleep_ms(100);  // allow thread to start up.
+      time_control::sleep_ms(100);  // allow thread to start up.
     }
     _parent.threads().clean_debris();  // toss any dead threads.
 
-    LOG(isprintf("%d threads checking time_stamp.", _parent.threads().threads()));
+    LOG(a_sprintf("%d threads checking time_stamp.", _parent.threads().threads()));
   }
 
 private:
@@ -130,30 +144,35 @@ private:
   timer_driver_tester &_parent;
 };
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 #define CREATE_TIMER(name, id, dur) \
   my_timer_handler name(*this, id); \
   program_wide_timer().set_timer(dur, &name); \
-  LOG(istring("timer ") + #name + " hitting every " \
-      + #dur + " ms")
+  LOG(astring("created timer ") + #name + " which hits every " + #dur + " ms")
 
 #define ZAP_TIMER(name) \
   program_wide_timer().zap_timer(&name)
 
 int timer_driver_tester::execute()
 {
-  SET_DEFAULT_COMBO_LOGGER;
+  int next_id = 1001;  // we start issuing timer IDs at 1001 for this test.
 
-  CREATE_TIMER(timer1, 1, 500);
-//  CREATE_TIMER(timer1, 1, 10);
-  CREATE_TIMER(timer2, 2, SECOND_ms);
-  CREATE_TIMER(timer3, 3, 3 * SECOND_ms);
-  CREATE_TIMER(timer4, 4, 8 * SECOND_ms);
-  CREATE_TIMER(timer5, 5, 12 * SECOND_ms);
+  int runtime_ms = DEFAULT_TEST_DURATION;
+  if (application::_global_argc >= 2) {
+    astring passed_runtime = application::_global_argv[1];
+    runtime_ms = passed_runtime.convert(DEFAULT_TEST_DURATION);
+  }
+
+  // some odd timer cycles below to avoid waiting longer than our short default.
+  CREATE_TIMER(timer1, unique_int(next_id++).raw_id(), 1 * SECOND_ms);
+  CREATE_TIMER(timer2, unique_int(next_id++).raw_id(), 250);
+  CREATE_TIMER(timer3, unique_int(next_id++).raw_id(), 3 * SECOND_ms);
+  CREATE_TIMER(timer4, unique_int(next_id++).raw_id(), 140);
+  CREATE_TIMER(timer5, unique_int(next_id++).raw_id(), 500);
 
   LOG("pausing for a while...");
-  time_stamp when_done(TEST_DURATION);
+  time_stamp when_done(runtime_ms);
   while (time_stamp() < when_done) {
     _in_progress = true;
     // do some various calculations in here and see if we're interrupted
@@ -165,14 +184,12 @@ int timer_driver_tester::execute()
     }
     _in_progress = false;    
 #ifdef __UNIX__
-    portable::sleep_ms(100);
+    time_control::sleep_ms(100);
 #else
     bool okay = event_extensions::poll();
     if (!okay) break;
 #endif
   }
-
-  guards::alert_message("timer_driver:: works for all functions tested (if messages seem appropriate).");
 
   ZAP_TIMER(timer1);
   ZAP_TIMER(timer2);
@@ -180,10 +197,12 @@ int timer_driver_tester::execute()
   ZAP_TIMER(timer4);
   ZAP_TIMER(timer5);
 
+  critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
+
   return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 HOOPLE_MAIN(timer_driver_tester, )
 
