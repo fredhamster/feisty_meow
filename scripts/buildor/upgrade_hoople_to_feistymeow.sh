@@ -155,6 +155,7 @@ standards and usages."
     | sed -e 's/guards::alert_message/critical_events::alert_message/g' \
     | sed -e 's/^#include <mathematics\/float_plus.h> *$/#include <mathematics\/double_plus.h>/g' \
     | sed -e 's/^#include <opsystem\/ini_parser.h> *$/#include <configuration\/ini_parser.h>/g' \
+    | sed -e 's/^#include <opsystem\/system_values.h> *$/#include <configuration\/system_values.h>/g' \
     | sed -e 's/^#include <opsystem\/registry_config.h> *$/#include <application\/registry_config.h>/g' \
     | sed -e 's/log_base::NO_ENDING/parser_bits::NO_ENDING/g' \
     | sed -e 's/log_base::CRLF_AT_END/parser_bits::CRLF_AT_END/g' \

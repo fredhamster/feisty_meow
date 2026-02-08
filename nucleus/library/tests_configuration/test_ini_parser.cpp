@@ -125,6 +125,7 @@ int test_ini_parser::execute()
 #endif
 
   critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
+
   return 0;
 }
 
