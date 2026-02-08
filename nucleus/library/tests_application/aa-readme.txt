@@ -12,12 +12,12 @@ eventually we may want to move the tests into specifically named folders for wha
 = potential testings for application lib
 ========================================
 
-application_shell.h
-base_application.h
-build_configuration.h
+DONE: application_shell.h
+DONE: base_application.h
+DONE: build_configuration.h
 callstack_tracker.h
 DONE: command_line.h
-hoople_main.h
+DONE: hoople_main.h
 hoople_service.h
 launch_manager.h
 memory_checker.h
