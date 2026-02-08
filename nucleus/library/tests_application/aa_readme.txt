@@ -22,8 +22,11 @@ hoople_service.h
 launch_manager.h
 memory_checker.h
 redirecter.h
-registry_config.h
+DONE: registry_config.h
 shared_memory.h
 singleton_application.h
 window_classist.h
 windoze_helper.h
+
+
+
