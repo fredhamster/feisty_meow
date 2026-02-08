@@ -17,40 +17,52 @@ const int test_iterations = 10;
 //#define DEBUG_INI_CONFIGURATOR_TEST
   // uncomment for debugging version.
 
-#include <basis/function.h>
+#include <application/hoople_main.h>
+#include <basis/functions.h>
 #include <basis/guards.h>
-#include <basis/istring.h>
+#include <basis/astring.h>
 #include <geometric/rectangle.h>
 #include <geometric/screen_rectangle.h>
-#include <mathematics/float_plus.h>
+#include <mathematics/double_plus.h>
 #include <loggers/console_logger.h>
-#include <opsystem/ini_config.h>
-#include <opsystem/path_configuration.h>
-#include <data_struct/static_memory_gremlin.h>
-#include <textual/byte_format.h>
+#include <configuration/ini_configurator.h>
+#include <configuration/application_configuration.h>
+#include <structures/static_memory_gremlin.h>
+#include <textual/byte_formatter.h>
 
 #ifdef DEBUG_INI_CONFIGURATOR_TEST
   #include <stdio.h>
 #endif
 
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+
 HOOPLE_STARTUP_CODE;
 
+using namespace basis;
+using namespace configuration;
 using namespace geometric;
+using namespace loggers;
+using namespace mathematics;
+using namespace textual;
 
-typedef float_plus<double> frunkle;
+typedef double_plus frunkle;
 
 #define WHERE __WHERE__.s()
 
 const char *INI_SECTION = "t_ini_configurator";
 
+//hmmm: ugly old main() without using the hoople machinery.  ack.
+astring static_class_name() { return "test_ini_configurator"; }
+
 int main(int formal(argc), char *formal(argv)[])
 {
+  FUNCDEF("test ini config main")
+
   ini_configurator ini("t_ini_configurator.ini", ini_configurator::AUTO_STORE);
 
-console_logger out;
-out.log(istring("ini file resides in: ") + ini.name());
+LOG(astring("ini file resides in: ") + ini.name());
 
-out.log(istring("exe directory is currently: ") + path_configuration::application_directory());
+LOG(astring("exe directory is currently: ") + application_configuration::application_directory());
 
   for (int i = 0; i < test_iterations; i++) {  // outer loop bracket.
     // beginning of test sets.
@@ -61,7 +73,7 @@ out.log(istring("exe directory is currently: ") + path_configuration::applicatio
       screen_rectangle default_rectangle(10, 289, 388, 191);
       ini.delete_entry(INI_SECTION, "window_size");
       screen_rectangle win_size;
-      istring tmp = ini.load(INI_SECTION, "window_size",
+      astring tmp = ini.load(INI_SECTION, "window_size",
           default_rectangle.text_form());
       win_size.from_text(tmp);
       if (win_size != default_rectangle)
@@ -80,16 +92,16 @@ out.log(istring("exe directory is currently: ") + path_configuration::applicatio
     {
       // second test set.
       const char *TEST_NAME = "second test: string";
-      istring junk("this is a junky string to be stored as bytes....");
-      byte_array to_store(junk.length() + 1, (byte *)junk.observe());
-      istring as_bytes;
-      byte_format::bytes_to_string(to_store, as_bytes);
+      astring junk("this is a junky string to be stored as bytes....");
+      byte_array to_store(junk.length() + 1, (abyte *)junk.observe());
+      astring as_bytes;
+      byte_formatter::bytes_to_string(to_store, as_bytes);
       ini.store("test_of_byte_store", "test1", as_bytes);
-      istring blort = "blort_fest!";
-      istring rettle = ini.load("test_of_byte_store", "test1", blort);
+      astring blort = "blort_fest!";
+      astring rettle = ini.load("test_of_byte_store", "test1", blort);
       byte_array found_byte;
-      byte_format::string_to_bytes(rettle, found_byte);
-      istring found_junk((const char *)found_byte.observe());
+      byte_formatter::string_to_bytes(rettle, found_byte);
+      astring found_junk((const char *)found_byte.observe());
       if (rettle == blort)
         deadly_error(INI_SECTION, TEST_NAME,
            "ini_configurator load failed: default was used");
@@ -101,9 +113,9 @@ out.log(istring("exe directory is currently: ") + path_configuration::applicatio
       // third test set.
       const char *TEST_NAME = "third test: frunkle";
       frunkle def_frunkle(3.14159265358);
-      istring def_text(istring::SPRINTF, "%f", def_frunkle.value());
+      astring def_text(astring::SPRINTF, "%f", def_frunkle.value());
       ini.store(INI_SECTION, TEST_NAME, def_text);
-      istring found_string = ini.load(INI_SECTION, TEST_NAME, "9949494.3");
+      astring found_string = ini.load(INI_SECTION, TEST_NAME, "9949494.3");
       frunkle found_frunkle = found_string.convert(0.0);
       if (found_frunkle == frunkle(9949494.3))
         deadly_error(INI_SECTION, TEST_NAME, 
@@ -116,9 +128,9 @@ out.log(istring("exe directory is currently: ") + path_configuration::applicatio
       // fourth test set.
       const char *TEST_NAME = "fourth test: frunkle";
       frunkle def_frunkle(1487335673.1415926535834985987);
-      istring def_text(istring::SPRINTF, "%f", def_frunkle.value());
+      astring def_text(astring::SPRINTF, "%f", def_frunkle.value());
       ini.store("test", "frunkle_test", def_text);
-      istring found_string = ini.load("test", "frunkle_test", "9949494.3");
+      astring found_string = ini.load("test", "frunkle_test", "9949494.3");
       frunkle found_frunkle = found_string.convert(0.0);
       if (found_frunkle == frunkle(9949494.3))
         deadly_error(INI_SECTION, TEST_NAME,
@@ -130,15 +142,15 @@ out.log(istring("exe directory is currently: ") + path_configuration::applicatio
     {
       // fifth test set.
       const char *TEST_NAME = "fifth test: bytes";
-      istring urp("urp");
-      istring junk("this is a junky string to be stored as bytes....");
-      byte_array default_bytes(urp.length() + 1, (byte *)urp.observe());
-      istring defbytes_string;
-      byte_format::bytes_to_string(default_bytes, defbytes_string);
+      astring urp("urp");
+      astring junk("this is a junky string to be stored as bytes....");
+      byte_array default_bytes(urp.length() + 1, (abyte *)urp.observe());
+      astring defbytes_string;
+      byte_formatter::bytes_to_string(default_bytes, defbytes_string);
       byte_array found;
-      istring tmp = ini.load("test_of_byte_store", "test1", defbytes_string);
-      byte_format::string_to_bytes(tmp, found);
-      istring string_found = (char *)found.observe();
+      astring tmp = ini.load("test_of_byte_store", "test1", defbytes_string);
+      byte_formatter::string_to_bytes(tmp, found);
+      astring string_found = (char *)found.observe();
       if (string_found == urp)
         deadly_error(INI_SECTION, TEST_NAME,
             "ini_configurator load_bytes failed: default was used");
@@ -153,13 +165,13 @@ out.log(istring("exe directory is currently: ") + path_configuration::applicatio
       // sixth test set.
       const char *TEST_NAME = "sixth test: blank string";
       ini.delete_entry("test_of_blank_string", "test1");
-      istring blank("");
-      istring fund = ini.load("test_of_blank_string", "test1", blank);
+      astring blank("");
+      astring fund = ini.load("test_of_blank_string", "test1", blank);
       if (fund != blank)
         deadly_error(INI_SECTION, TEST_NAME, "ini_configurator load string "
                "with blank default failed: didn't return blank");
       ini.delete_entry("test_of_blank_string", "test1");
-      istring non_blank("blinkblankblunk");
+      astring non_blank("blinkblankblunk");
       fund = ini.load("test_of_blank_string", "test1", non_blank);
       if (fund != non_blank)
         deadly_error(INI_SECTION, TEST_NAME, "ini_configurator load string "
@@ -171,8 +183,8 @@ out.log(istring("exe directory is currently: ") + path_configuration::applicatio
     }
   }
 
-  istring to_print("ini_configurator:: works for those functions tested.");
-  guards::alert_message(to_print.s());
+  astring to_print("ini_configurator:: works for those functions tested.");
+  critical_events::alert_message(to_print.s());
   return 0;
 }
 
