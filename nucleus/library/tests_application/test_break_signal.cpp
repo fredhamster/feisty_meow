@@ -89,5 +89,3 @@ int test_break_signal::execute()
 
 HOOPLE_MAIN(test_break_signal, )
 
-#undef static_class_name
-

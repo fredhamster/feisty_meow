@@ -4,10 +4,10 @@ include cpp/variables.def
 
 PROJECT = tests_application
 TYPE = test
-TARGETS = test_break_signal.exe test_command_line.exe test_path_configuration.exe
-
+TARGETS = test_break_signal.exe test_command_line.exe test_path_configuration.exe \
+  test_registry_configurator.exe 
 #  test_logger.exe \
-#  test_registry_configurator.exe test_redirection.exe \
+#  test_redirection.exe \
 #  test_rendezvous.exe test_system_values.exe test_timer_driver.exe
 #ifeq "$(findstring EMBEDDED_BUILD, $(DEFINITIONS))" ""
 #  TARGETS += test_shared_memory.exe 

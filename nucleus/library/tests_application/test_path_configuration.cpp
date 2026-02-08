@@ -50,6 +50,9 @@ int main(int argc, char *argv[])
   LOG(astring("app dir is: ") + app_dir);
 
   critical_events::alert_message(astring(static_class_name()) + ": works for those functions tested.");
+
   return 0;
 }
+
+#undef static_class_name
 
