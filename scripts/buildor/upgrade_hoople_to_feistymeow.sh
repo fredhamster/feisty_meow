@@ -153,6 +153,7 @@ standards and usages."
     | sed -e 's/application_shell(static_class_name())/application_shell()/g' \
     | sed -e 's/guards::alert_message/critical_events::alert_message/g' \
     | sed -e 's/^#include <mathematics\/float_plus.h> *$/#include <mathematics\/double_plus.h>/g' \
+    | sed -e 's/^#include <opsystem\/ini_parser.h> *$/#include <configuration\/double_plus.h>/g' \
     | sed -e 's/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/[\/]*/\/\/\/\/\/\/\/\/\/\/\/\/\/\//g' \
     >"$tempfile"
   

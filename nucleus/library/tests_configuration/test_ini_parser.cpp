@@ -12,17 +12,17 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/function.h>
+#include <basis/functions.h>
 #include <basis/guards.h>
-#include <basis/istring.h>
-#include <data_struct/string_table.h>
-#include <opsystem/application_shell.h>
-#include <opsystem/byte_filer.h>
+#include <basis/astring.h>
+#include <structures/string_table.h>
+#include <application/application_shell.h>
+#include <filesystem/byte_filer.h>
 #include <loggers/console_logger.h>
 #include <opsystem/ini_parser.h>
-#include <data_struct/static_memory_gremlin.h>
+#include <structures/static_memory_gremlin.h>
 
-const istring INI_FILE_1 = "\
+const astring INI_FILE_1 = "\
 [bork]\n\
 norple=1\n\
 train=12.5\n\
@@ -40,24 +40,24 @@ class test_ini_parser : public application_shell
 {
 public:
   test_ini_parser() : application_shell(class_name()) {}
-  IMPLEMENT_CLASS_NAME("test_ini_parser");
+  DEFINE_CLASS_NAME("test_ini_parser");
   virtual int execute();
 };
 
 int test_ini_parser::execute()
 {
-  program_wide_logger().eol(log_base::NO_ENDING);
+  program_wide_logger::get().eol(log_base::NO_ENDING);
 
   ini_parser par(INI_FILE_1);
 
-//istring dump;
+//astring dump;
 //par.restate(dump);
-//log(istring("table has:\n") + dump);
+//log(astring("table has:\n") + dump);
 
   string_table twerf;
   if (!par.get_section("twerf", twerf))
     deadly_error(class_name(), "get_section 1", "twerf section was not found");
-//log(istring("twerf section is: ") + twerf.text_form());
+//log(astring("twerf section is: ") + twerf.text_form());
   if (!twerf.find("noodles"))
     deadly_error(class_name(), "get_section 1", "item #1 was not found");
   if (*twerf.find("noodles") != "fungus")
@@ -83,28 +83,28 @@ int test_ini_parser::execute()
   if (*bork.find("singhy") != "9")
     deadly_error(class_name(), "get_section 2", "item #3 found is incorrect");
 
-  istring new_ini;
+  astring new_ini;
   par.restate(new_ini);
 
-  program_wide_logger().eol(log_base::CRLF_AT_END);
+  program_wide_logger::get().eol(log_base::CRLF_AT_END);
   log("");
 
 #ifdef READ_FILE_TEST
   byte_filer input("c:/home/fungal.lld", "rb");
   int len = input.length();
-  log(isprintf("fungal len is %d", len));
-  istring jojo;
+  log(a_sprintf("fungal len is %d", len));
+  astring jojo;
   input.read(jojo, len);
   //log("whole file is:");
   //log(jojo);
 
   ini_parser klug(jojo);
-  istring dump2;
+  astring dump2;
   klug.restate(dump2);
   log(dump2);
 #endif
 
-  guards::alert_message("ini_parser:: works for those functions tested.\n");
+  critical_events::alert_message("ini_parser:: works for those functions tested.\n");
   return 0;
 }
 
