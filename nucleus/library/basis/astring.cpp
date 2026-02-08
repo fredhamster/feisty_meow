@@ -180,9 +180,6 @@ astring &astring::sprintf(const char *initial, ...)
   return to_return;
 }
 
-//#pragma temporary debug in astring!!!
-//#define DEBUG_STRING
-
 astring &astring::base_sprintf(const char *initial, va_list &args)
 {
 #ifdef DEBUG_STRING
@@ -328,8 +325,6 @@ void astring::seek_modifier(const char *&traverser, char *modifier_chars)
   else printf("no modifiers\n");
 #endif
 }
-
-//#undef DEBUG_STRING
 
 void astring::get_type_character(const char * &traverser, va_list &args,
     astring &output_string, const char *flag_chars, const char *width_chars,

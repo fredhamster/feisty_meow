@@ -25,6 +25,7 @@ class math_ops
 {
 public:
   typedef signed long long fat_int;
+//hmmm: get this definition (or a better named one) into our definitions header.
 
   //! returns the rounded integer value for "to_round".
   static fat_int round_it(float to_round)

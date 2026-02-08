@@ -31,20 +31,17 @@
 #include <stdio.h>
 //hmmm: also a flush mechanism for i/o being inside feisty code would be better than this call to stdio.
 
-
 using namespace application;
 using namespace basis;
-//using namespace configuration;
-//using namespace filesystem;
 using namespace loggers;
-//using namespace structures;
-//using namespace textual;
 using namespace timely;
 using namespace unit_test;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 static bool _leave_now = false;
+
+const int DEFAULT_PAUSE_TIME = 20;  // how long we'll wait, unless told a different time.
 
 class test_break_signal : virtual public unit_base, virtual public application_shell
 {
@@ -67,9 +64,17 @@ void handle_break(int formal(signal))
 int test_break_signal::execute()
 {
   FUNCDEF("execute");
+
+  int pause_time = DEFAULT_PAUSE_TIME;
+  if (application::_global_argc >= 2) {
+    astring passed_pause = application::_global_argv[1];
+    pause_time = passed_pause.convert(DEFAULT_PAUSE_TIME);
+  }
+
+
   signal(SIGINT, handle_break);
   LOG("starting loop--hit ctrl-C to exit or wait for timeout.");
-  time_stamp leave_time(20 * SECOND_ms);
+  time_stamp leave_time(pause_time * SECOND_ms);
   while (!_leave_now && (time_stamp() < leave_time) ) {
     time_control::sleep_ms(20);
   }
