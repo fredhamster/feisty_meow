@@ -22,7 +22,7 @@
 #include <time.h>
 #include <sys/time.h>
 #if defined(__WIN32__) || defined(__UNIX__)
-//  #include <sys/timeb.h>
+  #include <sys/timeb.h>
 #endif
 
 #include <stdio.h>
@@ -323,6 +323,8 @@ time_number time_locus::normalize(time_locus &to_fix)
 
 //////////////
 
+#define static_class_name() "time_locus"
+
 time_locus convert(time_number seconds, time_number useconds,
     const tm &cal_values)
 {
@@ -351,7 +353,7 @@ time_locus convert(time_number seconds, time_number useconds,
 
 time_locus now()
 {
-  FUNCDEF("now")
+  FUNCDEF("now");
   timeval currtime;
   int okay = gettimeofday(&currtime, NULL_POINTER);
   if (okay != 0) {
@@ -368,7 +370,7 @@ time_locus now()
 
 time_locus greenwich_now()
 {
-  FUNCDEF("greenwich_now")
+  FUNCDEF("greenwich_now");
   timeval currtime;
   int okay = gettimeofday(&currtime, NULL_POINTER);
   if (okay != 0) {
@@ -444,6 +446,8 @@ const char *short_month_name(months to_name)
     default: return "Not";
   }
 }
+
+#undef static_class_name
 
 } // namespace.
 

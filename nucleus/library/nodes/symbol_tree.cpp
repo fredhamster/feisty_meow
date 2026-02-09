@@ -54,7 +54,7 @@ symbol_tree::symbol_tree(const astring &node_name, int estimated_elements)
   _associations(new symbol_tree_associations(estimated_elements)),
   _name(new astring(node_name))
 {
-  FUNCDEF("constructor")
+  FUNCDEF("constructor");
 }
 
 symbol_tree::~symbol_tree()

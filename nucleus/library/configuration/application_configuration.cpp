@@ -15,6 +15,7 @@
 
 #include <application/windoze_helper.h>
 #include <basis/environment.h>
+//#include <basis/enhance_cpp.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
 #include <basis/mutex.h>

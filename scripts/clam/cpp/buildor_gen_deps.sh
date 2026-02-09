@@ -444,7 +444,7 @@ function write_new_version {
     
     # throw out any items that are in the same directory we started in.
     if [ "$prohibited_directory" == "$(dirname $line_please)" ]; then
-#echo "skipping prohibited: $line_please"
+echo "skipping prohibited: $line_please"
       continue
     fi
 
@@ -452,13 +452,13 @@ function write_new_version {
     local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
 
     if [ ! -z "$(echo $chewed_line | sed -n -e 's/\.h$/yow/p')" ]; then
-#echo skipping header file: $chewed_line
+echo skipping header file: $chewed_line
       continue
     fi
 
     local new_include="  #include <$chewed_line>"
     echo "$new_include" >>"$pending_deps"
-#echo adding "$new_include" 
+echo adding "$new_include" 
   done
 
   sort "$pending_deps" >>"$replacement_file"

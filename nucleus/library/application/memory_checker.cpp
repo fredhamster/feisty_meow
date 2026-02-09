@@ -55,6 +55,8 @@ const int RESERVED_AREA = 1000;
 //#define DEBUG_MEMORY_CHECKER
   // uncomment for super noisy version.
 
+namespace application {
+
 //////////////
 
 // define the replacement new and delete operators.
@@ -408,7 +410,7 @@ char *memory_checker::text_form(bool show_outstanding)
 
 //////////////
 
+} // namespace.
+
 #endif  // enable memory hook
-
-
 

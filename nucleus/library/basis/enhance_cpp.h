@@ -15,6 +15,7 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <application/callstack_tracker.h>
 #include <basis/definitions.h>
 
 namespace basis {
@@ -26,10 +27,6 @@ namespace basis {
   ameliorate some of the worst missing parts, such as the fact that a function
   cannot get its own name, and other really helpful features.
 */
-
-//hmmm: temporary to hide missing code.
-#define frame_tracking_instance
-#define __trail_of_function(a, b, c, d, e)
 
 class enhance_cpp : public virtual root_object
 {
@@ -56,8 +53,8 @@ public:
   time the stack will no longer show it as active. */
   #define FUNCDEF(func_in) \
     const char *func = (const char *)func_in; \
-    frame_tracking_instance __trail_of_function(static_class_name(), func, \
-        __FILE__, __LINE__, true)
+    application::frame_tracking_instance __trail_of_function(static_class_name(), func, \
+        __FILE__, __LINE__, true);
 
 //////////////
 
@@ -71,7 +68,7 @@ public:
   that object (the macro "func" must be defined with that name). */
   #define FUNCTION(func) BASE_FUNCTION(func); \
     function_name += ": "; \
-    update_current_stack_frame_line_number(__LINE__)
+    application::update_current_stack_frame_line_number(__LINE__)
 
   //! A macro used within the INSTANCE_FUNCTION macro.
   #define BASE_INSTANCE_FUNCTION(func) astring just_function = astring(func); \
@@ -83,7 +80,7 @@ public:
   information about the class. */
   #define INSTANCE_FUNCTION(func) BASE_INSTANCE_FUNCTION(func); \
     function_name += ": "; \
-    update_current_stack_frame_line_number(__LINE__)
+    application::update_current_stack_frame_line_number(__LINE__)
 
 //////////////
 

@@ -1,11 +1,8 @@
-
-
-
-/*****************************************************************************\
-*                                                                             *
-*  Name   : callstack_tracker                                                 *
-*  Author : Chris Koeritz                                                     *
-*                                                                             *
+/*
+*
+*  Name   : callstack_tracker
+*  Author : Chris Koeritz
+*
 *******************************************************************************
 * Copyright (c) 2007-$now By Author.  This program is free software; you can  *
 * redistribute it and/or modify it under the terms of the GNU General Public  *
@@ -24,11 +21,27 @@
 
 #include "callstack_tracker.h"
 
+#include <basis/functions.h>
+
 #include <malloc.h>
 #include <stdio.h>
+#include <string.h>
+
+//using namespace application;
+using namespace basis;
+//using namespace configuration;
+//using namespace mathematics;
+//using namespace filesystem;
+//using namespace loggers;
+//using namespace structures;
+//using namespace textual;
+//using namespace timely;
+//using namespace unit_test;
 
 ////#undef new
-//is this right way to clean that out.
+//is this right way to clean that out..?
+
+namespace application {
 
 const int MAX_STACK_DEPTH = 2000;
   // beyond that many stack frames, we will simply refuse to add any more.
@@ -38,6 +51,34 @@ const int MAX_TEXT_FIELD = 1024;
 
 const char *emptiness_note = "Empty Stack\n";
   //!< what we show when the stack is empty.
+
+//////////////
+
+//! the single instance of callstack_tracker.
+/*! this is also an ultra low-level object, although it's not as far down
+as the memory checker.  it can allocate c++ objects and that kind of thing
+just fine.  the object must be stored here rather than in the static basis
+library due to issues in windows dlls.
+NOTE: this is also not thread safe; it must be initialized before any threads
+have started. */
+
+//hmmm: why is this here?  because it needs to interact with the progwide memories?
+callstack_tracker &program_wide_stack_trace()
+{
+  static callstack_tracker *_hidden_trace = NULL_POINTER;
+  if (!_hidden_trace) {
+#ifdef ENABLE_MEMORY_HOOK
+    program_wide_memories().disable();
+      // we don't want infinite loops tracking the call stack during this
+      // object's construction.
+#endif
+    _hidden_trace = new callstack_tracker;
+#ifdef ENABLE_MEMORY_HOOK
+    program_wide_memories().enable();
+#endif
+  }
+  return *_hidden_trace;
+}
 
 //////////////
 
@@ -265,8 +306,7 @@ void update_current_stack_frame_line_number(int line)
 //printf("frametrackinst updatelinenum out\n");
 }
 
+} // namespace
+
 #endif // ENABLE_CALLSTACK_TRACKING
-
-
-
 

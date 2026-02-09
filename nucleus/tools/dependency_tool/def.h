@@ -139,28 +139,28 @@ symtab    *slookup();
 symtab    *isdefined();
 symtab    *fdefined();
 filepointer  *getfile();
-inclist *newinclude(register char *, register char *);
+inclist *newinclude(char *, char *);
 inclist    *inc_path();
 */
 
 // cppsetup.cpp:
-int cppsetup(register char *line, register filepointer *filep,
-    register inclist *inc);
+int cppsetup(char *line, filepointer *filep,
+    inclist *inc);
 
 // include.cpp
-inclist *newinclude(register char *newfile, register char *incstring);
+inclist *newinclude(char *newfile, char *incstring);
 void inc_clean();
-inclist *inc_path(register char *file, register char *include, bool dot,
+inclist *inc_path(char *file, char *include, bool dot,
     bool &failure_okay);
-void included_by(register inclist *ip, register inclist *newfile);
+void included_by(inclist *ip, inclist *newfile);
 
 // main.cpp:
-char *base_name(register char  *file);
-char *copy(register char *str);
+char *base_name(char  *file);
+char *copy(char *str);
 filepointer *getfile(char  *file);
 void freefile(filepointer  *fp);
-char *getline(register filepointer  *filep);
-int match(register const char *str, register const char **list);
+char *getline(filepointer  *filep);
+int match(const char *str, const char **list);
 void redirect(char  *line, char  *makefile);
 #if NeedVarargsPrototypes
   void fatalerr(const char *, ...);
@@ -171,25 +171,25 @@ void redirect(char  *line, char  *makefile);
 // parse.cpp:
 void define(char  *def, inclist  *file);
 void define2(char  *name, char  *val, inclist  *file);
-int deftype(register char  *line, register filepointer *filep,
-    register inclist *file_red, register inclist *file,
+int deftype(char  *line, filepointer *filep,
+    inclist *file_red, inclist *file,
     int parse_it);
-symtab *fdefined(register char *symbol, inclist *file, inclist **srcfile);
+symtab *fdefined(char *symbol, inclist *file, inclist **srcfile);
 int find_includes(filepointer *filep, inclist *file,
     inclist *file_red, int recursion, bool failOK);
-int gobble(register filepointer *filep, inclist *file,
+int gobble(filepointer *filep, inclist *file,
     inclist *file_red);
-symtab *isdefined(register char *symbol, inclist *file,
+symtab *isdefined(char *symbol, inclist *file,
     inclist  **srcfile);
-symtab *slookup(register char  *symbol, register inclist *file);
-void undefine(char  *symbol, register inclist *file);
-int zero_value(register char  *exp, register filepointer *filep,
-    register inclist *file_red);
+symtab *slookup(char  *symbol, inclist *file);
+void undefine(char  *symbol, inclist *file);
+int zero_value(char  *exp, filepointer *filep,
+    inclist *file_red);
 
 // pr.cpp:
 void add_include(filepointer *filep, inclist  *file,
     inclist  *file_red, char  *include, bool dot, bool failOK);
-void pr(register inclist *ip, char *file, char *base, bool rc_file);
-void recursive_pr_include(register inclist *head, register char *file,
-    register char *base);
+void pr(inclist *ip, char *file, char *base, bool rc_file);
+void recursive_pr_include(inclist *head, char *file,
+    char *base);
 
