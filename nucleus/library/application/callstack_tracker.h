@@ -15,14 +15,13 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include "definitions.h"
-
-#ifdef ENABLE_CALLSTACK_TRACKING
-
-#include "build_configuration.h"
-#include "root_object.h"
+#include <application/build_configuration.h>
+#include <basis/contracts.h>
+#include <basis/definitions.h>
 
 namespace application {
+
+#ifdef ENABLE_CALLSTACK_TRACKING
 
 // forward.
 class callstack_records;
@@ -30,7 +29,7 @@ class callstack_tracker;
 
 //////////////
 
-callstack_tracker BASIS_EXTERN &program_wide_stack_trace();
+callstack_tracker &program_wide_stack_trace();
   //!< a global object that can be used to track the runtime callstack.
 
 //////////////
@@ -49,7 +48,7 @@ public:
   callstack_tracker();
   virtual ~callstack_tracker();
 
-  DEFINE_CLASS_NAME("callstack_tracker");
+//  DEFINE_CLASS_NAME("callstack_tracker");
 
   bool push_frame(const char *class_name, const char *func, const char *file,
           int line);
@@ -142,12 +141,18 @@ void update_current_stack_frame_line_number(int line);
   //!< sets the line number for the current frame in the global stack trace.
 
 #else // ENABLE_CALLSTACK_TRACKING
-  // bogus replacements for most commonly used callstack tracking support.
+  /*
+    bogus replacements for the most commonly used callstack tracking support.
+    these are necessary because we don't want this enabled in all scenarios,
+    and when we want the callstack tracking disabled, it must have near zero
+    runtime cost.
+  */
+  inline void no_op() { /* do nothing. */ }
   #define frame_tracking_instance
-  #define __trail_of_function(p1, p2, p3, p4, p5) if (func) {}
+  #define __trail_of_function(p1, p2, p3, p4, p5) no_op();
     // the above actually trades on the name of the object we'd normally
     // define.  it must match the object name in the FUNCDEF macro.
-  #define update_current_stack_frame_line_number(line)
+  inline void update_current_stack_frame_line_number(int line) { /* more nothing. */ }
 #endif // ENABLE_CALLSTACK_TRACKING
 
 } //namespace.

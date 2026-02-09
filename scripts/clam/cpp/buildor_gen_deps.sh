@@ -1,43 +1,42 @@
 #!/usr/bin/env bash
-###############################################################################
-#                                                                             #
-#  Name   : buildor_gen_deps                                                  #
-#  Author : Chris Koeritz                                                     #
-#  Rights : Copyright (C) 2008-$now by Author                                 #
-#                                                                             #
-###############################################################################
-#  This script is free software; you can redistribute it and/or modify it     #
-#  under the terms of the GNU General Public License as published by the Free #
-#  Software Foundation; either version 2 of the License or (at your option)   #
-#  any later version.  See "http://www.fsf.org/copyleft/gpl.html" for a copy  #
-#  of the License online.  Please send any updates to "fred@gruntose.com".    #
-###############################################################################
+
+####
+#  Name   : buildor_gen_deps
+#  Author : Chris Koeritz
+#  Rights : Copyright (C) 2008-$now by Author
+#  Purpose:
+#    this script finds all of the headers used by a cpp file and outputs a
+#    list of other cpp files that are probably needed for building it.
+####
+#  This script is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU General Public License as published by the Free
+#  Software Foundation; either version 2 of the License or (at your option)
+#  any later version.  See "http://www.fsf.org/copyleft/gpl.html" for a copy
+#  of the License online.  Please send any updates to "fred@gruntose.com".
+####
 
 if [ ! -z "$CLEAN" ]; then
   echo "in cleaning mode, will not build dependencies."
   exit 0
 fi
 
-# this script finds all of the headers used by a cpp file and outputs a
-# list of other cpp files that are probably needed for building it.
+# these semi-global variables used throughout the whole script to accumulate
+# information, rather than trying to juggle positional parameters everywhere.
 
-  # these semi-global variables used throughout the whole script to accumulate
-  # information, rather than trying to juggle positional parameters everywhere.
+# the list of dependencies being accumulated.
+declare -a dependency_accumulator=()
 
-  # the list of dependencies being accumulated.
-  declare -a dependency_accumulator=()
+# a set of files that are known to be bad, since we cannot find them.
+declare -a bad_files=()
 
-  # a set of files that are known to be bad, since we cannot find them.
-  declare -a bad_files=()
+# makes sure we don't keep looking at files even when they're neither
+# bad nor listed as dependencies.
+declare -a boring_files=()
 
-  # makes sure we don't keep looking at files even when they're neither
-  # bad nor listed as dependencies.
-  declare -a boring_files=()
-
-  # this directory is not allowed to participate in the scavenging
-  # because it's where the tool was pointed at.  if we allowed files in
-  # the app's same directory to be added, that leads to bad dependencies.
-  prohibited_directory=""
+# this directory is not allowed to participate in the scavenging
+# because it's where the tool was pointed at.  if we allowed files in
+# the app's same directory to be added, that leads to bad dependencies.
+prohibited_directory=""
 
 # set up the separator character so we don't eat tabs or spaces.  this should
 # be a character we hope to see pretty much never in a file near the includes.
@@ -62,7 +61,8 @@ function add_new_dep {
   local dep="$1"
   if seen_already "$dep"; then
 #echo bailing since seen: $dep
- return 1; fi
+    return 1
+  fi
 #echo had not seen before: $dep
 
 #  if existing_dep $dep; then return 1; fi  # added it to list already.
@@ -444,7 +444,7 @@ function write_new_version {
     
     # throw out any items that are in the same directory we started in.
     if [ "$prohibited_directory" == "$(dirname $line_please)" ]; then
-#echo "skipping prohibited: $line_please"
+echo "skipping prohibited: $line_please"
       continue
     fi
 
@@ -452,16 +452,17 @@ function write_new_version {
     local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
 
     if [ ! -z "$(echo $chewed_line | sed -n -e 's/\.h$/yow/p')" ]; then
-#echo skipping header file: $chewed_line
+echo skipping header file: $chewed_line
       continue
     fi
 
     local new_include="  #include <$chewed_line>"
     echo "$new_include" >>"$pending_deps"
-#echo adding "$new_include" 
+echo adding "$new_include" 
   done
 
   sort "$pending_deps" >>"$replacement_file"
+  exit_on_error "sorting pending deps into the replacement file"
   rm -f "$pending_deps"
 
   echo -e "$closing_guard_line" >>"$replacement_file"

@@ -50,24 +50,24 @@ extern bool warn_multiple;
 
 // forward.
 void remove_dotdot(char *path);
-int isdot(register char  *p);
-int isdotdot(register char *p);
-int issymbolic(register char  *dir, register char  *component);
-void included_by(register inclist *ip, register inclist *newfile);
+int isdot(char  *p);
+int isdotdot(char *p);
+int issymbolic(char  *dir, char  *component);
+void included_by(inclist *ip, inclist *newfile);
 
-inclist *inc_path(register char *file, register char *include, bool dot,
+inclist *inc_path(char *file, char *include, bool dot,
     bool &failure_okay)
 {
   static char  path[ BUFSIZ ];
-  register char    **pp, *p;
-  register inclist  *ip;
+  char    **pp, *p;
+  inclist  *ip;
   struct stat  st;
   bool  found = false;
 
 //fprintf(stderr, "file=%s include=%s\n", file, include);
   const size_t inclen = strlen(include);
   if (inclen >= 4) {
-    register char *cpp_point = include + inclen - 4;
+    char *cpp_point = include + inclen - 4;
     if (!strcasecmp(".cpp", cpp_point)) {
       // this is a CPP file include, which we skip.
 //fprintf(stderr, "!found match at point: %s\n", cpp_point);
@@ -134,7 +134,7 @@ inclist *inc_path(register char *file, register char *include, bool dot,
       sprintf(path, "%s/%s", *pp, include);
       remove_dotdot(path);
       if (stat(path, &st) == 0) {
-        register char **pp2;
+        char **pp2;
         bool exclude_it = false;
         for (pp2 = excludedirs; *pp2; pp2++) {
 ////////fprintf(stderr, "comparing %s with %s\n", *pp, *pp2);
@@ -170,7 +170,7 @@ inclist *inc_path(register char *file, register char *include, bool dot,
  */
 void remove_dotdot(char *path)
 {
-  register char  *end, *from, *to, **cp;
+  char  *end, *from, *to, **cp;
   char    *components[ MAXFILES ], newpath[ BUFSIZ ];
   bool    component_copied;
 
@@ -235,21 +235,21 @@ void remove_dotdot(char *path)
   strcpy(path, newpath);
 }
 
-int isdot(register char  *p)
+int isdot(char  *p)
 {
   if(p && *p++ == '.' && *p++ == '\0')
     return(true);
   return(false);
 }
 
-int isdotdot(register char *p)
+int isdotdot(char *p)
 {
   if(p && *p++ == '.' && *p++ == '.' && *p++ == '\0')
     return(true);
   return(false);
 }
 
-int issymbolic(register char  *dir, register char  *component)
+int issymbolic(char  *dir, char  *component)
 {
 #ifdef S_IFLNK
   struct stat  st;
@@ -273,9 +273,9 @@ int issymbolic(register char  *dir, register char  *component)
 /*
  * Add an include file to the list of those included by 'file'.
  */
-inclist *newinclude(register char *newfile, register char *incstring)
+inclist *newinclude(char *newfile, char *incstring)
 {
-  register inclist  *ip;
+  inclist  *ip;
 
   /*
    * First, put this file on the global list of include files.
@@ -293,9 +293,9 @@ inclist *newinclude(register char *newfile, register char *incstring)
   return(ip);
 }
 
-void included_by(register inclist *ip, register inclist *newfile)
+void included_by(inclist *ip, inclist *newfile)
 {
-  register int i;
+  int i;
 
   if (ip == NULL)
     return;
@@ -339,7 +339,7 @@ void included_by(register inclist *ip, register inclist *newfile)
 
 void inc_clean()
 {
-  register inclist *ip;
+  inclist *ip;
 
   for (ip = inc_list; ip < inclistp; ip++) {
     ip->i_marked = false;

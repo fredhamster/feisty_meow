@@ -177,11 +177,11 @@ printf((istring("added ") + curr + "\n").s());
 
 int main(int argc, char  **argv)
 {
-  register char  **fp = filelist;
-  register char  **incp = includedirs;
-  register char  **excp = excludedirs;
-  register char  *p;
-  register struct inclist  *ip;
+  char  **fp = filelist;
+  char  **incp = includedirs;
+  char  **excp = excludedirs;
+  char  *p;
+  struct inclist  *ip;
   char  *makefile = NULL;
   struct filepointer  *filecontent;
   struct symtab *psymp = predefs;
@@ -517,7 +517,7 @@ int main(int argc, char  **argv)
 
 struct filepointer *getfile(char  *file)
 {
-  register int  fd;
+  int  fd;
   struct filepointer  *content;
   struct stat  st;
 
@@ -551,17 +551,17 @@ void freefile(struct filepointer  *fp)
   free(fp);
 }
 
-char *copy(register char  *str)
+char *copy(char  *str)
 {
-  register char  *p = (char *)malloc(strlen(str) + 1);
+  char  *p = (char *)malloc(strlen(str) + 1);
 
   strcpy(p, str);
   return(p);
 }
 
-int match(register const char *str, register const char **list)
+int match(const char *str, const char **list)
 {
-  register int  i;
+  int  i;
 
   for (i=0; *list; i++, list++)
     if (strcmp(str, *list) == 0)
@@ -573,12 +573,12 @@ int match(register const char *str, register const char **list)
  * Get the next line.  We only return lines beginning with '#' since that
  * is all this program is ever interested in.
  */
-char *getline(register struct filepointer  *filep)
+char *getline(struct filepointer  *filep)
 {
-  register char  *p,  /* walking pointer */
+  char  *p,  /* walking pointer */
       *eof,  /* end of file pointer */
       *bol;  /* beginning of line pointer */
-  register  int lineno;  /* line number */
+  int lineno;  /* line number */
 
   eof = filep->f_end;
 ////  if (p >= eof) return NULL;
@@ -629,7 +629,7 @@ if (bol > p) fatalerr("somehow bol got ahead of p.");
 ////fprintf(stderr, "%s: %s\n", filep->f_name, bol);
 ////fflush(stderr);
         if (*bol == '#') {
-          register char *cp;
+          char *cp;
           /* punt lines with just # (yacc generated) */
           for (cp = bol+1; *cp && (*cp == ' ' || *cp == '\t'); cp++) {}
           if (*cp) { p++; goto done; }
@@ -650,9 +650,9 @@ done:
  * Strip the file name down to what we want to see in the Makefile.
  * It will have objprefix and objsuffix around it.
  */
-char *base_name(register char  *file)
+char *base_name(char  *file)
 {
-  register char  *p;
+  char  *p;
 
   file = copy(file);
   for(p=file+strlen(file); p>file && *p != '.'; p--) ;

@@ -66,10 +66,10 @@ extern char  slotab[];
 struct filepointer  *currentfile;
 inclist    *currentinc;
 
-int cppsetup(register char *line, register struct filepointer *filep,
-    register inclist *inc)
+int cppsetup(char *line, struct filepointer *filep,
+    inclist *inc)
 {
-  register char *p, savec;
+  char *p, savec;
   static bool setupdone = false;
   bool  value;
 
@@ -120,7 +120,7 @@ int pperror(int tag, int x0, int x1, int x2, int x3, int x4)
 }
 
 
-int yyerror(register char *s)
+int yyerror(char *s)
 {
   fatalerr("Fatal error: %s\n", s);
 }
@@ -204,8 +204,8 @@ static int _my_eval_variable(IfParser *ip, const char *var, int len)
 }
 
 
-int cppsetup(register char *line, register struct filepointer *filep,
-    register inclist *inc)
+int cppsetup(char *line, struct filepointer *filep,
+    inclist *inc)
 {
     IfParser ip;
     struct _parse_data pd;

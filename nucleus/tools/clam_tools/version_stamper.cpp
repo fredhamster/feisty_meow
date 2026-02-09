@@ -132,5 +132,9 @@ HOOPLE_MAIN(version_stamper, )
   #include <timely/earth_time.cpp>
   #include <timely/time_stamp.cpp>
   #include <versions/version_ini.cpp>
+
+//added manually since buildor_gen_deps is hosed as of 2026-02-09 (or earlier, since i didn't notice).
+#include <application/callstack_tracker.cpp>
+
 #endif // __BUILD_STATIC_APPLICATION__
 

@@ -13,6 +13,7 @@
 #include "checkup.h"
 
 #include <basis/astring.h>
+#include <basis/enhance_cpp.h>
 #include <loggers/critical_events.h>
 
 using namespace basis;
@@ -24,7 +25,7 @@ namespace system_checkup {
 #undef UNIT_BASE_THIS_OBJECT 
 #define UNIT_BASE_THIS_OBJECT testing
 #undef static_class_name
-#define static_class_name() astring("system_checkup")
+#define static_class_name() "system_checkup"
 
 bool check_system_characteristics(unit_base &testing)
 {
