@@ -86,7 +86,7 @@ outcome path::push(int index)
 
 bool path::generate_path(node *to_locate, path &to_follow) const
 {
-  FUNCDEF("generate_path");
+  FUNCDEF("generate_path")
 
 if (to_locate || to_follow.current()) {}
 LOG("hmmm: path::generate_path is not implemented.");
