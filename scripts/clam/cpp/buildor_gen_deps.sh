@@ -15,6 +15,8 @@
 #  of the License online.  Please send any updates to "fred@gruntose.com".
 ####
 
+source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+
 if [ ! -z "$CLEAN" ]; then
   echo "in cleaning mode, will not build dependencies."
   exit 0
@@ -228,18 +230,18 @@ function recurse_on_deps {
   # again.
   boring_files+=($to_examine)
 
-local dirtmp=$(dirname "$to_examine")
-local basetmp=$(basename "$to_examine")
-echo "dependent on: $(basename "$dirtmp")/$basetmp"
-#hmmm: gather the dependencies listed in debugging line above into a
-#      list that will be printed out at the end.
+  local dirtmp=$(dirname "$to_examine")
+  local basetmp=$(basename "$to_examine")
+  echo "dependent on: $(basename "$dirtmp")/$basetmp"
+#hmmm: do a better, nicer output--gather the dependencies listed in debugging
+#      line above into a list that will be printed out at the end.
 
   ##########################################################################
 
-  local current_includes="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps4-$base.XXXXXX)"
+  local current_includes="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_includes_${basetmp}.XXXXXX)"
   rm -f "$current_includes"
 
-  local partial_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps5-$base.XXXXXX)"
+  local partial_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_filepart_${basetmp}.XXXXXX)"
   rm -f "$partial_file"
 
   # find all the includes in this file and save to the temp file.
@@ -256,7 +258,8 @@ echo "dependent on: $(basename "$dirtmp")/$basetmp"
 
   grep "^[ $TAB_CHAR]*#include.*" <"$partial_file" >>"$current_includes"
 
-  rm "$partial_file"
+#hold
+  #rm "$partial_file"
 
 #echo "grabbing includes from: $to_examine"
 
@@ -387,7 +390,8 @@ echo "dependent on: $(basename "$dirtmp")/$basetmp"
     fi
   done <"$current_includes"
 
-  rm -f "$current_includes"
+#hold
+  #rm -f "$current_includes"
 
   # keep going on the list after our modifications.
   if [ ${#active_deps[*]} -ne 0 ]; then recurse_on_deps ${active_deps[*]}; fi
@@ -404,7 +408,8 @@ function write_new_version {
 #echo "would write deps to: $code_file"
 #echo ${dependency_accumulator[*]}
 
-  local replacement_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps3.XXXXXX)"
+  local base="$(basename "$code_file")"
+  local replacement_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_replacement_${base}.XXXXXX)"
 
   # blanks is a list of blank lines that we save up in between actual content.
   # if we don't hold onto them, we can have the effect of "walking" the static
@@ -436,7 +441,7 @@ function write_new_version {
   echo -e "$opening_guard_line" >>"$replacement_file"
 
   # now accumulate just the dependencies for a bit.
-  local pending_deps="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps2.XXXXXX)"
+  local pending_deps="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_pendingdeps_${base}.XXXXXX)"
   rm -f "$pending_deps"
 
   # iterate across all the dependencies we found.
@@ -452,14 +457,32 @@ echo "skipping prohibited: $line_please"
     local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
 
     if [ ! -z "$(echo $chewed_line | sed -n -e 's/\.h$/yow/p')" ]; then
-echo skipping header file: $chewed_line
+echo "skipping header file: $chewed_line"
       continue
     fi
 
     local new_include="  #include <$chewed_line>"
     echo "$new_include" >>"$pending_deps"
-echo adding "$new_include" 
+echo "adding '$new_include'"
   done
+
+  # check that our dependencies file is not empty still.
+  if [ ! -s "$pending_deps" ]; then
+    echo "
+We encountered a problem during the generation of dependencies.
+The temporary output file:
+  '${pending_deps}'
+was still empty after the dependency generation process.  This is a failure
+to find any dependencies and would result in writing an empty list into the
+file (possibly clobbering a perfectly fine existing list of generated
+dependencies).  So, we're bailing now.  Please resolve the issue in either
+the current code file:
+  '${code_file}'
+or within this script itself:
+  '$0'
+"
+    exit 1
+  fi
 
   sort "$pending_deps" >>"$replacement_file"
   exit_on_error "sorting pending deps into the replacement file"
@@ -475,6 +498,7 @@ echo adding "$new_include"
 #echo "--------------"
 
   mv "$replacement_file" "$code_file"
+  exit_on_error "replacing the original file with updated dependency version"
 }
 
 function find_dependencies {
@@ -505,7 +529,7 @@ for curr_parm in $*; do
   if [ -f "$curr_parm" ]; then
     echo "scanning file: $curr_parm"
     # get absolute path of the containing directory.
-    prohibited_directory="$(pwd "$curr_parm")"
+    prohibited_directory="$(\pwd "$curr_parm")"
     # fix our filename to be absolute.
     temp_absolute="$prohibited_directory/$(basename "$curr_parm")"
     curr_parm="$temp_absolute"
@@ -514,18 +538,20 @@ for curr_parm in $*; do
   elif [ -d "$curr_parm" ]; then
     echo "scanning folder: $curr_parm"
     # get absolute path of the containing directory.
-    prohibited_directory="$(pwd $curr_parm)"
+    prohibited_directory="$(\pwd $curr_parm)"
     # set the directory to that absolute path.
     curr_parm="$prohibited_directory"
 #echo "curr_parm: $curr_parm"
-    outfile="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps1.XXXXXX)"
+    local base="$(basename "$curr_parm")"
+    outfile="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_outfile_${base}.XXXXXX)"
     find "$curr_parm" -iname "*.cpp" >"$outfile"
     while read -r line_found; do
       if [ $? != 0 ]; then break; fi
 #echo "looking at file: $line_found"
       find_dependencies "$line_found"
     done <"$outfile"
-    rm -f "$outfile"
+#hold
+    #rm -f "$outfile"
   else
     echo "parameter is not a file or directory: $curr_parm"
   fi
