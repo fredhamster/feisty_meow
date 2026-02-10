@@ -1,4 +1,4 @@
-/*****************************************************************************\
+/*
 *
 *  Name   : test_callstack_tracker
 *  Author : Chris Koeritz
@@ -7,14 +7,14 @@
 *
 *    Puts the callstack tracking code through its paces, a bit.
 *
-*******************************************************************************
-* Copyright (c) 1992-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
-\*****************************************************************************/
+****
+* Copyright (c) 1992-$now By Author.  This program is free software; you can
+* redistribute it and/or modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either version 2 of
+* the License or (at your option) any later version.  This is online at:
+*     http://www.fsf.org/copyleft/gpl.html
+* Please send any updates to: fred@gruntose.com
+*/
 
 #include <basis/functions.h>
 #include <basis/guards.h>
@@ -31,8 +31,6 @@
 #include <structures/string_array.h>
 #include <unit_test/unit_base.h>
 
-//#include <string.h>
-
 using namespace application;
 using namespace basis;
 using namespace filesystem;
@@ -41,34 +39,6 @@ using namespace structures;
 using namespace unit_test;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
-
-//////////////
-
-/*
-  super helpful macro that shows the current stack trace and checks it for validity.
-  this shouldn't impact the trace, since it's all embedded inline from the macro.
-*/
-#define SHOW_TRACE_AND_CHECK_IT(message) { \
-  int trace_size = program_wide_stack_trace().full_trace_size(); \
-  char *stack_trace = program_wide_stack_trace().full_trace(); \
-  ASSERT_TRUE(trace_size >= strlen(stack_trace) + 1, "insufficient estimated stack trace size"); \
-  if (trace_size < strlen(stack_trace) + 1) { \
-    /* error condition here; we are supposed to get the actual size we would need to allocate! */ \
-    LOG(a_sprintf("failure in stack trace return: estimated size (%d) was less than actual (%d)", \
-        trace_size, strlen(stack_trace))); \
-    /* mandatory free step for newly allocated string. */ \
-    free(stack_trace); \
-    return 1; \
-  } \
-  ASSERT_TRUE(strlen(stack_trace) > 1, "empty stack trace"); \
-  if (strlen(stack_trace) < 2) { \
-    LOG("failure in stack trace return: the trace output string was empty!"); \
-    return 1; \
-  } \
-  LOG(astring("\n\n################\n\n") + message + "\n" + stack_trace); \
-  /* mandatory free step for newly allocated string. */ \
-  free(stack_trace); \
-}
 
 //////////////
 
@@ -95,7 +65,7 @@ int test_callstack_tracker::run_filestack_simple()
   FUNCDEF("run_filestack_simple")
   #ifdef ENABLE_CALLSTACK_TRACKING
     // just shows this method's own stack.
-    SHOW_TRACE_AND_CHECK_IT("trace of simple stack:");
+    GET_AND_TEST_STACK_TRACE("trace of simple stack:", 1);
   #endif
   return 0;
 }
@@ -123,7 +93,7 @@ int test_callstack_tracker::sub_call_4()
   FUNCDEF("sub_call_4");
   #ifdef ENABLE_CALLSTACK_TRACKING
     // just shows this method's own stack.
-    SHOW_TRACE_AND_CHECK_IT("trace of middling stack:");
+    GET_AND_TEST_STACK_TRACE("trace of middling stack:", 1);
   #endif
   return 0;
 }
