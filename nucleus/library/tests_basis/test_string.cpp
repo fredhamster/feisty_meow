@@ -49,8 +49,6 @@ using namespace textual;
 using namespace timely;
 using namespace unit_test;
 
-//HOOPLE_STARTUP_CODE;
-
 //#define DEBUG_STRING_TEST
   // uncomment for testing version.
 
@@ -859,6 +857,8 @@ void test_string::run_test_29()
   ASSERT_EQUAL(b, a, "second comparison failed");
 }
 
+#define static_class_name() "test_string"
+
 void standard_sprintf_test(const char *parm_string)
 {
   FUNCDEF("standard_sprintf_test");
@@ -874,6 +874,8 @@ void standard_sprintf_test(const char *parm_string)
       int(rando.inclusive(0, 23945)), char(rando.inclusive('A', 'Z')),
       parm_string, parm_string, basis::un_long(rando.inclusive(0, 2998238)));
 }
+
+#undef static_class_name
 
 void test_string::run_test_30()
 {
@@ -1277,5 +1279,4 @@ int test_string::execute()
 }
 
 HOOPLE_MAIN(test_string, )
-
 

@@ -24,6 +24,7 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <algorithms/sorts.h>
 #include <application/application_shell.h>
 #include <application/command_line.h>
 #include <application/hoople_main.h>
@@ -46,7 +47,6 @@
 
 #include <sys/stat.h>
 
-#include "../../library/algorithms/sorts.h"
 #ifdef __WIN32__
   #include <io.h>
 #endif
@@ -959,7 +959,9 @@ HOOPLE_MAIN(value_tagger, )
 
 #ifdef __BUILD_STATIC_APPLICATION__
   // static dependencies found by buildor_gen_deps.sh:
+  #include <algorithms/sorts.cpp>
   #include <application/application_shell.cpp>
+  #include <application/callstack_tracker.cpp>
   #include <application/command_line.cpp>
   #include <application/windoze_helper.cpp>
   #include <basis/astring.cpp>
@@ -978,10 +980,10 @@ HOOPLE_MAIN(value_tagger, )
   #include <filesystem/directory.cpp>
   #include <filesystem/directory_tree.cpp>
   #include <filesystem/file_info.cpp>
-  #include <filesystem/file_time.cpp>
   #include <filesystem/filename.cpp>
   #include <filesystem/filename_list.cpp>
   #include <filesystem/filename_tree.cpp>
+  #include <filesystem/file_time.cpp>
   #include <filesystem/huge_file.cpp>
   #include <loggers/combo_logger.cpp>
   #include <loggers/console_logger.cpp>
@@ -1004,9 +1006,5 @@ HOOPLE_MAIN(value_tagger, )
   #include <textual/string_manipulation.cpp>
   #include <timely/earth_time.cpp>
   #include <timely/time_stamp.cpp>
-
-//added manually since buildor_gen_deps is hosed as of 2026-02-09 (or earlier, since i didn't notice).
-#include <application/callstack_tracker.cpp>
-
 #endif // __BUILD_STATIC_APPLICATION__
 

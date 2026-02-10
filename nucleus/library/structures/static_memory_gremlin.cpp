@@ -142,8 +142,8 @@ bool static_memory_gremlin::__program_is_dying() { return __global_program_is_dy
 
 mutex &static_memory_gremlin::__memory_gremlin_synchronizer()
 {
-  static mutex __globabl_synch_mem;
-  return __globabl_synch_mem;
+  static mutex __global_synch_mem;
+  return __global_synch_mem;
 }
 
 int static_memory_gremlin::locate(const char *unique_name)
@@ -256,6 +256,7 @@ static_memory_gremlin &static_memory_gremlin::__hoople_globals()
     application::program_wide_stack_trace().full_trace_size();
       // invoke now to get callback tracking instantiated.
 #endif
+
     FUNCDEF("HOOPLE_GLOBALS remainder");
       // this definition must be postponed until after the objects that would
       // track it actually exist.
