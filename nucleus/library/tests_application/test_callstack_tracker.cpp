@@ -31,6 +31,8 @@
 #include <structures/string_array.h>
 #include <unit_test/unit_base.h>
 
+//#include <string.h>
+
 using namespace application;
 using namespace basis;
 using namespace filesystem;
@@ -39,6 +41,36 @@ using namespace structures;
 using namespace unit_test;
 
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+
+//////////////
+
+/*
+  super helpful macro that shows the current stack trace and checks it for validity.
+  this shouldn't impact the trace, since it's all embedded inline from the macro.
+*/
+#define SHOW_TRACE_AND_CHECK_IT(message) { \
+  int trace_size = program_wide_stack_trace().full_trace_size(); \
+  char *stack_trace = program_wide_stack_trace().full_trace(); \
+  ASSERT_TRUE(trace_size >= strlen(stack_trace) + 1, "insufficient estimated stack trace size"); \
+  if (trace_size < strlen(stack_trace) + 1) { \
+    /* error condition here; we are supposed to get the actual size we would need to allocate! */ \
+    LOG(a_sprintf("failure in stack trace return: estimated size (%d) was less than actual (%d)", \
+        trace_size, strlen(stack_trace))); \
+    /* mandatory free step for newly allocated string. */ \
+    free(stack_trace); \
+    return 1; \
+  } \
+  ASSERT_TRUE(strlen(stack_trace) > 1, "empty stack trace"); \
+  if (strlen(stack_trace) < 2) { \
+    LOG("failure in stack trace return: the trace output string was empty!"); \
+    return 1; \
+  } \
+  LOG(astring("\n\n################\n\n") + message + "\n" + stack_trace); \
+  /* mandatory free step for newly allocated string. */ \
+  free(stack_trace); \
+}
+
+//////////////
 
 class test_callstack_tracker : virtual public unit_base, virtual public application_shell
 {
@@ -50,28 +82,66 @@ public:
   int run_filestack_middling();
   int run_filestack_complex();
   int execute();
+
+private:
+  int sub_call_1();
+  int sub_call_2();
+  int sub_call_3();
+  int sub_call_4();
 };
 
 int test_callstack_tracker::run_filestack_simple()
 {
+  FUNCDEF("run_filestack_simple")
   #ifdef ENABLE_CALLSTACK_TRACKING
-//just show this stack.
-//return an error if any problem.
+    // just shows this method's own stack.
+    SHOW_TRACE_AND_CHECK_IT("trace of simple stack:");
+  #endif
+  return 0;
+}
+
+int test_callstack_tracker::sub_call_1()
+{
+  FUNCDEF("sub_call_1")
+  return sub_call_2();
+}
+
+int test_callstack_tracker::sub_call_2()
+{
+  FUNCDEF("sub_call_2");
+  return sub_call_3();
+}
+
+int test_callstack_tracker::sub_call_3()
+{
+  FUNCDEF("sub_call_3")
+  return sub_call_4();
+}
+
+int test_callstack_tracker::sub_call_4()
+{
+  FUNCDEF("sub_call_4");
+  #ifdef ENABLE_CALLSTACK_TRACKING
+    // just shows this method's own stack.
+    SHOW_TRACE_AND_CHECK_IT("trace of middling stack:");
   #endif
   return 0;
 }
 
 int test_callstack_tracker::run_filestack_middling()
 {
+  FUNCDEF("run_filestack_middling");
+  int retval = 0;
   #ifdef ENABLE_CALLSTACK_TRACKING
-//show a couple calls in.
-//return an error if any problem.
+    // show a couple calls in using our sub_calls.
+    retval = sub_call_1();
   #endif
-  return 0;
+  return retval;
 }
 
 int test_callstack_tracker::run_filestack_complex()
 {
+  FUNCDEF("run_filestack_complex")
   #ifdef ENABLE_CALLSTACK_TRACKING
 //do something recursive and show an elaborate stack
 //return an error if any problem.
@@ -83,6 +153,7 @@ int test_callstack_tracker::execute()
 {
   FUNCDEF("execute");
 
+//hmmm: do we really want the test to fail out for any subtest failure?  maybe so?
   int ret = run_filestack_simple();
   if (ret) return ret;
   ret = run_filestack_middling();
