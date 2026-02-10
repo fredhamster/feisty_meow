@@ -22,6 +22,9 @@ if [ ! -z "$CLEAN" ]; then
   exit 0
 fi
 
+# uncomment to enable debugging noises.
+DEBUG_BUILDOR_GEN_DEPS=yo
+
 # these semi-global variables used throughout the whole script to accumulate
 # information, rather than trying to juggle positional parameters everywhere.
 
@@ -62,15 +65,18 @@ function add_new_dep {
   # make sure we haven't already processed this.
   local dep="$1"
   if seen_already "$dep"; then
-echo bailing since seen: $dep
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      echo "bailing since seen: $dep"
+    fi
     return 1
   fi
-echo had not seen before: $dep
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    echo "had not seen before: $dep"
+  fi
 
-#  if existing_dep $dep; then return 1; fi  # added it to list already.
-#  if bad_file $dep; then return 1; fi  # known to suck.
-#  if boring_file $dep; then return 1; fi  # we already saw it.
-echo new dep: $dep
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    echo "new dependency: $dep"
+  fi
 
   dependency_accumulator+=($dep)
   return 0
@@ -166,39 +172,53 @@ declare -a resolve_matches_dest=()
 # tries to find a filename in the library hierarchy.
 function resolve_filename {
   local code_file=$1
-echo "resolving: $code_file"
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    echo "resolving: $code_file"
+  fi
   if [ -f "$code_file" ]; then
     # that was pretty easy.
     resolve_target_array=($code_file)
     return 0
   fi
-echo "MUST seek: $code_file"
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    echo "MUST seek: $code_file"
+  fi
 
   local dir=$(dirname "$code_file")
   local base=$(basename "$code_file")
   local src_key="$dir/$base"
-echo "src_key: $src_key"
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    echo "src_key: $src_key"
+  fi
 
   # see if we can find that element in the previously resolved items.
   if find_in_array "$src_key" ${resolve_matches_src[*]}; then
     local found_indy=$__finders_indy
     resolve_target_array=(${resolve_matches_dest[$found_indy]})
-echo "FOUND \"$src_key\" AT ${resolve_matches_dest[$found_indy]}"
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      echo "FOUND \"$src_key\" AT ${resolve_matches_dest[$found_indy]}"
+    fi
     return 0
   fi
 
   # reset our global list.
   resolve_target_array=()
-echo "HAVING TO FIND: $dir and $base"
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    echo "HAVING TO FIND: $dir and $base"
+  fi
   if [ -z "$dir" ]; then
     resolve_target_array=($(find "$BUILD_TOP" -iname "$base"))
   else
     resolve_target_array=($(find "$BUILD_TOP" -iname "$base" | grep "$dir.$base"))
   fi
-echo resolved to: ${resolve_target_array[*]}
-echo size of resolve array=${#resolve_target_array[*]}
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    echo resolved to: ${resolve_target_array[*]}
+    echo size of resolve array=${#resolve_target_array[*]}
+  fi
   if [ ${#resolve_target_array[*]} -eq 1 ]; then
-echo ADDING a match: $src_key ${resolve_target_array[0]}
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      echo ADDING a match: $src_key ${resolve_target_array[0]}
+    fi
     # for unique matches, we will store the correspondence so we can look
     # it up very quickly later.
     resolve_matches_src+=($src_key)
@@ -258,10 +278,11 @@ function recurse_on_deps {
 
   grep "^[ $TAB_CHAR]*#include.*" <"$partial_file" >>"$current_includes"
 
-#hold
-  #rm "$partial_file"
+  rm "$partial_file"
 
-echo "grabbing includes from: $to_examine"
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    echo "grabbing includes from: $to_examine"
+  fi
 
 #hmmm: could separate the find deps on this file stuff below.
 
@@ -274,7 +295,9 @@ echo "grabbing includes from: $to_examine"
     local chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *<\(.*\)>.*$/\1/')
     local original_value="$chew_toy"
     # we want to add the file to the active list before we forgot about it.
-echo A: chew_toy=$chew_toy
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      echo A: chew_toy=$chew_toy
+    fi
 
     # check whether the dependency looks like one of our style of includes.
     # if it doesn't have a slash in it, then we need to give it the same
@@ -286,7 +309,9 @@ echo A: chew_toy=$chew_toy
     if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
       # try again with a simpler pattern.
       chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *[">]\(.*\)[">].*$/\1/') 
-echo B: chew_toy=$chew_toy
+      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+        echo B: chew_toy=$chew_toy
+      fi
 
       # if it still has an #include or if it's not really a file, we can't
       # use it for anything.
@@ -305,13 +330,17 @@ echo B: chew_toy=$chew_toy
         else
           # cool, we can rely on the existing directory.
           chew_toy="$fp_dir/$chew_toy"
-echo patched dir: $chew_toy
+          if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+            echo patched dir: $chew_toy
+          fi
         fi
       fi
     fi
 
     if bad_file $chew_toy; then
-echo C: skipping because on bad list: $chew_toy
+      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+        echo "C: skipping because on bad list: $chew_toy"
+      fi
       continue
     fi
 
@@ -332,13 +361,17 @@ echo C: skipping because on bad list: $chew_toy
 #echo odd len is $odd_len
       if [ $odd_len -eq 0 ]; then
         # whoops.  we couldn't find it.  probably a system header, so toss it.
-echo "** ignoring: $chew_toy"
+        if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+          echo "** ignoring: $chew_toy"
+        fi
         bad_files+=($chew_toy)
         chew_toy=""
       elif [ $odd_len -eq 1 ]; then
         # there's exactly one match, which is very good.
         chew_toy="${found_odd[0]}"
-echo "C: chew_toy=$chew_toy"
+        if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+          echo "C: chew_toy=$chew_toy"
+        fi
       else
         # this is really wrong.  there are multiple files with the same name?
         # that kind of things makes debugger tools angry or stupid.
@@ -355,8 +388,9 @@ echo "C: chew_toy=$chew_toy"
       continue
     fi
 
-    # now if we got something out of our patterns, add it as a file to
-    # investigate.
+    # now if we got something out of our patterns, add it as a file to investigate.
+    # it is reasonable for the chew toy to be empty here, given the work we do above,
+    # hence the emptiness check.
     if [ ! -z "$chew_toy" ]; then
       # add the dependency we found.
       if add_new_dep "$chew_toy"; then
@@ -366,15 +400,16 @@ echo "C: chew_toy=$chew_toy"
           active_deps+=($chew_toy)
         fi
       fi
-    else
-      echo "** chew_toy was empty!  original value was '$original_value'"
     fi
 
     # now compute the path as if it was the implementation file (x.cpp)
     # instead of being a header.  does that file exist?  if so, we'd like
     # its dependencies also.
-    local cpp_toy=$(echo -n $chew_toy | sed -e 's/^\([^\.]*\)\.h$/\1.cpp/')
-echo "cpp_toy is '$cpp_toy' as derived from chew_toy '$chew_toy'"
+#slow and calls external app:    local cpp_toy=$(echo -n $chew_toy | sed -e 's/^\([^\.]*\)\.h$/\1.cpp/')
+    local cpp_toy="${chew_toy%.h}.cpp"  # sweet and fast using just bash variable expansion.
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      echo "cpp_toy is '$cpp_toy' as derived from chew_toy '$chew_toy'"
+    fi
 
     # there's no point in adding it if the name didn't change.
     if [ "$cpp_toy" != "$chew_toy" ]; then
@@ -394,8 +429,7 @@ echo "cpp_toy is '$cpp_toy' as derived from chew_toy '$chew_toy'"
     fi
   done <"$current_includes"
 
-#hold
-  #rm -f "$current_includes"
+  rm -f "$current_includes"
 
   # keep going on the list after our modifications.
   if [ ${#active_deps[*]} -ne 0 ]; then recurse_on_deps ${active_deps[*]}; fi
@@ -409,8 +443,9 @@ function write_new_version {
   local opening_guard_line="\n#ifdef __BUILD_STATIC_APPLICATION__\n  // static dependencies found by buildor_gen_deps.sh:"
   local closing_guard_line="#endif // __BUILD_STATIC_APPLICATION__\n"
 
-#echo "would write deps to: $code_file"
-#echo ${dependency_accumulator[*]}
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    echo "would write deps to: $code_file"
+  fi
 
   local base="$(basename "$code_file")"
   local replacement_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_replacement_${base}.XXXXXX)"
@@ -453,7 +488,9 @@ function write_new_version {
     
     # throw out any items that are in the same directory we started in.
     if [ "$prohibited_directory" == "$(dirname $line_please)" ]; then
-echo "skipping prohibited: $line_please"
+      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+        echo "skipping prohibited: $line_please"
+      fi
       continue
     fi
 
@@ -461,12 +498,16 @@ echo "skipping prohibited: $line_please"
     local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
 
     if [ ! -z "$(echo $chewed_line | sed -n -e 's/\.h$/yow/p')" ]; then
-echo "skipping header file: $chewed_line"
+#      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+        echo "skipping header file: $chewed_line"
+#      fi
       continue
     fi
 
     local new_include="  #include <$chewed_line>"
-echo "adding '$new_include'"
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      echo "adding '$new_include'"
+    fi
     echo "$new_include" >>"$pending_deps"
   done
 
@@ -501,7 +542,7 @@ or within this script itself:
 #cat "$replacement_file"
 #echo "--------------"
 
-  mv "$replacement_file" "$code_file"
+  \mv "$replacement_file" "$code_file"
   exit_on_error "replacing the original file with updated dependency version"
 }
 
@@ -554,8 +595,7 @@ for curr_parm in $*; do
 #echo "looking at file: $line_found"
       find_dependencies "$line_found"
     done <"$outfile"
-#hold
-    #rm -f "$outfile"
+    rm -f "$outfile"
   else
     echo "parameter is not a file or directory: $curr_parm"
   fi
@@ -566,5 +606,4 @@ for curr_parm in $*; do
   echo ""
 
 done
-
 
