@@ -56,7 +56,7 @@ const char *emptiness_note = "Empty Stack\n";
 
 basis::mutex &callstack_tracker::__callstack_tracker_synchronizer()
 {
-  static basis::mutex __global_synch_callstacks;
+  thread_local basis::mutex __global_synch_callstacks;
   return __global_synch_callstacks;
 }
 
@@ -65,24 +65,14 @@ basis::mutex &callstack_tracker::__callstack_tracker_synchronizer()
 //! the single instance of callstack_tracker.
 /*!
   this is also an ultra low-level object, although it's not as far down
-as the memory checker.  it can allocate c++ objects and that kind of thing
-just fine.  the object must be stored here rather than in the static basis
-library due to issues in windows dlls.
-  NOTE: the construction process for this is not thread-safe; the static
-program-wide object must be initialized before any threads have started.
-that is normally done in...
-uhhh....
-
-beuller?
-...
-
-
+  as the memory checker.  it can allocate c++ objects and that kind of thing
+  just fine.
 */
 callstack_tracker &program_wide_stack_trace()
 {
   auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
 
-  static callstack_tracker *_hidden_trace = NULL_POINTER;
+  thread_local callstack_tracker *_hidden_trace = NULL_POINTER;
   if (!_hidden_trace) {
 #ifdef ENABLE_MEMORY_HOOK
     program_wide_memories().disable();

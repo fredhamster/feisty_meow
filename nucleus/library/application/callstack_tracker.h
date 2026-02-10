@@ -104,6 +104,36 @@ private:
 
 //////////////
 
+/*!
+  super helpful macro that shows the current stack trace and checks it for validity.
+  this shouldn't impact the trace, since all the code is embedded inline from the macro.
+  this does require that LOG() is defined, and that a failure return value is expected
+  from the embedding function.
+*/
+#define GET_AND_TEST_STACK_TRACE(header, failure_return) { \
+  int trace_size = program_wide_stack_trace().full_trace_size(); \
+  char *stack_trace = program_wide_stack_trace().full_trace(); \
+  ASSERT_TRUE(trace_size >= strlen(stack_trace) + 1, "insufficient estimated stack trace size"); \
+  if (trace_size < strlen(stack_trace) + 1) { \
+    /* error condition here; we are supposed to get the actual size we would need to allocate! */ \
+    LOG(a_sprintf("failure in stack trace return: estimated size (%d) was less than actual (%d)", \
+        trace_size, strlen(stack_trace))); \
+    /* mandatory free step for newly allocated string. */ \
+    free(stack_trace); \
+    return failure_return; \
+  } \
+  ASSERT_TRUE(strlen(stack_trace) > 1, "empty stack trace"); \
+  if (strlen(stack_trace) < 2) { \
+    LOG("failure in stack trace return: the trace output string was empty!"); \
+    return failure_return; \
+  } \
+  LOG(astring("\n\n################\n\n") + header + "\n" + stack_trace); \
+  /* mandatory free step for newly allocated string. */ \
+  free(stack_trace); \
+}
+
+//////////////
+
 //! a small object that represents a stack trace in progress.
 /*! the object will automatically be destroyed when the containing scope
 exits.  this enables a users of the stack tracker to simply label their
@@ -155,9 +185,8 @@ void update_current_stack_frame_line_number(int line);
   */
   inline void no_op() { /* do nothing. */ }
   #define frame_tracking_instance
+  #define GET_AND_TEST_STACK_TRACE(header, failure_return) no_op();
   #define __trail_of_function(p1, p2, p3, p4, p5) no_op();
-    // the above actually trades on the name of the object we'd normally
-    // define.  it must match the object name in the FUNCDEF macro.
   inline void update_current_stack_frame_line_number(int line) { /* more nothing. */ }
 #endif // ENABLE_CALLSTACK_TRACKING
 

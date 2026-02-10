@@ -12,6 +12,7 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <application/callstack_tracker.h>
 #include <application/hoople_main.h>
 #include <basis/astring.h>
 #include <basis/guards.h>
@@ -40,6 +41,8 @@ using namespace timely;
 using namespace processes;
 using namespace structures;
 using namespace unit_test;
+
+class test_mutex;  // forward.
 
 #define DEBUG_MUTEX
   // uncomment for a verbose test run.
@@ -78,30 +81,27 @@ astring protected_string;
 #define LOG(to_print) CLASS_EMERGENCY_LOG(program_wide_logger::get(), to_print)
   // our macro for logging with a timestamp.
 
-// expects guardian mutex to already be locked once when coming in.
-void test_recursive_locking(chaos &_rando)
+//////////////
+
+#undef UNIT_BASE_THIS_OBJECT
+#define UNIT_BASE_THIS_OBJECT (*this)
+
+class test_mutex : virtual public unit_base, virtual public application_shell
 {
-  int test_attempts = _rando.inclusive(MIN_SAME_THREAD_LOCKING_TESTS,
-      MAX_SAME_THREAD_LOCKING_TESTS);
-  int locked = 0;
-  for (int i = 0; i < test_attempts; i++) {
-    bool lock = !!(_rando.inclusive(0, 1));
-    if (lock) {
-      guard().lock();
-      locked++;  // one more lock.
-    } else {
-      if (locked > 0) {
-        // must be sure we are not already locally unlocked completely.
-        guard().unlock();
-        locked--;
-      }
-    }
-  }
-  for (int j = 0; j < locked; j++) {
-    // drop any locks we had left during the test.
-    guard().unlock();
-  }
-}
+public:
+  chaos _rando;  // our randomizer.
+
+  test_mutex() : application_shell() {}
+
+  DEFINE_CLASS_NAME("test_mutex");
+
+  int execute();
+
+  void test_recursive_locking(chaos &_rando);
+    // invoked by the threads to do a little testing of locks.
+};
+
+//////////////
 
 //hmmm: how are these threads different so far?  they seem to do exactly
 //      the same thing.  maybe one should eat chars from the string.
@@ -113,9 +113,9 @@ class piranha : public ethread
 {
 public:
   chaos _rando;  // our randomizer.
-  unit_base &c_testing;  // provides for test recording.
+  test_mutex &c_testing;  // provides for test recording.
 
-  piranha(unit_base &testing) : ethread(0), c_testing(testing) {
+  piranha(test_mutex &testing) : ethread(0), c_testing(testing) {
     FUNCDEF("constructor");
     safe_add(concurrent_biters, 1);
     ASSERT_TRUE(concurrent_biters >= 1, "the piranha is very noticeable");
@@ -143,10 +143,15 @@ public:
       ASSERT_TRUE(grab_lock <= 1, "grab lock should not already be active");
       protected_string += char(_rando.inclusive('a', 'z'));
 
-      test_recursive_locking(_rando);
+      c_testing.test_recursive_locking(_rando);
 
       safe_add(grab_lock, -1);
     }
+
+    #ifdef ENABLE_CALLSTACK_TRACKING
+      GET_AND_TEST_STACK_TRACE(class_name() + "::" + func + " callstack:", );
+    #endif
+
     // dropped the lock.  snooze a bit.
     if (!should_stop())
       time_control::sleep_ms(_rando.inclusive(THREAD_PAUSE_LOWEST, THREAD_PAUSE_HIGHEST));
@@ -154,13 +159,15 @@ public:
 
 };
 
+//////////////
+
 class barracuda : public ethread
 {
 public:
   chaos _rando;  // our randomizer.
-  unit_base &c_testing;  // provides for test recording.
+  test_mutex &c_testing;  // provides for test recording.
 
-  barracuda(unit_base &testing) : ethread(0), c_testing(testing) {
+  barracuda(test_mutex &testing) : ethread(0), c_testing(testing) {
     FUNCDEF("constructor");
     safe_add(concurrent_biters, 1);
     ASSERT_TRUE(concurrent_biters >= 1, "our presence should have been noticed");
@@ -182,11 +189,16 @@ public:
     safe_add(grab_lock, 1);
     ASSERT_TRUE(grab_lock <= 1, "grab lock should not already be active");
 
-    test_recursive_locking(_rando);
+    c_testing.test_recursive_locking(_rando);
 
     protected_string += char(_rando.inclusive('a', 'z'));
     safe_add(grab_lock, -1);
     guard().unlock();
+
+    #ifdef ENABLE_CALLSTACK_TRACKING
+      GET_AND_TEST_STACK_TRACE(class_name() + "::" + func + " callstack:", );
+    #endif
+
     // done with the lock.  sleep for a while.
     if (!should_stop())
       time_control::sleep_ms(_rando.inclusive(THREAD_PAUSE_LOWEST, THREAD_PAUSE_HIGHEST));
@@ -197,18 +209,6 @@ public:
 
 #undef UNIT_BASE_THIS_OBJECT
 #define UNIT_BASE_THIS_OBJECT (*this)
-
-class test_mutex : virtual public unit_base, virtual public application_shell
-{
-public:
-  chaos _rando;  // our randomizer.
-
-  test_mutex() : application_shell() {}
-
-  DEFINE_CLASS_NAME("test_mutex");
-
-  int execute();
-};
 
 int test_mutex::execute()
 {
@@ -243,6 +243,10 @@ int test_mutex::execute()
 #ifdef DEBUG_MUTEX
     LOG("about to exit scope and dump automatic objects.");
 #endif
+
+    #ifdef ENABLE_CALLSTACK_TRACKING
+      GET_AND_TEST_STACK_TRACE(class_name() + "::" + func + " mutex lock timing callstack:", 1);
+    #endif
   }
 
 #ifdef DEBUG_MUTEX
@@ -264,6 +268,11 @@ int test_mutex::execute()
       LOG(a_sprintf("indy %i: adding new piranha now.", i));
 #endif
     }
+
+    #ifdef ENABLE_CALLSTACK_TRACKING
+      GET_AND_TEST_STACK_TRACE(class_name() + "::" + func + a_sprintf(" starting fish indy #%d", i+1) + " callstack:", 1);
+    #endif
+
     thread_list.append(t);
     ethread *q = thread_list[thread_list.elements() - 1];
     ASSERT_EQUAL(q, t, "amorph pointer equivalence is required");
@@ -318,6 +327,10 @@ int test_mutex::execute()
 #ifdef DEBUG_MUTEX
   LOG("done exiting from all threads.");
 
+  #ifdef ENABLE_CALLSTACK_TRACKING
+    GET_AND_TEST_STACK_TRACE(class_name() + "::" + func + " after all threads have exited callstack:", 1);
+  #endif
+
   LOG(astring(astring::SPRINTF, "the accumulated string had %d characters "
       "which means\nthere were %d thread activations from %d threads.",
       protected_string.length(), protected_string.length(),
@@ -326,6 +339,39 @@ int test_mutex::execute()
 
   return final_report();
 }
+
+//////////////
+
+// expects guardian mutex to already be locked once when coming in.
+void test_mutex::test_recursive_locking(chaos &_rando)
+{
+  FUNCDEF("test_recursive_locking");
+  int test_attempts = _rando.inclusive(MIN_SAME_THREAD_LOCKING_TESTS,
+      MAX_SAME_THREAD_LOCKING_TESTS);
+  int locked = 0;
+  #ifdef ENABLE_CALLSTACK_TRACKING
+    GET_AND_TEST_STACK_TRACE(class_name() + "::" + func + " callstack:", );
+  #endif
+  for (int i = 0; i < test_attempts; i++) {
+    bool lock = !!(_rando.inclusive(0, 1));
+    if (lock) {
+      guard().lock();
+      locked++;  // one more lock.
+    } else {
+      if (locked > 0) {
+        // must be sure we are not already locally unlocked completely.
+        guard().unlock();
+        locked--;
+      }
+    }
+  }
+  for (int j = 0; j < locked; j++) {
+    // drop any locks we had left during the test.
+    guard().unlock();
+  }
+}
+
+//////////////
 
 HOOPLE_MAIN(test_mutex, )
 
