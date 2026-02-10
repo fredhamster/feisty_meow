@@ -76,7 +76,7 @@ public:
     /*!< the user *must* free() the string returned. */
 
   int full_trace_size() const;
-    //!< this returns the number of bytes needed for the above full_trace().
+    //!< this returns an estimated number of bytes needed for the full_trace().
 
   int depth() const { return _depth; }
     //!< the current number of frames we know of.
