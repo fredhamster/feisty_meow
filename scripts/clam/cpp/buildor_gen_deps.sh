@@ -23,7 +23,7 @@ if [ ! -z "$CLEAN" ]; then
 fi
 
 # uncomment to enable debugging noises.
-DEBUG_BUILDOR_GEN_DEPS=yo
+#DEBUG_BUILDOR_GEN_DEPS=yo
 
 # these semi-global variables used throughout the whole script to accumulate
 # information, rather than trying to juggle positional parameters everywhere.
@@ -259,10 +259,10 @@ function recurse_on_deps {
   ##########################################################################
 
   local current_includes="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_includes_${basetmp}.XXXXXX)"
-  rm -f "$current_includes"
+  \rm -f "$current_includes"
 
   local partial_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_filepart_${basetmp}.XXXXXX)"
-  rm -f "$partial_file"
+  \rm -f "$partial_file"
 
   # find all the includes in this file and save to the temp file.
   while read -r spoon; do
@@ -278,7 +278,7 @@ function recurse_on_deps {
 
   grep "^[ $TAB_CHAR]*#include.*" <"$partial_file" >>"$current_includes"
 
-  rm "$partial_file"
+  \rm "$partial_file"
 
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
     echo "grabbing includes from: $to_examine"
@@ -400,36 +400,36 @@ function recurse_on_deps {
           active_deps+=($chew_toy)
         fi
       fi
-    fi
 
-    # now compute the path as if it was the implementation file (x.cpp)
-    # instead of being a header.  does that file exist?  if so, we'd like
-    # its dependencies also.
+      # now compute the path as if it was the implementation file (x.cpp)
+      # instead of being a header.  does that file exist?  if so, we'd like
+      # its dependencies also.
 #slow and calls external app:    local cpp_toy=$(echo -n $chew_toy | sed -e 's/^\([^\.]*\)\.h$/\1.cpp/')
-    local cpp_toy="${chew_toy%.h}.cpp"  # sweet and fast using just bash variable expansion.
-    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-      echo "cpp_toy is '$cpp_toy' as derived from chew_toy '$chew_toy'"
-    fi
+      local cpp_toy="${chew_toy%.h}.cpp"  # sweet and fast using just bash variable expansion.
+      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+        echo "cpp_toy is '$cpp_toy' as derived from chew_toy '$chew_toy'"
+      fi
 
-    # there's no point in adding it if the name didn't change.
-    if [ "$cpp_toy" != "$chew_toy" ]; then
-      resolve_filename $cpp_toy
+      # there's no point in adding it if the name didn't change.
+      if [ "$cpp_toy" != "$chew_toy" ]; then
+        resolve_filename $cpp_toy
 #hmmm: what if too many matches occur?
-      found_it="${resolve_target_array[0]}"
+        found_it="${resolve_target_array[0]}"
 
-      # if the dependency actually exists, then we'll add it to our list.
-      if [ ! -z "$found_it" ]; then
-        if add_new_dep "$found_it"; then
-          # that was a new dependency, so we'll continue examining it.
-          if ! already_listed "$found_it" ${active_deps[*]}; then
-            active_deps+=($found_it)
+        # if the dependency actually exists, then we'll add it to our list.
+        if [ ! -z "$found_it" ]; then
+          if add_new_dep "$found_it"; then
+            # that was a new dependency, so we'll continue examining it.
+            if ! already_listed "$found_it" ${active_deps[*]}; then
+              active_deps+=($found_it)
+            fi
           fi
         fi
       fi
     fi
   done <"$current_includes"
 
-  rm -f "$current_includes"
+  \rm -f "$current_includes"
 
   # keep going on the list after our modifications.
   if [ ${#active_deps[*]} -ne 0 ]; then recurse_on_deps ${active_deps[*]}; fi
@@ -481,7 +481,7 @@ function write_new_version {
 
   # now accumulate just the dependencies for a bit.
   local pending_deps="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_pendingdeps_${base}.XXXXXX)"
-  rm -f "$pending_deps"
+  \rm -f "$pending_deps"
 
   # iterate across all the dependencies we found.
   for line_please in ${dependency_accumulator[*]}; do
@@ -531,7 +531,7 @@ or within this script itself:
 
   sort "$pending_deps" >>"$replacement_file"
   exit_on_error "sorting pending deps into the replacement file"
-  rm -f "$pending_deps"
+  \rm -f "$pending_deps"
 
   echo -e "$closing_guard_line" >>"$replacement_file"
 
@@ -595,7 +595,7 @@ for curr_parm in $*; do
 #echo "looking at file: $line_found"
       find_dependencies "$line_found"
     done <"$outfile"
-    rm -f "$outfile"
+    \rm -f "$outfile"
   else
     echo "parameter is not a file or directory: $curr_parm"
   fi
