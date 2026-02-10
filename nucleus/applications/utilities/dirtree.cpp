@@ -149,7 +149,9 @@ HOOPLE_MAIN(dirtree, )
 
 #ifdef __BUILD_STATIC_APPLICATION__
   // static dependencies found by buildor_gen_deps.sh:
+  #include <algorithms/sorts.cpp>
   #include <application/application_shell.cpp>
+  #include <application/callstack_tracker.cpp>
   #include <application/command_line.cpp>
   #include <application/windoze_helper.cpp>
   #include <basis/astring.cpp>
@@ -168,10 +170,10 @@ HOOPLE_MAIN(dirtree, )
   #include <filesystem/directory.cpp>
   #include <filesystem/directory_tree.cpp>
   #include <filesystem/file_info.cpp>
-  #include <filesystem/file_time.cpp>
   #include <filesystem/filename.cpp>
   #include <filesystem/filename_list.cpp>
   #include <filesystem/filename_tree.cpp>
+  #include <filesystem/file_time.cpp>
   #include <filesystem/huge_file.cpp>
   #include <loggers/combo_logger.cpp>
   #include <loggers/console_logger.cpp>

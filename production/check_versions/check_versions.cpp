@@ -108,53 +108,41 @@ int main(int formal(argc), char *formal(argv)[])
 
 #ifdef __BUILD_STATIC_APPLICATION__
   // static dependencies found by buildor_gen_deps.sh:
-  #include <basis/byte_array.cpp>
-  #include <basis/callstack_tracker.cpp>
-  #include <basis/convert_utf.cpp>
-  #include <basis/definitions.cpp>
-  #include <basis/earth_time.cpp>
+  #include <algorithms/sorts.cpp>
+  #include <application/application_shell.cpp>
+  #include <application/callstack_tracker.cpp>
+  #include <application/windoze_helper.cpp>
+  #include <basis/astring.cpp>
+  #include <basis/common_outcomes.cpp>
+  #include <basis/environment.cpp>
   #include <basis/guards.cpp>
-  #include <basis/istring.cpp>
-  #include <basis/log_base.cpp>
-  #include <basis/memory_checker.cpp>
   #include <basis/mutex.cpp>
-  #include <basis/object_base.h>
-  #include <basis/outcome.cpp>
-  #include <basis/packable.cpp>
-  #include <basis/portable.cpp>
-  #include <basis/trap_new.addin>
-  #include <basis/untrap_new.addin>
-  #include <basis/utility.cpp>
-  #include <basis/version_checker.cpp>
-  #include <basis/version_record.cpp>
-  #include <data_struct/bit_vector.cpp>
-  #include <data_struct/byte_hasher.cpp>
-  #include <data_struct/configurator.cpp>
-  #include <data_struct/pointer_hash.h>
-  #include <data_struct/stack.h>
-  #include <data_struct/static_memory_gremlin.cpp>
-  #include <data_struct/string_hash.h>
-  #include <data_struct/string_hasher.cpp>
-  #include <data_struct/string_table.cpp>
-  #include <data_struct/symbol_table.h>
-  #include <data_struct/table_configurator.cpp>
+  #include <basis/utf_conversion.cpp>
+  #include <configuration/application_configuration.cpp>
+  #include <configuration/configurator.cpp>
+  #include <configuration/ini_configurator.cpp>
+  #include <configuration/ini_parser.cpp>
+  #include <configuration/table_configurator.cpp>
+  #include <configuration/variable_tokenizer.cpp>
+  #include <filesystem/byte_filer.cpp>
+  #include <filesystem/directory.cpp>
+  #include <filesystem/filename.cpp>
+  #include <loggers/combo_logger.cpp>
   #include <loggers/console_logger.cpp>
+  #include <loggers/critical_events.cpp>
   #include <loggers/file_logger.cpp>
-  #include <loggers/locked_logger.cpp>
-  #include <loggers/null_logger.cpp>
   #include <loggers/program_wide_logger.cpp>
-  #include <opsystem/byte_filer.cpp>
-  #include <opsystem/command_line.cpp>
-  #include <opsystem/critical_events.cpp>
-  #include <opsystem/directory.cpp>
-  #include <opsystem/filename.cpp>
-  #include <opsystem/ini_config.cpp>
-  #include <opsystem/ini_parser.cpp>
-  #include <opsystem/path_configuration.cpp>
-  #include <opsystem/rendezvous.cpp>
-  #include <textual/byte_format.cpp>
+  #include <structures/bit_vector.cpp>
+  #include <structures/checksums.cpp>
+  #include <structures/object_packers.cpp>
+  #include <structures/static_memory_gremlin.cpp>
+  #include <structures/string_hasher.cpp>
+  #include <structures/string_table.cpp>
+  #include <structures/version_record.cpp>
+  #include <textual/byte_formatter.cpp>
   #include <textual/parser_bits.cpp>
   #include <textual/string_manipulation.cpp>
-  #include <textual/tokenizer.cpp>
+  #include <timely/earth_time.cpp>
+  #include <timely/time_stamp.cpp>
 #endif // __BUILD_STATIC_APPLICATION__
 
