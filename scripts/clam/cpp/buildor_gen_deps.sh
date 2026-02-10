@@ -62,15 +62,15 @@ function add_new_dep {
   # make sure we haven't already processed this.
   local dep="$1"
   if seen_already "$dep"; then
-#echo bailing since seen: $dep
+echo bailing since seen: $dep
     return 1
   fi
-#echo had not seen before: $dep
+echo had not seen before: $dep
 
 #  if existing_dep $dep; then return 1; fi  # added it to list already.
 #  if bad_file $dep; then return 1; fi  # known to suck.
 #  if boring_file $dep; then return 1; fi  # we already saw it.
-##echo new dep: $dep
+echo new dep: $dep
 
   dependency_accumulator+=($dep)
   return 0
@@ -166,39 +166,39 @@ declare -a resolve_matches_dest=()
 # tries to find a filename in the library hierarchy.
 function resolve_filename {
   local code_file=$1
-#echo resolving: $code_file
+echo "resolving: $code_file"
   if [ -f "$code_file" ]; then
     # that was pretty easy.
     resolve_target_array=($code_file)
     return 0
   fi
-#echo "MUST seek: $code_file"
+echo "MUST seek: $code_file"
 
   local dir=$(dirname "$code_file")
   local base=$(basename "$code_file")
   local src_key="$dir/$base"
-#echo "src_key: $src_key"
+echo "src_key: $src_key"
 
   # see if we can find that element in the previously resolved items.
   if find_in_array "$src_key" ${resolve_matches_src[*]}; then
     local found_indy=$__finders_indy
     resolve_target_array=(${resolve_matches_dest[$found_indy]})
-#echo "FOUND \"$src_key\" AT ${resolve_matches_dest[$found_indy]}"
+echo "FOUND \"$src_key\" AT ${resolve_matches_dest[$found_indy]}"
     return 0
   fi
 
   # reset our global list.
   resolve_target_array=()
-#echo "HAVING TO FIND: $dir and $base"
+echo "HAVING TO FIND: $dir and $base"
   if [ -z "$dir" ]; then
     resolve_target_array=($(find "$BUILD_TOP" -iname "$base"))
   else
     resolve_target_array=($(find "$BUILD_TOP" -iname "$base" | grep "$dir.$base"))
   fi
-#echo resolved to: ${resolve_target_array[*]}
-#echo size of resolve array=${#resolve_target_array[*]}
+echo resolved to: ${resolve_target_array[*]}
+echo size of resolve array=${#resolve_target_array[*]}
   if [ ${#resolve_target_array[*]} -eq 1 ]; then
-#echo ADDING a match: $src_key ${resolve_target_array[0]}
+echo ADDING a match: $src_key ${resolve_target_array[0]}
     # for unique matches, we will store the correspondence so we can look
     # it up very quickly later.
     resolve_matches_src+=($src_key)
@@ -261,7 +261,7 @@ function recurse_on_deps {
 #hold
   #rm "$partial_file"
 
-#echo "grabbing includes from: $to_examine"
+echo "grabbing includes from: $to_examine"
 
 #hmmm: could separate the find deps on this file stuff below.
 
@@ -272,8 +272,9 @@ function recurse_on_deps {
   # we haven't already.
   while read -r line_found; do
     local chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *<\(.*\)>.*$/\1/')
+    local original_value="$chew_toy"
     # we want to add the file to the active list before we forgot about it.
-#echo A: chew_toy=$chew_toy
+echo A: chew_toy=$chew_toy
 
     # check whether the dependency looks like one of our style of includes.
     # if it doesn't have a slash in it, then we need to give it the same
@@ -285,7 +286,7 @@ function recurse_on_deps {
     if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
       # try again with a simpler pattern.
       chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *[">]\(.*\)[">].*$/\1/') 
-#echo B: chew_toy=$chew_toy
+echo B: chew_toy=$chew_toy
 
       # if it still has an #include or if it's not really a file, we can't
       # use it for anything.
@@ -304,13 +305,13 @@ function recurse_on_deps {
         else
           # cool, we can rely on the existing directory.
           chew_toy="$fp_dir/$chew_toy"
-#echo patched dir: $chew_toy
+echo patched dir: $chew_toy
         fi
       fi
     fi
 
     if bad_file $chew_toy; then
-#echo C: skipping because on bad list: $chew_toy
+echo C: skipping because on bad list: $chew_toy
       continue
     fi
 
@@ -331,13 +332,13 @@ function recurse_on_deps {
 #echo odd len is $odd_len
       if [ $odd_len -eq 0 ]; then
         # whoops.  we couldn't find it.  probably a system header, so toss it.
-#echo "** ignoring: $chew_toy"
+echo "** ignoring: $chew_toy"
         bad_files+=($chew_toy)
         chew_toy=""
       elif [ $odd_len -eq 1 ]; then
         # there's exactly one match, which is very good.
         chew_toy="${found_odd[0]}"
-#echo C: chew_toy=$chew_toy
+echo "C: chew_toy=$chew_toy"
       else
         # this is really wrong.  there are multiple files with the same name?
         # that kind of things makes debugger tools angry or stupid.
@@ -365,12 +366,15 @@ function recurse_on_deps {
           active_deps+=($chew_toy)
         fi
       fi
+    else
+      echo "** chew_toy was empty!  original value was '$original_value'"
     fi
 
     # now compute the path as if it was the implementation file (x.cpp)
     # instead of being a header.  does that file exist?  if so, we'd like
     # its dependencies also.
-    local cpp_toy=$(echo $chew_toy | sed -e 's/^\([^\.]*\)\.h$/\1.cpp/')
+    local cpp_toy=$(echo -n $chew_toy | sed -e 's/^\([^\.]*\)\.h$/\1.cpp/')
+echo "cpp_toy is '$cpp_toy' as derived from chew_toy '$chew_toy'"
 
     # there's no point in adding it if the name didn't change.
     if [ "$cpp_toy" != "$chew_toy" ]; then
@@ -462,8 +466,8 @@ echo "skipping header file: $chewed_line"
     fi
 
     local new_include="  #include <$chewed_line>"
-    echo "$new_include" >>"$pending_deps"
 echo "adding '$new_include'"
+    echo "$new_include" >>"$pending_deps"
   done
 
   # check that our dependencies file is not empty still.

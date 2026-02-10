@@ -24,6 +24,7 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <algorithms/sorts.h>
 #include <application/application_shell.h>
 #include <application/command_line.h>
 #include <application/hoople_main.h>
@@ -46,7 +47,6 @@
 
 #include <sys/stat.h>
 
-#include "../../library/algorithms/sorts.h"
 #ifdef __WIN32__
   #include <io.h>
 #endif

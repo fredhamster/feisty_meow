@@ -54,23 +54,42 @@ const char *emptiness_note = "Empty Stack\n";
 
 //////////////
 
+basis::mutex &callstack_tracker::__callstack_tracker_synchronizer()
+{
+  static basis::mutex __global_synch_callstacks;
+  return __global_synch_callstacks;
+}
+
+//////////////
+
 //! the single instance of callstack_tracker.
-/*! this is also an ultra low-level object, although it's not as far down
+/*!
+  this is also an ultra low-level object, although it's not as far down
 as the memory checker.  it can allocate c++ objects and that kind of thing
 just fine.  the object must be stored here rather than in the static basis
 library due to issues in windows dlls.
-NOTE: this is also not thread safe; it must be initialized before any threads
-have started. */
+  NOTE: the construction process for this is not thread-safe; the static
+program-wide object must be initialized before any threads have started.
+that is normally done in...
+uhhh....
 
-//hmmm: why is this here?  because it needs to interact with the progwide memories?
+beuller?
+...
+
+
+*/
 callstack_tracker &program_wide_stack_trace()
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
   static callstack_tracker *_hidden_trace = NULL_POINTER;
   if (!_hidden_trace) {
 #ifdef ENABLE_MEMORY_HOOK
     program_wide_memories().disable();
-      // we don't want infinite loops tracking the call stack during this
-      // object's construction.
+      /* we don't want infinite loops tracking the call stack during this object's construction. */
+//hmmm: does that disable the progwide memories for the whole program or just for this thread?
+//      and what does that entail exactly?
+//      did it actually fix the problem we saw?
 #endif
     _hidden_trace = new callstack_tracker;
 #ifdef ENABLE_MEMORY_HOOK
@@ -119,6 +138,8 @@ callstack_tracker::~callstack_tracker()
 bool callstack_tracker::push_frame(const char *class_name, const char *func,
     const char *file, int line)
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
 //printf("callstack pushframe depth=%d in\n", _depth);
   if (_unusable) return false;
   if (_depth >= MAX_STACK_DEPTH) {
@@ -137,6 +158,8 @@ bool callstack_tracker::push_frame(const char *class_name, const char *func,
 
 bool callstack_tracker::pop_frame()
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
 //printf("callstack popframe depth=%d in\n", _depth);
   if (_unusable) return false;
   if (_depth <= 0) {
@@ -154,6 +177,8 @@ bool callstack_tracker::pop_frame()
 
 bool callstack_tracker::update_line(int line)
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
   if (_unusable) return false;
   if (!_depth) return false;  // not as serious, but pretty weird.
   _bt->_records[_depth]._line = line;
@@ -162,6 +187,8 @@ bool callstack_tracker::update_line(int line)
 
 char *callstack_tracker::full_trace() const
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
   if (_unusable) return strdup("");
 //printf("fulltrace in\n");
   char *to_return = (char *)malloc(full_trace_size());
@@ -212,6 +239,8 @@ char *callstack_tracker::full_trace() const
 
 int callstack_tracker::full_trace_size() const
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
   if (_unusable) return 0;
   if (!_depth) return strlen(emptiness_note) + 14;  // liberal allocation.
   int to_return = 28;  // another hollywood style excess.

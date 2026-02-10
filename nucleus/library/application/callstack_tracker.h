@@ -18,6 +18,7 @@
 #include <application/build_configuration.h>
 #include <basis/contracts.h>
 #include <basis/definitions.h>
+#include <basis/mutex.h>
 
 namespace application {
 
@@ -31,6 +32,8 @@ class callstack_tracker;
 
 callstack_tracker &program_wide_stack_trace();
   //!< a global object that can be used to track the runtime callstack.
+
+//hmmm: maybe borked on basis of the conflict between a global stack tracker and the fact that each thread has its own callstack!  argh!
 
 //////////////
 
@@ -86,6 +89,9 @@ public:
 
   double highest() const { return _highest; }
     //!< reports the maximum stack depth seen during the runtime so far.
+
+  static basis::mutex &__callstack_tracker_synchronizer();
+    //!< protects concurrent access.
 
 private:
   callstack_records *_bt;  //!< the backtrace records for current program.

@@ -41,7 +41,7 @@ using namespace processes;
 using namespace structures;
 using namespace unit_test;
 
-//#define DEBUG_MUTEX
+#define DEBUG_MUTEX
   // uncomment for a verbose test run.
 
 const int MAX_MUTEX_TIMING_TEST = 2000000;
@@ -214,6 +214,10 @@ int test_mutex::execute()
 {
   FUNCDEF("execute");
 
+#ifdef DEBUG_MUTEX
+  LOG("entering execute method.");
+#endif
+
   // make sure the guard is initialized before the threads run.
   guard().lock();
   guard().unlock();
@@ -236,20 +240,46 @@ int test_mutex::execute()
         run_count, full_run_time));
     log(a_sprintf("or %f ms per (lock+unlock).", time_per_lock));
     ASSERT_TRUE(time_per_lock < 1.0, "mutex lock timing should be super fast");
+#ifdef DEBUG_MUTEX
+    LOG("about to exit scope and dump automatic objects.");
+#endif
   }
+
+#ifdef DEBUG_MUTEX
+  LOG("succeeded in exiting scope.");
+#endif
 
   amorph<ethread> thread_list;
 
   for (int i = 0; i < DEFAULT_FISH; i++) {
     ethread *t = NULL_POINTER;
-    if (i % 2) t = new piranha(*this);
-    else t = new barracuda(*this);
+    if (i % 2) {
+      t = new piranha(*this);
+#ifdef DEBUG_MUTEX
+      LOG(a_sprintf("indy %i: adding new piranha now.", i));
+#endif
+    } else {
+      t = new barracuda(*this);
+#ifdef DEBUG_MUTEX
+      LOG(a_sprintf("indy %i: adding new piranha now.", i));
+#endif
+    }
     thread_list.append(t);
     ethread *q = thread_list[thread_list.elements() - 1];
     ASSERT_EQUAL(q, t, "amorph pointer equivalence is required");
+#ifdef DEBUG_MUTEX
+    LOG(a_sprintf("indy %i: about to start new thread.", i));
+#endif
     // start the thread we added.
     q->start(NULL_POINTER);
+#ifdef DEBUG_MUTEX
+    LOG(a_sprintf("indy %i: after new thread started.", i));
+#endif
   }
+
+#ifdef DEBUG_MUTEX
+  LOG("about to begin snoozing.");
+#endif
 
   time_stamp when_to_leave(DEFAULT_RUN_TIME);
   while (when_to_leave > time_stamp()) {
@@ -260,13 +290,13 @@ int test_mutex::execute()
 //      that should work fine.
 
 #ifdef DEBUG_MUTEX
-  LOG("now cancelling all threads....");
+  LOG("now cancelling all threads.");
 #endif
 
   for (int j = 0; j < thread_list.elements(); j++) thread_list[j]->cancel();
 
 #ifdef DEBUG_MUTEX
-  LOG("now stopping all threads....");
+  LOG("now stopping all threads.");
 #endif
 
   for (int k = 0; k < thread_list.elements(); k++) thread_list[k]->stop();
@@ -278,7 +308,7 @@ int test_mutex::execute()
   ASSERT_EQUAL(threads_active, 0, "threads should actually have stopped by now");
 
 #ifdef DEBUG_MUTEX
-  LOG("resetting thread list....");
+  LOG("resetting thread list.");
 #endif
 
   thread_list.reset();  // should whack all threads.
@@ -286,7 +316,7 @@ int test_mutex::execute()
   ASSERT_EQUAL(concurrent_biters, 0, "threads should all be gone by now");
 
 #ifdef DEBUG_MUTEX
-  LOG("done exiting from all threads....");
+  LOG("done exiting from all threads.");
 
   LOG(astring(astring::SPRINTF, "the accumulated string had %d characters "
       "which means\nthere were %d thread activations from %d threads.",

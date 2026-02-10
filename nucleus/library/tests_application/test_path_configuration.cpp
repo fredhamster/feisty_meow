@@ -34,7 +34,7 @@ using namespace loggers;
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 //hmmm: ugly old main() without using the hoople machinery.  ack.
-astring static_class_name() { return "test_path_configuration"; }
+const char *static_class_name() { return "test_path_configuration"; }
 
 HOOPLE_STARTUP_CODE;
 
