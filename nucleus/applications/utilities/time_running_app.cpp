@@ -89,5 +89,42 @@ HOOPLE_MAIN(time_running_app, )
 
 #ifdef __BUILD_STATIC_APPLICATION__
   // static dependencies found by buildor_gen_deps.sh:
+  #include <algorithms/sorts.cpp>
+  #include <application/application_shell.cpp>
+  #include <application/callstack_tracker.cpp>
+  #include <application/command_line.cpp>
+  #include <application/windoze_helper.cpp>
+  #include <basis/astring.cpp>
+  #include <basis/common_outcomes.cpp>
+  #include <basis/environment.cpp>
+  #include <basis/guards.cpp>
+  #include <basis/mutex.cpp>
+  #include <basis/utf_conversion.cpp>
+  #include <configuration/application_configuration.cpp>
+  #include <configuration/configurator.cpp>
+  #include <configuration/ini_configurator.cpp>
+  #include <configuration/ini_parser.cpp>
+  #include <configuration/table_configurator.cpp>
+  #include <configuration/variable_tokenizer.cpp>
+  #include <filesystem/byte_filer.cpp>
+  #include <filesystem/directory.cpp>
+  #include <filesystem/filename.cpp>
+  #include <loggers/combo_logger.cpp>
+  #include <loggers/console_logger.cpp>
+  #include <loggers/critical_events.cpp>
+  #include <loggers/file_logger.cpp>
+  #include <loggers/program_wide_logger.cpp>
+  #include <structures/bit_vector.cpp>
+  #include <structures/checksums.cpp>
+  #include <structures/object_packers.cpp>
+  #include <structures/static_memory_gremlin.cpp>
+  #include <structures/string_hasher.cpp>
+  #include <structures/string_table.cpp>
+  #include <structures/version_record.cpp>
+  #include <textual/byte_formatter.cpp>
+  #include <textual/parser_bits.cpp>
+  #include <textual/string_manipulation.cpp>
+  #include <timely/earth_time.cpp>
+  #include <timely/time_stamp.cpp>
 #endif // __BUILD_STATIC_APPLICATION__
 

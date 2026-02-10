@@ -573,26 +573,30 @@ for curr_parm in $*; do
 
   if [ -f "$curr_parm" ]; then
     echo "scanning file: $curr_parm"
-    # get absolute path of the containing directory.
-    prohibited_directory="$(\pwd "$curr_parm")"
+    prohibited_directory="$(dirname "$curr_parm")"
+    # get the absolute path of the containing directory with our freaky pwd trick.
+    prohibited_directory="$( \cd "$prohibited_directory" && \pwd )"
+echo "for file, containing dir absolute is now: $prohibited_directory"
     # fix our filename to be absolute.
     temp_absolute="$prohibited_directory/$(basename "$curr_parm")"
     curr_parm="$temp_absolute"
-#echo "curr_parm: $curr_parm"
+echo "curr_parm file: $curr_parm"
     find_dependencies "$curr_parm"
   elif [ -d "$curr_parm" ]; then
     echo "scanning folder: $curr_parm"
+    prohibited_directory="$(dirname "$curr_parm")"
     # get absolute path of the containing directory.
-    prohibited_directory="$(\pwd $curr_parm)"
+    prohibited_directory="$( \cd "$prohibited_directory" && \pwd )"
+echo "for dir, containing dir absolute is now: $prohibited_directory"
     # set the directory to that absolute path.
     curr_parm="$prohibited_directory"
-#echo "curr_parm: $curr_parm"
+echo "curr_parm dir: $curr_parm"
     local base="$(basename "$curr_parm")"
     outfile="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_outfile_${base}.XXXXXX)"
     find "$curr_parm" -iname "*.cpp" >"$outfile"
     while read -r line_found; do
       if [ $? != 0 ]; then break; fi
-#echo "looking at file: $line_found"
+echo "looking at file: $line_found"
       find_dependencies "$line_found"
     done <"$outfile"
     \rm -f "$outfile"
