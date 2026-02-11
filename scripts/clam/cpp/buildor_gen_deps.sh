@@ -74,7 +74,7 @@ function seen_already {
 function add_new_dep {
   # make sure we haven't already processed this.
   local dep="$1"; shift
-log_it "looking for dep='$dep'"
+#log_it "looking for dep='$dep'"
   if seen_already "$dep"; then
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
       log_it "bailing since seen: $dep"
@@ -167,11 +167,14 @@ declare -A resolve_target_array
 # to be reset between runs on different files because the source hierarchy
 # is not supposed to be getting files deleted or added while the deps are
 # being geneated.
-declare -A resolve_matches_src
-declare -A resolve_matches_dest
+declare -A resolve_matches
 #
 # tries to find a filename in the library hierarchy.
-function resolve_filename {
+function resolve_filename() {
+  # wipe out prior contents from resolved paths.
+  unset resolve_target_array
+  declare -gA resolve_target_array
+
   local code_file=$1
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
     log_it "resolving: $code_file"
@@ -186,18 +189,27 @@ function resolve_filename {
   fi
 
   local dir=$(dirname "$code_file")
+  if [ "$dir" == "." ]; then
+    # we plan to behave as if there was no directory for this case.
+    # we can't include a simple dot in our searches below.
+    unset dir
+  fi
   local base=$(basename "$code_file")
   local src_key="$dir/$base"
+  if [ -z "$dir" ]; then
+    # with no directory, or current directory, this just has to be keyed by the basename.
+    src_key="$base"
+  fi
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
     log_it "src_key: $src_key"
   fi
 
   # see if we can find that element in the previously resolved items.
-  if [ ! -z "${resolve_matches_src[$src_key]}" ]; then
-#    local found_indy=$__finders_indy
-    local flounder="${resolve_matches_dest[$src_key]}"
-log_it flounder is $flounder
-    resolve_target_array[$flounder]=um
+#log_it "looking for '$src_key' in this list: '${!resolve_matches[@]}'"
+  if [ ! -z "${resolve_matches[$src_key]}" ]; then
+    local flounder="${resolve_matches[$src_key]}"
+#log_it flounder is $flounder
+    resolve_target_array[$flounder]=blup
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
       log_it "FOUND \"$src_key\" AT $flounder"
     fi
@@ -205,23 +217,26 @@ log_it flounder is $flounder
   fi
 
   # reset our global list.
-  unset resolve_target_array
-  declare -gA resolve_target_array
+#  unset resolve_target_array
+#  declare -gA resolve_target_array
 
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    log_it "HAVING TO FIND: $dir and $base"
+    log_it "HAVING TO FIND: dir='$dir' and base='$base'"
   fi
   if [ -z "$dir" ]; then
-    local -a init_list="$(find "$BUILD_TOP" -iname "$base" -exec echo "[{}]=\"o\" " ';')"
-log_it "init list is: ${init_list}"
+    local -a init_list="$(find "$BUILD_TOP" -iname "$base" | sed -e "s%\\(.*\\)%[\1]=lop %")"
+#log_it "no dir case, init list is: ${init_list}"
     if [ ${#init_list} -gt 0 ]; then
       eval resolve_target_array=(${init_list})
+#log_it "after no dir case addition, resolve targets are: " ${!resolve_target_array[@]}
     fi
   else
-    local -a init_list="$(find "$BUILD_TOP" -iname "$base" -exec echo "[{}]=\"j\" " ';' | grep "$dir.$base")"
-log_it "init list is: ${init_list}"
+    # a little tricky here, since we can't emit the associative array init line too early, or it will match for the grep.
+    local -a init_list="$(find "$BUILD_TOP" -iname "$base" | grep "$dir.$base" | sed -e "s%\\(.*\\)%[\1]=oof %")"
+#log_it "with dir case, init list is: ${init_list}"
     if [ ${#init_list} -gt 0 ]; then
       eval resolve_target_array=(${init_list})
+log_it "after dir case addition, resolve targets are: " ${!resolve_target_array[@]}
     fi
   fi
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
@@ -232,13 +247,15 @@ log_it "init list is: ${init_list}"
     local -a indies=( ${!resolve_target_array[@]} )
     local first_item=${indies[0]}
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-      log_it ADDING a match: $src_key $first_item
+      log_it ADDING a match: [$src_key]=$first_item
     fi
-    # for unique matches, we will store the correspondence so we can look
-    # it up very quickly later.
-    resolve_matches_src[$src_key]=sup
-    resolve_matches_dest[$first_item]=nada
+    # for unique matches, we will store the correspondence so we can find it very quickly later.
+    resolve_matches[$src_key]="$first_item"
+#log_it "resolve_matches list names now has: " ${!resolve_matches[@]}
+#log_it "resolve_matches list values now has: " ${resolve_matches[@]}
+    return $RET_OKAY
   fi
+  return $RET_FAIL
 }
 #
 ############################################################################
@@ -250,28 +267,34 @@ log_it "init list is: ${init_list}"
 function recurse_on_deps {
   # snag arguments into a list of dependencies to crawl.
   local -a active_deps=($@)
-log_it "active deps passed as $@"
+log_it "active deps passed as: " ${active_deps[@]}
 
   # pull off the first dependency so we can get all of its includes.
   local first_element="${active_deps[0]}"
-  active_deps=(${active_deps[*]:1})
-log_it "first_element is $first_element"
+#log_it "first_element is $first_element"
+#log_it "active_deps before truncate ${active_deps[@]}"
+  active_deps=(${active_deps[@]:1})
+#log_it "active_deps is now ${active_deps[@]}"
 
   # make the best guess we can at the real path.
-  resolve_filename $first_element
+  if ! resolve_filename $first_element; then
+    log_it "** FAILED to resolve the filename for '$first_element'"
+    return $RET_FAIL
+  fi
   local -a indies=( ${!resolve_target_array[@]} )
-  local first_item=${indies[0]}
-log_it "first_item is '$first_item' "
-  local to_examine="$first_item"
+  local to_examine=${indies[0]}
 
   # we didn't already have a failure (due to it being a bad file already
   # or other problems).  and once we execute the below code to grab the
   # file's dependencies, it really is boring and we never want to see it
   # again.
-log_it "assocarray index to use is '$to_examine'"
+log_it "resolved path to examine is '$to_examine'"
   if [ -z "$to_examine" ]; then
+#this shouldn't happen.
     log_it "hit the resolve_target_array list being empty; are we done?"
-    return $RET_OKAY
+echo "really think this shouldn't happen; if we got to here, it means we should have a non-empty to examine string."
+exit 1
+    return $RET_FAIL
   fi
   boring_files[$to_examine]=yawn
 
@@ -382,15 +405,17 @@ log_it "assocarray index to use is '$to_examine'"
     # make sure we can see this file already, or we will need to seek it out.
     if [ ! -f "$chew_toy" ]; then
       # not an obvious filename yet.  try resolving it.
+log_it "ARGH resolving this now: $chew_toy"
       resolve_filename $chew_toy
       declare -a found_odd=(${!resolve_target_array[@]})
       local odd_len=${#found_odd[*]}
       if [ $odd_len -eq 0 ]; then
         # whoops.  we couldn't find it.  probably a system header, so toss it.
-        log_it "** ignoring: $chew_toy"
+        log_it "** ignoring missing file: $chew_toy"
         bad_files[$chew_toy]=yup
         chew_toy=""
       elif [ $odd_len -eq 1 ]; then
+log_it "says this worked: '$chew_toy' found as '{found_odd[0]}'"
         # there's exactly one match, which is very good.
         chew_toy="${found_odd[0]}"
         if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
@@ -406,7 +431,7 @@ log_it "assocarray index to use is '$to_examine'"
     fi
 
     if [ ! -z "$chew_toy" -a ! -f "$chew_toy" ]; then
-      log_it "** failed to compute a real path for: $chew_toy"
+      log_it "** FAILED to compute a real path for: $chew_toy"
       bad_files[$chew_toy]=meh
       chew_toy=""
       continue
@@ -437,7 +462,6 @@ log_it "point Q1: about to add new dep: $chew_toy"
       # there's no point in adding it if the name didn't change.
       if [ "$cpp_toy" != "$chew_toy" ]; then
         resolve_filename $cpp_toy
-#wrong        local found_it="${!resolve_target_array[@]}[0]"
         local -a indies=( ${!resolve_target_array[@]} )
         local found_it="${indies[0]}"
 #hmmm: what if too many matches occur?
