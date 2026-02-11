@@ -58,7 +58,11 @@ private:
   int sub_call_2();
   int sub_call_3();
   int sub_call_4();
+
+  int recursive_factorial(int num);
 };
+
+//////////////
 
 int test_callstack_tracker::run_filestack_simple()
 {
@@ -69,6 +73,8 @@ int test_callstack_tracker::run_filestack_simple()
   #endif
   return 0;
 }
+
+//////////////
 
 int test_callstack_tracker::sub_call_1()
 {
@@ -112,12 +118,34 @@ int test_callstack_tracker::run_filestack_middling()
 int test_callstack_tracker::run_filestack_complex()
 {
   FUNCDEF("run_filestack_complex")
-  #ifdef ENABLE_CALLSTACK_TRACKING
-//do something recursive and show an elaborate stack
-//return an error if any problem.
-  #endif
+  int factotum = recursive_factorial(37);
+  if (factotum < 0) {
+    // uh-oh, there was an actual failure of some sort.
+    return 1;
+  }
   return 0;
 }
+
+//////////////
+
+int test_callstack_tracker::recursive_factorial(int num)
+{
+  FUNCDEF("recursive_factorial")
+  if (num < 0) {
+    return -1;  // signifies that things have gone badly.
+  }
+  if (num <= 1) {
+    #ifdef ENABLE_CALLSTACK_TRACKING
+      // now show the callstack, since we should be at the deepest level of nesting for this factorial implementation.
+      GET_AND_TEST_STACK_TRACE("trace of recursive_factorial:", -1);
+    #endif
+    return 1;
+  } else {
+    return num * recursive_factorial(num - 1);
+  }
+}
+
+//////////////
 
 int test_callstack_tracker::execute()
 {
