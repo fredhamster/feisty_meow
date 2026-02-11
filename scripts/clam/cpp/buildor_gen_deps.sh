@@ -118,25 +118,6 @@ function bad_file {
   return $RET_FAIL
 }
 
-#hmmm: this needs to go the way of the dodo and find_in_array...
-
-# checks whether an item is already contained in a list.  the first parameter
-# is taken as the item that one wants to add.  the second through n-th
-# parameters are taken as the candidate list.  if the item is present, then
-# zero is returned to indicate success.  otherwise a non-zero return value
-# indicates that the item was not yet present.
-#function already_listed {
-#  to_find=$1
-#  shift
-#  while (( $# > 0 )); do
-#    # return that we found it if the current item matches.
-#    if [ "$to_find" == "$1" ]; then return $RET_OKAY; fi
-#    shift  # toss next one out.
-#  done
-#  # failed to match it.
-#  return $RET_FAIL
-#}
-
 ############################################################################
 #
 # this variable gets stored into when resolve_filename runs.
@@ -325,7 +306,6 @@ function chew_on_one_dependency()
   while read -r line_found; do
     # process the line to see if we can get a simple filename out of the include.
     # we are only trying for system-searched files for this one, with angle brackets.
-    #local chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *<\(.*\)>.*$/\1/')
     local chew_toy="${line_found#*\#include *<}"
     chew_toy="${chew_toy/>*}"
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
@@ -487,8 +467,7 @@ function write_new_version {
   # read in our existing file.
   while read -r orig_line; do
     # if it's the beginning of our static app section, stop reading.
-    if [ ! -z "$(echo $orig_line \
-        | sed -n -e 's/#ifdef __BUILD_STATIC_APPLICATION__/yep/p')" ]; then
+    if [[ $orig_line == *"#ifdef __BUILD_STATIC_APPLICATION__"* ]]; then
       break
     fi
     if [ -z "$orig_line" ]; then
@@ -514,7 +493,9 @@ function write_new_version {
   # iterate across all the dependencies we found.
   for line_please in "${!dependency_accumulator[@]}"; do
     # throw out any items that are in the same directory we started in.
-    if [ "$prohibited_directory" == "$(dirname $line_please)" ]; then
+    local the_dir="$(dirname $line_please)"
+    local the_base="$(basename $line_please)"
+    if [ "$prohibited_directory" == "$the_dir" ]; then
       if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
         log_it "skipping prohibited: $line_please"
       fi
@@ -522,7 +503,9 @@ function write_new_version {
     fi
 
     # strip the line down to just the filename and single directory component.
-    local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
+#    local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
+    local chewed_line="$(echo "$(basename "$the_dir")/$the_base" )"
+#log_it chewed_line became: $chewed_line
 
     # see if this matches the header file ending; we don't want to add those to the cpp code.
     if [[ "$chewed_line" =~ ^.*\.h$ ]]; then
