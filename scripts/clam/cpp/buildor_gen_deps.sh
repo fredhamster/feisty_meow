@@ -245,7 +245,6 @@ function recurse_on_deps()
   local -n active_deps="$1"; shift
 
   while [ ${#active_deps[@]} -ne 0 ]; do
-#log_it "active deps state: " ${!active_deps[@]}
     # pull off the first dependency so we can get all of its includes.
     local -a indies=( ${!active_deps[@]} )
     local first_element=${indies[0]}
@@ -263,8 +262,6 @@ function chew_on_one_dependency()
 {
   local -n active_deps="$1"; shift
   local first_element="$1"; shift
-#echo "chewone: active_deps is ${!active_deps}"
-#echo "chewone: first elem is $first_element"
 
   # make the best guess we can at the real path.
   if ! resolve_filename $first_element; then
