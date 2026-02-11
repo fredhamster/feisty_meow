@@ -293,12 +293,12 @@ function recurse_on_deps {
 
   local fp_dir=$(dirname "$to_examine")
 
-  # iterate across the dependencies we saw and add them to our list if
-  # we haven't already.
+  # iterate across the dependencies we saw and add them to our list if we haven't already.
   while read -r line_found; do
-    local chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *<\(.*\)>.*$/\1/')
-    local original_value="$chew_toy"
-    # we want to add the file to the active list before we forgot about it.
+    # process the line to see if we can get a simple filename out of the include.
+    #local chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *<\(.*\)>.*$/\1/')
+    local chew_toy="${line_found#*\#include *[\"<]}"
+    chew_toy="${chew_toy/[\">]*}"
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
       log_it A: chew_toy=$chew_toy
     fi
@@ -309,35 +309,43 @@ function recurse_on_deps {
 #    local slash_present=$(echo $chew_toy | sed -n -e 's/.*[\\\/].*/yep/p')
     local slash_present="${chew_toy/[^\/]*/}"
 
-    # the replacement above to get rid of #include failed.  try something simpler.
+#this block with the second attempt should no longer be necessary.
+#    # the replacement above to get rid of #include failed.  try something simpler.
 #    if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
+#    if [[ $chew_toy == *"#include"* ]]; then
+
+#      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+#        log_it "into b-grade processing; why are we here????"
+#        log_it "line with include in it still is: '$chew_toy'"
+#      fi
+## # try again with a simpler pattern???
+## #      chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *[">]\(.*\)[">].*$/\1/') 
+##       chew_toy="${chew_toy#[[:space:]]*#include[[:space:]]*[\"<]}"
+##       chew_toy="${chew_toy/[[:space:]]*[\">]}"
+## #      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+##         log_it "B: chew_toy=$chew_toy"
+## #      fi
+
+    # if it still has an #include or if it's not really a file, we can't
+    # use it for anything.
     if [[ $chew_toy == *"#include"* ]]; then
-      # try again with a simpler pattern.
-      chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *[">]\(.*\)[">].*$/\1/') 
-      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-        log_it "B: chew_toy=$chew_toy"
-      fi
+#      if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
+      log_it "** bad include: $chew_toy"
+      continue
+    fi
 
-      # if it still has an #include or if it's not really a file, we can't
-      # use it for anything.
-      if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
-        log_it "** bad include: $chew_toy"
-        continue
-      fi
-
+    if [ -z "$slash_present" ]; then
       # we are pretty sure that this file has no path components in it.
       # we will add the surrounding directory if possible.
-      if [ -z "$slash_present" ]; then
-        if [ -z "$fp_dir" ]; then
-          # well, now we have no recourse, since we don't know where to
-          # say this file comes from.
-          log_it "** unknown directory: $chew_toy"
-        else
-          # cool, we can rely on the existing directory.
-          chew_toy="$fp_dir/$chew_toy"
-          if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-            log_it "patched dir: $chew_toy"
-          fi
+      if [ -z "$fp_dir" ]; then
+        # well, now we have no recourse, since we don't know where to
+        # say this file comes from.
+        log_it "** unknown directory: $chew_toy"
+      else
+        # cool, we can rely on the existing directory.
+        chew_toy="$fp_dir/$chew_toy"
+        if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+          log_it "patched dir: $chew_toy"
         fi
       fi
     fi
