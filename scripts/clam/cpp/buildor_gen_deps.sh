@@ -33,7 +33,7 @@ if [ ! -z "$CLEAN" ]; then
 fi
 
 # uncomment to enable debugging noises.
-DEBUG_BUILDOR_GEN_DEPS=yo
+#DEBUG_BUILDOR_GEN_DEPS=yo
 
 # these semi-global variables used throughout the whole script to accumulate
 # information, rather than trying to juggle positional parameters everywhere.
@@ -74,7 +74,6 @@ function seen_already {
 function add_new_dep {
   # make sure we haven't already processed this.
   local dep="$1"; shift
-log_it "looking for dep='$dep'"
   if seen_already "$dep"; then
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
       log_it "bailing since seen: $dep"
@@ -119,6 +118,8 @@ function bad_file {
   return $RET_FAIL
 }
 
+#hmmm: this needs to go the way of the dodo and find_in_array...
+
 # checks whether an item is already contained in a list.  the first parameter
 # is taken as the item that one wants to add.  the second through n-th
 # parameters are taken as the candidate list.  if the item is present, then
@@ -136,28 +137,6 @@ function already_listed {
   return $RET_FAIL
 }
 
-# finds the index of a particular element in the remainder of a list.
-# the variable __finders_indy will be set to -1 for no match, or it will be the
-# index of the element if the item was found.
-##__finders_indy=-1
-##function find_in_array {
-##  local to_find=$1
-##  shift
-##  local indy=0
-##  while (( $# > 0 )); do
-##    # return that we found it if the current item matches.
-##    if [ "$to_find" == "$1" ]; then
-##       __finders_indy=$indy
-##       return $RET_OKAY
-##    fi
-##    shift  # toss next one out.
-##    indy=$(expr $indy + 1)
-##  done
-##  _finders_indy=-1
-##  # failed to match it.
-##  return $RET_FAIL
-##}
-
 ############################################################################
 #
 # this variable gets stored into when resolve_filename runs.
@@ -167,11 +146,14 @@ declare -A resolve_target_array
 # to be reset between runs on different files because the source hierarchy
 # is not supposed to be getting files deleted or added while the deps are
 # being geneated.
-declare -A resolve_matches_src
-declare -A resolve_matches_dest
+declare -A resolve_matches
 #
 # tries to find a filename in the library hierarchy.
-function resolve_filename {
+function resolve_filename() {
+  # wipe out prior global contents from resolved paths.
+  unset resolve_target_array
+  declare -gA resolve_target_array
+
   local code_file=$1
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
     log_it "resolving: $code_file"
@@ -186,42 +168,48 @@ function resolve_filename {
   fi
 
   local dir=$(dirname "$code_file")
+  if [ "$dir" == "." ]; then
+    # we plan to behave as if there was no directory for this case.
+    # we can't include a simple dot in our searches below.
+    unset dir
+  fi
   local base=$(basename "$code_file")
   local src_key="$dir/$base"
+  if [ -z "$dir" ]; then
+    # with no directory, or current directory, this just has to be keyed by the basename.
+    src_key="$base"
+  fi
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
     log_it "src_key: $src_key"
   fi
 
   # see if we can find that element in the previously resolved items.
-  if [ ! -z "${resolve_matches_src[$src_key]}" ]; then
-#    local found_indy=$__finders_indy
-    local flounder="${resolve_matches_dest[$src_key]}"
-log_it flounder is $flounder
-    resolve_target_array[$flounder]=um
+  if [ ! -z "${resolve_matches[$src_key]}" ]; then
+    local flounder="${resolve_matches[$src_key]}"
+    resolve_target_array[$flounder]=blup
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
       log_it "FOUND \"$src_key\" AT $flounder"
     fi
     return $RET_OKAY
   fi
 
-  # reset our global list.
-  unset resolve_target_array
-  declare -gA resolve_target_array
-
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    log_it "HAVING TO FIND: $dir and $base"
+    log_it "HAVING TO FIND: dir='$dir' and base='$base'"
   fi
   if [ -z "$dir" ]; then
-    local -a init_list="$(find "$BUILD_TOP" -iname "$base" -exec echo "[{}]=\"o\" " ';')"
-log_it "init list is: ${init_list}"
+    local -a init_list="$(find "$BUILD_TOP" -iname "$base" | sed -e "s%\\(.*\\)%[\1]=lop %")"
+#log_it "no dir case, init list is: ${init_list}"
     if [ ${#init_list} -gt 0 ]; then
       eval resolve_target_array=(${init_list})
+#log_it "after no dir case addition, resolve targets are: " ${!resolve_target_array[@]}
     fi
   else
-    local -a init_list="$(find "$BUILD_TOP" -iname "$base" -exec echo "[{}]=\"j\" " ';' | grep "$dir.$base")"
-log_it "init list is: ${init_list}"
+    # a little tricky here, since we can't emit the associative array init line too early, or it will match for the grep.
+    local -a init_list="$(find "$BUILD_TOP" -iname "$base" | grep "$dir.$base" | sed -e "s%\\(.*\\)%[\1]=oof %")"
+#log_it "with dir case, init list is: ${init_list}"
     if [ ${#init_list} -gt 0 ]; then
       eval resolve_target_array=(${init_list})
+#log_it "after dir case addition, resolve targets are: " ${!resolve_target_array[@]}
     fi
   fi
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
@@ -232,13 +220,13 @@ log_it "init list is: ${init_list}"
     local -a indies=( ${!resolve_target_array[@]} )
     local first_item=${indies[0]}
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-      log_it ADDING a match: $src_key $first_item
+      log_it ADDING a match: [$src_key]=$first_item
     fi
-    # for unique matches, we will store the correspondence so we can look
-    # it up very quickly later.
-    resolve_matches_src[$src_key]=sup
-    resolve_matches_dest[$first_item]=nada
+    # for unique matches, we will store the correspondence so we can find it very quickly later.
+    resolve_matches[$src_key]="$first_item"
+    return $RET_OKAY
   fi
+  return $RET_FAIL
 }
 #
 ############################################################################
@@ -250,35 +238,33 @@ log_it "init list is: ${init_list}"
 function recurse_on_deps {
   # snag arguments into a list of dependencies to crawl.
   local -a active_deps=($@)
-log_it "active deps passed as $@"
+#log_it "active deps passed as: " ${active_deps[@]}
 
   # pull off the first dependency so we can get all of its includes.
   local first_element="${active_deps[0]}"
-  active_deps=(${active_deps[*]:1})
-log_it "first_element is $first_element"
+  active_deps=(${active_deps[@]:1})
 
   # make the best guess we can at the real path.
-  resolve_filename $first_element
-  local -a indies=( ${!resolve_target_array[@]} )
-  local first_item=${indies[0]}
-log_it "first_item is '$first_item' "
-  local to_examine="$first_item"
-
-  # we didn't already have a failure (due to it being a bad file already
-  # or other problems).  and once we execute the below code to grab the
-  # file's dependencies, it really is boring and we never want to see it
-  # again.
-log_it "assocarray index to use is '$to_examine'"
-  if [ -z "$to_examine" ]; then
-    log_it "hit the resolve_target_array list being empty; are we done?"
-    return $RET_OKAY
+  if ! resolve_filename $first_element; then
+    log_it "-- FAILED to resolve the filename for '$first_element'"
+    return $RET_FAIL
   fi
+  local -a indies=( ${!resolve_target_array[@]} )
+  local to_examine=${indies[0]}
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    log_it "resolved path to_examine is '$to_examine'"
+  fi
+
+  # we didn't already see a failure (due to it being a bad file already
+  # or other problems).  and once we execute the below code to grab the
+  # file's dependencies, the file really will be boring and we never want
+  # to see it again in our processing.
   boring_files[$to_examine]=yawn
 
   local dirtmp=$(dirname "$to_examine")
   local basetmp=$(basename "$to_examine")
 
-  log_it "dependent on: $(basename "$dirtmp")/$basetmp"
+  log_it "++ dependent on: $(basename "$dirtmp")/$basetmp"
 #hmmm: do a better, nicer output--gather the dependencies listed in debugging
 #      line above into a list that will be printed out at the end.
 
@@ -296,8 +282,6 @@ log_it "assocarray index to use is '$to_examine'"
 
   # find all the includes in this file and save to the temp file.
   while read -r spoon; do
-#    has_guard="$(echo "$spoon" | sed -n -e 's/#ifdef __BUILD_STATIC_APPLICATION__/yep/p')" 
-#    if [ ! -z "$has_guard" ]; then
     if [[ $spoon == *"#ifdef __BUILD_STATIC_APPLICATION__"* ]]; then
       # quit reading when we've seen the start of one of our guards.
       break
@@ -332,14 +316,11 @@ log_it "assocarray index to use is '$to_examine'"
     # check whether the dependency looks like one of our style of includes.
     # if it doesn't have a slash in it, then we need to give it the same
     # directory as the file we're working on.
-#    local slash_present=$(echo $chew_toy | sed -n -e 's/.*[\\\/].*/yep/p')
     local slash_present="${chew_toy/[^\/]*/}"
 
-#    if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
     if [[ $chew_toy == *"#include"* ]]; then
       # the replacement above to get rid of #include failed.  try something
       # more inclusive, so we match double quote includes also.
-#      chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *[">]\(.*\)[">].*$/\1/') 
       chew_toy="${chew_toy#*\#include *[\"<]}"
       chew_toy="${chew_toy/[\">]*}"
       if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
@@ -349,8 +330,7 @@ log_it "assocarray index to use is '$to_examine'"
       # if it still has an #include or if it's not really a file, we can't
       # use it for anything.
       if [[ $chew_toy == *"#include"* ]]; then
-#      if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
-        log_it "** bad include: $chew_toy"
+        log_it "-- BAD include: $chew_toy"
         continue
       fi
 
@@ -360,7 +340,7 @@ log_it "assocarray index to use is '$to_examine'"
         if [ -z "$fp_dir" ]; then
           # well, now we have no recourse, since we don't know where to
           # say this file comes from.
-          log_it "** unknown directory: $chew_toy"
+          log_it "-- UNKNOWN directory: $chew_toy"
         else
           # cool, we can rely on the existing directory.
           chew_toy="$fp_dir/$chew_toy"
@@ -387,7 +367,7 @@ log_it "assocarray index to use is '$to_examine'"
       local odd_len=${#found_odd[*]}
       if [ $odd_len -eq 0 ]; then
         # whoops.  we couldn't find it.  probably a system header, so toss it.
-        log_it "** ignoring: $chew_toy"
+        log_it "-- ignoring missing file: $chew_toy"
         bad_files[$chew_toy]=yup
         chew_toy=""
       elif [ $odd_len -eq 1 ]; then
@@ -399,14 +379,14 @@ log_it "assocarray index to use is '$to_examine'"
       else
         # this is really wrong.  there are multiple files with the same name?
         # that kind of things makes debugger tools angry or stupid.
-        log_it "** non-unique name: $chew_toy"
+        log_it "-- NON-UNIQUE name: $chew_toy"
         bad_files[$chew_toy]=urf
         chew_toy=""
       fi
     fi
 
     if [ ! -z "$chew_toy" -a ! -f "$chew_toy" ]; then
-      log_it "** failed to compute a real path for: $chew_toy"
+      log_it "-- FAILED to compute a real path for: $chew_toy"
       bad_files[$chew_toy]=meh
       chew_toy=""
       continue
@@ -417,7 +397,6 @@ log_it "assocarray index to use is '$to_examine'"
     # hence the emptiness check.
     if [ ! -z "$chew_toy" ]; then
       # add the dependency we found.
-log_it "point Q1: about to add new dep: $chew_toy"
       if add_new_dep "$chew_toy"; then
         # if that worked, it's not existing or bad so we want to keep it.
         if ! already_listed "$chew_toy" ${active_deps[*]}; then
@@ -437,14 +416,12 @@ log_it "point Q1: about to add new dep: $chew_toy"
       # there's no point in adding it if the name didn't change.
       if [ "$cpp_toy" != "$chew_toy" ]; then
         resolve_filename $cpp_toy
-#wrong        local found_it="${!resolve_target_array[@]}[0]"
         local -a indies=( ${!resolve_target_array[@]} )
         local found_it="${indies[0]}"
 #hmmm: what if too many matches occur?
 
         # if the dependency actually exists, then we'll add it to our list.
         if [ ! -z "$found_it" ]; then
-log_it "point Q2: about to add new dep: $found_it"
           if add_new_dep "$found_it"; then
             # that was a new dependency, so we'll continue examining it.
             if ! already_listed "$found_it" ${active_deps[*]}; then
@@ -472,9 +449,9 @@ function write_new_version {
   local opening_guard_line="\n#ifdef __BUILD_STATIC_APPLICATION__\n  // static dependencies found by buildor_gen_deps.sh:"
   local closing_guard_line="#endif // __BUILD_STATIC_APPLICATION__\n"
 
-  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    log_it "will write deps to: $code_file"
-  fi
+#  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    log_it "++ writing new dependencies to: $code_file"
+#  fi
 
   local base="$(basename "$code_file")"
   local replacement_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_replacement_${base}.XXXXXX)"
@@ -491,7 +468,6 @@ function write_new_version {
         | sed -n -e 's/#ifdef __BUILD_STATIC_APPLICATION__/yep/p')" ]; then
       break
     fi
-#echo "orig line is '$orig_line'"
     if [ -z "$orig_line" ]; then
       # add another blank line to our list and don't print any of them yet.
       blanks+=($'\n')
@@ -513,11 +489,7 @@ function write_new_version {
   \rm -f "$pending_deps"
 
   # iterate across all the dependencies we found.
-#  for line_please in ${dependency_accumulator[@]}; do
   for line_please in "${!dependency_accumulator[@]}"; do
-
-log_it "line please is '$line_please'"
-    
     # throw out any items that are in the same directory we started in.
     if [ "$prohibited_directory" == "$(dirname $line_please)" ]; then
       if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
@@ -528,16 +500,16 @@ log_it "line please is '$line_please'"
 
     # strip the line down to just the filename and single directory component.
     local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
-#log_it "chewed line is '$chewed_line'"
 
+    # see if this matches the header file ending; we don't want to add those to the cpp code.
     if [[ "$chewed_line" =~ ^.*\.h$ ]]; then
-#! -z "$(echo $chewed_line | sed -n -e 's/\.h$/yow/p')" ]; then
       if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
         log_it "skipping header file: $chewed_line"
       fi
       continue
     fi
 
+    # this one seems like a good code file to add, so chuck it in there.
     local new_include="  #include <$chewed_line>"
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
       log_it "adding '$new_include'"
@@ -606,7 +578,7 @@ function find_dependencies {
 
 for curr_parm in $*; do 
 
-  log_it "----------------------------------------------------------------------------"
+  echo "----------------------------------------------------------------------------"
   echo ""
 
   # resets the bad list in between sessions.
@@ -653,10 +625,10 @@ for curr_parm in $*; do
     done <"$outfile"
     \rm -f "$outfile"
   else
-    log_it "** parameter is not a file or directory: $curr_parm"
+    log_it "-- parameter is not a file or directory: $curr_parm"
   fi
 
-  log_it "ignored these files: " ${!bad_files[@]}
+  log_it "++ ignored these files: " ${!bad_files[@]}
 
   echo ""
   echo ""
