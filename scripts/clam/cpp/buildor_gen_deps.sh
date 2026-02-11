@@ -17,8 +17,14 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
+# prints out a message with a time-stamp prefixed to it.
+function log_it()
+{
+  echo -e "$(date_stringer): $*"
+}
+
 if [ ! -z "$CLEAN" ]; then
-  echo "in cleaning mode, will not build dependencies."
+  log_it "in cleaning mode, will not build dependencies."
   exit 0
 fi
 
@@ -66,16 +72,16 @@ function add_new_dep {
   local dep="$1"
   if seen_already "$dep"; then
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-      echo "bailing since seen: $dep"
+      log_it "bailing since seen: $dep"
     fi
     return 1
   fi
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    echo "had not seen before: $dep"
+    log_it "had not seen before: $dep"
   fi
 
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    echo "new dependency: $dep"
+    log_it "new dependency: $dep"
   fi
 
   dependency_accumulator+=($dep)
@@ -136,21 +142,16 @@ function already_listed {
 __finders_indy=-1
 function find_in_array {
   local to_find=$1
-#echo find_in_array needs: $to_find
   shift
-#echo restargs finder: $*
   local indy=0
   while (( $# > 0 )); do
     # return that we found it if the current item matches.
-#echo "find_in_array posn $indy has $1"
     if [ "$to_find" == "$1" ]; then
-#echo "FOUND $to_find at $indy"
        __finders_indy=$indy
        return 0
     fi
     shift  # toss next one out.
     indy=$(expr $indy + 1)
-#echo "find_in_array indy now $indy "
   done
   _finders_indy=-1
   # failed to match it.
@@ -173,7 +174,7 @@ declare -a resolve_matches_dest=()
 function resolve_filename {
   local code_file=$1
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    echo "resolving: $code_file"
+    log_it "resolving: $code_file"
   fi
   if [ -f "$code_file" ]; then
     # that was pretty easy.
@@ -181,14 +182,14 @@ function resolve_filename {
     return 0
   fi
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    echo "MUST seek: $code_file"
+    log_it "MUST seek: $code_file"
   fi
 
   local dir=$(dirname "$code_file")
   local base=$(basename "$code_file")
   local src_key="$dir/$base"
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    echo "src_key: $src_key"
+    log_it "src_key: $src_key"
   fi
 
   # see if we can find that element in the previously resolved items.
@@ -196,7 +197,7 @@ function resolve_filename {
     local found_indy=$__finders_indy
     resolve_target_array=(${resolve_matches_dest[$found_indy]})
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-      echo "FOUND \"$src_key\" AT ${resolve_matches_dest[$found_indy]}"
+      log_it "FOUND \"$src_key\" AT ${resolve_matches_dest[$found_indy]}"
     fi
     return 0
   fi
@@ -204,7 +205,7 @@ function resolve_filename {
   # reset our global list.
   resolve_target_array=()
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    echo "HAVING TO FIND: $dir and $base"
+    log_it "HAVING TO FIND: $dir and $base"
   fi
   if [ -z "$dir" ]; then
     resolve_target_array=($(find "$BUILD_TOP" -iname "$base"))
@@ -212,12 +213,12 @@ function resolve_filename {
     resolve_target_array=($(find "$BUILD_TOP" -iname "$base" | grep "$dir.$base"))
   fi
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    echo resolved to: ${resolve_target_array[*]}
-    echo size of resolve array=${#resolve_target_array[*]}
+    log_it resolved to: ${resolve_target_array[*]}
+    log_it size of resolve array=${#resolve_target_array[*]}
   fi
   if [ ${#resolve_target_array[*]} -eq 1 ]; then
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-      echo ADDING a match: $src_key ${resolve_target_array[0]}
+      log_it ADDING a match: $src_key ${resolve_target_array[0]}
     fi
     # for unique matches, we will store the correspondence so we can look
     # it up very quickly later.
@@ -252,7 +253,7 @@ function recurse_on_deps {
 
   local dirtmp=$(dirname "$to_examine")
   local basetmp=$(basename "$to_examine")
-  echo "dependent on: $(basename "$dirtmp")/$basetmp"
+  log_it "dependent on: $(basename "$dirtmp")/$basetmp"
 #hmmm: do a better, nicer output--gather the dependencies listed in debugging
 #      line above into a list that will be printed out at the end.
 
@@ -263,6 +264,10 @@ function recurse_on_deps {
 
   local partial_file="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_filepart_${basetmp}.XXXXXX)"
   \rm -f "$partial_file"
+
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    log_it "\n\n========\nprocessing file '$to_examine'\n========"
+  fi
 
   # find all the includes in this file and save to the temp file.
   while read -r spoon; do
@@ -281,13 +286,12 @@ function recurse_on_deps {
   \rm "$partial_file"
 
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    echo "grabbing includes from: $to_examine"
+    log_it "grabbing includes from: $to_examine"
   fi
 
 #hmmm: could separate the find deps on this file stuff below.
 
   local fp_dir=$(dirname "$to_examine")
-#echo fp_dir is: $fp_dir
 
   # iterate across the dependencies we saw and add them to our list if
   # we haven't already.
@@ -296,27 +300,28 @@ function recurse_on_deps {
     local original_value="$chew_toy"
     # we want to add the file to the active list before we forgot about it.
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-      echo A: chew_toy=$chew_toy
+      log_it A: chew_toy=$chew_toy
     fi
 
     # check whether the dependency looks like one of our style of includes.
     # if it doesn't have a slash in it, then we need to give it the same
     # directory as the file we're working on.
-    local slash_present=$(echo $chew_toy | sed -n -e 's/.*[\\\/].*/yep/p')
+#    local slash_present=$(echo $chew_toy | sed -n -e 's/.*[\\\/].*/yep/p')
+    local slash_present="${chew_toy/[^\/]*/}"
 
-    # the replacement above to get rid of #include failed.  try something
-    # simpler.
-    if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
+    # the replacement above to get rid of #include failed.  try something simpler.
+#    if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
+    if [[ $chew_toy == *"#include"* ]]; then
       # try again with a simpler pattern.
       chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *[">]\(.*\)[">].*$/\1/') 
       if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-        echo B: chew_toy=$chew_toy
+        log_it "B: chew_toy=$chew_toy"
       fi
 
       # if it still has an #include or if it's not really a file, we can't
       # use it for anything.
       if [ ! -z "$(echo $chew_toy | sed -n -e 's/#include/crud/p')" ]; then
-        echo "** bad include: $chew_toy"
+        log_it "** bad include: $chew_toy"
         continue
       fi
 
@@ -326,12 +331,12 @@ function recurse_on_deps {
         if [ -z "$fp_dir" ]; then
           # well, now we have no recourse, since we don't know where to
           # say this file comes from.
-          echo "** unknown directory: $chew_toy"
+          log_it "** unknown directory: $chew_toy"
         else
           # cool, we can rely on the existing directory.
           chew_toy="$fp_dir/$chew_toy"
           if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-            echo patched dir: $chew_toy
+            log_it "patched dir: $chew_toy"
           fi
         fi
       fi
@@ -339,50 +344,40 @@ function recurse_on_deps {
 
     if bad_file $chew_toy; then
       if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-        echo "C: skipping because on bad list: $chew_toy"
+        log_it "C: skipping because on bad list: $chew_toy"
       fi
       continue
     fi
 
-###  # if we've seen it before, we bail.
-###  if seen_already "$to_examine"; then 
-###echo bailing since seen before: $to_examine
-###return 0;
-### fi
-
-  # now remember that we've seen this file.  we only remember it if
+    # now remember that we've seen this file.  we only remember it if
     # make sure we can see this file already, or we will need to seek it out.
     if [ ! -f "$chew_toy" ]; then
       # not an obvious filename yet.  try resolving it.
       resolve_filename $chew_toy
       declare -a found_odd=(${resolve_target_array[*]})
-#echo found-list-is: ${found_odd[*]}
       local odd_len=${#found_odd[*]}
-#echo odd len is $odd_len
       if [ $odd_len -eq 0 ]; then
         # whoops.  we couldn't find it.  probably a system header, so toss it.
-        if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-          echo "** ignoring: $chew_toy"
-        fi
+        log_it "** ignoring: $chew_toy"
         bad_files+=($chew_toy)
         chew_toy=""
       elif [ $odd_len -eq 1 ]; then
         # there's exactly one match, which is very good.
         chew_toy="${found_odd[0]}"
         if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-          echo "C: chew_toy=$chew_toy"
+          log_it "C: chew_toy=$chew_toy"
         fi
       else
         # this is really wrong.  there are multiple files with the same name?
         # that kind of things makes debugger tools angry or stupid.
-        echo "** non-unique name: $chew_toy"
+        log_it "** non-unique name: $chew_toy"
         bad_files+=($chew_toy)
         chew_toy=""
       fi
     fi
 
     if [ ! -z "$chew_toy" -a ! -f "$chew_toy" ]; then
-      echo "** failed to compute a real path for: $chew_toy"
+      log_it "** failed to compute a real path for: $chew_toy"
       bad_files+=($chew_toy)
       chew_toy=""
       continue
@@ -404,10 +399,9 @@ function recurse_on_deps {
       # now compute the path as if it was the implementation file (x.cpp)
       # instead of being a header.  does that file exist?  if so, we'd like
       # its dependencies also.
-#slow and calls external app:    local cpp_toy=$(echo -n $chew_toy | sed -e 's/^\([^\.]*\)\.h$/\1.cpp/')
       local cpp_toy="${chew_toy%.h}.cpp"  # sweet and fast using just bash variable expansion.
       if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-        echo "cpp_toy is '$cpp_toy' as derived from chew_toy '$chew_toy'"
+        log_it "cpp_toy is '$cpp_toy' as derived from chew_toy '$chew_toy'"
       fi
 
       # there's no point in adding it if the name didn't change.
@@ -444,7 +438,7 @@ function write_new_version {
   local closing_guard_line="#endif // __BUILD_STATIC_APPLICATION__\n"
 
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-    echo "would write deps to: $code_file"
+    log_it "will write deps to: $code_file"
   fi
 
   local base="$(basename "$code_file")"
@@ -457,7 +451,6 @@ function write_new_version {
   declare -a blanks=()
   # read in our existing file.
   while read -r orig_line; do
-#echo "read: '$orig_line'"
     # if it's the beginning of our static app section, stop reading.
     if [ ! -z "$(echo $orig_line \
         | sed -n -e 's/#ifdef __BUILD_STATIC_APPLICATION__/yep/p')" ]; then
@@ -489,7 +482,7 @@ function write_new_version {
     # throw out any items that are in the same directory we started in.
     if [ "$prohibited_directory" == "$(dirname $line_please)" ]; then
       if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-        echo "skipping prohibited: $line_please"
+        log_it "skipping prohibited: $line_please"
       fi
       continue
     fi
@@ -498,9 +491,9 @@ function write_new_version {
     local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
 
     if [ ! -z "$(echo $chewed_line | sed -n -e 's/\.h$/yow/p')" ]; then
-#      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
-        echo "skipping header file: $chewed_line"
-#      fi
+      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+        log_it "skipping header file: $chewed_line"
+      fi
       continue
     fi
 
@@ -513,7 +506,7 @@ function write_new_version {
 
   # check that our dependencies file is not empty still.
   if [ ! -s "$pending_deps" ]; then
-    echo "
+    log_it "
 We encountered a problem during the generation of dependencies.
 The temporary output file:
   '${pending_deps}'
@@ -535,12 +528,12 @@ or within this script itself:
 
   echo -e "$closing_guard_line" >>"$replacement_file"
 
-#echo "about to move replacement, diffs:"
-#diff "$replacement_file" "$code_file"
-#echo "--------------"
-#echo full file:
-#cat "$replacement_file"
-#echo "--------------"
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    log_it "about to replace file.  here are the diffs:"
+    log_it "--------------"
+    diff "$replacement_file" "$code_file"
+    log_it "--------------"
+  fi
 
   \mv "$replacement_file" "$code_file"
   exit_on_error "replacing the original file with updated dependency version"
@@ -554,9 +547,15 @@ function find_dependencies {
   boring_files=()
 
   # start recursing with the first dependency being the file itself.
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    log_it "\n\n========\nstarting recursion on dependencies...\n========"
+  fi
   recurse_on_deps $code_file
 
   # create the new version of the file.
+  if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+    log_it "\n\n========\nwriting new version of code file...\n========"
+  fi
   write_new_version "$code_file"
 }
 
@@ -564,47 +563,57 @@ function find_dependencies {
 
 for curr_parm in $*; do 
 
-  echo "----------------------------------------------------------------------------"
+  log_it "----------------------------------------------------------------------------"
   echo ""
 
   # resets the bad list in between sessions.
   bad_files=() 
-#echo bad_files initial: ${bad_files[*]} 
+#log_it bad_files initial: ${bad_files[*]} 
 
   if [ -f "$curr_parm" ]; then
-    echo "scanning file: $curr_parm"
+    log_it "scanning file: $curr_parm"
     prohibited_directory="$(dirname "$curr_parm")"
     # get the absolute path of the containing directory with our freaky pwd trick.
     prohibited_directory="$( \cd "$prohibited_directory" && \pwd )"
-echo "for file, containing dir absolute is now: $prohibited_directory"
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      log_it "for file, containing dir absolute is now: $prohibited_directory"
+    fi
     # fix our filename to be absolute.
     temp_absolute="$prohibited_directory/$(basename "$curr_parm")"
     curr_parm="$temp_absolute"
-echo "curr_parm file: $curr_parm"
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      log_it "curr_parm file: $curr_parm"
+    fi
     find_dependencies "$curr_parm"
   elif [ -d "$curr_parm" ]; then
-    echo "scanning folder: $curr_parm"
+    log_it "scanning folder: $curr_parm"
     prohibited_directory="$(dirname "$curr_parm")"
     # get absolute path of the containing directory.
     prohibited_directory="$( \cd "$prohibited_directory" && \pwd )"
-echo "for dir, containing dir absolute is now: $prohibited_directory"
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      log_it "for dir, containing dir absolute is now: $prohibited_directory"
+    fi
     # set the directory to that absolute path.
     curr_parm="$prohibited_directory"
-echo "curr_parm dir: $curr_parm"
+    if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+      log_it "curr_parm dir: $curr_parm"
+    fi
     local base="$(basename "$curr_parm")"
     outfile="$(mktemp $TEMPORARIES_PILE/zz_buildor_deps_outfile_${base}.XXXXXX)"
     find "$curr_parm" -iname "*.cpp" >"$outfile"
     while read -r line_found; do
       if [ $? != 0 ]; then break; fi
-echo "looking at file: $line_found"
+      if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
+        log_it "looking at file: $line_found"
+      fi
       find_dependencies "$line_found"
     done <"$outfile"
     \rm -f "$outfile"
   else
-    echo "parameter is not a file or directory: $curr_parm"
+    log_it "** parameter is not a file or directory: $curr_parm"
   fi
 
-  echo "ignored: " ${bad_files[*]}
+  log_it "ignored these files: " ${bad_files[*]}
 
   echo ""
   echo ""
