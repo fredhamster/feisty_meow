@@ -273,16 +273,16 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   # add in any folders that are under the feisty meow applications folder.
   define_yeti_variable FEISTY_MEOW_REPOS_SCAN
   if [ -z "$FEISTY_MEOW_REPOS_SCAN" ]; then
-    if [ -d "$FEISTY_MEOW_PERSONAL_HOME/apps" ]; then
-      define_yeti_variable FEISTY_MEOW_REPOS_SCAN="$FEISTY_MEOW_PERSONAL_HOME/apps"
+    if [ -d "$FEISTY_MEOW_PERSONAL_HOME/source" ]; then
+      define_yeti_variable FEISTY_MEOW_REPOS_SCAN="$FEISTY_MEOW_PERSONAL_HOME/source"
     else
-#      echo "No value set for FEISTY_MEOW_REPOS_SCAN and no default apps folder found in home."
+#      echo "No value set for FEISTY_MEOW_REPOS_SCAN and no default source folder found in home."
       true
     fi
   fi
   if [ -d "$FEISTY_MEOW_REPOS_SCAN" ]; then
 #hmmm: handle the repos as if they are multi value!!!
-    # general search for normal project folders in apps.
+    # general search for normal project folders in source.
     REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
     REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
 

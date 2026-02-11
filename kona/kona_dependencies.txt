@@ -1,0 +1,23 @@
+
+to build the feisty meow kona code for java, these packages
+need to be set up as external jars on the classpath:
+
+(my personal approach is to unpack the archive file to a known
+location and use that location as the path for the external jar.)
+
+apache commons logging
+https://commons.apache.org/logging/download_logging.cgi
+
+apache commons compress
+https://commons.apache.org/compress/download_compress.cgi
+
+apache commons io
+https://commons.apache.org/io/download_io.cgi
+
+apache commons lang
+https://commons.apache.org/lang/download_lang.cgi
+
+apache log4j
+https://logging.apache.org/log4j/2.x/download.html
+
+

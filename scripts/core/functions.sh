@@ -22,7 +22,7 @@ fi
 if [ -z "$skip_all" ]; then
 
   if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then
-    echo "feisty meow function definitions beginning now..."
+    echo "establishing feisty meow function definitions..."
   fi
 
   # a handy little method that can be used for date strings.  it was getting
@@ -285,7 +285,7 @@ if [ -z "$skip_all" ]; then
   {
     if [ $? -ne 0 ]; then
       echo -e "\n\na problem occurred, but we can continue:\n\n$*\n\n=> Continuing script..."
-      error_sound
+#hmmm: not an error if continuing?  hmmm....      error_sound
     fi
   }
 
@@ -299,7 +299,7 @@ if [ -z "$skip_all" ]; then
 
   ##############
 
-  # wraps secure shell with some parameters we like, most importantly to enable X forwarding.
+  # wraps secure shell with some parameters we like.
   function ssh()
   {
     local args=($@)
@@ -316,6 +316,18 @@ if [ -z "$skip_all" ]; then
     save_terminal_title  # remember the current terminal title.
     /usr/bin/ssh -Y "${args[@]}"
     restore_terminal_title
+  }
+
+  # returns zero (success) if the X window system is currently running.
+  function test_for_xwin()
+  {
+    if ! timeout 1s xset q &>/dev/null; then
+#echo "No X server is running on \$DISPLAY [$DISPLAY]" >&2
+      return 1
+    else
+#echo "X server is running on \$DISPLAY [$DISPLAY]" >&2
+      return 0
+    fi
   }
 
   ##############
@@ -1163,7 +1175,7 @@ return 0
 #hmmm: would the composition of those two types of extensions cover all the files i want to rename?  they have to be "important".
     find "${dirs[@]}" -follow -maxdepth 1 -mindepth 1 -type f -and -not -iname ".[a-zA-Z0-9]*" | \
         grep -i \
-"csv\|doc\|docx\|eml\|html\|ics\|jpeg\|jpg\|m4a\|mov\|mp3\|mp4\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|webp\|xls\|xlsx\|xml\|zip" | \
+"csv\|doc\|docx\|eml\|epub\|html\|ics\|jpeg\|jpg\|m4a\|mov\|mp3\|mp4\|odp\|ods\|odt\|pdf\|png\|ppt\|pptx\|rtf\|txt\|vsd\|vsdx\|wav\|webp\|xls\|xlsx\|xml\|zip" | \
         sed -e 's/^/"/' | sed -e 's/$/"/' | \
         xargs bash "$FEISTY_MEOW_SCRIPTS/files/spacem.sh"
     # drop the temp file now that we're done.
@@ -1225,7 +1237,7 @@ return 0
     return 0; 
   }
   
-  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "feisty meow function definitions done."; fi
+  if [ ! -z "$DEBUG_FEISTY_MEOW" ]; then echo "feisty meow functions are now defined."; fi
 
   ##############
 

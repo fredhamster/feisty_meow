@@ -23,6 +23,7 @@ BUILD_BEFORE = algorithms \
   tests_textual \
   tests_timely \
   tests_configuration \
+  tests_application \
   versions \
   crypto \
   tests_crypto 

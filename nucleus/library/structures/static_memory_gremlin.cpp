@@ -15,12 +15,46 @@
 #include <basis/functions.h>
 
 #include <basis/array.h>
+#include <application/callstack_tracker.h>
 //temp!  needed for fake continuable error etc
 
 #include <stdio.h>
 #include <string.h>
 
+using namespace application;
 using namespace basis;
+
+/* no.
+namespace application {
+
+//! the single instance of callstack_tracker.
+/ *! this is also an ultra low-level object, although it's not as far down
+as the memory checker.  it can allocate c++ objects and that kind of thing
+just fine.  the object must be stored here rather than in the static basis
+library due to issues in windows dlls.
+NOTE: this is also not thread safe; it must be initialized before any threads
+have started. * /
+
+//hmmm: why is this here?  because it needs to interact with the progwide memories?
+callstack_tracker &program_wide_stack_trace()
+{
+  static callstack_tracker *_hidden_trace = NULL_POINTER;
+  if (!_hidden_trace) {
+#ifdef ENABLE_MEMORY_HOOK
+    program_wide_memories().disable();
+      // we don't want infinite loops tracking the call stack during this
+      // object's construction.
+#endif
+    _hidden_trace = new callstack_tracker;
+#ifdef ENABLE_MEMORY_HOOK
+    program_wide_memories().enable();
+#endif
+  }
+  return *_hidden_trace;
+}
+
+} //namespace.
+*/
 
 namespace structures {
 
@@ -108,8 +142,8 @@ bool static_memory_gremlin::__program_is_dying() { return __global_program_is_dy
 
 mutex &static_memory_gremlin::__memory_gremlin_synchronizer()
 {
-  static mutex __globabl_synch_mem;
-  return __globabl_synch_mem;
+  static mutex __global_synch_mem;
+  return __global_synch_mem;
 }
 
 int static_memory_gremlin::locate(const char *unique_name)
@@ -219,9 +253,10 @@ static_memory_gremlin &static_memory_gremlin::__hoople_globals()
 #endif
 
 #ifdef ENABLE_CALLSTACK_TRACKING
-    program_wide_stack_trace().full_trace_size();
+    application::program_wide_stack_trace().full_trace_size();
       // invoke now to get callback tracking instantiated.
 #endif
+
     FUNCDEF("HOOPLE_GLOBALS remainder");
       // this definition must be postponed until after the objects that would
       // track it actually exist.

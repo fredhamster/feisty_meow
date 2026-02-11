@@ -39,8 +39,8 @@ extern inclist  maininclist;
 
 int find_includes(struct filepointer *filep, inclist *file, inclist *file_red, int recursion, bool failOK)
 {
-  register char  *line;
-  register int  type;
+  char  *line;
+  int  type;
   bool recfailOK;
 
   while ((line = getline(filep))) {
@@ -162,11 +162,11 @@ int find_includes(struct filepointer *filep, inclist *file, inclist *file_red, i
   return(-1);
 }
 
-int gobble(register struct filepointer *filep, inclist *file,
+int gobble(struct filepointer *filep, inclist *file,
     inclist *file_red)
 {
-  register char  *line;
-  register int  type;
+  char  *line;
+  int  type;
 
   while ((line = getline(filep))) {
     switch(type = deftype(line, filep, file_red, file, false)) {
@@ -215,13 +215,13 @@ int gobble(register struct filepointer *filep, inclist *file,
 /*
  * Decide what type of # directive this line is.
  */
-int deftype(register char  *line, register struct filepointer *filep,
-    register inclist *file_red, register inclist *file,
+int deftype(char  *line, struct filepointer *filep,
+    inclist *file_red, inclist *file,
     int parse_it)
 {
-  register char  *p;
+  char  *p;
   char  *directive, savechar;
-  register int  ret;
+  int  ret;
 
   /*
    * Parse the directive...
@@ -359,10 +359,10 @@ int deftype(register char  *line, register struct filepointer *filep,
   return(ret);
 }
 
-symtab *isdefined(register char *symbol, inclist *file,
+symtab *isdefined(char *symbol, inclist *file,
     inclist  **srcfile)
 {
-  register struct symtab  *val;
+  struct symtab  *val;
 
   if ((val = slookup(symbol, &maininclist))) {
     debug(1,("%s defined on command line\n", symbol));
@@ -375,11 +375,11 @@ symtab *isdefined(register char *symbol, inclist *file,
   return(NULL);
 }
 
-struct symtab *fdefined(register char *symbol, inclist  *file, inclist  **srcfile)
+struct symtab *fdefined(char *symbol, inclist  *file, inclist  **srcfile)
 {
-  register inclist  **ip;
-  register struct symtab  *val;
-  register int  i;
+  inclist  **ip;
+  struct symtab  *val;
+  int  i;
   static int  recurse_lvl = 0;
 
   if (file->i_defchecked)
@@ -404,8 +404,8 @@ struct symtab *fdefined(register char *symbol, inclist  *file, inclist  **srcfil
 /*
  * Return type based on if the #if expression evaluates to 0
  */
-int zero_value(register char  *exp, register struct filepointer *filep,
-    register inclist *file_red)
+int zero_value(char  *exp, struct filepointer *filep,
+    inclist *file_red)
 {
   if (cppsetup(exp, filep, file_red))
       return(IFFALSE);
@@ -434,7 +434,7 @@ void define(char  *def, inclist  *file)
 void define2(char  *name, char  *val, inclist  *file)
 {
     int first, last, below;
-    register struct symtab *sp = NULL, *dest;
+    struct symtab *sp = NULL, *dest;
 
     /* Make space if it's needed */
     if (file->i_defs == NULL)
@@ -457,9 +457,9 @@ void define2(char  *name, char  *val, inclist  *file)
     while (last >= first)
     {
   /* Fast inline binary search */
-  register char *s1;
-  register char *s2;
-  register int middle = (first + last) / 2;
+  char *s1;
+  char *s2;
+  int middle = (first + last) / 2;
 
   /* Fast inline strchr() */
   s1 = name;
@@ -507,17 +507,17 @@ void define2(char  *name, char  *val, inclist  *file)
     sp->s_value = copy(val);
 }
 
-struct symtab *slookup(register char  *symbol, register inclist  *file)
+struct symtab *slookup(char  *symbol, inclist  *file)
 {
-  register int first = 0;
-  register int last = file->i_ndefs - 1;
+  int first = 0;
+  int last = file->i_ndefs - 1;
 
   if (file) while (last >= first)
   {
       /* Fast inline binary search */
-      register char *s1;
-      register char *s2;
-      register int middle = (first + last) / 2;
+      char *s1;
+      char *s2;
+      int middle = (first + last) / 2;
 
       /* Fast inline strchr() */
       s1 = symbol;
@@ -545,9 +545,9 @@ struct symtab *slookup(register char  *symbol, register inclist  *file)
   return(NULL);
 }
 
-void undefine(char  *symbol, register inclist *file)
+void undefine(char  *symbol, inclist *file)
 {
-  register struct symtab *ptr;
+  struct symtab *ptr;
   inclist *srcfile;
   while ((ptr = isdefined(symbol, file, &srcfile)) != NULL)
   {

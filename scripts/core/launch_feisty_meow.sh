@@ -60,7 +60,6 @@ and run this command (the whole unwieldy multiple line chunk inside the bars):
   exec bash -i 3<<EOF 4<&0 <&3
     echo -e '\n\n^^^ errors above here indicate potential problems in .bashrc ^^^';
     export FEISTY_MEOW_APEX=\"\$(pwd)\"; export FEISTY_MEOW_SCRIPTS=\$FEISTY_MEOW_APEX/scripts;
-    export FEISTY_MEOW_SHOW_LAUNCH_GREETING=yes;
     /bin/bash \$(pwd)/scripts/core/reconfigure_feisty_meow.sh;
     source \$(pwd)/scripts/core/launch_feisty_meow.sh; exec 3>&- <&4
 EOF
@@ -234,14 +233,14 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
 
   fi  # no error occurred.
 
-  if [ ! -z "$FEISTY_MEOW_SHOW_LAUNCH_GREETING" ]; then
+  if [ -z "$FEISTY_MEOW_LAUNCH_GREETING" ]; then
     echo
     echo
-    echo "welcome to the feisty meow zone of peace, one of many refuges in the uncountably"
-    echo "infinite multiverses that are hypothetically possible."
+    echo "welcome to the peaceful zone of feisty meow... one of many refuges in the"
+    echo "uncountably infinite multiverses that are hypothetically possible."
     echo
     echo
-    unset FEISTY_MEOW_SHOW_LAUNCH_GREETING
+    export FEISTY_MEOW_LAUNCH_GREETING=done
   fi
 
   # only run this hello file if the core feisty meow support haven't been loaded already.  this
@@ -259,6 +258,10 @@ if [ "$NO_REPAIRS_NEEDED" == "true" ]; then
     fi
     # from now on there should be no extra helloing.
     export NO_HELLO=true
+
+    # start up the xsecurelock screen saver if we are running x window system.
+#no.  cannot force this.    bash "$FEISTY_MEOW_SCRIPTS/system/start_xwin_screensaver.sh" &>/dev/null
+#no still.  don't want elaborate checks or noise here.    psa uhhh
   fi
 
   # load the last bits we do here.

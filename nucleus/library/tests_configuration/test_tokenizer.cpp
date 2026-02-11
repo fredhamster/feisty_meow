@@ -274,7 +274,9 @@ LOG(a_sprintf("gorp has %d fields, jed has %d fields", gorp.symbols(), jed.symbo
         TEST + "value for punzola missing or invalid");
     ASSERT_EQUAL(jed.find("mensch"), astring("racer X"),
         TEST + "value for mensch missing or invalid");
-  }    
+  }
+
+  critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
 
   return final_report();
 }

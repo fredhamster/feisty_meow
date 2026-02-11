@@ -61,7 +61,7 @@ fi
 
 # now run through our permutations for users...
 
-copy_f76_photos_from_src_to_dest "$src_top" "8836c852c8a647ba8ca45808a73c3fbb" "chronical_pc" "$dest_top"
+copy_f76_photos_from_src_to_dest "$src_top" "8836c852c8a647ba8ca45808a73c3fbb" "chronical_steam" "$dest_top"
 
-copy_f76_photos_from_src_to_dest "$src_top" "8f99c06443f04f6f8270604369bb78eb" "spoonburg_pc" "$dest_top"
+copy_f76_photos_from_src_to_dest "$src_top" "8f99c06443f04f6f8270604369bb78eb" "spoonburg_steam" "$dest_top"
 

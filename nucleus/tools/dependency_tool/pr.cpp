@@ -44,8 +44,8 @@ extern bool  show_where_not;
 void add_include(filepointer *filep, inclist  *file,
     inclist  *file_red, char  *include, bool dot, bool failOK)
 {
-  register struct inclist  *newfile;
-  register struct filepointer  *content;
+  struct inclist  *newfile;
+  struct filepointer  *content;
 
   /*
    * First decide what the pathname of this include file really is.
@@ -77,10 +77,10 @@ fatalerr("cannot find include file \"%s\"\n", include);
   }
 }
 
-void recursive_pr_include(register struct inclist  *head, register char  *file,
-    register char  *base)
+void recursive_pr_include(struct inclist  *head, char  *file,
+    char  *base)
 {
-  register int  i;
+  int  i;
 
   if (head->i_marked)
     return;
@@ -95,11 +95,11 @@ void recursive_pr_include(register struct inclist  *head, register char  *file,
     recursive_pr_include(head->i_list[ i ], file, base);
 }
 
-void pr(register struct inclist *ip, char *file, char *base, bool rc_file)
+void pr(struct inclist *ip, char *file, char *base, bool rc_file)
 {
   static char  *lastfile;
   static int  current_len;
-  register int  len, i;
+  int  len, i;
   char  buf[ BUFSIZ ];
 
   printed = true;

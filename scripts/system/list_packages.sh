@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
+source "$FEISTY_MEOW_SCRIPTS/core/functions.sh"
 
 if [ -z "$*" ]; then
   # no parameters, so we do a wildcard style of listing packages.
@@ -23,11 +23,13 @@ if [ ! -z "$rpm_available" ]; then
   exit $?
 fi
 
-yum_available="$(whichable yum)"
-if [ ! -z "$yum_available" ]; then
-  yum list | eval $SEEK_PIECE
-  exit $?
-fi
+# yum should never be available if rpm was not!
+#yum_available="$(whichable yum)"
+#if [ ! -z "$yum_available" ]; then
+#  yum list | eval $SEEK_PIECE
+#  exit $?
+#fi
 
 echo "Could not deduce what type of OS this is; missing package listing commands."
 exit 1
+

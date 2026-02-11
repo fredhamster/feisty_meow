@@ -182,6 +182,9 @@ astring &astring::sprintf(const char *initial, ...)
 
 astring &astring::base_sprintf(const char *initial, va_list &args)
 {
+#ifdef DEBUG_STRING
+  printf("base_sprintf entry, format string is: %s\n", initial);
+#endif
   reset();
   if (!initial) return *this;  // skip null strings.
   if (!initial[0]) return *this;  // skip empty strings.
@@ -192,7 +195,7 @@ astring &astring::base_sprintf(const char *initial, va_list &args)
   // thanks for the inspiration to k&r page 156.
   for (const char *traverser = initial; *traverser; traverser++) {
 #ifdef DEBUG_STRING
-    printf("index=%d, char=%c\n", traverser - initial, *traverser);
+    printf("index=%d, char=%c\n", int(traverser - initial), *traverser);
 #endif
 
     if (*traverser != '%') {
@@ -202,7 +205,7 @@ astring &astring::base_sprintf(const char *initial, va_list &args)
     }
     traverser++; // go to the next character.
 #ifdef DEBUG_STRING
-    printf("index=%d, char=%c\n", traverser - initial, *traverser);
+    printf("index=%d, char=%c\n", int(traverser - initial), *traverser);
 #endif
     if (*traverser == '%') {
       // capture the "%%" style format specifier.

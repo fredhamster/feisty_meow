@@ -81,7 +81,8 @@ int test_stopwatch::execute()
     deadly_error(class_name(), "second", "unacceptable timer deviation");
   fred_time.reset();
 
-  critical_events::alert_message("stopwatch:: works for those functions tested.");
+  critical_events::alert_message(astring(class_name()) + ": works for those functions tested.");
+
   return 0;
 }
 

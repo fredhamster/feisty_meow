@@ -1,11 +1,8 @@
-
-
-
-/*****************************************************************************\
-*                                                                             *
-*  Name   : callstack_tracker                                                 *
-*  Author : Chris Koeritz                                                     *
-*                                                                             *
+/*
+*
+*  Name   : callstack_tracker
+*  Author : Chris Koeritz
+*
 *******************************************************************************
 * Copyright (c) 2007-$now By Author.  This program is free software; you can  *
 * redistribute it and/or modify it under the terms of the GNU General Public  *
@@ -24,11 +21,27 @@
 
 #include "callstack_tracker.h"
 
+#include <basis/functions.h>
+
 #include <malloc.h>
 #include <stdio.h>
+#include <string.h>
+
+//using namespace application;
+using namespace basis;
+//using namespace configuration;
+//using namespace mathematics;
+//using namespace filesystem;
+//using namespace loggers;
+//using namespace structures;
+//using namespace textual;
+//using namespace timely;
+//using namespace unit_test;
 
 ////#undef new
-//is this right way to clean that out.
+//is this right way to clean that out..?
+
+namespace application {
 
 const int MAX_STACK_DEPTH = 2000;
   // beyond that many stack frames, we will simply refuse to add any more.
@@ -38,6 +51,43 @@ const int MAX_TEXT_FIELD = 1024;
 
 const char *emptiness_note = "Empty Stack\n";
   //!< what we show when the stack is empty.
+
+//////////////
+
+basis::mutex &callstack_tracker::__callstack_tracker_synchronizer()
+{
+  thread_local basis::mutex __global_synch_callstacks;
+  return __global_synch_callstacks;
+}
+
+//////////////
+
+//! the single instance of callstack_tracker.
+/*!
+  this is also an ultra low-level object, although it's not as far down
+  as the memory checker.  it can allocate c++ objects and that kind of thing
+  just fine.
+*/
+callstack_tracker &program_wide_stack_trace()
+{
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
+  thread_local callstack_tracker *_hidden_trace = NULL_POINTER;
+  if (!_hidden_trace) {
+#ifdef ENABLE_MEMORY_HOOK
+    program_wide_memories().disable();
+      /* we don't want infinite loops tracking the call stack during this object's construction. */
+//hmmm: does that disable the progwide memories for the whole program or just for this thread?
+//      and what does that entail exactly?
+//      did it actually fix the problem we saw?
+#endif
+    _hidden_trace = new callstack_tracker;
+#ifdef ENABLE_MEMORY_HOOK
+    program_wide_memories().enable();
+#endif
+  }
+  return *_hidden_trace;
+}
 
 //////////////
 
@@ -78,6 +128,8 @@ callstack_tracker::~callstack_tracker()
 bool callstack_tracker::push_frame(const char *class_name, const char *func,
     const char *file, int line)
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
 //printf("callstack pushframe depth=%d in\n", _depth);
   if (_unusable) return false;
   if (_depth >= MAX_STACK_DEPTH) {
@@ -96,6 +148,8 @@ bool callstack_tracker::push_frame(const char *class_name, const char *func,
 
 bool callstack_tracker::pop_frame()
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
 //printf("callstack popframe depth=%d in\n", _depth);
   if (_unusable) return false;
   if (_depth <= 0) {
@@ -113,64 +167,92 @@ bool callstack_tracker::pop_frame()
 
 bool callstack_tracker::update_line(int line)
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
   if (_unusable) return false;
   if (!_depth) return false;  // not as serious, but pretty weird.
   _bt->_records[_depth]._line = line;
   return true;
 }
 
+// helpful macro makes sure we stay within our buffer for string storage of the stack trace.
+#define CHECK_SPACE_IN_BUFFER(desired_chunk) \
+  /* being slightly paranoid about the space, but we don't want any buffer overflows. */ \
+  if (space_used_in_buffer + desired_chunk >= full_size_needed - 4) { \
+    printf("callstack_tracker::full_trace: failure in size estimation--we would have blown out of the buffer"); \
+    return to_return; \
+  } else { \
+    space_used_in_buffer += desired_chunk; \
+  }
+  
 char *callstack_tracker::full_trace() const
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
   if (_unusable) return strdup("");
-//printf("fulltrace in\n");
-  char *to_return = (char *)malloc(full_trace_size());
+  int full_size_needed = full_trace_size();
+  char *to_return = (char *)malloc(full_size_needed);
+//printf("fulltrace allocated %d bytes for trace.\n", full_size_needed);
   to_return[0] = '\0';
   if (!_depth) {
     strcat(to_return, emptiness_note);
     return to_return;
   }
+
   const int initial_len = MAX_TEXT_FIELD + 8;
   char temp[initial_len];
-  int allowed_len = initial_len;
-    // space provided for one text line.
+  int space_left_in_line;  // the space provided for one text line.
+
+  int space_used_in_buffer = 0;
+    /* tracks whether we're getting close to the buffer limit.  technically, this
+    should not happen, since we calculated the space ahead of time... but it is good
+    to ensure we don't overflow the buffer in case we were not accurate. */
+
   // start at top most active frame and go down towards bottom most.
   for (int i = _depth; i >= 1; i--) {
+    CHECK_SPACE_IN_BUFFER(1);
     strcat(to_return, "\t");  // we left space for this and \n at end.
+    space_left_in_line = initial_len;  // reset our counter per line now.
     temp[0] = '\0';
     int len_class = strlen(_bt->_records[i]._class);
     int len_func = strlen(_bt->_records[i]._func);
-    if (allowed_len > len_class + len_func + 6) {
-      allowed_len -= len_class + len_func + 6;
+    if (space_left_in_line > len_class + len_func + 6) {
+      space_left_in_line -= len_class + len_func + 6;
       sprintf(temp, "\"%s::%s\", ", _bt->_records[i]._class,
           _bt->_records[i]._func);
+      CHECK_SPACE_IN_BUFFER(strlen(temp));
       strcat(to_return, temp);
     }
 
     temp[0] = '\0';
     int len_file = strlen(_bt->_records[i]._file);
-    if (allowed_len > len_file + 4) {
-      allowed_len -= len_file + 4;
+    if (space_left_in_line > len_file + 4) {
+      space_left_in_line -= len_file + 4;
       sprintf(temp, "\"%s\", ", _bt->_records[i]._file);
+      CHECK_SPACE_IN_BUFFER(strlen(temp));
       strcat(to_return, temp);
     }
 
     temp[0] = '\0';
     sprintf(temp, "\"line=%d\"", _bt->_records[i]._line);
     int len_line = strlen(temp);
-    if (allowed_len > len_line) {
-      allowed_len -= len_line;
+    if (space_left_in_line > len_line) {
+      space_left_in_line -= len_line;
+      CHECK_SPACE_IN_BUFFER(strlen(temp));
       strcat(to_return, temp);
     }
 
+    CHECK_SPACE_IN_BUFFER(1);
     strcat(to_return, "\n");  // we left space for this already.
   }
 
-//printf("fulltrace out\n");
   return to_return;
 }
 
 int callstack_tracker::full_trace_size() const
 {
+  auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
+
   if (_unusable) return 0;
   if (!_depth) return strlen(emptiness_note) + 14;  // liberal allocation.
   int to_return = 28;  // another hollywood style excess.
@@ -265,8 +347,7 @@ void update_current_stack_frame_line_number(int line)
 //printf("frametrackinst updatelinenum out\n");
 }
 
+} // namespace
+
 #endif // ENABLE_CALLSTACK_TRACKING
-
-
-
 

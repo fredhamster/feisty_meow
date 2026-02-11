@@ -300,6 +300,7 @@ istring null_device()
   return "/dev/null";
 #endif
 }
+*/
 
 #ifdef __WIN32__
 bool event_poll(MSG &message)
@@ -315,6 +316,8 @@ bool event_poll(MSG &message)
   return true;
 }
 #endif
+
+/*
 
 // makes a complaint about a failure.
 #ifndef EMBEDDED_BUILD

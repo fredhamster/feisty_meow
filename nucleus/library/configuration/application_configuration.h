@@ -26,6 +26,8 @@ class application_configuration : public virtual basis::root_object
 public:
   virtual ~application_configuration() {}
 
+  DEFINE_CLASS_NAME("application_configuration");
+
   // these methods are mainly about the application itself.
 
   static basis::astring application_name();

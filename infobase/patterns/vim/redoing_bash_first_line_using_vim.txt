@@ -1,0 +1,8 @@
+
+use this command on any that has the old school #!/bin/bash hardcoded at the top of the file.
+although, hmmm, this actually replaces them throughout the file.  hmmm.
+
+:1,$s/#!\/bin\/bash/#!\/usr\/bin\/env bash/
+
+
+

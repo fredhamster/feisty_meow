@@ -326,7 +326,9 @@ LOG(astring("chose source dir as ") + repo_source);
 
 #ifdef __BUILD_STATIC_APPLICATION__
   // static dependencies found by buildor_gen_deps.sh:
+  #include <algorithms/sorts.cpp>
   #include <application/application_shell.cpp>
+  #include <application/callstack_tracker.cpp>
   #include <application/command_line.cpp>
   #include <application/windoze_helper.cpp>
   #include <basis/astring.cpp>

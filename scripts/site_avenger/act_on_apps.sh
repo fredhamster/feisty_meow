@@ -7,6 +7,6 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 # fix the app name for our call to the act_on_tree script.
 export APP_NAME="$(basename $0 .sh)"
 
-act_on_tree -f avenger5 -d ~/apps "${@}"
+act_on_tree -f avenger5 -d $HOME/source "${@}"
 
 

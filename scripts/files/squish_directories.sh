@@ -14,15 +14,17 @@ dirs=()
 # snag the command line arguments into an array of names.
 for i in "$@"; do dirs+=("$i"); done
 
-# if there were no arguments, use the current directories list of directories.
+###NOOOOO# if there were no arguments, use the current directories list of directories.
 if [ ${#dirs[@]} -eq 0 ]; then
-  # using a temp file is clumsy but after a lot of different methods being tried, this one
-  # worked and wasn't super ugly.
-  tempfile="$(mktemp /tmp/dirlist.XXXXXX)"
-  find $dir -mindepth 1 -maxdepth 1 -type d -exec echo "dirs+=(\"{}\");" ';' >$tempfile
-  source "$tempfile"
-#echo dirs default to: ${dirs[@]}
-  rm -f $tempfile
+  echo "No directories were specified; nothing will be squished."
+  exit 1
+##  # using a temp file is clumsy but after a lot of different methods being tried, this one
+##  # worked and wasn't super ugly.
+##  tempfile="$(mktemp /tmp/dirlist.XXXXXX)"
+##  find $dir -mindepth 1 -maxdepth 1 -type d -exec echo "dirs+=(\"{}\");" ';' >$tempfile
+##  source "$tempfile"
+###echo dirs default to: ${dirs[@]}
+##  rm -f $tempfile
 fi
 
 # takes a directory name as an argument and sucks the directory

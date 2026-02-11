@@ -192,19 +192,26 @@ PAX=(noop)
 
 # first, make sure the OS itself is prepared for us.
 
+#hmmm: ha, a better representation with less glop would be associative arrays for each chunk of stuff to do.
+#  + have one overall array of items which are the names of other arrays to pull in.
+#  + then each assoc array gets filled in by our various sections below using simple array syntax.
+#  + would be something like:
+#       crucial_os_packages["debianesque"]="bind9-dnsutils git gitk gparted mariadb-client openssh-server"
+#  + tasty!
+
 PHASE_MESSAGE="installing crucial OS packages"
 
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(bind9-dnsutils git gitk gparted openssh-server )
+  PAX=(apt-file bind9-dnsutils git gitk gparted kgpg mariadb-client net-tools openssh-server )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(bind9-dnsutils git gitk gparted openssh-server )
-#untested: bind9-dnsutils
+  PAX=(bind9-dnsutils git gitk gparted kgpg mariadb-client net-tools openssh-server )
+#untested: bind9-dnsutils mariadb-client kgpg net-tools 
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(bind9-dnsutils git gitk openssh-server )
-#untested: bind9-dnsutils
+  PAX=(bind9-dnsutils git gitk kgpg mariadb-client net-tools openssh-server )
+#untested: bind9-dnsutils mariadb-client kgpg net-tools 
 elif [ "$opsystem_here" == "windoze" ]; then
-  PAX=(bind9-dnsutils git gitk gparted openssh-server )
-#untested: bind9-dnsutils
+  PAX=(apt-file bind9-dnsutils git gitk gparted kgpg mariadb-client net-tools openssh-server )
+#untested: apt-file bind9-dnsutils mariadb-client kgpg net-tools 
 fi
 
 install_system_package "${PAX[@]}"
@@ -275,15 +282,15 @@ exit_on_error $PHASE_MESSAGE
 PHASE_MESSAGE="installing flavor bits"
 
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(cowsay lolcat )
+  PAX=(cowsay galculator lolcat )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(cowsay )
+  PAX=(cowsay galculator )
 #should exist, but doesn't? lolcat-rs 
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(cowsay lolcat )
+  PAX=(cowsay galculator lolcat )
   #hmmm: untested!
 elif [ "$opsystem_here" == "windoze" ]; then
-  PAX=(cowsay lolcat )
+  PAX=(cowsay galculator lolcat )
   #hmmm: untested!
 fi
 

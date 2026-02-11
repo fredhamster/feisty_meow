@@ -15,14 +15,14 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include "definitions.h"
-
-#ifdef ENABLE_CALLSTACK_TRACKING
-
-#include "build_configuration.h"
-#include "root_object.h"
+#include <application/build_configuration.h>
+#include <basis/contracts.h>
+#include <basis/definitions.h>
+#include <basis/mutex.h>
 
 namespace application {
+
+#ifdef ENABLE_CALLSTACK_TRACKING
 
 // forward.
 class callstack_records;
@@ -30,8 +30,10 @@ class callstack_tracker;
 
 //////////////
 
-callstack_tracker BASIS_EXTERN &program_wide_stack_trace();
+callstack_tracker &program_wide_stack_trace();
   //!< a global object that can be used to track the runtime callstack.
+
+//hmmm: maybe borked on basis of the conflict between a global stack tracker and the fact that each thread has its own callstack!  argh!
 
 //////////////
 
@@ -49,7 +51,7 @@ public:
   callstack_tracker();
   virtual ~callstack_tracker();
 
-  DEFINE_CLASS_NAME("callstack_tracker");
+//  DEFINE_CLASS_NAME("callstack_tracker");
 
   bool push_frame(const char *class_name, const char *func, const char *file,
           int line);
@@ -74,7 +76,7 @@ public:
     /*!< the user *must* free() the string returned. */
 
   int full_trace_size() const;
-    //!< this returns the number of bytes needed for the above full_trace().
+    //!< this returns an estimated number of bytes needed for the full_trace().
 
   int depth() const { return _depth; }
     //!< the current number of frames we know of.
@@ -88,6 +90,9 @@ public:
   double highest() const { return _highest; }
     //!< reports the maximum stack depth seen during the runtime so far.
 
+  static basis::mutex &__callstack_tracker_synchronizer();
+    //!< protects concurrent access.
+
 private:
   callstack_records *_bt;  //!< the backtrace records for current program.
   int _depth;  //!< the current number of frames we know of.
@@ -96,6 +101,36 @@ private:
   double _highest;  //!< the most number of frames in play at once.
   bool _unusable;  //!< object has already been destroyed.
 };
+
+//////////////
+
+/*!
+  super helpful macro that shows the current stack trace and checks it for validity.
+  this shouldn't impact the trace, since all the code is embedded inline from the macro.
+  this does require that LOG() is defined, and that a failure return value is expected
+  from the embedding function.
+*/
+#define GET_AND_TEST_STACK_TRACE(header, failure_return) { \
+  int trace_size = program_wide_stack_trace().full_trace_size(); \
+  char *stack_trace = program_wide_stack_trace().full_trace(); \
+  ASSERT_TRUE(trace_size >= strlen(stack_trace) + 1, "insufficient estimated stack trace size"); \
+  if (trace_size < strlen(stack_trace) + 1) { \
+    /* error condition here; we are supposed to get the actual size we would need to allocate! */ \
+    LOG(a_sprintf("failure in stack trace return: estimated size (%d) was less than actual (%d)", \
+        trace_size, strlen(stack_trace))); \
+    /* mandatory free step for newly allocated string. */ \
+    free(stack_trace); \
+    return failure_return; \
+  } \
+  ASSERT_TRUE(strlen(stack_trace) > 1, "empty stack trace"); \
+  if (strlen(stack_trace) < 2) { \
+    LOG("failure in stack trace return: the trace output string was empty!"); \
+    return failure_return; \
+  } \
+  LOG(astring("\n\n################\n\n") + header + "\n" + stack_trace); \
+  /* mandatory free step for newly allocated string. */ \
+  free(stack_trace); \
+}
 
 //////////////
 
@@ -142,12 +177,17 @@ void update_current_stack_frame_line_number(int line);
   //!< sets the line number for the current frame in the global stack trace.
 
 #else // ENABLE_CALLSTACK_TRACKING
-  // bogus replacements for most commonly used callstack tracking support.
+  /*
+    bogus replacements for the most commonly used callstack tracking support.
+    these are necessary because we don't want this enabled in all scenarios,
+    and when we want the callstack tracking disabled, it must have near zero
+    runtime cost.
+  */
+  inline void no_op() { /* do nothing. */ }
   #define frame_tracking_instance
-  #define __trail_of_function(p1, p2, p3, p4, p5) if (func) {}
-    // the above actually trades on the name of the object we'd normally
-    // define.  it must match the object name in the FUNCDEF macro.
-  #define update_current_stack_frame_line_number(line)
+  #define GET_AND_TEST_STACK_TRACE(header, failure_return) no_op();
+  #define __trail_of_function(p1, p2, p3, p4, p5) no_op();
+  inline void update_current_stack_frame_line_number(int line) { /* more nothing. */ }
 #endif // ENABLE_CALLSTACK_TRACKING
 
 } //namespace.

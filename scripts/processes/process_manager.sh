@@ -109,5 +109,9 @@ launcher_demonstrator()
   done
 }
 
-launcher_demonstrator;
+# this block should execute when the script is actually run, rather
+# than when it's just being sourced.
+if [[ $0 =~ .*process_manager\.sh.* ]]; then
+  launcher_demonstrator;
+fi
 

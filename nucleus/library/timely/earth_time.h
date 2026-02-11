@@ -90,6 +90,8 @@ namespace timely {
     time_number millisecond;  //!< The number of milliseconds elapsed in this second.
     time_number microsecond;  //!< Number of microseconds elapsed in this millisecond.
 
+    DEFINE_CLASS_NAME("clock_time");
+
     //! Constructs a clock_time object given all the parts.
     clock_time(time_number h = 0, time_number m = 0, time_number s = 0, time_number ms = 0, time_number us = 0)
              : hour(h), minute(m), second(s), millisecond(ms),
@@ -142,6 +144,8 @@ namespace timely {
     time_number day_in_month;  //!< The day number within the month (starting at one).
     days day_of_week;  //!< The day of the week.
     time_number day_of_year;  //!< Numerical day, where January 1st is equal to zero.
+
+    DEFINE_CLASS_NAME("day_in_year");
 
     int packed_size() const { return 4 * structures::PACKED_SIZE_INT64; }
 

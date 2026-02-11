@@ -36,7 +36,7 @@ using namespace timely;
   // uncomment for noisy code.
 
 #undef LOG
-#define LOG(tpr) printf("%s", (time_stamp::notarize() + "timer_driver::" + func + tpr).s() )
+#define LOG(tpr) printf("%s\n", (time_stamp::notarize() + "timer_driver::" + func + ": " + tpr).s() )
 
 namespace timely {
 
@@ -285,9 +285,9 @@ void timer_driver::handle_system_timer()
   }
   unhook_OS_timer();
 
-#ifdef DEBUG_TIMER_DRIVER
-  LOG("into handling OS timer...");
-#endif
+//#ifdef DEBUG_TIMER_DRIVER
+//  LOG("into handling OS timer...");
+//#endif
 
   array<driven_object_record *> to_invoke_now;
 
@@ -376,9 +376,9 @@ void timer_driver::handle_system_timer()
     }
   }
 
-#ifdef DEBUG_TIMER_DRIVER
-  LOG("done handling OS timer.");
-#endif
+//#ifdef DEBUG_TIMER_DRIVER
+//  LOG("done handling OS timer.");
+//#endif
 
   // set the next expiration time to the smallest next guy.
   reset_OS_timer(next_timer_duration);
@@ -426,18 +426,20 @@ void timer_driver::hookup_OS_timer(int duration)
 
 void timer_driver::unhook_OS_timer()
 {
-#ifdef DEBUG_TIMER_DRIVER
-  FUNCDEF("unhook_OS_timer");
-#endif
+//#ifdef DEBUG_TIMER_DRIVER
+//  FUNCDEF("unhook_OS_timer");
+//#endif
+
 //#if defined(__UNIX__) || defined(__GNU_WINDOWS__)
   // postpone the thread for quite a while so we can take care of business.
   _prompter->reschedule(LONG_TIME);
 //#elif defined(_MSC_VER)
 //  if (_real_timer_id) KillTimer(NULL_POINTER, (UINT_PTR)_real_timer_id);
 //#endif
-#ifdef DEBUG_TIMER_DRIVER
-  LOG("unhooked OS timer.");
-#endif
+
+//#ifdef DEBUG_TIMER_DRIVER
+//  LOG("unhooked OS timer.");
+//#endif
 }
 
 void timer_driver::reset_OS_timer(int next_hit)
