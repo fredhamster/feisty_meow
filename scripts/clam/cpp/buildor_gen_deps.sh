@@ -125,17 +125,17 @@ function bad_file {
 # parameters are taken as the candidate list.  if the item is present, then
 # zero is returned to indicate success.  otherwise a non-zero return value
 # indicates that the item was not yet present.
-function already_listed {
-  to_find=$1
-  shift
-  while (( $# > 0 )); do
-    # return that we found it if the current item matches.
-    if [ "$to_find" == "$1" ]; then return $RET_OKAY; fi
-    shift  # toss next one out.
-  done
-  # failed to match it.
-  return $RET_FAIL
-}
+#function already_listed {
+#  to_find=$1
+#  shift
+#  while (( $# > 0 )); do
+#    # return that we found it if the current item matches.
+#    if [ "$to_find" == "$1" ]; then return $RET_OKAY; fi
+#    shift  # toss next one out.
+#  done
+#  # failed to match it.
+#  return $RET_FAIL
+#}
 
 ############################################################################
 #
@@ -231,18 +231,40 @@ function resolve_filename() {
 #
 ############################################################################
 
-# main function that recurses on files and their dependencies.
-# this takes a list of file names to examine.  each one will have its
-# dependencies crawled.  we attempt to recurse on as few items as possible
+# main function that iterates on files and their dependencies.  this takes
+# the variable name of a list of file names to examine.  each one will have
+# its dependencies crawled.  we attempt to recurse on as few items as possible
 # by making sure we haven't already seen files or decided they're bad.
-function recurse_on_deps {
-  # snag arguments into a list of dependencies to crawl.
-  local -a active_deps=($@)
-#log_it "active deps passed as: " ${active_deps[@]}
+function recurse_on_deps()
+{
+  # the name of the list of dependencies to crawl is passed to us, initially with just
+  # one item.  it's important to realize that we're getting the external variable's name
+  # and then accessing it locally via the alias "active_deps" below.  as we find new items
+  # for the list, we add them to it.  when an item has been totally processed, it's removed
+  # from the list.
+  local -n active_deps="$1"; shift
 
-  # pull off the first dependency so we can get all of its includes.
-  local first_element="${active_deps[0]}"
-  active_deps=(${active_deps[@]:1})
+  while [ ${#active_deps[@]} -ne 0 ]; do
+#log_it "active deps state: " ${!active_deps[@]}
+    # pull off the first dependency so we can get all of its includes.
+    local -a indies=( ${!active_deps[@]} )
+    local first_element=${indies[0]}
+    # chop the element we're working on out of the active list.
+    unset active_deps[$first_element]
+    # invoke our workhorse method on the item.
+    chew_on_one_dependency ${!active_deps} "$first_element"
+  done
+  return 0
+}
+
+# processes one file to locate all of its dependencies.
+# the external global list will be updated as this runs.
+function chew_on_one_dependency()
+{
+  local -n active_deps="$1"; shift
+  local first_element="$1"; shift
+#echo "chewone: active_deps is ${!active_deps}"
+#echo "chewone: first elem is $first_element"
 
   # make the best guess we can at the real path.
   if ! resolve_filename $first_element; then
@@ -399,9 +421,10 @@ function recurse_on_deps {
       # add the dependency we found.
       if add_new_dep "$chew_toy"; then
         # if that worked, it's not existing or bad so we want to keep it.
-        if ! already_listed "$chew_toy" ${active_deps[*]}; then
+#        if ! already_listed "$chew_toy" ${active_deps[*]}; then
+        if [ -z "${active_deps[$chew_toy]}" ]; then
           # track the file for its own merits also (to squeeze more includes).
-          active_deps+=($chew_toy)
+          active_deps[$chew_toy]=fiz
         fi
       fi
 
@@ -424,8 +447,10 @@ function recurse_on_deps {
         if [ ! -z "$found_it" ]; then
           if add_new_dep "$found_it"; then
             # that was a new dependency, so we'll continue examining it.
-            if ! already_listed "$found_it" ${active_deps[*]}; then
-              active_deps+=($found_it)
+#            if ! already_listed "$found_it" ${active_deps[*]}; then
+            if [ -z "${active_deps[$found_it]}" ]; then
+#              active_deps+=($found_it)
+              active_deps[$found_it]=pop
             fi
           fi
         fi
@@ -435,10 +460,11 @@ function recurse_on_deps {
 
   \rm -f "$current_includes"
 
-  # keep going on the list after our modifications.
-  if [ ${#active_deps[@]} -ne 0 ]; then
-    recurse_on_deps ${active_deps[@]}
-  fi
+#  # keep going on the list after our modifications.
+#  if [ ${#active_deps[@]} -ne 0 ]; then
+#    recurse_on_deps ${active_deps[@]}
+#  fi
+
   return $RET_OKAY
 }
 
@@ -565,7 +591,13 @@ function find_dependencies {
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
     log_it "\n\n========\nstarting recursion on dependencies...\n========"
   fi
-  recurse_on_deps $code_file
+
+  # set up our indirectly referenced dictionary of dependencies.
+  unset global_active_dependencies
+  declare -gA global_active_dependencies
+  global_active_dependencies[$code_file]=go
+
+  recurse_on_deps global_active_dependencies
 
   # create the new version of the file.
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
