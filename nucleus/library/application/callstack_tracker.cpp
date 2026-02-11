@@ -175,55 +175,77 @@ bool callstack_tracker::update_line(int line)
   return true;
 }
 
+// helpful macro makes sure we stay within our buffer for string storage of the stack trace.
+#define CHECK_SPACE_IN_BUFFER(desired_chunk) \
+  /* being slightly paranoid about the space, but we don't want any buffer overflows. */ \
+  if (space_used_in_buffer + desired_chunk >= full_size_needed - 4) { \
+    printf("callstack_tracker::full_trace: failure in size estimation--we would have blown out of the buffer"); \
+    return to_return; \
+  } else { \
+    space_used_in_buffer += desired_chunk; \
+  }
+  
 char *callstack_tracker::full_trace() const
 {
   auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
 
   if (_unusable) return strdup("");
-//printf("fulltrace in\n");
-  char *to_return = (char *)malloc(full_trace_size());
+  int full_size_needed = full_trace_size();
+  char *to_return = (char *)malloc(full_size_needed);
+//printf("fulltrace allocated %d bytes for trace.\n", full_size_needed);
   to_return[0] = '\0';
   if (!_depth) {
     strcat(to_return, emptiness_note);
     return to_return;
   }
+
   const int initial_len = MAX_TEXT_FIELD + 8;
   char temp[initial_len];
-  int allowed_len = initial_len;
-    // space provided for one text line.
+  int space_left_in_line;  // the space provided for one text line.
+
+  int space_used_in_buffer = 0;
+    /* tracks whether we're getting close to the buffer limit.  technically, this
+    should not happen, since we calculated the space ahead of time... but it is good
+    to ensure we don't overflow the buffer in case we were not accurate. */
+
   // start at top most active frame and go down towards bottom most.
   for (int i = _depth; i >= 1; i--) {
+    CHECK_SPACE_IN_BUFFER(1);
     strcat(to_return, "\t");  // we left space for this and \n at end.
+    space_left_in_line = initial_len;  // reset our counter per line now.
     temp[0] = '\0';
     int len_class = strlen(_bt->_records[i]._class);
     int len_func = strlen(_bt->_records[i]._func);
-    if (allowed_len > len_class + len_func + 6) {
-      allowed_len -= len_class + len_func + 6;
+    if (space_left_in_line > len_class + len_func + 6) {
+      space_left_in_line -= len_class + len_func + 6;
       sprintf(temp, "\"%s::%s\", ", _bt->_records[i]._class,
           _bt->_records[i]._func);
+      CHECK_SPACE_IN_BUFFER(strlen(temp));
       strcat(to_return, temp);
     }
 
     temp[0] = '\0';
     int len_file = strlen(_bt->_records[i]._file);
-    if (allowed_len > len_file + 4) {
-      allowed_len -= len_file + 4;
+    if (space_left_in_line > len_file + 4) {
+      space_left_in_line -= len_file + 4;
       sprintf(temp, "\"%s\", ", _bt->_records[i]._file);
+      CHECK_SPACE_IN_BUFFER(strlen(temp));
       strcat(to_return, temp);
     }
 
     temp[0] = '\0';
     sprintf(temp, "\"line=%d\"", _bt->_records[i]._line);
     int len_line = strlen(temp);
-    if (allowed_len > len_line) {
-      allowed_len -= len_line;
+    if (space_left_in_line > len_line) {
+      space_left_in_line -= len_line;
+      CHECK_SPACE_IN_BUFFER(strlen(temp));
       strcat(to_return, temp);
     }
 
+    CHECK_SPACE_IN_BUFFER(1);
     strcat(to_return, "\n");  // we left space for this already.
   }
 
-//printf("fulltrace out\n");
   return to_return;
 }
 
