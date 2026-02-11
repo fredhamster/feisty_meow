@@ -17,6 +17,10 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
+# define some variables to avoid going nuts seeing 0 and 1 everywhere.
+RET_OKAY=0
+RET_FAIL=1
+
 # prints out a message with a time-stamp prefixed to it.
 function log_it()
 {
@@ -25,7 +29,7 @@ function log_it()
 
 if [ ! -z "$CLEAN" ]; then
   log_it "in cleaning mode, will not build dependencies."
-  exit 0
+  exit $RET_OKAY
 fi
 
 # uncomment to enable debugging noises.
@@ -60,10 +64,10 @@ TAB_CHAR="$(echo -e -n '\t')"
 # a zero success value is returned if the file has been seen before,
 # and a non-zero failure value for when the file is totally new.
 function seen_already {
-  if existing_dep "$1"; then return 0; fi  # added it to list already.
-  if bad_file "$1"; then return 0; fi  # known to suck.
-  if boring_file "$1"; then return 0; fi  # we already saw it.
-  return 1  # we had not seen this one, so we return an error.
+  if existing_dep "$1"; then return $RET_OKAY; fi  # added it to list already.
+  if bad_file "$1"; then return $RET_OKAY; fi  # known to suck.
+  if boring_file "$1"; then return $RET_OKAY; fi  # we already saw it.
+  return $RET_FAIL  # we had not seen this one, so we return an error.
 }
 
 # adds a new dependency at the end of the list.
@@ -75,7 +79,7 @@ log_it "looking for dep='$dep'"
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
       log_it "bailing since seen: $dep"
     fi
-    return 1
+    return $RET_FAIL
   fi
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
     log_it "had not seen before: $dep"
@@ -86,7 +90,7 @@ log_it "looking for dep='$dep'"
   fi
 
   dependency_accumulator[$dep]=yo
-  return 0
+  return $RET_OKAY
 }
 
 # checks the existing dependencies to see if the first parameter is already
@@ -94,25 +98,25 @@ log_it "looking for dep='$dep'"
 # the dependency is missing, then -1 is return to indicate an error.
 function existing_dep {
   if [ ! -z "${dependency_accumulator[$1]}" ]; then
-    return 0
+    return $RET_OKAY
   fi
-  return 1
+  return $RET_FAIL
 }
 
 # reports whether a file name has already been processed.
 function boring_file {
   if [ ! -z "${boring_files[$1]}" ]; then
-    return 0
+    return $RET_OKAY
   fi
-  return 1
+  return $RET_FAIL
 }
 
 # reports whether a file name has already been found to be missing.
 function bad_file {
   if [ ! -z "${bad_files[$1]}" ]; then
-    return 0
+    return $RET_OKAY
   fi
-  return 1
+  return $RET_FAIL
 }
 
 # checks whether an item is already contained in a list.  the first parameter
@@ -125,11 +129,11 @@ function already_listed {
   shift
   while (( $# > 0 )); do
     # return that we found it if the current item matches.
-    if [ "$to_find" == "$1" ]; then return 0; fi
+    if [ "$to_find" == "$1" ]; then return $RET_OKAY; fi
     shift  # toss next one out.
   done
   # failed to match it.
-  return 1
+  return $RET_FAIL
 }
 
 # finds the index of a particular element in the remainder of a list.
@@ -144,14 +148,14 @@ function already_listed {
 ##    # return that we found it if the current item matches.
 ##    if [ "$to_find" == "$1" ]; then
 ##       __finders_indy=$indy
-##       return 0
+##       return $RET_OKAY
 ##    fi
 ##    shift  # toss next one out.
 ##    indy=$(expr $indy + 1)
 ##  done
 ##  _finders_indy=-1
 ##  # failed to match it.
-##  return 1
+##  return $RET_FAIL
 ##}
 
 ############################################################################
@@ -175,7 +179,7 @@ function resolve_filename {
   if [ -f "$code_file" ]; then
     # that was pretty easy.
     resolve_target_array[$code_file]=zuh
-    return 0
+    return $RET_OKAY
   fi
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
     log_it "MUST seek: $code_file"
@@ -197,7 +201,7 @@ log_it flounder is $flounder
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
       log_it "FOUND \"$src_key\" AT $flounder"
     fi
-    return 0
+    return $RET_OKAY
   fi
 
   # reset our global list.
@@ -267,7 +271,7 @@ log_it "first_item is '$first_item' "
 log_it "assocarray index to use is '$to_examine'"
   if [ -z "$to_examine" ]; then
     log_it "hit the resolve_target_array list being empty; are we done?"
-    return 0
+    return $RET_OKAY
   fi
   boring_files[$to_examine]=yawn
 
@@ -458,7 +462,7 @@ log_it "point Q2: about to add new dep: $found_it"
   if [ ${#active_deps[@]} -ne 0 ]; then
     recurse_on_deps ${active_deps[@]}
   fi
-  return 0
+  return $RET_OKAY
 }
 
 # this takes the dependency list and adds it to our current file.
@@ -524,7 +528,7 @@ log_it "line please is '$line_please'"
 
     # strip the line down to just the filename and single directory component.
     local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
-log_it "chewed line is '$chewed_line'"
+#log_it "chewed line is '$chewed_line'"
 
     if [[ "$chewed_line" =~ ^.*\.h$ ]]; then
 #! -z "$(echo $chewed_line | sed -n -e 's/\.h$/yow/p')" ]; then
@@ -556,7 +560,7 @@ the current code file:
 or within this script itself:
   '$0'
 "
-    exit 1
+    exit $RET_FAIL
   fi
 
   sort "$pending_deps" >>"$replacement_file"

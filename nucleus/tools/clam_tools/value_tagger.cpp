@@ -959,5 +959,13 @@ HOOPLE_MAIN(value_tagger, )
 
 #ifdef __BUILD_STATIC_APPLICATION__
   // static dependencies found by buildor_gen_deps.sh:
+  #include <algorithms/sorts.cpp>
+  #include <application/command_line.cpp>
+  #include <application/windoze_helper.cpp>
+  #include <basis/environment.cpp>
+  #include <basis/utf_conversion.cpp>
+  #include <filesystem/filename.cpp>
+  #include <loggers/critical_events.cpp>
+  #include <structures/string_table.cpp>
 #endif // __BUILD_STATIC_APPLICATION__
 
