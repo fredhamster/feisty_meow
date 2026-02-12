@@ -118,25 +118,6 @@ function bad_file {
   return $RET_FAIL
 }
 
-#hmmm: this needs to go the way of the dodo and find_in_array...
-
-# checks whether an item is already contained in a list.  the first parameter
-# is taken as the item that one wants to add.  the second through n-th
-# parameters are taken as the candidate list.  if the item is present, then
-# zero is returned to indicate success.  otherwise a non-zero return value
-# indicates that the item was not yet present.
-function already_listed {
-  to_find=$1
-  shift
-  while (( $# > 0 )); do
-    # return that we found it if the current item matches.
-    if [ "$to_find" == "$1" ]; then return $RET_OKAY; fi
-    shift  # toss next one out.
-  done
-  # failed to match it.
-  return $RET_FAIL
-}
-
 ############################################################################
 #
 # this variable gets stored into when resolve_filename runs.
@@ -231,18 +212,37 @@ function resolve_filename() {
 #
 ############################################################################
 
-# main function that recurses on files and their dependencies.
-# this takes a list of file names to examine.  each one will have its
-# dependencies crawled.  we attempt to recurse on as few items as possible
+# main function that iterates on files and their dependencies.  this takes
+# the variable name of a list of file names to examine.  each one will have
+# its dependencies crawled.  we attempt to recurse on as few items as possible
 # by making sure we haven't already seen files or decided they're bad.
-function recurse_on_deps {
-  # snag arguments into a list of dependencies to crawl.
-  local -a active_deps=($@)
-#log_it "active deps passed as: " ${active_deps[@]}
+function recurse_on_deps()
+{
+  # the name of the list of dependencies to crawl is passed to us, initially with just
+  # one item.  it's important to realize that we're getting the external variable's name
+  # and then accessing it locally via the alias "active_deps" below.  as we find new items
+  # for the list, we add them to it.  when an item has been totally processed, it's removed
+  # from the list.
+  local -n active_deps="$1"; shift
 
-  # pull off the first dependency so we can get all of its includes.
-  local first_element="${active_deps[0]}"
-  active_deps=(${active_deps[@]:1})
+  while [ ${#active_deps[@]} -ne 0 ]; do
+    # pull off the first dependency so we can get all of its includes.
+    local -a indies=( ${!active_deps[@]} )
+    local first_element=${indies[0]}
+    # chop the element we're working on out of the active list.
+    unset active_deps[$first_element]
+    # invoke our workhorse method on the item.
+    chew_on_one_dependency ${!active_deps} "$first_element"
+  done
+  return 0
+}
+
+# processes one file to locate all of its dependencies.
+# the external global list will be updated as this runs.
+function chew_on_one_dependency()
+{
+  local -n active_deps="$1"; shift
+  local first_element="$1"; shift
 
   # make the best guess we can at the real path.
   if ! resolve_filename $first_element; then
@@ -306,7 +306,6 @@ function recurse_on_deps {
   while read -r line_found; do
     # process the line to see if we can get a simple filename out of the include.
     # we are only trying for system-searched files for this one, with angle brackets.
-    #local chew_toy=$(echo $line_found | sed -e 's/^[ \t]*#include *<\(.*\)>.*$/\1/')
     local chew_toy="${line_found#*\#include *<}"
     chew_toy="${chew_toy/>*}"
     if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
@@ -399,9 +398,10 @@ function recurse_on_deps {
       # add the dependency we found.
       if add_new_dep "$chew_toy"; then
         # if that worked, it's not existing or bad so we want to keep it.
-        if ! already_listed "$chew_toy" ${active_deps[*]}; then
+#        if ! already_listed "$chew_toy" ${active_deps[*]}; then
+        if [ -z "${active_deps[$chew_toy]}" ]; then
           # track the file for its own merits also (to squeeze more includes).
-          active_deps+=($chew_toy)
+          active_deps[$chew_toy]=fiz
         fi
       fi
 
@@ -424,8 +424,10 @@ function recurse_on_deps {
         if [ ! -z "$found_it" ]; then
           if add_new_dep "$found_it"; then
             # that was a new dependency, so we'll continue examining it.
-            if ! already_listed "$found_it" ${active_deps[*]}; then
-              active_deps+=($found_it)
+#            if ! already_listed "$found_it" ${active_deps[*]}; then
+            if [ -z "${active_deps[$found_it]}" ]; then
+#              active_deps+=($found_it)
+              active_deps[$found_it]=pop
             fi
           fi
         fi
@@ -435,10 +437,11 @@ function recurse_on_deps {
 
   \rm -f "$current_includes"
 
-  # keep going on the list after our modifications.
-  if [ ${#active_deps[@]} -ne 0 ]; then
-    recurse_on_deps ${active_deps[@]}
-  fi
+#  # keep going on the list after our modifications.
+#  if [ ${#active_deps[@]} -ne 0 ]; then
+#    recurse_on_deps ${active_deps[@]}
+#  fi
+
   return $RET_OKAY
 }
 
@@ -464,8 +467,7 @@ function write_new_version {
   # read in our existing file.
   while read -r orig_line; do
     # if it's the beginning of our static app section, stop reading.
-    if [ ! -z "$(echo $orig_line \
-        | sed -n -e 's/#ifdef __BUILD_STATIC_APPLICATION__/yep/p')" ]; then
+    if [[ $orig_line == *"#ifdef __BUILD_STATIC_APPLICATION__"* ]]; then
       break
     fi
     if [ -z "$orig_line" ]; then
@@ -491,7 +493,9 @@ function write_new_version {
   # iterate across all the dependencies we found.
   for line_please in "${!dependency_accumulator[@]}"; do
     # throw out any items that are in the same directory we started in.
-    if [ "$prohibited_directory" == "$(dirname $line_please)" ]; then
+    local the_dir="$(dirname $line_please)"
+    local the_base="$(basename $line_please)"
+    if [ "$prohibited_directory" == "$the_dir" ]; then
       if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
         log_it "skipping prohibited: $line_please"
       fi
@@ -499,7 +503,9 @@ function write_new_version {
     fi
 
     # strip the line down to just the filename and single directory component.
-    local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
+#    local chewed_line=$(echo $line_please | sed -e 's/.*[\\\/]\(.*\)[\\\/]\(.*\)$/\1\/\2/')
+    local chewed_line="$(echo "$(basename "$the_dir")/$the_base" )"
+#log_it chewed_line became: $chewed_line
 
     # see if this matches the header file ending; we don't want to add those to the cpp code.
     if [[ "$chewed_line" =~ ^.*\.h$ ]]; then
@@ -565,7 +571,13 @@ function find_dependencies {
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
     log_it "\n\n========\nstarting recursion on dependencies...\n========"
   fi
-  recurse_on_deps $code_file
+
+  # set up our indirectly referenced dictionary of dependencies.
+  unset global_active_dependencies
+  declare -gA global_active_dependencies
+  global_active_dependencies[$code_file]=go
+
+  recurse_on_deps global_active_dependencies
 
   # create the new version of the file.
   if [ ! -z "$DEBUG_BUILDOR_GEN_DEPS" ]; then
