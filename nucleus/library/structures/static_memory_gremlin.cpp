@@ -24,38 +24,6 @@
 using namespace application;
 using namespace basis;
 
-/* no.
-namespace application {
-
-//! the single instance of callstack_tracker.
-/ *! this is also an ultra low-level object, although it's not as far down
-as the memory checker.  it can allocate c++ objects and that kind of thing
-just fine.  the object must be stored here rather than in the static basis
-library due to issues in windows dlls.
-NOTE: this is also not thread safe; it must be initialized before any threads
-have started. * /
-
-//hmmm: why is this here?  because it needs to interact with the progwide memories?
-callstack_tracker &program_wide_stack_trace()
-{
-  static callstack_tracker *_hidden_trace = NULL_POINTER;
-  if (!_hidden_trace) {
-#ifdef ENABLE_MEMORY_HOOK
-    program_wide_memories().disable();
-      // we don't want infinite loops tracking the call stack during this
-      // object's construction.
-#endif
-    _hidden_trace = new callstack_tracker;
-#ifdef ENABLE_MEMORY_HOOK
-    program_wide_memories().enable();
-#endif
-  }
-  return *_hidden_trace;
-}
-
-} //namespace.
-*/
-
 namespace structures {
 
 //#define DEBUG_STATIC_MEMORY_GREMLIN
@@ -253,7 +221,7 @@ static_memory_gremlin &static_memory_gremlin::__hoople_globals()
 #endif
 
 #ifdef ENABLE_CALLSTACK_TRACKING
-    application::program_wide_stack_trace().full_trace_size();
+    application::thread_wide_stack_trace().full_trace_size();
       // invoke now to get callback tracking instantiated.
 #endif
 

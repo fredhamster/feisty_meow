@@ -1,6 +1,4 @@
 
-
-
 /*****************************************************************************\
 *                                                                             *
 *  Name   : memory_checker                                                    *
@@ -100,7 +98,7 @@ public:
     }
     _line = line;
 #ifdef ENABLE_CALLSTACK_TRACKING
-    _stack = program_wide_stack_trace().full_trace();
+    _stack = thread_wide_stack_trace().full_trace();
 ///printf("stack here:\n%s", _stack);
 #endif
   }

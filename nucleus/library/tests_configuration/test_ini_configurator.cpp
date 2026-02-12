@@ -54,7 +54,7 @@ typedef double_plus frunkle;
 const char *INI_SECTION = "t_ini_configurator";
 
 //hmmm: ugly old main() without using the hoople machinery.  ack.
-astring static_class_name() { return "test_ini_configurator"; }
+#define static_class_name() "test_ini_configurator"
 
 #define MACRO_AS_STRING(s) #s
 

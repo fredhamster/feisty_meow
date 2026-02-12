@@ -27,19 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 
-//using namespace application;
 using namespace basis;
-//using namespace configuration;
-//using namespace mathematics;
-//using namespace filesystem;
-//using namespace loggers;
-//using namespace structures;
-//using namespace textual;
-//using namespace timely;
-//using namespace unit_test;
-
-////#undef new
-//is this right way to clean that out..?
 
 namespace application {
 
@@ -68,7 +56,7 @@ basis::mutex &callstack_tracker::__callstack_tracker_synchronizer()
   as the memory checker.  it can allocate c++ objects and that kind of thing
   just fine.
 */
-callstack_tracker &program_wide_stack_trace()
+callstack_tracker &thread_wide_stack_trace()
 {
   auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
 
@@ -114,15 +102,12 @@ callstack_tracker::callstack_tracker()
   _highest(0),
   _unusable(false)
 {
-//printf("callstack ctor\n");
 }
 
 callstack_tracker::~callstack_tracker()
 {
-//printf("!!!!!!!!!!!!!!!!!!   callstack dtor in\n");
   _unusable = true;
   WHACK(_bt);
-//printf("!!!!!!!!!!!!!!!!!!   callstack dtor out\n");
 }
 
 bool callstack_tracker::push_frame(const char *class_name, const char *func,
@@ -289,7 +274,7 @@ frame_tracking_instance::frame_tracking_instance(const char *class_name,
 {
   if (_frame_involved) {
 //printf("frametrackinst ctor in class=%s func=%s\n", class_name, func);
-    program_wide_stack_trace().push_frame(class_name, func, file, line);
+    thread_wide_stack_trace().push_frame(class_name, func, file, line);
 //printf("frametrackinst ctor out\n");
   }
 }
@@ -310,7 +295,7 @@ void frame_tracking_instance::clean()
 {
   if (_frame_involved) {
 //printf("frametrackinst clean\n");
-    program_wide_stack_trace().pop_frame();
+    thread_wide_stack_trace().pop_frame();
   }
   _frame_involved = false;
   free(_class); _class = NULL_POINTER;
@@ -343,7 +328,7 @@ void frame_tracking_instance::assign(const char *class_name, const char *func,
 void update_current_stack_frame_line_number(int line)
 {
 //printf("frametrackinst updatelinenum in\n");
-  program_wide_stack_trace().update_line(line);
+  thread_wide_stack_trace().update_line(line);
 //printf("frametrackinst updatelinenum out\n");
 }
 
