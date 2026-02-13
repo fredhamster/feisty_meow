@@ -153,8 +153,8 @@ analyze_hierarchy_and_report $CLOUD_BASE/machinarium "cybernetic organisms"
 # unsorted files haven't been categorized yet.
 analyze_hierarchy_and_report $CLOUD_BASE/disordered "disordered and maybe deranged files"
 
-# bluesky is our brainstorming and wunderthinking area for new things.
-analyze_hierarchy_and_report $CLOUD_BASE/blue_sky "blue sky is the limit ideas"
+# green_sky is our brainstorming and wunderthinking area for new things.
+analyze_hierarchy_and_report $CLOUD_BASE/green_sky "sky is the limit ideas"
 
 ####
 
