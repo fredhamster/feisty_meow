@@ -202,15 +202,15 @@ PAX=(noop)
 PHASE_MESSAGE="installing crucial OS packages"
 
 if [ "$opsystem_here" == "debianesque" ]; then
-  PAX=(apt-file bind9-dnsutils git gitk gparted kgpg mariadb-client net-tools openssh-server )
+  PAX=(apt-file bind9-dnsutils fdisk git gitk gparted kgpg mariadb-client net-tools openssh-server )
 elif [ "$opsystem_here" == "redhatty" ]; then
-  PAX=(bind9-dnsutils git gitk gparted kgpg mariadb-client net-tools openssh-server )
+  PAX=(bind9-dnsutils fdisk git gitk gparted kgpg mariadb-client net-tools openssh-server )
 #untested: bind9-dnsutils mariadb-client kgpg net-tools 
 elif [ "$opsystem_here" == "macos" ]; then
-  PAX=(bind9-dnsutils git gitk kgpg mariadb-client net-tools openssh-server )
+  PAX=(bind9-dnsutils fdisk git gitk kgpg mariadb-client net-tools openssh-server )
 #untested: bind9-dnsutils mariadb-client kgpg net-tools 
 elif [ "$opsystem_here" == "windoze" ]; then
-  PAX=(apt-file bind9-dnsutils git gitk gparted kgpg mariadb-client net-tools openssh-server )
+  PAX=(apt-file bind9-dnsutils fdisk git gitk gparted kgpg mariadb-client net-tools openssh-server )
 #untested: apt-file bind9-dnsutils mariadb-client kgpg net-tools 
 fi
 
