@@ -19,12 +19,17 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
     export WEBBED_SITES=/var/www
   fi
 
-#hmmm: ebooks is not useful any more...
   # add a bunch of personal folders to the list for checkin & checkout.
-  REPOSITORY_LIST=" $CLOUD_BASE \
-    $FEISTY_MEOW_PERSONAL_HOME/ebooks \
-    $FEISTY_MEOW_PERSONAL_HOME/web \
-    ${REPOSITORY_LIST} "
+  fred_addins=" $CLOUD_BASE \
+    $FEISTY_MEOW_PERSONAL_HOME/web"
+  REPOSITORY_LIST_TO_PULL=" $fred_addins \
+    ${REPOSITORY_LIST_TO_PULL} "
+  # for fred, we add in a commit of feisty_meow code.  this is not something
+  # everyone can do, thus not everyone should use fred's config.
+  REPOSITORY_LIST_TO_COMMIT=" $fred_addins \
+    ${FEISTY_MEOW_APEX} \
+    ${REPOSITORY_LIST_TO_COMMIT} "
+  unset fred_addins
 
   # adds our locally relevant archive folders into the list to be synched.
   MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus $HOME/brobdingnag"

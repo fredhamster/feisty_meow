@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# puffer: "puffs out" all of the folders present in the REPOSITORY_LIST
+# puffer: "puffs out" all of the folders listed in the REPOSITORY_LIST_TO_PULL
 # variable, which causes the repo to be merged with its remote versions.
-# this enables a clean check-in; after puffer runs, there will be no secret
+# this enables a clean check-in; after puffer runs; there will be no secret
 # upstream changes that could mess up the git push (svn and cvs are not
 # supported in this script, since they branch differently than git).
 
@@ -18,10 +18,11 @@ save_terminal_title
 
 echo "puffing out repositories at: $(date)"
 
-FULL_LIST=" $(dirname $FEISTY_MEOW_APEX) $HOME "
-if [ "$OS" == "Windows_NT" ]; then
-  FULL_LIST+=" c:/ d:/ e:/ "
-fi
+#wrong: FULL_LIST=" $(dirname $FEISTY_MEOW_APEX) $HOME "
+FULL_LIST="${REPOSITORY_LIST_TO_PULL}"
+#no, and yuck: if [ "$OS" == "Windows_NT" ]; then
+#  FULL_LIST+=" c:/ d:/ e:/ "
+#fi
 
 puff_out_list $FULL_LIST
 exit_on_error "puffing out list: $FULL_LIST"
