@@ -15,9 +15,12 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   # logged historical file where we append our latest report.
   define_yeti_variable FRED_HAMSTER_OVERLOAD_REPORT_FILE="$CLOUD_BASE/stats/overload_history.txt"
 
+  # The gruntose web site and others are expected to reside below, if any sites exist at all.
+  define_yeti_variable WEBBED_SITES="$FEISTY_MEOW_PERSONAL_HOME/web"
+
   # add a bunch of personal folders to the list for checkin & checkout.
-  fred_addins=" $CLOUD_BASE \
-    $FEISTY_MEOW_PERSONAL_HOME/web"
+  fred_addins="$CLOUD_BASE \
+    $WEBBED_SITES "
   REPOSITORY_LIST_TO_PULL+="$fred_addins "
   # for fred, we add in a commit of feisty_meow code.  this is not something
   # everyone can do, thus not everyone should use fred's config.
