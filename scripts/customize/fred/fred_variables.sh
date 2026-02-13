@@ -4,6 +4,8 @@
 if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   # if we don't see the customizations variable defined, this probably hasn't run yet.
 
+  ##############
+
   # stuff our special bins in front of the other bin paths.
   export PATH=/usr/local/fred/bin:$PATH
 
@@ -13,22 +15,17 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   # logged historical file where we append our latest report.
   define_yeti_variable FRED_HAMSTER_OVERLOAD_REPORT_FILE="$CLOUD_BASE/stats/overload_history.txt"
 
-  # The gruntose web site is expected to reside below, if it exists at all.
-  export WEBBED_SITES=$HOME/web
-  if [ "$(hostname)" = "hamstertronic" ]; then
-    export WEBBED_SITES=/var/www
-  fi
+  # The gruntose web site and others are expected to reside below, if any sites exist at all.
+  define_yeti_variable WEBBED_SITES="$FEISTY_MEOW_PERSONAL_HOME/web"
 
   # add a bunch of personal folders to the list for checkin & checkout.
-  fred_addins=" $CLOUD_BASE \
-    $FEISTY_MEOW_PERSONAL_HOME/web"
-  REPOSITORY_LIST_TO_PULL=" $fred_addins \
-    ${REPOSITORY_LIST_TO_PULL} "
+  fred_addins="$CLOUD_BASE \
+    $WEBBED_SITES "
+  REPOSITORY_LIST_TO_PULL+="$fred_addins "
   # for fred, we add in a commit of feisty_meow code.  this is not something
   # everyone can do, thus not everyone should use fred's config.
-  REPOSITORY_LIST_TO_COMMIT=" $fred_addins \
-    ${FEISTY_MEOW_APEX} \
-    ${REPOSITORY_LIST_TO_COMMIT} "
+  REPOSITORY_LIST_TO_COMMIT+="$fred_addins \
+    ${FEISTY_MEOW_APEX} "
   unset fred_addins
 
   # adds our locally relevant archive folders into the list to be synched.
