@@ -234,8 +234,9 @@ function checkin_list()
   local list="$(uniquify $*)"
 
   # turn repo list back into an array.
-  repolist_combined="$(uniquify ${REPOSITORY_LIST_TO_COMMIT[*]} ${REPOSITORY_LIST_TO_PULL[*]})"
-  eval "repository_list=( $repolist_combined )"
+#no, wtf???  repolist_combined="$(uniquify ${REPOSITORY_LIST_TO_COMMIT[*]} ${REPOSITORY_LIST_TO_PULL[*]})"
+#  eval "repository_list=( $repolist_combined )"
+  eval "repository_list=( ${REPOSITORY_LIST_TO_COMMIT[*]} )"
 
   local outer inner
 
