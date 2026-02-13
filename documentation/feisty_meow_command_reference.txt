@@ -99,7 +99,7 @@ then operates on those names.
   changes that could cause problems later.
 
 ========
-the next suite of commands uses the REPOSITORY_LIST* environment variables
+the next suite of commands uses the REPOSITORY_LIST_* environment variables
 as the set of revision-controlled folders to operate on:
 
   REPOSITORY_LIST_TO_PULL => the set of version-controlled folders that the user
@@ -115,14 +115,16 @@ apex) to the pull list to ensure that updates are received when available.
 ========
 
   getem:
-  update all repositories in the REPOSITORY_LIST from their upstream remote
-  counterparts.  fast.
+  update all repositories in the REPOSITORY_LIST_TO_PULL variable from their
+  upstream remote counterparts.  fast.
 
   puffer:
-  puffs out the REPOSITORY_LIST items to merge upstream changes.
+  puffs out the REPOSITORY_LIST_TO_PULL items to merge upstream changes.
 
   checkin:
-  checks in all changes in the REPOSITORY_LIST to their remote repositories.
+  first updates all of the items in the REPOSITORY_LIST_TO_PULL list (similar
+  to puffer), but then checks in all changes in the REPOSITORY_LIST_TO_COMMIT
+  to their remote repositories.
 
 ========
 some assorted other revision control commands:

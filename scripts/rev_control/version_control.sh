@@ -234,7 +234,8 @@ function checkin_list()
   local list="$(uniquify $*)"
 
   # turn repo list back into an array.
-  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+  repolist_combined="$(uniquify ${REPOSITORY_LIST_TO_COMMIT[*]} ${REPOSITORY_LIST_TO_PULL[*]})"
+  eval "repository_list=( $repolist_combined )"
 
   local outer inner
 
@@ -490,7 +491,7 @@ function checkout_list()
   local list="$(uniquify $*)"
 
   # turn repo list back into an array.
-  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+  eval "repository_list=( ${REPOSITORY_LIST_TO_PULL[*]} )"
 
   local outer inner
 
@@ -514,7 +515,7 @@ function checkout_list()
 }
 
 # does a careful update on all the folders in the specified list;
-# it looks in the REPOSITORY_LIST for those names and updates them.
+# it looks in the REPOSITORY_LIST_TO_PULL for those names and updates them.
 # this is just like checkout_list, but it's for the puffing up action
 # we need to do on git.
 function puff_out_list()
@@ -523,7 +524,7 @@ function puff_out_list()
   local list="$(uniquify $*)"
 
   # turn repo list back into an array.
-  eval "repository_list=( ${REPOSITORY_LIST[*]} )"
+  eval "repository_list=( ${REPOSITORY_LIST_TO_PULL[*]} )"
 
   local outer inner
 

@@ -260,14 +260,18 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   # the base checkout list is just to update feisty_meow.  additional folder
   # names can be added in your customized scripts.  the space at the end of
   # this variable is important and allows users to extend the list like:
-  #    define_yeti_variable REPOSITORY_DIR+="muppets configs"
+  #    REPOSITORY_DIR+="muppets configs "
   # see the customize/fred folder for a live example.
-  define_yeti_variable REPOSITORY_LIST="$FEISTY_MEOW_APEX "
+  define_yeti_variable REPOSITORY_LIST_TO_PULL="$FEISTY_MEOW_APEX "
+  define_yeti_variable REPOSITORY_LIST_TO_COMMIT=""
 
   # add in any active projects to the repository list.
-#hmmm: resolve if still using this folder.
+#hmmm: resolve if still using this 'active' folder.
   if [ -d "$FEISTY_MEOW_PERSONAL_HOME/active" ]; then
-    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_PERSONAL_HOME/active" -maxdepth 1 -mindepth 1 -type d) "
+    active_addin+="$(find "$FEISTY_MEOW_PERSONAL_HOME/active" -maxdepth 1 -mindepth 1 -type d) "
+    REPOSITORY_LIST_TO_PULL+="$active_addin "
+    REPOSITORY_LIST_TO_COMMIT+="$active_addin "
+    unset active_addin
   fi
 
   # add in any folders that are under the feisty meow applications folder.
@@ -283,11 +287,11 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
   if [ -d "$FEISTY_MEOW_REPOS_SCAN" ]; then
 #hmmm: handle the repos as if they are multi value!!!
     # general search for normal project folders in source.
-    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
-    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST_TO_PULL+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".git" -type d -exec dirname {} ';') "
+    REPOSITORY_LIST_TO_PULL+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname ".svn" -type d -exec dirname {} ';') "
 
     # special search for site avenger directories; they have avenger5 as second level.
-    REPOSITORY_LIST+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
+    REPOSITORY_LIST_TO_PULL+="$(find "$FEISTY_MEOW_REPOS_SCAN" -maxdepth 2 -mindepth 2 -iname "avenger5" -type d) "
   fi
   
   # the archive list is a set of directories that are major repositories of
