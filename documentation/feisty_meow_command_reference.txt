@@ -99,10 +99,19 @@ then operates on those names.
   changes that could cause problems later.
 
 ========
-the next suite of commands uses the REPOSITORY_LIST environment variable as
-the set of revision controlled folders to operate on.  the feisty meow scripts
-automatically add the feisty meow top-level (the apex) to this list to ensure
-that updates are received when available.
+the next suite of commands uses the REPOSITORY_LIST* environment variables
+as the set of revision-controlled folders to operate on:
+
+  REPOSITORY_LIST_TO_PULL => the set of version-controlled folders that the user
+  wants updated when checkouts occur (e.g. the "getem" and "puffer" functions,
+  or the first phase of the "checkin" function).
+
+  REPOSITORY_LIST_TO_COMMIT => the set of version-controlled folders that the
+  user wants to be checked in when commits occur (e.g. the second phase of
+  the "checkin" function).
+
+the feisty meow scripts automatically add the feisty meow top-level (the
+apex) to the pull list to ensure that updates are received when available.
 ========
 
   getem:
