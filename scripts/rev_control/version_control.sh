@@ -551,6 +551,8 @@ function puff_out_list()
 # that are located under the directory passed as the first parameter.
 # if this does not result in any directories being found, then a recursive
 # upwards search is done for git repos, which wants the .git directory.
+# note that this will skip links, unless the directory passed is itself a
+# link; it will be entered, but links underneath it will be ignored.
 function generate_rev_ctrl_filelist()
 {
   local dir="$1"; shift
@@ -559,14 +561,19 @@ function generate_rev_ctrl_filelist()
   local tempfile=$(mktemp /tmp/zz_checkins.XXXXXX)
   echo -n >$tempfile
   local additional_filter
-  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+  # we will still enter into dirhere if it's a link, but we will not follow into sub-links.
+  find $dirhere/. -maxdepth $MAX_DEPTH -type d -iname ".svn" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+#-follow 
 
 #hmmm: how to get the report of things ABOVE here, which we need.
 #  can we do an exec using the seek writable?
 
-  find $dirhere -follow -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+  # we will still enter into dirhere if it's a link, but we will not follow into sub-links.
+  find $dirhere/. -maxdepth $MAX_DEPTH -type d -iname ".git" -exec echo {}/.. ';' >>$tempfile 2>/dev/null
+#-follow 
 
   # CVS is not well behaved like git and (now) svn, and we seldom use it anymore.
+
   popd &>/dev/null
 
   # see if they've warned us not to try checking in within vendor hierarchies.
