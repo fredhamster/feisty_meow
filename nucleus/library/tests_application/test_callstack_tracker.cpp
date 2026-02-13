@@ -118,7 +118,9 @@ int test_callstack_tracker::run_filestack_middling()
 int test_callstack_tracker::run_filestack_complex()
 {
   FUNCDEF("run_filestack_complex")
-  int factotum = recursive_factorial(37);
+  int fact_sought = 12;
+  int factotum = recursive_factorial(12);
+  LOG(a_sprintf("factorial of %d was computed as %d", fact_sought, factotum));
   if (factotum < 0) {
     // uh-oh, there was an actual failure of some sort.
     return 1;

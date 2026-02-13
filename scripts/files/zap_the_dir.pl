@@ -40,7 +40,7 @@ sub remove_whackables {
     if (! &important_filename($fname)) {
       # it's a junk file; whack it.
       $fname = $from_dir . '/' . $fname;
-#print "whacking: $fname.\n";
+print "whacking unimportant: $fname.\n";
       unlink $fname;
       if (-f "$fname") {
         print "cleaning file: $fname\n";

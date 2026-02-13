@@ -30,7 +30,7 @@ class callstack_tracker;
 
 //////////////
 
-callstack_tracker &program_wide_stack_trace();
+callstack_tracker &thread_wide_stack_trace();
   //!< a global object that can be used to track the runtime callstack.
 
 //hmmm: maybe borked on basis of the conflict between a global stack tracker and the fact that each thread has its own callstack!  argh!
@@ -111,8 +111,8 @@ private:
   from the embedding function.
 */
 #define GET_AND_TEST_STACK_TRACE(header, failure_return) { \
-  int trace_size = program_wide_stack_trace().full_trace_size(); \
-  char *stack_trace = program_wide_stack_trace().full_trace(); \
+  int trace_size = thread_wide_stack_trace().full_trace_size(); \
+  char *stack_trace = thread_wide_stack_trace().full_trace(); \
   ASSERT_TRUE(trace_size >= strlen(stack_trace) + 1, "insufficient estimated stack trace size"); \
   if (trace_size < strlen(stack_trace) + 1) { \
     /* error condition here; we are supposed to get the actual size we would need to allocate! */ \

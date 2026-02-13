@@ -4,6 +4,19 @@
 # in such a way that the file count can be very high without blowing its
 # mind, and without any extra headers in the report.
 
+####
+#
+# useful vim patterns for processing the output of the checker report:
+#
+# cleaning cdrom path entries:
+#    :1,$s/.media.fred.CDROM\///
+#
+# cleaning bluray path entries:
+#     :1,$s/.z.archons.bluray_[0-9][0-9]*_arch[^\/]*\///
+#
+####
+
+
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
 dirname="$1"; shift
