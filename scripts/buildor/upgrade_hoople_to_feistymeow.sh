@@ -95,7 +95,7 @@ standards and usages."
     | sed -e 's/opsystem.application_base/application\/base_application/g' \
     | sed -e 's/opsystem.command_line/application\/command_line/g' \
     | sed -e 's/opsystem.directory/filesystem\/directory/g' \
-    | sed -e 's/opsystem.rendezvous/application\/rendezvous/g' \
+    | sed -e 's/opsystem.rendezvous/processes\/rendezvous/g' \
     | sed -e 's/opsystem.singleton_application/application\/singleton_application/g' \
     | sed -e 's/opsystem.timer_driver/timely\/timer_driver/g' \
     | sed -e 's/opsystem.ini_config/configuration\/ini_configurator/g' \
@@ -160,6 +160,8 @@ standards and usages."
     | sed -e 's/^#include <opsystem\/event_extensions.h> *$/#include <application\/event_extensions.h>/g' \
     | sed -e 's/log_base::NO_ENDING/parser_bits::NO_ENDING/g' \
     | sed -e 's/log_base::CRLF_AT_END/parser_bits::CRLF_AT_END/g' \
+    | sed -e 's/^#include <mechanisms\/throughput_counter.h> *$/#include <sockets\/throughput_counter.h>/g' \
+    | sed -e 's/^#include <application\/rendezvous.h> *$/#include <processes\/rendezvous.h>/g' \
     | sed -e 's/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/[\/]*/\/\/\/\/\/\/\/\/\/\/\/\/\/\//g' \
     >"$tempfile"
   
