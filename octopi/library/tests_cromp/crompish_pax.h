@@ -19,8 +19,8 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/chaos.h>
-#include <basis/string_array.h>
+#include <mathematics/chaos.h>
+#include <structures/string_array.h>
 #include <cromp/cromp_transaction.h>
 #include <geometric/screen_rectangle.h>
 #include <octopus/infoton.h>
@@ -40,7 +40,7 @@ public:
   { reset(data_segment_size, boundaries, color); }
 
   const string_array &bubble_classing() {
-    static istring bubbs[2] = { "bubble", "rubble" };
+    static astring bubbs[2] = { "bubble", "rubble" };
     static string_array barray(2, bubbs);
     return barray;
   }
@@ -61,9 +61,9 @@ public:
   int non_data_overhead() const { return packed_size() - _data.length(); }
 
   virtual void pack(byte_array &packed_form) const {
-    basis::attach(packed_form, _color);
+    structures::attach(packed_form, _color);
     _bounds.pack(packed_form);
-    basis::attach(packed_form, _data);
+    structures::attach(packed_form, _data);
   }
 
   int packed_size() const {
@@ -73,9 +73,9 @@ public:
   }
 
   virtual bool unpack(byte_array &packed_form) {
-    if (!basis::detach(packed_form, _color)) return false;
+    if (!structures::detach(packed_form, _color)) return false;
     if (!_bounds.unpack(packed_form)) return false;
-    if (!basis::detach(packed_form, _data)) return false;
+    if (!structures::detach(packed_form, _data)) return false;
     return true;
   }
 
@@ -85,7 +85,7 @@ private:
   byte_array _data;
 };
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 class bubbles_tentacle : public tentacle_helper<bubble>
 {
