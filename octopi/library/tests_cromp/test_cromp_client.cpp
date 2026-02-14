@@ -56,7 +56,10 @@ using namespace timely;
 using namespace unit_test;
 
 #undef LOG
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+#undef BASE_LOG
+#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+
 
 #define DEBUG_TESTER
   // uncomment for noisier version.
@@ -122,9 +125,6 @@ const int PENDING_REQUESTS_FORCED = MAXIMUM_PENDING_REQUESTS;
 
 const int CHANCE_OF_RECONSTRUCT = 14;
   // how frequently a bus reconstruction occurs, in 1000.
-
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
-#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), s)
 
 class cromp_client_tester : virtual public unit_base, virtual public application_shell
 {
@@ -241,7 +241,8 @@ private:
 //////////////
 
 cromp_client_tester::cromp_client_tester()
-: application_shell("cromp_client_tester"),
+: application_shell(),
+//"cromp_client_tester"),
   _uplink(NULL_POINTER),
   _lock(new mutex),
   _threads_active(0),
@@ -409,7 +410,7 @@ int cromp_client_tester::print_instructions()
 {
   astring name = filename(application::_global_argv[0]).basename().raw();
   log(a_sprintf("%s usage:", name.s()));
-  log("");
+  log(astring(""));
   log(a_sprintf("\
 This program connects to a cromp test server and exchanges packets to test\n\
 the performance of the cromp protocol.  All command line flags are optional\n\
@@ -557,7 +558,7 @@ void cromp_client_tester::bite_server(structures::set<octopus_request_id> &ids,
       }
       case cromp_client::TOO_FULL: {
 //treating as failure right now.
-BASE_LOG("got too full outcome!");
+LOG("got too full outcome!");
         sends--;
         overall_sent -= curr_sending;
         continue;
@@ -565,7 +566,7 @@ BASE_LOG("got too full outcome!");
       }
       case cromp_client::TIMED_OUT: {
 //treating as failure right now.
-BASE_LOG("got timed out outcome!");
+LOG("got timed out outcome!");
         sends--;
         overall_sent -= curr_sending;
         continue;
@@ -598,10 +599,10 @@ BASE_LOG("got timed out outcome!");
     }
 
     if (! (sends % _checkpoint_count)) {
-      BASE_LOG(a_sprintf("%x send #%d", originator, sends));
+      LOG(a_sprintf("%x send #%d", originator, sends));
     }
   }
-  BASE_LOG(a_sprintf("%x final send #%d", originator, _send_count));
+  LOG(a_sprintf("%x final send #%d", originator, _send_count));
 
 ///  LOG(timestamp(true, true) + " done.");
 ///  LOG(a_sprintf("sent %d items.", _send_count));

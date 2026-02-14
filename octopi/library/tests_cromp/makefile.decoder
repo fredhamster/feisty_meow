@@ -6,12 +6,8 @@ PROJECT = decoder_ring
 TYPE = application
 TARGETS = cromp_decoder.exe
 LOCAL_LIBS_USED = basis 
-#ifeq "$(COMPILER)" "VISUAL_CPP"
-#  SOURCE += cromp_decoder_version.rc
-#endif
-#USE_SSL = t
-#VCPP_USE_SOCK = t
-#RUN_TARGETS = $(ACTUAL_TARGETS)
+USE_SSL = t
+RUN_TARGETS = $(ACTUAL_TARGETS)
 
 include cpp/rules.def
 
