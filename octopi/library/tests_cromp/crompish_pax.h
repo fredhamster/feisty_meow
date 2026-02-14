@@ -39,7 +39,7 @@ public:
   : infoton(bubble_classing()), _data()
   { reset(data_segment_size, boundaries, color); }
 
-  const structures::string_array &bubble_classing() {
+  const structures::string_array &bubble_classing() const {
     static basis::astring bubbs[2] = { "bubble", "rubble" };
     static structures::string_array barray(2, bubbs);
     return barray;
@@ -61,8 +61,9 @@ public:
   int non_data_overhead() const { return packed_size() - _data.length(); }
 
   virtual void text_form(basis::base_string &to_show) const {
+    const structures::string_array bubs = bubble_classing();
     to_show.assign(basis::a_sprintf("classing=%s, seg size=%d, color=%d, bounds=%s", 
-        bubble_classing().text_form().s(), _data.length(), _bounds.text_form().s(), _color));
+        bubs.text_form().s(), _data.length(), _bounds.text_form().s(), _color));
   }
 
   virtual void pack(basis::byte_array &packed_form) const {
