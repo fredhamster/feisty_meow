@@ -17,7 +17,9 @@
 #include <mathematics/chaos.h>
 #include <basis/astring.h>
 
-#include <structures/set.h>
+#include <application/application_shell.h>
+#include <application/command_line.h>
+#include <application/hoople_main.h>
 #include <cromp/cromp_client.h>
 #include <processes/ethread.h>
 #include <processes/thread_cabinet.h>
@@ -25,16 +27,32 @@
 #include <octopus/entity_data_bin.h>
 #include <octopus/entity_defs.h>
 #include <octopus/infoton.h>
-#include <application/application_shell.h>
-#include <application/command_line.h>
 #include <loggers/console_logger.h>
 #include <loggers/file_logger.h>
+#include <loggers/program_wide_logger.h>
 #include <filesystem/filename.h>
 #include <processes/rendezvous.h>
-#include <structures/static_memory_gremlin.h>
 #include <sockets/internet_address.h>
+#include <structures/static_memory_gremlin.h>
+#include <structures/set.h>
+#include <unit_test/unit_base.h>
 
 #include <stdlib.h>
+
+using namespace application;
+using namespace basis;
+using namespace configuration;
+using namespace cromp;
+//using namespace mathematics;
+using namespace filesystem;
+using namespace loggers;
+using namespace octopi;
+using namespace processes;
+using namespace sockets;
+using namespace structures;
+using namespace textual;
+using namespace timely;
+using namespace unit_test;
 
 #undef LOG
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
@@ -107,7 +125,7 @@ const int CHANCE_OF_RECONSTRUCT = 14;
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 #define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), s)
 
-class cromp_client_tester : public application_shell
+class cromp_client_tester : virtual public unit_base, virtual public application_shell
 {
 public:
   cromp_client_tester();
