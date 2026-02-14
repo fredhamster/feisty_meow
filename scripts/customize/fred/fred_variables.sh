@@ -18,15 +18,12 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
   # The gruntose web site and others are expected to reside below, if any sites exist at all.
   define_yeti_variable WEBBED_SITES="$FEISTY_MEOW_PERSONAL_HOME/web"
 
-  # add a bunch of personal folders to the list for checkin & checkout.
-  fred_addins="$CLOUD_BASE \
-    $WEBBED_SITES "
-  REPOSITORY_LIST_TO_PULL+="$fred_addins "
+  # add a bunch of personal folders to the list for checkin.
   # for fred, we add in a commit of feisty_meow code.  this is not something
   # everyone can do, thus not everyone should use fred's config.
-  REPOSITORY_LIST_TO_COMMIT+="$fred_addins \
+  REPOSITORY_LIST_TO_COMMIT+="$CLOUD_BASE \
+    $WEBBED_SITES \
     ${FEISTY_MEOW_APEX} "
-  unset fred_addins
 
   # adds our locally relevant archive folders into the list to be synched.
   MAJOR_ARCHIVE_SOURCES+="/z/archons /z/basement /z/imaginations /z/musix /z/toaster /z/walrus $HOME/brobdingnag"

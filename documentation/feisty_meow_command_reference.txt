@@ -112,6 +112,9 @@ as the set of revision-controlled folders to operate on:
 
 the feisty meow scripts automatically add the feisty meow top-level (the
 apex) to the pull list to ensure that updates are received when available.
+(this may not be the right decision for when feisty meow is installed
+system-wide, but the scripts will not attempt to check out the code if the
+.git folder is not writable.)
 ========
 
   getem:
@@ -124,7 +127,8 @@ apex) to the pull list to ensure that updates are received when available.
   checkin:
   first updates all of the items in the REPOSITORY_LIST_TO_PULL list (similar
   to puffer), but then checks in all changes in the REPOSITORY_LIST_TO_COMMIT
-  to their remote repositories.
+  to their remote repositories.  note that items on the commit list will be
+  puffed out first to receive updates before they are checked in.
 
 ========
 some assorted other revision control commands:

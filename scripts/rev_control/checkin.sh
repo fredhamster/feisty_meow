@@ -13,10 +13,6 @@ save_terminal_title
 echo "committing repositories at: $(date)"
 
 FULL_LIST_OUT="${REPOSITORY_LIST_TO_PULL}"
-#still wrong: FULL_LIST_OUT=" $(dirname $FEISTY_MEOW_APEX) $HOME "
-#ack: if [ "$OS" == "Windows_NT" ]; then
-#  FULL_LIST+=" c:/ d:/ e:/ "
-#fi
 puff_out_list $FULL_LIST_OUT
 exit_on_error "revision control puffing-out of list: $FULL_LIST_OUT"
 
