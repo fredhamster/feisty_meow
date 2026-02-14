@@ -35,8 +35,7 @@ fi
 ##############
 
 export TMPO_CHK=$TMP/zz_chk.log
-
-rm -f "$TMPO_CHK"
+\rm -f "$TMPO_CHK"
 exit_on_error "removing file: $TMPO_CHK"
 
 echo "getting repositories at: $(date)"
