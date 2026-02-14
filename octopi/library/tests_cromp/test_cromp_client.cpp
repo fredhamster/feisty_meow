@@ -17,24 +17,43 @@
 #include <mathematics/chaos.h>
 #include <basis/astring.h>
 
-#include <structures/set.h>
+#include <application/application_shell.h>
+#include <application/command_line.h>
+#include <application/hoople_main.h>
 #include <cromp/cromp_client.h>
-#include <processes/ethread.h>
-#include <processes/thread_cabinet.h>
-#include <sockets/throughput_counter.h>
+#include <filesystem/filename.h>
+#include <loggers/console_logger.h>
+#include <loggers/file_logger.h>
+#include <loggers/program_wide_logger.h>
 #include <octopus/entity_data_bin.h>
 #include <octopus/entity_defs.h>
 #include <octopus/infoton.h>
-#include <application/application_shell.h>
-#include <application/command_line.h>
-#include <loggers/console_logger.h>
-#include <loggers/file_logger.h>
-#include <filesystem/filename.h>
+#include <processes/ethread.h>
+#include <processes/thread_cabinet.h>
 #include <processes/rendezvous.h>
-#include <structures/static_memory_gremlin.h>
 #include <sockets/internet_address.h>
+#include <sockets/throughput_counter.h>
+#include <structures/static_memory_gremlin.h>
+#include <structures/set.h>
+#include <timely/time_control.h>
+#include <unit_test/unit_base.h>
 
 #include <stdlib.h>
+
+using namespace application;
+using namespace basis;
+using namespace configuration;
+using namespace cromp;
+using namespace mathematics;
+using namespace filesystem;
+using namespace loggers;
+using namespace octopi;
+using namespace processes;
+using namespace sockets;
+using namespace structures;
+using namespace textual;
+using namespace timely;
+using namespace unit_test;
 
 #undef LOG
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
@@ -107,7 +126,7 @@ const int CHANCE_OF_RECONSTRUCT = 14;
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 #define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), s)
 
-class cromp_client_tester : public application_shell
+class cromp_client_tester : virtual public unit_base, virtual public application_shell
 {
 public:
   cromp_client_tester();
@@ -223,7 +242,7 @@ private:
 
 cromp_client_tester::cromp_client_tester()
 : application_shell("cromp_client_tester"),
-  _uplink(NIL),
+  _uplink(NULL_POINTER),
   _lock(new mutex),
   _threads_active(0),
   _finished_loops(0.0),
@@ -421,7 +440,7 @@ void cromp_client_tester::look_for_receipts(int count,
     structures::set<octopus_request_id> &delinquents, bool wait)
 {
   FUNCDEF("look_for_receipts");
-  infoton *received = NIL;
+  infoton *received = NULL_POINTER;
   while (count--) {
     if (!ids.length()) break;  // nothing to check on.
     octopus_request_id the_id = ids[0];
@@ -465,7 +484,7 @@ LOG(a_sprintf("added %s to delinquents.", the_id.text_form().s()));
 
 if (!received) {
 deadly_error(class_name(), func,
-"received packet was NIL even though outcome was OKAY!");
+"received packet was NULL_POINTER even though outcome was OKAY!");
 }
 
     // check that the right type is coming back to us.
@@ -597,7 +616,7 @@ void cromp_client_tester::grab_items()
   FUNCDEF("grab_items");
   octopus_request_id id(_uplink->entity(), -12);
     // look for an id we don't expect to have any thing waiting for.
-  infoton *found = NIL;
+  infoton *found = NULL_POINTER;
   outcome ret = _uplink->retrieve_and_restore(found, id, 0);
   WHACK(found);
 }
@@ -723,7 +742,7 @@ int cromp_client_tester::execute()
   // create the extra grabber threads.
   for (int i = 0; i < _grabber_count; i++) {
     grabby_thread *to_add = new grabby_thread(*this);
-    cab.add_thread(to_add, false, NIL);
+    cab.add_thread(to_add, false, NULL_POINTER);
   }
 
   LOG(a_sprintf("adding %d transmitter threads to test.", _thread_count));
@@ -731,12 +750,12 @@ int cromp_client_tester::execute()
   // create the specified number of threads.
   for (int j = 0; j < _thread_count; j++) {
     bitey_thread *to_add = new bitey_thread(*this);
-    cab.add_thread(to_add, false, NIL);
+    cab.add_thread(to_add, false, NULL_POINTER);
   }
 
 //LOG("starting all threads...");
   time_stamp start;
-  cab.start_all(NIL);
+  cab.start_all(NULL_POINTER);
 //LOG("done starting threads...");
 
   time_control::sleep_ms(400);  // wait until a few get cranked up.
