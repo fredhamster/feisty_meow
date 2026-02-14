@@ -35,18 +35,13 @@ fi
 ##############
 
 export TMPO_CHK=$TMP/zz_chk.log
-
-rm -f "$TMPO_CHK"
+\rm -f "$TMPO_CHK"
 exit_on_error "removing file: $TMPO_CHK"
 
 echo "getting repositories at: $(date)"
 
 # perform the checkouts as appropriate per OS.
-#wrong: FULL_LIST="$(dirname $FEISTY_MEOW_APEX) $HOME"
 FULL_LIST="${REPOSITORY_LIST_TO_PULL}"
-#argh: if [ "$OS" == "Windows_NT" ]; then
-#  FULL_LIST+="c:/ d:/ e:/"
-#fi
 checkout_list $FULL_LIST 2>&1 | tee -a "$TMPO_CHK"
 exit_on_error "checking out list: $FULL_LIST"
 

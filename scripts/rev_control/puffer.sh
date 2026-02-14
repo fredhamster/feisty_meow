@@ -18,12 +18,7 @@ save_terminal_title
 
 echo "puffing out repositories at: $(date)"
 
-#wrong: FULL_LIST=" $(dirname $FEISTY_MEOW_APEX) $HOME "
 FULL_LIST="${REPOSITORY_LIST_TO_PULL}"
-#no, and yuck: if [ "$OS" == "Windows_NT" ]; then
-#  FULL_LIST+=" c:/ d:/ e:/ "
-#fi
-
 puff_out_list $FULL_LIST
 exit_on_error "puffing out list: $FULL_LIST"
 

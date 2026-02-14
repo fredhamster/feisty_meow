@@ -7,10 +7,9 @@ if [ -z "$USER_CUSTOMIZATIONS_LOADED" ]; then
 
   ##############
  
-  # The gruntose web site is expected to reside below, if it exists at all.
+  # the gruntose web site is expected to reside below, if it exists at all.
   export WEBBED_SITES="$FEISTY_MEOW_PERSONAL_HOME/web"
-
-  REPOSITORY_LIST_TO_PULL+="$WEBBED_SITES"
+  # and we do want it checked in when there are updates.
   REPOSITORY_LIST_TO_COMMIT+="$WEBBED_SITES"
 
   ##############

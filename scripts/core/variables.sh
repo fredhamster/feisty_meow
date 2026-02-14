@@ -258,10 +258,11 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
 ##  define_yeti_variable LESSOPEN="| source-highlight -f esc -o STDOUT -i %s"
 
   # the base checkout list is just to update feisty_meow.  additional folder
-  # names can be added in your customized scripts.  the space at the end of
-  # this variable is important and allows users to extend the list like:
+  # names can be added in your customized scripts.
+  # NOTE: keeping a space at the end of these variables is important.
+  # the space character enables users to extend the list like so:
   #    REPOSITORY_DIR+="muppets configs "
-  # see the customize/fred folder for a live example.
+  # see the customize/fred folder for a live example of this.
   define_yeti_variable REPOSITORY_LIST_TO_PULL="$FEISTY_MEOW_APEX "
   define_yeti_variable REPOSITORY_LIST_TO_COMMIT=""
 
@@ -269,7 +270,7 @@ define_yeti_variable DEFAULT_FEISTYMEOW_ORG_DIR=/opt/feistymeow.org
 #hmmm: resolve if still using this 'active' folder.
   if [ -d "$FEISTY_MEOW_PERSONAL_HOME/active" ]; then
     active_addin+="$(find "$FEISTY_MEOW_PERSONAL_HOME/active" -maxdepth 1 -mindepth 1 -type d) "
-    REPOSITORY_LIST_TO_PULL+="$active_addin "
+#no, redundant.    REPOSITORY_LIST_TO_PULL+="$active_addin "
     REPOSITORY_LIST_TO_COMMIT+="$active_addin "
     unset active_addin
   fi
