@@ -242,7 +242,7 @@ private:
 
 cromp_client_tester::cromp_client_tester()
 : application_shell("cromp_client_tester"),
-  _uplink(NIL),
+  _uplink(NULL_POINTER),
   _lock(new mutex),
   _threads_active(0),
   _finished_loops(0.0),
@@ -440,7 +440,7 @@ void cromp_client_tester::look_for_receipts(int count,
     structures::set<octopus_request_id> &delinquents, bool wait)
 {
   FUNCDEF("look_for_receipts");
-  infoton *received = NIL;
+  infoton *received = NULL_POINTER;
   while (count--) {
     if (!ids.length()) break;  // nothing to check on.
     octopus_request_id the_id = ids[0];
@@ -484,7 +484,7 @@ LOG(a_sprintf("added %s to delinquents.", the_id.text_form().s()));
 
 if (!received) {
 deadly_error(class_name(), func,
-"received packet was NIL even though outcome was OKAY!");
+"received packet was NULL_POINTER even though outcome was OKAY!");
 }
 
     // check that the right type is coming back to us.
@@ -616,7 +616,7 @@ void cromp_client_tester::grab_items()
   FUNCDEF("grab_items");
   octopus_request_id id(_uplink->entity(), -12);
     // look for an id we don't expect to have any thing waiting for.
-  infoton *found = NIL;
+  infoton *found = NULL_POINTER;
   outcome ret = _uplink->retrieve_and_restore(found, id, 0);
   WHACK(found);
 }
@@ -742,7 +742,7 @@ int cromp_client_tester::execute()
   // create the extra grabber threads.
   for (int i = 0; i < _grabber_count; i++) {
     grabby_thread *to_add = new grabby_thread(*this);
-    cab.add_thread(to_add, false, NIL);
+    cab.add_thread(to_add, false, NULL_POINTER);
   }
 
   LOG(a_sprintf("adding %d transmitter threads to test.", _thread_count));
@@ -750,12 +750,12 @@ int cromp_client_tester::execute()
   // create the specified number of threads.
   for (int j = 0; j < _thread_count; j++) {
     bitey_thread *to_add = new bitey_thread(*this);
-    cab.add_thread(to_add, false, NIL);
+    cab.add_thread(to_add, false, NULL_POINTER);
   }
 
 //LOG("starting all threads...");
   time_stamp start;
-  cab.start_all(NIL);
+  cab.start_all(NULL_POINTER);
 //LOG("done starting threads...");
 
   time_control::sleep_ms(400);  // wait until a few get cranked up.
