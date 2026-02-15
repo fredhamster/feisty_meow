@@ -20,19 +20,16 @@
 \*****************************************************************************/
 
 #include <cromp/cromp_transaction.h>
-#include <geometric/screen_rectangle.h>
 #include <mathematics/chaos.h>
 #include <octopus/infoton.h>
 #include <octopus/tentacle_helper.h>
 #include <structures/string_array.h>
 
-using namespace geometric;
-
 class bubble : public octopi::infoton
 {
 public:
-  bubble(int data_segment_size = 0, const screen_rectangle &boundaries
-      = screen_rectangle(), int color = 0)
+  bubble(int data_segment_size = 0, const structures::string_array &boundaries
+      = structures::string_array(), int color = 0)
     // constructs a bubble within the "boundaries" that has "color" and a data
     // segment size specified by "data_segment_size".  the color definitions
     // reside elsewhere.
@@ -45,7 +42,7 @@ public:
     return barray;
   }
 
-  void reset(int data_segment_size, const screen_rectangle &boundaries,
+  void reset(int data_segment_size, const structures::string_array &boundaries,
       int color) {
     _color = color;
     _bounds = boundaries;
@@ -86,7 +83,7 @@ public:
   }
 
 private:
-  screen_rectangle _bounds;
+  structures::string_array _bounds;
   int _color;
   basis::byte_array _data;
 };

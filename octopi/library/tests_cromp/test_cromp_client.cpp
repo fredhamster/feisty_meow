@@ -516,10 +516,13 @@ void cromp_client_tester::bite_server(structures::set<octopus_request_id> &ids,
 
   double overall_sent = 0;
 
+//hmmm: not very interesting boundaries below, non-randomized and identical in both places.
+  const char *bounds_init[] = { "0", "120", "220", "280" };
+  string_array boundish(4, bounds_init);
+
   // this computes the size of the exchange object with no extra data attached.
   byte_array temp;
-  bubble test_size(_dataseg_size, screen_rectangle(0, 120, 220, 280),
-      238843);
+  bubble test_size(_dataseg_size, boundish, 238843);
   test_size.data().reset();
     // set the data segment to zero length.
   test_size.pack(temp);
@@ -531,8 +534,7 @@ void cromp_client_tester::bite_server(structures::set<octopus_request_id> &ids,
   time_stamp start;  // record when our testing started.
 
   for (int sends = 1; sends <= _send_count; sends++) {
-    bubble to_send(_dataseg_size, screen_rectangle(0, 120, 220, 280),
-        238843);
+    bubble to_send(_dataseg_size, boundish, 238843);
     int curr_sending = to_send.data_length() + base_length * 2;
     overall_sent += curr_sending;
       // we compute the overall sent by what's sent in the request (which is
