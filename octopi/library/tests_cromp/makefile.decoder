@@ -9,7 +9,11 @@ LOCAL_LIBS_USED = unit_test octopus cromp crypto application configuration files
   mathematics nodes processes sockets structures textual timely \
   tentacles structures basis 
 USE_SSL = t
-RUN_TARGETS = $(ACTUAL_TARGETS)
+LAST_TARGETS = decoder_ring
 
 include cpp/rules.def
+
+decoder_ring:
+	$(FEISTY_MEOW_BINARIES)/cromp_decoder < example_cromp_data.txt
+
 

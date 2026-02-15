@@ -14,20 +14,23 @@
 
 #include "crompish_pax.h"
 
-#include <basis/byte_array.h>
-#include <basis/functions.h>
-#include <basis/astring.h>
-#include <cromp/cromp_server.h>
-#include <timely/time_stamp.h>
-#include <octopus/tentacle.h>
 #include <application/application_shell.h>
 #include <application/command_line.h>
+#include <application/hoople_main.h>
+#include <basis/astring.h>
+#include <basis/byte_array.h>
+#include <basis/functions.h>
+#include <cromp/cromp_server.h>
 #include <loggers/console_logger.h>
 #include <loggers/file_logger.h>
-#include <structures/static_memory_gremlin.h>
+#include <loggers/program_wide_logger.h>
+#include <octopus/tentacle.h>
 #include <sockets/internet_address.h>
 #include <sockets/machine_uid.h>
 #include <sockets/tcpip_stack.h>
+#include <structures/static_memory_gremlin.h>
+#include <timely/time_control.h>
+#include <timely/time_stamp.h>
 #include <unit_test/unit_base.h>
 
 using namespace application;
@@ -119,7 +122,7 @@ public:
     bubble *inf = dynamic_cast<bubble *>(&to_chow);
     if (!inf) return NO_HANDLER;
 //LOG("caching product!  success getting unpacked etc.");
-    bubble *junk = (bubble *)inf->clone();
+    bubble *junk = dynamic_cast<bubble *>(inf->clone());
     store_product(junk, item_id);
     return OKAY;
   }
@@ -139,7 +142,7 @@ cromp_server_tester::cromp_server_tester()
   _encryption(false)
 {
   FUNCDEF("constructor");
-  SET_DEFAULT_COMBO_LOGGER;
+///  SET_DEFAULT_COMBO_LOGGER;
   LOG("");
   LOG("");
 

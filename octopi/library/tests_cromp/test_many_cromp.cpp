@@ -18,21 +18,41 @@
 
 #include "crompish_pax.h"
 
-#include <basis/chaos.h>
-#include <basis/istring.h>
-#include <basis/portable.h>
-#include <data_struct/amorph.h>
+#include <mathematics/chaos.h>
+#include <basis/astring.h>
+
+#include <application/application_shell.h>
+#include <application/command_line.h>
+#include <application/hoople_main.h>
+#include <structures/amorph.h>
 #include <cromp/cromp_client.h>
 #include <octopus/entity_defs.h>
 #include <octopus/infoton.h>
-#include <opsystem/application_shell.h>
-#include <opsystem/command_line.h>
 #include <loggers/console_logger.h>
+#include <loggers/critical_events.h>
 #include <loggers/file_logger.h>
-#include <data_struct/static_memory_gremlin.h>
-#include <sockets/address.h>
+#include <loggers/program_wide_logger.h>
+#include <sockets/internet_address.h>
+#include <structures/static_memory_gremlin.h>
+#include <timely/time_control.h>
+#include <unit_test/unit_base.h>
 
 #include <stdio.h>
+
+using namespace application;
+using namespace basis;
+using namespace configuration;
+using namespace cromp;
+using namespace mathematics;
+using namespace filesystem;
+using namespace loggers;
+using namespace octopi;
+using namespace processes;
+using namespace sockets;
+using namespace structures;
+using namespace textual;
+using namespace timely;
+using namespace unit_test;
 
 #define DEBUG_TESTER
   // uncomment for noisier version.
@@ -40,10 +60,10 @@
 const int REPORTING_INTERVAL = 20 * SECOND_ms;
   // how frequently we tell about bad crompers.
 
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger(), s)
-#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger(), s)
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), astring(s))
 
-class many_cromp_tester : public application_shell
+class many_cromp_tester : virtual public unit_base, virtual public application_shell
 {
 public:
   many_cromp_tester();
@@ -51,7 +71,7 @@ public:
 
   virtual int execute();
 
-  IMPLEMENT_CLASS_NAME("many_cromp_tester");
+  DEFINE_CLASS_NAME("many_cromp_tester");
 
 private:
   amorph<cromp_client> _uplinks;  // a list of cromp clients.
@@ -59,10 +79,11 @@ private:
   int _count;  // number of cromps.
 };
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 many_cromp_tester::many_cromp_tester()
-: application_shell("many_cromp_tester"),
+: application_shell(),
+///"many_cromp_tester"),
   _uplinks(),
   _encryption(false),
   _count(1)
@@ -73,21 +94,21 @@ many_cromp_tester::many_cromp_tester()
 
   internet_address server_loc;
 
-  command_line args(__argc, __argv);
-//LOG(isprintf("argc is %d and first is %s", __argc, __argv[0]));
+  command_line args(application::_global_argc, application::_global_argv);
+//LOG(a_sprintf("argc is %d and first is %s", application::_global_argc, application::_global_argv[0]));
 
   // check for a port on the command line.
-  istring port_text;
+  astring port_text;
   int port = 5678;
   if (args.get_value("port", port_text, false)) {
-    LOG(istring("using port: ") + port_text);
+    LOG(astring("using port: ") + port_text);
     port = port_text.convert(5678);
   }
   server_loc.port = port;
 
-  istring count_text;
+  astring count_text;
   if (args.get_value("count", count_text, false)) {
-    LOG(istring("using count: ") + count_text);
+    LOG(astring("using count: ") + count_text);
     _count = count_text.convert(_count);
   }
 
@@ -101,25 +122,25 @@ many_cromp_tester::many_cromp_tester()
   }
 
   // check for a hostname on the command line.
-  istring hostname("local");
-  istring host_temp;
+  astring hostname("local");
+  astring host_temp;
   if (args.get_value("host", host_temp, false)) {
-    LOG(istring("using host: ") + host_temp);
+    LOG(astring("using host: ") + host_temp);
     hostname = host_temp;
   }
-LOG(istring("using host: ") + hostname);
+LOG(astring("using host: ") + hostname);
   strcpy(server_loc.hostname, hostname.s());
 
-LOG(istring("opening at ") + server_loc.text_form());
+LOG(astring("opening at ") + server_loc.text_form());
 
-LOG(isprintf("count of %d cromps will be created.", _count));
+LOG(a_sprintf("count of %d cromps will be created.", _count));
 
   for (int i = 0; i < _count; i++) {
-LOG(isprintf("%d. A", i));
+LOG(a_sprintf("%d. A", i));
     cromp_client *uplink = new cromp_client(server_loc);
-LOG(isprintf("%d. B", i));
+LOG(a_sprintf("%d. B", i));
     uplink->add_tentacle(new bubbles_tentacle(false));
-LOG(isprintf("%d. C", i));
+LOG(a_sprintf("%d. C", i));
     _uplinks.append(uplink);
   }
 
@@ -142,7 +163,7 @@ int many_cromp_tester::execute()
   for (int i = 0; i < _uplinks.elements(); i++) {
     outcome ret = _uplinks.borrow(i)->connect();
     if (ret != cromp_client::OKAY) {
-      deadly_error(class_name(), func, istring("connection failed with error: ")
+      deadly_error(class_name(), func, astring("connection failed with error: ")
           + cromp_client::outcome_name(ret));
     }
   }
@@ -160,13 +181,13 @@ time_stamp when_to_leave(10 * HOUR_ms);
 
     if (time_stamp() > next_report) {
       int connected = _uplinks.elements() - unconnected;
-      LOG(isprintf("[ %d connected and %d did not ]", connected, unconnected));
+      LOG(a_sprintf("[ %d connected and %d did not ]", connected, unconnected));
       next_report.reset(REPORTING_INTERVAL);
     }
 
 //do something with uplinks.
 
-    portable::sleep_ms(100);
+    time_control::sleep_ms(100);
   }
 
 
@@ -175,7 +196,7 @@ time_stamp when_to_leave(10 * HOUR_ms);
   return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 HOOPLE_MAIN(many_cromp_tester, )
 

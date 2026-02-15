@@ -20,10 +20,15 @@
 \*****************************************************************************/
 
 #include <cromp/cromp_transaction.h>
+#include <loggers/critical_events.h>
 #include <mathematics/chaos.h>
 #include <octopus/infoton.h>
 #include <octopus/tentacle_helper.h>
 #include <structures/string_array.h>
+
+// uncomment to cause more checking that verifies the packed_size method
+// is reporting accurately.
+//#define CHECK_CROMPISH_PACKED_SIZE
 
 class bubble : public octopi::infoton
 {
@@ -51,7 +56,7 @@ public:
 
   int data_length() const { return _data.length(); }
 
-  clonable *clone() const { return octopi::cloner<bubble>(*this); }
+  virtual clonable *clone() const { return octopi::cloner<bubble>(*this); }
 
   basis::byte_array &data() { return _data; }
 
@@ -64,15 +69,27 @@ public:
   }
 
   virtual void pack(basis::byte_array &packed_form) const {
+    FUNCDEF("pack")
+#ifdef CHECK_CROMPISH_PACKED_SIZE
+    int prior_len = packed_form.length();
+#endif
     structures::attach(packed_form, _color);
     _bounds.pack(packed_form);
     structures::attach(packed_form, _data);
+#ifdef CHECK_CROMPISH_PACKED_SIZE
+    int predicted_size = packed_size();
+    int new_len = packed_form.length();
+    if (prior_len + predicted_size != new_len) {
+      loggers::deadly_error(class_name(), func, basis::a_sprintf("size predicted=%d but actually was %d", predicted_size, new_len - prior_len));
+    }
+#endif
   }
 
   int packed_size() const {
-    return _data.length() + 2 * sizeof(int)       // packed byte array.
+    return _data.length() + 2 * sizeof(int)   // packed byte array.
         + sizeof(int)                         // packed color.
-        + 4 * sizeof(int);                    // packed screen rectangle.
+        + _bounds.packed_size();              // packed string array.
+///no, old. 4 * sizeof(int);                    
   }
 
   virtual bool unpack(basis::byte_array &packed_form) {

@@ -57,8 +57,8 @@ using namespace unit_test;
 
 #undef LOG
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
-#undef BASE_LOG
-#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+///#undef BASE_LOG
+///#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), astring(s))
 
 
 #define DEBUG_TESTER
@@ -677,7 +677,7 @@ void cromp_client_tester::report(const time_stamp &start_time,
       packed_transa.length() - payload_portion));
 #endif
 
-  BASE_LOG(a_sprintf("sent %.0f items, %.0f bytes, %.0f bytes per item,%s"
+  LOG(a_sprintf("sent %.0f items, %.0f bytes, %.0f bytes per item,%s"
       "payload %.0f bytes, overhead %.0f bytes, percent overhead %.1f%%,%s"
       "in %.2f seconds is %f ms/item%s"
       "at %.2f %cb/sec & %.2f items/sec.",
@@ -809,7 +809,7 @@ int cromp_client_tester::execute()
 ///  int char_read = fgetc(stdin);
 #endif
 
-  BASE_LOG("cromp_client:: works for those functions tested.");
+  LOG("works for those functions tested.");
 
   return 0;
 }
