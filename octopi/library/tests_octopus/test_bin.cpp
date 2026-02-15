@@ -17,19 +17,20 @@
 \*****************************************************************************/
 
 #include <application/hoople_main.h>
+#include <application/application_shell.h>
 #include <basis/byte_array.h>
-#include <mathematics/chaos.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
 #include <basis/astring.h>
-#include <application/application_shell.h>
 #include <loggers/console_logger.h>
 #include <loggers/program_wide_logger.h>
-#include <structures/static_memory_gremlin.h>
+#include <mathematics/chaos.h>
 #include <octopus/entity_data_bin.h>
 #include <octopus/entity_defs.h>
+#include <structures/static_memory_gremlin.h>
 #include <tentacles/security_infoton.h>
 #include <textual/string_manipulation.h>
+#include <unit_test/unit_base.h>
 
 #include <stdio.h>
 
@@ -38,14 +39,15 @@ using namespace basis;
 using namespace loggers;
 using namespace octopi;
 using namespace textual;
+using namespace unit_test;
 
 const int ITEM_COUNT = 10000;
   // the number of times to repeat each test operation.
 
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger().get(), astring(s))
-#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger().get(), astring(s))
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), astring(s))
 
-class test_bin : public application_shell
+class test_bin : virtual public unit_base, virtual public application_shell
 {
 public:
   test_bin() : application_shell() {}
@@ -72,7 +74,7 @@ LOG(a_sprintf("test type %d beginning...%c", q, c));
 //LOG("note memory usage and hit a key:");
 //c = getchar();
 
-    program_wide_logger().get().eol(parser_bits::NO_ENDING);
+    program_wide_logger::get().eol(parser_bits::NO_ENDING);
     for (int i = 1; i <= ITEM_COUNT; i++) {
       // test the basic filling of the values in an entity.
       octopus_request_id req_id;
@@ -91,12 +93,12 @@ LOG(a_sprintf("test type %d beginning...%c", q, c));
         fflush(NULL_POINTER);
       }
     }
-    program_wide_logger().get().eol(parser_bits::CRLF_AT_END);
+    program_wide_logger::get().eol(parser_bits::CRLF_AT_END);
     LOG("");
 
     int items_seen = 0;
 
-    program_wide_logger().get().eol(parser_bits::NO_ENDING);
+    program_wide_logger::get().eol(parser_bits::NO_ENDING);
     if (q == ANY) {
       while (item_list.length()) {
         octopus_request_id id;
@@ -160,7 +162,7 @@ LOG(a_sprintf("test type %d beginning...%c", q, c));
     } else {
       deadly_error(class_name(), "looping", "bad enum value");
     }
-    program_wide_logger().get().eol(parser_bits::CRLF_AT_END);
+    program_wide_logger::get().eol(parser_bits::CRLF_AT_END);
     LOG("");
     item_list.reset();
     item_list.shrink();
