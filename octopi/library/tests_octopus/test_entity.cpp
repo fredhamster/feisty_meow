@@ -16,17 +16,21 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <application/application_shell.h>
+#include <application/hoople_main.h>
 #include <basis/byte_array.h>
-#include <mathematics/chaos.h>
 #include <basis/guards.h>
 #include <basis/astring.h>
-#include <octopus/entity_defs.h>
-#include <application/application_shell.h>
+#include <configuration/application_configuration.h>
 #include <loggers/console_logger.h>
 #include <loggers/file_logger.h>
-#include <structures/static_memory_gremlin.h>
+#include <loggers/program_wide_logger.h>
+#include <mathematics/chaos.h>
+#include <octopus/entity_defs.h>
 #include <sockets/tcpip_stack.h>
+#include <structures/static_memory_gremlin.h>
 #include <textual/string_manipulation.h>
+#include <unit_test/unit_base.h>
 
 #ifdef __WIN32__
   #include <process.h>
@@ -34,21 +38,35 @@
   #include <unistd.h>
 #endif
 
+using namespace application;
+using namespace basis;
+using namespace configuration;
+using namespace loggers;
+using namespace mathematics;
+using namespace octopi;
+using namespace sockets;
+using namespace textual;
+using namespace unit_test;
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+
 const int ITERATE_EACH_TEST = 1000;
   // the number of times to repeat each test operation.
 
-class test_entity : public application_shell
+class test_entity : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_entity() : application_shell(class_name()) {}
+  test_entity() : application_shell() {}
+//class_name()
   DEFINE_CLASS_NAME("test_entity");
   virtual int execute();
 };
 
 int test_entity::execute()
 {
+  FUNCDEF("execute");
   chaos rando;
-  SET_DEFAULT_COMBO_LOGGER;
+///  SET_DEFAULT_COMBO_LOGGER;
   tcpip_stack stack;
 
   octopus_entity blankie;
@@ -63,8 +81,8 @@ int test_entity::execute()
   for (int i = 0; i < ITERATE_EACH_TEST; i++) {
     // test the basic filling of the values in an entity.
     octopus_entity blank_ent;
-    int sequencer = rando.inclusive(1, MAXINT - 10);
-    int add_in = rando.inclusive(0, MAXINT - 10);
+    int sequencer = rando.inclusive(1, MAXINT32 - 10);
+    int add_in = rando.inclusive(0, MAXINT32 - 10);
     octopus_entity filled_ent(stack.hostname(), application_configuration::process_id(), sequencer,
         add_in);
     blank_ent = octopus_entity(stack.hostname(), application_configuration::process_id(), sequencer,
@@ -76,9 +94,9 @@ int test_entity::execute()
     astring text2 = blank_ent.to_text();
     if (text1 != text2)
       deadly_error(class_name(), "to_text test", "strings are different");
-///log(text1);
+///LOG(text1);
     octopus_entity georgio = octopus_entity::from_text(text2);
-///log(georgio.to_text());
+///LOG(georgio.to_text());
     if (georgio != filled_ent)
       deadly_error(class_name(), "from_text test",
           "entity is different after from_text");
@@ -96,7 +114,7 @@ int test_entity::execute()
     if (blank_ent != filled_ent)
       deadly_error(class_name(), "reset from attribs test",
           "failed to resolve to same id");
-//    log(a_sprintf("%d: ", i + 1) + filled_ent.mangled_form());
+//    LOG(a_sprintf("%d: ", i + 1) + filled_ent.mangled_form());
 
     byte_array chunk1;
     filled_ent.pack(chunk1);
@@ -108,10 +126,10 @@ int test_entity::execute()
 
     // test of entity packing and size calculation.
     octopus_entity ent(string_manipulation::make_random_name(1, 428),
-            randomizer().inclusive(0, MAXINT/2),
-            randomizer().inclusive(0, MAXINT/2),
-            randomizer().inclusive(0, MAXINT/2));
-    octopus_request_id bobo(ent, randomizer().inclusive(0, MAXINT/2));
+            randomizer().inclusive(0, MAXINT32/2),
+            randomizer().inclusive(0, MAXINT32/2),
+            randomizer().inclusive(0, MAXINT32/2));
+    octopus_request_id bobo(ent, randomizer().inclusive(0, MAXINT32/2));
     int packed_estimate = bobo.packed_size();
     byte_array packed_bobo;
     bobo.pack(packed_bobo);
@@ -121,7 +139,7 @@ int test_entity::execute()
   }
 
 
-  log("octopus_entity:: works for those functions tested.");
+  LOG(astring(class_name()) + ":: works for those functions tested.");
   return 0;
 }
 
