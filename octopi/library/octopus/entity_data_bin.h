@@ -104,6 +104,9 @@ public:
     // note that this should be called periodically by the controlling object.
     // it will not be called automatically.
 
+  basis::base_synchronizer &locker() { return *_ent_lock; }
+    //!< provided for tighter synchronization; this should be used very carefully, e.g. with auto_synchronizer.
+
 private:
   entity_item_hash *_table;  // our main storage object.
   basis::mutex *_ent_lock;  // protects our structures.

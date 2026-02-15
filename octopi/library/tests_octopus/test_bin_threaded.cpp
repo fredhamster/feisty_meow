@@ -13,25 +13,27 @@
 \*****************************************************************************/
 
 #include <application/hoople_main.h>
+#include <application/application_shell.h>
 #include <basis/byte_array.h>
-#include <mathematics/chaos.h>
+#include <configuration/application_configuration.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
 #include <basis/astring.h>
 #include <basis/mutex.h>
-#include <structures/amorph.h>
-#include <structures/static_memory_gremlin.h>
 #include <loggers/console_logger.h>
-#include <processes/ethread.h>
-#include <processes/safe_roller.h>
-#include <timely/time_control.h>
-#include <timely/time_stamp.h>
+#include <mathematics/chaos.h>
 #include <octopus/entity_data_bin.h>
 #include <octopus/entity_defs.h>
 #include <octopus/unhandled_request.h>
-#include <application/application_shell.h>
-#include <configuration/application_configuration.h>
+#include <processes/ethread.h>
+#include <processes/safe_roller.h>
+#include <structures/amorph.h>
+#include <structures/static_memory_gremlin.h>
+#include <structures/string_array.h>
 #include <textual/string_manipulation.h>
+#include <timely/time_control.h>
+#include <timely/time_stamp.h>
+#include <unit_test/unit_base.h>
 
 #include <stdio.h>
 
@@ -40,10 +42,15 @@
 #endif
 
 using namespace application;
+using namespace basis;
 using namespace loggers;
+using namespace mathematics;
 using namespace octopi;
 using namespace processes;
+using namespace structures;
+using namespace textual;
 using namespace timely;
+using namespace unit_test;
 
 // global constants...
 
@@ -86,7 +93,7 @@ const int MONKS_CLEANING_TIME = 10 * SECOND_ms;
   // a very short duration for data to live.
 
 #define LOG(to_print) printf("%s\n", (char *)astring(to_print).s());
-//CLASS_EMERGENCY_LOG(program_wide_logger().get(), to_print)
+//CLASS_EMERGENCY_LOG(program_wide_logger::get().get(), to_print)
   // our macro for logging with a timestamp.
 
 // global objects...
@@ -105,9 +112,9 @@ octopus_request_id create_request_id()
   octopus_request_id req_id;
   if (randomizer().inclusive(1, 100) < 25) {
     // some of the time we make a totally random entity id.
-    int sequencer = randomizer().inclusive(1, MAXINT - 10);
-    int add_in = randomizer().inclusive(0, MAXINT - 10);
-    int process_id = randomizer().inclusive(0, MAXINT - 10);
+    int sequencer = randomizer().inclusive(1, MAXINT32 - 10);
+    int add_in = randomizer().inclusive(0, MAXINT32 - 10);
+    int process_id = randomizer().inclusive(0, MAXINT32 - 10);
     req_id._entity = octopus_entity(string_manipulation::make_random_name(),
         process_id, sequencer, add_in);
   } else {
@@ -118,7 +125,7 @@ octopus_request_id create_request_id()
     req_id._entity = octopus_entity("boringentity",
         process_id, sequencer, add_in);
   }
-  req_id._request_num = randomizer().inclusive(1, MAXINT - 10);
+  req_id._request_num = randomizer().inclusive(1, MAXINT32 - 10);
   return req_id;
 }
 
@@ -243,20 +250,23 @@ public:
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
     while (!should_stop()) {
-      // one activation of monk has devastating consequences.  we empty out
-      // the data one item at a time until we see no data at all.  after
-      // cleaning each item, we ensure that the deadwood is cleaned out.
-      binger._ent_lock->lock();
+      {
+        // one activation of monk has devastating consequences.  we empty out
+        // the data one item at a time until we see no data at all.  after
+        // cleaning each item, we ensure that the deadwood is cleaned out.
+////      binger._ent_lock->lock();
+        auto_synchronizer l(binger.locker());
 LOG(a_sprintf("monk sees %d items.", binger.items_held()));
-      while (binger.items_held()) {
-        // grab one instance of any item in the bin.
-        octopus_request_id id;
-        infoton *found = binger.acquire_for_any(id);
-        WHACK(found);
-        // also clean out things a lot faster than normal.  
-        binger.clean_out_deadwood(MONKS_CLEANING_TIME);
+        while (binger.items_held()) {
+          // grab one instance of any item in the bin.
+          octopus_request_id id;
+          infoton *found = binger.acquire_for_any(id);
+          WHACK(found);
+          // also clean out things a lot faster than normal.  
+          binger.clean_out_deadwood(MONKS_CLEANING_TIME);
+        }
+///      binger._ent_lock->unlock();
       }
-      binger._ent_lock->unlock();
 LOG(a_sprintf("after a little cleaning, monk sees %d items.", binger.items_held()));
       // snooze.
       int sleepy_time = randomizer().inclusive(MIN_MONK_THREAD_PAUSE,
@@ -271,7 +281,7 @@ LOG(a_sprintf("after a little cleaning, monk sees %d items.", binger.items_held(
 class test_entity_data_bin_threaded : public application_shell
 {
 public:
-  test_entity_data_bin_threaded() : application_shell(class_name()) {}
+  test_entity_data_bin_threaded() : application_shell() {}
 
   DEFINE_CLASS_NAME("test_entity_data_bin_threaded");
 
@@ -329,7 +339,7 @@ int test_entity_data_bin_threaded::execute()
 // how many evaporated due to timeout.
 
 
-  guards::alert_message("t_bin_threaded:: works for all functions tested.");
+  critical_events::alert_message("t_bin_threaded:: works for all functions tested.");
   return 0;
 }
 

@@ -19,6 +19,6 @@ create_decoder_ring:
 run_client_server_test:
 	# launch the server into the background first.  we have to hope it completes, eventually.
 	($(FEISTY_MEOW_BINARIES)/test_cromp_server &)
-	$(FEISTY_MEOW_BINARIES)/test_cromp_client
+	$(FEISTY_MEOW_BINARIES)/test_cromp_client --sends 1008
 	# zap the server now, since it won't quit otherwise.
 	killall test_cromp_server

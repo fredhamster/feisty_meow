@@ -57,9 +57,6 @@ using namespace unit_test;
 
 #undef LOG
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
-///#undef BASE_LOG
-///#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), astring(s))
-
 
 #define DEBUG_TESTER
   // uncomment for noisier version.
