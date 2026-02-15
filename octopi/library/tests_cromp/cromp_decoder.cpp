@@ -12,25 +12,43 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/istring.h>
+#include <application/application_shell.h>
+#include <application/hoople_main.h>
+#include <basis/astring.h>
 #include <cromp/cromp_common.h>
-#include <octopus/entity_defs.h>
-#include <opsystem/application_shell.h>
+#include <loggers/program_wide_logger.h>
 #include <loggers/console_logger.h>
 #include <loggers/file_logger.h>
-#include <data_struct/static_memory_gremlin.h>
+#include <octopus/entity_defs.h>
 #include <sockets/machine_uid.h>
-#include <textual/byte_format.h>
+#include <structures/static_memory_gremlin.h>
+#include <textual/byte_formatter.h>
+#include <unit_test/unit_base.h>
 
 #include <stdio.h>
 
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger(), s)
-#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger(), s)
+using namespace application;
+using namespace basis;
+using namespace configuration;
+using namespace cromp;
+using namespace mathematics;
+using namespace filesystem;
+using namespace loggers;
+using namespace octopi;
+using namespace processes;
+using namespace sockets;
+using namespace structures;
+using namespace textual;
+using namespace timely;
+using namespace unit_test;
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+#define BASE_LOG(s) EMERGENCY_LOG(program_wide_logger::get(), astring(s))
 
 const int MAX_LINE = 2048;
   // the longest line we'll bother to try to process.
 
-class cromp_decoder : public application_shell
+class cromp_decoder : virtual public unit_base, virtual public application_shell
 {
 public:
   cromp_decoder();
@@ -38,12 +56,12 @@ public:
 
   virtual int execute();
 
-  IMPLEMENT_CLASS_NAME("cromp_decoder");
+  DEFINE_CLASS_NAME("cromp_decoder");
 };
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
-cromp_decoder::cromp_decoder() : application_shell(class_name()) {}
+cromp_decoder::cromp_decoder() : application_shell() {}
 
 cromp_decoder::~cromp_decoder() {}
 
@@ -56,12 +74,12 @@ This application will decode a cromp entity and report the different values");
   BASE_LOG("\
 that are encoded into it.");
 
-  istring buffer;  // we'll read input from the user into this.
+  astring buffer;  // we'll read input from the user into this.
 
   while (true) {
     BASE_LOG("Please enter the entity (or hit just enter to exit).")
     
-    buffer = istring('\0', MAX_LINE + 10);  // reset the buffer.
+    buffer = astring('\0', MAX_LINE + 10);  // reset the buffer.
     char *buf2 = fgets(buffer.s(), MAX_LINE, stdin);
     if (buf2 != buffer.s()) {
       deadly_error(class_name(), func,
@@ -69,7 +87,7 @@ that are encoded into it.");
     }
 
     buffer.shrink();
-    buffer.strip("\r\n", istring::FROM_END);
+    buffer.strip("\r\n", astring::FROM_END);
     if (!buffer.length()) break;
 
     // make sure they didn't actually give us a request id.
@@ -87,26 +105,26 @@ that are encoded into it.");
     BASE_LOG("");
     BASE_LOG("Entity contains:");
     BASE_LOG("");
-    BASE_LOG(isprintf("\tProcess ID=%d", ent.process_id()));
-    BASE_LOG(isprintf("\tSequencer=%d", ent.sequencer()));
-    BASE_LOG(isprintf("\tChaotic Addin=%d", ent.add_in()));
+    BASE_LOG(a_sprintf("\tProcess ID=%d", ent.process_id()));
+    BASE_LOG(a_sprintf("\tSequencer=%d", ent.sequencer()));
+    BASE_LOG(a_sprintf("\tChaotic Addin=%d", ent.add_in()));
 
-    istring host;
+    astring host;
     machine_uid machine;
     bool worked = cromp_common::decode_host(ent.hostname(), host, machine);
     if (!worked) {
       BASE_LOG("Failed to decode the hostname!  Was it a valid entity?");
       continue;
     }
-    BASE_LOG(istring("\tPartial Hostname=") + host);
-    BASE_LOG(istring("\tMachine UID=") + machine.text_form());
+    BASE_LOG(astring("\tPartial Hostname=") + host);
+    BASE_LOG(astring("\tMachine UID=") + machine.text_form());
     BASE_LOG("");
   }
 
   return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 HOOPLE_MAIN(cromp_decoder, )
 

@@ -15,23 +15,37 @@
 #include "crompish_pax.h"
 
 #include <basis/byte_array.h>
-#include <basis/function.h>
-#include <basis/istring.h>
-#include <basis/log_base.h>
-#include <basis/portable.h>
+#include <basis/functions.h>
+#include <basis/astring.h>
 #include <cromp/cromp_server.h>
-#include <mechanisms/time_stamp.h>
+#include <timely/time_stamp.h>
 #include <octopus/tentacle.h>
-#include <opsystem/application_shell.h>
-#include <opsystem/command_line.h>
+#include <application/application_shell.h>
+#include <application/command_line.h>
 #include <loggers/console_logger.h>
 #include <loggers/file_logger.h>
-#include <data_struct/static_memory_gremlin.h>
-#include <sockets/address.h>
+#include <structures/static_memory_gremlin.h>
+#include <sockets/internet_address.h>
 #include <sockets/machine_uid.h>
 #include <sockets/tcpip_stack.h>
+#include <unit_test/unit_base.h>
 
-#define LOG(a) CLASS_EMERGENCY_LOG(program_wide_logger(), a)
+using namespace application;
+using namespace basis;
+using namespace configuration;
+using namespace cromp;
+using namespace mathematics;
+using namespace filesystem;
+using namespace loggers;
+using namespace octopi;
+using namespace processes;
+using namespace sockets;
+using namespace structures;
+using namespace textual;
+using namespace timely;
+using namespace unit_test;
+
+#define LOG(a) CLASS_EMERGENCY_LOG(program_wide_logger::get(), a)
 
 const int REPORTING_INTERVAL = 28 * SECOND_ms;  // how often to squawk.
 
@@ -46,7 +60,7 @@ const bool SUPPORT_BACKGROUNDING = false;
 //const bool IMMEDIATE_EVALUATION = true;
 const bool IMMEDIATE_EVALUATION = false;
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 // forward.
 class cromp_server_tester;
@@ -60,15 +74,15 @@ public:
 
   ~our_cromp_server() {}
 
-  IMPLEMENT_CLASS_NAME("our_cromp_server");
+  DEFINE_CLASS_NAME("our_cromp_server");
 
 private:
   cromp_server_tester &_parent;
 };
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
-class cromp_server_tester : public application_shell
+class cromp_server_tester : virtual public unit_base, virtual public application_shell
 {
 public:
   bool _saw_clients;  // true if we ever got a connection.
@@ -78,7 +92,7 @@ public:
 
   virtual int execute();
 
-  IMPLEMENT_CLASS_NAME("cromp_server_tester");
+  DEFINE_CLASS_NAME("cromp_server_tester");
 
 private:
   our_cromp_server *_uplink;
@@ -88,7 +102,7 @@ private:
   internet_address c_address;
 };
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 class real_bubbles_tentacle : public bubbles_tentacle
 {
@@ -114,12 +128,13 @@ private:
   cromp_server_tester &_parent;
 };
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 cromp_server_tester::cromp_server_tester()
-: application_shell("cromp_server_tester"),
+: application_shell(),
+///"cromp_server_tester"),
   _saw_clients(false),
-  _uplink(NIL),
+  _uplink(NULL_POINTER),
   _leave_when_no_clients(false),
   _encryption(false)
 {
@@ -128,12 +143,12 @@ cromp_server_tester::cromp_server_tester()
   LOG("");
   LOG("");
 
-  command_line args(__argc, __argv);
+  command_line args(application::_global_argc, application::_global_argv);
   // check for a port on the command line.
-  istring port_text;
+  astring port_text;
   int port = 5678;
   if (args.get_value("port", port_text, false)) {
-    LOG(istring("using port: ") + port_text);
+    LOG(astring("using port: ") + port_text);
     port = port_text.convert(5678);
   }
   int posn = 0;
@@ -145,15 +160,15 @@ cromp_server_tester::cromp_server_tester()
 //hmmm:normalize host so this can take either name or IP.
 
   // check for a hostname on the command line.
-  istring hostname("local");
-  istring host_temp;
+  astring hostname("local");
+  astring host_temp;
   if (args.get_value("host", host_temp, false)) {
-    LOG(istring("using host: ") + host_temp);
+    LOG(astring("using host: ") + host_temp);
     hostname = host_temp;
   }
   strcpy(c_address.hostname, hostname.s());
 
-//LOG(istring("here's the command line:") + log_base::platform_ending() + args.text_form());
+//LOG(astring("here's the command line:") + parser_bits::platform_eol_to_chars() + args.text_form());
 
   int indy = 0;
   if (args.find("encrypt", indy) || (args.find('e', indy)) ) {
@@ -196,7 +211,7 @@ int cromp_server_tester::execute()
       if (client_count == 1) verb = "is";
       const char *ending = "s";
       if (client_count == 1) ending = "";
-      LOG(isprintf("There %s %d client%s.", verb, client_count, ending));
+      LOG(a_sprintf("There %s %d client%s.", verb, client_count, ending));
       next_report.reset(REPORTING_INTERVAL);
     }
 
@@ -209,12 +224,12 @@ _uplink->add_tentacle(new real_bubbles_tentacle(*this, SUPPORT_BACKGROUNDING));
 _uplink->enable_servers(_encryption);
 }
 
-    portable::sleep_ms(100); 
+    time_control::sleep_ms(100); 
   }
   return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////
+//////////////
 
 HOOPLE_MAIN(cromp_server_tester, )
 

@@ -5,7 +5,9 @@ include cpp/variables.def
 PROJECT = decoder_ring
 TYPE = application
 TARGETS = cromp_decoder.exe
-LOCAL_LIBS_USED = basis 
+LOCAL_LIBS_USED = unit_test octopus cromp crypto application configuration filesystem loggers \
+  mathematics nodes processes sockets structures textual timely \
+  tentacles structures basis 
 USE_SSL = t
 RUN_TARGETS = $(ACTUAL_TARGETS)
 
