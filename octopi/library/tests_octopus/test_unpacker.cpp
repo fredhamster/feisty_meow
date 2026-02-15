@@ -16,25 +16,41 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <application/application_shell.h>
+#include <application/hoople_main.h>
 #include <basis/astring.h>
-#include <structures/static_memory_gremlin.h>
+#include <loggers/console_logger.h>
+#include <loggers/file_logger.h>
+#include <loggers/program_wide_logger.h>
 #include <octopus/entity_defs.h>
 #include <octopus/infoton.h>
 #include <octopus/octopus.h>
 #include <octopus/tentacle_helper.h>
-#include <application/application_shell.h>
-#include <loggers/console_logger.h>
-#include <loggers/file_logger.h>
-#include <structures/static_memory_gremlin.h>
 #include <sockets/internet_address.h>
+#include <structures/static_memory_gremlin.h>
+#include <structures/string_array.h>
+#include <unit_test/unit_base.h>
+
+using namespace application;
+using namespace basis;
+using namespace configuration;
+using namespace loggers;
+using namespace mathematics;
+using namespace octopi;
+using namespace sockets;
+using namespace structures;
+using namespace textual;
+using namespace unit_test;
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
 
 //hmmm: provide equality ops to be able to check that same stuff
 //      came back out that went in.
 
-class test_unpacker : public application_shell
+class test_unpacker : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_unpacker() : application_shell(class_name()) {}
+  test_unpacker() : application_shell() {}
   DEFINE_CLASS_NAME("test_unpacker");
   virtual int execute();
   void test_unpacking();
@@ -63,17 +79,23 @@ const char *addr_list[] = { "address" };
 SAFE_STATIC_CONST(string_array, addr_classifier, (base_classifier()
     + string_array(1, addr_list)))
 
-class address_ton : public infoton, public network_address
+class address_ton : public infoton, public internet_address
 {
 public:
   address_ton() : infoton(addr_classifier() + "leaf") {}
 
+  const char *class_name() const { return "address_ton"; }
+
   virtual void pack(byte_array &packed_form) const {
-    network_address::pack(packed_form);
+    internet_address::pack(packed_form);
+  }
+
+  virtual void text_form(basis::base_string &state_fill) const {
+    state_fill.concatenate_string(internet_address::text_form());
   }
 
   virtual bool unpack(byte_array &packed_form) {
-    return network_address::unpack(packed_form);
+    return internet_address::unpack(packed_form);
   }
 
   virtual int packed_size() const {
@@ -94,9 +116,15 @@ public:
 
   float_ton() : infoton(math_classifier() + "float") {}
 
+  const char *class_name() const { return "float_ton"; }
+
   virtual void pack(byte_array &packed_form) const {
     structures::attach(packed_form, f1);
     structures::attach(packed_form, d1);
+  }
+
+  virtual void text_form(basis::base_string &state_fill) const {
+    state_fill.concatenate_string(a_sprintf("f1=%f d1=%f", f1, d1));
   }
 
   virtual int packed_size() const {
@@ -123,6 +151,19 @@ public:
   int_set nums;
 
   int_set_ton() : infoton(math_classifier() + "intset") {}
+
+  const char *class_name() const { return "int_set_ton"; }
+
+  virtual void text_form(basis::base_string &state_fill) const {
+    state_fill.concatenate_string(astring("( "));
+    for (int indy = 0; indy < nums.length(); indy++) {
+      state_fill.concatenate_string(a_sprintf("%d", nums[indy]));
+      if (indy < nums.length() - 1) {
+        state_fill.concatenate_string(astring(", "));
+      }
+    }
+    state_fill.concatenate_string(astring(" )"));
+  }
 
   virtual void pack(byte_array &packed_form) const {
     structures::attach(packed_form, nums.elements());
@@ -173,7 +214,7 @@ public:
     reformed = NULL_POINTER;
     if (classifier.length() < 2) return BAD_INPUT;
     astring key = classifier[1];
-    if (key == "float") {
+    if (key == astring("float")) {
       float_ton *to_return = new float_ton;
       if (!to_return->unpack(packed_form)) {
         WHACK(to_return);
@@ -181,7 +222,7 @@ public:
       }
       reformed = to_return;
       return OKAY;
-    } else if (key == "intset") {
+    } else if (key == astring("intset")) {
       int_set_ton *to_return = new int_set_ton;
       if (!to_return->unpack(packed_form)) {
         WHACK(to_return);
@@ -250,7 +291,7 @@ public:
     real_class.zap(0, 0);
     to_chow.set_classifier(real_class);
     // route to octopus.
-    return _unpackers.evaluate((infoton *)to_chow.clone(), item_id);
+    return _unpackers.evaluate(dynamic_cast<infoton *>(to_chow.clone()), item_id);
   }
 
   void expunge(const octopus_entity &formal(whackola)) {}
@@ -352,7 +393,7 @@ void test_unpacker::test_unpacking()
   chunkmo += 0x37;
   chunkmo += 0x65;
   address_ton norf;
-  (network_address &)norf = network_address(internet_address
+  (internet_address &)norf = internet_address(internet_address
       (chunkmo, "urp", 23841));
   chunkmo.reset();
   infoton::fast_pack(chunkmo, norf);
@@ -361,7 +402,7 @@ void test_unpacker::test_unpacking()
   if (!infoton::fast_unpack(chunkmo, clarfiator, pacula))
     deadly_error(class_name(), "test fast_unpack", "chunkmo has errors");
   infoton *scrung = NULL_POINTER;
-//log(astring("classif is ") + clarfiator.text_form());
+//LOG(astring("classif is ") + clarfiator.text_form());
 
   outcome scrung_ret = unpacky.restore(clarfiator, pacula, scrung);
   if (scrung_ret != tentacle::OKAY)
@@ -372,7 +413,7 @@ void test_unpacker::test_unpacking()
   if (!rescrung)
     deadly_error(class_name(), "test fast_unpack", "wrong dynamic type for scrung");
   address_ton &prescrung = *rescrung;
-  if ((network_address &)prescrung != (network_address &)norf)
+  if ((internet_address &)prescrung != (internet_address &)norf)
     deadly_error(class_name(), "test fast_unpack", "wrong network address restored");
   WHACK(scrung);
 }
@@ -382,12 +423,13 @@ const int MAXIMUM_TESTS = 10;
 
 int test_unpacker::execute()
 {
+  FUNCDEF("execute");
   int iters = 0;
   while (iters++ < MAXIMUM_TESTS) {
-//log(a_sprintf("iter #%d", iters));
+//LOG(a_sprintf("iter #%d", iters));
     test_unpacking();
   }
-  log("unpacking octopus:: works for all functions tested.");
+  LOG(astring(class_name()) + ":: works for all functions tested.");
 //time_control::sleep_ms(30000);
   return 0;
 }

@@ -16,28 +16,46 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <application/application_shell.h>
+#include <application/hoople_main.h>
 #include <basis/astring.h>
+#include <loggers/console_logger.h>
+#include <loggers/critical_events.h>
+#include <loggers/program_wide_logger.h>
 #include <octopus/entity_defs.h>
 #include <octopus/identity_infoton.h>
 #include <octopus/infoton.h>
 #include <octopus/octopus.h>
 #include <octopus/tentacle.h>
-#include <application/application_shell.h>
-#include <loggers/console_logger.h>
 #include <structures/static_memory_gremlin.h>
+#include <unit_test/unit_base.h>
+
+using namespace application;
+using namespace basis;
+//using namespace configuration;
+using namespace loggers;
+using namespace mathematics;
+using namespace octopi;
+//using namespace sockets;
+using namespace textual;
+using namespace unit_test;
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
 
 //////////////
 
-class test_octopus_identity : public application_shell
+class test_octopus_identity : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_octopus_identity() : application_shell(class_name()) {}
+  test_octopus_identity() : application_shell() {}
+//class_name()
   DEFINE_CLASS_NAME("test_octopus_identity");
   virtual int execute();
 };
 
 int test_octopus_identity::execute()
 {
+  FUNCDEF("execute")
   octopus logos("local", 18 * MEGABYTE);
 
   identity_infoton *ide = new identity_infoton;
@@ -55,7 +73,7 @@ int test_octopus_identity::execute()
     deadly_error(class_name(), "evaluate test",
         astring("the evaluation failed with an error ")
         + tentacle::outcome_name(ret));
-log("point a");
+LOG("point a");
 
   octopus_request_id response_id;  // based on bogus from before.
   infoton *response = logos.acquire_result(junk_id._entity, response_id);
@@ -70,14 +88,14 @@ log("point a");
 
   octopus_entity my_ide = new_id->_new_name;
 
-log(astring("new id is: ") + my_ide.text_form());
+LOG(astring("new id is: ") + my_ide.text_form());
 
   if (my_ide.blank())
     deadly_error(class_name(), "retrieving id",
         astring("the new entity id is blank."));
 
 
-  log("octopus:: identity works for those functions tested.");
+  LOG("octopus:: identity works for those functions tested.");
 
   return 0;
 }

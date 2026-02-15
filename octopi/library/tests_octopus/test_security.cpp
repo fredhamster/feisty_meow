@@ -17,19 +17,38 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
+#include <application/application_shell.h>
+#include <application/hoople_main.h>
 #include <basis/astring.h>
 #include <basis/mutex.h>
-#include <structures/static_memory_gremlin.h>
+#include <configuration/application_configuration.h>
+#include <loggers/console_logger.h>
+#include <loggers/critical_events.h>
+#include <loggers/program_wide_logger.h>
 #include <octopus/entity_defs.h>
 #include <octopus/infoton.h>
 #include <octopus/octopus.h>
 #include <octopus/tentacle.h>
-#include <application/application_shell.h>
-#include <loggers/console_logger.h>
 #include <structures/static_memory_gremlin.h>
 #include <sockets/internet_address.h>
+//#include <structures/static_memory_gremlin.h>
+#include <structures/string_array.h>
 #include <tentacles/login_tentacle.h>
 #include <tentacles/simple_entity_registry.h>
+#include <unit_test/unit_base.h>
+
+using namespace application;
+using namespace basis;
+using namespace configuration;
+using namespace loggers;
+using namespace mathematics;
+using namespace octopi;
+using namespace sockets;
+using namespace structures;
+using namespace textual;
+using namespace unit_test;
+
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
 
 //////////////
 
@@ -43,6 +62,10 @@ public:
   astring futzle;
 
   simple_infoton() : infoton(simp_classifier()) {}
+
+  virtual void text_form(basis::base_string &state_fill) const {
+    state_fill.concatenate_string(astring("futzle=") + futzle);
+  }
 
   virtual void pack(byte_array &packed_form) const {
     futzle.pack(packed_form);
@@ -96,16 +119,18 @@ public:
 //      a while, log out, do another one, let it time out, try to access
 //      something with dead id hoping to be rejected, etc.
 
-class test_octopus_security : public application_shell
+class test_octopus_security : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_octopus_security() : application_shell(class_name()) {}
+  test_octopus_security() : application_shell() {}
+//class_name()
   DEFINE_CLASS_NAME("test_octopus_security");
   virtual int execute();
 };
 
 int test_octopus_security::execute()
 {
+  FUNCDEF("execute")
   octopus logos("local", 18 * MEGABYTE);
   simple_tentacle *tenty = new simple_tentacle;
   logos.add_tentacle(tenty);
@@ -173,7 +198,7 @@ int test_octopus_security::execute()
         astring("the operation failed with an error ")
         + tentacle::outcome_name(ret));
 
-  log("octopus:: security works for those functions tested.");
+  LOG(astring(class_name()) + ":: security works for those functions tested.");
 
   WHACK(guardian); 
 
