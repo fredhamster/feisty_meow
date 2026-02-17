@@ -19,9 +19,8 @@ LIBS_USED += z
 include cpp/rules.def
 
 show_makefilename:
-	echo hey the makeflags are $(MAKEFLAGS)
-
+	$(HIDER)echo "current MAKEFLAGS are: '$(MAKEFLAGS)'"
 
 mocko:
-	echo got to other cleans
+	$(HIDER)echo got to other cleans
 

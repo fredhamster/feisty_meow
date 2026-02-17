@@ -74,15 +74,17 @@ outcome application_shell::log(const base_string &to_print, int filter)
 
 int application_shell::execute_application()
 {
+  int c_exit_value = 0;  // optimistic outlook on the eventual exit value.
   try {
     c_exit_value = execute();
   } catch (const char *message) {
-    printf("caught exception:\n%s\n", message);
+    printf("BOOM: caught exception:\n%s\n", message);
   } catch (astring &message) {
-    printf("caught exception:\n%s\n", message.s());
+    printf("BOOM: caught exception:\n%s\n", message.s());
   } catch (...) {
-    printf("caught exception: unknown type!\n");
+    printf("BOOM: caught exception: unhandled type!\n");
   }
+//printf("got to just before return, and exit value is %d currently.", c_exit_value);
   return c_exit_value;
 }
 

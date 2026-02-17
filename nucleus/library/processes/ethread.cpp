@@ -51,8 +51,7 @@ const int MAXIMUM_CREATE_ATTEMPTS = 20;
 
 const int MINIMUM_SLEEP_PERIOD = 10;
   // this is the smallest time we'll sleep for if we're slack.
-
-const int MAXIMUM_SLEEP_PERIOD = 200;
+const int MAXIMUM_SLEEP_PERIOD = 80;
   // the number of milliseconds we use for breaking up longer sleep periods.
 
 const int SNOOZE_FOR_RETRY = 100;

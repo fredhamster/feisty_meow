@@ -12,9 +12,15 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-// NOTE: we are explicitly avoiding use of new and delete here because this
-//       class is needed by our memory allocation object, which would be
-//       providing the new and delete methods.
+/*
+  NOTE: we are explicitly avoiding use of new and delete here because this
+  class is needed by our memory allocation object, which would be providing
+  the new and delete methods.
+
+  this class also does not participate in the FUNCDEF macros or anything that
+  would trigger activity in the callstack_tracker, because that object also
+  needs to use mutexes.
+*/
 
 #include "mutex.h"
 
