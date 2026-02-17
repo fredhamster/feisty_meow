@@ -162,11 +162,9 @@ bool ethread::start(void *thread_data)
     if (aret) LOG("failed to set detach state.");
     int ret = -1;
     if (_periodic)
-      ret = pthread_create(_handle, &attribs, periodic_thread_driver,
-          (void *)this);
+      ret = pthread_create(_handle, &attribs, periodic_thread_driver, (void *)this);
     else
-      ret = pthread_create(_handle, &attribs, one_shot_thread_driver,
-          (void *)this);
+      ret = pthread_create(_handle, &attribs, one_shot_thread_driver, (void *)this);
     if (!ret) success = true;
     else error = ret;
 /*

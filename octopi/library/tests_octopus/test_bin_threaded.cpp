@@ -52,6 +52,9 @@ using namespace textual;
 using namespace timely;
 using namespace unit_test;
 
+// uncomment if you want the more careful shutdown of the threads.
+//#define FANCY_UNNECESSARY_THREAD_STOP ugh
+
 // synchronization for logged messages to avoid overwriting on the console.
 SAFE_STATIC(mutex, __loggers_lock, )
 
@@ -269,12 +272,12 @@ class obsessive_compulsive : public ethread
 public:
   obsessive_compulsive() : ethread(MIN_TIDIER_THREAD_PAUSE, ethread::TIGHT_INTERVAL) {
     FUNCDEF("constructor");
-    LOG("<< new cleaner <<");
+    LOG(">> new cleaner >>");
   }
 
   virtual ~obsessive_compulsive() {
     FUNCDEF("destructor");
-    LOG(">> cleaner exits >>");
+    LOG("<< cleaner exits <<");
   }
 
   DEFINE_CLASS_NAME("obsessive_compulsive");
@@ -405,10 +408,12 @@ int test_entity_data_bin_threaded::execute()
 
   __threads_can_run_wild_and_free() = false;
 
-#ifdef FANCY_UNNECESSARY_THREAD_STOP
-  //hmmm: this code shouldn't be needed!  thread cabinet should do it!!!!
+//deciding whether the cancel really should be done every time, to let the threads bail on their own rather than single stepping through their shutdowns.
   LOG("now cancelling all threads...");
   for (int j = 0; j < thread_list.elements(); j++) { thread_list[j]->cancel(); }
+
+#ifdef FANCY_UNNECESSARY_THREAD_STOP
+  //hmmm: this code shouldn't be needed!  thread cabinet should do it!!!!
   LOG("now stopping all threads...");
   for (int k = 0; k < thread_list.elements(); k++) { thread_list[k]->stop(); }
 #endif
