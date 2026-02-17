@@ -79,6 +79,21 @@ SAFE_STATIC(mutex, __teds_lock, )
   ted().log(joe, basis::ALWAYS_PRINT); \
 }
 
+// protects our logging stream really, by keeping all the threads chomping at the bit rather
+// than running right away.  when this flag switches to true, then *bam* they're off.
+class bool_scared_ya : public root_object {
+public:
+  bool_scared_ya(bool init = false) : _value(init) {}
+  bool_scared_ya &operator = (const bool_scared_ya &s1) { _value = s1._value; return *this; }
+  bool_scared_ya &operator = (bool s1) { _value = s1; return *this; }
+  virtual ~bool_scared_ya() {}
+  operator bool() { return _value; }
+  DEFINE_CLASS_NAME("bool_scared_ya");
+private:
+  bool _value;
+};
+SAFE_STATIC(bool_scared_ya, __time_to_start, (false));
+
 // global constants...
 
 //const int DEFAULT_RUN_TIME = 80 * MINUTE_ms;
@@ -123,11 +138,10 @@ const int MONKS_CLEANING_TIME = 10 * SECOND_ms;
 
 // global objects...
 
-chaos _rando;  // our randomizer.
-
-/* replaces app_shell version with local randomizer, so all the static
-functions can employ it also. */
-#define randomizer() _rando
+SAFE_STATIC(chaos, _rando, );
+////chaos _rando;  // our randomizer.
+/* replaces app_shell version with local static randomizer. */
+#define randomizer() _rando()
 
 entity_data_bin binger(MAXIMUM_DATA_PER_ENTITY);
 
@@ -173,6 +187,7 @@ public:
 
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
+    if (!__time_to_start()) return;  // starting gun hasn't fired yet.
     // add a new item to the cache.
     int how_many = randomizer().inclusive(MINIMUM_ITEMS_HANDLED,
         MAXIMUM_ITEMS_HANDLED);
@@ -219,6 +234,7 @@ public:
 
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
+    if (!__time_to_start()) return;  // starting gun hasn't fired yet.
     int how_many = randomizer().inclusive(MINIMUM_ITEMS_HANDLED,
         MAXIMUM_ITEMS_HANDLED);
     for (int i = 0; i < how_many; i++) {
@@ -256,6 +272,7 @@ public:
 
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
+    if (!__time_to_start()) return;  // starting gun hasn't fired yet.
     // make sure there's nothing rotting too long.
     binger.clean_out_deadwood(DATA_DECAY_TIME);
     // snooze.
@@ -284,6 +301,7 @@ public:
 
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
+    if (!__time_to_start()) return;  // starting gun hasn't fired yet.
     // one activation of monk has devastating consequences.  we empty out
     // the data one item at a time until we see no data at all.  after
     // cleaning each item, we ensure that the deadwood is cleaned out.
@@ -359,29 +377,30 @@ int test_entity_data_bin_threaded::execute()
     thread_list[thread_list.elements() - 1]->start(NULL_POINTER);
   }
 
+  // set our sentinel variable to allow the threads to run now.
+  __time_to_start() = true;
+
   time_stamp when_to_leave(duration);
   while (when_to_leave > time_stamp()) {
-    time_control::sleep_ms(100);
+    time_control::sleep_ms(20);
   }
 
+  LOG("now cancelling all threads...");
 //hmmm: this code shouldn't be needed!  thread cabinet should do it!!!!
-///LOG("now cancelling all threads....");
 ///for (int j = 0; j < thread_list.elements(); j++) thread_list[j]->cancel();
 ///LOG("now stopping all threads....");
 ///for (int k = 0; k < thread_list.elements(); k++) thread_list[k]->stop();
 ///LOG("resetting thread list....");
-
   thread_list.reset();  // should whack all threads.
 
-  LOG("done exiting from all threads....");
+  LOG("done exiting from all threads.");
 
 //report the results:
 // how many objects created.
 // how many got destroyed.
 // how many evaporated due to timeout.
 
-
-  critical_events::alert_message("t_bin_threaded:: works for all functions tested.");
+  critical_events::alert_message(astring(class_name()) + ":: works for all functions tested.");
   return 0;
 }
 
