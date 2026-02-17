@@ -19,7 +19,12 @@
 #include <application/application_shell.h>
 #include <application/hoople_main.h>
 #include <basis/functions.h>
+#include <filesystem/directory.h>
+#include <filesystem/filename.h>
 #include <loggers/console_logger.h>
+#include <loggers/critical_events.h>
+#include <mathematics/chaos.h>
+#include <processes/launch_process.h>
 #include <structures/static_memory_gremlin.h>
 #include <structures/string_array.h>
 #include <tentacles/file_transfer_tentacle.h>
@@ -28,11 +33,11 @@
 
 using namespace application;
 using namespace basis;
-//using namespace configuration;
+using namespace filesystem;
 using namespace loggers;
 using namespace mathematics;
 using namespace octopi;
-//using namespace sockets;
+using namespace processes;
 using namespace structures;
 using namespace textual;
 using namespace unit_test;
@@ -42,28 +47,69 @@ using namespace unit_test;
 class test_file_transfer_tentacle : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_file_transfer_tentacle() : application_shell() {}
+  test_file_transfer_tentacle() : application_shell() {
+    DEFAULT_SOURCE_DIRECTORY = environment::get("FEISTY_MEOW_SCRIPTS");
+    DEFAULT_TARGET_DIRECTORY = environment::get("HOME") + a_sprintf("/tftt_junkdir_%d", randomizer().inclusive(1, 65535));
+  }
   DEFINE_CLASS_NAME("test_dirtree_fcopy");
   int execute();
+  void print_instructions();
+
+private:
+  astring DEFAULT_SOURCE_DIRECTORY;
+  astring DEFAULT_TARGET_DIRECTORY;
 };
 
-int test_file_transfer_tentacle::execute()
+void test_file_transfer_tentacle::print_instructions()
 {
-  FUNCDEF("execute");
-
-  if (application::_global_argc < 3) {
-    LOG("\
+  FUNCDEF("print_instructions");
+  LOG("\
 This program needs two parameters:\n\
 a directory for the source root and one for the target root.\n\
 Optionally, a third parameter may specify a starting point within the\n\
 source root.\n\
 Further, if fourth or more parameters are found, they are taken to be\n\
 files to include; only they will be transferred.\n");
-    return 23;
+
+}
+
+int test_file_transfer_tentacle::execute()
+{
+  FUNCDEF("execute");
+
+///  if (application::_global_argc < 3) {
+///    print_instructions();
+///    return 23;
+///  }
+
+  astring source_dir = "";
+  if (application::_global_argc > 2) source_dir = application::_global_argv[1];
+  if (source_dir.empty()) {
+    LOG(astring("using default source directory: ") + DEFAULT_SOURCE_DIRECTORY);
+    source_dir = DEFAULT_SOURCE_DIRECTORY;
+  }
+  astring target_dir = "";
+  if (application::_global_argc > 3) target_dir = application::_global_argv[2];
+  if (target_dir.empty()) {
+    LOG(astring("using default target directory: ") + DEFAULT_TARGET_DIRECTORY);
+    target_dir = DEFAULT_TARGET_DIRECTORY;
+    bool made_it = directory::make_directory(target_dir);
+    if (!made_it) {
+      deadly_error(class_name(), func, astring("failed to create target directory for copying: ") + target_dir);
+    }
   }
 
-  astring source_dir = application::_global_argv[1];
-  astring target_dir = application::_global_argv[2];
+  // do some verification of what we were handed as directories.
+  filename source(source_dir);
+  if (!source.exists() || !source.is_directory()) {
+    print_instructions();
+    return 23;
+  }
+  filename target(target_dir);
+  if (!target.exists() || !target.is_directory()) {
+    print_instructions();
+    return 23;
+  }
 
   astring source_start = "";
   if (application::_global_argc >= 4) {
@@ -77,125 +123,35 @@ files to include; only they will be transferred.\n");
     }
   }
 
-
   outcome returned = recursive_file_copy::copy_hierarchy
       (file_transfer_tentacle::COMPARE_SIZE_AND_TIME, source_dir,
       target_dir, includes, source_start);
 
-/*
-this better be old code that was made redundant by creation of the copy_hierarchy method.
-otherwise, why is all this disabled?
 
-  astring source_root = "snootums";
-  if (source_start.t()) {
-    source_root += filename::default_separator() + source_start;
+  int retval = 0;  // dress for success (then re-clothe after wardrobe malfunctions).
+
+  if (returned == common::OKAY) {
+//hmmm: now check the contents with differ or something independent of our code.
+//returned = more results from that
   }
 
-  tcpip_stack stack;
-  octopus ring_leader(stack.hostname(), 10 * MEGABYTE);
-  file_transfer_tentacle *tran = new file_transfer_tentacle(MAX_CHUNK, false);
-  ring_leader.add_tentacle(tran);
-
-  outcome add_ret = tran->add_correspondence("snootums", source_dir,
-      10 * MINUTE_ms);
-  if (add_ret != tentacle::OKAY)
-    deadly_error(class_name(), func, "failed to add the correspondence");
-
-  file_transfer_infoton *initiate = new file_transfer_infoton;
-  initiate->_request = true;
-  initiate->_command = file_transfer_infoton::TREE_COMPARISON;
-  initiate->_src_root = source_root;
-  initiate->_dest_root = target_dir;
-  directory_tree target_area(target_dir);
-  target_area.calculate();
-  initiate->package_tree_info(target_area, includes);
-
-  octopus_entity ent = ring_leader.issue_identity();
-  octopus_request_id req_id(ent, 1);
-  outcome start_ret = ring_leader.evaluate(initiate, req_id);
-  if (start_ret != tentacle::OKAY)
-    deadly_error(class_name(), func, "failed to start the comparison");
-
-  file_transfer_infoton *reply_from_init
-      = (file_transfer_infoton *)ring_leader.acquire_specific_result(req_id);
-  if (!reply_from_init)
-    deadly_error(class_name(), func, "no response to tree compare start");
-
-  filename_list diffs;
-  byte_array pack_copy = reply_from_init->_packed_data;
-  if (!diffs.unpack(pack_copy))
-    deadly_error(class_name(), func, "could not unpack filename list!");
-//  LOG(astring("got list of diffs:\n") + diffs.text_form());
-
-  octopus client_spider(stack.hostname(), 10 * MEGABYTE);
-  file_transfer_tentacle *tran2 = new file_transfer_tentacle(MAX_CHUNK, false);
-  tran2->register_file_transfer(ent, source_root, target_dir, includes);
-  client_spider.add_tentacle(tran2);
-
-  octopus_request_id resp_id(ent, 2);
-  outcome ini_resp_ret = client_spider.evaluate(reply_from_init, resp_id);
-  if (ini_resp_ret != tentacle::OKAY)
-    deadly_error(class_name(), func, "failed to process the start response!");
-
-  infoton *junk = client_spider.acquire_specific_result(resp_id);
-  if (junk)
-    deadly_error(class_name(), func, "got a response we shouldn't have!");
-
-  int iter = 0;
-  while (true) {
-LOG(a_sprintf("ongoing chunk %d", ++iter));
-
-    // keep going until we find a broken reply.
-    file_transfer_infoton *ongoing = new file_transfer_infoton;
-    ongoing->_request = true;
-    ongoing->_command = file_transfer_infoton::PLACE_FILE_CHUNKS;
-    ongoing->_src_root = source_root;
-    ongoing->_dest_root = target_dir;
-
-    octopus_request_id chunk_id(ent, iter + 10);
-    outcome place_ret = ring_leader.evaluate(ongoing, chunk_id);
-    if (place_ret != tentacle::OKAY)
-      deadly_error(class_name(), func, "failed to run ongoing transfer");
-  
-    file_transfer_infoton *reply = (file_transfer_infoton *)ring_leader
-         .acquire_specific_result(chunk_id);
-    if (!reply)
-      deadly_error(class_name(), func, "failed to get ongoing transfer reply");
-
-    if (!reply->_packed_data.length()) {
-      LOG("hit termination condition: no data packed in for file chunks.");
-      break;
-    }
-
-    byte_array copy = reply->_packed_data;
-    while (copy.length()) {
-      file_transfer_header head;
-      if (!head.unpack(copy)) 
-        deadly_error(class_name(), func, "failed to unpack header");
-LOG(astring("header: ") + head.text_form());
-LOG(a_sprintf("size in array: %d", copy.length()));
-      if (copy.length() < head._length)
-        deadly_error(class_name(), func, "not enough length in array");
-      copy.zap(0, head._length - 1);
-LOG(a_sprintf("size in array now: %d", copy.length()));
-    }
-    if (copy.length())
-      deadly_error(class_name(), func, "still had data in array");
-
-    octopus_request_id resp_id(ent, iter + 11);
-    outcome resp_ret = client_spider.evaluate(reply, resp_id);
-    if (resp_ret != tentacle::OKAY)
-      deadly_error(class_name(), func, "failed to process the transfer reply!");
-  
+  // delete the temporary directory.
+  launch_process launcher;
+  un_int kid_id = 0;
+  un_int rm_result = launcher.run("rm", astring("-rf ") + target_dir, launch_process::AWAIT_APP_EXIT, kid_id);
+  if (rm_result != 0) {
+    critical_events::alert_message(astring(class_name()) + ":: failed to remove temporary directory '" + target_dir + a_sprintf("' with OS exit value of %d", rm_result));
+    // this is just a guess at what failure occurred in terms of our outcomes; the log should show more details.
+    returned = common::ACCESS_DENIED;
   }
-*/
-
+  
   if (returned == common::OKAY)
-    critical_events::alert_message("file_transfer_tentacle:: works for those "
+    critical_events::alert_message(astring(class_name()) + ":: works for those "
         "functions tested.");
   else
-    critical_events::alert_message(astring("file_transfer_tentacle:: failed with "
-        "outcome=") + recursive_file_copy::outcome_name(returned));
+    critical_events::alert_message(astring(class_name()) + "file_transfer_tentacle:: failed with "
+        "outcome=" + recursive_file_copy::outcome_name(returned));
+
   return 0;
 }
 
