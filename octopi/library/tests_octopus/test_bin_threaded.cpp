@@ -221,8 +221,8 @@ public:
       if (!__threads_can_run_wild_and_free()) { sleep_time(MIN_ADDER_THREAD_PAUSE); return; }
       unhandled_request *newbert = new unhandled_request(create_request_id(),
           random_strings);
-      BASE_LOG("+");
       binger.add_item(newbert, create_request_id());
+      BASE_LOG("+");
     }
 
     // snooze.
@@ -265,8 +265,8 @@ public:
       octopus_request_id id;
       infoton *found = binger.acquire_for_any(id);
       if (!found) break;  // nothing to whack there.
-      BASE_LOG("-");
       WHACK(found);
+      BASE_LOG("-");
     }
     // snooze.
     int sleepy_time = randomizer().inclusive(MIN_WHACKER_THREAD_PAUSE,
@@ -343,8 +343,8 @@ LOG(a_sprintf("monk sees %d items and will clean them all.", binger.items_held()
       infoton *found = binger.acquire_for_any(id);
       if (!found) break;  // nothing to see here.
       check_count++;
-      BASE_LOG("-");
       WHACK(found);
+      BASE_LOG("-");
       // also clean out things a lot faster than normal.  
       binger.clean_out_deadwood(MONKS_CLEANING_TIME);
 //hmmm: interesting--deadwood cleaning above will possibly cause us not to clean out the number of items reported above for items_held().
