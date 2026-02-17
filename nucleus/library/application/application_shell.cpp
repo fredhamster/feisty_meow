@@ -84,7 +84,7 @@ int application_shell::execute_application()
   } catch (...) {
     printf("BOOM: caught exception: unhandled type!\n");
   }
-printf("got to just before return, and exit value is %d currently.", c_exit_value);
+//printf("got to just before return, and exit value is %d currently.", c_exit_value);
   return c_exit_value;
 }
 
