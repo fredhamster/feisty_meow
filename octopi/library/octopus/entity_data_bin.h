@@ -64,7 +64,7 @@ public:
     // the lock on the bin, but if it's zero then that's a good reason to
     // avoid looking for data yet.
 
-  bool get_sizes(const octopus_entity &id, int &items, int &bytes);
+  bool get_sizes(const octopus_entity &id, int &items, int &bytes) const;
     // finds the storage for "id".  if there is any there, true is returned
     // and "items" is set to the number of pending items and "bytes" is set
     // to the number of bytes for those items.

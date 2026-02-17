@@ -16,20 +16,33 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/functions.h>
-#include <structures/string_array.h>
-#include <structures/static_memory_gremlin.h>
-#include <loggers/console_logger.h>
 #include <application/application_shell.h>
+#include <application/hoople_main.h>
+#include <basis/functions.h>
+#include <loggers/console_logger.h>
+#include <structures/static_memory_gremlin.h>
+#include <structures/string_array.h>
 #include <tentacles/file_transfer_tentacle.h>
 #include <tentacles/recursive_file_copy.h>
+#include <unit_test/unit_base.h>
 
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
+using namespace application;
+using namespace basis;
+//using namespace configuration;
+using namespace loggers;
+using namespace mathematics;
+using namespace octopi;
+//using namespace sockets;
+using namespace structures;
+using namespace textual;
+using namespace unit_test;
 
-class test_file_transfer_tentacle : public application_shell
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+
+class test_file_transfer_tentacle : virtual public unit_base, virtual public application_shell
 {
 public:
-  test_file_transfer_tentacle() : application_shell(static_class_name()) {}
+  test_file_transfer_tentacle() : application_shell() {}
   DEFINE_CLASS_NAME("test_dirtree_fcopy");
   int execute();
 };
@@ -38,8 +51,8 @@ int test_file_transfer_tentacle::execute()
 {
   FUNCDEF("execute");
 
-  if (__argc < 3) {
-    log("\
+  if (application::_global_argc < 3) {
+    LOG("\
 This program needs two parameters:\n\
 a directory for the source root and one for the target root.\n\
 Optionally, a third parameter may specify a starting point within the\n\
@@ -49,18 +62,18 @@ files to include; only they will be transferred.\n");
     return 23;
   }
 
-  astring source_dir = __argv[1];
-  astring target_dir = __argv[2];
+  astring source_dir = application::_global_argv[1];
+  astring target_dir = application::_global_argv[2];
 
   astring source_start = "";
-  if (__argc >= 4) {
-    source_start = __argv[3];
+  if (application::_global_argc >= 4) {
+    source_start = application::_global_argv[3];
   }
 
   string_array includes;
-  if (__argc >= 5) {
-    for (int i = 4; i < __argc; i++) {
-      includes += __argv[i];
+  if (application::_global_argc >= 5) {
+    for (int i = 4; i < application::_global_argc; i++) {
+      includes += application::_global_argv[i];
     }
   }
 
@@ -175,10 +188,10 @@ LOG(a_sprintf("size in array now: %d", copy.length()));
 */
 
   if (returned == common::OKAY)
-    guards::alert_message("file_transfer_tentacle:: works for those "
+    critical_events::alert_message("file_transfer_tentacle:: works for those "
         "functions tested.");
   else
-    guards::alert_message(astring("file_transfer_tentacle:: failed with "
+    critical_events::alert_message(astring("file_transfer_tentacle:: failed with "
         "outcome=") + recursive_file_copy::outcome_name(returned));
   return 0;
 }
