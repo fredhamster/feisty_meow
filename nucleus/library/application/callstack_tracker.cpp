@@ -3,14 +3,14 @@
 *  Name   : callstack_tracker
 *  Author : Chris Koeritz
 *
-*******************************************************************************
-* Copyright (c) 2007-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
-\*****************************************************************************/
+*
+* Copyright (c) 2007-$now By Author.  This program is free software; you can
+* redistribute it and/or modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either version 2 of
+* the License or (at your option) any later version.  This is online at:
+*     http://www.fsf.org/copyleft/gpl.html
+* Please send any updates to: fred@gruntose.com
+*/
 
 #ifdef ENABLE_CALLSTACK_TRACKING
 
@@ -65,9 +65,11 @@ callstack_tracker &thread_wide_stack_trace()
 #ifdef ENABLE_MEMORY_HOOK
     program_wide_memories().disable();
       /* we don't want infinite loops tracking the call stack during this object's construction. */
+
 //hmmm: does that disable the progwide memories for the whole program or just for this thread?
 //      and what does that entail exactly?
 //      did it actually fix the problem we saw?
+
 #endif
     _hidden_trace = new callstack_tracker;
 #ifdef ENABLE_MEMORY_HOOK
@@ -87,12 +89,14 @@ public:
 
 //////////////
 
-// our current depth gives us our position in the array.  we define our
-// stack as starting at element zero, which is a null stack entry and
-// corresponds to a depth of zero also.  then, when the stack depth is one,
-// we actually have an element in place and it resides at index 1.  this
-// scheme allows us to have an update to the line number just do nothing when
-// there is no current stack.
+/*
+  our current depth gives us our position in the array.  we define our
+  stack as starting at element zero, which is a null stack entry and
+  corresponds to a depth of zero also.  then, when the stack depth is one,
+  we actually have an element in place and it resides at index 1.  this
+  scheme allows us to have an update to the line number just do nothing when
+  there is no current stack.
+*/
 
 callstack_tracker::callstack_tracker()
 : _bt(new callstack_records),
