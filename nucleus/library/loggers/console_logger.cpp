@@ -15,9 +15,12 @@
 #include "console_logger.h"
 #include "logging_filters.h"
 
+#include <textual/parser_bits.h>
+
 #include <stdio.h>
 
 using namespace basis;
+using namespace textual;
 
 namespace loggers {
 
@@ -33,28 +36,15 @@ if (filter) {} //temp ignored
 
   FILE *log_to = stdout;
   if (c_target == TO_STDERR) log_to = stderr;
-
-//hmmm: temp simplified form during bootup of new hoople.
-fprintf(log_to, "%s\n", (char *)info.observe());
-
-/*
-hmmm: need filter set support!
   if (member(filter)) {
-*/
     // format the output with %s to ensure we get all characters, rather
     // than having some get interpreted if we used info as the format spec.
-//    fprintf(log_to, "%s", (char *)info.s());
+    fprintf(log_to, "%s", (char *)info.observe());
     // send the EOL char if the style is appropriate for that.
-//    if (eol() != NO_ENDING) fprintf(log_to, "%s", get_ending().s());
-
-
+    if (eol() != parser_bits::NO_ENDING) fprintf(log_to, "%s", get_ending().s());
     // write immediately to avoid lost output on crash.
     fflush(log_to);
-
-/*
-hmmm: need filter set support!
   }
-*/
   return common::OKAY;
 }
 

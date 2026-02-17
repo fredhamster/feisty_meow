@@ -6,7 +6,7 @@ PROJECT = test_cromp
 TYPE = test
 TARGETS = test_cromp_client.exe test_cromp_server.exe test_many_cromp.exe
 LOCAL_LIBS_USED = unit_test crypto application configuration filesystem loggers \
-  mathematics nodes processes sockets structures textual timely octopus cromp \
+  mathematics nodes processes sockets structures textual timely cromp octopus \
   tentacles structures basis 
 USE_SSL = t
 LAST_TARGETS = create_decoder_ring run_client_server_test

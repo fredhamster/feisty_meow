@@ -234,20 +234,29 @@ bool entity_data_bin::add_item(infoton *to_add,
 
   bask->_last_active = time_stamp();  // reset activity time.
 
-  // count up the current amount of data in use.
-  int current_size = 0;
-  for (int i = 0; i < bask->elements(); i++)
-    current_size += bask->borrow(i)->_item->packed_size();
-
+  // count the current amount of data in use.
+  int current_count = 0; int current_size = 0;
+  bool worked = get_sizes(orig_id._entity, current_count, current_size);
+#ifdef DEBUG_ENTITY_DATA_BIN
+//  LOG(a_sprintf("size before add=%d", current_size));
+#endif
   if (current_size + to_add->packed_size() > _max_per_ent) {
+#ifdef DEBUG_ENTITY_DATA_BIN
+    LOG(a_sprintf("size limit would be exceeded if we stored this product (would grow to %d with limit of %d).", current_size + to_add->packed_size(), _max_per_ent));
+#endif
     WHACK(holder);
-LOG(astring("size limit would be exceeded if we stored this product"));
     return false;
   }
   
   // append the latest production to the list.
   bask->append(holder);
   _items_held++;
+
+#ifdef DEBUG_ENTITY_DATA_BIN
+//  worked = get_sizes(orig_id._entity, current_count, current_size);
+//  LOG(a_sprintf("size after add=%d", current_size));
+#endif
+
   return true;
 }
 
@@ -277,6 +286,12 @@ infoton *entity_data_bin::acquire_for_any(octopus_request_id &id)
   _table->apply(any_item_applier, &apple);
   if (!apple._any_item) return NULL_POINTER;
   DUMP_STATE;
+#ifdef DEBUG_ENTITY_DATA_BIN
+//  int current_count = 0;
+//  int current_size = 0;
+//  bool worked = get_sizes(id._entity, current_count, current_size);
+//  LOG(a_sprintf("size before remove=%d", current_size));
+#endif
   // retrieve the information from our basket that was provided.
   infoton_holder *found = apple._any_item->acquire(0);
   apple._any_item->zap(0, 0);
@@ -293,10 +308,16 @@ infoton *entity_data_bin::acquire_for_any(octopus_request_id &id)
   found->_item = NULL_POINTER;  // clear so it won't be whacked.
   WHACK(found);
   _items_held--;
+
 //#ifdef DEBUG_ENTITY_DATA_BIN
   if (_items_held < 0)
     LOG("logic error: number of items went below zero.");
 //#endif
+
+#ifdef DEBUG_ENTITY_DATA_BIN
+//  worked = get_sizes(id._entity, current_count, current_size);
+//  LOG(a_sprintf("size after remove=%d", current_size));
+#endif
   return to_return;
 }
 
@@ -469,8 +490,7 @@ void entity_data_bin::clean_out_deadwood(int decay_interval)
   }
 }
 
-bool entity_data_bin::get_sizes(const octopus_entity &id, int &items,
-    int &bytes)
+bool entity_data_bin::get_sizes(const octopus_entity &id, int &items, int &bytes) const
 {
   FUNCDEF("get_sizes");
   items = 0;

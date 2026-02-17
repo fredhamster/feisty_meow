@@ -12,14 +12,14 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <application/hoople_main.h>
 #include <application/application_shell.h>
+#include <application/hoople_main.h>
 #include <basis/byte_array.h>
-#include <configuration/application_configuration.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
 #include <basis/astring.h>
 #include <basis/mutex.h>
+#include <configuration/application_configuration.h>
 #include <loggers/console_logger.h>
 #include <mathematics/chaos.h>
 #include <octopus/entity_data_bin.h>
@@ -52,10 +52,43 @@ using namespace textual;
 using namespace timely;
 using namespace unit_test;
 
+// our macros for logging (with or without a timestamp).
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s))
+
+// the base log feature just prints the text to the console with no carriage return or extra flair.
+// it does count up how many characters have been printed though, and does an EOL when it seems like it would be reasonable (80 chars-ish).
+// note that this code makes no attempt to worry about any other printing that's happening; it has a very egocentric view of what's on the
+// terminal so far.
+static int chars_printed = 0;
+const int MAXIMUM_CHARS_PER_LINE = 108;
+//hmmm: may want to make the line size selectable, if we keep some version of this code around.
+SAFE_STATIC(console_logger, ted, );
+SAFE_STATIC(mutex, __teds_lock, )
+#define BASE_LOG(s) { \
+  auto_synchronizer critical_section(__teds_lock()); \
+  /* we set the eol every time, since console_logger constructor doesn't currently provide. */ \
+  ted().eol(parser_bits::NO_ENDING); \
+  astring joe(s); \
+  int len = joe.length(); \
+  /* naive check for line length. */ \
+  if (chars_printed + len > MAXIMUM_CHARS_PER_LINE) { \
+    ted().log(astring("\n"), basis::ALWAYS_PRINT); \
+    chars_printed = 0; \
+  } \
+  chars_printed += len; \
+  ted().log(joe, basis::ALWAYS_PRINT); \
+}
+
 // global constants...
 
+//const int DEFAULT_RUN_TIME = 80 * MINUTE_ms;
+//const int DEFAULT_RUN_TIME = 2 * MINUTE_ms;
+//const int DEFAULT_RUN_TIME = 28 * SECOND_ms;
+const int DEFAULT_RUN_TIME = 4 * SECOND_ms;
+  // the length of time to run the program.
+
 // how much data is the entity data bin allowed to hold at one time.
-const int MAXIMUM_DATA_PER_ENTITY = 1 * KILOBYTE;
+const int MAXIMUM_DATA_PER_ENTITY = 5 * KILOBYTE;
 //tiny limit to test having too much data.
 
 // controls the timing of the thread that adds items.
@@ -63,6 +96,7 @@ const int MIN_ADDER_THREAD_PAUSE = 3;
 const int MAX_ADDER_THREAD_PAUSE = 20;
 
 // controls the timing of the item deleting thread.
+// we currently have this biased to be slower than the adder, so things accumulate.
 const int MIN_WHACKER_THREAD_PAUSE = 8;
 const int MAX_WHACKER_THREAD_PAUSE = 70;
 
@@ -70,21 +104,16 @@ const int MAX_WHACKER_THREAD_PAUSE = 70;
 const int MIN_TIDIER_THREAD_PAUSE = 60;
 const int MAX_TIDIER_THREAD_PAUSE = 500;
 
-// monk is kept asleep most of the time or he'd be trashing
-// all our data too frequently.
-const int MIN_MONK_THREAD_PAUSE = 2 * MINUTE_ms;
-const int MAX_MONK_THREAD_PAUSE = 4 * MINUTE_ms;
+// monk is kept asleep most of the time or he'd be trashing all our data too frequently.
+const int MIN_MONK_THREAD_PAUSE = 42 * SECOND_ms;
+const int MAX_MONK_THREAD_PAUSE = 64 * SECOND_ms;
 
-// the range of new items added whenever the creator thread is hit.
-const int MINIMUM_ITEMS_ADDED = 1;
-const int MAXIMUM_ITEMS_ADDED = 20;
+// the range of new items added whenever the creator or destroyer threads are hit.
+const int MINIMUM_ITEMS_HANDLED = 1;
+const int MAXIMUM_ITEMS_HANDLED = 20;
 
 const int DEFAULT_THREADS = 90;
   // the number of threads we create by default.
-
-const int DEFAULT_RUN_TIME = 80 * MINUTE_ms;
-//2 * MINUTE_ms;
-  // the length of time to run the program.
 
 const int DATA_DECAY_TIME = 1 * MINUTE_ms;
   // how long we retain unclaimed data.
@@ -92,16 +121,12 @@ const int DATA_DECAY_TIME = 1 * MINUTE_ms;
 const int MONKS_CLEANING_TIME = 10 * SECOND_ms;
   // a very short duration for data to live.
 
-#define LOG(to_print) printf("%s\n", (char *)astring(to_print).s());
-//CLASS_EMERGENCY_LOG(program_wide_logger::get().get(), to_print)
-  // our macro for logging with a timestamp.
-
 // global objects...
 
 chaos _rando;  // our randomizer.
 
-// replace app_shell version with local randomizer, so all the static
-// functions can employ it also.
+/* replaces app_shell version with local randomizer, so all the static
+functions can employ it also. */
 #define randomizer() _rando
 
 entity_data_bin binger(MAXIMUM_DATA_PER_ENTITY);
@@ -130,10 +155,11 @@ octopus_request_id create_request_id()
 }
 
 // this thread creates new items for the entity data bin.
+// also known as the adder.
 class ballot_box_stuffer : public ethread
 {
 public:
-  ballot_box_stuffer() : ethread(0) {
+  ballot_box_stuffer() : ethread(MIN_ADDER_THREAD_PAUSE) {
     FUNCDEF("constructor");
     LOG("+creator");
   }
@@ -147,37 +173,41 @@ public:
 
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
-    while (!should_stop()) {
-      // add a new item to the cache.
-      int how_many = randomizer().inclusive(MINIMUM_ITEMS_ADDED,
-          MAXIMUM_ITEMS_ADDED);
-      for (int i = 0; i < how_many; i++) {
-        string_array random_strings;
-        int string_count = randomizer().inclusive(1, 10);
-        // we create a random classifier, just to use up some space.
-        for (int q = 0; q < string_count; q++) {
-          random_strings += string_manipulation::make_random_name();
-        }
-        unhandled_request *newbert = new unhandled_request(create_request_id(),
-            random_strings);
-        binger.add_item(newbert, create_request_id());
+    // add a new item to the cache.
+    int how_many = randomizer().inclusive(MINIMUM_ITEMS_HANDLED,
+        MAXIMUM_ITEMS_HANDLED);
+    for (int i = 0; i < how_many; i++) {
+      string_array random_strings;
+      int string_count = randomizer().inclusive(1, 10);
+      // we create a random classifier, just to use up some space.
+      for (int q = 0; q < string_count; q++) {
+        random_strings += string_manipulation::make_random_name();
       }
-      // snooze.
-      int sleepy_time = randomizer().inclusive(MIN_ADDER_THREAD_PAUSE,
-          MAX_ADDER_THREAD_PAUSE);
-      time_control::sleep_ms(sleepy_time);
+      unhandled_request *newbert = new unhandled_request(create_request_id(),
+          random_strings);
+      BASE_LOG("+");
+      binger.add_item(newbert, create_request_id());
     }
-  }
 
+    // snooze.
+    int sleepy_time = randomizer().inclusive(MIN_ADDER_THREAD_PAUSE,
+        MAX_ADDER_THREAD_PAUSE);
+    time_control::sleep_ms(sleepy_time);
+    // reset the thread's snooze timing.
+    ethread::sleep_time(sleepy_time);
+  }
 };
 
+//////////////
+
 // this thread eliminates entries in the ballot box.
+// also known as the whacker.
 class vote_destroyer : public ethread
 {
 public:
-  vote_destroyer() : ethread(0) {
+  vote_destroyer() : ethread(MIN_WHACKER_THREAD_PAUSE) {
     FUNCDEF("constructor");
-    LOG("+destroyer");
+    BASE_LOG("+destroyer");
   }
 
   virtual ~vote_destroyer() {
@@ -189,16 +219,22 @@ public:
 
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
-    while (!should_stop()) {
+    int how_many = randomizer().inclusive(MINIMUM_ITEMS_HANDLED,
+        MAXIMUM_ITEMS_HANDLED);
+    for (int i = 0; i < how_many; i++) {
       // snag any old item and drop it on the floor.
       octopus_request_id id;
       infoton *found = binger.acquire_for_any(id);
+      if (!found) break;  // nothing to whack there.
+      BASE_LOG("-");
       WHACK(found);
-      // snooze.
-      int sleepy_time = randomizer().inclusive(MIN_WHACKER_THREAD_PAUSE,
-          MAX_WHACKER_THREAD_PAUSE);
-      time_control::sleep_ms(sleepy_time);
     }
+    // snooze.
+    int sleepy_time = randomizer().inclusive(MIN_WHACKER_THREAD_PAUSE,
+        MAX_WHACKER_THREAD_PAUSE);
+    time_control::sleep_ms(sleepy_time);
+    // re-schedule the thread.
+    ethread::sleep_time(sleepy_time);
   }
 };
 
@@ -220,14 +256,13 @@ public:
 
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
-    while (!should_stop()) {
-      // make sure there's nothing rotting too long.
-      binger.clean_out_deadwood(DATA_DECAY_TIME);
-      // snooze.
-      int sleepy_time = randomizer().inclusive(MIN_TIDIER_THREAD_PAUSE,
-          MAX_TIDIER_THREAD_PAUSE);
-      time_control::sleep_ms(sleepy_time);
-    }
+    // make sure there's nothing rotting too long.
+    binger.clean_out_deadwood(DATA_DECAY_TIME);
+    // snooze.
+    int sleepy_time = randomizer().inclusive(MIN_TIDIER_THREAD_PAUSE,
+        MAX_TIDIER_THREAD_PAUSE);
+    time_control::sleep_ms(sleepy_time);
+    ethread::sleep_time(sleepy_time);
   }
 };
 
@@ -249,30 +284,29 @@ public:
 
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
-    while (!should_stop()) {
-      {
-        // one activation of monk has devastating consequences.  we empty out
-        // the data one item at a time until we see no data at all.  after
-        // cleaning each item, we ensure that the deadwood is cleaned out.
-////      binger._ent_lock->lock();
-        auto_synchronizer l(binger.locker());
-LOG(a_sprintf("monk sees %d items.", binger.items_held()));
-        while (binger.items_held()) {
-          // grab one instance of any item in the bin.
-          octopus_request_id id;
-          infoton *found = binger.acquire_for_any(id);
-          WHACK(found);
-          // also clean out things a lot faster than normal.  
-          binger.clean_out_deadwood(MONKS_CLEANING_TIME);
-        }
-///      binger._ent_lock->unlock();
-      }
-LOG(a_sprintf("after a little cleaning, monk sees %d items.", binger.items_held()));
-      // snooze.
-      int sleepy_time = randomizer().inclusive(MIN_MONK_THREAD_PAUSE,
-          MAX_MONK_THREAD_PAUSE);
-      time_control::sleep_ms(sleepy_time);
+    // one activation of monk has devastating consequences.  we empty out
+    // the data one item at a time until we see no data at all.  after
+    // cleaning each item, we ensure that the deadwood is cleaned out.
+    auto_synchronizer l(binger.locker());
+LOG(a_sprintf("monk sees %d items and will clean them all.", binger.items_held()));
+    while (binger.items_held()) {
+      // grab one instance of any item in the bin.
+      octopus_request_id id;
+      infoton *found = binger.acquire_for_any(id);
+      if (!found) break;  // nothing to see here.
+      BASE_LOG("-");
+      WHACK(found);
+      // also clean out things a lot faster than normal.  
+      binger.clean_out_deadwood(MONKS_CLEANING_TIME);
     }
+LOG(a_sprintf("after a little light cleaning, monk sees %d items.", binger.items_held()));
+    // snooze.
+    int sleepy_time = randomizer().inclusive(MIN_MONK_THREAD_PAUSE, MAX_MONK_THREAD_PAUSE);
+    // reschedule the thread for the new snooze.  and note how we are not actually stuck waiting
+    // for the whole sleep time, given how ethread works with timed threads.  an old implementation
+    // actually slept uninterruptably for the whole snooze time, which was really off-putting and
+    // rude.
+    ethread::sleep_time(sleepy_time);
   }
 };
 
@@ -291,6 +325,17 @@ public:
 int test_entity_data_bin_threaded::execute()
 {
   FUNCDEF("execute");
+
+  int duration = DEFAULT_RUN_TIME;
+  if (application::_global_argc >= 2) {
+    astring duration_string = application::_global_argv[1];
+    if (duration_string.length()) {
+      duration = duration_string.convert(DEFAULT_RUN_TIME);
+      LOG(a_sprintf("user specified runtime duration of %d seconds.", duration));
+      // convert from seconds to milliseconds.
+      duration *= SECOND_ms;
+    }
+  }
 
   amorph<ethread> thread_list;
 
@@ -314,20 +359,17 @@ int test_entity_data_bin_threaded::execute()
     thread_list[thread_list.elements() - 1]->start(NULL_POINTER);
   }
 
-  time_stamp when_to_leave(DEFAULT_RUN_TIME);
+  time_stamp when_to_leave(duration);
   while (when_to_leave > time_stamp()) {
     time_control::sleep_ms(100);
   }
 
-//  LOG("now cancelling all threads....");
-
-//  for (int j = 0; j < thread_list.elements(); j++) thread_list[j]->cancel();
-
-//  LOG("now stopping all threads....");
-
-//  for (int k = 0; k < thread_list.elements(); k++) thread_list[k]->stop();
-
-//  LOG("resetting thread list....");
+//hmmm: this code shouldn't be needed!  thread cabinet should do it!!!!
+///LOG("now cancelling all threads....");
+///for (int j = 0; j < thread_list.elements(); j++) thread_list[j]->cancel();
+///LOG("now stopping all threads....");
+///for (int k = 0; k < thread_list.elements(); k++) thread_list[k]->stop();
+///LOG("resetting thread list....");
 
   thread_list.reset();  // should whack all threads.
 
