@@ -269,12 +269,12 @@ class obsessive_compulsive : public ethread
 public:
   obsessive_compulsive() : ethread(MIN_TIDIER_THREAD_PAUSE, ethread::TIGHT_INTERVAL) {
     FUNCDEF("constructor");
-    LOG("<< new cleaner <<");
+    LOG(">> new cleaner >>");
   }
 
   virtual ~obsessive_compulsive() {
     FUNCDEF("destructor");
-    LOG(">> cleaner exits >>");
+    LOG("<< cleaner exits <<");
   }
 
   DEFINE_CLASS_NAME("obsessive_compulsive");
@@ -405,14 +405,12 @@ int test_entity_data_bin_threaded::execute()
 
   __threads_can_run_wild_and_free() = false;
 
-#ifdef FANCY_UNNECESSARY_THREAD_STOP
-  //hmmm: this code shouldn't be needed!  thread cabinet should do it!!!!
+  /* we cancel all the threads first.  this gives them an opportunity to know 
+  they should shut down, and they will all go about that at their own rate.  if we
+  just killed the list with reset first, then the amorph would dutifully shut the
+  threads down also, but it would do them sequentially which is way slower. */
   LOG("now cancelling all threads...");
   for (int j = 0; j < thread_list.elements(); j++) { thread_list[j]->cancel(); }
-  LOG("now stopping all threads...");
-  for (int k = 0; k < thread_list.elements(); k++) { thread_list[k]->stop(); }
-#endif
-
   LOG("now resetting thread list...");
   thread_list.reset();  // should whack all threads.
   LOG("...done exiting from all threads.");
