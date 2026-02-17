@@ -83,6 +83,9 @@ files to include; only they will be transferred.\n");
       target_dir, includes, source_start);
 
 /*
+this better be old code that was made redundant by creation of the copy_hierarchy method.
+otherwise, why is all this disabled?
+
   astring source_root = "snootums";
   if (source_start.t()) {
     source_root += filename::default_separator() + source_start;

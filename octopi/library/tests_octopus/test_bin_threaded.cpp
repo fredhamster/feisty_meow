@@ -14,10 +14,10 @@
 
 #include <application/application_shell.h>
 #include <application/hoople_main.h>
+#include <basis/astring.h>
 #include <basis/byte_array.h>
 #include <basis/functions.h>
 #include <basis/guards.h>
-#include <basis/astring.h>
 #include <basis/mutex.h>
 #include <configuration/application_configuration.h>
 #include <loggers/console_logger.h>
@@ -52,6 +52,8 @@ using namespace textual;
 using namespace timely;
 using namespace unit_test;
 
+//////////////
+
 // synchronization for logged messages to avoid overwriting on the console.
 SAFE_STATIC(mutex, __loggers_lock, )
 
@@ -60,6 +62,8 @@ SAFE_STATIC(mutex, __loggers_lock, )
   auto_synchronizer critical_section(__loggers_lock()); \
   CLASS_EMERGENCY_LOG(program_wide_logger::get(), astring(s)); \
 }
+
+//////////////
 
 // the base log feature just prints the text to the console with no carriage return or extra flair.
 // it does count up how many characters have been printed though, and does an EOL when it seems like it would be reasonable (80 chars-ish).
@@ -84,6 +88,8 @@ SAFE_STATIC(console_logger, ted, );
 }
 //hmmm: may want to make the line size selectable, if we keep some version of the above line handling code around.
 
+//////////////
+
 // protects our logging stream really, by keeping all the threads chomping at the bit rather
 // than running right away.  when this flag switches to true, then *bam* they're off.
 class bool_scared_ya : public root_object {
@@ -98,6 +104,8 @@ private:
   bool _value;
 };
 SAFE_STATIC(bool_scared_ya, __threads_can_run_wild_and_free, (false));
+
+//////////////
 
 // global constants...
 
@@ -141,6 +149,8 @@ const int DATA_DECAY_TIME = 1 * MINUTE_ms;
 const int MONKS_CLEANING_TIME = 10 * SECOND_ms;
   // a very short duration for data to live.
 
+//////////////
+
 // global objects...
 
 SAFE_STATIC(chaos, _rando, );
@@ -149,6 +159,8 @@ SAFE_STATIC(chaos, _rando, );
 #define randomizer() _rando()
 
 entity_data_bin binger(MAXIMUM_DATA_PER_ENTITY);
+
+//////////////
 
 octopus_request_id create_request_id()
 {
@@ -172,6 +184,8 @@ octopus_request_id create_request_id()
   req_id._request_num = randomizer().inclusive(1, MAXINT32 - 10);
   return req_id;
 }
+
+//////////////
 
 // this thread creates new items for the entity data bin.
 // also known as the adder.
@@ -263,6 +277,8 @@ public:
   }
 };
 
+//////////////
+
 // this class makes sure the deadwood is cleaned out of the entity bin.
 class obsessive_compulsive : public ethread
 {
@@ -291,6 +307,8 @@ public:
     ethread::sleep_time(sleepy_time);
   }
 };
+
+//////////////
 
 // this thread will destroy all data in the bins while cleaning furiously.
 class monk_the_detective : public ethread
@@ -423,6 +441,8 @@ int test_entity_data_bin_threaded::execute()
   critical_events::alert_message(astring(class_name()) + ":: works for all functions tested.");
   return 0;
 }
+
+//////////////
 
 HOOPLE_MAIN(test_entity_data_bin_threaded, )
 
