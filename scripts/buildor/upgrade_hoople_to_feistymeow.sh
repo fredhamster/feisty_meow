@@ -163,6 +163,7 @@ standards and usages."
     | sed -e 's/^#include <mechanisms\/throughput_counter.h> *$/#include <sockets\/throughput_counter.h>/g' \
     | sed -e 's/^#include <application\/rendezvous.h> *$/#include <processes\/rendezvous.h>/g' \
     | sed -e 's/\([^A-Za-z0-9_]\)NIL\([^A-Za-z0-9_]\)/\1NULL_POINTER\2/g' \
+    | sed -e 's/^#include <mechanisms\/state_machine.h> *$/#include <processes\/state_machine.h>/g' \
     | sed -e 's/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/[\/]*/\/\/\/\/\/\/\/\/\/\/\/\/\/\//g' \
     >"$tempfile"
   

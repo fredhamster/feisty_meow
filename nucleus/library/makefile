@@ -19,6 +19,7 @@ BUILD_BEFORE = algorithms \
   tests_structures \
   tests_filesystem \
   tests_mathematics \
+  tests_processes \
   tests_nodes \
   tests_textual \
   tests_timely \
