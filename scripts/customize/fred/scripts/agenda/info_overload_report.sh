@@ -162,7 +162,7 @@ analyze_hierarchy_and_report $CLOUD_BASE/green_sky "sky is the limit ideas"
 # standardized name for it, or maybe there are prefixes for similar items (like project-).
 
 # high priority stuff would be called urgent.
-analyze_by_dir_patterns "high priority (aieeee!)" $CLOUD_BASE/*priority*
+analyze_by_dir_patterns "high priority (aieeee!)" $CLOUD_BASE/*priority* $CLOUD_BASE/*crucial*
 
 # scan all the items declared as active projects.
 analyze_by_dir_patterns "active issues" $CLOUD_BASE/*active* 
