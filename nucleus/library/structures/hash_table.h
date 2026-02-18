@@ -27,6 +27,11 @@
 
 namespace structures {
 
+const int HASH_FUDGE_FACTOR = 10;
+  // we fudge the number of elements requested by adding a little chunk, just in case.
+  // since we're going to take the power of 2 that comes closest, we can afford to be
+  // a little generous, rather than being too miserly.
+
 // forward.
 template <class key, class contents> class internal_hash_array;
 
@@ -279,11 +284,11 @@ hash_table<key_type, contents>::~hash_table()
 template <class key_type, class contents>
 int hash_table<key_type, contents>::calculate_num_slots(int estimated_elements)
 {
-//printf("elems wanted = %d\n", estimated_elements);
-  int log_2_truncated = int(log(float(estimated_elements)) / log(2.0));
-//printf("log 2 of elems, truncated = %d\n", log_2_truncated);
+//printf("[ elems wanted = %d, fudge adjusted = %d\n", estimated_elements, estimated_elements + HASH_FUDGE_FACTOR);
+  int log_2_truncated = int(log(float(estimated_elements + HASH_FUDGE_FACTOR)) / log(2.0));
+//printf("  log 2 of elems, truncated = %d\n", log_2_truncated);
   int slots_needed_for_elems = (int)pow(2.0, double(log_2_truncated + 1));
-//printf("slots needed = %d\n", slots_needed_for_elems );
+//printf("  slots needed = %d]\n", slots_needed_for_elems );
   return slots_needed_for_elems;
 }
 

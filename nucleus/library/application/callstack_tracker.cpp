@@ -26,6 +26,8 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <unordered_map>
 
 using namespace basis;
 
@@ -40,43 +42,78 @@ const int MAX_TEXT_FIELD = 1024;
 const char *emptiness_note = "Empty Stack\n";
   //!< what we show when the stack is empty.
 
+const int STACK_TRACKER_ELEMS = 200;
+  //!< fairly generous thread allotment for callstacks, before we start bucketing.
+
+// uncomment for noisier debugging logging.
+//#define DEBUG_CALLSTACK_TRACKER
+
 //////////////
 
 basis::mutex &callstack_tracker::__callstack_tracker_synchronizer()
 {
-  thread_local basis::mutex __global_synch_callstacks;
+  static basis::mutex __global_synch_callstacks;
   return __global_synch_callstacks;
 }
 
 //////////////
 
-//! the single instance of callstack_tracker.
+class tracker_hashing : public std::unordered_map<pid_t, callstack_tracker *>
+{
+public:
+  tracker_hashing() : unordered_map<pid_t, callstack_tracker *>() {}
+};
+
+tracker_hashing &__tracker_hashing()
+{
+  static tracker_hashing __global_tracker;
+  return __global_tracker;
+}
+
+//! the provider of thread-wide (single instance per thread) callstack_trackers.
 /*!
-  this is also an ultra low-level object, although it's not as far down
-  as the memory checker.  it can allocate c++ objects and that kind of thing
-  just fine.
+  this code is ultra low-level in our code stack, although it's not as far down as
+  the memory checker.  it can allocate c++ objects and that kind of thing just fine.
 */
 callstack_tracker &thread_wide_stack_trace()
 {
   auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
 
-  thread_local callstack_tracker *_hidden_trace = NULL_POINTER;
-  if (!_hidden_trace) {
+  tracker_hashing &thc = __tracker_hashing();
+  callstack_tracker *pointy = NULL_POINTER;
+  pid_t my_thread_id = gettid();
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf("looking for thread id %ld in callstack lists...\n", (long)my_thread_id);
+#endif
+  if (auto seeker = thc.find(my_thread_id); seeker != thc.end()) {
+    my_thread_id = seeker->first;
+    pointy = seeker->second;
+#ifdef DEBUG_CALLSTACK_TRACKER
+    printf("found existing callstack_tracker for thread %ld\n", (long)my_thread_id);
+#endif
+  } else {
 #ifdef ENABLE_MEMORY_HOOK
     program_wide_memories().disable();
       /* we don't want infinite loops tracking the call stack during this object's construction. */
-
 //hmmm: does that disable the progwide memories for the whole program or just for this thread?
 //      and what does that entail exactly?
 //      did it actually fix the problem we saw?
-
 #endif
-    _hidden_trace = new callstack_tracker;
+#ifdef DEBUG_CALLSTACK_TRACKER
+    printf("adding new callstack_tracker for thread %ld\n", (long)my_thread_id);
+#endif
+    pointy = new callstack_tracker;
+    thc.insert({my_thread_id, pointy});
 #ifdef ENABLE_MEMORY_HOOK
     program_wide_memories().enable();
 #endif
   }
-  return *_hidden_trace;
+
+//hmmm: now scan for dead threads here!
+// costly though!  have to iterate across all the ids.
+// how about doing it on a timed basis?
+
+  return *pointy;
 }
 
 //////////////
@@ -118,8 +155,9 @@ bool callstack_tracker::push_frame(const char *class_name, const char *func,
     const char *file, int line)
 {
   auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
-
-//printf("callstack pushframe depth=%d in\n", _depth);
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf(">> in, callstack pushframe depth=%d\n", _depth);
+#endif
   if (_unusable) return false;
   if (_depth >= MAX_STACK_DEPTH) {
     // too many frames already.
@@ -131,15 +169,18 @@ bool callstack_tracker::push_frame(const char *class_name, const char *func,
   if (_depth > _highest) _highest = _depth;
   _frames_in += 1;
   _bt->_records[_depth].assign(class_name, func, file, line);
-//printf("callstack pushframe depth=%d out\n", _depth);
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf("<< out, callstack pushframe depth=%d\n", _depth);
+#endif
   return true;
 }
 
 bool callstack_tracker::pop_frame()
 {
   auto_synchronizer l(callstack_tracker::__callstack_tracker_synchronizer());
-
-//printf("callstack popframe depth=%d in\n", _depth);
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf(">> in, callstack popframe depth=%d\n", _depth);
+#endif
   if (_unusable) return false;
   if (_depth <= 0) {
     // how inappropriate of them; we have no frames.
@@ -150,7 +191,9 @@ bool callstack_tracker::pop_frame()
   _bt->_records[_depth].clean();
   _depth--;
   _frames_out += 1;
-//printf("callstack popframe depth=%d out\n", _depth);
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf("<< out, callstack popframe depth=%d\n", _depth);
+#endif
   return true;
 }
 
@@ -181,7 +224,9 @@ char *callstack_tracker::full_trace() const
   if (_unusable) return strdup("");
   int full_size_needed = full_trace_size();
   char *to_return = (char *)malloc(full_size_needed);
-//printf("fulltrace allocated %d bytes for trace.\n", full_size_needed);
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf("fulltrace allocated %d bytes for trace.\n", full_size_needed);
+#endif
   to_return[0] = '\0';
   if (!_depth) {
     strcat(to_return, emptiness_note);
@@ -277,9 +322,13 @@ frame_tracking_instance::frame_tracking_instance(const char *class_name,
   _line(line)
 {
   if (_frame_involved) {
-//printf("frametrackinst ctor in class=%s func=%s\n", class_name, func);
+#ifdef DEBUG_CALLSTACK_TRACKER
+    printf(">> in, frame_tracking_instance ctor, class=%s func=%s\n", class_name, func);
+#endif
     thread_wide_stack_trace().push_frame(class_name, func, file, line);
-//printf("frametrackinst ctor out\n");
+#ifdef DEBUG_CALLSTACK_TRACKER
+    printf("<< out, frame_tracking_instance ctor\n");
+#endif
   }
 }
 
@@ -298,7 +347,9 @@ frame_tracking_instance::~frame_tracking_instance() { clean(); }
 void frame_tracking_instance::clean()
 {
   if (_frame_involved) {
-//printf("frametrackinst clean\n");
+#ifdef DEBUG_CALLSTACK_TRACKER
+    printf("frame_tracking_instance clean\n");
+#endif
     thread_wide_stack_trace().pop_frame();
   }
   _frame_involved = false;
@@ -311,10 +362,14 @@ void frame_tracking_instance::clean()
 frame_tracking_instance &frame_tracking_instance::operator =
     (const frame_tracking_instance &to_copy)
 {
-//printf("frametrackinst tor = in\n");
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf(">> in, frametrackinst assignment\n");
+#endif
   if (this == &to_copy) return *this;
   assign(to_copy._class, to_copy._func, to_copy._file, to_copy._line);
-//printf("frametrackinst tor = out\n");
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf("<< out, frametrackinst assignment\n");
+#endif
   return *this;
 }
 
@@ -331,9 +386,13 @@ void frame_tracking_instance::assign(const char *class_name, const char *func,
 
 void update_current_stack_frame_line_number(int line)
 {
-//printf("frametrackinst updatelinenum in\n");
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf(">> in, frame_tracking_instance update line num\n");
+#endif
   thread_wide_stack_trace().update_line(line);
-//printf("frametrackinst updatelinenum out\n");
+#ifdef DEBUG_CALLSTACK_TRACKER
+  printf("<< out, frame_tracking_instance update line num\n");
+#endif
 }
 
 } // namespace

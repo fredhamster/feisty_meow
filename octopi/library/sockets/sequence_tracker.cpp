@@ -33,8 +33,8 @@ using namespace timely;
 
 namespace sockets {
 
-const int MAX_BITS_FOR_SEQ_HASH = 10;
-  // the number of bits in the hash table of sequences, allowing 2^max buckets.
+const int MAX_ELEMENTS_FOR_SEQ_HASH = 500;
+  // the estimated elements in the hash table of sequences, before we start needing buckets.
 
 const int CLEANING_SPAN = 20000;
   // if the sequence number is this far off from the one received, we will
@@ -84,7 +84,7 @@ public:
     // we could piece this together from the sequences but we prefer not to.
 
   host_record(const machine_uid &host)
-  : _received_to(0), _host(host), _sequences(MAX_BITS_FOR_SEQ_HASH),
+  : _received_to(0), _host(host), _sequences(MAX_ELEMENTS_FOR_SEQ_HASH),
     _last_active()
   {}
 

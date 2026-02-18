@@ -35,7 +35,7 @@ template <class contents>
 class int_hash : public hash_table<int, contents>
 {
 public:
-  int_hash(int max_bits);
+  int_hash(int estimated_elements);
   ~int_hash();
 
   const int_set &ids() const;
@@ -69,8 +69,8 @@ private:
 // implementations below...
 
 template <class contents>
-int_hash<contents>::int_hash(int max_bits)
-: hash_table<int, contents>(rotating_byte_hasher(), max_bits),
+int_hash<contents>::int_hash(int estimated_elements)
+: hash_table<int, contents>(rotating_byte_hasher(), estimated_elements),
   _ids(new int_set)
 {}
 
