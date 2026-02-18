@@ -146,11 +146,15 @@ int test_state_machine::execute()
   transition_map recog;
   setup_state_machine(recog);
 
+  astring filename;
   if (application::_global_argc < 2) {
-    print_instructions();
-    return 1;
+    // automating for unit test with a simple input file.
+    filename = "./input_data_state_machine.txt";
+///    print_instructions();
+///    return 1;
+  } else {
+    filename = astring(application::_global_argv[1]);
   }
-  astring filename = astring(application::_global_argv[1]);
 ///  int indy = filename.find(' ');
   if (!filename) {
     print_instructions();

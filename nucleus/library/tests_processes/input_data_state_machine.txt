@@ -8,13 +8,13 @@ common_outcomes.h
 contracts.h
 definitions.h
 enhance_cpp.h
-environment.cpp
+environment.c
 environment.h
 functions.h
 guards.cpp
 guards.h
 makefile
-mutex.cpp
+mutex.o
 mutex.h
 outcome.h
 utf_conversion.cpp
