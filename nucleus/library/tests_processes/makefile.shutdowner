@@ -2,11 +2,12 @@ CONSOLE_MODE = t
 
 include cpp/variables.def
 
-PROJECT = t_shutdown_alerter
+PROJECT = test_shutdown_alerter
 TYPE = test
-TARGETS = t_shutdown_alerter.exe
-LOCAL_LIBS_USED = basis i_library
-RUN_TARGETS = 
+TARGETS = test_shutdown_alerter.exe
+LOCAL_LIBS_USED = basis 
+##i_library
+RUN_TARGETS = $(ACTUAL_TARGETS)
 
 include cpp/rules.def
 

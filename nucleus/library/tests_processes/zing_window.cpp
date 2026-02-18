@@ -22,21 +22,21 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/convert_utf.h>
+#include <basis/utf_conversion.h>
 #include <basis/guards.h>
-#include <basis/istring.h>
-#include <basis/portable.h>
-#include <opsystem/command_line.h>
+#include <basis/astring.h>
+
+#include <application/command_line.h>
 #include <loggers/console_logger.h>
-#include <opsystem/filename.h>
-#include <data_struct/static_memory_gremlin.h>
+#include <filesystem/filename.h>
+#include <structures/static_memory_gremlin.h>
 
 #include <stdio.h>
 
 HOOPLE_STARTUP_CODE;
 
-window_handle matching_window = NIL;
-istring window_name_sought;
+window_handle matching_window = NULL_POINTER;
+astring window_name_sought;
 
 BOOL CALLBACK zingers_enum_proc(window_handle hwnd, LPARAM lParam)
 {
@@ -45,7 +45,7 @@ BOOL CALLBACK zingers_enum_proc(window_handle hwnd, LPARAM lParam)
   int chars = GetWindowText(hwnd, win_name, MAX_TITLE - 1);
   if (chars > 0) {
     // see if the current window matches what we're looking for.
-    if (istring(from_unicode_temp(win_name)).ifind(window_name_sought) >= 0) {
+    if (astring(from_unicode_temp(win_name)).ifind(window_name_sought) >= 0) {
       matching_window = hwnd;
       return false;  // don't keep going.
     }
@@ -68,12 +68,12 @@ int main(int argc, char *argv[])
         "message chosen, the window will behave in various different ways.\n"
         "If there are a third or fourth parameter, then these are taken as\n"
         "the extra data to send in the PostMessage call for zinging.");
-    out.log(isprintf("\nExample windows message values:\n\t"
+    out.log(a_sprintf("\nExample windows message values:\n\t"
         "WM_CLOSE = %d\n\tWM_PAINT = %d", WM_CLOSE, WM_PAINT));
     return 1;
   }
 
-  istring junk_text = cmds.get(0).text();
+  astring junk_text = cmds.get(0).text();
   bool saw_hex_code = false;
   if (junk_text.begins("0x")) {
     // we have a hex code.  we will key off of that, which assumes that there
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
   }
   if (has_alpha) {
     // reset our match first.
-    matching_window = NIL;
+    matching_window = NULL_POINTER;
     window_name_sought = junk_text;
 //out.log("saw non-numbers in handle, trying as name.");
     // enumerate the windows looking for a match.
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 
   PostMessage(handle, event, p1, p2);
 
-  out.log(isprintf("posted at 0x%lx the zing (%u %u %u)", handle, event,
+  out.log(a_sprintf("posted at 0x%lx the zing (%u %u %u)", handle, event,
       p1, p2));
 
   return 0;
@@ -149,54 +149,54 @@ int main(int argc, char *argv[])
   // static dependencies found by buildor_gen_deps.sh:
   #include <basis/byte_array.cpp>
   #include <basis/callstack_tracker.cpp>
-  #include <basis/convert_utf.cpp>
+  #include <basis/utf_conversion.cpp>
   #include <basis/definitions.cpp>
   #include <basis/earth_time.cpp>
   #include <basis/guards.cpp>
-  #include <basis/istring.cpp>
+  #include <basis/astring.cpp>
   #include <basis/log_base.cpp>
   #include <basis/memory_checker.cpp>
   #include <basis/mutex.cpp>
-  #include <basis/object_base.h>
+  #include <basis/contracts.h>
   #include <basis/outcome.cpp>
   #include <basis/packable.cpp>
   #include <basis/portable.cpp>
   #include <basis/sequence.h>
-  #include <basis/set.h>
+  #include <structures/set.h>
   #include <basis/trap_new.addin>
   #include <basis/untrap_new.addin>
   #include <basis/utility.cpp>
   #include <basis/version_record.cpp>
-  #include <data_struct/amorph.h>
-  #include <data_struct/bit_vector.cpp>
-  #include <data_struct/byte_hasher.cpp>
-  #include <data_struct/configurator.cpp>
-  #include <data_struct/hash_table.h>
-  #include <data_struct/pointer_hash.h>
-  #include <data_struct/stack.h>
-  #include <data_struct/static_memory_gremlin.cpp>
-  #include <data_struct/string_hash.h>
-  #include <data_struct/string_hasher.cpp>
-  #include <data_struct/string_table.cpp>
-  #include <data_struct/symbol_table.h>
-  #include <data_struct/table_configurator.cpp>
+  #include <structures/amorph.h>
+  #include <structures/bit_vector.cpp>
+  #include <structures/byte_hasher.cpp>
+  #include <structures/configurator.cpp>
+  #include <structures/hash_table.h>
+  #include <structures/pointer_hash.h>
+  #include <structures/stack.h>
+  #include <structures/static_memory_gremlin.cpp>
+  #include <structures/string_hash.h>
+  #include <structures/string_hasher.cpp>
+  #include <structures/string_table.cpp>
+  #include <structures/symbol_table.h>
+  #include <structures/table_configurator.cpp>
   #include <loggers/console_logger.cpp>
   #include <loggers/file_logger.cpp>
   #include <loggers/locked_logger.cpp>
   #include <loggers/null_logger.cpp>
   #include <loggers/program_wide_logger.cpp>
-  #include <opsystem/byte_filer.cpp>
-  #include <opsystem/command_line.cpp>
+  #include <filesystem/byte_filer.cpp>
+  #include <application/command_line.cpp>
   #include <opsystem/critical_events.cpp>
-  #include <opsystem/directory.cpp>
-  #include <opsystem/filename.cpp>
-  #include <opsystem/ini_config.cpp>
+  #include <filesystem/directory.cpp>
+  #include <filesystem/filename.cpp>
+  #include <configuration/ini_configurator.cpp>
   #include <opsystem/ini_parser.cpp>
-  #include <opsystem/path_configuration.cpp>
-  #include <opsystem/rendezvous.cpp>
-  #include <textual/byte_format.cpp>
+  #include <configuration/application_configuration.cpp>
+  #include <processes/rendezvous.cpp>
+  #include <textual/byte_formatter.cpp>
   #include <textual/parser_bits.cpp>
   #include <textual/string_manipulation.cpp>
-  #include <textual/tokenizer.cpp>
+  #include <configuration/variable_tokenizer.cpp>
 #endif // __BUILD_STATIC_APPLICATION__
 

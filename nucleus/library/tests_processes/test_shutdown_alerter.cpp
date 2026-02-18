@@ -17,16 +17,16 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <basis/istring.h>
-#include <basis/log_base.h>
-#include <opsystem/filename.h>
-#include <data_struct/static_memory_gremlin.h>
+#include <basis/astring.h>
+
+#include <filesystem/filename.h>
+#include <structures/static_memory_gremlin.h>
 #include <processes/shutdown_alerter.h>
 
 HOOPLE_STARTUP_CODE;
 
-#define BASE_LOG(s) STAMPED_EMERGENCY_LOG(program_wide_logger(), s)
-#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger(), s)
+#define BASE_LOG(s) STAMPED_EMERGENCY_LOG(program_wide_logger::get(), s)
+#define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
 const int TIMING_CYCLE = 1408;
   // how frequently timer should be hit.
@@ -42,9 +42,9 @@ public:
 int main(int formal(argc), char *formal(argv)[])
 {
   my_anchor w;
-  BASE_LOG(isprintf("timer will hit every %d ms.", TIMING_CYCLE));
+  BASE_LOG(a_sprintf("timer will hit every %d ms.", TIMING_CYCLE));
   shutdown_alerter::launch_console(w,
-      filename(portable::application_name()).basename(), TIMING_CYCLE);
+      filename(application_configuration::application_name()).basename(), TIMING_CYCLE);
   return 0;
 }
 
