@@ -44,7 +44,7 @@ using namespace unit_test;
 
 class test_mutex;  // forward.
 
-#define DEBUG_MUTEX
+//#define DEBUG_MUTEX
   // uncomment for a verbose test run.
 
 const int MAX_MUTEX_TIMING_TEST = 2000000;
