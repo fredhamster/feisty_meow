@@ -29,7 +29,7 @@ namespace processes {
 
 //////////////
 
-//#define DEBUG_STATE_MACHINE
+#define DEBUG_STATE_MACHINE
   // uncomment if you want the debugging version.
 
 //hmmm: implement logging...

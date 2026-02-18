@@ -1,0 +1,13 @@
+CONSOLE_MODE = t
+
+include cpp/variables.def
+
+PROJECT = test_shutdown_alerter
+TYPE = test
+TARGETS = test_shutdown_alerter.exe
+LOCAL_LIBS_USED = basis 
+##i_library
+RUN_TARGETS = $(ACTUAL_TARGETS)
+
+include cpp/rules.def
+
