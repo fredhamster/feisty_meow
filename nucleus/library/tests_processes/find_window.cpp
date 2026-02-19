@@ -35,6 +35,8 @@ using namespace structures;
 #undef LOG
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 
+#ifdef __WIN32__
+
 window_handle matching_window = NULL_POINTER;
 astring window_name_sought;
 
@@ -84,59 +86,44 @@ int main(int argc, char *argv[])
   return 0;
 }
 
+#else
+// non-windows implementation is a no-op.
+int main(int argc, char *argv[])
+{
+  return 0;
+}
+#endif
+
 #ifdef __BUILD_STATIC_APPLICATION__
   // static dependencies found by buildor_gen_deps.sh:
-  #include <basis/array.h>
-  #include <basis/byte_array.cpp>
-  #include <basis/callstack_tracker.cpp>
-  #include <basis/utf_conversion.cpp>
-  #include <basis/definitions.cpp>
-  #include <basis/earth_time.cpp>
-  #include <basis/guards.cpp>
+  #include <algorithms/sorts.cpp>
+  #include <application/callstack_tracker.cpp>
+  #include <application/windoze_helper.cpp>
   #include <basis/astring.cpp>
-  #include <basis/log_base.cpp>
-  #include <basis/memory_checker.cpp>
+  #include <basis/common_outcomes.cpp>
+  #include <basis/environment.cpp>
+  #include <basis/guards.cpp>
   #include <basis/mutex.cpp>
-  #include <basis/contracts.h>
-  #include <basis/outcome.cpp>
-  #include <basis/packable.cpp>
-  #include <basis/portable.cpp>
-  #include <basis/sequence.h>
-  #include <structures/set.h>
-  #include <basis/trap_new.addin>
-  #include <basis/untrap_new.addin>
-  #include <basis/utility.cpp>
-  #include <basis/version_record.cpp>
-  #include <structures/amorph.h>
-  #include <structures/bit_vector.cpp>
-  #include <structures/byte_hasher.cpp>
-  #include <structures/configurator.cpp>
-  #include <structures/hash_table.h>
-  #include <structures/pointer_hash.h>
-  #include <structures/stack.h>
-  #include <structures/static_memory_gremlin.cpp>
-  #include <structures/string_hash.h>
-  #include <structures/string_hasher.cpp>
-  #include <structures/string_table.cpp>
-  #include <structures/symbol_table.h>
-  #include <structures/table_configurator.cpp>
-  #include <loggers/console_logger.cpp>
-  #include <loggers/file_logger.cpp>
-  #include <loggers/locked_logger.cpp>
-  #include <loggers/null_logger.cpp>
-  #include <loggers/program_wide_logger.cpp>
+  #include <basis/utf_conversion.cpp>
+  #include <configuration/application_configuration.cpp>
+  #include <configuration/configurator.cpp>
+  #include <configuration/ini_configurator.cpp>
+  #include <configuration/ini_parser.cpp>
+  #include <configuration/table_configurator.cpp>
+  #include <configuration/variable_tokenizer.cpp>
   #include <filesystem/byte_filer.cpp>
-  #include <application/command_line.cpp>
-  #include <opsystem/critical_events.cpp>
   #include <filesystem/directory.cpp>
   #include <filesystem/filename.cpp>
-  #include <configuration/ini_configurator.cpp>
-  #include <opsystem/ini_parser.cpp>
-  #include <configuration/application_configuration.cpp>
-  #include <processes/rendezvous.cpp>
-  #include <textual/byte_formatter.cpp>
+  #include <loggers/console_logger.cpp>
+  #include <loggers/program_wide_logger.cpp>
+  #include <structures/checksums.cpp>
+  #include <structures/object_packers.cpp>
+  #include <structures/static_memory_gremlin.cpp>
+  #include <structures/string_hasher.cpp>
+  #include <structures/string_table.cpp>
+  #include <structures/version_record.cpp>
   #include <textual/parser_bits.cpp>
-  #include <textual/string_manipulation.cpp>
-  #include <configuration/variable_tokenizer.cpp>
+  #include <timely/earth_time.cpp>
+  #include <timely/time_stamp.cpp>
 #endif // __BUILD_STATIC_APPLICATION__
 
