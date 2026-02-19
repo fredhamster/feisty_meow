@@ -5,8 +5,9 @@ include cpp/variables.def
 PROJECT = test_shutdown_alerter
 TYPE = test
 TARGETS = test_shutdown_alerter.exe
-LOCAL_LIBS_USED = basis 
-##i_library
+LOCAL_LIBS_USED = unit_test application configuration filesystem loggers \
+  filesystem mathematics timely \
+  nodes processes structures textual timely structures basis 
 RUN_TARGETS = $(ACTUAL_TARGETS)
 
 include cpp/rules.def

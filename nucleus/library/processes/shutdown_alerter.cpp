@@ -181,14 +181,15 @@ bool shutdown_alerter::launch_console(shutdown_alerter &alert,
   }
 
 #ifdef DEBUG_SHUTDOWN_ALERTER
-  time_stamp next_report(10 * SECOND_ms);
+  const int REPORT_CYCLE = 10 * SECOND_ms;
+  time_stamp next_report(REPORT_CYCLE);
 #endif
 
   while (!alert.is_defunct()) {
 #ifdef DEBUG_SHUTDOWN_ALERTER
     if (time_stamp() >= next_report) {
-      printf("%s: shout out from my main thread yo.\n", _global_argv[0]);
-      next_report.reset(10 * SECOND_ms);
+      LOG(a_sprintf("%s: shout out from my main thread yo.\n", _global_argv[0]));
+      next_report.reset(REPORT_CYCLE);
     }
 #endif
     time_control::sleep_ms(42);

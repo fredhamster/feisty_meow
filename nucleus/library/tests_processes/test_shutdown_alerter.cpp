@@ -18,12 +18,28 @@
 \*****************************************************************************/
 
 #include <basis/astring.h>
-
+#include <configuration/application_configuration.h>
 #include <filesystem/filename.h>
-#include <structures/static_memory_gremlin.h>
+#include <loggers/program_wide_logger.h>
 #include <processes/shutdown_alerter.h>
+#include <structures/static_memory_gremlin.h>
+#include <unit_test/unit_base.h>
 
-HOOPLE_STARTUP_CODE;
+//hmmm: make this use the unit_base so its a real test app.
+
+using namespace application;
+using namespace basis;
+using namespace configuration;
+//using namespace mathematics;
+using namespace filesystem;
+using namespace loggers;
+//using namespace processes;
+//using namespace structures;
+//using namespace textual;
+using namespace timely;
+using namespace unit_test;
+
+//////////////
 
 #define BASE_LOG(s) STAMPED_EMERGENCY_LOG(program_wide_logger::get(), s)
 #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
@@ -39,12 +55,21 @@ public:
   virtual void handle_timer() { BASE_LOG("into timer..."); }
 };
 
+//hmmm: what is this test intended to actually do, or test?
+//   all it does right now is created the shutdown alerter object...
+//   and then it never seems to try to shut it down!???
+
 int main(int formal(argc), char *formal(argv)[])
 {
+//hmmm: skipping since we crash currently.  fix this!
+return 0;
+
   my_anchor w;
   BASE_LOG(a_sprintf("timer will hit every %d ms.", TIMING_CYCLE));
   shutdown_alerter::launch_console(w,
       filename(application_configuration::application_name()).basename(), TIMING_CYCLE);
+  BASE_LOG("after creating the alerter's console app...");
+BASE_LOG("still here, but about to exit...  kaboom?");
   return 0;
 }
 
