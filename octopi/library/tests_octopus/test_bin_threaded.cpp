@@ -328,7 +328,15 @@ public:
 
   void perform_activity(void *formal(data)) {
     FUNCDEF("perform_activity");
-    if (!__threads_can_run_wild_and_free()) { sleep_time(MIN_MONK_THREAD_PAUSE); return; }
+    if (!__threads_can_run_wild_and_free() || !_hit_first_activation) {
+      _hit_first_activation = true;  // we've seen an activation now for sure.
+      sleep_time(MIN_MONK_THREAD_PAUSE);
+      return; 
+    } else {
+      // still record that we've seen an activation, so we're not gated by the wild & free sentinel for correctness.
+      _hit_first_activation = true;
+    }
+
     // one activation of monk has devastating consequences.  we empty out
     // the data one item at a time until we see no data at all.  after
     // cleaning each item, we ensure that the deadwood is cleaned out.
@@ -359,6 +367,12 @@ LOG(a_sprintf("after this little light cleaning, monk sees %d items held.", bing
     // rude.
     ethread::sleep_time(sleepy_time);
   }
+
+private:
+  bool _hit_first_activation;
+    /* if this is true, then we can start running normally.  we don't fire on the first activation of the thread,
+    because we want monk to only start after its minimum pause period, rather than getting cranked up right away.
+    there is nothing for him to do at program inception anyhow. */
 };
 
 //////////////
