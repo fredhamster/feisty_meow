@@ -20,6 +20,9 @@
 #include <basis/mutex.h>
 #include <structures/set.h>
 
+// forward.
+class monk_the_detective;
+
 namespace octopi {
 
 // forward.
@@ -104,9 +107,6 @@ public:
     // note that this should be called periodically by the controlling object.
     // it will not be called automatically.
 
-  basis::base_synchronizer &locker() { return *_ent_lock; }
-    //!< provided for tighter synchronization; this should be used very carefully, e.g. with auto_synchronizer.
-
 private:
   entity_item_hash *_table;  // our main storage object.
   basis::mutex *_ent_lock;  // protects our structures.
@@ -116,7 +116,10 @@ private:
   int _max_per_ent;  // the maximum size allowed per entity.
   int _items_held;  // the number of items in residence.
 
-  friend class monk_the_detective;  // eerie supernatural powers, for testing.
+  friend class ::monk_the_detective;  // eerie supernatural powers, for testing.
+
+  basis::base_synchronizer &locker() { return *_ent_lock; }
+    //!< provided for tighter synchronization; this should be used very carefully, e.g. with auto_synchronizer.
 
   int scramble_counter();  // counts the number of items used.
 
