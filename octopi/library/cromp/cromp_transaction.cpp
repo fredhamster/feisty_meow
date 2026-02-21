@@ -36,7 +36,7 @@ using namespace textual;
 
 namespace cromp {
 
-#define DEBUG_CROMP_TRANSACTION
+//#define DEBUG_CROMP_TRANSACTION
   // uncomment for noisy version.
 
 const int MAXIMUM_TRANSACTION = 100 * MEGABYTE;
