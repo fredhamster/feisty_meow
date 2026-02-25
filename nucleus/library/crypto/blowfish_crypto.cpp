@@ -186,9 +186,10 @@ const byte_array &blowfish_crypto::init_vector()
   LOG("prior to initted check");
   if (!initted) {
     LOG("actually doing init");
-    for (int i = 0; i < EVP_MAX_IV_LENGTH; i++)
-      to_return[i] = 214 - i;
+    for (int i = 0; i < to_return.length(); i++)
+      to_return[i] = abyte(214 - i);
     initted = true;
+    LOG("finished init process");
   }
   LOG("leaving init check");
   return to_return;
@@ -204,10 +205,9 @@ bool blowfish_crypto::encrypt(const byte_array &source,
 
   // initialize an encoding session.
   EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
-
   EVP_CIPHER_CTX_init(session);
-  EVP_EncryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, _key->observe(),
-      init_vector().observe());
+  EVP_EncryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, _key->observe(), init_vector().observe());
+  LOG(a_sprintf("calling set key len with key size of %d", _key_size));
   EVP_CIPHER_CTX_set_key_length(session, _key_size);
 
   // allocate temporary space for encrypted data.

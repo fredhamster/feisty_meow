@@ -21,6 +21,7 @@
 
 #include <openssl/crypto.h>
 #include <openssl/err.h>
+#include <openssl/provider.h>
 #include <openssl/rand.h>
 
 using namespace basis;
@@ -52,6 +53,13 @@ ssl_init::ssl_init()
 : c_rando()
 {
   FUNCDEF("ctor");
+
+  // new code needed because blowfish is considered legacy code now.  ugh.
+  OSSL_PROVIDER *legacy_provider = OSSL_PROVIDER_load(NULL_POINTER, "legacy");
+  // also load the default provider or the standard, still accepted, algorithms will not be available.
+  OSSL_PROVIDER *default_provider = OSSL_PROVIDER_load(NULL, "default");
+//hmmm: do we need to clean up these providers?
+
 #ifdef DEBUG_SSL
   LOG("prior to crypto debug init");
   CRYPTO_malloc_debug_init();
@@ -93,4 +101,5 @@ byte_array ssl_init::random_bytes(int length) const
 }
 
 } //namespace.
+
 
