@@ -48,7 +48,7 @@ const int MAXIMUM_TRANSACTION = 100 * MEGABYTE;
   // since the transaction stuff is so low-level, we risk a feedback loop if
   // we log stuff when the program wide logger is itself a communication
   // object.
-  #define LOG(s) CLASS_EMERGENCY_LOG(file_logger(environment::TMP() + "/cromp_transaction.log"), s)
+  #define LOG(s) CLASS_EMERGENCY_LOG(file_logger(environment::TMP() + "/transactions-cromp.log"), s)
 #else
   #define LOG(s) 
 #endif
