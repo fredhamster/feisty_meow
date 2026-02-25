@@ -41,14 +41,15 @@ using namespace textual;
 using namespace timely;
 using namespace unit_test;
 
-#define LOG(to_print) EMERGENCY_LOG(program_wide_logger::get(), to_print)
+#define LOG(to_print) EMERGENCY_LOG(program_wide_logger::get(), astring(to_print))
 
 #define DEBUG_BLOWFISH
   // uncomment for noisier run.
 
 const int TEST_RUNS_PER_KEY = 5;  // encryption test cycles done on each key.
 
-const int THREAD_COUNT = 10;  // number of threads testing blowfish at once.
+//const int THREAD_COUNT = 10;  // number of threads testing blowfish at once.
+const int THREAD_COUNT = 1;  // number of threads testing blowfish at once.
 
 const int ITERATIONS = 4;  // number of test runs in our testing threads.
 
@@ -92,7 +93,7 @@ int test_blowfish::execute()
 {
   FUNCDEF("execute");
 #ifdef DEBUG_BLOWFISH
-  LOG(astring("starting blowfish test..."));
+  LOG("starting blowfish test...");
 #endif
   int left = THREAD_COUNT;
   while (left--) {
@@ -103,12 +104,12 @@ int test_blowfish::execute()
   }
 
 #ifdef DEBUG_BLOWFISH
-  LOG(astring("started all threads..."));
+  LOG("started all threads...");
 #endif
 
   while (_threads.threads()) {
 #ifdef DEBUG_BLOWFISH
-    LOG(astring("cleaning debris."));
+    LOG("cleaning debris.");
 #endif
     _threads.clean_debris();
     time_control::sleep_ms(1000);
@@ -145,7 +146,6 @@ void blowfish_thread::perform_activity(void *)
     LOG(a_sprintf("%s", dumped_key.s()));
 #endif
     int key_dur = int(time_stamp().value() - key_start.value());
-
 #ifdef DEBUG_BLOWFISH
     LOG(a_sprintf("  key generation took %d ms", key_dur));
 #endif
@@ -154,31 +154,43 @@ void blowfish_thread::perform_activity(void *)
       byte_array key;
       byte_array iv;
 
+LOG(a_sprintf("loop iter %d", i));
+
       int string_start = _parent.randomizer().inclusive(0, MAX_STRING - 1);
       int string_end = _parent.randomizer().inclusive(0, MAX_STRING - 1);
       flip_increasing(string_start, string_end);
       astring ranstring = _parent._fodder.substring(string_start, string_end);
-//LOG(a_sprintf("encoding %s\n", ranstring.s());
-//LOG(a_sprintf("string length encoded: %d\n", ranstring.length());
+#ifdef DEBUG_BLOWFISH
+      LOG(a_sprintf("encoding %s\n", ranstring.s()));
+      LOG(a_sprintf("string length encoded: %d\n", ranstring.length()));
+#endif
 
+LOG("point A");
       byte_array target;
-
       time_stamp test_start;
-      bool worked = bc.encrypt(byte_array(ranstring.length() + 1,
-          (abyte*)ranstring.s()), target);
+LOG("point A.2");
+      bool worked = bc.encrypt(byte_array(ranstring.length() + 1, (abyte*)ranstring.s()), target);
+LOG("point B");
       int enc_durat = int(time_stamp().value() - test_start.value());
       ASSERT_TRUE(worked, "phase 1 should not fail to encrypt the string");
+LOG("point C");
 
       byte_array recovered;
+LOG("point D");
       test_start.reset();
       worked = bc.decrypt(target, recovered);
+LOG("point E");
       int dec_durat = int(time_stamp().value() - test_start.value());
       ASSERT_TRUE(worked, "phase 1 should not fail to decrypt the string");
-//    LOG(a_sprintf("original has %d chars, recovered has %d chars\n",
-//        ranstring.length(), recovered.length() - 1));
+#ifdef DEBUG_BLOWFISH
+      LOG(a_sprintf("original has %d chars, recovered has %d chars\n",
+          ranstring.length(), recovered.length() - 1));
+#endif
 
       astring teddro = (char *)recovered.observe();
-//LOG(a_sprintf("decoded %s\n", teddro.s()));
+#ifdef DEBUG_BLOWFISH
+      LOG(a_sprintf("decoded %s\n", teddro.s()));
+#endif
 
 #ifdef DEBUG_BLOWFISH
       if (teddro != ranstring) {

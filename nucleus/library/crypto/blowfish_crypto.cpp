@@ -41,7 +41,7 @@ const int FUDGE = 128;
 //#undef set_key
   // get rid of a macro we don't want.
 
-//#define DEBUG_BLOWFISH
+#define DEBUG_BLOWFISH
   // uncomment for noisier version.
 
 #ifdef DEBUG_BLOWFISH
@@ -187,8 +187,9 @@ const byte_array &blowfish_crypto::init_vector()
   if (!initted) {
     LOG("actually doing init");
     for (int i = 0; i < EVP_MAX_IV_LENGTH; i++)
-      to_return[i] = 214 - i;
+      to_return[i] = abyte(214 - i);
     initted = true;
+    LOG("finished init process");
   }
   LOG("leaving init check");
   return to_return;
@@ -205,13 +206,18 @@ bool blowfish_crypto::encrypt(const byte_array &source,
   // initialize an encoding session.
   EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
 
+LOG("enc 001");
   EVP_CIPHER_CTX_init(session);
-  EVP_EncryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, _key->observe(),
-      init_vector().observe());
+LOG("enc 002");
+  EVP_EncryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, _key->observe(), init_vector().observe());
+LOG("enc 003");
+LOG(a_sprintf("going to do set key len with key size of %d", _key_size));
   EVP_CIPHER_CTX_set_key_length(session, _key_size);
+LOG("enc 004");
 
   // allocate temporary space for encrypted data.
   byte_array encoded(source.length() + FUDGE);
+LOG("enc 005");
 
   // encrypt the entire source buffer.
   int encoded_len = 0;
