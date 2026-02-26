@@ -8,7 +8,7 @@ source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 export MONO_THREADS_PER_CPU=1208
 
 # we run the processes with a little cpu de-prioritization.  we do not want
-# them taking over completely if there's a runaway mono tornado.
+# them taking over completely if there's a runaway mono/dotnet tornado.
 export NICENESS_LEVEL=6
 
 # a tip that supposedly helps on linux so that there won't be bizarre
@@ -24,12 +24,12 @@ export SNOOZE_TIME=6
 ulimit -s 512144
 
 # use more recent versions of mono for opensim if they're available.
-if [ -d /opt/mono-2.10/bin ]; then
-  export PATH=/opt/mono-2.10/bin:$PATH
-elif [ -d /opt/mono-2.8/bin ]; then
-  # use version 2.8 mono for opensim if it's available.
-  export PATH=/opt/mono-2.8/bin:$PATH
-fi
+#if [ -d /opt/mono-2.10/bin ]; then
+#  export PATH=/opt/mono-2.10/bin:$PATH
+#elif [ -d /opt/mono-2.8/bin ]; then
+#  # use version 2.8 mono for opensim if it's available.
+#  export PATH=/opt/mono-2.8/bin:$PATH
+#fi
 
 function launch_screen()
 {
@@ -41,7 +41,7 @@ local boguslog=$HOME/screen_junk_$(date_stringer).log
 #maybe they unbroke it in 17.10?  yes, but it requires NO space now.  *&@#*&@#
 #hmmm: bring back old version but check for ubuntu 17.04 vs 17.10 now.
 #actually they made it a new parm.  arghhh!
-  screen -L -S "$screen_name" -d -m nice -n $NICENESS_LEVEL mono "$app_name" 
+  screen -L -S "$screen_name" -d -m nice -n $NICENESS_LEVEL dotnet "$app_name" 
 #$boguslog 
 
   echo "$(date_stringer ' '): $screen_name started."
@@ -61,7 +61,7 @@ function find_opensim_process()
   if [ -z "$process_name" ]; then
     return 1  # failure in call.
   fi
-  OS_PROC_ID=$(ps wuax | grep "[0-9] mono $process_name" | grep -vi screen | sed -e "s/$(sanitized_username)  *\([0-9][0-9]*\).*/\1/" | head -n 1)
+  OS_PROC_ID=$(ps wuax | grep "[0-9] dotnet $process_name" | grep -vi screen | sed -e "s/$(sanitized_username)  *\([0-9][0-9]*\).*/\1/" | head -n 1)
 }
 
 # takes a screen name for the detached screen session and a process name that
