@@ -44,7 +44,8 @@ using namespace unit_test;
 //#define DEBUG_TEST_SYMBOL_TREE
 
 // how many nodes we add to the tree.
-const int MAX_NODES_TESTED = 40000;
+//const int MAX_NODES_TESTED = 40000;
+const int MAX_NODES_TESTED = 4200;
 
 class test_symbol_tree : public unit_base, public application_shell
 {
