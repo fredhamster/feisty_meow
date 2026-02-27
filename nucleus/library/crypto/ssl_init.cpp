@@ -35,6 +35,7 @@ namespace crypto {
   // uncomment to cause more debugging information to be generated, plus
   // more checking to be performed in the SSL support.
 
+#define ALWAYS_LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 #ifdef DEBUG_SSL
   #undef LOG
   #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
@@ -54,11 +55,19 @@ ssl_init::ssl_init()
 {
   FUNCDEF("ctor");
 
-  // new code needed because blowfish is considered legacy code now.  ugh.
-  OSSL_PROVIDER *legacy_provider = OSSL_PROVIDER_load(NULL_POINTER, "legacy");
   // also load the default provider or the standard, still accepted, algorithms will not be available.
   OSSL_PROVIDER *default_provider = OSSL_PROVIDER_load(NULL_POINTER, "default");
-//hmmm: do we need to clean up these providers?
+  if (!default_provider) {
+    ALWAYS_LOG("failed to load default openssl provider!  mega flopsweat fail!");
+    exit(1);
+  }
+  // new code needed because blowfish is considered legacy code now.  ugh.
+  OSSL_PROVIDER *legacy_provider = OSSL_PROVIDER_load(NULL_POINTER, "legacy");
+  if (!legacy_provider) {
+    ALWAYS_LOG("failed to load legacy openssl provider!  mega boofer fail!");
+    exit(1);
+  }
+//hmmm: do we need to clean up those providers?
 
 #ifdef DEBUG_SSL
   LOG("prior to crypto debug init");
