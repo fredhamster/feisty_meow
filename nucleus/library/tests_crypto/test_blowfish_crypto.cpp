@@ -108,7 +108,7 @@ int test_blowfish::execute()
 
   while (_threads.threads()) {
 #ifdef DEBUG_BLOWFISH
-    LOG("cleaning debris.");
+    LOG("periodic debris cleaning.");
 #endif
     _threads.clean_debris();
     time_control::sleep_ms(1000);

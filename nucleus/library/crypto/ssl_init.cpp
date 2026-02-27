@@ -31,10 +31,11 @@ using namespace structures;
 
 namespace crypto {
 
-//#define DEBUG_SSL
+#define DEBUG_SSL
   // uncomment to cause more debugging information to be generated, plus
   // more checking to be performed in the SSL support.
 
+#define ALWAYS_LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 #ifdef DEBUG_SSL
   #undef LOG
   #define LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
@@ -54,20 +55,22 @@ ssl_init::ssl_init()
 {
   FUNCDEF("ctor");
 
+  LOG("prior to provider setup");
+  // also load the default provider or the standard, still accepted, algorithms will not be available.
+  OSSL_PROVIDER *default_provider = OSSL_PROVIDER_load(NULL_POINTER, "default");
+  if (!default_provider) {
+    ALWAYS_LOG("failed to load default openssl provider!  mega flopsweat fail!");
+    exit(1);
+  }
   // new code needed because blowfish is considered legacy code now.  ugh.
   OSSL_PROVIDER *legacy_provider = OSSL_PROVIDER_load(NULL_POINTER, "legacy");
-  // also load the default provider or the standard, still accepted, algorithms will not be available.
-  OSSL_PROVIDER *default_provider = OSSL_PROVIDER_load(NULL, "default");
-//hmmm: do we need to clean up these providers?
+  if (!legacy_provider) {
+    ALWAYS_LOG("failed to load legacy openssl provider!  mega boofer fail!");
+    exit(1);
+  }
+//hmmm: do we need to clean up those providers?
+  LOG("after provider setup");
 
-#ifdef DEBUG_SSL
-  LOG("prior to crypto debug init");
-  CRYPTO_malloc_debug_init();
-  LOG("prior to dbg set options");
-  CRYPTO_dbg_set_options(V_CRYPTO_MDEBUG_ALL);
-  LOG("prior to mem ctrl");
-  CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON);
-#endif
   LOG("prior to rand seed");
   RAND_seed(random_bytes(SEED_SIZE).observe(), SEED_SIZE);
   LOG("after rand seed");
@@ -78,16 +81,6 @@ ssl_init::~ssl_init()
   FUNCDEF("destructor");
   LOG("prior to crypto cleanup");
   CRYPTO_cleanup_all_ex_data();
-
-//hmmm: deprecated
-//  LOG("prior to err remove state");
-//  ERR_remove_thread_state(NULL);
-
-
-//THIS HAD TO be removed in most recent openssl; does it exist?
-//  LOG("prior to mem leaks fp");
-//  CRYPTO_mem_leaks_fp(stderr);
-//  LOG("after mem leaks fp");
 }
 
 const chaos &ssl_init::randomizer() const { return c_rando; }
