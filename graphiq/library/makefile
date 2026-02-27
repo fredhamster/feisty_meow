@@ -1,8 +1,9 @@
 include variables.def
 
 PROJECT = graphical_libraries
-BUILD_BEFORE = geometric \
-  user_interface \
+BUILD_BEFORE = user_interface 
+#wrong hierarchical considerations having geometric here.
+#geometric \
   tests_geometric
 
 include rules.def

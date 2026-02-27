@@ -35,6 +35,7 @@ namespace crypto {
   // uncomment to cause more debugging information to be generated, plus
   // more checking to be performed in the SSL support.
 
+#undef ALWAYS_LOG
 #define ALWAYS_LOG(s) CLASS_EMERGENCY_LOG(program_wide_logger::get(), s)
 #ifdef DEBUG_SSL
   #undef LOG
@@ -51,24 +52,25 @@ const int SEED_SIZE = 100;
 SAFE_STATIC_CONST(ssl_init, static_ssl_initializer, )
 
 ssl_init::ssl_init()
-: c_rando()
+: c_rando(),
+  c_default_provider(NULL_POINTER),
+  c_legacy_provider(NULL_POINTER)
 {
   FUNCDEF("ctor");
 
   LOG("prior to provider setup");
-  // also load the default provider or the standard, still accepted, algorithms will not be available.
-  OSSL_PROVIDER *default_provider = OSSL_PROVIDER_load(NULL_POINTER, "default");
-  if (!default_provider) {
-    ALWAYS_LOG("failed to load default openssl provider!  mega flopsweat fail!");
-    exit(1);
-  }
   // new code needed because blowfish is considered legacy code now.  ugh.
-  OSSL_PROVIDER *legacy_provider = OSSL_PROVIDER_load(NULL_POINTER, "legacy");
-  if (!legacy_provider) {
+  c_legacy_provider = OSSL_PROVIDER_load(NULL_POINTER, "legacy");
+  if (!c_legacy_provider) {
     ALWAYS_LOG("failed to load legacy openssl provider!  mega boofer fail!");
     exit(1);
   }
-//hmmm: do we need to clean up those providers?
+  // also load the default provider or the standard, still accepted, algorithms will not be available.
+  c_default_provider = OSSL_PROVIDER_load(NULL_POINTER, "default");
+  if (!c_default_provider) {
+    ALWAYS_LOG("failed to load default openssl provider!  mega flopsweat fail!");
+    exit(1);
+  }
   LOG("after provider setup");
 
   LOG("prior to rand seed");
@@ -80,6 +82,12 @@ ssl_init::~ssl_init()
 {
   FUNCDEF("destructor");
   LOG("prior to crypto cleanup");
+
+  // clean up the providers again.  not super necessary since the program will
+  // exit shortly, but it's good to be tidy.
+  if (c_default_provider) OSSL_PROVIDER_unload(c_default_provider);
+  if (c_legacy_provider) OSSL_PROVIDER_unload(c_legacy_provider);
+
   CRYPTO_cleanup_all_ex_data();
 }
 

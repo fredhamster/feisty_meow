@@ -20,6 +20,9 @@
 
 #include <openssl/opensslv.h>
 
+// forward.
+struct ossl_provider_st;
+
 namespace crypto {
 
 //! provides some initialization for the RSA and blowfish crypto.
@@ -52,6 +55,9 @@ public:
 
 private:
   mathematics::chaos c_rando;  //!< used for generating random numbers.
+  // we hang onto our providers so we can clean them up on exit.
+  ossl_provider_st *c_default_provider;
+  ossl_provider_st *c_legacy_provider;
 };
 
 extern const ssl_init &static_ssl_initializer();
