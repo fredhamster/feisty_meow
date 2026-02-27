@@ -63,12 +63,12 @@ const int FUDGE = 128;
   // this macro checks on the validity of the key sizes (in bits).
   #define DISCUSS_KEY_SIZE(key_size) \
     if (key_size < minimum_key_size()) { \
-      continuable_error(static_class_name(), func, \
+      deadly_error(static_class_name(), func, \
           a_sprintf("key size (%d bits) is less than minimum key size %d.", \
               key_size, minimum_key_size())); \
       } \
   if (key_size > maximum_key_size()) { \
-      continuable_error(static_class_name(), func, \
+      deadly_error(static_class_name(), func, \
           a_sprintf("key size (%d bits) is greater than maximum key size %d.", \
               key_size, maximum_key_size())); \
     }
@@ -77,7 +77,7 @@ const int FUDGE = 128;
   // the key size bits.
   #define DISCUSS_PROVIDED_KEY(key_size, key) \
     if (key.length() * BITS_PER_BYTE < key_size) { \
-      continuable_error(static_class_name(), func, \
+      deadly_error(static_class_name(), func, \
           a_sprintf("key array length (%d) is less than required by key size " \
               "(%d bits).", key.length(), key_size)); \
     }
@@ -192,7 +192,6 @@ const byte_array &blowfish_crypto::init_vector()
   auto_synchronizer locking(__vector_init_lock());
   static byte_array to_return(EVP_MAX_IV_LENGTH);
   static bool initted = false;
-  LOG("prior to initted check");
   if (!initted) {
     LOG("actually doing init");
     for (int i = 0; i < to_return.length(); i++)
@@ -200,7 +199,6 @@ const byte_array &blowfish_crypto::init_vector()
     initted = true;
     LOG("finished init process");
   }
-  LOG("leaving init check");
   return to_return;
 }
 
@@ -208,9 +206,12 @@ bool blowfish_crypto::encrypt(const byte_array &source,
     byte_array &target) const
 {
   FUNCDEF("encrypt");
+ALWAYS_LOG(">>encrypt>>");
   target.reset();
   if (!_key->length() || !source.length()) return false;
   bool to_return = true;
+
+LOG(a_sprintf("  encrypting %d bytes", source.length()));
 
   // initialize an encoding session.
   EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
@@ -227,7 +228,7 @@ bool blowfish_crypto::encrypt(const byte_array &source,
     ALWAYS_LOG(a_sprintf("failure in calling EVP_EncryptInit_ex, with error %s", GET_SSL_ERROR()));
     exit(1);
   }
-  LOG(a_sprintf("calling set key len with key size of %d", _key_size));
+  LOG(a_sprintf("  calling set key len with key size of %d", _key_size));
   // new fancy footwork needed to keep openssl from blowing up and claiming we didn't set the key.
 //hmmm: check returns on these setters?
   EVP_CIPHER_CTX_set_key_length(session, _key_size);
@@ -248,12 +249,12 @@ bool blowfish_crypto::encrypt(const byte_array &source,
   int enc_ret = EVP_EncryptUpdate(session, encoded.access(), &encoded_len,
       source.observe(), source.length());
   if (enc_ret != 1) {
-    continuable_error(class_name(), func, a_sprintf("encryption failed, "
+    deadly_error(class_name(), func, a_sprintf("encryption failed, "
         "result=%d with error=%s.", enc_ret, GET_SSL_ERROR()));
     to_return = false;
   } else {
     // chop any extra space off.
-    LOG(a_sprintf("chopping bytes %d to %d.\n", encoded_len, encoded.last()));
+    LOG(a_sprintf("  chopping extra bytes %d to %d.", encoded_len, encoded.last()));
     encoded.zap(encoded_len, encoded.last());
     target = encoded;
   }
@@ -265,11 +266,11 @@ bool blowfish_crypto::encrypt(const byte_array &source,
     int pad_len = 0;
     enc_ret = EVP_EncryptFinal_ex(session, encoded.access(), &pad_len);
     if (enc_ret != 1) {
-      continuable_error(class_name(), func, a_sprintf("finalizing encryption "
+      deadly_error(class_name(), func, a_sprintf("finalizing encryption "
           "failed, result=%d with error=%s.", enc_ret, GET_SSL_ERROR()));
       to_return = false;
     } else {
-      LOG(a_sprintf("padding added %d bytes.\n", pad_len));
+      LOG(a_sprintf("  padding added %d bytes.", pad_len));
       encoded.zap(pad_len, encoded.last());
       target += encoded;
     }
@@ -277,6 +278,7 @@ bool blowfish_crypto::encrypt(const byte_array &source,
 
   EVP_CIPHER_CTX_cleanup(session);
   EVP_CIPHER_CTX_free(session);
+ALWAYS_LOG("<<encrypt<<");
   return to_return;
 }
 
@@ -284,15 +286,18 @@ bool blowfish_crypto::decrypt(const byte_array &source,
     byte_array &target) const
 {
   FUNCDEF("decrypt");
+ALWAYS_LOG(">>decrypt>>");
   target.reset();
   if (!_key->length() || !source.length()) return false;
   bool to_return = true;
   EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
   EVP_CIPHER_CTX_init(session);
-  LOG(a_sprintf("key size %d bits.\n", BITS_PER_BYTE * _key->length()));
+  LOG(a_sprintf("  using key size with %d bits.", _key_size));
+///NOOOOOOO BITS_PER_BYTE * _key->length()));
   int initret = EVP_DecryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, NULL_POINTER, NULL_POINTER);
   if (!initret) {
     // zero means a failure of the initialization.
+//hmmm: below approach is called a deadly error.  use that instead, throughout.
     ALWAYS_LOG(a_sprintf("failure in calling EVP_DecryptInit_ex, with error %s", GET_SSL_ERROR()));
     exit(1);
   }
@@ -314,10 +319,10 @@ bool blowfish_crypto::decrypt(const byte_array &source,
   int dec_ret = EVP_DecryptUpdate(session, decoded.access(), &decoded_len,
       source.observe(), source.length());
   if (dec_ret != 1) {
-    continuable_error(class_name(), func, a_sprintf("decryption failed with error=%s", GET_SSL_ERROR()));
+    deadly_error(class_name(), func, a_sprintf("decryption failed with error=%s", GET_SSL_ERROR()));
     to_return = false;
   } else {
-    LOG(a_sprintf("  decrypted size in bytes is %d.\n", decoded_len));
+    LOG(a_sprintf("  first part decrypted size in bytes is %d.", decoded_len));
     decoded.zap(decoded_len, decoded.last());
     target = decoded;
   }
@@ -327,21 +332,21 @@ bool blowfish_crypto::decrypt(const byte_array &source,
     decoded.reset(FUDGE);  // reinflate for padding.
     int pad_len = 0;
     dec_ret = EVP_DecryptFinal_ex(session, decoded.access(), &pad_len);
-    LOG(a_sprintf("padding added %d bytes.\n", pad_len));
     if (dec_ret != 1) {
-      continuable_error(class_name(), func, a_sprintf("finalizing decryption "
+      deadly_error(class_name(), func, a_sprintf("finalizing decryption "
           "failed, result=%d, padlen=%d, target had %d bytes, error=%s.", dec_ret,
           pad_len, target.length(), GET_SSL_ERROR()));
       to_return = false;
     } else {
-      int dec_size = pad_len;
-      decoded.zap(dec_size, decoded.last());
+      LOG(a_sprintf("  padding added %d bytes.", pad_len));
+      decoded.zap(pad_len, decoded.last());
       target += decoded;
     }
   }
 
   EVP_CIPHER_CTX_cleanup(session);
   EVP_CIPHER_CTX_free(session);
+ALWAYS_LOG("<<decrypt<<");
   return to_return;
 }
 

@@ -46,11 +46,14 @@ using namespace unit_test;
 #define DEBUG_BLOWFISH
   // uncomment for noisier run.
 
-const int TEST_RUNS_PER_KEY = 5;  // encryption test cycles done on each key.
+//const int TEST_RUNS_PER_KEY = 5;  // encryption test cycles done on each key.
+const int TEST_RUNS_PER_KEY = 1008;  // encryption test cycles done on each key.
 
-const int THREAD_COUNT = 10;  // number of threads testing blowfish at once.
+//const int THREAD_COUNT = 10;  // number of threads testing blowfish at once.
+const int THREAD_COUNT = 1;  // number of threads testing blowfish at once.
 
-const int ITERATIONS = 4;  // number of test runs in our testing threads.
+//const int ITERATIONS = 4;  // number of test runs in our testing threads.
+const int ITERATIONS = 80;  // number of test runs in our testing threads.
 
 const int MAX_STRING = 20000;  // largest chunk that we'll try to encrypt.
 
@@ -138,9 +141,9 @@ void blowfish_thread::perform_activity(void *)
         (blowfish_crypto::minimum_key_size(),
          blowfish_crypto::maximum_key_size()));
 #ifdef DEBUG_BLOWFISH
-//    LOG(a_sprintf("%d bit key has:", bc.key_size()));
-//    astring dumped_key = byte_formatter::text_dump(bc.get_key());
-//    LOG(a_sprintf("%s", dumped_key.s()));
+    LOG(a_sprintf("%d bit key has:", bc.key_size()));
+    astring dumped_key = byte_formatter::text_dump(bc.get_key());
+    LOG(a_sprintf("%s", dumped_key.s()));
 #endif
     int key_dur = int(time_stamp().value() - key_start.value());
 #ifdef DEBUG_BLOWFISH
@@ -148,8 +151,9 @@ void blowfish_thread::perform_activity(void *)
 #endif
 
     for (int i = 0; i < TEST_RUNS_PER_KEY; i++) {
-      byte_array key;
-      byte_array iv;
+///      byte_array key;
+///      byte_array iv;
+LOG(a_sprintf("test run %d on this key.", i+1));
       int string_start = _parent.randomizer().inclusive(0, MAX_STRING - 1);
       int string_end = _parent.randomizer().inclusive(0, MAX_STRING - 1);
       flip_increasing(string_start, string_end);
