@@ -57,7 +57,7 @@ ssl_init::ssl_init()
   // new code needed because blowfish is considered legacy code now.  ugh.
   OSSL_PROVIDER *legacy_provider = OSSL_PROVIDER_load(NULL_POINTER, "legacy");
   // also load the default provider or the standard, still accepted, algorithms will not be available.
-  OSSL_PROVIDER *default_provider = OSSL_PROVIDER_load(NULL, "default");
+  OSSL_PROVIDER *default_provider = OSSL_PROVIDER_load(NULL_POINTER, "default");
 //hmmm: do we need to clean up these providers?
 
 #ifdef DEBUG_SSL
