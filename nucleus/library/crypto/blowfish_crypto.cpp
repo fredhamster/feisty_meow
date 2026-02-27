@@ -24,6 +24,7 @@
 #include <structures/static_memory_gremlin.h>
 
 #include <openssl/blowfish.h>
+#include <openssl/err.h>
 #include <openssl/evp.h>
 
 using namespace basis;
@@ -41,9 +42,11 @@ const int FUDGE = 128;
 //#undef set_key
   // get rid of a macro we don't want.
 
-//#define DEBUG_BLOWFISH
+#define DEBUG_BLOWFISH
   // uncomment for noisier version.
 
+#undef ALWAYS_LOG
+#define ALWAYS_LOG(t) CLASS_EMERGENCY_LOG(program_wide_logger::get(), t)
 #ifdef DEBUG_BLOWFISH
   #undef LOG
   #define LOG(t) CLASS_EMERGENCY_LOG(program_wide_logger::get(), t)
@@ -51,6 +54,10 @@ const int FUDGE = 128;
   #undef LOG
   #define LOG(t) 
 #endif
+
+// helpful macro for the error string of last failure.
+#define GET_SSL_ERROR() \
+  ERR_error_string(ERR_get_error(), NULL_POINTER)
 
 #ifdef DEBUG_BLOWFISH
   // this macro checks on the validity of the key sizes (in bits).
@@ -101,6 +108,7 @@ blowfish_crypto::blowfish_crypto(const byte_array &key, int key_size)
   _key(new byte_array(key))
 {
   FUNCDEF("ctor(byte_array,int)");
+  static_ssl_initializer();
   // any problems with the key provided are horrid.  they will yield a
   // non-working blowfish object.
   LOG("prior to key size discuss");
@@ -108,7 +116,6 @@ blowfish_crypto::blowfish_crypto(const byte_array &key, int key_size)
   LOG("prior to provided key discuss");
   DISCUSS_PROVIDED_KEY(key_size, key);
   LOG("prior to ssl static init");
-  static_ssl_initializer();
   LOG("after ssl static init");
 }
 
@@ -163,6 +170,7 @@ bool blowfish_crypto::set_key(const byte_array &new_key, int key_size)
 void blowfish_crypto::generate_key(int size, byte_array &new_key)
 {
   FUNCDEF("generate_key");
+  static_ssl_initializer();
   DISCUSS_KEY_SIZE(size);
   if (size < minimum_key_size())
     size = minimum_key_size();
@@ -180,6 +188,7 @@ SAFE_STATIC(mutex, __vector_init_lock, )
 const byte_array &blowfish_crypto::init_vector()
 {
   FUNCDEF("init_vector");
+  static_ssl_initializer();
   auto_synchronizer locking(__vector_init_lock());
   static byte_array to_return(EVP_MAX_IV_LENGTH);
   static bool initted = false;
@@ -206,9 +215,30 @@ bool blowfish_crypto::encrypt(const byte_array &source,
   // initialize an encoding session.
   EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
   EVP_CIPHER_CTX_init(session);
-  EVP_EncryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, _key->observe(), init_vector().observe());
+
+//new rules!
+//EVP_EncryptInit to set the cipher, but leave key and IV null and unset
+//EVP_CIPHER_CTX_set_key_length and EVP_CTRL_AEAD_SET_IVLEN
+//EVP_EncryptInit again. This time leave cipher null, because you've already set it, and set the key and IV.
+
+  int initret = EVP_EncryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, NULL_POINTER, NULL_POINTER);
+  if (!initret) {
+    // zero means a failure of the initialization.
+    ALWAYS_LOG(a_sprintf("failure in calling EVP_EncryptInit_ex, with error %s", GET_SSL_ERROR()));
+    exit(1);
+  }
   LOG(a_sprintf("calling set key len with key size of %d", _key_size));
+  // new fancy footwork needed to keep openssl from blowing up and claiming we didn't set the key.
+//hmmm: check returns on these setters?
   EVP_CIPHER_CTX_set_key_length(session, _key_size);
+  EVP_CIPHER_CTX_ctrl(session, EVP_CTRL_AEAD_SET_IVLEN, init_vector().length(), NULL);
+  // and round and round we go...
+  initret = EVP_EncryptInit_ex(session, NULL_POINTER, NULL_POINTER, _key->observe(), init_vector().observe());
+  if (!initret) {
+    // zero means a failure of the initialization.
+    ALWAYS_LOG(a_sprintf("second phase failure in calling EVP_EncryptInit_ex, with error %s", GET_SSL_ERROR()));
+    exit(1);
+  }
 
   // allocate temporary space for encrypted data.
   byte_array encoded(source.length() + FUDGE);
@@ -219,7 +249,7 @@ bool blowfish_crypto::encrypt(const byte_array &source,
       source.observe(), source.length());
   if (enc_ret != 1) {
     continuable_error(class_name(), func, a_sprintf("encryption failed, "
-        "result=%d.", enc_ret));
+        "result=%d with error=%s.", enc_ret, GET_SSL_ERROR()));
     to_return = false;
   } else {
     // chop any extra space off.
@@ -236,7 +266,7 @@ bool blowfish_crypto::encrypt(const byte_array &source,
     enc_ret = EVP_EncryptFinal_ex(session, encoded.access(), &pad_len);
     if (enc_ret != 1) {
       continuable_error(class_name(), func, a_sprintf("finalizing encryption "
-          "failed, result=%d.", enc_ret));
+          "failed, result=%d with error=%s.", enc_ret, GET_SSL_ERROR()));
       to_return = false;
     } else {
       LOG(a_sprintf("padding added %d bytes.\n", pad_len));
@@ -260,9 +290,22 @@ bool blowfish_crypto::decrypt(const byte_array &source,
   EVP_CIPHER_CTX *session = EVP_CIPHER_CTX_new();
   EVP_CIPHER_CTX_init(session);
   LOG(a_sprintf("key size %d bits.\n", BITS_PER_BYTE * _key->length()));
-  EVP_DecryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, _key->observe(),
-      init_vector().observe());
+  int initret = EVP_DecryptInit_ex(session, EVP_bf_cbc(), NULL_POINTER, NULL_POINTER, NULL_POINTER);
+  if (!initret) {
+    // zero means a failure of the initialization.
+    ALWAYS_LOG(a_sprintf("failure in calling EVP_DecryptInit_ex, with error %s", GET_SSL_ERROR()));
+    exit(1);
+  }
+  // more fancy fupwork.
+//hmmm: check returns on these setters?
   EVP_CIPHER_CTX_set_key_length(session, _key_size);
+  EVP_CIPHER_CTX_ctrl(session, EVP_CTRL_AEAD_SET_IVLEN, init_vector().length(), NULL);
+  initret = EVP_DecryptInit_ex(session, NULL_POINTER, NULL_POINTER, _key->observe(), init_vector().observe());
+  if (!initret) {
+    // zero means a failure of the initialization.
+    ALWAYS_LOG(a_sprintf("second phase failure in calling EVP_DecryptInit_ex, with error %s", GET_SSL_ERROR()));
+    exit(1);
+  }
 
   // allocate enough space for decoded bytes.
   byte_array decoded(source.length() + FUDGE);
@@ -271,7 +314,7 @@ bool blowfish_crypto::decrypt(const byte_array &source,
   int dec_ret = EVP_DecryptUpdate(session, decoded.access(), &decoded_len,
       source.observe(), source.length());
   if (dec_ret != 1) {
-    continuable_error(class_name(), func, "decryption failed.");
+    continuable_error(class_name(), func, a_sprintf("decryption failed with error=%s", GET_SSL_ERROR()));
     to_return = false;
   } else {
     LOG(a_sprintf("  decrypted size in bytes is %d.\n", decoded_len));
@@ -287,8 +330,8 @@ bool blowfish_crypto::decrypt(const byte_array &source,
     LOG(a_sprintf("padding added %d bytes.\n", pad_len));
     if (dec_ret != 1) {
       continuable_error(class_name(), func, a_sprintf("finalizing decryption "
-          "failed, result=%d, padlen=%d, target had %d bytes.", dec_ret,
-          pad_len, target.length()));
+          "failed, result=%d, padlen=%d, target had %d bytes, error=%s.", dec_ret,
+          pad_len, target.length(), GET_SSL_ERROR()));
       to_return = false;
     } else {
       int dec_size = pad_len;

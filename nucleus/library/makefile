@@ -6,6 +6,7 @@ BUILD_BEFORE = algorithms \
   structures \
   timely \
   mathematics \
+  geometric \
   textual \
   nodes \
   filesystem \
@@ -19,6 +20,7 @@ BUILD_BEFORE = algorithms \
   tests_structures \
   tests_filesystem \
   tests_mathematics \
+  tests_geometric \
   tests_processes \
   tests_nodes \
   tests_textual \
