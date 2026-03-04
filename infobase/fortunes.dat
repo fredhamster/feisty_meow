@@ -46022,3 +46022,9 @@ signs you have a bad religion:
 - if it conflicts with your personal morals or ethics.
 
   -- fred t. hamster
+~
+Even perfect program verification can only establish that a program meets its
+specification. [...]  Much of the essence of building a program is in fact the
+debugging of the specification.
+  -- Fred Brooks, manager of the IBM System/360
+
