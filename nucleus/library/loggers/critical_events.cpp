@@ -16,6 +16,7 @@
 #include "program_wide_logger.h"
 
 #include <application/application_shell.h>
+#include <application/callstack_tracker.h>
 #include <application/windoze_helper.h>
 #include <basis/astring.h>
 #include <basis/functions.h>
@@ -28,6 +29,7 @@
 #include <stdio.h>
 #include <errno.h>
 
+using namespace application;
 using namespace basis;
 using namespace structures;
 using namespace configuration;
@@ -154,10 +156,11 @@ void critical_events::make_error_message(const char *file, int line,
     const char *info, char *guards_message_space)
 {
   strcpy(guards_message_space, "\nProblem reported for \"");
-//hmmm: only copy N chars of each into the space.
-//      say 40 for class/function each, then the space - consumed for the
-//      info.  get strlen for real on the class and function name to know
-//      actual size for that computation.
+/*hmmm: only copy N chars of each into the space.
+        say 40 for class/function each, then the space - consumed for the
+        info.  get strlen for real on the class and function name to know
+        actual size for that computation.
+*/
   strcat(guards_message_space, error_class);
   strcat(guards_message_space, "::");
   strcat(guards_message_space, error_function);
@@ -181,9 +184,10 @@ void critical_events::FL_deadly_error(const char *file, int line, const char *er
       "Deadly Error Information");
   CAUSE_BREAKPOINT;
   throw "deadly_error";
-    // abort() is not as good an approach as throwing an exception.  aborts are
-    // harder to track with some compilers, but all should be able to trap an
-    // exception.
+    /* why we use an exception here--abort() is not as good an approach as
+    throwing an exception.  aborts are harder to track with some compilers,
+    but all should be able to trap an exception.  if not, get a new compiler,
+    please. */
 }
 
 void critical_events::FL_deadly_error(const astring &file, int line,
@@ -199,15 +203,21 @@ void critical_events::FL_continuable_error_real(const char *file, int line,
     const char *title)
 {
   char guards_message_space[MESSAGE_SPACE_PROVIDED];
-    // this routine could still fail, if the call stack is already jammed
-    // against its barrier.  but if that's the case, even the simple function
-    // call might fail.  in any case, we cannot deal with a stack overflow
-    // type error using this function.  but we would rather deal with that
-    // than make the space static since that would cause corruption when
-    // two threads wrote errors at the same time.
+    /* this routine could still fail, if the call stack is already jammed
+    against its barrier.  but if that's the case, even the simple function
+    call might fail.  in any case, we cannot deal with a stack overflow
+    type error using this function.  but we would rather deal with that
+    than make the space static since that would cause corruption when
+    two threads wrote errors at the same time. */
   make_error_message(file, line, error_class, error_function, info,
       guards_message_space);
   alert_message(guards_message_space, title);
+#ifdef ENABLE_CALLSTACK_TRACKING
+  char *stack_trace = thread_wide_stack_trace().full_trace();
+  alert_message(stack_trace, "current stack trace");
+  // super important to free the space again.
+  free(stack_trace);
+#endif
 }
 
 void critical_events::FL_continuable_error(const char *file, int line,
