@@ -13,7 +13,7 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <crypto/rsa_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <octopus/octopus.h>
 #include <octopus/entity_defs.h>
 #include <octopus/entity_data_bin.h>
@@ -177,7 +177,7 @@ public:
     // returns our octopus support object.  this should always exist when this
     // object is constructed properly.
 
-  static const crypto::rsa_crypto &localhost_only_key();
+  static const crypto::old_school_rsa_crypto &localhost_only_key();
     // this key should *only* be used for speeding up encryption on the local
     // host.  it is generated when the first caller needs it but then is
     // a constant key during the program's runtime.  this object can be used

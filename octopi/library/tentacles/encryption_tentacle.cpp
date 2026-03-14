@@ -17,7 +17,7 @@
 #include "key_repository.h"
 
 #include <crypto/blowfish_crypto.h>
-#include <crypto/rsa_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <loggers/program_wide_logger.h>
 #include <structures/symbol_table.h>
 #include <textual/byte_formatter.h>
@@ -52,7 +52,7 @@ encryption_tentacle::encryption_tentacle(const byte_array &private_key)
     (encryption_infoton::encryption_classifier(), false),
   _server_side(false),
   _keys(new key_repository),
-  _rsa_private(new rsa_crypto(private_key))
+  _rsa_private(new old_school_rsa_crypto(private_key))
 {
 }
 
@@ -61,7 +61,7 @@ encryption_tentacle::encryption_tentacle(int key_size)
     (encryption_infoton::encryption_classifier(), false),
   _server_side(false),
   _keys(new key_repository),
-  _rsa_private(new rsa_crypto(key_size))
+  _rsa_private(new old_school_rsa_crypto(key_size))
 {
 }
 
@@ -73,7 +73,7 @@ encryption_tentacle::~encryption_tentacle()
 
 key_repository &encryption_tentacle::keys() const { return *_keys; }
 
-const rsa_crypto &encryption_tentacle::private_key() const
+const old_school_rsa_crypto &encryption_tentacle::private_key() const
 { return *_rsa_private; }
 
 outcome encryption_tentacle::reconstitute(const string_array &classifier,

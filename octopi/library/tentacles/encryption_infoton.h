@@ -16,7 +16,7 @@
 \*****************************************************************************/
 
 #include <crypto/blowfish_crypto.h>
-#include <crypto/rsa_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <octopus/entity_defs.h>
 #include <octopus/infoton.h>
 
@@ -68,14 +68,14 @@ public:
     "new_key" will always be used to communicate with the client after this.
     */
 
-  basis::outcome prepare_public_key(const crypto::rsa_crypto &private_key);
+  basis::outcome prepare_public_key(const crypto::old_school_rsa_crypto &private_key);
     //!< prepares the request side for a client.
     /*!< the rsa public key will be generated from the "private_key". */
 
-  basis::outcome prepare_both_keys(crypto::rsa_crypto &private_key);
+  basis::outcome prepare_both_keys(crypto::old_school_rsa_crypto &private_key);
     //!< sets up both keys by randomly generating the "private_key".
 
-  basis::outcome extract_response(const crypto::rsa_crypto &private_key,
+  basis::outcome extract_response(const crypto::old_school_rsa_crypto &private_key,
           crypto::blowfish_crypto &new_key) const;
     //!< used by the client to extract the shared blowfish key from the server.
     /*!< using the private key, the server's response is decrypted and stored

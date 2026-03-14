@@ -142,7 +142,7 @@ standards and usages."
     | sed -e 's/class encryption_tentacle;/#include <tentacles\/encryption_tentacle.h>/g' \
     | sed -e 's/class login_tentacle;/#include <tentacles\/login_tentacle.h>/g' \
     | sed -e 's/class thread_cabinet;/#include <processes\/thread_cabinet.h>/g' \
-    | sed -e 's/RSA_crypto/rsa_crypto/g' \
+    | sed -e 's/RSA_crypto/old_school_rsa_crypto/g' \
     | sed -e 's/float_plus<double>/double_plus/g' \
     | sed -e 's/basis::obscure_/structures::obscure_/g' \
     | sed -e 's/program_wide_logger()/program_wide_logger::get()/g' \

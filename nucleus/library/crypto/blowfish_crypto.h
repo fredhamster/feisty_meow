@@ -18,11 +18,14 @@
 #include <basis/byte_array.h>
 #include <basis/contracts.h>
 
+#include "cryptical_envelopment.h"
+
 namespace crypto {
 
 //! Provides BlowFish encryption on byte_arrays using the OpenSSL package.
 
-class blowfish_crypto : public virtual basis::root_object
+class blowfish_crypto : public cryptical_envelopment
+//: public virtual basis::root_object
 {
 public:
   blowfish_crypto(int key_size);
@@ -46,30 +49,30 @@ public:
 
   DEFINE_CLASS_NAME("blowfish_crypto");
 
-  int key_size() const;  // returns the size of our key, in bits.
+///  int key_size() const;  // returns the size of our key, in bits.
 
-  static int minimum_key_size();
-    //!< returns the minimum key size (in bits) supported here.
-  static int maximum_key_size();
-    //!< returns the maximum key size (in bits) supported here.
+///  static int minimum_key_size();
+///    //!< returns the minimum key size (in bits) supported here.
+///  static int maximum_key_size();
+///    //!< returns the maximum key size (in bits) supported here.
 
-  const basis::byte_array &get_key() const;  //!< returns our current key.
+///  const basis::byte_array &get_key() const;  //!< returns our current key.
 
-  bool set_key(const basis::byte_array &new_key, int key_size);
+///  bool set_key(const basis::byte_array &new_key, int key_size);
     //!< sets the encryption key to "new_key".
 
-  static void generate_key(int size, basis::byte_array &new_key);
+///  static void generate_key(int size, basis::byte_array &new_key);
     //!< creates a "new_key" of the "size" (in bits) specified.
 
-  bool encrypt(const basis::byte_array &source, basis::byte_array &target) const;
+///  bool encrypt(const basis::byte_array &source, basis::byte_array &target) const;
     //!< encrypts the "source" array into the "target" array.
 
-  bool decrypt(const basis::byte_array &source, basis::byte_array &target) const;
+///  bool decrypt(const basis::byte_array &source, basis::byte_array &target) const;
     //!< decrypts the "target" array from the encrypted "source" array.
 
   // seldom-needed methods...
 
-  static const basis::byte_array &init_vector();
+///  static const basis::byte_array &init_vector();
     //!< returns the initialization vector that is used by this class.
     /*!< decryption of chunks that were encrypted by this class will require
     the same init vector as this function returns.  this is mainly provided
@@ -80,8 +83,8 @@ public:
     (currently named blowfish_crypto.cpp). */
 
 private:
-  int _key_size;  //!< number of bits in the key.
-  basis::byte_array *_key;  //!< our secret key.
+///  int _key_size;  //!< number of bits in the key.
+///  basis::byte_array *_key;  //!< our secret key.
 };
 
 } //namespace.

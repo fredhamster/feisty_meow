@@ -1,16 +1,14 @@
-/*****************************************************************************\
-*                                                                             *
-*  Name   : blowfish encryption                                               *
-*  Author : Chris Koeritz                                                     *
-*                                                                             *
-*******************************************************************************
-* Copyright (c) 2005-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
-\*****************************************************************************/
+/*
+*  Name   : blowfish encryption
+*  Author : Chris Koeritz
+*****
+* Copyright (c) 2005-$now By Author.  This program is free software; you can
+* redistribute it and/or modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either version 2 of
+* the License or (at your option) any later version.  This is online at:
+*     http://www.fsf.org/copyleft/gpl.html
+* Please send any updates to: fred@gruntose.com
+*/
 
 #include "blowfish_crypto.h"
 #include "ssl_init.h"
@@ -34,7 +32,7 @@ using namespace structures;
 
 namespace crypto {
 
-const int FUDGE = 128;
+////const int FUDGE = 128;
   // extra space for the cipher's block size.  blowfish is only 8 bytes for
   // the cipher block size, but we ensure there will definitely be no
   // problems.
@@ -42,9 +40,8 @@ const int FUDGE = 128;
 //#undef set_key
   // get rid of a macro we don't want.
 
-#define DEBUG_BLOWFISH
+//#define DEBUG_BLOWFISH
   // uncomment for noisier version.
-
 #undef ALWAYS_LOG
 #define ALWAYS_LOG(t) CLASS_EMERGENCY_LOG(program_wide_logger::get(), t)
 #ifdef DEBUG_BLOWFISH
@@ -56,9 +53,10 @@ const int FUDGE = 128;
 #endif
 
 // helpful macro for the error string of last failure.
-#define GET_SSL_ERROR() \
-  ERR_error_string(ERR_get_error(), NULL_POINTER)
+//#define GET_SSL_ERROR() \
+//  ERR_error_string(ERR_get_error(), NULL_POINTER)
 
+/*
 #ifdef DEBUG_BLOWFISH
   // this macro checks on the validity of the key sizes (in bits).
   #define DISCUSS_KEY_SIZE(key_size) \
@@ -85,11 +83,14 @@ const int FUDGE = 128;
   #define DISCUSS_PROVIDED_KEY(key_size, key) 
   #define DISCUSS_KEY_SIZE(key_size) 
 #endif
+*/
 
 blowfish_crypto::blowfish_crypto(int key_size)
-: _key_size(key_size),
-  _key(new byte_array)
+: cryptical_envelopment(key_size, EVP_bf_cbc())
+///_key_size(key_size),
+///  _key(new byte_array)
 {
+/*
   FUNCDEF("ctor(int)");
   static_ssl_initializer();
   LOG("prior to key size discuss");
@@ -101,12 +102,15 @@ blowfish_crypto::blowfish_crypto(int key_size)
   LOG("prior to generate key");
   generate_key(_key_size, *_key);
   LOG("after generate key");
+*/
 }
 
 blowfish_crypto::blowfish_crypto(const byte_array &key, int key_size)
-: _key_size(key_size),
-  _key(new byte_array(key))
+: cryptical_envelopment(key, key_size, EVP_bf_cbc())
+//: _key_size(key_size),
+//  _key(new byte_array(key))
 {
+/*
   FUNCDEF("ctor(byte_array,int)");
   static_ssl_initializer();
   // any problems with the key provided are horrid.  they will yield a
@@ -117,26 +121,31 @@ blowfish_crypto::blowfish_crypto(const byte_array &key, int key_size)
   DISCUSS_PROVIDED_KEY(key_size, key);
   LOG("prior to ssl static init");
   LOG("after ssl static init");
+*/
 }
 
 blowfish_crypto::blowfish_crypto(const blowfish_crypto &to_copy)
 : root_object(),
-  _key_size(to_copy._key_size),
-  _key(new byte_array(*to_copy._key))
+  cryptical_envelopment(*this)
+///  _key_size(to_copy._key_size),
+///  _key(new byte_array(*to_copy._key))
 {
-  FUNCDEF("copy ctor");
-  static_ssl_initializer(); 
-  LOG("after ssl static init");
+///  FUNCDEF("copy ctor");
+///  static_ssl_initializer(); 
+///  LOG("after ssl static init");
 }
 
 blowfish_crypto::~blowfish_crypto()
 {
+/*
   FUNCDEF("destructor");
   LOG("prior to key whack");
   WHACK(_key);
   LOG("after key whack");
+*/
 }
 
+/*
 int blowfish_crypto::key_size() const { return _key_size; }
 
 const byte_array &blowfish_crypto::get_key() const { return *_key; }
@@ -144,15 +153,20 @@ const byte_array &blowfish_crypto::get_key() const { return *_key; }
 int blowfish_crypto::minimum_key_size() { return 64; }
 
 int blowfish_crypto::maximum_key_size() { return 448; }
+*/
 
 blowfish_crypto &blowfish_crypto::operator = (const blowfish_crypto &to_copy)
 {
   if (this == &to_copy) return *this;
-  _key_size = to_copy._key_size;
-  *_key = *to_copy._key;
+  *((cryptical_envelopment *)this) = *((cryptical_envelopment *)&to_copy);
+//hmmm: is that the best way to do this?
+
+//  _key_size = to_copy._key_size;
+//  *_key = *to_copy._key;
   return *this;
 }
 
+/*
 bool blowfish_crypto::set_key(const byte_array &new_key, int key_size)
 {
   FUNCDEF("set_key");
@@ -349,6 +363,7 @@ ALWAYS_LOG(">>decrypt>>");
 ALWAYS_LOG("<<decrypt<<");
   return to_return;
 }
+*/
 
 } //namespace.
 

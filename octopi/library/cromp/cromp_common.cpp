@@ -35,7 +35,7 @@
 #include <basis/functions.h>
 #include <basis/astring.h>
 #include <basis/mutex.h>
-#include <crypto/rsa_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <loggers/program_wide_logger.h>
 #include <octopus/entity_data_bin.h>
 #include <octopus/entity_defs.h>
@@ -104,9 +104,9 @@ const int cromp_common::HOSTCHOP = 6;
 double cromp_common::_bytes_sent_total = 0.0;
 double cromp_common::_bytes_received_total = 0.0;
 
-  SAFE_STATIC_CONST(rsa_crypto, _hidden_localhost_only_key,
+  SAFE_STATIC_CONST(old_school_rsa_crypto, _hidden_localhost_only_key,
       (encryption_infoton::RSA_KEY_SIZE))
-  const rsa_crypto &cromp_common::localhost_only_key() {
+  const old_school_rsa_crypto &cromp_common::localhost_only_key() {
 #ifdef DEBUG_CROMP_COMMON
     FUNCDEF("localhost_only_key");
 #endif
@@ -119,7 +119,7 @@ double cromp_common::_bytes_received_total = 0.0;
     if (!was_initted)
       LOG("started creating localhost RSA key.");
 #endif
-    const rsa_crypto &to_return = _hidden_localhost_only_key();
+    const old_school_rsa_crypto &to_return = _hidden_localhost_only_key();
 #ifdef DEBUG_CROMP_COMMON
     if (!was_initted)
       LOG("done creating localhost RSA key.");

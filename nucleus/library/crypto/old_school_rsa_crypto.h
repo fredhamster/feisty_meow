@@ -1,5 +1,5 @@
-#ifndef RSA_CRYPTO_CLASS
-#define RSA_CRYPTO_CLASS
+#ifndef OLD_SCHOOL_RSA_CRYPTO_CLASS
+#define OLD_SCHOOL_RSA_CRYPTO_CLASS
 
 /*****************************************************************************\
 *                                                                             *
@@ -19,7 +19,6 @@
 #include <basis/contracts.h>
 
 // forward.
-//struct RSA;
 typedef struct rsa_st RSA;
 
 namespace crypto {
@@ -29,31 +28,31 @@ namespace crypto {
   This class uses the OpenSSL package's support for RSA encryption.
 */
 
-class rsa_crypto : public virtual basis::nameable
+class old_school_rsa_crypto : public virtual basis::nameable
 {
 public:
-  rsa_crypto(int key_size);
+  old_school_rsa_crypto(int key_size);
     //!< constructs using a randomized private key of the "key_size".
     /*!< the "key_size" must be at least 1024 bits for acceptable security.
     smaller keys are considered insecure. */
 
-  rsa_crypto(const basis::byte_array &key);
+  old_school_rsa_crypto(const basis::byte_array &key);
     //!< constructs with the specified "key" as our private key.
     /*!< the "key" is used for encryption rather than generating a random one.
     the key is only valid if it was created with this class.  also, if the key
     is a public key, then only the public_encryption and public_decryption
     methods will be available. */
 
-  rsa_crypto(RSA *key);
+  old_school_rsa_crypto(RSA *key);
     //!< starts with a pre-existing "key" in the low-level form.
 
-  rsa_crypto(const rsa_crypto &to_copy);
+  old_school_rsa_crypto(const old_school_rsa_crypto &to_copy);
 
-  virtual ~rsa_crypto();
+  virtual ~old_school_rsa_crypto();
 
-  const rsa_crypto &operator = (const rsa_crypto &to_copy);
+  const old_school_rsa_crypto &operator = (const old_school_rsa_crypto &to_copy);
 
-  DEFINE_CLASS_NAME("rsa_crypto");
+  DEFINE_CLASS_NAME("old_school_rsa_crypto");
 
   bool set_key(basis::byte_array &key);
     //!< resets this object's key to "key".

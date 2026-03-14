@@ -20,7 +20,7 @@
 #include <basis/functions.h>
 #include <basis/mutex.h>
 #include <configuration/application_configuration.h>
-#include <crypto/rsa_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <loggers/program_wide_logger.h>
 #include <mathematics/chaos.h>
 #include <octopus/entity_defs.h>
