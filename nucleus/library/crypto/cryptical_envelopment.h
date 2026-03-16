@@ -28,34 +28,34 @@ namespace crypto {
 class cryptical_envelopment : public virtual basis::root_object
 {
 public:
-  cryptical_envelopment(int key_size, const EVP_CIPHER *cipher_type);
-    //!< this will create a new random key of the "key_size", in bits.
-    /*!< the valid sizes for keys depend on the algorithm in question. */
-
-  cryptical_envelopment(const basis::byte_array &key, int key_size, const EVP_CIPHER *cipher_type);
-    //!< uses a pre-existing "key" for encryption.
-
+  cryptical_envelopment(const EVP_CIPHER *cipher_type);
+    //!< constructor requires the type of encryption to use.
   cryptical_envelopment(const cryptical_envelopment &to_copy);  //!< copy constructor.
 
   virtual ~cryptical_envelopment();
 
   cryptical_envelopment &operator = (const cryptical_envelopment &to_copy);
 
-  DEFINE_CLASS_NAME("cryptical_envelopment");
-
-  int key_size() const;  // returns the size of our key, in bits.
-
-///  static int minimum_key_size();
-///    //!< returns the minimum key size (in bits) supported here.
-///  static int maximum_key_size();
-///    //!< returns the maximum key size (in bits) supported here.
-
-  const basis::byte_array &get_key() const;  //!< returns our current key.
+  bool set_key(int key_size);
+    //!< this will create a new random key of the "key_size", in bits.
+    /*!< the valid sizes for keys depend on the algorithm in question. */
 
   bool set_key(const basis::byte_array &new_key, int key_size);
     //!< sets the encryption key to "new_key" with a "key_size" in bits.
 
-  static void generate_key(int size, basis::byte_array &new_key);
+  DEFINE_CLASS_NAME("cryptical_envelopment");
+
+  int key_size() const;  // returns the size of our key, in bits.
+
+  // derived classes must provide the min and max for key sizes.
+  virtual int minimum_key_size() const = 0;
+    //!< returns the minimum key size (in bits) supported here.
+  virtual int maximum_key_size() const = 0;
+    //!< returns the maximum key size (in bits) supported here.
+
+  const basis::byte_array &get_key() const;  //!< returns our current key.
+
+  bool generate_key(int size, basis::byte_array &new_key);
     //!< creates a "new_key" of the "size" (in bits) specified.
 
   bool encrypt(const basis::byte_array &source, basis::byte_array &target) const;

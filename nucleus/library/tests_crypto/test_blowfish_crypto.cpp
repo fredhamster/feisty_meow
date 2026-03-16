@@ -58,7 +58,7 @@ const int ITERATIONS = 80;  // number of test runs in our testing threads.
 const int MAX_STRING = 20000;  // largest chunk that we'll try to encrypt.
 
 // some constants snagged from older version of blowfish_crypto class...
-const int blowfish_crypto_minimum_key_size_in_bits = 64;
+const int blowfish_crypto_minimum_key_size_in_bits = 32;
 const int blowfish_crypto_maximum_key_size_in_bits = 448;
 
 //////////////

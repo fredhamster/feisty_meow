@@ -49,6 +49,10 @@ public:
 
   DEFINE_CLASS_NAME("blowfish_crypto");
 
+  // blowfish relevant values for appropriate key sizes.
+  virtual int minimum_key_size() const { return 32; }
+  virtual int maximum_key_size() const { return 448; }
+
 ///  int key_size() const;  // returns the size of our key, in bits.
 
 ///  static int minimum_key_size();

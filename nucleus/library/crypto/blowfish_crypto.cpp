@@ -21,7 +21,6 @@
 #include <mathematics/chaos.h>
 #include <structures/static_memory_gremlin.h>
 
-#include <openssl/blowfish.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 
@@ -86,10 +85,11 @@ namespace crypto {
 */
 
 blowfish_crypto::blowfish_crypto(int key_size)
-: cryptical_envelopment(key_size, EVP_bf_cbc())
+: cryptical_envelopment(EVP_bf_cbc())
 ///_key_size(key_size),
 ///  _key(new byte_array)
 {
+  set_key(key_size);
 /*
   FUNCDEF("ctor(int)");
   static_ssl_initializer();
@@ -106,10 +106,11 @@ blowfish_crypto::blowfish_crypto(int key_size)
 }
 
 blowfish_crypto::blowfish_crypto(const byte_array &key, int key_size)
-: cryptical_envelopment(key, key_size, EVP_bf_cbc())
+: cryptical_envelopment(EVP_bf_cbc())
 //: _key_size(key_size),
 //  _key(new byte_array(key))
 {
+  set_key(key, key_size);
 /*
   FUNCDEF("ctor(byte_array,int)");
   static_ssl_initializer();
