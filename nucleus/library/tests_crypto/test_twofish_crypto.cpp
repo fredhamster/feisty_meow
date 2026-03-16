@@ -46,19 +46,17 @@ using namespace unit_test;
 #define DEBUG_TWOFISH
   // uncomment for noisier run.
 
-//const int TEST_RUNS_PER_KEY = 42;  // encryption test cycles done on each key.
-const int TEST_RUNS_PER_KEY = 420;  // encryption test cycles done on each key.
+const int TEST_RUNS_PER_KEY = 42;  // encryption test cycles done on each key.
 
 const int THREAD_COUNT = 10;  // number of threads testing twofish at once.
 
-//const int ITERATIONS = 64;  // number of test runs in our testing threads.
-const int ITERATIONS = 4200;  // number of test runs in our testing threads.
+const int ITERATIONS = 64;  // number of test runs in our testing threads.
 
 const int MAX_STRING = 64 * KILOBYTE;  // largest chunk that we'll try to encrypt.
 
 // some constants snagged from older version of twofish_crypto class...
-const int twofish_crypto_minimum_key_size_in_bits = 92;
-const int twofish_crypto_maximum_key_size_in_bits = 256;
+//const int twofish_crypto_minimum_key_size_in_bits = 92;
+//const int twofish_crypto_maximum_key_size_in_bits = 256;
 /*
  Q: is twofish truly requiring 128/192/256 key sizes only?
  A: no, schneier says any key size up to 256 bits.

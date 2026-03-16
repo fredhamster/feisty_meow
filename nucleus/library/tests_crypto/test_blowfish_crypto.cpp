@@ -14,7 +14,7 @@
 #include <application/hoople_main.h>
 #include <basis/byte_array.h>
 #include <basis/astring.h>
-#include <crypto/blowfish_crypto.h>
+#include <crypto/borked_blowfish_crypto.h>
 #include <mathematics/chaos.h>
 #include <processes/ethread.h>
 #include <processes/thread_cabinet.h>
@@ -57,9 +57,9 @@ const int ITERATIONS = 80;  // number of test runs in our testing threads.
 
 const int MAX_STRING = 20000;  // largest chunk that we'll try to encrypt.
 
-// some constants snagged from older version of blowfish_crypto class...
-const int blowfish_crypto_minimum_key_size_in_bits = 32;
-const int blowfish_crypto_maximum_key_size_in_bits = 448;
+// some constants snagged from older version of borked_blowfish_crypto class...
+const int borked_blowfish_crypto_minimum_key_size_in_bits = 32;
+const int borked_blowfish_crypto_maximum_key_size_in_bits = 448;
 
 //////////////
 
@@ -141,8 +141,8 @@ void blowfish_thread::perform_activity(void *)
   int left = ITERATIONS;
   while (left--) {
     time_stamp key_start;
-    blowfish_crypto bc(_parent.randomizer().inclusive(blowfish_crypto_minimum_key_size_in_bits,
-        blowfish_crypto_maximum_key_size_in_bits));
+    borked_blowfish_crypto bc(_parent.randomizer().inclusive(borked_blowfish_crypto_minimum_key_size_in_bits,
+        borked_blowfish_crypto_maximum_key_size_in_bits));
 #ifdef DEBUG_BLOWFISH
     LOG(a_sprintf("%d bit key has:", bc.key_size()));
     astring dumped_key = byte_formatter::text_dump(bc.get_key());
