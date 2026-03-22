@@ -42,7 +42,7 @@ public:
   DEFINE_CLASS_NAME("twofish_crypto");
 
   // twofish relevant values for appropriate key sizes.
-  virtual int minimum_key_size() const { return 92; }
+  virtual int minimum_key_size_in_bits() const { return 92; }
     /*
      note that the lower bound above was discovered for openssl library through experimentation,
      and is not officially documented for the twofish algorithm anywhere we can find (yet).
@@ -50,7 +50,7 @@ public:
      would succeed on the same key length but then would trigger an 'invalid key length' error.
      not the kind of deterministic behavior we might expect.
     */
-  virtual int maximum_key_size() const { return 256; }
+  virtual int maximum_key_size_in_bits() const { return 256; }
 };
 
 } //namespace.

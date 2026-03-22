@@ -3,12 +3,12 @@
 *  Author : Chris Koeritz
 *  Purpose: Exercises the BlowFish encryption methods in the crypto library.
 **
-* Copyright (c) 2005-$now By Author.  This program is free software; you can  *
-* redistribute it and/or modify it under the terms of the GNU General Public  *
-* License as published by the Free Software Foundation; either version 2 of   *
-* the License or (at your option) any later version.  This is online at:      *
-*     http://www.fsf.org/copyleft/gpl.html                                    *
-* Please send any updates to: fred@gruntose.com                               *
+* Copyright (c) 2005-$now By Author.  This program is free software; you can
+* redistribute it and/or modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either version 2 of
+* the License or (at your option) any later version.  This is online at:
+*     http://www.fsf.org/copyleft/gpl.html
+* Please send any updates to: fred@gruntose.com
 */
 
 #include <application/hoople_main.h>
@@ -58,8 +58,8 @@ const int ITERATIONS = 80;  // number of test runs in our testing threads.
 const int MAX_STRING = 20000;  // largest chunk that we'll try to encrypt.
 
 // some constants snagged from older version of borked_blowfish_crypto class...
-const int borked_blowfish_crypto_minimum_key_size_in_bits = 32;
-const int borked_blowfish_crypto_maximum_key_size_in_bits = 448;
+///const int borked_blowfish_crypto_minimum_key_size_in_bits = 32;
+///const int borked_blowfish_crypto_maximum_key_size_in_bits = 448;
 
 //////////////
 
@@ -141,8 +141,8 @@ void blowfish_thread::perform_activity(void *)
   int left = ITERATIONS;
   while (left--) {
     time_stamp key_start;
-    borked_blowfish_crypto bc(_parent.randomizer().inclusive(borked_blowfish_crypto_minimum_key_size_in_bits,
-        borked_blowfish_crypto_maximum_key_size_in_bits));
+    borked_blowfish_crypto bc(256);
+    bc = borked_blowfish_crypto(_parent.randomizer().inclusive(bc.minimum_key_size_in_bits(), bc.maximum_key_size_in_bits()));
 #ifdef DEBUG_BLOWFISH
     LOG(a_sprintf("%d bit key has:", bc.key_size()));
     astring dumped_key = byte_formatter::text_dump(bc.get_key());

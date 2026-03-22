@@ -72,16 +72,16 @@ const int FUDGE = 1024;
 
 // this macro checks on the validity of the key sizes (in bits).
 #define DISCUSS_KEY_SIZE(key_size) \
-  if (key_size < minimum_key_size()) { \
+  if (key_size < minimum_key_size_in_bits()) { \
     ERROR_BAILOUT(static_class_name(), func, \
         a_sprintf("key size (%d bits) is less than minimum key size %d.", \
-            key_size, minimum_key_size())); \
+            key_size, minimum_key_size_in_bits())); \
     return false; \
   } \
-  if (key_size > maximum_key_size()) { \
+  if (key_size > maximum_key_size_in_bits()) { \
       ERROR_BAILOUT(static_class_name(), func, \
           a_sprintf("key size (%d bits) is greater than maximum key size %d.", \
-              key_size, maximum_key_size())); \
+              key_size, maximum_key_size_in_bits())); \
     return false; \
   }
 
@@ -126,31 +126,12 @@ bool cryptical_envelopment::set_key(int key_size)
 {
   FUNCDEF("set_key(int)");
   DISCUSS_KEY_SIZE(key_size);
-///  if (key_size < minimum_key_size())
-///    _key_size = minimum_key_size();
-///  if (key_size > maximum_key_size())
-///    _key_size = maximum_key_size();
   LOG("prior to generate key");
   _key_size = key_size;
-///  WHACK(_key);  // clear any existing key.
-///  _key = new byte_array();
   bool to_return = generate_key(_key_size, *_key);
   LOG("after generate key");
   return to_return;
 }
-
-/*
-bool cryptical_envelopment::set_key(const byte_array &key, int key_size)
-{
-  FUNCDEF("set_key(byte_array,int)");
-////  static_ssl_initializer();
-  DISCUSS_KEY_SIZE(key_size);
-  DISCUSS_PROVIDED_KEY(key_size, key);
-  _key_size = key_size;
-  _key = new byte_array(key);
-  return true;
-}
-*/
 
 int cryptical_envelopment::key_size() const { return _key_size; }
 
@@ -168,14 +149,8 @@ cryptical_envelopment &cryptical_envelopment::operator = (const cryptical_envelo
 bool cryptical_envelopment::set_key(const byte_array &new_key, int key_size)
 {
   FUNCDEF("set_key(byte_array,int)");
-//  if (!new_key.length()) return false;
   DISCUSS_KEY_SIZE(key_size);
   DISCUSS_PROVIDED_KEY(key_size, new_key);
-//  if ( (key_size < minimum_key_size()) || (key_size > maximum_key_size()) )
-//    return false;
-//  if (new_key.length() * BITS_PER_BYTE < key_size) return false;
-////  if (!_key)
-////    _key = new byte_array();
   _key_size = key_size;
   *_key = new_key;
   return true;
@@ -197,13 +172,7 @@ bool cryptical_envelopment::generate_key(int size, byte_array &new_key)
 {
   FUNCDEF("generate_key");
   static_ssl_initializer();
-////  if (!_key)
-////    _key = new byte_array();
   DISCUSS_KEY_SIZE(size);
-//  if (size < minimum_key_size())
-//    size = minimum_key_size();
-//  else if (size > maximum_key_size())
-//    size = maximum_key_size();
   int bytes = size / BITS_PER_BYTE;  // calculate the number of bytes needed.
   if (size % BITS_PER_BYTE) bytes++;  // add one for non-integral portion.
   new_key.reset(bytes);

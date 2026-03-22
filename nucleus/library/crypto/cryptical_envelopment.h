@@ -48,10 +48,10 @@ public:
   int key_size() const;  // returns the size of our key, in bits.
 
   // derived classes must provide the min and max for key sizes.
-  virtual int minimum_key_size() const = 0;
-    //!< returns the minimum key size (in bits) supported here.
-  virtual int maximum_key_size() const = 0;
-    //!< returns the maximum key size (in bits) supported here.
+  virtual int minimum_key_size_in_bits() const = 0;
+    //!< returns the minimum key size in bits supported here.
+  virtual int maximum_key_size_in_bits() const = 0;
+    //!< returns the maximum key size in bits supported here.
 
   const basis::byte_array &get_key() const;  //!< returns our current key.
 

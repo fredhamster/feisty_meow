@@ -54,8 +54,8 @@ public:
   DEFINE_CLASS_NAME("borked_blowfish_crypto");
 
   // blowfish relevant values for appropriate key sizes.
-  virtual int minimum_key_size() const { return 64; }  // officially, this is 32.
-  virtual int maximum_key_size() const { return 448; }
+  virtual int minimum_key_size_in_bits() const { return 64; }  // officially, this is 32.
+  virtual int maximum_key_size_in_bits() const { return 448; }
 };
 
 } //namespace.

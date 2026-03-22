@@ -57,14 +57,6 @@ const int MAX_STRING = 64 * KILOBYTE;  // largest chunk that we'll try to encryp
 // some constants snagged from older version of twofish_crypto class...
 //const int twofish_crypto_minimum_key_size_in_bits = 92;
 //const int twofish_crypto_maximum_key_size_in_bits = 256;
-/*
- Q: is twofish truly requiring 128/192/256 key sizes only?
- A: no, schneier says any key size up to 256 bits.
- Q: can twofish really support *any* key length up to 256?
- A: well, not in openssl.  we are getting invalid key length complaints
-    with keys below 92 bits.  this was calculated by testing for quite
-    a while with only those size keys, and 92 seems reliable as a minimum.
-*/
 
 //////////////
 
@@ -146,11 +138,11 @@ void twofish_thread::perform_activity(void *)
   int left = ITERATIONS;
   while (left--) {
     time_stamp key_start;
-    twofish_crypto bc(_parent.randomizer().inclusive(twofish_crypto_minimum_key_size_in_bits,
-        twofish_crypto_maximum_key_size_in_bits));
+    twofish_crypto tc(256);
+    tc = twofish_crypto(_parent.randomizer().inclusive(tc.minimum_key_size_in_bits(), tc.maximum_key_size_in_bits()));
 #ifdef DEBUG_TWOFISH
-    LOG(a_sprintf("%d bit key has:", bc.key_size()));
-    astring dumped_key = byte_formatter::text_dump(bc.get_key());
+    LOG(a_sprintf("%d bit key has:", tc.key_size()));
+    astring dumped_key = byte_formatter::text_dump(tc.get_key());
     LOG(a_sprintf("%s", dumped_key.s()));
 #endif
     int key_dur = int(time_stamp().value() - key_start.value());
@@ -173,13 +165,13 @@ LOG(a_sprintf("test run %d on this key.", i+1));
 
       byte_array target;
       time_stamp test_start;
-      bool worked = bc.encrypt(byte_array(ranstring.length() + 1, (abyte*)ranstring.s()), target);
+      bool worked = tc.encrypt(byte_array(ranstring.length() + 1, (abyte*)ranstring.s()), target);
       int enc_durat = int(time_stamp().value() - test_start.value());
       ASSERT_TRUE(worked, "phase 1 should not fail to encrypt the string");
 
       byte_array recovered;
       test_start.reset();
-      worked = bc.decrypt(target, recovered);
+      worked = tc.decrypt(target, recovered);
       int dec_durat = int(time_stamp().value() - test_start.value());
       ASSERT_TRUE(worked, "phase 1 should not fail to decrypt the string");
 #ifdef DEBUG_TWOFISH
