@@ -15,7 +15,7 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <crypto/blowfish_crypto.h>
+#include <crypto/twofish_crypto.h>
 #include <crypto/old_school_rsa_crypto.h>
 #include <octopus/entity_defs.h>
 #include <octopus/infoton.h>
@@ -62,7 +62,7 @@ public:
 
   encryption_infoton &operator =(const encryption_infoton &to_copy);
 
-  basis::outcome prepare_blowfish_key(crypto::blowfish_crypto &new_key);
+  basis::outcome prepare_blowfish_key(crypto::twofish_crypto &new_key);
     //!< performs the server side's job on the current key.
     /*!< the public key had better be set already or this will fail.  the
     "new_key" will always be used to communicate with the client after this.
@@ -76,7 +76,7 @@ public:
     //!< sets up both keys by randomly generating the "private_key".
 
   basis::outcome extract_response(const crypto::old_school_rsa_crypto &private_key,
-          crypto::blowfish_crypto &new_key) const;
+          crypto::twofish_crypto &new_key) const;
     //!< used by the client to extract the shared blowfish key from the server.
     /*!< using the private key, the server's response is decrypted and stored
     in "new_key".  note that this will only succeed if the _success member

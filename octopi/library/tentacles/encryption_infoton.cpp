@@ -18,7 +18,7 @@
 
 #include <basis/mutex.h>
 #include <basis/functions.h>
-#include <crypto/blowfish_crypto.h>
+#include <crypto/twofish_crypto.h>
 #include <crypto/old_school_rsa_crypto.h>
 #include <octopus/tentacle.h>
 #include <structures/static_memory_gremlin.h>
@@ -103,7 +103,7 @@ bool encryption_infoton::unpack(byte_array &packed_form)
   return true;
 }
 
-outcome encryption_infoton::prepare_blowfish_key(blowfish_crypto &new_key)
+outcome encryption_infoton::prepare_blowfish_key(twofish_crypto &new_key)
 {
   FUNCDEF("prepare_blowfish_key");
   _encrypted_blowfish_key.reset();  // clean out stuff to create.
@@ -114,7 +114,7 @@ outcome encryption_infoton::prepare_blowfish_key(blowfish_crypto &new_key)
   }
 
   old_school_rsa_crypto pub(_public_key);  // suck in the provided key.
-  blowfish_crypto agreed_key(BLOWFISH_KEY_SIZE);  // random blowfish key.
+  twofish_crypto agreed_key(BLOWFISH_KEY_SIZE);  // random blowfish key.
   new_key = agreed_key;
 
   // now encrypt the new key for transit.
@@ -141,7 +141,7 @@ outcome encryption_infoton::prepare_public_key(const old_school_rsa_crypto &priv
 }
 
 outcome encryption_infoton::extract_response(const old_school_rsa_crypto &private_key,
-    blowfish_crypto &new_key) const
+    twofish_crypto &new_key) const
 {
   FUNCDEF("extract_response");
   if (_success != tentacle::OKAY) return _success;

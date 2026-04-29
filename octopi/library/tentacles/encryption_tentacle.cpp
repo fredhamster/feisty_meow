@@ -16,7 +16,7 @@
 #include "encryption_wrapper.h"
 #include "key_repository.h"
 
-#include <crypto/blowfish_crypto.h>
+#include <crypto/twofish_crypto.h>
 #include <crypto/old_school_rsa_crypto.h>
 #include <loggers/program_wide_logger.h>
 #include <structures/symbol_table.h>
@@ -149,7 +149,7 @@ outcome encryption_tentacle::consume(infoton &to_chow,
   if (!_server_side) {
     // client's side must track the key we were given for decryption.  we'll
     // use that from now on.
-    blowfish_crypto new_key(blowfish_crypto::minimum_key_size());  // bogus.
+    twofish_crypto new_key(twofish_crypto::minimum_key_size());  // bogus.
     outcome ret = inf->extract_response(*_rsa_private, new_key);
     if (ret != OKAY) {
 #ifdef DEBUG_ENCRYPTION_TENTACLE
@@ -164,7 +164,7 @@ outcome encryption_tentacle::consume(infoton &to_chow,
   } else {
     // server's side need to process a key request and send it back using
     // the public key the requester provided.
-    blowfish_crypto agreed_key(blowfish_crypto::minimum_key_size());
+    twofish_crypto agreed_key(twofish_crypto::minimum_key_size());
       // initialized with junk.
     outcome worked = inf->prepare_blowfish_key(agreed_key);
     if (worked != OKAY) {
