@@ -34,13 +34,14 @@ class borked_blowfish_crypto : public cryptical_envelopment
 public:
   borked_blowfish_crypto(int key_size);
     //!< this will create a new random key of the "key_size", in bits.
-    /*!< the valid sizes are from 64 bits to 448 bits (we are forcing a
-    higher minimum than the published algorithm because we have found smaller
-    keys to be unreliable during decryption.  keys of 168 bits and larger
-    should be very secure.  it is said that if a billion computers each tried
-    a billion keys a second, then a 168 bit key would take 10 * 10^24 years
-    to break (using brute force).  this is essentially unbreakable since the
-    age of the universe is only 10 * 10^9 years so far. */
+    /*!< the valid published sizes are from 32 bits to 448 bits, but openssl
+    borks with lower than 128 seemingly.  so we are forcing a higher minimum
+    here than the published algorithm.
+    keys of 168 bits and larger should be very secure.  it is said
+    (ed: by who?) that if a billion computers each tried a billion keys a
+    second, then a 168 bit key would take 10 * 10^24 years to break (using
+    brute force).  this would be essentially unbreakable since the age of the
+    universe is only 10 * 10^9 years so far.  (estimates not guaranteed.) */
 
   borked_blowfish_crypto(const basis::byte_array &key, int key_size);
     //!< uses a pre-existing "key".
@@ -54,8 +55,11 @@ public:
   DEFINE_CLASS_NAME("borked_blowfish_crypto");
 
   // blowfish relevant values for appropriate key sizes.
-  virtual int minimum_key_size_in_bits() const { return 64; }  // officially, this is 32.
-  virtual int maximum_key_size_in_bits() const { return 448; }
+  virtual int minimum_key_size_in_bits() const { return static_minimum_key_size_in_bits(); }
+  virtual int maximum_key_size_in_bits() const { return static_maximum_key_size_in_bits(); }
+  static int static_minimum_key_size_in_bits() { return 128; }
+    // officially, this is 32.  but openssl fails occasionally with less than 64 bits.
+  static int static_maximum_key_size_in_bits() { return 448; }
 };
 
 } //namespace.

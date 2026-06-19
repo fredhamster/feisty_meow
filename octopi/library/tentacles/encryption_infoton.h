@@ -55,6 +55,7 @@ public:
     //!< this key size should be used for all RSA private keys.
   static const int BLOWFISH_KEY_SIZE;
     //!< this will be used for blowfish keys that this object generates.
+//hmmm: FIX THAT NAME! argh.  blowfish used to be used for second stage, and rsa for first stage, of encrypted communications.
 
   void text_form(basis::base_string &fill) const {
     fill.assign(basis::astring(class_name()));  // low exposure for vital held info.

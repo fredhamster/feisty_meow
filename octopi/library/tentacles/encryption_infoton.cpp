@@ -32,11 +32,10 @@ using namespace textual;
 
 namespace octopi {
 
-const int encryption_infoton::BLOWFISH_KEY_SIZE = 314;
-  // our key size is almost double the recommended key size (168 bits).
-  // this would take a very long time to crack using brute force.
+const int encryption_infoton::BLOWFISH_KEY_SIZE = 256;
+  // maximum provided for in standard encryptions.
 
-const int encryption_infoton::RSA_KEY_SIZE = 1480;
+const int encryption_infoton::RSA_KEY_SIZE = 2048;
   // a little bit larger than the 1024 bit threshold.
 
 #undef LOG

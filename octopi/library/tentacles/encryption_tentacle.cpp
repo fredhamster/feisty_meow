@@ -149,7 +149,7 @@ outcome encryption_tentacle::consume(infoton &to_chow,
   if (!_server_side) {
     // client's side must track the key we were given for decryption.  we'll
     // use that from now on.
-    twofish_crypto new_key(twofish_crypto::minimum_key_size());  // bogus.
+    twofish_crypto new_key(twofish_crypto::static_maximum_key_size_in_bits());
     outcome ret = inf->extract_response(*_rsa_private, new_key);
     if (ret != OKAY) {
 #ifdef DEBUG_ENCRYPTION_TENTACLE
@@ -164,7 +164,7 @@ outcome encryption_tentacle::consume(infoton &to_chow,
   } else {
     // server's side need to process a key request and send it back using
     // the public key the requester provided.
-    twofish_crypto agreed_key(twofish_crypto::minimum_key_size());
+    twofish_crypto agreed_key(twofish_crypto::static_maximum_key_size_in_bits());
       // initialized with junk.
     outcome worked = inf->prepare_blowfish_key(agreed_key);
     if (worked != OKAY) {

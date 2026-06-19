@@ -5,8 +5,11 @@
 *  Name   : cryptical_envelopment
 *  Author : Chris Koeritz
 *
-*  Purpose: Implements the majority of encryption processing using the
+*  Purpose:
+*
+*  A base class that implements the majority of encryption processing using the
 *  OpenSSL EVP methods, aka the digital envelope routines.
+*
 *****
 * Copyright (c) 2005-$now By Author.  This program is free software; you can
 * redistribute it and/or modify it under the terms of the GNU General Public

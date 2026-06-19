@@ -54,10 +54,6 @@ const int ITERATIONS = 64;  // number of test runs in our testing threads.
 
 const int MAX_STRING = 64 * KILOBYTE;  // largest chunk that we'll try to encrypt.
 
-// some constants snagged from older version of twofish_crypto class...
-//const int twofish_crypto_minimum_key_size_in_bits = 92;
-//const int twofish_crypto_maximum_key_size_in_bits = 256;
-
 //////////////
 
 class test_twofish;  // forward.
@@ -138,8 +134,7 @@ void twofish_thread::perform_activity(void *)
   int left = ITERATIONS;
   while (left--) {
     time_stamp key_start;
-    twofish_crypto tc(256);
-    tc = twofish_crypto(_parent.randomizer().inclusive(tc.minimum_key_size_in_bits(), tc.maximum_key_size_in_bits()));
+    twofish_crypto tc = twofish_crypto(_parent.randomizer().inclusive(tc.static_minimum_key_size_in_bits(), tc.static_maximum_key_size_in_bits()));
 #ifdef DEBUG_TWOFISH
     LOG(a_sprintf("%d bit key has:", tc.key_size()));
     astring dumped_key = byte_formatter::text_dump(tc.get_key());

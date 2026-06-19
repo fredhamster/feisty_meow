@@ -73,13 +73,13 @@ const int FUDGE = 1024;
 // this macro checks on the validity of the key sizes (in bits).
 #define DISCUSS_KEY_SIZE(key_size) \
   if (key_size < minimum_key_size_in_bits()) { \
-    ERROR_BAILOUT(static_class_name(), func, \
+    ERROR_BAILOUT(class_name(), func, \
         a_sprintf("key size (%d bits) is less than minimum key size %d.", \
             key_size, minimum_key_size_in_bits())); \
     return false; \
   } \
   if (key_size > maximum_key_size_in_bits()) { \
-      ERROR_BAILOUT(static_class_name(), func, \
+      ERROR_BAILOUT(class_name(), func, \
           a_sprintf("key size (%d bits) is greater than maximum key size %d.", \
               key_size, maximum_key_size_in_bits())); \
     return false; \
@@ -89,7 +89,7 @@ const int FUDGE = 1024;
 // the key size bits.
 #define DISCUSS_PROVIDED_KEY(key_size, key) \
   if (key.length() * BITS_PER_BYTE < key_size) { \
-    ERROR_BAILOUT(static_class_name(), func, \
+    ERROR_BAILOUT(class_name(), func, \
         a_sprintf("key array length (%d) is less than required by key size " \
             "(%d bits).", key.length(), key_size)); \
     return false; \
