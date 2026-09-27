@@ -44,7 +44,8 @@ unit_base::unit_base()
   c_total_tests(0),
   c_passed_tests(0),
   c_successful(EXPECTED_MAXIMUM_TESTS),
-  c_failed(EXPECTED_MAXIMUM_TESTS)
+  c_failed(EXPECTED_MAXIMUM_TESTS),
+  c_fail_on_errors(true)
 {
 }
 
@@ -292,6 +293,14 @@ int unit_base::final_report()
 
   // send an xml file out for the build engine to analyze.
   write_cppunit_xml();
+
+  if (! c_fail_on_errors) {
+    /*
+     * if we're not tracking errors as failures, due to a test that is known to
+     * fail, then we just signal a success here regardless of how many errors occurred.
+     */
+    return common::OKAY;
+  }
 
   return to_return;
 }

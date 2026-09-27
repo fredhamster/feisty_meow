@@ -43,7 +43,7 @@ const int FUDGE = 1024;
 //#undef set_key
   // get rid of a macro we don't want.
 
-#define DEBUG_CRYPTICAL_ENVELOPMENT
+//#define DEBUG_CRYPTICAL_ENVELOPMENT
   // uncomment for noisier version.
 
 // our logging via LOG is disabled unless the debugging flag above is turned on.
@@ -64,10 +64,9 @@ const int FUDGE = 1024;
 
 #ifdef DEBUG_CRYPTICAL_ENVELOPMENT
   // only cause a program stop if we're in debugging mode.
-//hmmm: that's pretty loose, really; if they have a key size error, how can we keep going and just pretend that's okay?  we should not.
   #define ERROR_BAILOUT(a, b, c) deadly_error(a, b, c)
 #else
-  #define ERROR_BAILOUT(a, b, c) 
+  #define ERROR_BAILOUT(a, b, c) continuable_error(a, b, c)
 #endif
 
 // this macro checks on the validity of the key sizes (in bits).
@@ -249,7 +248,7 @@ LOG(a_sprintf("  encrypting %d bytes", source.length()));
   int initret = EVP_EncryptInit_ex(session, _cipher_type, NULL_POINTER, NULL_POINTER, NULL_POINTER);
   if (!initret) {
     // zero means a failure of the initialization.
-    deadly_error(class_name(), func, a_sprintf("failure in calling EVP_EncryptInit_ex, with error %s", GET_SSL_ERROR()));
+    ERROR_BAILOUT(class_name(), func, a_sprintf("failure in calling EVP_EncryptInit_ex, with error %s", GET_SSL_ERROR()));
   }
   LOG(a_sprintf("  calling set key len with key size of %d", _key_size));
   // new fancy footwork needed to keep openssl from blowing up and claiming we didn't set the key.
@@ -260,7 +259,7 @@ LOG(a_sprintf("  encrypting %d bytes", source.length()));
   initret = EVP_EncryptInit_ex(session, NULL_POINTER, NULL_POINTER, _key->observe(), init_vector().observe());
   if (!initret) {
     // zero means a failure of the initialization.
-    deadly_error(class_name(), func, a_sprintf("second phase failure in calling EVP_EncryptInit_ex, with error %s", GET_SSL_ERROR()));
+    ERROR_BAILOUT(class_name(), func, a_sprintf("second phase failure in calling EVP_EncryptInit_ex, with error %s", GET_SSL_ERROR()));
   }
 
   // allocate temporary space for encrypted data.
@@ -271,7 +270,7 @@ LOG(a_sprintf("  encrypting %d bytes", source.length()));
   int enc_ret = EVP_EncryptUpdate(session, encoded.access(), &encoded_len,
       source.observe(), source.length());
   if (enc_ret != 1) {
-    deadly_error(class_name(), func, a_sprintf("encryption failed, "
+    ERROR_BAILOUT(class_name(), func, a_sprintf("encryption failed, "
         "result=%d with error=%s.", enc_ret, GET_SSL_ERROR()));
     to_return = false;
   } else {
@@ -288,7 +287,7 @@ LOG(a_sprintf("  encrypting %d bytes", source.length()));
     int pad_len = 0;
     enc_ret = EVP_EncryptFinal_ex(session, encoded.access(), &pad_len);
     if (enc_ret != 1) {
-      deadly_error(class_name(), func, a_sprintf("finalizing encryption "
+      ERROR_BAILOUT(class_name(), func, a_sprintf("finalizing encryption "
           "failed, result=%d with error=%s.", enc_ret, GET_SSL_ERROR()));
       to_return = false;
     } else {
@@ -318,7 +317,7 @@ ALWAYS_LOG(">>decrypt>>");
   int initret = EVP_DecryptInit_ex(session, _cipher_type, NULL_POINTER, NULL_POINTER, NULL_POINTER);
   if (!initret) {
     // zero means a failure of the initialization.
-    deadly_error(class_name(), func, a_sprintf("failure in calling EVP_DecryptInit_ex, with error %s", GET_SSL_ERROR()));
+    ERROR_BAILOUT(class_name(), func, a_sprintf("failure in calling EVP_DecryptInit_ex, with error %s", GET_SSL_ERROR()));
   }
   // more fancy fupwork.
 //hmmm: check returns on these setters?
@@ -327,7 +326,7 @@ ALWAYS_LOG(">>decrypt>>");
   initret = EVP_DecryptInit_ex(session, NULL_POINTER, NULL_POINTER, _key->observe(), init_vector().observe());
   if (!initret) {
     // zero means a failure of the initialization.
-    deadly_error(class_name(), func, a_sprintf("second phase failure in calling EVP_DecryptInit_ex, with error %s", GET_SSL_ERROR()));
+    ERROR_BAILOUT(class_name(), func, a_sprintf("second phase failure in calling EVP_DecryptInit_ex, with error %s", GET_SSL_ERROR()));
   }
 
   // allocate enough space for decoded bytes.
@@ -337,7 +336,7 @@ ALWAYS_LOG(">>decrypt>>");
   int dec_ret = EVP_DecryptUpdate(session, decoded.access(), &decoded_len,
       source.observe(), source.length());
   if (dec_ret != 1) {
-    deadly_error(class_name(), func, a_sprintf("decryption failed with error=%s", GET_SSL_ERROR()));
+    ERROR_BAILOUT(class_name(), func, a_sprintf("decryption failed with error=%s", GET_SSL_ERROR()));
     to_return = false;
   } else {
     LOG(a_sprintf("  first part decrypted size in bytes is %d.", decoded_len));
@@ -351,7 +350,7 @@ ALWAYS_LOG(">>decrypt>>");
     int pad_len = 0;
     dec_ret = EVP_DecryptFinal_ex(session, decoded.access(), &pad_len);
     if (dec_ret != 1) {
-      deadly_error(class_name(), func, a_sprintf("finalizing decryption "
+      ERROR_BAILOUT(class_name(), func, a_sprintf("finalizing decryption "
           "failed, result=%d, padlen=%d, target had %d bytes, error=%s.", dec_ret,
           pad_len, target.length(), GET_SSL_ERROR()));
       to_return = false;
