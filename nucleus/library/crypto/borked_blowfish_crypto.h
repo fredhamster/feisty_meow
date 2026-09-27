@@ -57,7 +57,7 @@ public:
   // blowfish relevant values for appropriate key sizes.
   virtual int minimum_key_size_in_bits() const { return static_minimum_key_size_in_bits(); }
   virtual int maximum_key_size_in_bits() const { return static_maximum_key_size_in_bits(); }
-  static int static_minimum_key_size_in_bits() { return 128; }
+  static int static_minimum_key_size_in_bits() { return 64; }
     // officially, this is 32.  but openssl fails occasionally with less than 64 bits.
   static int static_maximum_key_size_in_bits() { return 448; }
 };
