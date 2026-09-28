@@ -131,7 +131,7 @@ standards and usages."
     | sed -e 's/class unique_int;/#include <structures\/unique_id.h>/g' \
     | sed -e 's/class tcpip_stack;/#include <sockets\/tcpip_stack.h>/g' \
     | sed -e 's/class safe_roller;/#include <processes\/safe_roller.h>/g' \
-    | sed -e 's/class blowfish_crypto;/#include <crypto\/blowfish_crypto.h>/g' \
+    | sed -e 's/class blowfish_crypto;/#include <crypto\/borked_blowfish_crypto.h>/g' \
     | sed -e 's/class RSA_crypto;/#include <crypto\/RSA_crypto.h>/g' \
     | sed -e 's/class entity_data_bin;/#include <octopus\/entity_data_bin.h>/g' \
     | sed -e 's/class infoton;/#include <octopus\/infoton.h>/g' \
