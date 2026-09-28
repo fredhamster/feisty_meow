@@ -45,7 +45,7 @@ $(basename $0 .sh) \$HOME/my_init.sh \$HOME/my_remote_actor.sh \$HOME/my_cleaner
 # operation is invoked (remotely), then the clean-up operation is run locally.
 # the initialization and clean-up operations are expected to take a hostname,
 # and they will each be run for each remote host.
-function instigate_remote_calls()
+function activate_remote_calls()
 {
   local init_op="$1"; shift
   local remote_op="$1"; shift
@@ -109,7 +109,7 @@ fi
 ################
 
 # if we made it to here, let's try doing their action on all those hosts they provided...
-instigate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain_piece" "$host_piece"
+activate_remote_calls "$init_op" "$remote_op" "$cleanup_op" "$domain_piece" "$host_piece"
 
 ################
 
