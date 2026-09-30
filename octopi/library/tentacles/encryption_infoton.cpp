@@ -18,8 +18,8 @@
 
 #include <basis/mutex.h>
 #include <basis/functions.h>
-#include <crypto/blowfish_crypto.h>
-#include <crypto/rsa_crypto.h>
+#include <crypto/twofish_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <octopus/tentacle.h>
 #include <structures/static_memory_gremlin.h>
 #include <textual/byte_formatter.h>
@@ -32,11 +32,10 @@ using namespace textual;
 
 namespace octopi {
 
-const int encryption_infoton::BLOWFISH_KEY_SIZE = 314;
-  // our key size is almost double the recommended key size (168 bits).
-  // this would take a very long time to crack using brute force.
+const int encryption_infoton::BLOWFISH_KEY_SIZE = 256;
+  // maximum provided for in standard encryptions.
 
-const int encryption_infoton::RSA_KEY_SIZE = 1480;
+const int encryption_infoton::RSA_KEY_SIZE = 2048;
   // a little bit larger than the 1024 bit threshold.
 
 #undef LOG
@@ -103,7 +102,7 @@ bool encryption_infoton::unpack(byte_array &packed_form)
   return true;
 }
 
-outcome encryption_infoton::prepare_blowfish_key(blowfish_crypto &new_key)
+outcome encryption_infoton::prepare_blowfish_key(twofish_crypto &new_key)
 {
   FUNCDEF("prepare_blowfish_key");
   _encrypted_blowfish_key.reset();  // clean out stuff to create.
@@ -113,8 +112,8 @@ outcome encryption_infoton::prepare_blowfish_key(blowfish_crypto &new_key)
     return _success;
   }
 
-  rsa_crypto pub(_public_key);  // suck in the provided key.
-  blowfish_crypto agreed_key(BLOWFISH_KEY_SIZE);  // random blowfish key.
+  old_school_rsa_crypto pub(_public_key);  // suck in the provided key.
+  twofish_crypto agreed_key(BLOWFISH_KEY_SIZE);  // random blowfish key.
   new_key = agreed_key;
 
   // now encrypt the new key for transit.
@@ -125,23 +124,23 @@ outcome encryption_infoton::prepare_blowfish_key(blowfish_crypto &new_key)
   return _success;
 }
 
-outcome encryption_infoton::prepare_both_keys(rsa_crypto &private_key)
+outcome encryption_infoton::prepare_both_keys(old_school_rsa_crypto &private_key)
 {
-  rsa_crypto priv(RSA_KEY_SIZE);  // generate random key.
+  old_school_rsa_crypto priv(RSA_KEY_SIZE);  // generate random key.
   outcome to_return = prepare_public_key(priv);
   if (to_return == tentacle::OKAY) private_key = priv;
   return to_return;
 }
 
-outcome encryption_infoton::prepare_public_key(const rsa_crypto &private_key)
+outcome encryption_infoton::prepare_public_key(const old_school_rsa_crypto &private_key)
 {
   bool worked = private_key.public_key(_public_key);
   if (!worked) return tentacle::DISALLOWED;  // why would that ever fail?
   return tentacle::OKAY;
 }
 
-outcome encryption_infoton::extract_response(const rsa_crypto &private_key,
-    blowfish_crypto &new_key) const
+outcome encryption_infoton::extract_response(const old_school_rsa_crypto &private_key,
+    twofish_crypto &new_key) const
 {
   FUNCDEF("extract_response");
   if (_success != tentacle::OKAY) return _success;

@@ -5,54 +5,6 @@
 
 source "$FEISTY_MEOW_SCRIPTS/core/launch_feisty_meow.sh"
 
-#REMOVE, now elsewhere
-# takes a triplet of script names and runs them on local and remote hosts...
-# first the initialization operation is run locally, then the actual remote
-# operation is invoked (remotely), then the clean-up operation is run locally.
-# the initialization and clean-up operations are expected to take a hostname,
-# and they will each be run for each remote host.
-function OLD_instigate_remote_calls()
-{
-  local init_op="$1"; shift
-  local remote_op="$1"; shift
-  local cleanup_op="$1"; shift
-  local domain_piece="$1"; shift
-  local host_list="$1"; shift
-  # variables used later.
-  local retval
-
-  for host in $host_list; do
-
-    # first we call our initialization process.
-    echo "invoking local initialization operation '$init_op'..."
-    squelch_unless_error bash "$init_op" "${host}.${domain_piece}"
-    retval=$?
-    if [ $retval -ne 0 ]; then
-      echo "got return value $retval from initialization script '$init_op' for ${host}.${domain_piece}; skipping it."
-      continue
-    fi
-
-    # now we make the remote call by relying on the host strider.
-    echo "invoking remote action operation '$remote_op'..."
-    squelch_unless_error bash $FEISTY_MEOW_SCRIPTS/core/host_strider.sh "${remote_op}" "${domain_piece}" "${host}"
-    retval=$?
-    if [ $retval -ne 0 ]; then
-      echo "got return value $retval from remote action script '$remote_op' on ${host}.${domain_piece}; skipping it."
-      continue
-    fi
-
-    # then invoke the clean-up call to get things right again on the local host.
-    echo "invoking local clean-up operation '$cleanup_op'..."
-    squelch_unless_error bash "$cleanup_op" "${host}.${domain_piece}"
-    retval=$?
-    if [ $retval -ne 0 ]; then
-      echo "got return value $retval from clean-up script '$cleanup_op' for ${host}.${domain_piece}; skipping it."
-      continue
-    fi
-
-  done
-}
-
 ################
 
 # active part of the script, where we go out to a bunch of machines to get things done.
@@ -89,19 +41,19 @@ fi
 
 domain="its.virginia.edu"
 hostlist="idpprod01 idpprod02 idpprod03 idpprod04 idpprod05 "
-remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_activater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 hostlist="idpdev01 idpdev02 "
-remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_activater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 hostlist="idptest01 idptest02 "
-remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_activater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 hostlist="idpsistest01 idpsistest02 "
-remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_activater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 hostlist="test-shibboleth-sp02 "
-remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_activater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 hostlist="tower "
-remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_activater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 ################
 
@@ -109,7 +61,7 @@ remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 domain="storage.virginia.edu"
 hostlist="admin03 admin-hsz02-s admin-lab nasman02-s "
-remote_instigater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
+remote_activater "$init_op" "$remote_op" "$cleanup_op" "$domain" "$hostlist"
 
 ################
 

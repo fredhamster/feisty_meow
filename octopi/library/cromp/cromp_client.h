@@ -28,7 +28,7 @@
 
 #include "cromp_common.h"
 
-#include <crypto/blowfish_crypto.h>
+#include <crypto/twofish_crypto.h>
 #include <sockets/internet_address.h>
 #include <structures/roller.h>
 #include <tentacles/encryption_tentacle.h>
@@ -175,7 +175,7 @@ private:
   friend class asynch_connection_thread;  // solely so it can use r_p_c method.
   asynch_connection_thread *_asynch_connector;  // b-ground connection thread.
   bool _channel_secured;  // true if an encrypted connection has been made.
-  crypto::blowfish_crypto *_crypto;  // tracks our key, once we have one.
+  crypto::twofish_crypto *_crypto;  // tracks our key, once we have one.
   octopi::encryption_tentacle *_encrypt_arm;  // processes encryption for us.
   octopi::blank_entity_registry *_guardian;  // simple security support.
   basis::byte_array *c_verification;  // verification token we were given.

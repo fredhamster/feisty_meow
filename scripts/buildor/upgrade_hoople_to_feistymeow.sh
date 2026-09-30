@@ -131,7 +131,7 @@ standards and usages."
     | sed -e 's/class unique_int;/#include <structures\/unique_id.h>/g' \
     | sed -e 's/class tcpip_stack;/#include <sockets\/tcpip_stack.h>/g' \
     | sed -e 's/class safe_roller;/#include <processes\/safe_roller.h>/g' \
-    | sed -e 's/class blowfish_crypto;/#include <crypto\/blowfish_crypto.h>/g' \
+    | sed -e 's/class blowfish_crypto;/#include <crypto\/borked_blowfish_crypto.h>/g' \
     | sed -e 's/class RSA_crypto;/#include <crypto\/RSA_crypto.h>/g' \
     | sed -e 's/class entity_data_bin;/#include <octopus\/entity_data_bin.h>/g' \
     | sed -e 's/class infoton;/#include <octopus\/infoton.h>/g' \
@@ -142,7 +142,7 @@ standards and usages."
     | sed -e 's/class encryption_tentacle;/#include <tentacles\/encryption_tentacle.h>/g' \
     | sed -e 's/class login_tentacle;/#include <tentacles\/login_tentacle.h>/g' \
     | sed -e 's/class thread_cabinet;/#include <processes\/thread_cabinet.h>/g' \
-    | sed -e 's/RSA_crypto/rsa_crypto/g' \
+    | sed -e 's/RSA_crypto/old_school_rsa_crypto/g' \
     | sed -e 's/float_plus<double>/double_plus/g' \
     | sed -e 's/basis::obscure_/structures::obscure_/g' \
     | sed -e 's/program_wide_logger()/program_wide_logger::get()/g' \

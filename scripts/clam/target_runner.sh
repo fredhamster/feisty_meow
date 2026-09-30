@@ -27,7 +27,7 @@ function run_the_targets()
   if [ ! -z "${RUN_TARGETS}" -a ! -z "${RUN_ALL_TESTS}" ]; then
     if [ -f "${DIRTY_FILE}" -o -f "${SUBMAKE_FLAG}" ]; then
       for program_name in ${RUN_TARGETS}; do
-echo "about to run target: $program_name"
+        echo "+++ running target: $program_name"
         local base=$(basename $program_name)
         if [ "$OPERATING_SYSTEM" == "WIN32" ]; then
           # extra step to force win32 applications to stay held in our grip,
@@ -39,9 +39,11 @@ echo "about to run target: $program_name"
           # which is the app being run.
           exitval=${PIPESTATUS[0]}
         else
-          "$program_name"
+#temp hack to do timing when running an app.
+          /bin/time "$program_name"
           exitval=$?
         fi
+        echo "--- target complete: $program_name"
         if [ $exitval -ne 0 ]; then
           echo "ERROR: $program_name exits with $exitval at $(date)"
           total_exitval=$(($total_exitval + 1))

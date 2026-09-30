@@ -16,8 +16,8 @@
 #include "encryption_wrapper.h"
 #include "key_repository.h"
 
-#include <crypto/blowfish_crypto.h>
-#include <crypto/rsa_crypto.h>
+#include <crypto/twofish_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <loggers/program_wide_logger.h>
 #include <structures/symbol_table.h>
 #include <textual/byte_formatter.h>
@@ -52,7 +52,7 @@ encryption_tentacle::encryption_tentacle(const byte_array &private_key)
     (encryption_infoton::encryption_classifier(), false),
   _server_side(false),
   _keys(new key_repository),
-  _rsa_private(new rsa_crypto(private_key))
+  _rsa_private(new old_school_rsa_crypto(private_key))
 {
 }
 
@@ -61,7 +61,7 @@ encryption_tentacle::encryption_tentacle(int key_size)
     (encryption_infoton::encryption_classifier(), false),
   _server_side(false),
   _keys(new key_repository),
-  _rsa_private(new rsa_crypto(key_size))
+  _rsa_private(new old_school_rsa_crypto(key_size))
 {
 }
 
@@ -73,7 +73,7 @@ encryption_tentacle::~encryption_tentacle()
 
 key_repository &encryption_tentacle::keys() const { return *_keys; }
 
-const rsa_crypto &encryption_tentacle::private_key() const
+const old_school_rsa_crypto &encryption_tentacle::private_key() const
 { return *_rsa_private; }
 
 outcome encryption_tentacle::reconstitute(const string_array &classifier,
@@ -149,7 +149,7 @@ outcome encryption_tentacle::consume(infoton &to_chow,
   if (!_server_side) {
     // client's side must track the key we were given for decryption.  we'll
     // use that from now on.
-    blowfish_crypto new_key(blowfish_crypto::minimum_key_size());  // bogus.
+    twofish_crypto new_key(twofish_crypto::static_maximum_key_size_in_bits());
     outcome ret = inf->extract_response(*_rsa_private, new_key);
     if (ret != OKAY) {
 #ifdef DEBUG_ENCRYPTION_TENTACLE
@@ -164,7 +164,7 @@ outcome encryption_tentacle::consume(infoton &to_chow,
   } else {
     // server's side need to process a key request and send it back using
     // the public key the requester provided.
-    blowfish_crypto agreed_key(blowfish_crypto::minimum_key_size());
+    twofish_crypto agreed_key(twofish_crypto::static_maximum_key_size_in_bits());
       // initialized with junk.
     outcome worked = inf->prepare_blowfish_key(agreed_key);
     if (worked != OKAY) {

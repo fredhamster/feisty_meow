@@ -15,8 +15,8 @@
 * Please send any updates to: fred@gruntose.com                               *
 \*****************************************************************************/
 
-#include <crypto/blowfish_crypto.h>
-#include <crypto/rsa_crypto.h>
+#include <crypto/twofish_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <octopus/entity_defs.h>
 #include <octopus/infoton.h>
 
@@ -55,6 +55,7 @@ public:
     //!< this key size should be used for all RSA private keys.
   static const int BLOWFISH_KEY_SIZE;
     //!< this will be used for blowfish keys that this object generates.
+//hmmm: FIX THAT NAME! argh.  blowfish used to be used for second stage, and rsa for first stage, of encrypted communications.
 
   void text_form(basis::base_string &fill) const {
     fill.assign(basis::astring(class_name()));  // low exposure for vital held info.
@@ -62,21 +63,21 @@ public:
 
   encryption_infoton &operator =(const encryption_infoton &to_copy);
 
-  basis::outcome prepare_blowfish_key(crypto::blowfish_crypto &new_key);
+  basis::outcome prepare_blowfish_key(crypto::twofish_crypto &new_key);
     //!< performs the server side's job on the current key.
     /*!< the public key had better be set already or this will fail.  the
     "new_key" will always be used to communicate with the client after this.
     */
 
-  basis::outcome prepare_public_key(const crypto::rsa_crypto &private_key);
+  basis::outcome prepare_public_key(const crypto::old_school_rsa_crypto &private_key);
     //!< prepares the request side for a client.
     /*!< the rsa public key will be generated from the "private_key". */
 
-  basis::outcome prepare_both_keys(crypto::rsa_crypto &private_key);
+  basis::outcome prepare_both_keys(crypto::old_school_rsa_crypto &private_key);
     //!< sets up both keys by randomly generating the "private_key".
 
-  basis::outcome extract_response(const crypto::rsa_crypto &private_key,
-          crypto::blowfish_crypto &new_key) const;
+  basis::outcome extract_response(const crypto::old_school_rsa_crypto &private_key,
+          crypto::twofish_crypto &new_key) const;
     //!< used by the client to extract the shared blowfish key from the server.
     /*!< using the private key, the server's response is decrypted and stored
     in "new_key".  note that this will only succeed if the _success member

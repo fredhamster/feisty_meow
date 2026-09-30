@@ -84,14 +84,14 @@ public:
     /*!< this is very private info, but it's needed for encrypting items
     going back to the client. */
 
-  const crypto::rsa_crypto &private_key() const;
+  const crypto::old_school_rsa_crypto &private_key() const;
     //!< provides access to the key held here.
     /*!< this is an important object; do not expose it externally. */
 
 private:
   bool _server_side;  //!< true if we're acting as a server.
   key_repository *_keys;  //!< our table of keys that we've agreed on.
-  crypto::rsa_crypto *_rsa_private;  //!< the private key for a client side.
+  crypto::old_school_rsa_crypto *_rsa_private;  //!< the private key for a client side.
 };
 
 } //namespace.

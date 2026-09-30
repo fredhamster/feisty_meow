@@ -16,7 +16,7 @@
 \*****************************************************************************/
 
 #include <basis/mutex.h>
-#include <crypto/blowfish_crypto.h>
+#include <crypto/twofish_crypto.h>
 #include <structures/symbol_table.h>
 #include <octopus/entity_defs.h>
 
@@ -34,11 +34,11 @@ class octenc_key_record
 {
 public:
   octopus_entity _entity;  //!< who the key belongs to.
-  crypto::blowfish_crypto _key;  //!< used for communicating with an entity.
+  crypto::twofish_crypto _key;  //!< used for communicating with an entity.
 
   octenc_key_record() : _key(200) {}  //!< bogus blank constructor.
 
-  octenc_key_record(const octopus_entity &entity, const crypto::blowfish_crypto &key) 
+  octenc_key_record(const octopus_entity &entity, const crypto::twofish_crypto &key) 
   : _entity(entity), _key(key) {}
 };
 
@@ -59,7 +59,7 @@ public:
   void unlock(octenc_key_record *to_unlock);
     //!< drops the lock on the key record in "to_unlock".
 
-  basis::outcome add(const octopus_entity &ent, const crypto::blowfish_crypto &key);
+  basis::outcome add(const octopus_entity &ent, const crypto::twofish_crypto &key);
     //!< adds a "key" for the "ent".  this will fail if one is already listed.
 
   basis::outcome whack(const octopus_entity &ent);

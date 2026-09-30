@@ -171,16 +171,15 @@ int main(int argc, char *argv[])
       printed_header = true;
       if (show_header) {
         printf("%s\n", (astring("[ checker running at ") + time_stamp::notarize(true) + "]").s());
-        printf("bizarro  fletcher  filename\n");
-        printf("=======  ========  ========\n");
+        printf("filename\tbizarro\tfletcher\n");
+        printf("========\t=======\t========\n");
       }
     }
     astring name = c.text();
     int checksum_of_file = do_checksum(name, open_file_as_text);
     int fletcher_chksum = do_fletcher_checksum(name, open_file_as_text);
     if (checksum_of_file >= 0) {
-      printf("%s", a_sprintf(" %05d    0x%04x   %s\n", checksum_of_file,
-          fletcher_chksum, name.s()).s());
+      printf("%s", a_sprintf("%s\t%05d\t0x%04x\n", name.s(), checksum_of_file, fletcher_chksum).s());
     } else {
       printf("%s", a_sprintf("%s is inaccessible.\n", name.s()).s());
     }

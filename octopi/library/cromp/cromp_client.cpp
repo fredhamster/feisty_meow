@@ -20,7 +20,7 @@
 #include <basis/functions.h>
 #include <basis/mutex.h>
 #include <configuration/application_configuration.h>
-#include <crypto/rsa_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <loggers/program_wide_logger.h>
 #include <mathematics/chaos.h>
 #include <octopus/entity_defs.h>
@@ -135,7 +135,7 @@ cromp_client::cromp_client(const internet_address &addr, int connection_wait,
   _disallowed(false),
   _asynch_connector(NULL_POINTER),
   _channel_secured(false),
-  _crypto(new blowfish_crypto(encryption_infoton::BLOWFISH_KEY_SIZE)),
+  _crypto(new twofish_crypto(encryption_infoton::BLOWFISH_KEY_SIZE)),
   _encrypt_arm(NULL_POINTER),
   _guardian(new blank_entity_registry),
   c_verification(new byte_array)

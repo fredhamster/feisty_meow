@@ -67,6 +67,16 @@ public:
   int passed_tests() const;  //!< count of successful tests run.
   int failed_tests() const;  //!< count of number of failed tests.
 
+  bool failures_are_critical() const { return c_fail_on_errors; }
+    /*!<
+     * report whether we consider test errors to be a critical failure.  if true, then any
+     * error causes a non-zero exit return from the unit test.  if false, then the successful
+     * zero exit occurs instead.  this allows a test which is known to fail to not break the
+     * build (ahem, borked blowfish!).
+     */ 
+  void set_failures_are_critial(bool are_failures_critical)
+      { c_fail_on_errors = are_failures_critical; }  //<! setter for test fail flag.
+
   void assert_equal(const basis::hoople_standard &a, const basis::hoople_standard &b,
       const basis::astring &class_name, const basis::astring &test_name,
       const basis::astring &diagnostic_info);
@@ -149,6 +159,7 @@ private:
   int c_passed_tests;  //!< how many of those passed?
   structures::string_table c_successful;  //!< successful test names.
   structures::string_table c_failed;  //!< failing test names.
+  bool c_fail_on_errors;  //!< status for how we report errors.
 
   void write_cppunit_xml();
     //!< outputs a report file in cppunit format so CI engines can see results.

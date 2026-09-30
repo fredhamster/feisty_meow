@@ -20,7 +20,7 @@
 // RSA_size(rsa) - 41 for RSA_PKCS1_OAEP_PADDING and exactly RSA_size(rsa)
 // for RSA_NO_PADDING.
 
-#include "rsa_crypto.h"
+#include "old_school_rsa_crypto.h"
 #include "ssl_init.h"
 
 #include <basis/functions.h>
@@ -55,7 +55,7 @@ namespace crypto {
 SAFE_STATIC(mutex, __single_stepper, )
   // protects unsafe areas of rsa crypto from access by multiple threads at once.
 
-rsa_crypto::rsa_crypto(int key_size)
+old_school_rsa_crypto::old_school_rsa_crypto(int key_size)
 : _key(NULL_POINTER)
 {
   FUNCDEF("ctor(int)");
@@ -64,7 +64,7 @@ rsa_crypto::rsa_crypto(int key_size)
   LOG("after generating key");
 }
 
-rsa_crypto::rsa_crypto(const byte_array &key)
+old_school_rsa_crypto::old_school_rsa_crypto(const byte_array &key)
 : _key(NULL_POINTER)
 {
   FUNCDEF("ctor(byte_array)");
@@ -75,7 +75,7 @@ rsa_crypto::rsa_crypto(const byte_array &key)
   LOG("after set key");
 }
 
-rsa_crypto::rsa_crypto(RSA *key)
+old_school_rsa_crypto::old_school_rsa_crypto(RSA *key)
 : _key(NULL_POINTER)
 {
   FUNCDEF("ctor(RSA)");
@@ -85,7 +85,7 @@ rsa_crypto::rsa_crypto(RSA *key)
   LOG("after set key");
 }
 
-rsa_crypto::rsa_crypto(const rsa_crypto &to_copy)
+old_school_rsa_crypto::old_school_rsa_crypto(const old_school_rsa_crypto &to_copy)
 : root_object(),
   _key(NULL_POINTER)
 {
@@ -96,7 +96,7 @@ rsa_crypto::rsa_crypto(const rsa_crypto &to_copy)
   LOG("after set key");
 }
 
-rsa_crypto::~rsa_crypto()
+old_school_rsa_crypto::~old_school_rsa_crypto()
 {
   FUNCDEF("destructor");
   LOG("prior to rsa free");
@@ -105,14 +105,14 @@ rsa_crypto::~rsa_crypto()
   LOG("after rsa free");
 }
 
-const rsa_crypto &rsa_crypto::operator = (const rsa_crypto &to_copy)
+const old_school_rsa_crypto &old_school_rsa_crypto::operator = (const old_school_rsa_crypto &to_copy)
 {
   if (this == &to_copy) return *this;
   set_key(to_copy._key);
   return *this;
 }
 
-RSA *rsa_crypto::generate_key(int key_size)
+RSA *old_school_rsa_crypto::generate_key(int key_size)
 {
   FUNCDEF("generate_key");
   if (key_size < 4) key_size = 4;  // laughable lower default.
@@ -136,13 +136,13 @@ RSA *rsa_crypto::generate_key(int key_size)
   return to_return;
 }
 
-bool rsa_crypto::check_key(RSA *key)
+bool old_school_rsa_crypto::check_key(RSA *key)
 {
   auto_synchronizer mutt(__single_stepper());
   return RSA_check_key(key) == 1;
 }
 
-bool rsa_crypto::set_key(byte_array &key)
+bool old_school_rsa_crypto::set_key(byte_array &key)
 {
   FUNCDEF("set_key [byte_array]");
   if (!key.length()) return false;
@@ -223,7 +223,7 @@ bool rsa_crypto::set_key(byte_array &key)
   return true;
 }
 
-bool rsa_crypto::set_key(RSA *key)
+bool old_school_rsa_crypto::set_key(RSA *key)
 {
   FUNCDEF("set_key [RSA]");
   if (!key) return NULL_POINTER;
@@ -242,7 +242,7 @@ bool rsa_crypto::set_key(RSA *key)
   return true;
 }
 
-bool rsa_crypto::public_key(byte_array &pubkey) const
+bool old_school_rsa_crypto::public_key(byte_array &pubkey) const
 {
   FUNCDEF("public_key");
   if (!_key) return false;
@@ -266,7 +266,7 @@ bool rsa_crypto::public_key(byte_array &pubkey) const
   return true;
 }
 
-bool rsa_crypto::private_key(byte_array &privkey) const
+bool old_school_rsa_crypto::private_key(byte_array &privkey) const
 {
   FUNCDEF("private_key");
   if (!_key) return false;
@@ -310,7 +310,7 @@ bool rsa_crypto::private_key(byte_array &privkey) const
   return true;
 }
 
-bool rsa_crypto::public_encrypt(const byte_array &source,
+bool old_school_rsa_crypto::public_encrypt(const byte_array &source,
     byte_array &target) const
 {
   FUNCDEF("public_encrypt");
@@ -333,7 +333,7 @@ bool rsa_crypto::public_encrypt(const byte_array &source,
   return true;
 }
 
-bool rsa_crypto::private_decrypt(const byte_array &source,
+bool old_school_rsa_crypto::private_decrypt(const byte_array &source,
     byte_array &target) const
 {
   FUNCDEF("private_decrypt");
@@ -359,7 +359,7 @@ bool rsa_crypto::private_decrypt(const byte_array &source,
   return true;
 }
 
-bool rsa_crypto::private_encrypt(const byte_array &source,
+bool old_school_rsa_crypto::private_encrypt(const byte_array &source,
     byte_array &target) const
 {
   FUNCDEF("private_encrypt");
@@ -382,7 +382,7 @@ bool rsa_crypto::private_encrypt(const byte_array &source,
   return true;
 }
 
-bool rsa_crypto::public_decrypt(const byte_array &source,
+bool old_school_rsa_crypto::public_decrypt(const byte_array &source,
     byte_array &target) const
 {
   FUNCDEF("public_decrypt");

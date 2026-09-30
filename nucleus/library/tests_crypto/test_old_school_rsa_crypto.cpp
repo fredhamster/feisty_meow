@@ -15,7 +15,7 @@
 #include <application/hoople_main.h>
 #include <basis/byte_array.h>
 #include <basis/astring.h>
-#include <crypto/rsa_crypto.h>
+#include <crypto/old_school_rsa_crypto.h>
 #include <mathematics/chaos.h>
 #include <processes/ethread.h>
 #include <processes/thread_cabinet.h>
@@ -136,7 +136,7 @@ void rsa_thread::perform_activity(void *)
   while (left--) {
     time_stamp start;
 
-    rsa_crypto rc_private_here(KEY_SIZE);
+    old_school_rsa_crypto rc_private_here(KEY_SIZE);
     int key_durat = int(time_stamp().value() - start.value());
 
     byte_array public_key;
@@ -157,13 +157,13 @@ void rsa_thread::perform_activity(void *)
     // with our private key, can decrypt.
 
     start.reset();
-    rsa_crypto rc_pub(public_key);
+    old_school_rsa_crypto rc_pub(public_key);
     bool worked = rc_pub.public_encrypt(byte_array(ranstring.length() + 1,
         (abyte*)ranstring.s()), target);
     int pub_enc_durat = int(time_stamp().value() - start.value());
     ASSERT_TRUE(worked, "phase 1 shouldn't fail to encrypt the string");
 
-    rsa_crypto rc_priv(private_key);
+    old_school_rsa_crypto rc_priv(private_key);
     byte_array recovered;
     start.reset();
     worked = rc_priv.private_decrypt(target, recovered);

@@ -14,7 +14,7 @@
 
 #include "key_repository.h"
 
-#include <crypto/blowfish_crypto.h>
+#include <crypto/twofish_crypto.h>
 #include <structures/symbol_table.h>
 
 using namespace basis;
@@ -61,7 +61,7 @@ void key_repository::unlock(octenc_key_record *to_unlock)
 }
 
 outcome key_repository::add(const octopus_entity &ent,
-    const blowfish_crypto &key)
+    const twofish_crypto &key)
 {
 #ifdef DEBUG_KEY_REPOSITORY
   FUNCDEF("add");
